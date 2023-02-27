@@ -1,0 +1,12 @@
+<h2>Podania v balíku <%= @submission_package.name %> z <%= @submission_package.created_at %></h2>
+
+<div>
+  <% @submission_package.submissions.each do |submission| %>
+    <%#= link_to "#{package.name} z #{package.created_at}", path %>
+    <p><%= submission.message_subject %></p>
+  <% end %>
+</div>
+
+<%= form_tag submission_submit_path(@submission_package.id), method: :post, multipart: true do %>
+  <%= submit_tag 'Podať', class: "btn btn-primary" %>
+<% end %>
