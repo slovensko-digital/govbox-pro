@@ -1,0 +1,23 @@
+default: &default
+  adapter: postgresql
+  host: localhost
+  username: postgres
+  password: password123
+  encoding: unicode
+  pool: 50
+
+development:
+  <<: *default
+  database: govbox_pro_development
+
+test:
+  <<: *default
+  database: govbox_pro_test
+
+staging:
+  url: <%= ENV['DATABASE_URL'] %>
+  pool: 30
+
+production:
+  url: <%= ENV['DATABASE_URL'] %>
+  pool: 50
