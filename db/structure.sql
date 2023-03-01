@@ -384,7 +384,6 @@ CREATE TABLE submission.objects (
     name character varying NOT NULL,
     signed boolean NOT NULL,
     to_be_signed boolean NOT NULL,
-    mime_type character varying NOT NULL,
     content bytea NOT NULL,
     form boolean,
     created_at timestamp(6) without time zone NOT NULL,

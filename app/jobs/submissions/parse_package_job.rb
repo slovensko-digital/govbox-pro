@@ -60,7 +60,6 @@ class Submissions::ParsePackageJob < ApplicationJob
             name: Submissions::Utils.parse_entry_name(entry),
             signed: true, # TODO
             to_be_signed: false, # TODO
-            mime_type: '', # TODO
             content: io.read,
             form: form?(submission, entry)
           )

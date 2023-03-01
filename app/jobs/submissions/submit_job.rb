@@ -33,7 +33,7 @@ class Submissions::SubmitJob < ApplicationJob
         name: o.name,
         encoding: 'Base64',
         signed: o.signed,
-        mime_type: o.mime_type,
+        mime_type: Submissions::Utils.detect_mime_type(o),
         form: o.form,
         content: Base64.strict_encode64(o.content)
       }

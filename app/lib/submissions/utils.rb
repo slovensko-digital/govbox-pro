@@ -30,4 +30,35 @@ module Submissions::Utils
 
     File.basename(entry_path)
   end
+
+  def detect_mime_type(entry)
+    case File.extname(entry.name).downcase
+    when '.pdf'
+      'application/pdf'
+    when '.xml'
+      entry.form? ? 'application/x-eform-xml' : 'application/xml'
+    when '.asice'
+      '' # TODO
+    when '.xzep'
+      'application/x-xades_zep' # TODO
+    when '.zep'
+      '' # TODO
+    when '.zip'
+      'application/x-zip-compressed'
+    when '.txt'
+      'text/plain'
+    when '.doc'
+      'application/msword'
+    when '.docx'
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    when '.jpg', '.jpeg'
+      'image/jpeg'
+    when '.png'
+      'image/png'
+    when '.tiff', '.tif'
+      'image/tiff'
+    else
+      raise "Uknown MimeType for #{entry.name}"
+    end
+  end
 end

@@ -8,9 +8,11 @@ Rails.application.routes.draw do
     end
   end
 
-  namespace :admin do
-    namespace :que do
-      mount Que::Web, at: '/'
+  resources :submissions, path: 'podania', only: [:index, :new, :create, :show] do
+    post :submit
+
+    collection do
+      get 'novy-balik', to: 'submissions#new'
     end
   end
 end
