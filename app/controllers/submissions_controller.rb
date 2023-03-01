@@ -14,7 +14,7 @@ class SubmissionsController < ApplicationController
     parse_job.new.perform(package)
     # parse_job.perform_later(package)
 
-    # render action: "index"
+    redirect_to :action=>'index'
   end
 
   def show

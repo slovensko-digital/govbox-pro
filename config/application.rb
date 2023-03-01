@@ -33,4 +33,5 @@ module GovboxPro
   end
 end
 
-require 'govbox_api'
+require 'upvs/api'
+require 'upvs/govbox_api'

@@ -1,7 +1,7 @@
 class Submissions::SubmitJob < ApplicationJob
   queue_as :high_priority
 
-  def perform(submission, sender: GovboxApi)
+  def perform(submission, sender: Upvs::GovboxApi)
     submission_data = {
       posp_id: submission.posp_id,
       posp_version: submission.posp_version,
@@ -13,7 +13,7 @@ class Submissions::SubmitJob < ApplicationJob
       objects: build_objects(submission)
     }
 
-    sender = sender.new(submission.subject.sub)
+    sender = sender.new(submission.subject.sub).sktalk
     sender_response = sender.receive_and_save_to_outbox(submission_data)
 
     if sender_response

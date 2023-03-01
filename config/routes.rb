@@ -8,4 +8,10 @@ Rails.application.routes.draw do
       get 'novy-balik', to: 'submissions#new'
     end
   end
+
+  namespace :admin do
+    namespace :que do
+      mount Que::Web, at: '/'
+    end
+  end
 end

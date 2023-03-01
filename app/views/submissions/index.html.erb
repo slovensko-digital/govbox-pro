@@ -4,6 +4,6 @@
 
 <div>
   <% @submission_packages.each do |package| %>
-    <p><%= link_to "#{package.name} z #{package.created_at}", submission_path(package.id) %></p>
+    <p><%= link_to "#{package.name} z #{package.created_at.strftime('%d.%m.%Y %H:%M')}", submission_path(package.id) %></p>
   <% end %>
 </div>

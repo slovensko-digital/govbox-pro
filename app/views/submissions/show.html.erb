@@ -1,4 +1,4 @@
-<h2>Podania v balíku <%= @submission_package.name %> z <%= @submission_package.created_at %></h2>
+<h2>Podania v balíku <%= @submission_package.name %> z <%= @submission_package.created_at.strftime('%d.%m.%Y %H:%M') %></h2>
 
 <div>
   <% @submission_package.submissions.each do |submission| %>
