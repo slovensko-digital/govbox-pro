@@ -36,13 +36,13 @@ module Submissions::Utils
     when '.pdf'
       'application/pdf'
     when '.xml'
-      entry.form? ? 'application/x-eform-xml' : 'application/xml'
+      entry.form? ? 'application/x-eform-xml' : 'application/xml' # TODO confirm if correct
     when '.asice'
-      '' # TODO
+      'application/vnd.etsi.asic-e+zip'
+    when '.asics'
+      'application/vnd.etsi.asic-s+zip'
     when '.xzep'
-      'application/x-xades_zep' # TODO
-    when '.zep'
-      '' # TODO
+      'application/x-xades_zep' # TODO confirm if correct
     when '.zip'
       'application/x-zip-compressed'
     when '.txt'
