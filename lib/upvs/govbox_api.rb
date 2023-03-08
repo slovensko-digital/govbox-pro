@@ -19,7 +19,7 @@ module Upvs
 
     class SkTalk < Namespace
       def receive_and_save_to_outbox(data)
-        response = @api.request(:post, "#{@api.url}/api/sktalk/receive_and_save_to_outbox", { data: data.to_json }, header)
+        response = @api.request(:post, "#{@api.url}/api/sktalk/receive_and_save_to_outbox", data.to_json, header)
 
         receive_and_save_to_outbox_successful?(response)
       end
@@ -45,8 +45,6 @@ module Upvs
         success = response['receive_result'] == 0 && response['save_to_outbox_result'] == 0
 
         raise Error.new(response), 'Receive and save to outbox fail' unless success
-
-        success
       end
     end
 

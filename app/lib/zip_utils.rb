@@ -4,6 +4,9 @@ require 'tempfile'
 module ZipUtils
   extend self
 
+  # Zip.unicode_names = true
+  # Zip.force_entry_names_encoding = 'UTF-8'
+
   TMP_DIR = 'tmp'
 
   def extract(file, only: :itself, dir: TMP_DIR)

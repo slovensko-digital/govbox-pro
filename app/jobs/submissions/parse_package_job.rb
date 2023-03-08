@@ -29,14 +29,13 @@ class Submissions::ParsePackageJob < ApplicationJob
       Submission.create!(
         package_id: package.id,
         recipient_uri: row['recipient_uri'],
-        form_signed: row['form_signed'],
-        form_to_be_signed: row['form_to_be_signed'],
         posp_id: row['posp_id'],
         posp_version: row['posp_version'],
         message_type: row['message_type'],
-        message_subject: row['subfolder'],
+        message_subject: row['message_subject'],
         sender_business_reference: row['sender_business_reference'],
         recipient_business_reference: row['recipient_business_reference'],
+        package_subfolder: row['subfolder'],
         message_id: uuid,
         correlation_id: uuid
       )
@@ -54,15 +53,14 @@ class Submissions::ParsePackageJob < ApplicationJob
 
           raise "Found no submission record in CSV for #{submission_subdirectory_name}!" unless submission
 
-          Submissions::Object.create!(
+          object = Submissions::Object.create(
             submission_id: submission.id,
             uuid: uuid,
-            name: Submissions::Utils.parse_entry_name(entry),
-            signed: true, # TODO
-            to_be_signed: false, # TODO
+            name: Submissions::Utils.parse_entry_name(entry), # TODO
             content: io.read,
             form: form?(submission, entry)
           )
+          Submissions::Utils.detect_signature_status(entry.name, object)
         end
       end
     end
@@ -75,10 +73,10 @@ class Submissions::ParsePackageJob < ApplicationJob
   end
 
   def form?(submission, entry)
-    file_name_without_extension = entry.name.split('.', 2)&.first
+    file_name_without_extension = File.basename(entry.name, ".*")
 
-    # Form file should have the same name as message_subject
-    "#{submission.message_subject}/#{submission.message_subject}" == file_name_without_extension
+    # Form file must have the same name as subfolder
+    file_name_without_extension == submission.package_subfolder
   end
 
   delegate :uuid, to: self

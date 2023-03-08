@@ -12,6 +12,7 @@
 #  message_subject                             :string           not null
 #  sender_business_reference                   :string
 #  recipient_business_reference                :string
+#  package_subfolder                           :string
 #  message_id                                  :uuid             not null
 #  correlation_id                              :uuid             not null
 #  created_at                                  :datetime         not null

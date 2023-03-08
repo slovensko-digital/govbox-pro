@@ -61,4 +61,25 @@ module Submissions::Utils
       raise "Uknown MimeType for #{entry.name}"
     end
   end
+
+  def detect_signature_status(full_path, object)
+    if full_path.include? 'nepodpisovat'
+      object.update!(
+        signed: false,
+        to_be_signed: false
+      )
+    elsif full_path.include? 'podpisat'
+      object.update!(
+        signed: false,
+        to_be_signed: true
+      )
+    elsif full_path.include? 'podpisane'
+      object.update!(
+        signed: true,
+        to_be_signed: false
+      )
+    else
+      raise "Unknown signature status for #{full_path}"
+    end
+  end
 end
