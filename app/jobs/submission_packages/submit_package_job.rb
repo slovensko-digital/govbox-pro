@@ -1,4 +1,4 @@
-class Submissions::SubmitPackageJob < ApplicationJob
+class SubmissionPackages::SubmitPackageJob < ApplicationJob
   queue_as :high_priority
 
   def perform(package, submit_job: Submissions::SubmitJob)

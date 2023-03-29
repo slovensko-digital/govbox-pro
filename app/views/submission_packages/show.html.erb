@@ -7,6 +7,6 @@
   <% end %>
 </div>
 
-<%= form_tag submission_submit_path(@submission_package.id), method: :post, multipart: true do %>
+<%= form_tag submission_package_submit_path(@submission_package.id), method: :post, multipart: true do %>
   <%= submit_tag 'Podať', class: "btn btn-primary" %>
 <% end %>

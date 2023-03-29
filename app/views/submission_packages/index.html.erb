@@ -1,0 +1,9 @@
+<h2>Hromadné podania</h2>
+
+<%= link_to 'Nový balík', upload_new_submission_packages_url %>
+
+<div>
+  <% @submission_packages.each do |package| %>
+    <p><%= link_to "#{package.name} z #{package.created_at.strftime('%d.%m.%Y %H:%M')}", submission_package_path(package.id) %></p>
+  <% end %>
+</div>

@@ -1,9 +1,9 @@
-class SubmissionsController < ApplicationController
+class SubmissionPackagesController < ApplicationController
   def index
     @submission_packages = subject.submission_packages
   end
 
-  def create(parse_job: Submissions::ParsePackageJob, archive: Archive.new)
+  def create(parse_job: SubmissionPackages::ParsePackageJob, archive: Archive.new)
     zip_content = params[:content]
     package = Submissions::Package.create!(
       name: zip_content.original_filename,

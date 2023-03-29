@@ -1,13 +1,13 @@
 require 'csv'
 
-class Submissions::ParsePackageJob < ApplicationJob
+class SubmissionPackages::ParsePackageJob < ApplicationJob
   queue_as :high_priority
 
   class << self
     delegate :uuid, to: SecureRandom
   end
 
-  def perform(package, package_zip_path, load_package_info_job: Submissions::LoadPackageSubmissionsInfoJob, load_package_data_job: Submissions::LoadPackageSubmissionDataJob)
+  def perform(package, package_zip_path, load_package_info_job: SubmissionPackages::LoadPackageInfoJob, load_package_data_job: SubmissionPackages::LoadPackageDataJob)
     extracted_package_path = File.join(Utils.file_directory(package_zip_path), File.basename(package_zip_path, ".*"))
     system("unzip", package_zip_path, '-d', extracted_package_path)
 

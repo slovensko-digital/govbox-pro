@@ -1,6 +1,6 @@
 require 'csv'
 
-class Submissions::LoadPackageSubmissionDataJob < ApplicationJob
+class SubmissionPackages::LoadPackageDataJob < ApplicationJob
   queue_as :high_priority
 
   class << self
