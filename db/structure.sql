@@ -337,17 +337,17 @@ ALTER SEQUENCE public.subjects_id_seq OWNED BY public.subjects.id;
 CREATE TABLE public.submissions (
     id bigint NOT NULL,
     package_id bigint NOT NULL,
-    status integer DEFAULT 0 NOT NULL,
-    recipient_uri character varying NOT NULL,
-    posp_id character varying NOT NULL,
-    posp_version character varying NOT NULL,
-    message_type character varying NOT NULL,
-    message_subject character varying NOT NULL,
+    status integer DEFAULT 0,
+    recipient_uri character varying,
+    posp_id character varying,
+    posp_version character varying,
+    message_type character varying,
+    message_subject character varying,
     package_subfolder character varying,
     sender_business_reference character varying,
     recipient_business_reference character varying,
-    message_id uuid NOT NULL,
-    correlation_id uuid NOT NULL,
+    message_id uuid,
+    correlation_id uuid,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
 );
@@ -416,7 +416,7 @@ ALTER SEQUENCE submission.objects_id_seq OWNED BY submission.objects.id;
 CREATE TABLE submission.packages (
     id bigint NOT NULL,
     name character varying NOT NULL,
-    content bytea NOT NULL,
+    content bytea,
     subject_id bigint NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL

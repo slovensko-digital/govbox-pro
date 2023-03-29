@@ -4,7 +4,7 @@
 #
 #  id                                          :integer          not null, primary key
 #  package_id                                  :integer          not null
-#  status                                      :integer          default("created"), not null
+#  status                                      :integer          default("being_loaded"), not null
 #  recipient_uri                               :string           not null
 #  posp_id                                     :string           not null
 #  posp_version                                :string           not null
@@ -25,7 +25,7 @@ class Submission < ApplicationRecord
 
   delegate :subject, :to => :package, :allow_nil => false
 
-  enum status: { created: 0, being_submitted: 1, submitted: 2 }
+  enum status: { being_loaded: 0, created: 1, being_submitted: 2, submitted: 3 }
 
   def form
     objects.select { |o| o.form? }&.first

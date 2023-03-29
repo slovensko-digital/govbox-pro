@@ -8,7 +8,7 @@
 #  name                                        :string           not null
 #  signed                                      :boolean
 #  to_be_signed                                :boolean
-#  mime_type                                   :string           not null
+#  content                                     :binary           not null
 #  form                                        :boolean
 #  created_at                                  :datetime         not null
 #  updated_at                                  :datetime         not null

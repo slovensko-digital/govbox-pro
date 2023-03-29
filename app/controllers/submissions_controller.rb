@@ -3,18 +3,18 @@ class SubmissionsController < ApplicationController
     @submission_packages = subject.submission_packages
   end
 
-  def create(parse_job: Submissions::ParsePackageJob)
-    package_content = params[:content]
+  def create(parse_job: Submissions::ParsePackageJob, archive: Archive.new)
+    zip_content = params[:content]
     package = Submissions::Package.create!(
-      name: package_content.original_filename,
-      content: package_content.read,
+      name: zip_content.original_filename,
       subject_id: 1 #TODO
     )
 
-    parse_job.new.perform(package)
-    # parse_job.perform_later(package)
+    package_path = archive.store('submissions', File.join(String(package.subject_id), zip_content.original_filename), zip_content.read.force_encoding("UTF-8"))
+    parse_job.new.perform(package, package_path)
+    # parse_job.perform_later(package, content)
 
-    redirect_to :action=>'index'
+    redirect_to :action => 'index'
   end
 
   def show
