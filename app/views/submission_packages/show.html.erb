@@ -2,11 +2,23 @@
 
 <div>
   <% @submission_package.submissions.each do |submission| %>
-    <%#= link_to "#{package.name} z #{package.created_at}", path %>
-    <p><%= submission.message_subject %></p>
+    <p>
+      <%= submission.message_subject %>
+
+      <% if submission.submitted? %>
+        <span> - Odoslané</span>
+      <% end %>
+    </p>
   <% end %>
 </div>
 
-<%= form_tag submission_package_submit_path(@submission_package.id), method: :post, multipart: true do %>
-  <%= submit_tag 'Podať', class: "btn btn-primary" %>
+<%= form_tag submission_package_path(@submission_package.id), method: :delete, multipart: true do %>
+  <%= submit_tag 'Zmazať', class: "btn btn-primary" %>
+<% end %>
+
+<br />
+<% if @submission_package.submittable? %>
+  <%= form_tag submission_package_submit_path(@submission_package.id), method: :post, multipart: true do %>
+    <%= submit_tag 'Podať', class: "btn btn-primary" %>
+  <% end %>
 <% end %>

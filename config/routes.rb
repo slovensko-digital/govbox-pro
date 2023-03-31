@@ -8,7 +8,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :submission_packages, path: 'hromadne-podania', only: [:index, :create, :show] do
+  resources :submission_packages, path: 'hromadne-podania', only: [:index, :create, :show, :destroy] do
     get :upload_new, path: 'nove', on: :collection
     post :submit
   end

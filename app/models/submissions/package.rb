@@ -13,5 +13,9 @@ class Submissions::Package < ApplicationRecord
   self.table_name = 'submission.packages'
 
   belongs_to :subject, class_name: 'Subject'
-  has_many :submissions
+  has_many :submissions, :dependent => :destroy
+
+  def submittable?
+    submissions.all? { |submission| submission.status == 'created' || submission.status == 'submit_failed' }
+  end
 end

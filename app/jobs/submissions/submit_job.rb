@@ -14,11 +14,12 @@ class Submissions::SubmitJob < ApplicationJob
     }
 
     sender = sender.new(submission.subject.sub).sktalk
-    sender_response = sender.receive_and_save_to_outbox(submission_data)
 
-    if sender_response
-      Submission.update!(status: 'submitted')
-    else
+    begin
+      sender_response = sender.receive_and_save_to_outbox(submission_data)
+      Submission.update!(status: 'submitted') if sender_response
+    rescue
+      submission.update!(status: 'submit_failed')
       raise "Submission #{submission.message_subject} failed!"
     end
   end

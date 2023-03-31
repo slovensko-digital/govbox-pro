@@ -21,11 +21,15 @@
 class Submission < ApplicationRecord
   belongs_to :package, class_name: 'Submissions::Package'
 
-  has_many :objects, class_name: 'Submissions::Object'
+  has_many :objects, class_name: 'Submissions::Object', :dependent => :destroy
 
   delegate :subject, :to => :package, :allow_nil => false
 
-  enum status: { being_loaded: 0, created: 1, being_submitted: 2, submitted: 3 }
+  enum status: { being_loaded: 0, created: 1, being_submitted: 2, submitted: 3, submit_failed: 4 }
+
+  def submitted?
+    status == 'submitted'
+  end
 
   def form
     objects.select { |o| o.form? }&.first
