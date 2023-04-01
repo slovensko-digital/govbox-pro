@@ -15,7 +15,9 @@ class Submissions::Package < ApplicationRecord
   belongs_to :subject, class_name: 'Subject'
   has_many :submissions, :dependent => :destroy
 
+  enum status: { uploaded: 0, parsed: 1, parsing_failed: 2 }
+
   def submittable?
-    submissions.all? { |submission| submission.status == 'created' || submission.status == 'submit_failed' }
+    status == 'parsed' && submissions.all? { |submission| submission.status == 'created' || submission.status == 'submit_failed' }
   end
 end

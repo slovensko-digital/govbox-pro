@@ -1,0 +1,7 @@
+<h2>Podania</h2>
+
+<div>
+  <% @submissions.each do |submission| %>
+    <p><%= link_to submission.message_subject, submission_path(submission.id) %></p>
+  <% end %>
+</div>

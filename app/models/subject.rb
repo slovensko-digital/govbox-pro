@@ -11,4 +11,5 @@
 
 class Subject < ApplicationRecord
   has_many :submission_packages, class_name: 'Submissions::Package'
+  has_many :submissions, through: :submission_packages
 end

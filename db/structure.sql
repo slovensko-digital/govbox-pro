@@ -417,6 +417,7 @@ CREATE TABLE submission.packages (
     id bigint NOT NULL,
     name character varying NOT NULL,
     content bytea,
+    status integer DEFAULT 0,
     subject_id bigint NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL

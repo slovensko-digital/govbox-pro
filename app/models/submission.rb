@@ -25,10 +25,14 @@ class Submission < ApplicationRecord
 
   delegate :subject, :to => :package, :allow_nil => false
 
-  enum status: { being_loaded: 0, created: 1, being_submitted: 2, submitted: 3, submit_failed: 4 }
+  enum status: { being_loaded: 0, created: 1, corrupt: 2, being_submitted: 3, submitted: 4, submit_failed: 5 }
 
   def submitted?
     status == 'submitted'
+  end
+
+  def submittable?
+    (status == 'created' || 'submit_failed') && valid_for_submission?
   end
 
   def form
@@ -37,5 +41,9 @@ class Submission < ApplicationRecord
 
   def has_one_form?
     objects.select { |o| o.form? }.count == 1
+  end
+
+  def valid_for_submission?
+    has_one_form?
   end
 end

@@ -10,20 +10,24 @@ class SubmissionPackages::LoadPackageDataJob < ApplicationJob
   def perform(submission, submission_path)
     Dir.each_child(submission_path) do |subdirectory_name|
       case subdirectory_name
-      when 'podpisane'
+      when "podpisane"
         load_submission_objects(submission, File.join(submission_path, subdirectory_name), true, false)
-      when 'podpisat'
+      when "podpisat"
         load_submission_objects(submission, File.join(submission_path, subdirectory_name), false, true)
-      when 'nepodpisovat'
+      when "nepodpisovat"
         load_submission_objects(submission, File.join(submission_path, subdirectory_name), false, false)
       else
         raise "Found extra content!"
       end
     end
 
-    raise "Submission #{submission.package_subfolder} does not containt exactly 1 form!" unless submission.has_one_form?
+    submission.update(status: "created")
 
-    submission.update!(status: "created")
+    unless submission.has_one_form?
+      submission.update(status: "corrupt")
+    end
+  rescue StandardError
+    submission.update(status: "invalid")
   end
 
   private

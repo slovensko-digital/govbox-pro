@@ -1,0 +1,15 @@
+<h2>Podanie <%= @submission.message_subject %></h2>
+
+<p>Stav: <%= @submission.status %></p>
+<br />
+
+<%= form_tag submission_path(@submission.id), method: :delete, multipart: true do %>
+  <%= submit_tag 'Zmazať', class: "btn btn-primary" %>
+<% end %>
+
+<br />
+<% if @submission.submittable? %>
+  <%= form_tag submission_submit_path(@submission.id), method: :post, multipart: true do %>
+    <%= submit_tag 'Podať', class: "btn btn-primary" %>
+  <% end %>
+<% end %>

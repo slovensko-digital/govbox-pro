@@ -1,9 +1,11 @@
 <h2>Podania v balíku <%= @submission_package.name %> z <%= @submission_package.created_at.strftime('%d.%m.%Y %H:%M') %></h2>
 
 <div>
+  <p>Stav: <%= @submission_package.status %></p>
+
   <% @submission_package.submissions.each do |submission| %>
     <p>
-      <%= submission.message_subject %>
+      <%= link_to submission.message_subject, submission_path(submission.id) %>
 
       <% if submission.submitted? %>
         <span> - Odoslané</span>
