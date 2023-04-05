@@ -13,6 +13,13 @@ class SubmissionsController < ApplicationController
     redirect_to :action => 'index'
   end
 
+  def destroy_all
+    current_subject.submission_packages.destroy_all
+    current_subject.submissions.destroy_all
+
+    redirect_to :action => 'index'
+  end
+
   def submit(submit_job: Submissions::SubmitJob)
     @submission = Submission.find(params[:submission_id])
     mark_submission_as_being_submitted(@submission)

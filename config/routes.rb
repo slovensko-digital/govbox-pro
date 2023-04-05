@@ -15,5 +15,6 @@ Rails.application.routes.draw do
 
   resources :submissions, path: 'podania', only: [:index, :show, :destroy] do
     post :submit, path: 'podat'
+    delete :destroy_all, path: 'zmazat', on: :collection
   end
 end

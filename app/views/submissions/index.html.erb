@@ -4,14 +4,32 @@
   <%= button_to "Vytvoriť nové podanie", submissions_path, :method => :get %>
   <br />
   <%= button_to "Nahrať balík podaní", upload_new_submission_packages_path, :method => :get %>
-</div>
-
-<br />
-<h3>Vytvorené podania</h3>
-<div>
-  <% @submissions.each do |submission| %>
-    <p>
-      <%= link_to submission.title, submission_path(submission.id) %><%= " #{submission.status}" %><%= " #{submission.is_valid?}" %>
-    </p>
+  <% if @submissions.any? %>
+    <br />
+    <%= button_to "Zmazať všetky", destroy_all_submissions_path, :method => :delete %>
   <% end %>
 </div>
+
+<% if @submissions.any? %>
+  <br />
+  <h3>Vytvorené podania</h3>
+  <div>
+    <table>
+      <tr>
+        <th>Podanie</th>
+        <th>Balík</th>
+        <th>Stav</th>
+        <th>Validné?</th>
+      </tr>
+
+      <% @submissions.each do |submission| %>
+        <tr>
+          <td><%= link_to submission.title, submission_path(submission.id) %></td>
+          <td><%= " #{submission.package&.base_name}" %></td>
+          <td><%= " #{submission.status}" %></td>
+          <td><%= " #{submission.is_valid?}" %></td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
+<% end %>

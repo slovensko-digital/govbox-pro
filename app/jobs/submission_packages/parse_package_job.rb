@@ -33,6 +33,9 @@ class SubmissionPackages::ParsePackageJob < ApplicationJob
       submission.update(status: 'created')
     end
 
+
+    FileUtils.rm_rf(package_zip_path)
+    FileUtils.rm_rf(extracted_package_path)
   rescue StandardError
     # TODO Send notification
     # TODO Delete package
