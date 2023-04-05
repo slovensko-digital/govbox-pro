@@ -8,6 +8,8 @@ class SubmissionPackages::LoadPackageDataJob < ApplicationJob
   end
 
   def perform(submission, submission_path)
+    raise "Submission info missing in CSV" unless submission
+
     Dir.each_child(submission_path) do |subdirectory_name|
       case subdirectory_name
       when "podpisane"
@@ -27,7 +29,7 @@ class SubmissionPackages::LoadPackageDataJob < ApplicationJob
       submission.update(status: "corrupt")
     end
   rescue StandardError
-    submission.update(status: "invalid")
+    submission.update(status: "invalid") if submission
   end
 
   private

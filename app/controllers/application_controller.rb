@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
-  def subject
-    # TODO current subject
+  def current_subject
+    # TODO find current subject
     Subject::find(1)
   end
 end

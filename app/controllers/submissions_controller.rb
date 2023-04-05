@@ -15,14 +15,14 @@ class SubmissionsController < ApplicationController
 
   def submit(submit_job: Submissions::SubmitJob)
     @submission = Submission.find(params[:submission_id])
-    mark_submission_as_being_submitted(@submissions)
+    mark_submission_as_being_submitted(@submission)
     submit_job.new.perform(@submission)
     # submit_job.perform_later(@submission_package)
   end
 
   private
 
-  def mark_submissions_as_being_submitted(submission)
+  def mark_submission_as_being_submitted(submission)
     Submission.transaction do
       submission.update(status: 'being_submitted')
     end

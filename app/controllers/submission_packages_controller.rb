@@ -1,16 +1,16 @@
 class SubmissionPackagesController < ApplicationController
   def index
-    @submission_packages = subject.submission_packages
+    @submission_packages = current_subject.submission_packages
   end
 
   def create(parse_job: SubmissionPackages::ParsePackageJob, archive: Archive.new)
     zip_content = params[:content]
     package = Submissions::Package.create!(
-      name: zip_content.original_filename,
-      subject_id: 1 #TODO
+      name: "#{Time.now.to_i}_#{zip_content.original_filename}",
+      subject_id: current_subject.id
     )
 
-    package_path = archive.store('submissions', File.join(String(package.subject_id), zip_content.original_filename), zip_content.read.force_encoding("UTF-8"))
+    package_path = archive.store('submissions', package_path(package), zip_content.read.force_encoding("UTF-8"))
     parse_job.new.perform(package, package_path)
     # parse_job.perform_later(package, package_path)
 
@@ -35,6 +35,10 @@ class SubmissionPackagesController < ApplicationController
   end
 
   private
+
+  def package_path(package)
+    File.join(String(current_subject.id), package.name)
+  end
 
   def mark_submissions_as_being_submitted(submissions)
     Submission.transaction do
