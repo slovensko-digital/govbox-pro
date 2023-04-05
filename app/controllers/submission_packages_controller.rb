@@ -1,8 +1,4 @@
 class SubmissionPackagesController < ApplicationController
-  def index
-    @submission_packages = current_subject.submission_packages
-  end
-
   def create(parse_job: SubmissionPackages::ParsePackageJob, archive: Archive.new)
     zip_content = params[:content]
     package = Submissions::Package.create!(
@@ -15,10 +11,6 @@ class SubmissionPackagesController < ApplicationController
     # parse_job.perform_later(package, package_path)
 
     redirect_to :action => 'index'
-  end
-
-  def show
-    @submission_package = Submissions::Package.find(params[:id])
   end
 
   def destroy

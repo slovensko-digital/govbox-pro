@@ -1,6 +1,14 @@
 <h2>Podania</h2>
 
 <div>
+  <%= button_to "Vytvoriť nové podanie", submissions_path, :method => :get %>
+  <br />
+  <%= button_to "Nahrať balík podaní", upload_new_submission_packages_path, :method => :get %>
+</div>
+
+<br />
+<h3>Vytvorené podania</h3>
+<div>
   <% @submissions.each do |submission| %>
     <p><%= link_to submission.message_subject, submission_path(submission.id) %></p>
   <% end %>
