@@ -7,23 +7,15 @@ class SubmissionPackagesController < ApplicationController
     )
 
     package_path = archive.store('submissions', package_path(package), zip_content.read.force_encoding("UTF-8"))
-    parse_job.new.perform(package, package_path)
-    # parse_job.perform_later(package, package_path)
+    parse_job.perform_later(package, package_path)
 
-    redirect_to :action => 'index'
-  end
-
-  def destroy
-    Submissions::Package.find(params[:id]).destroy
-
-    redirect_to :action => 'index'
+    redirect_to :action => 'index', :controller => 'submissions'
   end
 
   def submit(submit_job: SubmissionPackages::SubmitPackageJob)
     @submission_package = Submissions::Package.find(params[:submission_package_id])
     mark_submissions_as_being_submitted(@submission_package.submissions)
-    submit_job.new.perform(@submission_package)
-    # submit_job.perform_later(@submission_package)
+    submit_job.perform_later(@submission_package)
   end
 
   private

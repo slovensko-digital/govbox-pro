@@ -7,7 +7,7 @@ class SubmissionPackages::ParsePackageJob < ApplicationJob
     delegate :uuid, to: SecureRandom
   end
 
-  def perform(package, package_zip_path, load_package_data_job: SubmissionPackages::LoadPackageDataJob)
+  def perform(package, package_zip_path, load_submission_content_job: Submissions::LoadSubmissionContentJob)
     extracted_package_path = File.join(Utils.file_directory(package_zip_path), File.basename(package_zip_path, ".*"))
     system("unzip", package_zip_path, '-d', extracted_package_path)
 
@@ -15,34 +15,27 @@ class SubmissionPackages::ParsePackageJob < ApplicationJob
 
     raise "Package must contain 1 CSV file!" if csv_paths.size != 1
 
-    submissions_from_csv = load_package_csv(package, csv_paths.first)
-    submissions_from_package = []
+    submissions_list = load_package_csv(package, csv_paths.first)
 
     Dir.each_child(extracted_package_path) do |entry_name|
       if Utils.directory?(entry_name)
-        submission = Submission.find_by(
+        submission = Submission.find_or_create_by(
           package_id: package.id,
           package_subfolder: File.basename(entry_name)
         )
-        submissions_from_package << submission
 
-        load_package_data_job.new.perform(submission, File.join(extracted_package_path, entry_name))
-        # load_package_data_job.perform_later(submission, File.join(extracted_package_path, entry_name))
+        load_submission_content_job.perform_later(submission, File.join(extracted_package_path, entry_name))
       end
     end
 
-    unless submissions_from_csv.sort == submissions_from_package.sort
-      # Delete all extra submissions
-
-      (submissions_from_csv - submissions_from_package).each { |submission| submission.destroy }
-      (submissions_from_package.compact - submissions_from_csv).each { |submission| submission.destroy }
-
-      raise "CSV content does not match package content!"
+    package.update(status: 'parsed')
+    submissions_list.each do |submission|
+      submission.update(status: 'created')
     end
 
-    package.update(status: 'parsed')
   rescue StandardError
-    package.update(status: 'parsing_failed')
+    # TODO Send notification
+    # TODO Delete package
   end
 
   private
@@ -54,10 +47,10 @@ class SubmissionPackages::ParsePackageJob < ApplicationJob
   }
 
   def load_package_csv(package, csv_path)
-    submissions = []
+    submissions_list = []
 
     CSV.parse(File.read(csv_path), **CSV_OPTIONS) do |row|
-      submissions << Submission.create!(
+      submissions_list << Submission.create!(
         package_id: package.id,
         package_subfolder: row['subfolder'],
         recipient_uri: row['recipient_uri'],
@@ -72,7 +65,7 @@ class SubmissionPackages::ParsePackageJob < ApplicationJob
       )
     end
 
-    submissions
+    submissions_list
   end
 
   delegate :uuid, to: self

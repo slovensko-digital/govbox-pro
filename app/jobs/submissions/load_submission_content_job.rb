@@ -1,6 +1,6 @@
 require 'csv'
 
-class SubmissionPackages::LoadPackageDataJob < ApplicationJob
+class Submissions::LoadSubmissionContentJob < ApplicationJob
   queue_as :high_priority
 
   class << self
@@ -8,8 +8,6 @@ class SubmissionPackages::LoadPackageDataJob < ApplicationJob
   end
 
   def perform(submission, submission_path)
-    raise "Submission info missing in CSV" unless submission
-
     Dir.each_child(submission_path) do |subdirectory_name|
       case subdirectory_name
       when "podpisane"
@@ -18,18 +16,10 @@ class SubmissionPackages::LoadPackageDataJob < ApplicationJob
         load_submission_objects(submission, File.join(submission_path, subdirectory_name), false, true)
       when "nepodpisovat"
         load_submission_objects(submission, File.join(submission_path, subdirectory_name), false, false)
-      else
-        raise "Found extra content!"
       end
     end
 
     submission.update(status: "created")
-
-    unless submission.has_one_form?
-      submission.update(status: "corrupt")
-    end
-  rescue StandardError
-    submission.update(status: "invalid") if submission
   end
 
   private
@@ -37,8 +27,6 @@ class SubmissionPackages::LoadPackageDataJob < ApplicationJob
   def load_submission_objects(submission, objects_path, signed, to_be_signed)
     Dir.foreach(objects_path) do |filename|
       next if filename == '.' or filename == '..'
-
-      raise "Found extra content!" if File.directory?(filename)
 
       Submissions::Object.create(
         submission_id: submission.id,

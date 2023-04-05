@@ -25,25 +25,64 @@ class Submission < ApplicationRecord
 
   delegate :subject, :to => :package, :allow_nil => false
 
-  enum status: { being_loaded: 0, created: 1, corrupt: 2, being_submitted: 3, submitted: 4, submit_failed: 5 }
+  enum status: { being_loaded: 0, created: 1, being_submitted: 2, submitted: 3, submit_failed: 4 }
+
+  def title
+    message_subject || package_subfolder
+  end
 
   def submitted?
     status == 'submitted'
   end
 
   def submittable?
-    (status == 'created' || 'submit_failed') && valid_for_submission?
+    (status == 'created' || 'submit_failed') && valid?
   end
 
   def form
     objects.select { |o| o.form? }&.first
   end
 
+  def is_valid?
+    status == 'created' && all_mandatory_data_present? && has_one_form? && all_objects_valid?
+  end
+
+  def validation_errors
+    errors = []
+
+    unless all_mandatory_data_present?
+      missing_attributes = mandatory_attributes.select { |_, v| v.blank? }
+      errors << "Chýbajúce dáta v CSV prehľade o podaní: #{missing_attributes.keys.join(", ")}"
+    end
+
+    if objects.size == 0
+      errors << "K podaniu nebol nájdený formulár, ani žiadna príloha"
+    elsif !has_one_form?
+      errors << "Podanie musí obsahovať práve jeden formulár!"
+    end
+
+    unless all_objects_valid?
+      errors += objects.map { |object| object.validation_errors }.compact.flatten
+    end
+
+    errors
+  end
+
+  private
+
   def has_one_form?
     objects.select { |o| o.form? }.count == 1
   end
 
-  def valid_for_submission?
-    has_one_form?
+  def mandatory_attributes
+    attributes.slice("recipient_uri", "posp_id", "posp_version", "message_type", "message_subject")
+  end
+
+  def all_mandatory_data_present?
+    mandatory_attributes.all? { |_, v| v.present? }
+  end
+
+  def all_objects_valid?
+    objects.all? { |object| object.is_valid? }
   end
 end

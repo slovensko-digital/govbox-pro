@@ -1,6 +1,8 @@
 module Utils
   extend self
 
+  EXTENSIONS_ALLOW_LIST = %w(pdf xml asice asics xzep zip txt doc docx jpg jpeg png tif tiff)
+
   def file_directory(file_path)
     File.dirname(file_path)
   end

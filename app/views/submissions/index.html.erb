@@ -10,6 +10,8 @@
 <h3>Vytvorené podania</h3>
 <div>
   <% @submissions.each do |submission| %>
-    <p><%= link_to submission.message_subject, submission_path(submission.id) %></p>
+    <p>
+      <%= link_to submission.title, submission_path(submission.id) %><%= " #{submission.status}" %><%= " #{submission.is_valid?}" %>
+    </p>
   <% end %>
 </div>

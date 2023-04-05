@@ -1,6 +1,6 @@
 class SubmissionsController < ApplicationController
   def index
-    @submissions = subject.submissions
+    @submissions = current_subject.submissions
   end
 
   def show
