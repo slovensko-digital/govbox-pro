@@ -25,7 +25,7 @@ class Submission < ApplicationRecord
 
   delegate :subject, :to => :package, :allow_nil => false
 
-  enum status: { created: 0, being_loaded: 1, loading_done: 2, being_submitted: 3, submitted: 4, submit_failed: 5 }
+  enum status: { created: 0, being_loaded: 1, loading_done: 2, being_submitted: 3, submitted: 4, submit_failed_unprocessable: 5, submit_failed_temporary: 6 }
 
   def title
     message_subject || package_subfolder

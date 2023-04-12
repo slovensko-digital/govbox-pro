@@ -6,10 +6,10 @@ class SubmissionPackagesController < ApplicationController
       subject_id: current_subject.id
     )
 
-    package_path = archive.store('submissions', package_path(package), zip_content.read.force_encoding("UTF-8"))
+    package_path = archive.store("submissions", package_path(package), zip_content.read.force_encoding("UTF-8"))
     parse_job.perform_later(package, package_path)
 
-    redirect_to :action => 'index', :controller => 'submissions'
+    redirect_to :action => "index", :controller => "submissions"
   end
 
   def submit(submit_job: SubmissionPackages::SubmitPackageJob)
