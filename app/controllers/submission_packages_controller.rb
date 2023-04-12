@@ -27,7 +27,7 @@ class SubmissionPackagesController < ApplicationController
   def mark_submissions_as_being_submitted(submissions)
     Submission.transaction do
       submissions.each do |s|
-        s.update(status: 'being_submitted')
+        s.update(status: "being_submitted")
       end
     end
   end

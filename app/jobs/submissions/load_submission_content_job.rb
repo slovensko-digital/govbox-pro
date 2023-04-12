@@ -19,7 +19,11 @@ class Submissions::LoadSubmissionContentJob < ApplicationJob
       end
     end
 
-    submission.update(status: "created")
+    submission.update(status: "loading_done")
+
+    # TODO confirm if OK
+    # TODO package folder needs to be deleted to (schedule deleting it later?)
+    FileUtils.rm_rf(submission_path)
   end
 
   private

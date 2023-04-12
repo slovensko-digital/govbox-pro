@@ -7,8 +7,14 @@ module Utils
     File.dirname(file_path)
   end
 
-  def directory?(name)
-    File.extname(name).empty?
+  def sub_folders(path)
+    Dir.chdir(path) do
+      Dir["*"].reject { |o| not File.directory?(o) }
+    end
+  end
+    
+  def csv?(name)
+    File.extname(name).downcase == '.csv'
   end
 
   def detect_mime_type(entry)
@@ -40,5 +46,9 @@ module Utils
     else
       raise "Uknown MimeType for #{entry.name}"
     end
+  end
+
+  def delete_file(path)
+    FileUtils.rm_rf(path)
   end
 end

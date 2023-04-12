@@ -11,34 +11,33 @@ class SubmissionPackages::ParsePackageJob < ApplicationJob
     extracted_package_path = File.join(Utils.file_directory(package_zip_path), File.basename(package_zip_path, ".*"))
     system("unzip", package_zip_path, '-d', extracted_package_path)
 
+    validate_package_structure(extracted_package_path)
+
     csv_paths = Dir[extracted_package_path + "/*.csv"]
 
     raise "Package must contain 1 CSV file!" if csv_paths.size != 1
 
-    submissions_list = load_package_csv(package, csv_paths.first)
+    load_package_csv(package, csv_paths.first)
 
     Dir.each_child(extracted_package_path) do |entry_name|
-      if Utils.directory?(entry_name)
+      if File.directory?(File.join(extracted_package_path, entry_name))
         submission = Submission.find_or_create_by(
           package_id: package.id,
           package_subfolder: File.basename(entry_name)
         )
+        submission.update(status: "being_loaded")
 
         load_submission_content_job.perform_later(submission, File.join(extracted_package_path, entry_name))
       end
     end
 
-    package.update(status: 'parsed')
-    submissions_list.each do |submission|
-      submission.update(status: 'created')
-    end
-
-
-    FileUtils.rm_rf(package_zip_path)
-    FileUtils.rm_rf(extracted_package_path)
-  rescue StandardError
+    package.update(status: "parsed")
+  rescue StandardError => e
     # TODO Send notification
-    # TODO Delete package
+    Utils.delete_file(extracted_package_path)
+    package.destroy!
+  ensure
+    Utils.delete_file(package_zip_path)
   end
 
   private
@@ -50,10 +49,8 @@ class SubmissionPackages::ParsePackageJob < ApplicationJob
   }
 
   def load_package_csv(package, csv_path)
-    submissions_list = []
-
     CSV.parse(File.read(csv_path), **CSV_OPTIONS) do |row|
-      submissions_list << Submission.create!(
+      Submission.create!(
         package_id: package.id,
         package_subfolder: row['subfolder'],
         recipient_uri: row['recipient_uri'],
@@ -67,8 +64,42 @@ class SubmissionPackages::ParsePackageJob < ApplicationJob
         correlation_id: uuid
       )
     end
+  end
 
-    submissions_list
+  def validate_package_structure(extracted_package_path)
+    raise "No submissions found!" if Utils.sub_folders(extracted_package_path).empty?
+
+    Dir.each_child(extracted_package_path) do |package_entry_name|
+      package_entry_path = File.join(extracted_package_path, package_entry_name)
+
+      if File.directory?(package_entry_path)
+        # check each submission directory structure
+        Dir.each_child(package_entry_path) do |submission_subfolder_name|
+          submission_subfolder_path = File.join(package_entry_path, submission_subfolder_name)
+
+          if File.directory?(submission_subfolder_path)
+            case(submission_subfolder_name)
+            when 'podpisane', 'podpisat', 'nepodpisovat'
+              contains_files_only?(submission_subfolder_path)
+            else
+              raise "Disallowed submission subfolder!"
+            end
+          else
+            raise "Unknown signature status! File must be inside a folder."
+          end
+        end
+      elsif Utils.csv?(package_entry_name)
+        # noop
+      else
+        raise "Package contains extra file!"
+      end
+    end
+  end
+
+  def contains_files_only?(path)
+    Dir.each_child(path) do |entry_name|
+      raise "Disallowed content subfolder!" if File.directory?(entry_name)
+    end
   end
 
   delegate :uuid, to: self
