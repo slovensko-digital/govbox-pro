@@ -17,8 +17,7 @@ gem 'bootstrap', '4.0.0.alpha6'
 gem 'clockwork'
 
 # Workers
-gem 'que'
-gem 'que-web'
+gem "good_job", "~> 3.15"
 
 # Utilities
 gem 'rest-client'

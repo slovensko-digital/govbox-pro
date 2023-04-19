@@ -21,7 +21,7 @@ module GovboxPro
     config.active_record.default_timezone = :utc
     config.time_zone = 'Europe/Bratislava'
 
-    config.active_job.queue_adapter = :que
+    config.active_job.queue_adapter = :good_job
     config.active_job.default_queue_name = :medium_priority
     config.action_mailer.deliver_later_queue_name = :high_priority
 
@@ -34,8 +34,6 @@ module GovboxPro
     # config.eager_load_paths << Rails.root.join("extras")
   end
 end
-
-require 'que/active_record/model'
 
 require 'upvs/api'
 require 'upvs/govbox_api'
