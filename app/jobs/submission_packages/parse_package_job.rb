@@ -19,6 +19,8 @@ class SubmissionPackages::ParsePackageJob < ApplicationJob
 
     load_package_csv(package, csv_paths.first)
 
+    jobs_batch = GoodJob::Batch.new
+
     Dir.each_child(extracted_package_path) do |entry_name|
       if File.directory?(File.join(extracted_package_path, entry_name))
         submission = Submission.find_or_create_by(
@@ -27,17 +29,17 @@ class SubmissionPackages::ParsePackageJob < ApplicationJob
         )
         submission.update(status: "being_loaded")
 
-        load_submission_content_job.perform_later(submission, File.join(extracted_package_path, entry_name))
+        jobs_batch.add do
+          load_submission_content_job.perform_later(submission, File.join(extracted_package_path, entry_name))
+        end
       end
     end
+
+    jobs_batch.enqueue(on_success: SubmissionPackages::CleanPackageFilesJob, package: package, zip_path: package_zip_path, extracted_data_path: extracted_package_path)
 
     package.update(status: "parsed")
   rescue StandardError => e
     # TODO Send notification
-    Utils.delete_file(extracted_package_path)
-    package.destroy!
-  ensure
-    Utils.delete_file(package_zip_path)
   end
 
   private
