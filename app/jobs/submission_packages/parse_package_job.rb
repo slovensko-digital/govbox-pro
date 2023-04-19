@@ -40,18 +40,19 @@ class SubmissionPackages::ParsePackageJob < ApplicationJob
     package.update(status: "parsed")
   rescue StandardError => e
     # TODO Send notification
+    package.destroy!
   end
 
   private
 
-  CSV_OPTIONS = {
-    encoding: 'UTF-8',
-    col_sep: ',',
-    headers: true
-  }
-
   def load_package_csv(package, csv_path)
-    CSV.parse(File.read(csv_path), **CSV_OPTIONS) do |row|
+    csv_options = {
+      encoding: 'UTF-8',
+      col_sep: File.open(csv_path) { |f| f.readline }.include?(';') ? ';' : ',',
+      headers: true
+    }
+
+    CSV.parse(File.read(csv_path), **csv_options) do |row|
       Submission.create!(
         package_id: package.id,
         package_subfolder: row['subfolder'],

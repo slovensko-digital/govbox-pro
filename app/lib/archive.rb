@@ -1,13 +1,13 @@
 class Archive
-  def self.new(environment: Rails.env, name: 'archive')
+  def self.new(environment: Rails.env, name: "archive")
     case environment
-    when 'development'
+    when "development"
       NoArchive.new(name)
-    when 'test'
+    when "test"
       NoArchive.new(name)
-    when 'staging'
+    when "staging"
       # TODO
-    when 'production'
+    when "production"
       # TODO
     else
       raise

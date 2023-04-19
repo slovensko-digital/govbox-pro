@@ -17,9 +17,10 @@ class Submissions::SubmitJob < ApplicationJob
 
     begin
       sender_response = sender.receive_and_save_to_outbox(submission_data)
-      Submission.update!(status: 'submitted') if sender_response
+      Submission.update!(status: "submitted") if sender_response
     rescue
-      submission.update!(status: 'submit_failed')
+      # TODO handle based on error code
+      submission.update!(status: "submit_failed")
       raise "Submission #{submission.message_subject} failed!"
     end
   end
@@ -28,15 +29,15 @@ class Submissions::SubmitJob < ApplicationJob
 
   def build_objects(submission)
     objects = []
-    submission.objects.each do |o|
+    submission.objects.each do |object|
       objects << {
-        id: o.uuid,
-        name: o.name,
-        encoding: 'Base64',
-        signed: o.signed,
-        mime_type: Utils.detect_mime_type(o),
-        form: (o.form if o.form),
-        content: Base64.strict_encode64(o.content.force_encoding('UTF-8'))
+        id: object.uuid,
+        name: object.name,
+        encoding: "Base64",
+        signed: object.signed,
+        mime_type: Utils.detect_mime_type(object),
+        form: (object.form if object.form),
+        content: Base64.strict_encode64(object.content.force_encoding("UTF-8"))
       }.compact
     end
 

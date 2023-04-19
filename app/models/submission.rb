@@ -4,7 +4,7 @@
 #
 #  id                                          :integer          not null, primary key
 #  package_id                                  :integer          not null
-#  status                                      :integer          default("being_loaded"), not null
+#  status                                      :integer          default("created"), not null
 #  recipient_uri                               :string           not null
 #  posp_id                                     :string           not null
 #  posp_version                                :string           not null
@@ -48,11 +48,11 @@ class Submission < ApplicationRecord
 
     unless all_mandatory_data_present?
       missing_attributes = mandatory_attributes.select { |_, v| v.blank? }
-      errors << "Chýbajúce dáta v CSV prehľade o podaní: #{missing_attributes.keys.join(", ")}"
+      errors << "Chýbajúce dáta v CSV prehľade o podaní: #{missing_attributes.keys.join(", ")}."
     end
 
     if objects.size == 0
-      errors << "K podaniu nebol nájdený formulár, ani žiadna príloha"
+      errors << "K podaniu nebol nájdený formulár, ani žiadna príloha."
     elsif !has_one_form?
       errors << "Podanie musí obsahovať práve jeden formulár!"
     end

@@ -1,5 +1,5 @@
 class SubmissionPackages::CleanPackageFilesJob < ApplicationJob
-  queue_as :high_priority
+  queue_as :low_priority
 
   def perform(batch, params)
     Utils.delete_file(batch.properties[:zip_path])

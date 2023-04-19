@@ -8,8 +8,6 @@ class NoArchive
   def store(scope, name, content)
     path = File.join(Rails.root, 'storage', scope, name)
     create_dir_if_not_exists(path)
-
-    # TODO add timestamp to filename
     File.write(path, content)
 
     path
