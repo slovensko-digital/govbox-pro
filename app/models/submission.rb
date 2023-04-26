@@ -32,7 +32,7 @@ class Submission < ApplicationRecord
   end
 
   def submittable?
-    (loading_done? || submit_failed?) && is_valid?
+    (loading_done? || submit_failed_temporary?) && is_valid?
   end
 
   def form

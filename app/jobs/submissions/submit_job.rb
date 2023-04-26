@@ -20,7 +20,8 @@ class Submissions::SubmitJob < ApplicationJob
       Submission.update!(status: "submitted") if sender_response
     rescue
       # TODO handle based on error code
-      submission.update!(status: "submit_failed")
+      # TODO update submission status based on error code
+      # submission.update!(status: "submit_failed")
       raise "Submission #{submission.message_subject} failed!"
     end
   end
