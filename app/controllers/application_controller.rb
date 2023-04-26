@@ -1,7 +1,9 @@
-class ApplicationController < ActionController::Base
-  include Authentication
+require 'authenticable'
 
-  before_action :authenticate
+class ApplicationController < ActionController::Base
+  include Authenticable
+
+  before_action :authenticate_user
 
   def current_user
     @current_user ||= User.find_by(id: session[:user_id]) if session[:user_id]

@@ -239,7 +239,7 @@ ALTER SEQUENCE public.tenants_id_seq OWNED BY public.tenants.id;
 
 CREATE TABLE public.users (
     id bigint NOT NULL,
-    subject_id bigint,
+    tenant_id bigint,
     role integer DEFAULT 0 NOT NULL,
     email character varying NOT NULL,
     name character varying,
@@ -582,10 +582,10 @@ CREATE UNIQUE INDEX index_users_on_email ON public.users USING btree (email);
 
 
 --
--- Name: index_users_on_subject_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_users_on_tenant_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_users_on_subject_id ON public.users USING btree (subject_id);
+CREATE INDEX index_users_on_tenant_id ON public.users USING btree (tenant_id);
 
 
 --
@@ -603,6 +603,14 @@ CREATE INDEX "index_submission.packages_on_subject_id" ON submission.packages US
 
 
 --
+-- Name: users fk_rails_135c8f54b2; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT fk_rails_135c8f54b2 FOREIGN KEY (tenant_id) REFERENCES public.tenants(id);
+
+
+--
 -- Name: submissions fk_rails_2c9c69ad2d; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -616,14 +624,6 @@ ALTER TABLE ONLY public.submissions
 
 ALTER TABLE ONLY public.subjects
     ADD CONSTRAINT fk_rails_ad855a4b96 FOREIGN KEY (tenant_id) REFERENCES public.tenants(id);
-
-
---
--- Name: users fk_rails_c46a29f432; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.users
-    ADD CONSTRAINT fk_rails_c46a29f432 FOREIGN KEY (subject_id) REFERENCES public.subjects(id);
 
 
 --

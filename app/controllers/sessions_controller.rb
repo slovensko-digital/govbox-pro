@@ -1,22 +1,29 @@
 class SessionsController < ApplicationController
-  skip_before_action :authenticate
+  include Authenticable
+
+  skip_before_action :authenticate_user
 
   def login
   end
 
   def create
-    auth = request.env["omniauth.auth"]
+    create_session
+  end
 
-    user = User.find_or_create_by!(email: auth.info.email)
-    cookies.encrypted[:user_id] = user.id
-
-    binding.pry
+  def destroy
+    clean_session
 
     redirect_to root_path
   end
 
-  def destroy
-    cookies.encrypted[:user_id] = nil
-    redirect_to root_path
+  def failure
+    render html: "Authorization failed (#{request.params['message']})", status: :forbidden
+  end
+
+  private
+
+  def clean_session
+    session[:user_id] = nil
+    session[:login_expires_at] = nil
   end
 end

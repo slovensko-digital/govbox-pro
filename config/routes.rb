@@ -14,7 +14,9 @@ Rails.application.routes.draw do
     delete :destroy, on: :collection
   end
 
-  get "/auth/google_oauth2/callback", to: "sessions#create"
+  get :auth, path: "prihlasenie", to: 'sessions#login'
+  get "auth/google_oauth2/callback", to: "sessions#create"
+  get "auth/google_oauth2/failure", to: "sessions#failure"
 
   root "sessions#login"
 

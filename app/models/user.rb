@@ -11,4 +11,8 @@
 
 class User < ApplicationRecord
   enum role: { regular: 0, admin: 1, super_admin: 2 }
+
+  def logged_in?
+    true
+  end
 end
