@@ -10,6 +10,8 @@
 #  updated_at                                  :datetime         not null
 
 class Subject < ApplicationRecord
+  belongs_to :tenant
+
   has_many :submission_packages, class_name: 'Submissions::Package'
   has_many :submissions, through: :submission_packages
 end

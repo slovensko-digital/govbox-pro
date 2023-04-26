@@ -132,6 +132,7 @@ CREATE TABLE public.schema_migrations (
 
 CREATE TABLE public.subjects (
     id bigint NOT NULL,
+    tenant_id bigint NOT NULL,
     name character varying,
     uri character varying,
     sub character varying,
@@ -202,12 +203,46 @@ ALTER SEQUENCE public.submissions_id_seq OWNED BY public.submissions.id;
 
 
 --
+-- Name: tenants; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.tenants (
+    id bigint NOT NULL,
+    name character varying,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: tenants_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.tenants_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: tenants_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.tenants_id_seq OWNED BY public.tenants.id;
+
+
+--
 -- Name: users; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.users (
     id bigint NOT NULL,
+    subject_id bigint,
+    role integer DEFAULT 0 NOT NULL,
     email character varying NOT NULL,
+    name character varying,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
 );
@@ -318,6 +353,13 @@ ALTER TABLE ONLY public.submissions ALTER COLUMN id SET DEFAULT nextval('public.
 
 
 --
+-- Name: tenants id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.tenants ALTER COLUMN id SET DEFAULT nextval('public.tenants_id_seq'::regclass);
+
+
+--
 -- Name: users id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -400,6 +442,14 @@ ALTER TABLE ONLY public.subjects
 
 ALTER TABLE ONLY public.submissions
     ADD CONSTRAINT submissions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: tenants tenants_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.tenants
+    ADD CONSTRAINT tenants_pkey PRIMARY KEY (id);
 
 
 --
@@ -511,6 +561,13 @@ CREATE INDEX index_good_jobs_on_scheduled_at ON public.good_jobs USING btree (sc
 
 
 --
+-- Name: index_subjects_on_tenant_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_subjects_on_tenant_id ON public.subjects USING btree (tenant_id);
+
+
+--
 -- Name: index_submissions_on_package_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -522,6 +579,13 @@ CREATE INDEX index_submissions_on_package_id ON public.submissions USING btree (
 --
 
 CREATE UNIQUE INDEX index_users_on_email ON public.users USING btree (email);
+
+
+--
+-- Name: index_users_on_subject_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_users_on_subject_id ON public.users USING btree (subject_id);
 
 
 --
@@ -547,6 +611,22 @@ ALTER TABLE ONLY public.submissions
 
 
 --
+-- Name: subjects fk_rails_ad855a4b96; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.subjects
+    ADD CONSTRAINT fk_rails_ad855a4b96 FOREIGN KEY (tenant_id) REFERENCES public.tenants(id);
+
+
+--
+-- Name: users fk_rails_c46a29f432; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT fk_rails_c46a29f432 FOREIGN KEY (subject_id) REFERENCES public.subjects(id);
+
+
+--
 -- Name: objects fk_rails_3a1fdd6f1b; Type: FK CONSTRAINT; Schema: submission; Owner: -
 --
 
@@ -569,6 +649,7 @@ ALTER TABLE ONLY submission.packages
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20230216090644'),
 ('20230222200113'),
 ('20230222204705'),
 ('20230222210751'),
