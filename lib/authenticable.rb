@@ -6,7 +6,6 @@ module Authenticable
       session[:login_expires_at] = SESSION_TIMEOUT.from_now
     else
       session[:after_login_path] = request.fullpath unless request.path == login_path
-      binding.pry
       redirect_to login_path
     end
   end
