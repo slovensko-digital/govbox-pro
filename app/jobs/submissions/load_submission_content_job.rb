@@ -28,15 +28,19 @@ class Submissions::LoadSubmissionContentJob < ApplicationJob
     Dir.foreach(objects_path) do |filename|
       next if filename == '.' or filename == '..'
 
-      Submissions::Object.create(
+      submission_object = Submissions::Object.create(
         submission_id: submission.id,
         uuid: uuid,
         name: filename,
-        content: File.read(File.join(objects_path, filename)),
         form: form?(submission, filename),
         signed: signed,
         to_be_signed: to_be_signed
       )
+
+      File.open(File.join(objects_path, filename)) do |io|
+        submission_object.content.attach(io: io, filename: filename)
+      end
+      submission_object.save!
     end
   end
 

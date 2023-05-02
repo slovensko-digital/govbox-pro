@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_28_152037) do
+ActiveRecord::Schema[7.0].define(version: 2023_05_02_182521) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -58,6 +58,19 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_28_152037) do
     t.datetime "finished_at"
   end
 
+  create_table "good_job_executions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "active_job_id", null: false
+    t.text "job_class"
+    t.text "queue_name"
+    t.jsonb "serialized_params"
+    t.datetime "scheduled_at"
+    t.datetime "finished_at"
+    t.text "error"
+    t.index ["active_job_id", "created_at"], name: "index_good_job_executions_on_active_job_id_and_created_at"
+  end
+
   create_table "good_job_processes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -89,6 +102,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_28_152037) do
     t.datetime "cron_at"
     t.uuid "batch_id"
     t.uuid "batch_callback_id"
+    t.boolean "is_discrete"
+    t.integer "executions_count"
+    t.text "job_class"
     t.index ["active_job_id", "created_at"], name: "index_good_jobs_on_active_job_id_and_created_at"
     t.index ["active_job_id"], name: "index_good_jobs_on_active_job_id"
     t.index ["batch_callback_id"], name: "index_good_jobs_on_batch_callback_id", where: "(batch_callback_id IS NOT NULL)"
@@ -103,13 +119,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_28_152037) do
   end
 
   create_table "subjects", force: :cascade do |t|
-    t.bigint "tenant_id", null: false
     t.string "name"
     t.string "uri"
     t.string "sub"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["tenant_id"], name: "index_subjects_on_tenant_id"
   end
 
   create_table "submissions", force: :cascade do |t|
@@ -132,27 +146,32 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_28_152037) do
     t.index ["subject_id"], name: "index_submissions_on_subject_id"
   end
 
-  create_table "tenants", force: :cascade do |t|
-    t.string "name"
+  create_table "submissions_objects", force: :cascade do |t|
+    t.bigint "submission_id", null: false
+    t.uuid "uuid", null: false
+    t.string "name", null: false
+    t.boolean "signed"
+    t.boolean "to_be_signed"
+    t.boolean "form"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["submission_id"], name: "index_submissions_objects_on_submission_id"
   end
 
-  create_table "users", force: :cascade do |t|
-    t.bigint "tenant_id"
-    t.integer "role", default: 0, null: false
-    t.string "email", null: false
-    t.string "name"
+  create_table "submissions_packages", force: :cascade do |t|
+    t.string "name", null: false
+    t.binary "content"
+    t.integer "status", default: 0
+    t.bigint "subject_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["tenant_id"], name: "index_users_on_tenant_id"
+    t.index ["subject_id"], name: "index_submissions_packages_on_subject_id"
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "subjects", "tenants"
   add_foreign_key "submissions", "subjects"
-  add_foreign_key "submissions", "submission.packages", column: "package_id"
-  add_foreign_key "users", "tenants"
+  add_foreign_key "submissions", "submissions_packages", column: "package_id"
+  add_foreign_key "submissions_objects", "submissions"
+  add_foreign_key "submissions_packages", "subjects"
 end

@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: submission.objects
+# Table name: submissions_objects
 #
 #  id                                          :integer          not null, primary key
 #  submission_id                               :string           not null
@@ -14,9 +14,9 @@
 #  updated_at                                  :datetime         not null
 
 class Submissions::Object < ApplicationRecord
-  self.table_name = 'submission.objects'
 
   belongs_to :submission, class_name: 'Submission'
+  has_one_attached :content
 
   def is_valid?
     valid_mime_type?

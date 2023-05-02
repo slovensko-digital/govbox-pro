@@ -1,6 +1,6 @@
-class CreateSubmissionObjects < ActiveRecord::Migration[6.1]
+class CreateSubmissionObjects < ActiveRecord::Migration[7.0]
   def change
-    create_table 'submission.objects' do |t|
+    create_table :submissions_objects do |t|
       t.references :submission, null: false, foreign_key: true
 
       t.uuid :uuid, null: false

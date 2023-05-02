@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: submission.packages
+# Table name: submissions_packages
 #
 #  id                                          :integer          not null, primary key
 #  name                                        :string           not null
@@ -10,7 +10,6 @@
 #  updated_at                                  :datetime         not null
 
 class Submissions::Package < ApplicationRecord
-  self.table_name = 'submission.packages'
 
   belongs_to :subject, class_name: 'Subject'
   has_many :submissions, :dependent => :destroy

@@ -1,6 +1,6 @@
-class CreateSubmissionPackages < ActiveRecord::Migration[6.1]
+class CreateSubmissionPackages < ActiveRecord::Migration[7.0]
   def change
-    create_table 'submission.packages' do |t|
+    create_table :submissions_packages do |t|
       t.string :name, null: false
       t.binary :content
       t.integer :status, default: 0

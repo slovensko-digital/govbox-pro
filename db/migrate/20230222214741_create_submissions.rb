@@ -1,8 +1,8 @@
-class CreateSubmissions < ActiveRecord::Migration[6.1]
+class CreateSubmissions < ActiveRecord::Migration[7.0]
   def change
     create_table :submissions do |t|
       t.references :subject, null: false, foreign_key: true
-      t.references :package, null: true, foreign_key: { to_table: 'submission.packages' }
+      t.references :package, null: true, foreign_key: { to_table: :submissions_packages }
 
       t.integer :status, default: 0
       t.string :recipient_uri
