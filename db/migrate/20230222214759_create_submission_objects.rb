@@ -7,7 +7,6 @@ class CreateSubmissionObjects < ActiveRecord::Migration[6.1]
       t.string :name, null: false
       t.boolean :signed
       t.boolean :to_be_signed
-      t.binary :content, null: false
       t.boolean :form
 
       t.timestamps

@@ -13,7 +13,7 @@ module GovboxPro
 
     config.middleware.use Rack::Attack
 
-    config.active_record.schema_format = :sql
+    config.active_record.schema_format = :ruby
 
     # config.i18n.load_path += Dir[Rails.root.join 'config', 'locales', '**', '*.{rb,yml}']
     config.i18n.default_locale = :sk
