@@ -3,7 +3,7 @@ class SubmissionPackagesController < ApplicationController
     zip_content = params[:content]
     package = Submissions::Package.create!(
       name: "#{Time.now.to_i}_#{zip_content.original_filename}",
-      subject_id: current_subject.id
+      subject_id: Current.subject.id  # TODO add tenant option (no subject selected)
     )
 
     package_path = archive.store("submissions", package_path(package), zip_content.read.force_encoding("UTF-8"))
@@ -15,6 +15,6 @@ class SubmissionPackagesController < ApplicationController
   private
 
   def package_path(package)
-    File.join(String(current_subject.id), package.name)
+    File.join(String(Current.subject.id), package.name)
   end
 end

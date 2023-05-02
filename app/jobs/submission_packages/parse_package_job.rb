@@ -54,6 +54,7 @@ class SubmissionPackages::ParsePackageJob < ApplicationJob
 
     CSV.parse(File.read(csv_path), **csv_options) do |row|
       Submission.create!(
+        subject_id: package.subject_id,
         package_id: package.id,
         package_subfolder: row['subfolder'],
         recipient_uri: row['recipient_uri'],

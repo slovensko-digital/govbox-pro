@@ -1,6 +1,6 @@
 class SubmissionsController < ApplicationController
   def index
-    @submissions = current_subject.submissions
+    @submissions = Current.subject.submissions
   end
 
   def show
@@ -14,8 +14,8 @@ class SubmissionsController < ApplicationController
   end
 
   def destroy_all
-    current_subject.submission_packages.destroy_all
-    current_subject.submissions.destroy_all
+    Current.subject.submission_packages.destroy_all
+    Current.subject.submissions.destroy_all
 
     redirect_to :action => 'index'
   end
