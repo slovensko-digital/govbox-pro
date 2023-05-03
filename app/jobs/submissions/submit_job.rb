@@ -1,6 +1,4 @@
 class Submissions::SubmitJob < ApplicationJob
-  queue_as :high_priority
-
   def perform(submission, sender: Upvs::GovboxApi)
     submission_data = {
       posp_id: submission.posp_id,

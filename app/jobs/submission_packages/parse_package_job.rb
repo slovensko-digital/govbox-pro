@@ -1,8 +1,6 @@
 require 'csv'
 
 class SubmissionPackages::ParsePackageJob < ApplicationJob
-  queue_as :high_priority
-
   class << self
     delegate :uuid, to: SecureRandom
   end
