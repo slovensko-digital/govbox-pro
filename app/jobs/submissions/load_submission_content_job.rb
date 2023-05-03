@@ -9,11 +9,11 @@ class Submissions::LoadSubmissionContentJob < ApplicationJob
     Dir.each_child(submission_path) do |subdirectory_name|
       case subdirectory_name
       when "podpisane"
-        load_submission_objects(submission, File.join(submission_path, subdirectory_name), true, false)
+        load_submission_objects(submission, File.join(submission_path, subdirectory_name), signed: true, to_be_signed: false)
       when "podpisat"
-        load_submission_objects(submission, File.join(submission_path, subdirectory_name), false, true)
+        load_submission_objects(submission, File.join(submission_path, subdirectory_name), signed: false, to_be_signed: true)
       when "nepodpisovat"
-        load_submission_objects(submission, File.join(submission_path, subdirectory_name), false, false)
+        load_submission_objects(submission, File.join(submission_path, subdirectory_name), signed: false, to_be_signed: false)
       end
     end
 
@@ -22,7 +22,7 @@ class Submissions::LoadSubmissionContentJob < ApplicationJob
 
   private
 
-  def load_submission_objects(submission, objects_path, signed, to_be_signed)
+  def load_submission_objects(submission, objects_path, signed: signed, to_be_signed: to_be_signed)
     Dir.foreach(objects_path) do |filename|
       next if filename == '.' or filename == '..'
 
