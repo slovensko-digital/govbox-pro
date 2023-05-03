@@ -8,14 +8,15 @@
   <br />
 <% end %>
 
-<%= form_tag submission_path(@submission.id), method: :delete, multipart: true do %>
-  <%= submit_tag 'Zmazať', class: "btn btn-primary" %>
+<%= form_tag submission_path(@submission), method: :delete do %>
+  <%= submit_tag 'Zmazať' %>
 <% end %>
 
 <br />
+
 <% if @submission.submittable? %>
-  <%= form_tag submission_submit_path(@submission.id), method: :post, multipart: true do %>
-    <%= submit_tag 'Podať', class: "btn btn-primary" %>
+  <%= form_tag submission_submit_path(@submission), method: :post do %>
+    <%= submit_tag 'Podať' %>
   <% end %>
 <% end %>
 

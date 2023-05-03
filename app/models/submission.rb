@@ -3,6 +3,7 @@
 # Table name: submissions
 #
 #  id                                          :integer          not null, primary key
+#  subject_id                                  :integer          not null
 #  package_id                                  :integer          not null
 #  status                                      :integer          default("created"), not null
 #  recipient_uri                               :string           not null
@@ -19,11 +20,10 @@
 #  updated_at                                  :datetime         not null
 
 class Submission < ApplicationRecord
-  belongs_to :package, class_name: 'Submissions::Package'
+  belongs_to :subject
+  belongs_to :package, class_name: 'Submissions::Package', optional: true
 
   has_many :objects, class_name: 'Submissions::Object', :dependent => :destroy
-
-  delegate :subject, :to => :package, :allow_nil => false
 
   enum status: { created: 0, being_loaded: 1, loading_done: 2, being_submitted: 3, submitted: 4, submit_failed_unprocessable: 5, submit_failed_temporary: 6 }
 

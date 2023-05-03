@@ -10,14 +10,14 @@ class SubmissionsController < ApplicationController
   def destroy
     Submission.find(params[:id]).destroy
 
-    redirect_to :action => 'index'
+    redirect_to submissions_path
   end
 
   def destroy_all
     Current.subject.submission_packages.destroy_all
     Current.subject.submissions.destroy_all
 
-    redirect_to :action => 'index'
+    redirect_to submissions_path
   end
 
   def submit

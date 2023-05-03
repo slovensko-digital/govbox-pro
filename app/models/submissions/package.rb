@@ -10,7 +10,6 @@
 #  updated_at                                  :datetime         not null
 
 class Submissions::Package < ApplicationRecord
-
   belongs_to :subject, class_name: 'Subject'
   has_many :submissions, :dependent => :destroy
 
@@ -18,9 +17,5 @@ class Submissions::Package < ApplicationRecord
 
   def base_name
     name.split('_', 2).last
-  end
-
-  def submittable?
-    status == 'parsed' && submissions.all? { |submission| submission.status == 'created' || submission.status == 'submit_failed' }
   end
 end

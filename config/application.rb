@@ -34,6 +34,3 @@ module GovboxPro
     # config.eager_load_paths << Rails.root.join("extras")
   end
 end
-
-require 'upvs/api'
-require 'upvs/govbox_api'

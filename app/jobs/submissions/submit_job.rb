@@ -36,7 +36,7 @@ class Submissions::SubmitJob < ApplicationJob
         signed: object.signed,
         mime_type: Utils.detect_mime_type(object),
         form: (object.form if object.form),
-        content: Base64.strict_encode64(object.content.force_encoding("UTF-8"))
+        content: Base64.strict_encode64(object.content.download)
       }.compact
     end
 
