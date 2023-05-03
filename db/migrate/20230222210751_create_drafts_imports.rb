@@ -1,6 +1,6 @@
-class CreateSubmissionPackages < ActiveRecord::Migration[7.0]
+class CreateDraftsImports < ActiveRecord::Migration[7.0]
   def change
-    create_table :submissions_packages do |t|
+    create_table :drafts_imports do |t|
       t.string :name, null: false
       t.integer :status, default: 0
       t.string :content_path

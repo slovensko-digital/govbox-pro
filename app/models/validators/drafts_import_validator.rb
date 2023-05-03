@@ -1,4 +1,4 @@
-class SubmissionPackageValidator < ActiveModel::Validator
+class DraftsImportValidator < ActiveModel::Validator
   def validate(record)
     record.errors.add(:submissions, "No submissions found") if Utils.sub_folders(record.content_path).empty?
 

@@ -1,8 +1,0 @@
-<h2>Nový balík podaní</h2>
-
-<%= form_tag submission_packages_path, method: :post, multipart: true do %>
-  <%= label_tag :content, 'Balík' %>
-  <%= file_field_tag :content, accept: "application/zip" %>
-  <br/><br/>
-  <%= submit_tag 'Nahrať', class: "btn btn-primary" %>
-<% end %>

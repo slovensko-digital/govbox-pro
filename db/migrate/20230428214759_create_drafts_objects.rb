@@ -1,7 +1,7 @@
-class CreateSubmissionObjects < ActiveRecord::Migration[7.0]
+class CreateDraftsObjects < ActiveRecord::Migration[7.0]
   def change
-    create_table :submissions_objects do |t|
-      t.references :submission, null: false, foreign_key: true
+    create_table :drafts_objects do |t|
+      t.references :draft, null: false, foreign_key: true
 
       t.uuid :uuid, null: false
       t.string :name, null: false

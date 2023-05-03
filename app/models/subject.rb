@@ -10,6 +10,6 @@
 #  updated_at                                  :datetime         not null
 
 class Subject < ApplicationRecord
-  has_many :submission_packages, class_name: 'Submissions::Package'
-  has_many :submissions
+  has_many :drafts_imports, class_name: 'Drafts::Import'
+  has_many :drafts
 end

@@ -43,6 +43,48 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_02_182521) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "drafts", force: :cascade do |t|
+    t.bigint "subject_id", null: false
+    t.bigint "import_id"
+    t.integer "status", default: 0
+    t.string "recipient_uri"
+    t.string "posp_id"
+    t.string "posp_version"
+    t.string "message_type"
+    t.string "message_subject"
+    t.string "import_subfolder"
+    t.string "sender_business_reference"
+    t.string "recipient_business_reference"
+    t.uuid "message_id"
+    t.uuid "correlation_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["import_id"], name: "index_drafts_on_import_id"
+    t.index ["subject_id"], name: "index_drafts_on_subject_id"
+  end
+
+  create_table "drafts_imports", force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "status", default: 0
+    t.string "content_path"
+    t.bigint "subject_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["subject_id"], name: "index_drafts_imports_on_subject_id"
+  end
+
+  create_table "drafts_objects", force: :cascade do |t|
+    t.bigint "draft_id", null: false
+    t.uuid "uuid", null: false
+    t.string "name", null: false
+    t.boolean "signed"
+    t.boolean "to_be_signed"
+    t.boolean "form"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["draft_id"], name: "index_drafts_objects_on_draft_id"
+  end
+
   create_table "good_job_batches", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -126,52 +168,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_02_182521) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "submissions", force: :cascade do |t|
-    t.bigint "subject_id", null: false
-    t.bigint "package_id"
-    t.integer "status", default: 0
-    t.string "recipient_uri"
-    t.string "posp_id"
-    t.string "posp_version"
-    t.string "message_type"
-    t.string "message_subject"
-    t.string "package_subfolder"
-    t.string "sender_business_reference"
-    t.string "recipient_business_reference"
-    t.uuid "message_id"
-    t.uuid "correlation_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["package_id"], name: "index_submissions_on_package_id"
-    t.index ["subject_id"], name: "index_submissions_on_subject_id"
-  end
-
-  create_table "submissions_objects", force: :cascade do |t|
-    t.bigint "submission_id", null: false
-    t.uuid "uuid", null: false
-    t.string "name", null: false
-    t.boolean "signed"
-    t.boolean "to_be_signed"
-    t.boolean "form"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["submission_id"], name: "index_submissions_objects_on_submission_id"
-  end
-
-  create_table "submissions_packages", force: :cascade do |t|
-    t.string "name", null: false
-    t.integer "status", default: 0
-    t.string "content_path"
-    t.bigint "subject_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["subject_id"], name: "index_submissions_packages_on_subject_id"
-  end
-
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "submissions", "subjects"
-  add_foreign_key "submissions", "submissions_packages", column: "package_id"
-  add_foreign_key "submissions_objects", "submissions"
-  add_foreign_key "submissions_packages", "subjects"
+  add_foreign_key "drafts", "drafts_imports", column: "import_id"
+  add_foreign_key "drafts", "subjects"
+  add_foreign_key "drafts_imports", "subjects"
+  add_foreign_key "drafts_objects", "drafts"
 end

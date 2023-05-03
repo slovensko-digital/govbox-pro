@@ -4,11 +4,13 @@ Rails.application.routes.draw do
     mount GoodJob::Engine => 'good_job'
   end
 
-  resources :submission_packages, path: 'hromadne-podania', only: :create do
-    get :upload_new, path: 'nove', on: :collection
+  namespace :drafts, path: 'drafty' do
+    resources :imports, path: 'importy', only: :create do
+      get :upload_new, path: 'novy', on: :collection
+    end
   end
 
-  resources :submissions, path: 'podania', only: [:index, :show, :destroy] do
+  resources :drafts, path: 'drafty', only: [:index, :show, :destroy] do
     post :submit
     delete :destroy_all, path: 'zmazat', on: :collection if Rails.env.development?
   end

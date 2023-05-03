@@ -1,34 +1,34 @@
 class Drafts::SubmitJob < ApplicationJob
-  def perform(submission, sender: Upvs::GovboxApi)
-    submission_data = {
-      posp_id: submission.posp_id,
-      posp_version: submission.posp_version,
-      message_type: submission.message_type,
-      message_id: submission.message_id,
-      correlation_id: submission.correlation_id,
-      recipient_uri: submission.recipient_uri,
-      message_subject: submission.message_subject,
-      objects: build_objects(submission)
+  def perform(draft, sender: Upvs::GovboxApi)
+    draft_data = {
+      posp_id: draft.posp_id,
+      posp_version: draft.posp_version,
+      message_type: draft.message_type,
+      message_id: draft.message_id,
+      correlation_id: draft.correlation_id,
+      recipient_uri: draft.recipient_uri,
+      message_subject: draft.message_subject,
+      objects: build_objects(draft)
     }
 
-    sender = sender.new(submission.subject.sub).sktalk
+    sender = sender.new(draft.subject.sub).sktalk
 
     begin
-      sender_response = sender.receive_and_save_to_outbox(submission_data)
-      Submission.update!(status: "submitted") if sender_response
+      sender_response = sender.receive_and_save_to_outbox(draft_data)
+      Draft.update!(status: "submitted") if sender_response
     rescue
       # TODO handle based on error code
-      # TODO update submission status based on error code
-      submission.update!(status: "submit_failed_unprocessable")
-      raise "Submission #{submission.message_subject} failed!"
+      # TODO update draft status based on error code
+      draft.update!(status: "submit_failed_unprocessable")
+      raise "Draft #{draft.message_subject} failed!"
     end
   end
 
   private
 
-  def build_objects(submission)
+  def build_objects(draft)
     objects = []
-    submission.objects.each do |object|
+    draft.objects.each do |object|
       objects << {
         id: object.uuid,
         name: object.name,

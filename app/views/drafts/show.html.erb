@@ -1,0 +1,31 @@
+<h2>Draft <%= @draft.message_subject %></h2>
+
+<p>Stav: <%= @draft.status %></p>
+<br />
+
+<% if @draft.import %>
+  <p>Z importu: <%= @draft.import.base_name %></p>
+  <br />
+<% end %>
+
+<%= form_tag draft_path(@draft), method: :delete do %>
+  <%= submit_tag 'Zmazať' %>
+<% end %>
+
+<br />
+
+<% if @draft.submittable? %>
+  <%= form_tag draft_submit_path(@draft), method: :post do %>
+    <%= submit_tag 'Podať' %>
+  <% end %>
+<% end %>
+
+<% unless @draft.valid?(:validate_data) %>
+  <p>Errors: </p>
+  <ul>
+    <% @draft.errors.each do |error| %>
+      <li><%= error.full_message %></li>
+    <% end %>
+  </ul>
+<% end %>
+

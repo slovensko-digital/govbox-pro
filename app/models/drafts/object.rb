@@ -1,9 +1,9 @@
 # == Schema Information
 #
-# Table name: submissions_objects
+# Table name: drafts_objects
 #
 #  id                                          :integer          not null, primary key
-#  submission_id                               :string           not null
+#  draf_id                                     :string           not null
 #  uuid                                        :string           not null
 #  name                                        :string           not null
 #  signed                                      :boolean
@@ -12,8 +12,8 @@
 #  created_at                                  :datetime         not null
 #  updated_at                                  :datetime         not null
 
-class Submissions::Object < ApplicationRecord
-  belongs_to :submission, class_name: 'Submission'
+class Drafts::Object < ApplicationRecord
+  belongs_to :draft, class_name: 'Draft'
 
   has_one_attached :content
 
