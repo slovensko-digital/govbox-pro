@@ -20,9 +20,12 @@
   <% end %>
 <% end %>
 
-<% unless @submission.is_valid? %>
+<% unless @submission.valid?(:validate_data) %>
   <p>Errors: </p>
-  <% @submission.validation_errors.each do |error| %>
-    <p><%= error %></p>
-  <% end %>
+  <ul>
+    <% @submission.errors.each do |error| %>
+      <li><%= error.full_message %></li>
+    <% end %>
+  </ul>
 <% end %>
+

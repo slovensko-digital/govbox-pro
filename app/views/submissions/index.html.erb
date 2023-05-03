@@ -19,7 +19,6 @@
         <th>Podanie</th>
         <th>Balík</th>
         <th>Stav</th>
-        <th>Validné?</th>
       </tr>
 
       <% @submissions.each do |submission| %>
@@ -27,7 +26,6 @@
           <td><%= link_to submission.title, submission_path(submission.id) %></td>
           <td><%= " #{submission.package&.base_name}" %></td>
           <td><%= " #{submission.status}" %></td>
-          <td><%= " #{submission.is_valid?}" if submission.loading_done? %></td>
         </tr>
       <% end %>
     </table>

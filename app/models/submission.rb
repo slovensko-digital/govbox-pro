@@ -3,19 +3,19 @@
 # Table name: submissions
 #
 #  id                                          :integer          not null, primary key
-#  subject_id                                  :integer          not null
-#  package_id                                  :integer          not null
-#  status                                      :integer          default("created"), not null
-#  recipient_uri                               :string           not null
-#  posp_id                                     :string           not null
-#  posp_version                                :string           not null
-#  message_type                                :string           not null
-#  message_subject                             :string           not null
+#  subject_id                                  :integer
+#  package_id                                  :integer
+#  status                                      :integer          default("created")
+#  recipient_uri                               :string
+#  posp_id                                     :string
+#  posp_version                                :string
+#  message_type                                :string
+#  message_subject                             :string
 #  sender_business_reference                   :string
 #  recipient_business_reference                :string
 #  package_subfolder                           :string
-#  message_id                                  :uuid             not null
-#  correlation_id                              :uuid             not null
+#  message_id                                  :uuid
+#  correlation_id                              :uuid
 #  created_at                                  :datetime         not null
 #  updated_at                                  :datetime         not null
 
@@ -25,60 +25,43 @@ class Submission < ApplicationRecord
 
   has_many :objects, class_name: 'Submissions::Object', :dependent => :destroy
 
-  enum status: { created: 0, being_loaded: 1, loading_done: 2, being_submitted: 3, submitted: 4, submit_failed_unprocessable: 5, submit_failed_temporary: 6 }
+  with_options on: :validate_data do |loaded_submission|
+    loaded_submission.validates :recipient_uri, :posp_id, :posp_version, :message_type, :message_subject, :message_id, :correlation_id, presence: true
+    loaded_submission.validates :message_id, :correlation_id, format: { with: Utils::UUID_PATTERN }, allow_blank: true
+    loaded_submission.validate :has_one_form?
+    loaded_submission.validate :validate_objects
+  end
+
+  enum status: { created: 0, being_loaded: 1, loading_done: 2, invalid_data: 3, being_submitted: 4, submitted: 5, submit_failed_unprocessable: 6, submit_failed_temporary: 7 }
 
   def title
     message_subject || package_subfolder
   end
 
   def submittable?
-    (loading_done? || submit_failed_temporary?) && is_valid?
+    (loading_done? || submit_failed_temporary?) && valid?
   end
 
   def form
     objects.select { |o| o.form? }&.first
   end
 
-  def is_valid?
-    loading_done? && all_mandatory_data_present? && has_one_form? && all_objects_valid?
-  end
-
-  def validation_errors
-    errors = []
-
-    unless all_mandatory_data_present?
-      missing_attributes = mandatory_attributes.select { |_, v| v.blank? }
-      errors << "Chýbajúce dáta v CSV prehľade o podaní: #{missing_attributes.keys.join(", ")}."
-    end
-
-    if objects.size == 0
-      errors << "K podaniu nebol nájdený formulár, ani žiadna príloha."
-    elsif !has_one_form?
-      errors << "Podanie musí obsahovať práve jeden formulár!"
-    end
-
-    unless all_objects_valid?
-      errors += objects.map { |object| object.validation_errors }.compact.flatten
-    end
-
-    errors
-  end
-
   private
 
   def has_one_form?
-    objects.select { |o| o.form? }.count == 1
+    forms = objects.select { |o| o.form? }
+
+    if objects.size == 0
+      errors.add(:objects, "No objects found for submission")
+    elsif forms.count != 1
+      errors.add(:objects, "Submission has to contain exactly one form")
+    end
   end
 
-  def mandatory_attributes
-    attributes.slice("recipient_uri", "posp_id", "posp_version", "message_type", "message_subject")
-  end
-
-  def all_mandatory_data_present?
-    mandatory_attributes.all? { |_, v| v.present? }
-  end
-
-  def all_objects_valid?
-    objects.all? { |object| object.is_valid? }
+  def validate_objects
+    objects.each do |object|
+      object.valid?(:validate_data)
+      errors.merge!(object.errors)
+    end
   end
 end

@@ -21,6 +21,8 @@ module GovboxPro
     config.active_record.default_timezone = :utc
     config.time_zone = 'Europe/Bratislava'
 
+    config.autoload_paths += Dir[File.join(Rails.root, 'app', 'models', 'validators')]
+
     config.active_job.queue_adapter = :good_job
     config.active_job.default_queue_name = :medium_priority
     config.action_mailer.deliver_later_queue_name = :high_priority

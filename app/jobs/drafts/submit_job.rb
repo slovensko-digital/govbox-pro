@@ -1,4 +1,4 @@
-class Submissions::SubmitJob < ApplicationJob
+class Drafts::SubmitJob < ApplicationJob
   def perform(submission, sender: Upvs::GovboxApi)
     submission_data = {
       posp_id: submission.posp_id,
@@ -19,7 +19,7 @@ class Submissions::SubmitJob < ApplicationJob
     rescue
       # TODO handle based on error code
       # TODO update submission status based on error code
-      # submission.update!(status: "submit_failed")
+      submission.update!(status: "submit_failed_unprocessable")
       raise "Submission #{submission.message_subject} failed!"
     end
   end

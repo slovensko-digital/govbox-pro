@@ -24,7 +24,7 @@ class SubmissionsController < ApplicationController
     @submission = Submission.find(params[:submission_id])
     mark_submission_as_being_submitted(@submission)
 
-    Submissions::SubmitJob.perform_later(@submission)
+    Drafts::SubmitJob.perform_later(@submission)
   end
 
   private

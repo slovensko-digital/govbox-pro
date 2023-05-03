@@ -161,6 +161,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_02_182521) do
   create_table "submissions_packages", force: :cascade do |t|
     t.string "name", null: false
     t.integer "status", default: 0
+    t.string "content_path"
     t.bigint "subject_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

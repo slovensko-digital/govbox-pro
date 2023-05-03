@@ -1,6 +1,6 @@
 require 'csv'
 
-class Submissions::LoadSubmissionContentJob < ApplicationJob
+class Drafts::LoadContentJob < ApplicationJob
   class << self
     delegate :uuid, to: SecureRandom
   end
@@ -16,13 +16,11 @@ class Submissions::LoadSubmissionContentJob < ApplicationJob
         load_submission_objects(submission, File.join(submission_path, subdirectory_name), signed: false, to_be_signed: false)
       end
     end
-
-    submission.update(status: "loading_done")
   end
 
   private
 
-  def load_submission_objects(submission, objects_path, signed: signed, to_be_signed: to_be_signed)
+  def load_submission_objects(submission, objects_path, signed:, to_be_signed:)
     Dir.foreach(objects_path) do |filename|
       next if filename == '.' or filename == '..'
 
@@ -38,6 +36,7 @@ class Submissions::LoadSubmissionContentJob < ApplicationJob
       File.open(File.join(objects_path, filename)) do |io|
         submission_object.content.attach(io: io, filename: filename)
       end
+
       submission_object.save!
     end
   end

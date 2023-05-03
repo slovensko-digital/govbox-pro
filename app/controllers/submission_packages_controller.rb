@@ -9,7 +9,7 @@ class SubmissionPackagesController < ApplicationController
     )
 
     package_path = archive.store("submissions", package_path(package), zip_content.read.force_encoding("UTF-8"))
-    SubmissionPackages::ParsePackageJob.perform_later(package, package_path)
+    Drafts::ParseImportJob.perform_later(package, package_path)
 
     redirect_to submissions_path
   end
