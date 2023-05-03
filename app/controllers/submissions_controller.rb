@@ -20,11 +20,11 @@ class SubmissionsController < ApplicationController
     redirect_to :action => 'index'
   end
 
-  def submit(submit_job: Submissions::SubmitJob)
+  def submit
     @submission = Submission.find(params[:submission_id])
     mark_submission_as_being_submitted(@submission)
 
-    submit_job.perform_later(@submission)
+    Submissions::SubmitJob.perform_later(@submission)
   end
 
   private
