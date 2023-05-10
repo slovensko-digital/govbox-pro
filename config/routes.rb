@@ -23,10 +23,9 @@ Rails.application.routes.draw do
 
   class GoodJobAdmin
     def self.matches?(request)
-      cookies = ActionDispatch::Cookies::CookieJar.build(request, request.cookies)
-      admin_ips = ENV.fetch('ADMIN_IDS','').split(',')
+      admin_ids = ENV.fetch('ADMIN_IDS','').split(',')
 
-      admin_ips.include?(cookies.encrypted['user_id'].to_s)
+      admin_ids.include?(request.session['user_id'].to_s)
     end
   end
 
