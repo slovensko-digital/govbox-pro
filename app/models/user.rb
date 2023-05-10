@@ -1,17 +1,16 @@
 # == Schema Information
 #
-# Table name: subjects
+# Table name: users
 #
 #  id                                          :integer          not null, primary key
+#  email                                       :string           not null
 #  name                                        :string           not null
-#  uri                                         :string           not null
-#  sub                                         :string           not null
+#  tenant_id                                   :integer
 #  created_at                                  :datetime         not null
 #  updated_at                                  :datetime         not null
 
-class Subject < ApplicationRecord
+class User < ApplicationRecord
   belongs_to :tenant
 
-  has_many :drafts_imports, class_name: 'Drafts::Import'
-  has_many :drafts
+  # TODO roles
 end
