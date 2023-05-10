@@ -12,6 +12,6 @@
 class Subject < ApplicationRecord
   belongs_to :tenant
 
-  has_many :submission_packages, class_name: 'Submissions::Package'
-  has_many :submissions, through: :submission_packages
+  has_many :drafts_imports, class_name: 'Drafts::Import'
+  has_many :drafts
 end

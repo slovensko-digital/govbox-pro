@@ -1,4 +1,4 @@
-module Authenticable
+module Authentication
   SESSION_TIMEOUT = 20.minutes
 
   def authenticate_user
@@ -8,18 +8,25 @@ module Authenticable
       session[:after_login_path] = request.fullpath unless request.path == login_path
       redirect_to login_path
     end
+
+    Current.user = User.find(session[:user_id]) if session[:user_id]
   end
 
   def create_session
-    user = User.find_by(email: auth_hash.info.email)
+    Current.user = User.find_by(email: auth_hash.info.email)
 
     if user
-      session[:user_id] = user.id
+      session[:user_id] = Current.user.id
       session[:login_expires_at] = SESSION_TIMEOUT.from_now
       redirect_to session[:after_login_path] || default_after_login_path
     else
       render html: 'Not authorized', status: :forbidden
     end
+  end
+
+  def clean_session
+    session[:user_id] = nil
+    session[:login_expires_at] = nil
   end
 
   def valid_session?(session)
@@ -33,7 +40,7 @@ module Authenticable
   end
 
   def skip_authentication?
-    Rails.env.development? || Rails.env.test?
+    !Rails.env.prod?
   end
 
   def login_path

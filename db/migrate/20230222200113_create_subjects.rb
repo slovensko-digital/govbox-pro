@@ -1,4 +1,4 @@
-class CreateSubjects < ActiveRecord::Migration[6.1]
+class CreateSubjects < ActiveRecord::Migration[7.0]
   def change
     create_table :subjects do |t|
       t.references :tenant, null: false, foreign_key: true

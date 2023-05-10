@@ -13,13 +13,15 @@ module GovboxPro
 
     config.middleware.use Rack::Attack
 
-    config.active_record.schema_format = :sql
+    config.active_record.schema_format = :ruby
 
     # config.i18n.load_path += Dir[Rails.root.join 'config', 'locales', '**', '*.{rb,yml}']
     config.i18n.default_locale = :sk
 
     config.active_record.default_timezone = :utc
     config.time_zone = 'Europe/Bratislava'
+
+    config.autoload_paths += Dir[File.join(Rails.root, 'app', 'models', 'validators')]
 
     config.active_job.queue_adapter = :good_job
     config.active_job.default_queue_name = :medium_priority
@@ -34,6 +36,3 @@ module GovboxPro
     # config.eager_load_paths << Rails.root.join("extras")
   end
 end
-
-require 'upvs/api'
-require 'upvs/govbox_api'

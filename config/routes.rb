@@ -1,12 +1,13 @@
 Rails.application.routes.draw do
-    resources :submission_packages, path: 'hromadne-podania', only: :create do
-    get :upload_new, path: 'nove', on: :collection
-    post :submit, path: 'podat'
+  namespace :drafts, path: 'drafty' do
+    resources :imports, path: 'importy', only: :create do
+      get :upload_new, path: 'novy', on: :collection
+    end
   end
 
-  resources :submissions, path: 'podania', only: [:index, :show, :destroy] do
-    post :submit, path: 'podat'
-    delete :destroy_all, path: 'zmazat', on: :collection
+  resources :drafts, path: 'drafty', only: [:index, :show, :destroy] do
+    post :submit
+    delete :destroy_all, path: 'zmazat', on: :collection if Rails.env.development?
   end
 
   resources :sessions do
