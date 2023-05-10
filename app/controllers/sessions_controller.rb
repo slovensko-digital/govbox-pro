@@ -1,5 +1,6 @@
 class SessionsController < ApplicationController
-  skip_before_action :authenticate_user
+  skip_before_action :authenticate
+  before_action :load_current_user, only: :login
 
   def login
   end

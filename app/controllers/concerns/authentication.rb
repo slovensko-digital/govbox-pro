@@ -1,7 +1,13 @@
 module Authentication
+  extend ActiveSupport::Concern
+
+  included do
+    before_action :authenticate
+  end
+
   SESSION_TIMEOUT = 20.minutes
 
-  def authenticate_user
+  def authenticate
     if skip_authentication? || valid_session?(session)
       session[:login_expires_at] = SESSION_TIMEOUT.from_now
     else
@@ -9,13 +15,16 @@ module Authentication
       redirect_to login_path
     end
 
-    Current.user = User.find(session[:user_id]) if session[:user_id]
+    load_current_user
+
+    # TODO
+    Current.subject = Subject.find(1)
   end
 
   def create_session
     Current.user = User.find_by(email: auth_hash.info.email)
 
-    if user
+    if Current.user
       session[:user_id] = Current.user.id
       session[:login_expires_at] = SESSION_TIMEOUT.from_now
       redirect_to session[:after_login_path] || default_after_login_path
@@ -27,6 +36,10 @@ module Authentication
   def clean_session
     session[:user_id] = nil
     session[:login_expires_at] = nil
+  end
+
+  def load_current_user
+    Current.user = User.find(session[:user_id]) if session[:user_id]
   end
 
   def valid_session?(session)
