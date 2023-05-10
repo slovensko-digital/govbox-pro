@@ -11,7 +11,7 @@
 
   <body>
     <h1>GovBox PRO</h1>
-    <% if Current.user&.logged_in? %>
+    <% if Current.user %>
       <p><%= Current.user.email %></p>
       <%= button_to "Odhlásiť sa", sessions_path, method: :delete %>
     <% end %>

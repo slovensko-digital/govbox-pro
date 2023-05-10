@@ -3,7 +3,6 @@ class CreateUsers < ActiveRecord::Migration[7.0]
     create_table :users do |t|
       t.references :tenant, null: true, foreign_key: true
 
-      t.integer :role, default: 0, null: false
       t.string :email, null: false
       t.string :name
 
