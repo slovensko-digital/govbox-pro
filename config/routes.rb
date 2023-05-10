@@ -12,6 +12,7 @@ Rails.application.routes.draw do
 
   resources :drafts, path: 'drafty', only: [:index, :show, :destroy] do
     post :submit
+    post :submit_all, on: :collection if Rails.env.development?
     delete :destroy_all, path: 'zmazat', on: :collection if Rails.env.development?
   end
 end

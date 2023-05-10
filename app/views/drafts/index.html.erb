@@ -6,6 +6,7 @@
   <%= link_to "Nahrať import", upload_new_drafts_imports_path %>
   <% if @drafts.any? %>
     <br />
+    <%= button_to "Podať všetky", submit_all_drafts_path, method: :post %>
     <%= button_to "Zmazať všetky", destroy_all_drafts_path, method: :delete %>
   <% end %>
 </div>

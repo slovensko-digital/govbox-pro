@@ -27,6 +27,14 @@ class DraftsController < ApplicationController
     Drafts::SubmitJob.perform_later(@draft)
   end
 
+  def submit_all
+    @drafts = Current.subject.drafts
+
+    @drafts.each do |draft|
+      Drafts::SubmitJob.perform_later(draft)
+    end
+  end
+
   private
 
   def set_draft
