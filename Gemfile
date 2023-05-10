@@ -19,10 +19,13 @@ gem 'clockwork'
 # Workers
 gem "good_job", "~> 3.15"
 
+# Auth
+gem "omniauth-google-oauth2"
+gem "omniauth-rails_csrf_protection"
+
 # Utilities
 gem 'rest-client'
 gem 'rack-attack'
-gem 'omniauth-saml'
 gem 'rubyzip', require: 'zip'
 gem 'jwt'
 
