@@ -2,9 +2,9 @@ class Drafts::FinishImportJob < ApplicationJob
   def perform(batch, params)
     batch.properties[:drafts].each do |draft|
       if draft.valid?(:validate_data)
-        draft.update(status: "loading_done")
+        draft.loading_done!
       else
-        draft.update(status: "invalid_data")
+        draft.invalid_data!
       end
     end
 

@@ -1,10 +1,11 @@
 class DraftsController < ApplicationController
+  before_action :set_draft, only: [:show, :submit]
+
   def index
     @drafts = Current.subject.drafts
   end
 
   def show
-    @draft = Draft.find(params[:id])
   end
 
   def destroy
@@ -21,17 +22,14 @@ class DraftsController < ApplicationController
   end
 
   def submit
-    @draft = Draft.find(params[:draft_id])
-    mark_draft_as_being_submitted(@draft)
+    @draft.being_submitted!
 
     Drafts::SubmitJob.perform_later(@draft)
   end
 
   private
 
-  def mark_draft_as_being_submitted(draft)
-    Draft.transaction do
-      draft.update(status: 'being_submitted')
-    end
+  def set_draft
+    @draft = Current.subject.drafts.find(params[:id])
   end
 end

@@ -25,7 +25,7 @@ class Drafts::ParseImportJob < ApplicationJob
           import_id: import.id,
           import_subfolder: File.basename(entry_name)
         )
-        draft.update(status: "being_loaded")
+        draft.being_loaded!
         drafts_from_folders << draft
 
         jobs_batch.add do
@@ -37,7 +37,7 @@ class Drafts::ParseImportJob < ApplicationJob
     all_drafts = (drafts_from_csv + drafts_from_folders).uniq
     jobs_batch.enqueue(on_success: on_success_job, import: import, drafts: all_drafts, zip_path: import_zip_path, extracted_data_path: extracted_import_path)
 
-    import.update(status: "parsed")
+    import.parsed!
   rescue
     # TODO Send notification
     import.destroy!

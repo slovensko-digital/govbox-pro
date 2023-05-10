@@ -1,12 +1,12 @@
 <h2>Drafty</h2>
 
 <div>
-  <%= button_to "Vytvoriť nový draft", drafts_path, :method => :get %>
+  <%= link_to "Vytvoriť nový draft", drafts_path %>
   <br />
-  <%= button_to "Nahrať import", upload_new_drafts_imports_path, :method => :get %>
+  <%= link_to "Nahrať import", upload_new_drafts_imports_path %>
   <% if @drafts.any? %>
     <br />
-    <%= button_to "Zmazať všetky", destroy_all_drafts_path, :method => :delete %>
+    <%= button_to "Zmazať všetky", destroy_all_drafts_path, method: :delete %>
   <% end %>
 </div>
 

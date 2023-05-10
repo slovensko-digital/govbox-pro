@@ -19,7 +19,7 @@ class Drafts::SubmitJob < ApplicationJob
     rescue
       # TODO handle based on error code
       # TODO update draft status based on error code
-      draft.update!(status: "submit_failed_unprocessable")
+      draft.submit_failed_unprocessable!
       raise "Draft #{draft.message_subject} failed!"
     end
   end

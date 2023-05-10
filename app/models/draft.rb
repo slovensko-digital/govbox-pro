@@ -28,7 +28,7 @@ class Draft < ApplicationRecord
   with_options on: :validate_data do |loaded_draft|
     loaded_draft.validates :recipient_uri, :posp_id, :posp_version, :message_type, :message_subject, :message_id, :correlation_id, presence: true
     loaded_draft.validates :message_id, :correlation_id, format: { with: Utils::UUID_PATTERN }, allow_blank: true
-    loaded_draft.validate :has_one_form?
+    loaded_draft.validate :validate_form
     loaded_draft.validate :validate_objects
   end
 
@@ -48,7 +48,7 @@ class Draft < ApplicationRecord
 
   private
 
-  def has_one_form?
+  def validate_form
     forms = objects.select { |o| o.form? }
 
     if objects.size == 0
