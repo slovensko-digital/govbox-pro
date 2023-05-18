@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  folder: one
+  title: MyString
+  original_title: MyString
+  merge_uuids: <%= [SecureRandom.uuid, SecureRandom.uuid] %>
+  delivered_at: 2023-05-18 16:06:56
+
+two:
+  folder: two
+  title: MyString
+  original_title: MyString
+  merge_uuids: <%= [SecureRandom.uuid] %>
+  delivered_at: 2023-05-18 16:06:56

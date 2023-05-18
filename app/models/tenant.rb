@@ -10,4 +10,7 @@
 class Tenant < ApplicationRecord
   has_many :subjects
   has_many :users
+  has_many :boxes
+
+  has_many :automation_rules, :class_name => 'Automation::Rule'
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_02_182521) do
+ActiveRecord::Schema[7.0].define(version: 2023_05_18_211846) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -41,6 +41,24 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_02_182521) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "automation_rules", force: :cascade do |t|
+    t.bigint "tenant_id", null: false
+    t.string "name", null: false
+    t.string "trigger_event", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tenant_id"], name: "index_automation_rules_on_tenant_id"
+  end
+
+  create_table "boxes", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "uri", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "tenant_id", null: false
+    t.index ["tenant_id"], name: "index_boxes_on_tenant_id"
   end
 
   create_table "drafts", force: :cascade do |t|
@@ -83,6 +101,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_02_182521) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["draft_id"], name: "index_drafts_objects_on_draft_id"
+  end
+
+  create_table "folders", force: :cascade do |t|
+    t.bigint "box_id", null: false
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["box_id"], name: "index_folders_on_box_id"
   end
 
   create_table "good_job_batches", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -160,6 +186,55 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_02_182521) do
     t.index ["scheduled_at"], name: "index_good_jobs_on_scheduled_at", where: "(finished_at IS NULL)"
   end
 
+  create_table "govbox_messages", force: :cascade do |t|
+    t.uuid "message_id", null: false
+    t.uuid "correlation_id", null: false
+    t.text "body", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "message_object_data", force: :cascade do |t|
+    t.bigint "message_object_id", null: false
+    t.text "blob", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["message_object_id"], name: "index_message_object_data_on_message_object_id"
+  end
+
+  create_table "message_objects", force: :cascade do |t|
+    t.bigint "message_id", null: false
+    t.string "name", null: false
+    t.string "mimetype", null: false
+    t.string "type", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["message_id"], name: "index_message_objects_on_message_id"
+  end
+
+  create_table "message_threads", force: :cascade do |t|
+    t.bigint "folder_id", null: false
+    t.string "title", null: false
+    t.string "original_title", null: false
+    t.uuid "merge_uuids", default: [], null: false, array: true
+    t.datetime "delivered_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["folder_id"], name: "index_message_threads_on_folder_id"
+  end
+
+  create_table "messages", force: :cascade do |t|
+    t.uuid "uuid", null: false
+    t.bigint "message_thread_id", null: false
+    t.string "title", null: false
+    t.string "sender_name", null: false
+    t.string "recipient_name", null: false
+    t.datetime "delivered_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["message_thread_id"], name: "index_messages_on_message_thread_id"
+  end
+
   create_table "subjects", force: :cascade do |t|
     t.bigint "tenant_id", null: false
     t.string "name"
@@ -188,10 +263,17 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_02_182521) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "automation_rules", "tenants"
+  add_foreign_key "boxes", "tenants"
   add_foreign_key "drafts", "drafts_imports", column: "import_id"
   add_foreign_key "drafts", "subjects"
   add_foreign_key "drafts_imports", "subjects"
   add_foreign_key "drafts_objects", "drafts"
+  add_foreign_key "folders", "boxes"
+  add_foreign_key "message_object_data", "message_objects"
+  add_foreign_key "message_objects", "messages"
+  add_foreign_key "message_threads", "folders"
+  add_foreign_key "messages", "message_threads"
   add_foreign_key "subjects", "tenants"
   add_foreign_key "users", "tenants"
 end
