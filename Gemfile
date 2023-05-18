@@ -55,3 +55,5 @@ group :test do
   gem 'capybara-screenshot'
   gem 'webmock'
 end
+
+gem "tailwindcss-rails", "~> 2.0"
