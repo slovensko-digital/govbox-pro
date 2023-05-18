@@ -17,7 +17,7 @@ gem 'bootstrap', '4.0.0.alpha6'
 gem 'clockwork'
 
 # Workers
-gem "good_job", "~> 3.15"
+gem "good_job"
 
 # Auth
 gem "omniauth-google-oauth2"
