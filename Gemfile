@@ -45,6 +45,7 @@ group :development do
   gem 'annotate'
   gem 'listen'
   gem 'web-console'
+  gem 'solargraph'
 end
 
 group :test do
