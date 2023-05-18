@@ -10,4 +10,5 @@
 class Tenant < ApplicationRecord
   has_many :subjects
   has_many :users
+  has_many :groups
 end

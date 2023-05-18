@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_02_182521) do
+ActiveRecord::Schema[7.0].define(version: 2023_05_18_090954) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -160,14 +160,20 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_02_182521) do
     t.index ["scheduled_at"], name: "index_good_jobs_on_scheduled_at", where: "(finished_at IS NULL)"
   end
 
-  create_table "subjects", force: :cascade do |t|
+  create_table "groups", force: :cascade do |t|
+    t.string "name"
     t.bigint "tenant_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tenant_id"], name: "index_groups_on_tenant_id"
+  end
+
+  create_table "subjects", force: :cascade do |t|
     t.string "name"
     t.string "uri"
     t.string "sub"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["tenant_id"], name: "index_subjects_on_tenant_id"
   end
 
   create_table "tenants", force: :cascade do |t|
@@ -192,6 +198,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_02_182521) do
   add_foreign_key "drafts", "subjects"
   add_foreign_key "drafts_imports", "subjects"
   add_foreign_key "drafts_objects", "drafts"
-  add_foreign_key "subjects", "tenants"
+  add_foreign_key "groups", "tenants"
   add_foreign_key "users", "tenants"
 end

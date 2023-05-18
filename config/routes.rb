@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  resources :tenants do
+    resources :groups
+  end
+
   namespace :drafts, path: 'drafty' do
     resources :imports, path: 'importy', only: :create do
       get :upload_new, path: 'novy', on: :collection
