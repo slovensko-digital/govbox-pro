@@ -1,7 +1,10 @@
 Rails.application.routes.draw do
   resources :tenants do
     resources :groups
+    resources :users
   end
+
+  resources :group_memberships
 
   namespace :drafts, path: 'drafty' do
     resources :imports, path: 'importy', only: :create do

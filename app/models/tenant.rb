@@ -9,6 +9,6 @@
 
 class Tenant < ApplicationRecord
   has_many :subjects
-  has_many :users
-  has_many :groups
+  has_many :users, dependent: :destroy
+  has_many :groups, dependent: :destroy
 end

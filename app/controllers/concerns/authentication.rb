@@ -37,6 +37,7 @@ module Authentication
   def clean_session
     session[:user_id] = nil
     session[:login_expires_at] = nil
+    session[:tenant_id] = nil
   end
 
   def load_current_user
@@ -55,7 +56,8 @@ module Authentication
   end
 
   def skip_authentication?
-    !Rails.env.prod?
+    # !Rails.env.prod?
+    false
   end
 
   def login_path

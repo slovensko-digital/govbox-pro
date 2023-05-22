@@ -46,6 +46,7 @@ group :development do
   gem 'listen'
   gem 'web-console'
   gem 'solargraph'
+  gem 'htmlbeautifier'
 end
 
 group :test do
@@ -57,3 +58,5 @@ group :test do
 end
 
 gem "tailwindcss-rails", "~> 2.0"
+gem "view_component"
+gem "pundit"

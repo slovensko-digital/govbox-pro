@@ -14,6 +14,10 @@
     <%= form.text_field :name, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
   </div>
   <div class="my-5">
+    <%= form.label :group_type %>
+    <%= form.select :group_type, ['CUSTOM', 'ALL', 'USER'], class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+  </div>
+  <div class="my-5">
     <%= form.label :tenant_id %>
     <%= form.text_field :tenant_id, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
   </div>

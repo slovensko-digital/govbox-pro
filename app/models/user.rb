@@ -11,6 +11,6 @@
 
 class User < ApplicationRecord
   belongs_to :tenant
-
-  # TODO roles
+  has_many :group_memberships, dependent: :destroy
+  has_many :groups, through: :group_memberships
 end
