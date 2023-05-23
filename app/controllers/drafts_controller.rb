@@ -9,7 +9,7 @@ class DraftsController < ApplicationController
   end
 
   def destroy
-    Draft.find(params[:id]).destroy
+    Current.subject.drafts.find(params[:id]).destroy
 
     redirect_to drafts_path
   end
@@ -31,6 +31,7 @@ class DraftsController < ApplicationController
     @drafts = Current.subject.drafts
 
     @drafts.each do |draft|
+      draft.being_submitted!
       Drafts::SubmitJob.perform_later(draft)
     end
   end
@@ -38,6 +39,6 @@ class DraftsController < ApplicationController
   private
 
   def set_draft
-    @draft = Current.subject.drafts.find(params[:id])
+    @draft = Current.subject.drafts.find(params[:id] || params[:draft_id])
   end
 end
