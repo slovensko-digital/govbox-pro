@@ -7,7 +7,7 @@ module Upvs
       raise Error.new(error.response) if error.respond_to?(:response) && error.response
       raise error
     else
-      raise Error.new(response), 'Status not OK' if response.code != 200
+      raise Error.new(response), 'Status not OK' if response.status != 200
       return structure
     end
 

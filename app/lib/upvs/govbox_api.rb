@@ -11,6 +11,7 @@ module Upvs
       @edesk = Edesk.new(self)
       @sktalk = SkTalk.new(self)
       @handler = handler
+      @handler.options.timeout = 900000
     end
 
     class Edesk < Namespace
