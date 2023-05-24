@@ -15,10 +15,11 @@ class Drafts::SubmitJob < ApplicationJob
 
     begin
       sender_response = sender.receive_and_save_to_outbox(draft_data)
-      Draft.update!(status: "submitted") if sender_response
+      draft.update!(status: "submitted") if sender_response
     rescue
       # TODO handle based on error code
       # TODO update draft status based on error code
+
       draft.submit_failed_unprocessable!
       raise "Draft #{draft.message_subject} failed!"
     end
