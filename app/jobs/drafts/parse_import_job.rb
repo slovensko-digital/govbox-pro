@@ -34,8 +34,7 @@ class Drafts::ParseImportJob < ApplicationJob
       end
     end
 
-    all_drafts = (drafts_from_csv + drafts_from_folders).uniq
-    jobs_batch.enqueue(on_success: on_success_job, import: import, drafts: all_drafts, zip_path: import_zip_path, extracted_data_path: extracted_import_path)
+    jobs_batch.enqueue(on_success: on_success_job, import: import, zip_path: import_zip_path, extracted_data_path: extracted_import_path)
 
     import.parsed!
   rescue
