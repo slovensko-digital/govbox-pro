@@ -20,8 +20,8 @@ module Upvs
 
     class SkTalk < Namespace
       def receive_and_save_to_outbox(data)
-        response = @api.request(:post, "#{@api.url}/api/sktalk/receive_and_save_to_outbox", data.to_json, header)
-        receive_and_save_to_outbox_successful?(response)
+        response_status, response_body = @api.request(:post, "#{@api.url}/api/sktalk/receive_and_save_to_outbox", data.to_json, header)
+        [response_status, response_body['receive_result'], response_body['save_to_outbox_result']]
       end
 
       private
@@ -39,14 +39,6 @@ module Upvs
 
       def token
         JWT.encode({ sub: @api.sub, exp: 5.minutes.from_now.to_i, jti: SecureRandom.uuid }, @api.api_token_private_key, 'RS256')
-      end
-
-      def receive_and_save_to_outbox_successful?(response)
-        success = response['receive_result'] == 0 && response['save_to_outbox_result'] == 0
-
-        raise Error.new(response), 'Receive and save to outbox fail' unless success
-
-        success
       end
     end
 
