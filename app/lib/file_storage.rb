@@ -1,10 +1,10 @@
-class Archive
-  def self.new(environment: Rails.env, name: "archive")
+class FileStorage
+  def self.new(environment: Rails.env, name: "file_storage")
     case environment
     when "development"
-      NoArchive.new(name)
+      NoFileStorage.new(name)
     when "test"
-      NoArchive.new(name)
+      NoFileStorage.new(name)
     when "staging"
       # TODO
     when "production"
