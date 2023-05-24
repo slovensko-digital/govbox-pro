@@ -29,7 +29,7 @@ class DraftsController < ApplicationController
 
   def submit_all
     @drafts.each do |draft|
-      submit_draft(draft)
+      submit_draft(draft) if draft.submittable?
     end
   end
 
