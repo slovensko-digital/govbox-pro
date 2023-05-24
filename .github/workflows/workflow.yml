@@ -1,0 +1,54 @@
+name: Push CI
+
+on:
+  push:
+    branches: '**'
+
+jobs:
+  # TODO: uncomment when we have tests
+  # test:
+  #   if: ${{github.repository == 'solver-it-sro/govbox-pro'}}
+
+  #   runs-on: ubuntu-latest
+
+  #   env:
+  #     PGHOST: localhost
+  #     RAILS_ENV: test
+
+  #   services:
+  #     postgres:
+  #       image: postgres:12-alpine
+  #       env:
+  #         POSTGRES_USER: runner
+  #         POSTGRES_HOST_AUTH_METHOD: trust
+  #       ports:
+  #         - 5432:5432
+  #       options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: ruby/setup-ruby@v1
+  #       with:
+  #         bundler-cache: true
+
+  #     - run: bundle exec rails db:create db:structure:load db:seed --trace
+  #     - run: bundle exec rspec
+
+
+  gitlab-push:
+    name: Push to GitLab
+
+    if: ${{(github.repository == 'solver-it-sro/govbox-pro') && (github.ref == 'refs/heads/main')}}
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - uses: dokku/github-action@master
+        with:
+          git_push_flags: '--force'
+          git_remote_url: ssh://git@${{secrets.GITLAB_DEPLOY_HOST}}/${{github.event.repository.name}}.git
+          ssh_private_key: ${{secrets.GITLAB_DEPLOY_KEY}}
