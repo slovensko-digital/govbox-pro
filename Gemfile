@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby '3.1.2'
+ruby '3.2.2'
 
 gem 'rails', '~> 7.0'
 gem 'rails-i18n'
@@ -17,7 +17,7 @@ gem 'bootstrap', '4.0.0.alpha6'
 gem 'clockwork'
 
 # Workers
-gem "good_job", "~> 3.15"
+gem "good_job"
 
 # Auth
 gem "omniauth-google-oauth2"
