@@ -7,8 +7,10 @@ class FileStorage
       NoFileStorage.new(name)
     when "staging"
       # TODO
+      NoFileStorage.new(name)
     when "production"
       # TODO
+      NoFileStorage.new(name)
     else
       raise
     end
