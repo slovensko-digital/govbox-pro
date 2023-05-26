@@ -14,13 +14,14 @@ class Drafts::SubmitJob < ApplicationJob
     sender = sender.new(draft.subject.sub).sktalk
 
     begin
-      sender_response = sender.receive_and_save_to_outbox(draft_data)
-      Draft.update!(status: "submitted") if sender_response
+      response_status, receive_result, save_to_outbox_result = sender.receive_and_save_to_outbox(draft_data)
+      if submit_successful?(response_status, receive_result, save_to_outbox_result)
+        draft.update!(status: "submitted")
+      else
+        handle_submit_fail(draft, response_status)
+      end
     rescue
-      # TODO handle based on error code
-      # TODO update draft status based on error code
-      draft.submit_failed_unprocessable!
-      raise "Draft #{draft.message_subject} failed!"
+      draft.submit_failed_temporary!
     end
   end
 
@@ -41,5 +42,20 @@ class Drafts::SubmitJob < ApplicationJob
     end
 
     objects
+  end
+
+  def submit_successful?(response_status, receive_result, save_to_outbox_result)
+    response_status == 200 && receive_result == 0 && save_to_outbox_result == 0
+  end
+
+  def handle_submit_fail(draft, response_status)
+    case response_status
+    when 408
+      # TODO
+    when 422
+      draft.submit_failed_unprocessable!
+    else
+      draft.submit_failed_temporary!
+    end
   end
 end
