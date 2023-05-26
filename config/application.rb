@@ -13,7 +13,7 @@ module GovboxPro
 
     config.middleware.use Rack::Attack
 
-    config.active_record.schema_format = :sql
+    config.active_record.schema_format = :ruby
 
     # config.i18n.load_path += Dir[Rails.root.join 'config', 'locales', '**', '*.{rb,yml}']
     config.i18n.default_locale = :sk
@@ -21,7 +21,11 @@ module GovboxPro
     config.active_record.default_timezone = :utc
     config.time_zone = 'Europe/Bratislava'
 
-    config.active_job.queue_adapter = :que
+    config.autoload_paths += Dir[File.join(Rails.root, 'app', 'models', 'validators')]
+
+    config.active_job.queue_adapter = :good_job
+    config.active_job.default_queue_name = :medium_priority
+    config.action_mailer.deliver_later_queue_name = :high_priority
 
     # Configuration for the application, engines, and railties goes here.
     #

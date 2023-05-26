@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby '3.1.2'
+ruby '3.2.2'
 
 gem 'rails', '~> 7.0'
 gem 'rails-i18n'
@@ -17,13 +17,15 @@ gem 'bootstrap', '4.0.0.alpha6'
 gem 'clockwork'
 
 # Workers
-gem 'que'
-gem 'que-web'
+gem "good_job"
+
+# Auth
+gem "omniauth-google-oauth2"
+gem "omniauth-rails_csrf_protection"
 
 # Utilities
 gem 'rest-client'
 gem 'rack-attack'
-gem 'omniauth-saml'
 gem 'rubyzip', require: 'zip'
 gem 'jwt'
 

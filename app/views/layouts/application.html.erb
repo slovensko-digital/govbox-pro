@@ -11,6 +11,10 @@
 
   <body>
     <h1>GovBox PRO</h1>
-    <%= yield %>
+    <% if Current.user %>
+      <p><%= Current.user.email %></p>
+      <%= button_to "Odhlásiť sa", sessions_path, method: :delete %>
+    <% end %>
+  <%= yield %>
   </body>
 </html>
