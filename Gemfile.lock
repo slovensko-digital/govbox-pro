@@ -409,7 +409,7 @@ DEPENDENCIES
   sass-rails (>= 6)
   selenium-webdriver
   solargraph
-  tailwindcss-rails (~> 2.0)
+  tailwindcss-rails
   view_component
   web-console
   webdrivers

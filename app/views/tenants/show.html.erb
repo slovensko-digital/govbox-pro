@@ -60,7 +60,7 @@ Tu zacina tabulka s groupami
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-200 bg-white">
-              <%= render(GroupTableRowComponent.with_collection(@tenant.groups)) %>
+              <%= render GroupTableRowComponent.with_collection(@tenant.groups) %>
             </tbody>
           </table>
         </div>

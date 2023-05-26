@@ -5,30 +5,33 @@ class GroupMembershipPolicy < ApplicationPolicy
 
   def initialize(user, group_membership)
     @user = user
-    @siteadmin = (@user.user_type == 'SITE_ADMIN')
-    @admin = @user.groups.exists?(group_type: 'ADMIN')
+    @group_membership = group_membership
   end
 
   class Scope < Scope
     def resolve
-      if @siteadmin
+      if @user.site_admin?
         scope.all
       else
-        scope.includes(:user).where('user.tenant_id = ?', @user.tenant_id).includes(:group).where('group.tenant_id = ?', @user.tenant_id)
+        scope.includes(:user, :group).where(user: {tenant_id: Current.tenant.id}, group: {tenant_id: Current.tenant.id})
       end
     end
   end
 
-   def index
-    @siteadmin || @admin
+  def index
+    @user.site_admin? || @user.admin?
   end
 
   def show?
-    @siteadmin || @admin
+    @user.site_admin? || @user.admin?
   end
 
   def create?
-    @siteadmin || @admin
+    return false if !@user.site_admin? && !@user.admin?
+    return false unless @group_membership.group.tenant == Current.tenant
+    return false unless @group_membership.user.tenant == Current.tenant
+
+    true
   end
 
   def new?
@@ -36,7 +39,7 @@ class GroupMembershipPolicy < ApplicationPolicy
   end
 
   def update?
-    @siteadmin || @admin
+    @user.site_admin? || @user.admin?
   end
 
   def edit?
@@ -44,7 +47,7 @@ class GroupMembershipPolicy < ApplicationPolicy
   end
 
   def destroy?
-    @siteadmin || @admin
+    @user.site_admin? || @user.admin?
   end
-
 end
+

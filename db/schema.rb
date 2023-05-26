@@ -15,6 +15,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_19_121653) do
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
+  # Custom types defined in this database.
+  # Note that some types may not work with other database engines. Be careful if changing database.
+  create_enum "group_type", ["ALL", "USER", "CUSTOM", "ADMIN"]
+
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -170,12 +174,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_19_121653) do
   end
 
   create_table "groups", force: :cascade do |t|
-    t.string "name"
+    t.string "name", null: false
     t.bigint "tenant_id", null: false
+    t.enum "group_type", null: false, enum_type: "group_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "type"
-    t.string "group_type"
     t.index ["tenant_id"], name: "index_groups_on_tenant_id"
   end
 

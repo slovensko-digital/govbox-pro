@@ -5,13 +5,12 @@ class TenantPolicy < ApplicationPolicy
 
   def initialize(user, tenant)
     @user = user
-    @siteadmin = (@user.user_type == 'SITE_ADMIN')
     @tenant = tenant
   end
 
   class Scope < Scope
     def resolve
-      if @siteadmin
+      if @user.site_admin?
         scope.all
       else
         scope.where(id: @user.tenant_id)
@@ -19,18 +18,16 @@ class TenantPolicy < ApplicationPolicy
     end
   end
 
-   def index?
-    true
-    #@siteadmin
+  def index?
+    @user.site_admin? || @user.admin?
   end
 
   def show?
-    true
-    #@siteadmin || @user.tenant_id == @tenant.id
+    @user.site_admin? || @user.admin?
   end
 
   def create?
-    @siteadmin
+    @user.site_admin?
   end
 
   def new?
@@ -38,7 +35,7 @@ class TenantPolicy < ApplicationPolicy
   end
 
   def update?
-    @siteadmin
+    @user.site_admin?
   end
 
   def edit?
@@ -46,7 +43,6 @@ class TenantPolicy < ApplicationPolicy
   end
 
   def destroy?
-    @siteadmin
+    @user.site_admin?
   end
-
 end

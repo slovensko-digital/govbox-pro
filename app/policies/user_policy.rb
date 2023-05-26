@@ -5,13 +5,11 @@ class UserPolicy < ApplicationPolicy
 
   def initialize(user_logged_in, user_to_authorize)
     @user = user_logged_in
-    @siteadmin = (@user.user_type == 'SITE_ADMIN')
-    @admin = @user.groups.exists?(group_type: 'ADMIN')
   end
 
   class Scope < Scope
     def resolve
-      if @siteadmin
+      if @user.site_admin?
         scope.all
       else
         scope.where(tenant_id: @user.tenant_id)
@@ -19,16 +17,16 @@ class UserPolicy < ApplicationPolicy
     end
   end
 
-   def index
-    @siteadmin || @admin
+  def index
+    @user.site_admin? || @user.admin?
   end
 
   def show?
-    @siteadmin || @admin
+    @user.site_admin? || @user.admin?
   end
 
   def create?
-    @siteadmin || @admin
+    @user.site_admin? || @user.admin?
   end
 
   def new?
@@ -36,7 +34,7 @@ class UserPolicy < ApplicationPolicy
   end
 
   def update?
-    @siteadmin || @admin
+    @user.site_admin? || @user.admin?
   end
 
   def edit?
@@ -44,7 +42,7 @@ class UserPolicy < ApplicationPolicy
   end
 
   def destroy?
-    @siteadmin || @admin
+    @user.site_admin? || @user.admin?
   end
 
 end

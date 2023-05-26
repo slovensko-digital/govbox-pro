@@ -5,15 +5,18 @@
   <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
     <%= @group.group_type %>
   </td>
-  <% case @group_action
+  <% 
+    case @group_action
     when 'add' %>
-  <td>
-    <%= form_with model: [GroupMembership.new(group: @group, user: @user)], class: "contents" do |form| %>
-      <%= form.hidden_field :group_id %>
-      <%= form.hidden_field :user_id %>
-      <%= form.submit 'Add to group' ,class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
+  <% if @group.is_modifiable? %>
+    <td>
+      <%= form_with model: [GroupMembership.new(group: @group, user: @user)], class: "contents" do |form| %>
+        <%= form.hidden_field :group_id %>
+        <%= form.hidden_field :user_id %>
+        <%= form.submit 'Add to group' ,class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
+      </td>
     <% end %>
-  </td>
+  <% end %>
 <% else %>
   <td>
     <%= link_to 'Edit this group', edit_tenant_group_path(Current.tenant, @group), class: "rounded-lg py-3 ml-2 px-5 bg-gray-100 inline-block font-medium" %>

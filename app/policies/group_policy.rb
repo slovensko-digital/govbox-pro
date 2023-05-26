@@ -5,14 +5,12 @@ class GroupPolicy < ApplicationPolicy
 
   def initialize(user, group)
     @user = user
-    @siteadmin = (@user.user_type == 'SITE_ADMIN')
-    @admin = @user.groups.exists?(group_type: 'ADMIN')
-    group = group
+    @group = group
   end
 
   class Scope < Scope
     def resolve
-      if @siteadmin
+      if @user.site_admin?
         scope.all
       else
         scope.where(tenant_id: @user.tenant_id)
@@ -21,15 +19,15 @@ class GroupPolicy < ApplicationPolicy
   end
 
    def index
-    @siteadmin || @admin
+    @user.site_admin? || @user.admin?
   end
 
   def show?
-    @siteadmin || @admin
+    @user.site_admin? || @user.admin?
   end
 
   def create?
-    @siteadmin || @admin
+    @user.site_admin? || @user.admin?
   end
 
   def new?
@@ -37,7 +35,7 @@ class GroupPolicy < ApplicationPolicy
   end
 
   def update?
-    @siteadmin || @admin
+    @user.site_admin? || @user.admin?
   end
 
   def edit?
@@ -45,7 +43,7 @@ class GroupPolicy < ApplicationPolicy
   end
 
   def destroy?
-    @siteadmin || @admin
+    @user.site_admin? || @user.admin?
   end
 
 end

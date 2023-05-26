@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  # TODO pridat namespace /admin/ a doriesit dopady
   resources :tenants do
     resources :groups
     resources :users

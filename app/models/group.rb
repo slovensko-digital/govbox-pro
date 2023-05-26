@@ -4,4 +4,8 @@ class Group < ApplicationRecord
   has_many :users, through: :group_memberships
 
   validates :group_type, inclusion: { in: ['ALL', 'USER', 'ADMIN', 'CUSTOM'], allow_blank: false}
+
+  def is_modifiable?
+    !group_type.in? ['ALL', 'USER']
+  end
 end
