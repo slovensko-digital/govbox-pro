@@ -1,0 +1,5 @@
+class User
+  def admin?: -> bool
+
+  def site_admin?: -> bool
+end

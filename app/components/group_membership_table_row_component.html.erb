@@ -1,0 +1,14 @@
+<tr>
+  <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
+    <%= link_to @group_membership.group.name, tenant_group_path(Current.tenant, @group_membership.group) %>
+  </td>
+  <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
+    <%= @group_membership.group.group_type %>
+  </td>
+  <td>
+    <% if @group_membership.group_membership_modifiable? %>
+      <%= button_to 'Remove from group', group_membership_path(@group_membership),
+      method: :delete, class: "mt-2 rounded-lg py-3 px-5 bg-gray-100 font-medium cursor-pointer" %>
+    <% end %>
+  </td>
+</tr>

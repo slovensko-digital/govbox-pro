@@ -1,6 +1,7 @@
 class SessionsController < ApplicationController
   skip_before_action :authenticate
-  before_action :load_current_user, only: :login
+  skip_after_action :verify_authorized
+  skip_after_action :verify_policy_scoped
 
   def login
   end

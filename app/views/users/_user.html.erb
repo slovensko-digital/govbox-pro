@@ -1,0 +1,8 @@
+<tr>
+  <td><%= link_to user.name, tenant_user_url(Current.tenant, @user) %>
+  </td>
+  <td><%= user.email%></td>
+  <td>
+    <%= link_to 'Edit this user', edit_tenant_user_url(Current.tenant, @user), class: "rounded-lg py-3 ml-2 px-5 bg-gray-100 inline-block font-medium" %>
+  </td>
+</tr>

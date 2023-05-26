@@ -11,7 +11,9 @@ gem 'puma', '~> 5.0'
 
 # Styles
 gem 'sass-rails', '>= 6'
-gem 'bootstrap', '4.0.0.alpha6'
+gem 'bootstrap', '4.0.0.alpha6' # TODO remove
+gem 'tailwindcss-rails'
+gem 'view_component'
 
 # Schedulers
 gem 'clockwork'
@@ -22,6 +24,7 @@ gem "good_job"
 # Auth
 gem "omniauth-google-oauth2"
 gem "omniauth-rails_csrf_protection"
+gem "pundit"
 
 # Utilities
 gem 'rest-client'
@@ -39,12 +42,15 @@ group :development, :test do
   gem 'dotenv-rails'
   gem 'pry-rails'
   gem 'pry-byebug'
+  gem 'foreman'
 end
 
 group :development do
   gem 'annotate'
   gem 'listen'
   gem 'web-console'
+  gem 'solargraph'
+  gem 'htmlbeautifier'
 end
 
 group :test do
