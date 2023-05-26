@@ -1,6 +1,6 @@
 class Drafts::ImportsController < ApplicationController
   def create
-    archive = Archive.new
+    file_storage = FileStorage.new
 
     zip_content = params[:content]
     import = Drafts::Import.create!(
@@ -8,7 +8,7 @@ class Drafts::ImportsController < ApplicationController
       subject_id: Current.subject.id  # TODO add tenant option (no subject selected)
     )
 
-    import_path = archive.store("imports", import_path(import), zip_content.read.force_encoding("UTF-8"))
+    import_path = file_storage.store("imports", import_path(import), zip_content.read.force_encoding("UTF-8"))
     Drafts::ParseImportJob.perform_later(import, import_path)
 
     redirect_to drafts_path

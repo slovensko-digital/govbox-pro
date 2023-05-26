@@ -391,8 +391,8 @@ DEPENDENCIES
   clockwork
   dotenv-rails
   foreman
-  good_job (~> 3.15)
   htmlbeautifier
+  good_job
   jwt
   listen
   omniauth-google-oauth2
