@@ -10,8 +10,8 @@ gem 'pg', '~> 1.0'
 gem 'puma', '~> 5.0'
 
 # Styles
-gem 'sass-rails', '>= 6'
-gem 'bootstrap', '4.0.0.alpha6' # TODO remove
+gem 'sprockets-rails'
+gem 'importmap-rails'
 gem 'tailwindcss-rails'
 gem 'view_component'
 

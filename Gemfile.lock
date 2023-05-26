@@ -72,16 +72,11 @@ GEM
       activerecord (>= 3.2, < 8.0)
       rake (>= 10.4, < 14.0)
     ast (2.4.2)
-    autoprefixer-rails (10.4.13.0)
-      execjs (~> 2)
     backport (1.2.0)
     benchmark (0.2.1)
     bindex (0.8.1)
     bootsnap (1.16.0)
       msgpack (~> 1.2)
-    bootstrap (4.0.0.alpha6)
-      autoprefixer-rails (>= 6.0.3)
-      sass (>= 3.4.19)
     builder (3.2.4)
     byebug (11.1.3)
     capybara (3.39.1)
@@ -116,7 +111,6 @@ GEM
     erubi (1.12.0)
     et-orbi (1.2.7)
       tzinfo
-    execjs (2.8.1)
     faraday (2.7.4)
       faraday-net_http (>= 2.0, < 3.1)
       ruby2_keywords (>= 0.0.4)
@@ -144,6 +138,9 @@ GEM
       domain_name (~> 0.5)
     i18n (1.13.0)
       concurrent-ruby (~> 1.0)
+    importmap-rails (1.1.6)
+      actionpack (>= 6.0.0)
+      railties (>= 6.0.0)
     jaro_winkler (1.5.4)
     json (2.6.3)
     jwt (2.7.0)
@@ -295,21 +292,6 @@ GEM
     ruby-progressbar (1.13.0)
     ruby2_keywords (0.0.5)
     rubyzip (2.3.2)
-    sass (3.7.4)
-      sass-listen (~> 4.0.0)
-    sass-listen (4.0.0)
-      rb-fsevent (~> 0.9, >= 0.9.4)
-      rb-inotify (~> 0.9, >= 0.9.7)
-    sass-rails (6.0.0)
-      sassc-rails (~> 2.1, >= 2.1.1)
-    sassc (2.4.0)
-      ffi (~> 1.9)
-    sassc-rails (2.1.2)
-      railties (>= 4.0.0)
-      sassc (>= 2.0)
-      sprockets (> 3.0)
-      sprockets-rails
-      tilt
     selenium-webdriver (4.9.1)
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
@@ -385,14 +367,14 @@ PLATFORMS
 DEPENDENCIES
   annotate
   bootsnap (>= 1.4.4)
-  bootstrap (= 4.0.0.alpha6)
   capybara
   capybara-screenshot
   clockwork
   dotenv-rails
   foreman
-  htmlbeautifier
   good_job
+  htmlbeautifier
+  importmap-rails
   jwt
   listen
   omniauth-google-oauth2
@@ -408,9 +390,9 @@ DEPENDENCIES
   rest-client
   rollbar
   rubyzip
-  sass-rails (>= 6)
   selenium-webdriver
   solargraph
+  sprockets-rails
   tailwindcss-rails
   view_component
   web-console
