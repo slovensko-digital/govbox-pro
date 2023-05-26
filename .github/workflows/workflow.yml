@@ -5,35 +5,33 @@ on:
     branches: '**'
 
 jobs:
-  # TODO: uncomment when we have tests
-  # test:
-  #   if: ${{github.repository == 'solver-it-sro/govbox-pro'}}
+  test:
+    if: ${{github.repository == 'solver-it-sro/govbox-pro'}}
 
-  #   runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
 
-  #   env:
-  #     PGHOST: localhost
-  #     RAILS_ENV: test
+    env:
+      PGHOST: localhost
+      RAILS_ENV: test
 
-  #   services:
-  #     postgres:
-  #       image: postgres:12-alpine
-  #       env:
-  #         POSTGRES_USER: runner
-  #         POSTGRES_HOST_AUTH_METHOD: trust
-  #       ports:
-  #         - 5432:5432
-  #       options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    services:
+      postgres:
+        image: postgres:14-alpine
+        env:
+          POSTGRES_USER: runner
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - uses: ruby/setup-ruby@v1
-  #       with:
-  #         bundler-cache: true
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
 
-  #     - run: bundle exec rails db:create db:structure:load db:seed --trace
-  #     - run: bundle exec rspec
-
+      - run: bundle exec rails db:setup --trace
+      - run: bundle exec rails test
 
   gitlab-push:
     name: Push to GitLab
@@ -41,6 +39,8 @@ jobs:
     if: ${{(github.repository == 'solver-it-sro/govbox-pro') && (github.ref == 'refs/heads/main')}}
 
     runs-on: ubuntu-latest
+
+    needs: test
 
     steps:
       - uses: actions/checkout@v2
