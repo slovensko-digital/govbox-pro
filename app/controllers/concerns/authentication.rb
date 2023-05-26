@@ -16,9 +16,6 @@ module Authentication
     end
 
     load_current_user
-
-    # TODO
-    Current.subject = Subject.find(1)
   end
 
   def create_session

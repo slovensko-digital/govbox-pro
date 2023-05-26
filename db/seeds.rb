@@ -9,10 +9,11 @@
 # TODO - upratat, aby sa nic nepytalo
 puts 'Type First tenant name'
 tenant_name = STDIN.gets.chomp
-@tenant = Tenant.find_or_create_by(name: tenant_name)
+@tenant = Tenant.find_or_create_by!(name: tenant_name)
 
-puts 'Type SITE ADMIN name'
+puts 'Type ADMIN name'
 site_admin_name = STDIN.gets.chomp
-puts 'Type SITE ADMIN gmail address - used for authentication'
+puts 'Type ADMIN gmail address - used for authentication'
 site_admin_email = STDIN.gets.chomp
-@user = @tenant.users.find_or_create_by(email: site_admin_email, name: site_admin_name, user_type: 'SITE_ADMIN')
+@user = @tenant.users.find_or_create_by!(email: site_admin_email, name: site_admin_name)
+

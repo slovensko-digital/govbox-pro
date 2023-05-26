@@ -39,7 +39,6 @@ class ApplicationPolicy
   class Scope
     def initialize(user, scope)
       @user = user
-      @siteadmin = @user.user_type == 'SITE_ADMIN'
       @scope = scope
     end
 

@@ -14,11 +14,14 @@ class User < ApplicationRecord
   has_many :group_memberships, dependent: :destroy
   has_many :groups, through: :group_memberships
 
-  before_destroy :delete_special_group, prepend: true
+  validates_presence_of :name, :email
+  validates_uniqueness_of :name, :email, scope: :tenant_id
+
+  before_destroy :delete_user_group, prepend: true
   after_create :handle_default_groups
 
   def site_admin?
-    user_type == 'SITE_ADMIN'
+    ENV['SITE_ADMIN_EMAILS'].to_s.split(',').include?(email)
   end
 
   def admin?
@@ -27,12 +30,12 @@ class User < ApplicationRecord
 
   private
 
-  def delete_special_group
+  def delete_user_group
     groups.destroy_by(group_type: 'USER')
   end
 
   def handle_default_groups
-    groups.create!(name: name , group_type: 'USER', tenant_id: tenant_id)
-    group_memberships.create!(group_id: Group.find_by(tenant_id: tenant_id, group_type: 'ALL').id)
+    groups.create!(name: name, group_type: 'USER', tenant_id: tenant_id)
+    group_memberships.create!(group: tenant.all_group)
   end
 end

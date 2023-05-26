@@ -12,12 +12,16 @@ class Tenant < ApplicationRecord
   has_many :users, dependent: :destroy
   has_many :groups, dependent: :destroy
 
+  has_one :all_group, -> { where(group_type: 'ALL') }, class_name: 'Group'
+
   after_create :create_default_groups
+
+  validates_presence_of :name
 
   private
 
   def create_default_groups
-    groups.create!(name: 'All Tenant users - default system group', group_type: 'ALL')
-    groups.create!(name: 'Tenant admins - default system group', group_type: 'ADMIN')
+    groups.create!(name: 'all', group_type: 'ALL')
+    groups.create!(name: 'admins', group_type: 'ADMIN')
   end
 end
