@@ -23,4 +23,14 @@ resources:
     cpu: 10m
     memory: 400Mi
   limits:
-    memory: 400Mi
+    memory: 1Gi
+persistence:
+  enabled: true
+  volumes:
+  - name: govbox-pro-storage
+    mount:
+      path: /app/storage
+    claim:
+      accessMode: ReadWriteMany
+      size: 10Gi
+      storageClass: nfs-client
