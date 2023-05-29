@@ -6,5 +6,7 @@ class Box < ApplicationRecord
 
   has_many :drafts_imports, class_name: 'Drafts::Import'
   has_many :drafts
+
+  has_one :govbox_api_connection, class_name: 'Govbox::ApiConnection'
 end
 

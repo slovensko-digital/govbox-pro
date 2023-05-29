@@ -4,9 +4,10 @@ module Upvs
   class GovboxApi < Api
     attr_reader :sub, :api_token_private_key, :url, :edesk, :sktalk
 
-    def initialize(sub, url: ENV['GB_API_URL'], handler: Faraday)
-      @sub = sub
-      @api_token_private_key = load_api_token_private_key
+    def initialize(govbox_api_connection, url: ENV['GB_API_URL'], handler: Faraday)
+      @sub = govbox_api_connection.sub
+      @obo = govbox_api_connection.obo
+      @api_token_private_key = govbox_api_connection.api_token_private_key
       @url = url
       @edesk = Edesk.new(self)
       @sktalk = SkTalk.new(self)

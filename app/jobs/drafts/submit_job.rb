@@ -11,7 +11,7 @@ class Drafts::SubmitJob < ApplicationJob
       objects: build_objects(draft)
     }
 
-    sender = sender.new(draft.subject.sub).sktalk
+    sender = sender.new(draft.box.govbox_api_connection).sktalk
 
     begin
       response_status, receive_result, save_to_outbox_result = sender.receive_and_save_to_outbox(draft_data)
