@@ -1,4 +1,4 @@
-class GroupMembershipsController < ApplicationController
+class Admin::GroupMembershipsController < ApplicationController
   before_action :set_group_membership, only: %i[ destroy ]
   # TODO - rediscuss the whole concept of SITE_ADMIN vs TENANT admin responsibilities and functionality
 

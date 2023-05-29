@@ -2,12 +2,14 @@ Rails.application.routes.draw do
   resource :dashboard
 
   # TODO pridat namespace /admin/ a doriesit dopady
-  resources :tenants do
-    resources :groups
-    resources :users
-  end
+  namespace :admin do
+    resources :tenants do
+      resources :groups
+      resources :users
+    end
 
-  resources :group_memberships
+    resources :group_memberships
+  end
 
   namespace :drafts, path: 'drafty' do
     resources :imports, path: 'importy', only: :create do
