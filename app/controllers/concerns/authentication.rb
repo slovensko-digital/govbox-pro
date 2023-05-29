@@ -18,7 +18,7 @@ module Authentication
     load_current_user
 
     # TODO
-    Current.box = box.find(1)
+    Current.box = Box.find(1)
   end
 
   def create_session

@@ -1,3 +1,14 @@
+# == Schema Information
+#
+# Table name: govbox_messages
+#
+#  id                                          :integer          not null, primary key
+#  message_id                                  :uuid             not null
+#  correlation_id                              :uuid             not null
+#  body                                        :text             not null
+#  created_at                                  :datetime         not null
+#  updated_at                                  :datetime         not null
+
 class Govbox::Message < ApplicationRecord
   belongs_to :box
   belongs_to :folder, class_name: 'Govbox::Folder'

@@ -1,3 +1,13 @@
+# == Schema Information
+#
+# Table name: boxes
+#
+#  id                                          :integer          not null, primary key
+#  name                                        :string           not null
+#  uri                                         :string
+#  created_at                                  :datetime         not null
+#  updated_at                                  :datetime         not null
+
 class Box < ApplicationRecord
   belongs_to :tenant
 
