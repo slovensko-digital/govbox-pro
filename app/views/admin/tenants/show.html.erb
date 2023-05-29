@@ -1,26 +1,30 @@
 <div class="flex justify-between items-center">
-  <h1 class='font-bold text-4xl'>User</h1>
+  <h1 class='font-bold text-4xl'>Tenant</h1>
 </div>
 <div class="mx-auto md:w-2/3 w-full flex">
   <div class="mx-auto">
     <% if notice.present? %>
       <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
     <% end %>
-    <%= render @user %>
-    <%= link_to 'Edit this user', edit_tenant_user_url(Current.tenant, @user), class: "mt-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
+    <%= render @tenant %>
+    <%= link_to 'Edit this tenant', edit_admin_tenant_path(@tenant), class: "mt-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
     <div class="inline-block ml-2">
-      <%= button_to 'Destroy this user', tenant_user_path(@user), method: :delete, class: "mt-2 rounded-lg py-3 px-5 bg-gray-100 font-medium" %>
+      <%= button_to 'Destroy this tenant', admin_tenant_path(@tenant), method: :delete, data: { confirm: 'Are you sure?' }, class: "mt-2 rounded-lg py-3 px-5 bg-gray-100 font-medium" %>
     </div>
-    <%= link_to 'Back to tenant', tenant_path(Current.tenant), class: "ml-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
+    <%= link_to 'Back to tenants', admin_tenants_path, class: "ml-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
   </div>
 </div>
 <!--
-Tabulka s groupami, kde je
+Tu zacina tabulka s groupami
 -->
-<div class="flex justify-between items-center">
-  <h1 class='font-bold text-4xl'>Groups Membership</h1>
-</div>
 <div class="w-full">
+  <% if notice.present? %>
+    <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
+  <% end %>
+  <div class="flex justify-between items-center">
+    <h1 class="font-bold text-4xl">Groups</h1>
+    <%= link_to 'New group', new_admin_tenant_group_path(@tenant.id), class: "rounded-lg py-3 px-5 bg-blue-600 text-white block font-medium" %>
+  </div>
   <div class="px-4 sm:px-6 lg:px-8">
     <div class="mt-8 flow-root">
       <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -41,7 +45,7 @@ Tabulka s groupami, kde je
                 </th>
                 <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">
                   <a href="#" class="group inline-flex">
-                    Type
+                    Group Type
                     <!-- Active: "bg-gray-200 text-gray-900 group-hover:bg-gray-300", Not Active: "invisible text-gray-400 group-hover:visible group-focus:visible" -->
                     <span class="invisible ml-2 flex-none rounded text-gray-400 group-hover:visible group-focus:visible">
                       <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -56,7 +60,7 @@ Tabulka s groupami, kde je
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-200 bg-white">
-              <%= render GroupMembershipTableRowComponent.with_collection(@user.group_memberships) %>
+              <%= render GroupTableRowComponent.with_collection(@tenant.groups) %>
             </tbody>
           </table>
         </div>
@@ -65,12 +69,16 @@ Tabulka s groupami, kde je
   </div>
 </div>
 <!--
-Tabulka s groupami, kde nie je
+Tu zacina tabulka s usermi
 -->
-<div class="flex justify-between items-center">
-  <h1 class='font-bold text-4xl'>Other Groups</h1>
-</div>
 <div class="w-full">
+  <% if notice.present? %>
+    <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
+  <% end %>
+  <div class="flex justify-between items-center">
+    <h1 class="font-bold text-4xl">Users</h1>
+    <%= link_to 'New user', new_admin_tenant_user_path(@tenant.id), class: "rounded-lg py-3 px-5 bg-blue-600 text-white block font-medium" %>
+  </div>
   <div class="px-4 sm:px-6 lg:px-8">
     <div class="mt-8 flow-root">
       <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -89,9 +97,9 @@ Tabulka s groupami, kde nie je
                     </span>
                   </a>
                 </th>
-                <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">
+                <th>
                   <a href="#" class="group inline-flex">
-                    Type
+                    E-Mail
                     <!-- Active: "bg-gray-200 text-gray-900 group-hover:bg-gray-300", Not Active: "invisible text-gray-400 group-hover:visible group-focus:visible" -->
                     <span class="invisible ml-2 flex-none rounded text-gray-400 group-hover:visible group-focus:visible">
                       <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -106,7 +114,7 @@ Tabulka s groupami, kde nie je
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-200 bg-white">
-              <%= render GroupTableRowComponent.with_collection(@other_groups, user: @user, group_action: 'add') %>
+              <%= render(UserTableRowComponent.with_collection(@tenant.users)) %>
             </tbody>
           </table>
         </div>
