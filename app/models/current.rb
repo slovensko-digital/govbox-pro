@@ -1,4 +1,4 @@
 class Current < ActiveSupport::CurrentAttributes
-  attribute :subject
+  attribute :box
   attribute :user
 end

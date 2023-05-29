@@ -41,14 +41,14 @@ class DraftsController < ApplicationController
   end
 
   def load_draft
-    @draft = Current.subject.drafts.find(params[:id] || params[:draft_id])
+    @draft = Current.box.drafts.find(params[:id] || params[:draft_id])
   end
 
   def load_drafts
-    @drafts = Current.subject.drafts
+    @drafts = Current.box.drafts
   end
 
   def load_drafts_imports
-    @drafts_imports = Current.subject.drafts_imports
+    @drafts_imports = Current.box.drafts_imports
   end
 end

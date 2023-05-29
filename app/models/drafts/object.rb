@@ -4,7 +4,7 @@
 #
 #  id                                          :integer          not null, primary key
 #  draf_id                                     :string           not null
-#  uuid                                        :string           not null
+#  uuid                                        :uuid             not null
 #  name                                        :string           not null
 #  signed                                      :boolean
 #  to_be_signed                                :boolean
