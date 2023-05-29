@@ -183,11 +183,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_26_172048) do
   end
 
   create_table "subjects", force: :cascade do |t|
+    t.bigint "tenant_id", null: false
     t.string "name"
     t.string "uri"
     t.string "sub"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["tenant_id"], name: "index_subjects_on_tenant_id"
   end
 
   create_table "tenants", force: :cascade do |t|
