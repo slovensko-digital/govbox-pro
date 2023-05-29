@@ -216,5 +216,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_26_172048) do
   add_foreign_key "group_memberships", "groups"
   add_foreign_key "group_memberships", "users"
   add_foreign_key "groups", "tenants"
+  add_foreign_key "subjects", "tenants"
   add_foreign_key "users", "tenants"
 end
