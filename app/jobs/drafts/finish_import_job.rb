@@ -1,6 +1,6 @@
 class Drafts::FinishImportJob < ApplicationJob
   def perform(batch, params)
-    batch.properties[:drafts].each do |draft|
+    batch.properties[:import].drafts.find_each do |draft|
       if draft.valid?(:validate_data)
         draft.loading_done!
       else

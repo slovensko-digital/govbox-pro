@@ -10,10 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_18_211846) do
+ActiveRecord::Schema[7.0].define(version: 2023_05_26_172048) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
+
+  # Custom types defined in this database.
+  # Note that some types may not work with other database engines. Be careful if changing database.
+  create_enum "group_type", %w[ALL USER CUSTOM ADMIN]
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -22,7 +26,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_18_211846) do
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
     t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
-    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
+    t.index %w[record_type record_id name blob_id],
+            name: "index_active_storage_attachments_uniqueness",
+            unique: true
   end
 
   create_table "active_storage_blobs", force: :cascade do |t|
@@ -40,7 +46,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_18_211846) do
   create_table "active_storage_variant_records", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
-    t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+    t.index %w[blob_id variation_digest],
+            name: "index_active_storage_variant_records_uniqueness",
+            unique: true
   end
 
   create_table "automation_rules", force: :cascade do |t|
@@ -111,7 +119,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_18_211846) do
     t.index ["box_id"], name: "index_folders_on_box_id"
   end
 
-  create_table "good_job_batches", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "good_job_batches",
+               id: :uuid,
+               default: -> { "gen_random_uuid()" },
+               force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "description"
@@ -126,7 +137,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_18_211846) do
     t.datetime "finished_at"
   end
 
-  create_table "good_job_executions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "good_job_executions",
+               id: :uuid,
+               default: -> { "gen_random_uuid()" },
+               force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.uuid "active_job_id", null: false
@@ -136,16 +150,23 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_18_211846) do
     t.datetime "scheduled_at"
     t.datetime "finished_at"
     t.text "error"
-    t.index ["active_job_id", "created_at"], name: "index_good_job_executions_on_active_job_id_and_created_at"
+    t.index %w[active_job_id created_at],
+            name: "index_good_job_executions_on_active_job_id_and_created_at"
   end
 
-  create_table "good_job_processes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "good_job_processes",
+               id: :uuid,
+               default: -> { "gen_random_uuid()" },
+               force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.jsonb "state"
   end
 
-  create_table "good_job_settings", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "good_job_settings",
+               id: :uuid,
+               default: -> { "gen_random_uuid()" },
+               force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "key"
@@ -153,7 +174,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_18_211846) do
     t.index ["key"], name: "index_good_job_settings_on_key", unique: true
   end
 
-  create_table "good_jobs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "good_jobs",
+               id: :uuid,
+               default: -> { "gen_random_uuid()" },
+               force: :cascade do |t|
     t.text "queue_name"
     t.integer "priority"
     t.jsonb "serialized_params"
@@ -173,17 +197,57 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_18_211846) do
     t.boolean "is_discrete"
     t.integer "executions_count"
     t.text "job_class"
-    t.index ["active_job_id", "created_at"], name: "index_good_jobs_on_active_job_id_and_created_at"
+    t.index %w[active_job_id created_at],
+            name: "index_good_jobs_on_active_job_id_and_created_at"
     t.index ["active_job_id"], name: "index_good_jobs_on_active_job_id"
-    t.index ["batch_callback_id"], name: "index_good_jobs_on_batch_callback_id", where: "(batch_callback_id IS NOT NULL)"
-    t.index ["batch_id"], name: "index_good_jobs_on_batch_id", where: "(batch_id IS NOT NULL)"
-    t.index ["concurrency_key"], name: "index_good_jobs_on_concurrency_key_when_unfinished", where: "(finished_at IS NULL)"
-    t.index ["cron_key", "created_at"], name: "index_good_jobs_on_cron_key_and_created_at"
-    t.index ["cron_key", "cron_at"], name: "index_good_jobs_on_cron_key_and_cron_at", unique: true
-    t.index ["finished_at"], name: "index_good_jobs_jobs_on_finished_at", where: "((retried_good_job_id IS NULL) AND (finished_at IS NOT NULL))"
-    t.index ["priority", "created_at"], name: "index_good_jobs_jobs_on_priority_created_at_when_unfinished", order: { priority: "DESC NULLS LAST" }, where: "(finished_at IS NULL)"
-    t.index ["queue_name", "scheduled_at"], name: "index_good_jobs_on_queue_name_and_scheduled_at", where: "(finished_at IS NULL)"
-    t.index ["scheduled_at"], name: "index_good_jobs_on_scheduled_at", where: "(finished_at IS NULL)"
+    t.index ["batch_callback_id"],
+            name: "index_good_jobs_on_batch_callback_id",
+            where: "(batch_callback_id IS NOT NULL)"
+    t.index ["batch_id"],
+            name: "index_good_jobs_on_batch_id",
+            where: "(batch_id IS NOT NULL)"
+    t.index ["concurrency_key"],
+            name: "index_good_jobs_on_concurrency_key_when_unfinished",
+            where: "(finished_at IS NULL)"
+    t.index %w[cron_key created_at],
+            name: "index_good_jobs_on_cron_key_and_created_at"
+    t.index %w[cron_key cron_at],
+            name: "index_good_jobs_on_cron_key_and_cron_at",
+            unique: true
+    t.index ["finished_at"],
+            name: "index_good_jobs_jobs_on_finished_at",
+            where:
+              "((retried_good_job_id IS NULL) AND (finished_at IS NOT NULL))"
+    t.index %w[priority created_at],
+            name: "index_good_jobs_jobs_on_priority_created_at_when_unfinished",
+            order: {
+              priority: "DESC NULLS LAST"
+            },
+            where: "(finished_at IS NULL)"
+    t.index %w[queue_name scheduled_at],
+            name: "index_good_jobs_on_queue_name_and_scheduled_at",
+            where: "(finished_at IS NULL)"
+    t.index ["scheduled_at"],
+            name: "index_good_jobs_on_scheduled_at",
+            where: "(finished_at IS NULL)"
+  end
+
+  create_table "group_memberships", force: :cascade do |t|
+    t.bigint "group_id", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["group_id"], name: "index_group_memberships_on_group_id"
+    t.index ["user_id"], name: "index_group_memberships_on_user_id"
+  end
+
+  create_table "groups", force: :cascade do |t|
+    t.string "name", null: false
+    t.bigint "tenant_id", null: false
+    t.enum "group_type", null: false, enum_type: "group_type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tenant_id"], name: "index_groups_on_tenant_id"
   end
 
   create_table "govbox_messages", force: :cascade do |t|
@@ -199,7 +263,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_18_211846) do
     t.text "blob", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["message_object_id"], name: "index_message_object_data_on_message_object_id"
+    t.index ["message_object_id"],
+            name: "index_message_object_data_on_message_object_id"
   end
 
   create_table "message_objects", force: :cascade do |t|
@@ -257,12 +322,17 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_18_211846) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["tenant_id"], name: "index_users_on_tenant_id"
+    t.index %w[tenant_id email],
+            name: "index_users_on_tenant_id_and_email",
+            unique: true
   end
 
-  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "active_storage_attachments",
+                  "active_storage_blobs",
+                  column: "blob_id"
+  add_foreign_key "active_storage_variant_records",
+                  "active_storage_blobs",
+                  column: "blob_id"
   add_foreign_key "automation_rules", "tenants"
   add_foreign_key "boxes", "tenants"
   add_foreign_key "drafts", "drafts_imports", column: "import_id"
@@ -274,6 +344,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_18_211846) do
   add_foreign_key "message_objects", "messages"
   add_foreign_key "message_threads", "folders"
   add_foreign_key "messages", "message_threads"
+  add_foreign_key "group_memberships", "groups"
+  add_foreign_key "group_memberships", "users"
+  add_foreign_key "groups", "tenants"
   add_foreign_key "subjects", "tenants"
   add_foreign_key "users", "tenants"
 end

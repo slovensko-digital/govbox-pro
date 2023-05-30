@@ -1,4 +1,4 @@
-class NoArchive
+class NoFileStorage
   attr_accessor :name
 
   def initialize(name)
