@@ -1,0 +1,14 @@
+networkPolicy:
+  enabled: true
+  spec:
+    podSelector:
+      matchLabels:
+        foo: bar
+    ingress:
+    - from:
+      - podSelector:
+          matchLabels: {}
+      - namespaceSelector:
+          matchLabels:
+            name: foo
+    externalTrafficPolicy: Local
