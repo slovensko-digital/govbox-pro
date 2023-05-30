@@ -71,14 +71,12 @@ GEM
     annotate (3.2.0)
       activerecord (>= 3.2, < 8.0)
       rake (>= 10.4, < 14.0)
-    autoprefixer-rails (10.4.13.0)
-      execjs (~> 2)
+    ast (2.4.2)
+    backport (1.2.0)
+    benchmark (0.2.1)
     bindex (0.8.1)
     bootsnap (1.16.0)
       msgpack (~> 1.2)
-    bootstrap (4.0.0.alpha6)
-      autoprefixer-rails (>= 6.0.3)
-      sass (>= 3.4.19)
     builder (3.2.4)
     byebug (11.1.3)
     capybara (3.39.1)
@@ -102,21 +100,23 @@ GEM
       rexml
     crass (1.0.6)
     date (3.3.3)
+    diff-lcs (1.5.0)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
     dotenv (2.8.1)
     dotenv-rails (2.8.1)
       dotenv (= 2.8.1)
       railties (>= 3.2)
+    e2mmap (0.1.0)
     erubi (1.12.0)
     et-orbi (1.2.7)
       tzinfo
-    execjs (2.8.1)
     faraday (2.7.4)
       faraday-net_http (>= 2.0, < 3.1)
       ruby2_keywords (>= 0.0.4)
     faraday-net_http (3.0.2)
     ffi (1.15.5)
+    foreman (0.87.2)
     fugit (1.8.1)
       et-orbi (~> 1, >= 1.2.7)
       raabro (~> 1.4)
@@ -132,12 +132,22 @@ GEM
       webrick (>= 1.3)
     hashdiff (1.0.1)
     hashie (5.0.0)
+    htmlbeautifier (1.4.2)
     http-accept (1.7.0)
     http-cookie (1.0.5)
       domain_name (~> 0.5)
     i18n (1.13.0)
       concurrent-ruby (~> 1.0)
+    importmap-rails (1.1.6)
+      actionpack (>= 6.0.0)
+      railties (>= 6.0.0)
+    jaro_winkler (1.5.4)
+    json (2.6.3)
     jwt (2.7.0)
+    kramdown (2.4.0)
+      rexml
+    kramdown-parser-gfm (1.1.0)
+      kramdown (~> 2.0)
     launchy (2.5.2)
       addressable (~> 2.8)
     listen (3.8.0)
@@ -196,6 +206,9 @@ GEM
     omniauth-rails_csrf_protection (1.0.1)
       actionpack (>= 4.2)
       omniauth (~> 2.0)
+    parallel (1.23.0)
+    parser (3.2.2.1)
+      ast (~> 2.4.1)
     pg (1.5.3)
     pry (0.14.2)
       coderay (~> 1.1)
@@ -208,6 +221,8 @@ GEM
     public_suffix (5.0.1)
     puma (5.6.5)
       nio4r (~> 2.0)
+    pundit (2.3.0)
+      activesupport (>= 3.0.0)
     raabro (1.4.0)
     racc (1.6.2)
     rack (2.2.7)
@@ -246,35 +261,37 @@ GEM
       rake (>= 12.2)
       thor (~> 1.0)
       zeitwerk (~> 2.5)
+    rainbow (3.1.1)
     rake (13.0.6)
     rb-fsevent (0.11.2)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
+    rbs (2.8.4)
     regexp_parser (2.8.0)
     rest-client (2.1.0)
       http-accept (>= 1.7.0, < 2.0)
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
+    reverse_markdown (2.1.1)
+      nokogiri
     rexml (3.2.5)
     rollbar (3.4.0)
+    rubocop (1.51.0)
+      json (~> 2.3)
+      parallel (~> 1.10)
+      parser (>= 3.2.0.0)
+      rainbow (>= 2.2.2, < 4.0)
+      regexp_parser (>= 1.8, < 3.0)
+      rexml (>= 3.2.5, < 4.0)
+      rubocop-ast (>= 1.28.0, < 2.0)
+      ruby-progressbar (~> 1.7)
+      unicode-display_width (>= 2.4.0, < 3.0)
+    rubocop-ast (1.28.1)
+      parser (>= 3.2.1.0)
+    ruby-progressbar (1.13.0)
     ruby2_keywords (0.0.5)
     rubyzip (2.3.2)
-    sass (3.7.4)
-      sass-listen (~> 4.0.0)
-    sass-listen (4.0.0)
-      rb-fsevent (~> 0.9, >= 0.9.4)
-      rb-inotify (~> 0.9, >= 0.9.7)
-    sass-rails (6.0.0)
-      sassc-rails (~> 2.1, >= 2.1.1)
-    sassc (2.4.0)
-      ffi (~> 1.9)
-    sassc-rails (2.1.2)
-      railties (>= 4.0.0)
-      sassc (>= 2.0)
-      sprockets (> 3.0)
-      sprockets-rails
-      tilt
     selenium-webdriver (4.9.1)
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
@@ -282,6 +299,22 @@ GEM
     snaky_hash (2.0.1)
       hashie
       version_gem (~> 1.1, >= 1.1.1)
+    solargraph (0.49.0)
+      backport (~> 1.2)
+      benchmark
+      bundler (~> 2.0)
+      diff-lcs (~> 1.4)
+      e2mmap
+      jaro_winkler (~> 1.5)
+      kramdown (~> 2.3)
+      kramdown-parser-gfm (~> 1.1)
+      parser (~> 3.0)
+      rbs (~> 2.0)
+      reverse_markdown (~> 2.0)
+      rubocop (~> 1.38)
+      thor (~> 1.0)
+      tilt (~> 2.0)
+      yard (~> 0.9, >= 0.9.24)
     sprockets (4.2.0)
       concurrent-ruby (~> 1.0)
       rack (>= 2.2.4, < 4)
@@ -289,6 +322,8 @@ GEM
       actionpack (>= 5.2)
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
+    tailwindcss-rails (2.0.29-x86_64-linux)
+      railties (>= 6.0.0)
     thor (1.2.2)
     tilt (2.1.0)
     timeout (0.3.2)
@@ -297,7 +332,12 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.8.2)
+    unicode-display_width (2.4.2)
     version_gem (1.1.2)
+    view_component (3.0.0)
+      activesupport (>= 5.2.0, < 8.0)
+      concurrent-ruby (~> 1.0)
+      method_source (~> 1.0)
     web-console (4.2.0)
       actionview (>= 6.0.0)
       activemodel (>= 6.0.0)
@@ -318,6 +358,7 @@ GEM
     websocket-extensions (0.1.5)
     xpath (3.2.0)
       nokogiri (~> 1.8)
+    yard (0.9.34)
     zeitwerk (2.6.8)
 
 PLATFORMS
@@ -326,12 +367,14 @@ PLATFORMS
 DEPENDENCIES
   annotate
   bootsnap (>= 1.4.4)
-  bootstrap (= 4.0.0.alpha6)
   capybara
   capybara-screenshot
   clockwork
   dotenv-rails
+  foreman
   good_job
+  htmlbeautifier
+  importmap-rails
   jwt
   listen
   omniauth-google-oauth2
@@ -340,14 +383,18 @@ DEPENDENCIES
   pry-byebug
   pry-rails
   puma (~> 5.0)
+  pundit
   rack-attack
   rails (~> 7.0)
   rails-i18n
   rest-client
   rollbar
   rubyzip
-  sass-rails (>= 6)
   selenium-webdriver
+  solargraph
+  sprockets-rails
+  tailwindcss-rails
+  view_component
   web-console
   webdrivers
   webmock

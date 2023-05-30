@@ -11,9 +11,13 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[7.0].define(version: 2023_05_29_235007) do
-  # These are extensions that must be enabled in order to support this database
+# These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
+
+  # Custom types defined in this database.
+  # Note that some types may not work with other database engines. Be careful if changing database.
+  create_enum "group_type", ["ALL", "USER", "CUSTOM", "ADMIN"]
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -260,6 +264,24 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_29_235007) do
     t.index ["message_thread_id"], name: "index_messages_on_message_thread_id"
   end
 
+  create_table "group_memberships", force: :cascade do |t|
+    t.bigint "group_id", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["group_id"], name: "index_group_memberships_on_group_id"
+    t.index ["user_id"], name: "index_group_memberships_on_user_id"
+  end
+
+  create_table "groups", force: :cascade do |t|
+    t.string "name", null: false
+    t.bigint "tenant_id", null: false
+    t.enum "group_type", null: false, enum_type: "group_type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tenant_id"], name: "index_groups_on_tenant_id"
+  end
+
   create_table "tenants", force: :cascade do |t|
     t.string "name", null: false
     t.datetime "created_at", null: false
@@ -272,8 +294,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_29_235007) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["tenant_id"], name: "index_users_on_tenant_id"
+    t.index ["tenant_id", "email"], name: "index_users_on_tenant_id_and_email", unique: true
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
@@ -292,5 +313,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_29_235007) do
   add_foreign_key "message_objects", "messages"
   add_foreign_key "message_threads", "folders"
   add_foreign_key "messages", "message_threads"
+  add_foreign_key "group_memberships", "groups"
+  add_foreign_key "group_memberships", "users"
+  add_foreign_key "groups", "tenants"
   add_foreign_key "users", "tenants"
 end

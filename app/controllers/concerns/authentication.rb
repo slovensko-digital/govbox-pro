@@ -16,9 +16,6 @@ module Authentication
     end
 
     load_current_user
-
-    Current.tenant = Current.user.tenant
-    Current.box = Current.user.tenant.boxes.first
   end
 
   def create_session
@@ -27,6 +24,7 @@ module Authentication
     if Current.user
       session[:user_id] = Current.user.id
       session[:login_expires_at] = SESSION_TIMEOUT.from_now
+      session[:tenant_id] = Current.user.tenant_id
       redirect_to session[:after_login_path] || default_after_login_path
     else
       render html: 'Not authorized', status: :forbidden
@@ -36,10 +34,13 @@ module Authentication
   def clean_session
     session[:user_id] = nil
     session[:login_expires_at] = nil
+    session[:tenant_id] = nil
   end
 
   def load_current_user
     Current.user = User.find(session[:user_id]) if session[:user_id]
+    Current.tenant = Tenant.find(session[:tenant_id]) if session[:tenant_id]
+    Current.box = Current.tenant&.boxes&.first
   end
 
   def valid_session?(session)
@@ -53,7 +54,8 @@ module Authentication
   end
 
   def skip_authentication?
-    !Rails.env.prod?
+    # !Rails.env.prod?
+    false
   end
 
   def login_path

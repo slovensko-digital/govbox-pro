@@ -1,4 +1,16 @@
 Rails.application.routes.draw do
+  resource :dashboard
+
+  # TODO pridat namespace /admin/ a doriesit dopady
+  namespace :admin do
+    resources :tenants do
+      resources :groups
+      resources :users
+    end
+
+    resources :group_memberships
+  end
+
   resources :boxes, path: 'schranky', only: [:index, :show] do
     post :sync
   end
@@ -28,7 +40,7 @@ Rails.application.routes.draw do
   get "auth/google_oauth2/callback", to: "sessions#create"
   get "auth/google_oauth2/failure", to: "sessions#failure"
 
-  root "sessions#login"
+  root "dashboard#show"
 
   class GoodJobAdmin
     def self.matches?(request)
