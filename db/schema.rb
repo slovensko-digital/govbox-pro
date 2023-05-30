@@ -11,7 +11,7 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[7.0].define(version: 2023_05_29_235007) do
-# These are extensions that must be enabled in order to support this database
+  # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
@@ -223,6 +223,24 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_29_235007) do
     t.index ["folder_id"], name: "index_govbox_messages_on_folder_id"
   end
 
+  create_table "group_memberships", force: :cascade do |t|
+    t.bigint "group_id", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["group_id"], name: "index_group_memberships_on_group_id"
+    t.index ["user_id"], name: "index_group_memberships_on_user_id"
+  end
+
+  create_table "groups", force: :cascade do |t|
+    t.string "name", null: false
+    t.bigint "tenant_id", null: false
+    t.enum "group_type", null: false, enum_type: "group_type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tenant_id"], name: "index_groups_on_tenant_id"
+  end
+
   create_table "message_object_data", force: :cascade do |t|
     t.bigint "message_object_id", null: false
     t.text "blob", null: false
@@ -264,24 +282,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_29_235007) do
     t.index ["message_thread_id"], name: "index_messages_on_message_thread_id"
   end
 
-  create_table "group_memberships", force: :cascade do |t|
-    t.bigint "group_id", null: false
-    t.bigint "user_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["group_id"], name: "index_group_memberships_on_group_id"
-    t.index ["user_id"], name: "index_group_memberships_on_user_id"
-  end
-
-  create_table "groups", force: :cascade do |t|
-    t.string "name", null: false
-    t.bigint "tenant_id", null: false
-    t.enum "group_type", null: false, enum_type: "group_type"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["tenant_id"], name: "index_groups_on_tenant_id"
-  end
-
   create_table "tenants", force: :cascade do |t|
     t.string "name", null: false
     t.datetime "created_at", null: false
@@ -309,12 +309,12 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_29_235007) do
   add_foreign_key "govbox_api_connections", "boxes"
   add_foreign_key "govbox_folders", "boxes"
   add_foreign_key "govbox_messages", "govbox_folders", column: "folder_id"
+  add_foreign_key "group_memberships", "groups"
+  add_foreign_key "group_memberships", "users"
+  add_foreign_key "groups", "tenants"
   add_foreign_key "message_object_data", "message_objects"
   add_foreign_key "message_objects", "messages"
   add_foreign_key "message_threads", "folders"
   add_foreign_key "messages", "message_threads"
-  add_foreign_key "group_memberships", "groups"
-  add_foreign_key "group_memberships", "users"
-  add_foreign_key "groups", "tenants"
   add_foreign_key "users", "tenants"
 end
