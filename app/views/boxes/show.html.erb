@@ -1,0 +1,25 @@
+<h2>Schránka <%= @box.name %></h2>
+
+<%= form_tag box_sync_path(@box), method: :post do %>
+  <%= submit_tag 'Stiahnúť nové správy' %>
+<% end %>
+
+<% if @box.govbox_folders.any? %>
+  <div>
+    <h3>ÚPVS priečinky</h3>
+    <table>
+      <tr>
+        <th>Názov</th>
+        <th>Počet správ</th>
+      </tr>
+
+      <% @box.govbox_folders.each do |govbox_folder| %>
+        <tr>
+          <td><%= govbox_folder.name %></td>
+          <td><%= govbox_folder.messages.count %></td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
+<% end %>
+

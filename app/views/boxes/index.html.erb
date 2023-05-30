@@ -1,0 +1,17 @@
+<h2>Schránky</h2>
+
+<% if @boxes.any? %>
+  <div>
+    <table>
+      <tr>
+        <th>Názov</th>
+      </tr>
+
+      <% @boxes.each do |box| %>
+        <tr>
+          <td><%= link_to box.name, box_path(box.id) %></td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
+<% end %>

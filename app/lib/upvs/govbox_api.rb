@@ -4,10 +4,10 @@ module Upvs
   class GovboxApi < Api
     attr_reader :sub, :api_token_private_key, :url, :edesk, :sktalk
 
-    def initialize(govbox_api_connection, url: ENV['GB_API_URL'], handler: Faraday)
+    def initialize(url, govbox_api_connection, handler: Faraday)
       @sub = govbox_api_connection.sub
       @obo = govbox_api_connection.obo
-      @api_token_private_key = govbox_api_connection.api_token_private_key
+      @api_token_private_key = OpenSSL::PKey::RSA.new(govbox_api_connection.api_token_private_key)
       @url = url
       @edesk = Edesk.new(self)
       @sktalk = SkTalk.new(self)
@@ -16,7 +16,25 @@ module Upvs
     end
 
     class Edesk < Namespace
+      def fetch_folders
+        @api.request(:get, "#{@api.url}/api/edesk/folders?token=#{token}")
+      end
 
+      def fetch_messages(folder_id, offset: 0, count: 5000)
+        @api.request(:get, "#{@api.url}/api/edesk/folders/#{folder_id}/messages?token=#{token}&page=#{offset}&per_page=#{count}")
+      end
+
+      def fetch_message(message_id)
+        @api.request(:get, "#{@api.url}/api/edesk/messages/#{message_id}?token=#{token}")
+      end
+
+      private
+
+      def header
+        {
+          "Authorization": authorization_payload,
+        }
+      end
     end
 
     class SkTalk < Namespace
@@ -33,14 +51,6 @@ module Upvs
           "Content-Type": "application/vnd.sktalk+json;type=SkTalk"
         }
       end
-
-      def authorization_payload
-        "Bearer #{token}"
-      end
-
-      def token
-        JWT.encode({ sub: @api.sub, exp: 5.minutes.from_now.to_i, jti: SecureRandom.uuid }, @api.api_token_private_key, 'RS256')
-      end
     end
 
     class Error < StandardError
@@ -55,13 +65,6 @@ module Upvs
       def to_s
         cause ? cause.to_s : 'Unknown error'
       end
-    end
-
-    private
-
-    def load_api_token_private_key
-      private_key_path = Rails.root.join('security', "govbox_api_#{ENV['GB_API_ENV']}.pem").to_s
-      OpenSSL::PKey::RSA.new(File.read(private_key_path))
     end
   end
 end

@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  resources :boxes, path: 'schranky', only: [:index, :show] do
+    post :sync
+  end
+
   namespace :drafts, path: 'drafty' do
     resources :imports, path: 'importy', only: :create do
       get :upload_new, path: 'novy', on: :collection

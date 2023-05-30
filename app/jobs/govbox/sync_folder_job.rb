@@ -2,11 +2,38 @@ module Govbox
   class SyncFolderJob < ApplicationJob
     queue_as :default
 
-    def perform(box, folder_hash)
-      message_headers = [] # TODO do syncing magic - fetch from API
+    def perform(folder, upvs_client: UpvsEnvironment.upvs_client, batch_size: 1000)
+      edesk_api = upvs_client.api(folder.box.govbox_api_connection).edesk
+      new_messages_ids = []
 
-      message_headers.each do |message_header|
-        DownloadMessageJob.perform_later(box, folder_hash, message_header['message_id'])
+      0.step do |k|
+        response_status, raw_messages = edesk_api.fetch_messages(folder.edesk_folder_id, offset: k * batch_size + 1, count: batch_size)
+
+        raise "Unable to fetch folder messages" if response_status != 200
+
+        edesk_message_ids_to_folder_ids = Govbox::Message.where(edesk_message_id: raw_messages.pluck('id')).pluck(:edesk_message_id, :folder_id).to_h
+        moved_edesk_message_ids = []
+
+        raw_messages.each do |raw_message|
+          edesk_message_id = raw_message['id']
+          old_folder_id = edesk_message_ids_to_folder_ids[edesk_message_id]
+
+          if old_folder_id.nil?
+            new_messages_ids << edesk_message_id
+          elsif old_folder_id != folder.id
+            moved_edesk_message_ids << edesk_message_id
+          end
+        end
+
+        if moved_edesk_message_ids.any?
+          Govbox::Message.where(edesk_message_id: moved_edesk_message_ids).update_all(folder_id: folder.id)
+        end
+
+        break if raw_messages.size < batch_size
+      end
+
+      new_messages_ids.each do |edesk_message_id|
+        DownloadMessageJob.perform_later(folder, edesk_message_id)
       end
     end
   end

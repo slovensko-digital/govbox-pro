@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_29_143225) do
+ActiveRecord::Schema[7.0].define(version: 2023_05_29_235007) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -196,12 +196,27 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_29_143225) do
     t.index ["box_id"], name: "index_govbox_api_connections_on_box_id"
   end
 
+  create_table "govbox_folders", force: :cascade do |t|
+    t.integer "edesk_folder_id", null: false
+    t.string "name", null: false
+    t.boolean "system", null: false
+    t.bigint "box_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["box_id"], name: "index_govbox_folders_on_box_id"
+  end
+
   create_table "govbox_messages", force: :cascade do |t|
     t.uuid "message_id", null: false
     t.uuid "correlation_id", null: false
     t.text "body", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "edesk_message_id", null: false
+    t.datetime "delivered_at", null: false
+    t.string "edesk_class", null: false
+    t.bigint "folder_id", null: false
+    t.index ["folder_id"], name: "index_govbox_messages_on_folder_id"
   end
 
   create_table "message_object_data", force: :cascade do |t|
@@ -271,6 +286,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_29_143225) do
   add_foreign_key "drafts_objects", "drafts"
   add_foreign_key "folders", "boxes"
   add_foreign_key "govbox_api_connections", "boxes"
+  add_foreign_key "govbox_folders", "boxes"
+  add_foreign_key "govbox_messages", "govbox_folders", column: "folder_id"
   add_foreign_key "message_object_data", "message_objects"
   add_foreign_key "message_objects", "messages"
   add_foreign_key "message_threads", "folders"

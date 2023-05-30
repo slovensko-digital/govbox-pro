@@ -14,6 +14,14 @@ module Upvs
       def initialize(api)
         @api = api
       end
+
+      def authorization_payload
+        "Bearer #{token}"
+      end
+
+      def token
+        JWT.encode({ sub: @api.sub, exp: 5.minutes.from_now.to_i, jti: SecureRandom.uuid }, @api.api_token_private_key, 'RS256')
+      end
     end
 
     class Error < StandardError
