@@ -21,12 +21,6 @@ Rails.application.routes.draw do
     post :submit
     post :submit_all, on: :collection
     delete :destroy_all, path: 'zmazat', on: :collection
-
-    # TODO uncomment later and remove ^ 2 endpoints
-    post :submit_all, on: :collection if Rails.env.development?
-    if Rails.env.development?
-      delete :destroy_all, path: 'zmazat', on: :collection
-    end
   end
 
   resources :sessions do
