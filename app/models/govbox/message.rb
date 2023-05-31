@@ -19,10 +19,10 @@ class Govbox::Message < ApplicationRecord
   delegate :box, to: :folder
 
   def self.create_message_with_thread!(govbox_message)
-    f = Folder.create(
-      name: "todo folder name #{Folder.count}",
+    f = Folder.find_or_create_by(
+      name: "Inbox",
       box_id: govbox_message.box.id
-    ) # TODO fix: this creates new folder for each message
+    ) # TODO create folder for threads
 
     thread = govbox_message.box.message_threads.find_or_create_by_merge_uuid!(
       merge_uuid: govbox_message.correlation_id,
