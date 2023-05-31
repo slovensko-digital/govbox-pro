@@ -1,5 +1,5 @@
 class Drafts::SubmitJob < ApplicationJob
-  def perform(draft, sender: Upvs::GovboxApi)
+  def perform(draft, upvs_client: UpvsEnvironment.upvs_client)
     draft_data = {
       posp_id: draft.posp_id,
       posp_version: draft.posp_version,
@@ -11,10 +11,10 @@ class Drafts::SubmitJob < ApplicationJob
       objects: build_objects(draft)
     }
 
-    sender = sender.new(draft.box.govbox_api_connection).sktalk
+    sktalk_api = upvs_client.api(folder.box).sktalk
 
     begin
-      response_status, receive_result, save_to_outbox_result = sender.receive_and_save_to_outbox(draft_data)
+      response_status, receive_result, save_to_outbox_result = sktalk_api.receive_and_save_to_outbox(draft_data)
       if submit_successful?(response_status, receive_result, save_to_outbox_result)
         draft.update!(status: "submitted")
       else

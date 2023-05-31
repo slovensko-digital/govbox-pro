@@ -3,7 +3,7 @@ module Govbox
     queue_as :default
 
     def perform(folder, edesk_message_id, upvs_client: UpvsEnvironment.upvs_client)
-      edesk_api = upvs_client.api(folder.box.govbox_api_connection).edesk
+      edesk_api = upvs_client.api(folder.box).edesk
       response_status, raw_message = edesk_api.fetch_message(edesk_message_id)
 
       raise "Unable to fetch folder messages" if response_status != 200

@@ -3,7 +3,7 @@ module Govbox
     queue_as :default
 
     def perform(box, upvs_client: UpvsEnvironment.upvs_client)
-      edesk_api = upvs_client.api(box.govbox_api_connection).edesk
+      edesk_api = upvs_client.api(box).edesk
       response_status, folders = edesk_api.fetch_folders
 
       raise "Unable to fetch folders" if response_status != 200
