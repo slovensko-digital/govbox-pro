@@ -1,7 +1,9 @@
 module Authentication
   extend ActiveSupport::Concern
 
-  included { before_action :authenticate }
+  included do
+    before_action :authenticate
+  end
 
   SESSION_TIMEOUT = 20.minutes
 
@@ -26,7 +28,7 @@ module Authentication
       session[:tenant_id] = Current.user.tenant_id
       redirect_to session[:after_login_path] || default_after_login_path
     else
-      render html: "Not authorized", status: :forbidden
+      render html: 'Not authorized', status: :forbidden
     end
   end
 
@@ -49,7 +51,7 @@ module Authentication
   private
 
   def auth_hash
-    request.env["omniauth.auth"]
+    request.env['omniauth.auth']
   end
 
   def skip_authentication?
