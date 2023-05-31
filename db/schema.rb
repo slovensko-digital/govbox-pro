@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_31_080924) do
+ActiveRecord::Schema[7.0].define(version: 2023_05_26_172048) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -66,6 +66,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_31_080924) do
   end
 
   create_table "drafts", force: :cascade do |t|
+    t.bigint "subject_id", null: false
     t.bigint "import_id"
     t.integer "status", default: 0
     t.string "recipient_uri"
@@ -80,19 +81,18 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_31_080924) do
     t.uuid "correlation_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "box_id", null: false
-    t.index ["box_id"], name: "index_drafts_on_box_id"
     t.index ["import_id"], name: "index_drafts_on_import_id"
+    t.index ["subject_id"], name: "index_drafts_on_subject_id"
   end
 
   create_table "drafts_imports", force: :cascade do |t|
     t.string "name", null: false
     t.integer "status", default: 0
     t.string "content_path"
+    t.bigint "subject_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "box_id", null: false
-    t.index ["box_id"], name: "index_drafts_imports_on_box_id"
+    t.index ["subject_id"], name: "index_drafts_imports_on_subject_id"
   end
 
   create_table "drafts_objects", force: :cascade do |t|
@@ -190,37 +190,12 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_31_080924) do
     t.index ["scheduled_at"], name: "index_good_jobs_on_scheduled_at", where: "(finished_at IS NULL)"
   end
 
-  create_table "govbox_api_connections", force: :cascade do |t|
-    t.bigint "box_id"
-    t.string "sub", null: false
-    t.uuid "obo"
-    t.string "api_token_private_key", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["box_id"], name: "index_govbox_api_connections_on_box_id"
-  end
-
-  create_table "govbox_folders", force: :cascade do |t|
-    t.integer "edesk_folder_id", null: false
-    t.string "name", null: false
-    t.boolean "system", null: false
-    t.bigint "box_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["box_id"], name: "index_govbox_folders_on_box_id"
-  end
-
   create_table "govbox_messages", force: :cascade do |t|
     t.uuid "message_id", null: false
     t.uuid "correlation_id", null: false
     t.text "body", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "edesk_message_id", null: false
-    t.datetime "delivered_at", null: false
-    t.string "edesk_class", null: false
-    t.bigint "folder_id", null: false
-    t.index ["folder_id"], name: "index_govbox_messages_on_folder_id"
   end
 
   create_table "group_memberships", force: :cascade do |t|
@@ -253,11 +228,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_31_080924) do
     t.bigint "message_id", null: false
     t.string "name", null: false
     t.string "mimetype", null: false
-    t.string "object_type", null: false
+    t.string "type", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "is_signed"
-    t.string "encoding"
     t.index ["message_id"], name: "index_message_objects_on_message_id"
   end
 
@@ -276,12 +249,22 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_31_080924) do
     t.uuid "uuid", null: false
     t.bigint "message_thread_id", null: false
     t.string "title", null: false
-    t.string "sender_name"
-    t.string "recipient_name"
+    t.string "sender_name", null: false
+    t.string "recipient_name", null: false
     t.datetime "delivered_at", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["message_thread_id"], name: "index_messages_on_message_thread_id"
+  end
+
+  create_table "subjects", force: :cascade do |t|
+    t.bigint "tenant_id", null: false
+    t.string "name"
+    t.string "uri"
+    t.string "sub"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tenant_id"], name: "index_subjects_on_tenant_id"
   end
 
   create_table "tenants", force: :cascade do |t|
@@ -303,14 +286,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_31_080924) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "automation_rules", "tenants"
   add_foreign_key "boxes", "tenants"
-  add_foreign_key "drafts", "boxes"
   add_foreign_key "drafts", "drafts_imports", column: "import_id"
-  add_foreign_key "drafts_imports", "boxes"
+  add_foreign_key "drafts", "subjects"
+  add_foreign_key "drafts_imports", "subjects"
   add_foreign_key "drafts_objects", "drafts"
   add_foreign_key "folders", "boxes"
-  add_foreign_key "govbox_api_connections", "boxes"
-  add_foreign_key "govbox_folders", "boxes"
-  add_foreign_key "govbox_messages", "govbox_folders", column: "folder_id"
   add_foreign_key "group_memberships", "groups"
   add_foreign_key "group_memberships", "users"
   add_foreign_key "groups", "tenants"
@@ -318,5 +298,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_31_080924) do
   add_foreign_key "message_objects", "messages"
   add_foreign_key "message_threads", "folders"
   add_foreign_key "messages", "message_threads"
+  add_foreign_key "subjects", "tenants"
   add_foreign_key "users", "tenants"
 end

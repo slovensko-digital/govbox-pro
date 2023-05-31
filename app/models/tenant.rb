@@ -14,7 +14,7 @@ class Tenant < ApplicationRecord
   has_one :all_group, -> { where(group_type: 'ALL') }, class_name: 'Group'
 
   has_many :boxes
-  has_many :automation_rules, :class_name => 'Automation::Rule'
+  has_many :automation_rules, class_name: 'Automation::Rule'
 
   after_create :create_default_groups
 

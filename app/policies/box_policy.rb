@@ -1,20 +1,16 @@
 # frozen_string_literal: true
 
-class GroupPolicy < ApplicationPolicy
-  attr_reader :user, :group
+class BoxPolicy < ApplicationPolicy
+  attr_reader :user, :box
 
-  def initialize(user, group)
+  def initialize(user, box)
     @user = user
-    @group = group
+    @box = box
   end
 
   class Scope < Scope
     def resolve
-      if @user.site_admin?
-        scope.all
-      else
-        scope.where(tenant_id: @user.tenant_id)
-      end
+      @user.site_admin? ? scope.all : scope.where(tenant_id: @user.tenant_id)
     end
   end
 
@@ -45,5 +41,4 @@ class GroupPolicy < ApplicationPolicy
   def destroy?
     @user.site_admin? || @user.admin?
   end
-
 end
