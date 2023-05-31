@@ -1,5 +1,5 @@
 module Govbox
-  class DownloadMessageJob < ApplicationJob
+  class DownloadAndProcessMessageJob < ApplicationJob
     queue_as :default
 
     def perform(govbox_folder, edesk_message_id, upvs_client: UpvsEnvironment.upvs_client)
