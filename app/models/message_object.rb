@@ -4,8 +4,10 @@
 #
 #  id                                          :integer          not null, primary key
 #  name                                        :string           not null
+#  encoding                                    :string           not null
 #  mimetype                                    :string           not null
-#  type                                        :string           not null
+#  signed                                      :boolean
+#  object_type                                 :string           not null
 #  message_id                                  :datetime         not null
 #  created_at                                  :datetime         not null
 #  updated_at                                  :datetime         not null

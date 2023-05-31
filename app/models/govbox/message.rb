@@ -18,33 +18,23 @@ class Govbox::Message < ApplicationRecord
 
   delegate :box, to: :folder
 
-  def self.create_message_with_thread!(govbox_message)
-    f = Folder.find_or_create_by(
+  def self.create_message_thread!(govbox_message, message)
+    folder = Folder.find_or_create_by!(
       name: "Inbox",
       box_id: govbox_message.box.id
     ) # TODO create folder for threads
 
-    thread = govbox_message.box.message_threads.find_or_create_by_merge_uuid!(
-      merge_uuid: govbox_message.correlation_id,
-      folder: f,
-      title: "todo thread name #{govbox_message.box.message_threads.count}", # TODO
-      delivered_at: govbox_message.delivered_at,
+    message_thread = MessageThread.find_or_create_by!(
+      merge_uuids: "{#{govbox_message.correlation_id}}"
     )
 
-    msg = thread.messages.find_or_create_by_uuid!(
-      uuid: govbox_message.message_id,
+    message_thread.update!(
+      folder: folder,
+      title: message.title,
+      delivered_at: govbox_message.delivered_at
     )
 
-    govbox_message.parse_objects.each do |govbox_object|
-      msg.objects.find_or_create_by_uuid!(
-        uuid: govbox_object.uuid,
-        # TODO rest
-      )
-    end
-  end
-
-  def parse_objects
-    # TODO parse objects and return govbox_objects
-    []
+    message.message_thread = message_thread
+    message.save!
   end
 end
