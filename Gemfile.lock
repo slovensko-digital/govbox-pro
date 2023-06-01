@@ -379,7 +379,7 @@ DEPENDENCIES
   good_job
   htmlbeautifier
   importmap-rails
-  jsbundling-rails (~> 1.1)
+  jsbundling-rails
   jwt
   listen
   omniauth-google-oauth2
