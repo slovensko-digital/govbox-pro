@@ -142,6 +142,8 @@ GEM
       actionpack (>= 6.0.0)
       railties (>= 6.0.0)
     jaro_winkler (1.5.4)
+    jsbundling-rails (1.1.1)
+      railties (>= 6.0.0)
     json (2.6.3)
     jwt (2.7.0)
     kramdown (2.4.0)
@@ -322,6 +324,8 @@ GEM
       actionpack (>= 5.2)
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
+    stimulus-rails (1.2.1)
+      railties (>= 6.0.0)
     tailwindcss-rails (2.0.29-x86_64-linux)
       railties (>= 6.0.0)
     thor (1.2.2)
@@ -375,6 +379,7 @@ DEPENDENCIES
   good_job
   htmlbeautifier
   importmap-rails
+  jsbundling-rails (~> 1.1)
   jwt
   listen
   omniauth-google-oauth2
@@ -393,6 +398,7 @@ DEPENDENCIES
   selenium-webdriver
   solargraph
   sprockets-rails
+  stimulus-rails
   tailwindcss-rails
   view_component
   web-console
