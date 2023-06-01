@@ -15,7 +15,7 @@
         {
             "type": "rdbg",
             "name": "Attach with rdbg",
-            "request": "attach"
+            "request": "attach",
             "rdbgPath": "/home/stage/.rbenv/shims/rdbg"
         }
     ]
