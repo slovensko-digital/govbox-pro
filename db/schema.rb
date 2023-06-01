@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_31_080924) do
+ActiveRecord::Schema[7.0].define(version: 2023_05_29_235007) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -253,11 +253,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_31_080924) do
     t.bigint "message_id", null: false
     t.string "name", null: false
     t.string "mimetype", null: false
-    t.string "object_type", null: false
+    t.string "type", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "is_signed"
-    t.string "encoding"
     t.index ["message_id"], name: "index_message_objects_on_message_id"
   end
 
@@ -276,8 +274,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_31_080924) do
     t.uuid "uuid", null: false
     t.bigint "message_thread_id", null: false
     t.string "title", null: false
-    t.string "sender_name"
-    t.string "recipient_name"
+    t.string "sender_name", null: false
+    t.string "recipient_name", null: false
     t.datetime "delivered_at", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
