@@ -34,7 +34,7 @@ module Govbox
       end
 
       new_messages_ids.each do |edesk_message_id|
-        DownloadAndProcessMessageJob.perform_later(folder, edesk_message_id)
+        DownloadMessageJob.perform_later(folder, edesk_message_id)
       end
     end
   end

@@ -8,6 +8,7 @@ one:
   edesk_class: 'TEST'
   folder: one
   body: MyText
+  payload: {"data": "json"}
 
 two:
   message_id: <%= SecureRandom.uuid %>
@@ -17,3 +18,4 @@ two:
   edesk_class: 'TEST'
   folder: one
   body: MyText
+  payload: {"data": "json"}
