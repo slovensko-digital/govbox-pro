@@ -258,7 +258,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_04_071856) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "is_signed"
-    t.string "encoding", null: false
+    t.string "encoding"
     t.index ["message_id"], name: "index_message_objects_on_message_id"
   end
 
