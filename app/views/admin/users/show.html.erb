@@ -56,7 +56,7 @@ Tabulka s groupami, kde je
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-200 bg-white">
-              <%= render GroupMembershipTableRowComponent.with_collection(@user.group_memberships) %>
+              <%= render Admin::GroupMembershipTableRowComponent.with_collection(@user.group_memberships) %>
             </tbody>
           </table>
         </div>
@@ -106,7 +106,7 @@ Tabulka s groupami, kde nie je
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-200 bg-white">
-              <%= render GroupTableRowComponent.with_collection(@other_groups, user: @user, group_action: 'add') %>
+              <%= render Admin::GroupTableRowComponent.with_collection(@other_groups, user: @user, group_action: 'add') %>
             </tbody>
           </table>
         </div>

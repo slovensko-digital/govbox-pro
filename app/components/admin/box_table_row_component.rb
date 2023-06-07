@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class BoxTableRowComponent < ViewComponent::Base
+class Admin::BoxTableRowComponent < ViewComponent::Base
   with_collection_parameter :box
 
   def initialize(box:, user: "", box_action: "")

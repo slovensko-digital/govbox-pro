@@ -1,0 +1,7 @@
+<%= render MessageThreadComponent.new do |component| %>
+  <% @message_thread.messages.order(:delivered_at).each do |message| %>
+    <% component.with_message do %>
+      <%= render MessageHeaderComponent.new(message: message) %>
+    <% end %>
+  <% end %>
+<% end %>

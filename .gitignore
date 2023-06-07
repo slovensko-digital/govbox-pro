@@ -9,6 +9,7 @@
 
 .idea
 .vscode
+.rdbg*
 
 # Ignore all logfiles and tempfiles.
 /log/*

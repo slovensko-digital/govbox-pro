@@ -1,0 +1,13 @@
+<tr>
+  <td class="relative px-7 sm:w-12 sm:px-6">
+    <!-- Selected row marker, only show when row is selected. -->
+    <!-- <div class="absolute inset-y-0 left-0 w-0.5 bg-indigo-600"></div> -->
+    <input type="checkbox" class="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
+  </td>
+  <!-- Selected: "text-indigo-600", Not Selected: "text-gray-900" -->
+  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"><%= @with_whom %></td>
+  <td class="whitespace-nowrap py-4 pr-3 text-sm font-medium text-gray-900"><%= link_to @message_thread.title, @message_thread %>
+    <span class="p-1 h-6 w-6 shrink-0 items-center justify-center rounded-lg border text-sm font-medium bg-white text-gray-400 border-gray-200 group-hover:border-indigo-600 group-hover:text-indigo-600"><%= @message_thread.messages.count%></span>
+  </td>
+  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"><%= @message_thread.delivered_at %></td>
+</tr>
