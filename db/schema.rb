@@ -244,7 +244,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_04_071856) do
 
   create_table "message_object_data", force: :cascade do |t|
     t.bigint "message_object_id", null: false
-    t.text "blob", null: false
+    t.binary "blob", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["message_object_id"], name: "index_message_object_data_on_message_object_id"
@@ -258,7 +258,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_04_071856) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "is_signed"
-    t.string "encoding", null: false
     t.index ["message_id"], name: "index_message_objects_on_message_id"
   end
 
