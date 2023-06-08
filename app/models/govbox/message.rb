@@ -61,12 +61,17 @@ class Govbox::Message < ApplicationRecord
         name: raw_object["name"],
         mimetype: raw_object["mime_type"],
         is_signed: raw_object["signed"],
-        encoding: raw_object["encoding"],
         object_type: raw_object["class"]
       )
 
+      if raw_object["encoding"] == "Base64"
+        object_content = Base64.decode64(raw_object["content"])
+      else
+        object_content = raw_object["content"]
+      end
+
       MessageObjectDatum.create!(
-        blob: raw_object["content"],
+        blob: object_content,
         message_object_id: object.id
       )
     end

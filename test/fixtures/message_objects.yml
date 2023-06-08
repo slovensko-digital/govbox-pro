@@ -4,12 +4,10 @@ one:
   message: one
   name: MyString
   mimetype: MyString
-  encoding: XML
   object_type: Attachment
 
 two:
   message: two
   name: MyString
   mimetype: MyString
-  encoding: Base64
   object_type: Form
