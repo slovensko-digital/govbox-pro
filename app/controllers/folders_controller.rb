@@ -2,13 +2,12 @@ class FoldersController < ApplicationController
   before_action :set_folder
 
   def show
-    # TODO - nechceme skipovat
-    skip_authorization
+    authorize @folder
   end
 
   private
 
   def set_folder
-    @folder = Folder.find(params[:id])
+    @folder = policy_scope(Folder).find(params[:id])
   end
 end

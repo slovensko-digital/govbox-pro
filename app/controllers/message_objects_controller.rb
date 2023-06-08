@@ -2,8 +2,7 @@ class MessageObjectsController < ApplicationController
   before_action :set_message_object
 
   def show
-    # TODO - nechceme skipovat
-    skip_authorization
+    authorize @message_object
     if params[:open_action] == "download"
       send_data @message_object.message_object_datum.blob, filename: @message_object.name, type: @message_object.mimetype, disposition: :download
     else
@@ -14,7 +13,7 @@ class MessageObjectsController < ApplicationController
   private
 
   def set_message_object
-    @message_object = MessageObject.find(params[:id])
+    @message_object = policy_scope(MessageObject).find(params[:id])
   end
 
 end

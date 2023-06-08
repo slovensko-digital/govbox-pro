@@ -2,13 +2,12 @@ class MessageThreadsController < ApplicationController
   before_action :set_message_thread
 
   def show
-    # TODO - nechceme skipovat
-    skip_authorization
+    authorize @message_thread
   end
 
   private
 
   def set_message_thread
-    @message_thread = MessageThread.find(params[:id])
+    @message_thread = policy_scope(MessageThread).find(params[:id])
   end
 end

@@ -2,13 +2,12 @@ class MessagesController < ApplicationController
   before_action :set_message
 
   def show
-    # TODO - nechceme skipovat
-    skip_authorization
+    authorize @message
   end
 
   private
 
   def set_message
-    @message = Message.find(params[:id])
+    @message = policy_scope(Message).find(params[:id])
   end
 end

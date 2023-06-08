@@ -12,10 +12,18 @@
   <body class = "h-full">
     <%= render UILib::LightLayoutWithSidebarComponent.new do |component| %>
       <% component.with_sidebar do %>
-        <%= render UILib::SidebarComponent.new %>
+        <%= render UILib::SidebarComponent.new do |sidebar| %>
+          <% sidebar.with_folder_list do%>
+            <%= render Layout::FolderListComponent.new %>
+          <% end %>
+        <% end %>
       <% end %>
       <% component.with_static_sidebar do %>
-        <%= render UILib::StaticSidebarComponent.new(folders: Folder.all) %>
+        <%= render UILib::StaticSidebarComponent.new do |sidebar| %>
+          <% sidebar.with_folder_list do%>
+            <%= render Layout::FolderListComponent.new %>
+          <% end %>
+        <% end %>
       <% end %>
       <% component.with_user_menu do %>
         <%= render UILib::UserMenuComponent.new(user: Current.user) %>

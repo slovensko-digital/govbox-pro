@@ -1,28 +1,24 @@
 class BoxesController < ApplicationController
-  before_action :load_boxes, only: :index
   before_action :load_box, only: [:show, :sync]
 
-  # TODO fix: this is temporary
-  skip_after_action :verify_authorized
-  skip_after_action :verify_policy_scoped
-
   def index
+    authorize Box, policy_class: BoxPolicy
+    @boxes = policy_scope(Box)
   end
 
   def show
+    authorize @box, policy_class: BoxPolicy
   end
 
   def sync
+    authorize @box, policy_class: BoxPolicy
+    raise ActionController::MethodNotAllowed.new('Not authorized') unless policy_scope(Box).exists?(@box.id)
     Govbox::SyncBoxJob.perform_later(@box)
   end
 
   private
 
   def load_box
-    @box = Current.box
-  end
-
-  def load_boxes
-    @boxes = Current.tenant.boxes
+    @box = policy_scope(Box).find(Current.box.id)
   end
 end

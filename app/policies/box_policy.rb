@@ -14,11 +14,15 @@ class BoxPolicy < ApplicationPolicy
     end
   end
 
-  def index
+  def index?
     @user.site_admin? || @user.admin?
   end
 
   def show?
+    @user.site_admin? || @user.admin?
+  end
+
+  def sync?
     @user.site_admin? || @user.admin?
   end
 
