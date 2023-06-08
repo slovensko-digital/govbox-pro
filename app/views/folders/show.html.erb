@@ -1,5 +1,5 @@
 <%= render MessageThreadsTableComponent.new do |component| %>
-  <% @folder.message_threads.each do |message_thread| %>
+  <% @folder.message_threads.order(delivered_at: :desc).each do |message_thread| %>
     <% component.with_message_thread do %>
       <%= render MessageThreadsTableRowComponent.new(message_thread: message_thread) %>
     <% end %>

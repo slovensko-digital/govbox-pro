@@ -15,14 +15,10 @@ Rails.application.routes.draw do
     post :sync
   end
 
-  resources :folders do
-  end
-
-  resources :message_threads do
-  end
-
-  resources :messages do
-  end
+  resources :folders
+  resources :message_threads
+  resources :messages
+  resources :message_objects
 
   namespace :drafts, path: 'drafty' do
     resources :imports, path: 'importy', only: :create do
