@@ -51,7 +51,8 @@ class Govbox::Message < ApplicationRecord
       title: raw_message["subject"],
       sender_name: raw_message["sender_name"],
       recipient_name: raw_message["recipient_name"],
-      delivered_at: Time.parse(raw_message["delivered_at"])
+      delivered_at: Time.parse(raw_message["delivered_at"]),
+      html_visualization: raw_message["original_html"]
     )
   end
 
