@@ -1,22 +1,24 @@
-source 'https://rubygems.org'
+source "https://rubygems.org"
 
-ruby '3.2.2'
+ruby "3.2.2"
 
-gem 'rails', '~> 7.0'
-gem 'rails-i18n'
+gem "rails", "~> 7.0"
+gem "rails-i18n"
 
-gem 'pg', '~> 1.0'
+gem "pg", "~> 1.0"
 
-gem 'puma', '~> 5.0'
+gem "puma", "~> 5.0"
+
+gem "turbo-rails"
 
 # Styles
-gem 'sprockets-rails'
-gem 'importmap-rails'
-gem 'tailwindcss-rails'
-gem 'view_component'
+gem "sprockets-rails"
+gem "importmap-rails"
+gem "tailwindcss-rails"
+gem "view_component"
 
 # Schedulers
-gem 'clockwork'
+gem "clockwork"
 
 # Workers
 gem "good_job"
@@ -27,38 +29,41 @@ gem "omniauth-rails_csrf_protection"
 gem "pundit"
 
 # Utilities
-gem 'rest-client'
-gem 'rack-attack'
-gem 'rubyzip', require: 'zip'
-gem 'jwt'
-gem 'stimulus-rails'
+gem "rest-client"
+gem "rack-attack"
+gem "rubyzip", require: "zip"
+gem "jwt"
+gem "stimulus-rails"
 gem "jsbundling-rails"
 
 # Monitoring
-gem 'rollbar'
+gem "rollbar"
 
 # Reduces boot times through caching; required in config/boot.rb
-gem 'bootsnap', '>= 1.4.4', require: false
+gem "bootsnap", ">= 1.4.4", require: false
 
 group :development, :test do
-  gem 'dotenv-rails'
-  gem 'pry-rails'
-  gem 'pry-byebug'
-  gem 'foreman'
+  gem "dotenv-rails"
+  gem "pry-rails"
+  gem "pry-byebug"
+  gem "foreman"
 end
 
 group :development do
-  gem 'annotate'
-  gem 'listen'
-  gem 'web-console'
-  gem 'solargraph'
-  gem 'htmlbeautifier'
+  gem "annotate"
+  gem "listen"
+  gem "web-console"
+  gem "solargraph"
+  gem "htmlbeautifier"
 end
 
 group :test do
-  gem 'selenium-webdriver'
-  gem 'webdrivers'
-  gem 'capybara'
-  gem 'capybara-screenshot'
-  gem 'webmock'
+  gem "selenium-webdriver"
+  gem "webdrivers"
+  gem "capybara"
+  gem "capybara-screenshot"
+  gem "webmock"
 end
+
+# Use Redis for Action Cable
+gem "redis", "~> 4.0"

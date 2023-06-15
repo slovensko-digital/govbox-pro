@@ -1,0 +1,11 @@
+<%= render MessageThreadsTableComponent.new do |component| %>
+  <% @message_threads.each do |message_thread| %>
+    <% component.with_message_thread do %>
+      <%= render MessageThreadsTableRowComponent.new(message_thread: message_thread) %>
+    <% end %>
+  <% end %>
+<% end %>
+<%= turbo_frame_tag "next_page_area" do %>
+  <%= render partial: "next_page" %>
+  <%= render UILib::CenteredSpinnerComponent.new %>
+<% end %>

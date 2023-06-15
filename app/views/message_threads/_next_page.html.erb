@@ -1,0 +1,6 @@
+<%= turbo_frame_tag(
+      "next-link-"+@next_cursor.to_s.tr(' :-',''),
+      loading: :lazy,
+      src: folder_message_threads_url(folder_id: params[:folder_id], :cursor => @next_cursor, format: :turbo_stream),
+      target: "_top",
+    ) %>

@@ -1,0 +1,13 @@
+<%= turbo_stream.append "message_threads" do %>
+  <% @message_threads.each do |message_thread| %>
+    <%= render MessageThreadsTableRowComponent.new(message_thread: message_thread) %>
+  <% end %>
+<% end %>
+<% if @message_threads.any? %>
+  <%= turbo_stream.append "next_page_area" do %>
+    <%= render partial: "next_page" %>
+  <% end %>
+<% else %>
+  <%= turbo_stream.replace "next_page_area" do %>
+  <% end %>
+<% end %>

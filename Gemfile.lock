@@ -269,6 +269,7 @@ GEM
     rb-inotify (0.10.1)
       ffi (~> 1.0)
     rbs (2.8.4)
+    redis (4.8.1)
     regexp_parser (2.8.0)
     rest-client (2.1.0)
       http-accept (>= 1.7.0, < 2.0)
@@ -331,6 +332,10 @@ GEM
     thor (1.2.2)
     tilt (2.1.0)
     timeout (0.3.2)
+    turbo-rails (1.4.0)
+      actionpack (>= 6.0.0)
+      activejob (>= 6.0.0)
+      railties (>= 6.0.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unf (0.1.4)
@@ -392,6 +397,7 @@ DEPENDENCIES
   rack-attack
   rails (~> 7.0)
   rails-i18n
+  redis (~> 4.0)
   rest-client
   rollbar
   rubyzip
@@ -400,6 +406,7 @@ DEPENDENCIES
   sprockets-rails
   stimulus-rails
   tailwindcss-rails
+  turbo-rails
   view_component
   web-console
   webdrivers

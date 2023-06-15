@@ -19,7 +19,7 @@
                 <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Dátum</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-gray-200 bg-white">
+            <tbody id="message_threads" is="turbo-frame" class="divide-y divide-gray-200 bg-white">
               <!-- Selected: "bg-gray-50" -->
               <% message_threads.each do |message_thread| %>
                 <%= message_thread %>
