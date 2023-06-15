@@ -18,4 +18,7 @@ class MessageObjectPolicy < ApplicationPolicy
     true
   end
 
+  def download?
+    true
+  end
 end

@@ -3,11 +3,12 @@ class MessageObjectsController < ApplicationController
 
   def show
     authorize @message_object
-    if params[:open_action] == "download"
-      send_data @message_object.message_object_datum.blob, filename: @message_object.name, type: @message_object.mimetype, disposition: :download
-    else
-      send_data @message_object.message_object_datum.blob, filename: @message_object.name, type: @message_object.mimetype, disposition: :inline
-    end
+    send_data @message_object.message_object_datum.blob, filename: @message_object.name, type: @message_object.mimetype, disposition: :inline
+  end
+
+  def download
+    authorize @message_object
+    send_data @message_object.message_object_datum.blob, filename: @message_object.name, type: @message_object.mimetype, disposition: :download
   end
 
   private
@@ -15,6 +16,4 @@ class MessageObjectsController < ApplicationController
   def set_message_object
     @message_object = policy_scope(MessageObject).find(params[:id])
   end
-
 end
-

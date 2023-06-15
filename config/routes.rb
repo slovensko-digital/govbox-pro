@@ -16,19 +16,20 @@ Rails.application.routes.draw do
   end
 
   resources :folders do
-    resources :message_threads do
-      collection do
-        post :index
-      end
-    end
+    resources :message_threads
   end
 
   resources :message_threads do
     resources :messages
   end
 
-  resources :messages
-  resources :message_objects
+  resources :messages do
+    resources :message_objects do
+      member do
+        get 'download'
+      end
+    end
+  end
 
   namespace :drafts, path: 'drafty' do
     resources :imports, path: 'importy', only: :create do

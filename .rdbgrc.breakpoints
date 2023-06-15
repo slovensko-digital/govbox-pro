@@ -1,0 +1,3 @@
+break /home/stage/prog/govbox-pro/app/lib/pagination.rb:16
+break /home/stage/prog/govbox-pro/app/controllers/message_objects_controller.rb:5
+break /home/stage/prog/govbox-pro/app/controllers/message_objects_controller.rb:10
