@@ -5,7 +5,10 @@
 <% end %>
 <% if @message_threads.any? %>
   <%= turbo_stream.append "next_page_area" do %>
-    <%= render partial: "next_page" %>
+    <%= render Turbo::NextPageComponent.new(
+    id:@next_cursor, 
+    url:folder_message_threads_url(folder_id: params[:folder_id], :cursor => @next_cursor, format: :turbo_stream)
+    ) %>
   <% end %>
 <% else %>
   <%= turbo_stream.replace "next_page_area" do %>
