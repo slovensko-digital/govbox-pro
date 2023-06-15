@@ -1,19 +1,16 @@
 # frozen_string_literal: true
 
-class UserPolicy < ApplicationPolicy
-  attr_reader :user
+class Admin::BoxPolicy < ApplicationPolicy
+  attr_reader :user, :box
 
-  def initialize(user_logged_in, user_to_authorize)
-    @user = user_logged_in
+  def initialize(user, box)
+    @user = user
+    @box = box
   end
 
   class Scope < Scope
     def resolve
-      if @user.site_admin?
-        scope.all
-      else
-        scope.where(tenant_id: @user.tenant_id)
-      end
+      @user.site_admin? ? scope.all : scope.where(tenant_id: @user.tenant_id)
     end
   end
 
@@ -44,5 +41,4 @@ class UserPolicy < ApplicationPolicy
   def destroy?
     @user.site_admin? || @user.admin?
   end
-
 end

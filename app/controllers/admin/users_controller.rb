@@ -2,13 +2,13 @@ class Admin::UsersController < ApplicationController
   before_action :set_user, only: %i[ show edit update destroy ]
 
   def index
-    authorize User
-    @users = policy_scope(User)
+    authorize User, policy_class: Admin::UserPolicy
+    @users = policy_scope(User, policy_scope_class: Admin::UserPolicy::Scope)
   end
 
   def show
-    @user = policy_scope(User).find(params[:id])
-    authorize @user, policy_class: UserPolicy
+    @user = policy_scope(User, policy_scope_class: Admin::UserPolicy::Scope).find(params[:id])
+    authorize @user, policy_class: Admin::UserPolicy
     @other_groups = Group.where(tenant_id: params[:tenant_id])
       .where.not(group_type: 'USER')
       .where.not(
@@ -19,16 +19,16 @@ class Admin::UsersController < ApplicationController
 
   def new
     @user = Current.tenant.users.new
-    authorize @user
+    authorize @user, policy_class: Admin::UserPolicy
   end
 
   def edit
-    authorize @user
+    authorize @user, policy_class: Admin::UserPolicy
   end
 
   def create
     @user = Current.tenant.users.new(user_params)
-    authorize @user
+    authorize @user, policy_class: Admin::UserPolicy
 
     respond_to do |format|
       if @user.save
@@ -42,7 +42,7 @@ class Admin::UsersController < ApplicationController
   end
 
   def update
-    authorize @user
+    authorize @user, policy_class: Admin::UserPolicy
     respond_to do |format|
       if @user.update(user_params)
         format.html { redirect_to admin_tenant_url(Current.tenant), notice: "User was successfully updated." }
@@ -55,7 +55,7 @@ class Admin::UsersController < ApplicationController
   end
 
   def destroy
-    authorize @user
+    authorize @user, policy_class: Admin::UserPolicy
     @user.destroy
 
     respond_to do |format|
@@ -66,7 +66,7 @@ class Admin::UsersController < ApplicationController
 
   private
     def set_user
-      @user = policy_scope(User).find(params[:id])
+      @user = policy_scope(User, policy_scope_class: Admin::UserPolicy::Scope).find(params[:id])
     end
 
     def user_params

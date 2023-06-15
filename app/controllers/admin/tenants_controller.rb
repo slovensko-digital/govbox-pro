@@ -2,29 +2,29 @@ class Admin::TenantsController < ApplicationController
   before_action :set_tenant, only: %i[show edit update destroy]
 
   def index
-    authorize Tenant
-    @tenants = policy_scope(Tenant)
+    authorize Tenant, policy_class: Admin::TenantPolicy
+    @tenants = policy_scope(Tenant, policy_scope_class: Admin::TenantPolicy::Scope)
   end
 
   def show
-    @tenant = policy_scope(Tenant).find(params[:id])
-    authorize @tenant
+    @tenant = policy_scope(Tenant, policy_scope_class: Admin::TenantPolicy::Scope).find(params[:id])
+    authorize @tenant, policy_class: Admin::TenantPolicy
     session[:tenant_id] = @tenant.id
     Current.tenant = @tenant.id
   end
 
   def new
     @tenant = Tenant.new
-    authorize @tenant
+    authorize @tenant, policy_class: Admin::TenantPolicy
   end
 
   def edit
-    authorize @tenant
+    authorize @tenant, policy_class: Admin::TenantPolicy
   end
 
   def create
     @tenant = Tenant.new(tenant_params)
-    authorize @tenant
+    authorize @tenant, policy_class: Admin::TenantPolicy
     respond_to do |format|
       if @tenant.save
         format.html { redirect_to admin_tenant_url(@tenant), notice: 'Tenant was successfully created.' }
@@ -38,7 +38,7 @@ class Admin::TenantsController < ApplicationController
 
   # PATCH/PUT /tenants/1 or /tenants/1.json
   def update
-    authorize @tenant
+    authorize @tenant, policy_class: Admin::TenantPolicy
     respond_to do |format|
       if @tenant.update(tenant_params)
         format.html { redirect_to admin_tenant_url(@tenant), notice: 'Tenant was successfully updated.' }
@@ -52,7 +52,7 @@ class Admin::TenantsController < ApplicationController
 
   # DELETE /tenants/1 or /tenants/1.json
   def destroy
-    authorize @tenant
+    authorize @tenant, policy_class: Admin::TenantPolicy
     @tenant.destroy
     session[:tenant_id] = nil
     respond_to do |format|
