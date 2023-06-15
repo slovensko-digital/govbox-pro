@@ -10,7 +10,7 @@ class Admin::BoxPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      @user.site_admin? ? scope.all : scope.where(tenant_id: @user.tenant_id)
+      @user.site_admin? ? scope.all : scope.where(tenant: @user.tenant)
     end
   end
 

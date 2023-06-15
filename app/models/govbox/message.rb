@@ -21,7 +21,7 @@ class Govbox::Message < ApplicationRecord
   def self.create_message_with_thread!(govbox_message)
     folder = Folder.find_or_create_by!(
       name: "Inbox",
-      box_id: govbox_message.box.id
+      box: govbox_message.box
     ) # TODO create folder for threads
 
     message_thread = MessageThread.find_or_create_by(
