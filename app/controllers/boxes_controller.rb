@@ -1,12 +1,9 @@
 class BoxesController < ApplicationController
-  before_action :load_boxes, only: :index
   before_action :load_box, only: [:show, :sync]
 
-  # TODO fix: this is temporary
-  skip_after_action :verify_authorized
-  skip_after_action :verify_policy_scoped
-
   def index
+    @boxes = policy_scope(Box)
+    authorize Box
   end
 
   def show
@@ -19,10 +16,7 @@ class BoxesController < ApplicationController
   private
 
   def load_box
-    @box = Current.box
-  end
-
-  def load_boxes
-    @boxes = Current.tenant.boxes
+    @box = policy_scope(Box).find(params[:id] || params[:box_id])
+    authorize @box
   end
 end
