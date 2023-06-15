@@ -8,6 +8,7 @@
 #  message_thread_id                           :integer          not null
 #  sender_name                                 :string
 #  recipient_name                              :string
+#  html_visualization                          :text             not null
 #  delivered_at                                :datetime         not null
 #  created_at                                  :datetime         not null
 #  updated_at                                  :datetime         not null
