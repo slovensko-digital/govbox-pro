@@ -2,27 +2,27 @@ class Admin::GroupsController < ApplicationController
   before_action :set_group, only: %i[ show edit update destroy ]
 
   def index
-    authorize Group, policy_class: Admin::GroupPolicy
-    @groups = policy_scope(Group, policy_scope_class: Admin::GroupPolicy::Scope)
+    authorize([:admin, Group])
+    @groups = policy_scope([:admin, Group])
   end
 
   def show
-    @group = policy_scope(Group, policy_scope_class: Admin::GroupPolicy::Scope).find(params[:id])
-    authorize @group, policy_class: Admin::GroupPolicy
+    @group = policy_scope([:admin, Group]).find(params[:id])
+    authorize([:admin, @group])
   end
 
   def new
     @group = Current.tenant.groups.new
-    authorize @group, policy_class: Admin::GroupPolicy
+    authorize([:admin, @group])
   end
 
   def edit
-    authorize @group, policy_class: Admin::GroupPolicy
+    authorize([:admin, @group])
   end
 
   def create
     @group = Current.tenant.groups.new(group_params)
-    authorize @group, policy_class: Admin::GroupPolicy
+    authorize([:admin, @group])
 
     if @group.save
       redirect_to admin_tenant_url(Current.tenant), notice: "Group was successfully created."
@@ -32,7 +32,7 @@ class Admin::GroupsController < ApplicationController
   end
 
   def update
-    authorize @group, policy_class: Admin::GroupPolicy
+    authorize([:admin, @group])
     if @group.update(group_params)
       redirect_to admin_tenant_url(Current.tenant), notice: "Group was successfully updated."
     else
@@ -41,7 +41,7 @@ class Admin::GroupsController < ApplicationController
   end
 
   def destroy
-    authorize @group, policy_class: Admin::GroupPolicy
+    authorize([:admin, @group])
     @group.destroy
     redirect_to admin_tenant_url(Current.tenant), notice: "Group was successfully destroyed."
   end

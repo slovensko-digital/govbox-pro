@@ -2,13 +2,13 @@ class Admin::UsersController < ApplicationController
   before_action :set_user, only: %i[ show edit update destroy ]
 
   def index
-    authorize User, policy_class: Admin::UserPolicy
-    @users = policy_scope(User, policy_scope_class: Admin::UserPolicy::Scope)
+    authorize([:admin, User])
+    @users = policy_scope([:admin, User])
   end
 
   def show
-    @user = policy_scope(User, policy_scope_class: Admin::UserPolicy::Scope).find(params[:id])
-    authorize @user, policy_class: Admin::UserPolicy
+    @user = policy_scope([:admin, User]).find(params[:id])
+    authorize([:admin, @user])
     @other_groups = Group.where(tenant_id: params[:tenant_id])
       .where.not(group_type: 'USER')
       .where.not(
@@ -19,16 +19,16 @@ class Admin::UsersController < ApplicationController
 
   def new
     @user = Current.tenant.users.new
-    authorize @user, policy_class: Admin::UserPolicy
+    authorize([:admin, @user])
   end
 
   def edit
-    authorize @user, policy_class: Admin::UserPolicy
+    authorize([:admin, @user])
   end
 
   def create
     @user = Current.tenant.users.new(user_params)
-    authorize @user, policy_class: Admin::UserPolicy
+    authorize([:admin, @user])
 
     respond_to do |format|
       if @user.save
@@ -42,7 +42,7 @@ class Admin::UsersController < ApplicationController
   end
 
   def update
-    authorize @user, policy_class: Admin::UserPolicy
+    authorize([:admin, @user])
     respond_to do |format|
       if @user.update(user_params)
         format.html { redirect_to admin_tenant_url(Current.tenant), notice: "User was successfully updated." }
@@ -55,7 +55,7 @@ class Admin::UsersController < ApplicationController
   end
 
   def destroy
-    authorize @user, policy_class: Admin::UserPolicy
+    authorize([:admin, @user])
     @user.destroy
 
     respond_to do |format|
@@ -66,7 +66,7 @@ class Admin::UsersController < ApplicationController
 
   private
     def set_user
-      @user = policy_scope(User, policy_scope_class: Admin::UserPolicy::Scope).find(params[:id])
+      @user = policy_scope([:admin, User]).find(params[:id])
     end
 
     def user_params

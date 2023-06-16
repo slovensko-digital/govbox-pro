@@ -4,7 +4,7 @@ class Admin::GroupMembershipsController < ApplicationController
 
   def create
     @group_membership = GroupMembership.new(group_membership_params)
-    authorize @group_membership, policy_class: Admin::GroupMembershipPolicy
+    authorize([:admin, @group_membership])
 
     if @group_membership.save
       redirect_back fallback_location:"/", notice: "Group membership was successfully created."
@@ -14,7 +14,7 @@ class Admin::GroupMembershipsController < ApplicationController
   end
 
   def destroy
-    authorize @group_membership, policy_class: Admin::GroupMembershipPolicy
+    authorize([:admin, @group_membership])
     @group_membership.destroy
     redirect_back fallback_location:"/", notice: "Group membership was successfully destroyed."
   end
@@ -22,7 +22,7 @@ class Admin::GroupMembershipsController < ApplicationController
   private
 
   def set_group_membership
-    @group_membership = policy_scope(GroupMembership, policy_scope_class: Admin::GroupMembershipPolicy::Scope).find(params[:id])
+    @group_membership = policy_scope([:admin, GroupMembership]).find(params[:id])
   end
 
   # Only allow a list of trusted parameters through.

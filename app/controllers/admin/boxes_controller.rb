@@ -2,27 +2,27 @@ class Admin::BoxesController < ApplicationController
   before_action :set_box, only: %i[show edit update destroy]
 
   def index
-    authorize Box, policy_class: Admin::BoxPolicy
-    @boxes = policy_scope(Box, policy_class: Admin::BoxPolicy)
+    authorize Box
+    @boxes = policy_scope([:admin, Box])
   end
 
   def show
-    @box = policy_scope(Box, policy_class: Admin::BoxPolicy).find(params[:id])
-    authorize @box, policy_class: Admin::BoxPolicy
+    @box = policy_scope([:admin, Box]).find(params[:id])
+    authorize([:admin, @box])
   end
 
   def new
     @box = Current.tenant.boxes.new
-    authorize @box, policy_class: Admin::BoxPolicy
+    authorize([:admin, @box])
   end
 
   def edit
-    authorize @box, policy_class: Admin::BoxPolicy
+    authorize([:admin, @box])
   end
 
   def create
     @box = Current.tenant.boxes.new(box_params)
-    authorize @box, policy_class: Admin::BoxPolicy
+    authorize([:admin, @box])
 
     if @box.save
       redirect_to admin_tenant_url(Current.tenant), notice: "Box was successfully created."
@@ -32,7 +32,7 @@ class Admin::BoxesController < ApplicationController
   end
 
   def update
-    authorize @box, policy_class: Admin::BoxPolicy
+    authorize([:admin, @box])
     if @box.update(box_params)
       redirect_to admin_tenant_url(Current.tenant), notice: "Box was successfully updated."
     else
@@ -41,7 +41,7 @@ class Admin::BoxesController < ApplicationController
   end
 
   def destroy
-    authorize @box, policy_class: Admin::BoxPolicy
+    authorize([:admin, @box])
     @box.destroy
     redirect_to admin_tenant_url(Current.tenant), notice: "Box was successfully destroyed."
   end
