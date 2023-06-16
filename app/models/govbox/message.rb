@@ -37,7 +37,7 @@ class Govbox::Message < ApplicationRecord
       delivered_at: govbox_message.delivered_at
     )
 
-    message.message_thread = message_thread
+    message.thread = message_thread
     message.save!
 
     self.create_message_objects(message, govbox_message.payload)
@@ -58,7 +58,7 @@ class Govbox::Message < ApplicationRecord
 
   def self.create_message_objects(message, raw_message)
     raw_message["objects"].each do |raw_object|
-      object = message.message_objects.create!(
+      object = message.objects.create!(
         name: raw_object["name"],
         mimetype: raw_object["mime_type"],
         is_signed: raw_object["signed"],

@@ -14,6 +14,6 @@
 #  updated_at                                  :datetime         not null
 
 class Message < ApplicationRecord
-  belongs_to :message_thread # TODO rename
-  has_many :message_objects # TODO rename
+  belongs_to :thread, class_name: 'MessageThread', foreign_key: 'message_thread_id'
+  has_many :objects, class_name: 'MessageObject'
 end
