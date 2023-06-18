@@ -12,7 +12,6 @@
 
 class MessageThread < ApplicationRecord
   belongs_to :folder
-  has_and_belongs_to_many :tags
   has_many :messages do
     def find_or_create_by_uuid!(uuid:) end
   end

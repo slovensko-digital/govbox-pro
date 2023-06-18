@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_14_105536) do
+ActiveRecord::Schema[7.0].define(version: 2023_06_16_161948) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -285,6 +285,23 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_14_105536) do
     t.index ["message_thread_id"], name: "index_messages_on_message_thread_id"
   end
 
+  create_table "messages_tags", force: :cascade do |t|
+    t.bigint "message_id", null: false
+    t.bigint "tag_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["message_id"], name: "index_messages_tags_on_message_id"
+    t.index ["tag_id"], name: "index_messages_tags_on_tag_id"
+  end
+
+  create_table "tags", force: :cascade do |t|
+    t.bigint "box_id", null: false
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["box_id"], name: "index_tags_on_box_id"
+  end
+
   create_table "tenants", force: :cascade do |t|
     t.string "name", null: false
     t.datetime "created_at", null: false
@@ -319,5 +336,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_14_105536) do
   add_foreign_key "message_objects", "messages"
   add_foreign_key "message_threads", "folders"
   add_foreign_key "messages", "message_threads"
+  add_foreign_key "messages_tags", "messages"
+  add_foreign_key "messages_tags", "tags"
+  add_foreign_key "tags", "boxes"
   add_foreign_key "users", "tenants"
 end
