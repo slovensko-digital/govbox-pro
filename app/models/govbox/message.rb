@@ -24,20 +24,15 @@ class Govbox::Message < ApplicationRecord
       box: govbox_message.box
     ) # TODO create folder for threads
 
-    message_thread = MessageThread.find_or_create_by(
-      merge_uuids: "{#{govbox_message.correlation_id}}"
-    )
-
     message = self.create_message(govbox_message.payload)
 
-    message_thread.update!(
+    message.thread = govbox_message.box.message_threads.find_or_create_by_merge_uuid!(
       folder: folder,
+      merge_uuid: govbox_message.correlation_id,
       title: message.title,
-      original_title: message.title, # TODO
       delivered_at: govbox_message.delivered_at
     )
 
-    message.thread = message_thread
     message.save!
 
     self.create_message_objects(message, govbox_message.payload)
