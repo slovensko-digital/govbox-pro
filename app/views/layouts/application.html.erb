@@ -13,15 +13,15 @@
     <%= render UILib::LightLayoutWithSidebarComponent.new do |component| %>
       <% component.with_sidebar do %>
         <%= render UILib::SidebarComponent.new do |sidebar| %>
-          <% sidebar.with_folder_list do%>
-            <%= render Layout::FolderListComponent.new %>
+          <% sidebar.with_tag_list do%>
+            <%= render Layout::TagListComponent.new %>
           <% end %>
         <% end %>
       <% end %>
       <% component.with_static_sidebar do %>
         <%= render UILib::StaticSidebarComponent.new do |sidebar| %>
-          <% sidebar.with_folder_list do%>
-            <%= render Layout::FolderListComponent.new %>
+          <% sidebar.with_tag_list do%>
+            <%= render Layout::TagListComponent.new %>
           <% end %>
         <% end %>
       <% end %>

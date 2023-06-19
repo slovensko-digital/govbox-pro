@@ -15,6 +15,7 @@ class MessageThread < ApplicationRecord
   has_many :messages do
     def find_or_create_by_uuid!(uuid:) end
   end
+  has_and_belongs_to_many :tags, through: :messages
 
   after_create_commit ->(thread) { EventBus.publish(:message_thread_created, thread) }
 

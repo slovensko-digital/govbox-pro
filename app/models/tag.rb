@@ -10,5 +10,5 @@
 
 class Tag < ApplicationRecord
   belongs_to :tenant
-  has_and_belongs_to_many :message_threads
+  has_and_belongs_to_many :message_threads, through: :messages
 end

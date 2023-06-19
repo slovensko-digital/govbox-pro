@@ -15,7 +15,10 @@ class MessageThreadsController < ApplicationController
     @cursor[:delivered_at] = millis_to_time(@cursor[:delivered_at]) || Time.now
 
     @message_threads, @next_cursor = paginate(collection: policy_scope(MessageThread)
-        .where(folder_id: params[:folder_id])
+        .where("message_threads.id in (select mt.id from message_threads mt
+                  join messages m on m.message_thread_id = mt.id
+                  join messages_tags mtags on m.id = mtags.message_id
+                  where mtags.tag_id = ?)", params[:tag_id])
         # TODO - mame tu velmi hruby sposob ako zistit, s kym je dany thread komunikacie, vedeny, len pre ucely zobrazenia. Dohodnut aj s @Taja, co s tym
         .select("message_threads.*,
           (select count(messages.id) from messages where messages.message_thread_id = message_threads.id) as messages_count,

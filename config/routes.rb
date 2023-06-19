@@ -15,8 +15,9 @@ Rails.application.routes.draw do
     post :sync
   end
 
-  resources :folders do
-    resources :message_threads
+  resources :tags do
+    resources :message_threads do
+    end    
   end
 
   resources :message_threads do

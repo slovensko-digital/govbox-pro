@@ -1,3 +1,3 @@
 class UILib::StaticSidebarComponent < ViewComponent::Base
-    renders_one :folder_list
+    renders_one :tag_list
 end
