@@ -47,8 +47,8 @@ class Govbox::Message < ApplicationRecord
 
   def self.create_message_with_tag(govbox_message)
     message_tag = Tag.find_or_create_by!(
-      name: "slovensko.sk:#{govbox_message.folder.name}",
-      box: govbox_message.box
+      name: "slovensko.sk:#{govbox_message.folder.full_name}",
+      tenant: govbox_message.box.tenant
     )
 
     raw_message = govbox_message.payload
