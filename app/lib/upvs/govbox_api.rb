@@ -17,15 +17,15 @@ module Upvs
 
     class Edesk < Namespace
       def fetch_folders
-        @api.request(:get, "#{@api.url}/api/edesk/folders?token=#{token}")
+        @api.request(:get, "#{@api.url}/api/edesk/folders", {}, header)
       end
 
       def fetch_messages(folder_id, offset: 0, count: 5000)
-        @api.request(:get, "#{@api.url}/api/edesk/folders/#{folder_id}/messages?token=#{token}&page=#{offset}&per_page=#{count}")
+        @api.request(:get, "#{@api.url}/api/edesk/folders/#{folder_id}/messages?page=#{offset}&per_page=#{count}", {}, header)
       end
 
       def fetch_message(message_id)
-        @api.request(:get, "#{@api.url}/api/edesk/messages/#{message_id}?token=#{token}")
+        @api.request(:get, "#{@api.url}/api/edesk/messages/#{message_id}", {}, header)
       end
 
       private

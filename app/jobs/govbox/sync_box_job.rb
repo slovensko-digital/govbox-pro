@@ -11,6 +11,7 @@ module Govbox
       folders.each do |folder_hash|
         folder = Govbox::Folder.find_or_initialize_by(edesk_folder_id: folder_hash['id']).tap do |f|
           f.edesk_folder_id = folder_hash['id']
+          f.edesk_parent_folder_id = folder_hash['parent_id']
           f.name = folder_hash['name']
           f.system = folder_hash['system'] || false
           f.box = box

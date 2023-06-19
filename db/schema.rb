@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_04_071856) do
+ActiveRecord::Schema[7.0].define(version: 2023_06_16_161948) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -202,12 +202,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_04_071856) do
 
   create_table "govbox_folders", force: :cascade do |t|
     t.integer "edesk_folder_id", null: false
+    t.integer "edesk_parent_folder_id"
     t.string "name", null: false
     t.boolean "system", null: false
     t.bigint "box_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["box_id"], name: "index_govbox_folders_on_box_id"
+    t.index ["edesk_folder_id"], name: "index_govbox_folders_on_edesk_folder_id", unique: true
   end
 
   create_table "govbox_messages", force: :cascade do |t|
@@ -281,7 +283,25 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_04_071856) do
     t.datetime "delivered_at", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "html_visualization", null: false
     t.index ["message_thread_id"], name: "index_messages_on_message_thread_id"
+  end
+
+  create_table "messages_tags", force: :cascade do |t|
+    t.bigint "message_id", null: false
+    t.bigint "tag_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["message_id"], name: "index_messages_tags_on_message_id"
+    t.index ["tag_id"], name: "index_messages_tags_on_tag_id"
+  end
+
+  create_table "tags", force: :cascade do |t|
+    t.bigint "tenant_id", null: false
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tenant_id"], name: "index_tags_on_tenant_id"
   end
 
   create_table "tenants", force: :cascade do |t|
@@ -318,5 +338,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_04_071856) do
   add_foreign_key "message_objects", "messages"
   add_foreign_key "message_threads", "folders"
   add_foreign_key "messages", "message_threads"
+  add_foreign_key "messages_tags", "messages"
+  add_foreign_key "messages_tags", "tags"
+  add_foreign_key "tags", "tenants"
   add_foreign_key "users", "tenants"
 end

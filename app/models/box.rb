@@ -3,6 +3,7 @@
 # Table name: boxes
 #
 #  id                                          :integer          not null, primary key
+#  tenant_id                                   :integer          not null
 #  name                                        :string           not null
 #  uri                                         :string
 #  created_at                                  :datetime         not null
