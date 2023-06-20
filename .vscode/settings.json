@@ -8,6 +8,15 @@
       "name": "govbox_pro_development",
       "database": "govbox_pro_development",
       "username": "govbox_pro"
+    },
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5432,
+      "driver": "PostgreSQL",
+      "name": "govbox_pro_test",
+      "database": "govbox_pro_test",
+      "username": "govbox_pro"
     }
   ]
 }

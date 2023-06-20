@@ -1,3 +1,2 @@
-break /home/stage/prog/govbox-pro/app/models/automation/condition.rb:14
-break /home/stage/prog/govbox-pro/app/models/automation/rule.rb:16
-break /home/stage/prog/govbox-pro/app/models/automation/rule.rb:11
+break /home/stage/prog/govbox-pro/app/models/automation/rule.rb:9
+break /home/stage/prog/govbox-pro/app/lib/automate.rb:4

@@ -5,11 +5,11 @@ module Automation
     def run!(thing)
       case name.to_sym
       when :add_tag
-        tag = Tag.find_by(name: params[:name])
-        thing.tags.delete(tag)
-      when :delete_tag
-        tag = Tag.find_by(name: params[:name])
+        tag = Current.tenant.tags.find_by(name: params)
         thing.tags << tag
+      when :delete_tag
+        tag = Current.tenant.tags.find_by(name: params)
+        thing.tags.delete(tag)
       end
     end
   end

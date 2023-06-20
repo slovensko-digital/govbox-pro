@@ -5,7 +5,7 @@ module Automation
     def satisfied?(thing)
       case operator.to_sym
       when :contains
-        message_thread[attr].match?(value)
+         thing[attr].match?(value)
       end
     end
   end

@@ -53,8 +53,10 @@ class MessageThreadsController < ApplicationController
 
   # TODO - vyhodit, len pre debug
   def run_rules
+    skip_authorization
     @message_thread = policy_scope(MessageThread).find(params[:id])
-    run_rules_for(@message_thread, :message_created)
+    run_rules_for(@message_thread.messages.last, :message_created)
+    render plain: 'Success'
   end
 
   private

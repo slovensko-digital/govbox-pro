@@ -7,14 +7,19 @@ module Automation
 
     def run!(thing, event)
       Current.tenant.automation_rules.where(trigger_event: event).each do |rule|
-        rule.conditions.each do |condition|
-          # TODO - tento break je malo?
-          break unless condition.satisfied?(thing)
-        end
+        break unless conditions_met?(rule, thing)
+
         rule.actions.each do |action|
           action.run!(thing)
         end
       end
+    end
+
+    def conditions_met?(rule, thing)
+      rule.conditions.each do |condition|
+        return false unless condition.satisfied?(thing)
+      end
+      true
     end
   end
 end
