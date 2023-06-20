@@ -211,14 +211,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_19_152249) do
 
   create_table "govbox_folders", force: :cascade do |t|
     t.integer "edesk_folder_id", null: false
-    t.integer "edesk_parent_folder_id"
     t.string "name", null: false
     t.boolean "system", null: false
+    t.bigint "parent_folder_id"
     t.bigint "box_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["box_id"], name: "index_govbox_folders_on_box_id"
     t.index ["edesk_folder_id"], name: "index_govbox_folders_on_edesk_folder_id", unique: true
+    t.index ["parent_folder_id"], name: "index_govbox_folders_on_parent_folder_id"
   end
 
   create_table "govbox_messages", force: :cascade do |t|
@@ -340,6 +341,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_19_152249) do
   add_foreign_key "folders", "boxes"
   add_foreign_key "govbox_api_connections", "boxes"
   add_foreign_key "govbox_folders", "boxes"
+  add_foreign_key "govbox_folders", "govbox_folders", column: "parent_folder_id"
   add_foreign_key "govbox_messages", "govbox_folders", column: "folder_id"
   add_foreign_key "group_memberships", "groups"
   add_foreign_key "group_memberships", "users"

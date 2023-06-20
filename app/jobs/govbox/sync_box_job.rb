@@ -9,14 +9,20 @@ module Govbox
       raise "Unable to fetch folders" if response_status != 200
 
       folders.each do |folder_hash|
-        folder = Govbox::Folder.find_or_initialize_by(edesk_folder_id: folder_hash['id']).tap do |f|
+        Govbox::Folder.find_or_initialize_by(edesk_folder_id: folder_hash['id']).tap do |f|
           f.edesk_folder_id = folder_hash['id']
-          f.edesk_parent_folder_id = folder_hash['parent_id']
           f.name = folder_hash['name']
           f.system = folder_hash['system'] || false
           f.box = box
           f.save!
         end
+      end
+
+      folders.each do |folder_hash|
+        folder = Govbox::Folder.find_or_initialize_by(edesk_folder_id: folder_hash['id'])
+        folder.update!(
+          parent_folder_id: Govbox::Folder.find_by(edesk_folder_id: folder_hash['parent_id'])&.id
+        )
 
         SyncFolderJob.perform_later(folder)
       end
