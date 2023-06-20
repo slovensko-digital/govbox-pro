@@ -10,23 +10,23 @@
     <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
   </head>
   <body class = "h-full">
-    <%= render UILib::LightLayoutWithSidebarComponent.new do |component| %>
+    <%= render TW::LightLayoutWithSidebarComponent.new do |component| %>
       <% component.with_sidebar do %>
-        <%= render UILib::SidebarComponent.new do |sidebar| %>
+        <%= render TW::SidebarComponent.new do |sidebar| %>
           <% sidebar.with_folder_list do%>
             <%= render Layout::FolderListComponent.new %>
           <% end %>
         <% end %>
       <% end %>
       <% component.with_static_sidebar do %>
-        <%= render UILib::StaticSidebarComponent.new do |sidebar| %>
+        <%= render TW::StaticSidebarComponent.new do |sidebar| %>
           <% sidebar.with_folder_list do%>
             <%= render Layout::FolderListComponent.new %>
           <% end %>
         <% end %>
       <% end %>
       <% component.with_user_menu do %>
-        <%= render UILib::UserMenuComponent.new(user: Current.user) %>
+        <%= render TW::UserMenuComponent.new(user: Current.user) %>
       <% end %>
       <% component.with_main_content do %>
         <%= yield %>

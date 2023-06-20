@@ -1,4 +1,4 @@
-class UILib::LightLayoutWithSidebarComponent < ViewComponent::Base
+class TW::LightLayoutWithSidebarComponent < ViewComponent::Base
   renders_one :static_sidebar
   renders_one :sidebar
   #renders_one :search_box
