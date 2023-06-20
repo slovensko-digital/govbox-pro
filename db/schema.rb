@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_16_161948) do
+ActiveRecord::Schema[7.0].define(version: 2023_06_19_152249) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -45,6 +45,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_16_161948) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "automation_actions", force: :cascade do |t|
+    t.string "name"
+    t.string "params"
+    t.bigint "automation_rule_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["automation_rule_id"], name: "index_automation_actions_on_automation_rule_id"
   end
 
   create_table "automation_rules", force: :cascade do |t|
@@ -321,6 +330,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_16_161948) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "automation_actions", "automation_rules"
   add_foreign_key "automation_rules", "tenants"
   add_foreign_key "boxes", "tenants"
   add_foreign_key "drafts", "boxes"

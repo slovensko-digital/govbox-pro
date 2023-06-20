@@ -3,16 +3,8 @@ module Automation
     belongs_to :automation_rule, class_name: 'Automation::Rule'
 
     def satisfied?(thing)
-      case thing.class.name
-      when 'MessageThread'
-        satisfied_message_thread?(thing)
-#      when 'Message'
-      end
-    end
-
-    def satisfied_message_thread?(message_thread)
-      case operator
-      when 'contains'
+      case operator.to_sym
+      when :contains
         message_thread[attr].match?(value)
       end
     end

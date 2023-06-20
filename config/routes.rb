@@ -22,6 +22,10 @@ Rails.application.routes.draw do
 
   resources :message_threads do
     resources :messages
+    # vyhodit, len na debug
+    member do
+      get 'run_rules'
+    end
   end
 
   resources :messages do

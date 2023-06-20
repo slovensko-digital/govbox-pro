@@ -1,5 +1,7 @@
 class MessageThreadsController < ApplicationController
   include Pagination
+  # TODO - vyhodit, len pre debug
+  include Automate
 
   before_action :set_message_thread, only: %i[show]
 
@@ -47,6 +49,12 @@ class MessageThreadsController < ApplicationController
       format.html # GET
       format.turbo_stream # POST
     end
+  end
+
+  # TODO - vyhodit, len pre debug
+  def run_rules
+    @message_thread = policy_scope(MessageThread).find(params[:id])
+    run_rules_for(@message_thread, :message_created)
   end
 
   private
