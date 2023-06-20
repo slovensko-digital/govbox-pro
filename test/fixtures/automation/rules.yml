@@ -1,11 +1,13 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  tenant: one
+  tenant: ssd
   name: MyString
+  user_id: 1
   trigger_event: MyString
 
 two:
-  tenant: two
+  tenant: solver
   name: MyString
+  user_id: 1
   trigger_event: MyString
