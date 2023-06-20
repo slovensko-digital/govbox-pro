@@ -56,13 +56,25 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_19_152249) do
     t.index ["automation_rule_id"], name: "index_automation_actions_on_automation_rule_id"
   end
 
+  create_table "automation_conditions", force: :cascade do |t|
+    t.string "attr"
+    t.string "operator"
+    t.string "value"
+    t.bigint "automation_rule_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["automation_rule_id"], name: "index_automation_conditions_on_automation_rule_id"
+  end
+
   create_table "automation_rules", force: :cascade do |t|
     t.bigint "tenant_id", null: false
+    t.bigint "user_id", null: false
     t.string "name", null: false
     t.string "trigger_event", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["tenant_id"], name: "index_automation_rules_on_tenant_id"
+    t.index ["user_id"], name: "index_automation_rules_on_user_id"
   end
 
   create_table "boxes", force: :cascade do |t|
@@ -332,7 +344,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_19_152249) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "automation_actions", "automation_rules"
+  add_foreign_key "automation_conditions", "automation_rules"
   add_foreign_key "automation_rules", "tenants"
+  add_foreign_key "automation_rules", "users"
   add_foreign_key "boxes", "tenants"
   add_foreign_key "drafts", "boxes"
   add_foreign_key "drafts", "drafts_imports", column: "import_id"

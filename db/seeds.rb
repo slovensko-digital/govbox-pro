@@ -11,16 +11,5 @@ end
 box = tenant.boxes.create!(name: "Dev box", uri: "ico://sk/83300252")
 Govbox::ApiConnection.create!(sub: "SPL_Irvin_83300252_KK_24022023", box: box, api_token_private_key: File.read(Rails.root + "security/govbox_api_fix.pem"))
 
-rule = tenant.automation_rules.create!(
-  name: 'Message Thread Name Rule Test',
-  user: tenant.users.first,
-  trigger_event: :message_created,
-  action: :add_tag,
-  action_params: { tag_name: 'Dolezite' }
-)
-
-rule.conditions.create!(
-  attr: :title,
-  operator: :contains,
-  value: 'neplat'
-)
+rule = tenant.automation_rules.create!(name: 'Message Thread Name Rule Test', user: tenant.users.first, trigger_event: :message_created)
+rule.conditions.create!(attr: :title, operator: :contains, value: 'neplat')
