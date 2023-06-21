@@ -42,8 +42,15 @@ class Govbox::Message < ApplicationRecord
 
   private
 
-  def self.create_message(raw_message)
-    ::Message.create(
+  def self.create_message_with_tag(govbox_message)
+    message_tag = Tag.find_or_create_by!(
+      name: "slovensko.sk:#{govbox_message.folder.full_name}",
+      tenant: govbox_message.box.tenant
+    )
+
+    raw_message = govbox_message.payload
+
+    message = ::Message.create(
       uuid: raw_message["message_id"],
       title: raw_message["subject"],
       sender_name: raw_message["sender_name"],
@@ -51,6 +58,9 @@ class Govbox::Message < ApplicationRecord
       delivered_at: Time.parse(raw_message["delivered_at"]),
       html_visualization: raw_message["original_html"]
     )
+
+    message.tags << message_tag
+    message
   end
 
   def self.create_message_objects(message, raw_message)

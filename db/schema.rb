@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_14_105536) do
+ActiveRecord::Schema[7.0].define(version: 2023_06_16_161948) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -204,10 +204,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_14_105536) do
     t.integer "edesk_folder_id", null: false
     t.string "name", null: false
     t.boolean "system", null: false
+    t.bigint "parent_folder_id"
     t.bigint "box_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["box_id"], name: "index_govbox_folders_on_box_id"
+    t.index ["edesk_folder_id"], name: "index_govbox_folders_on_edesk_folder_id", unique: true
+    t.index ["parent_folder_id"], name: "index_govbox_folders_on_parent_folder_id"
   end
 
   create_table "govbox_messages", force: :cascade do |t|
@@ -285,6 +288,23 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_14_105536) do
     t.index ["message_thread_id"], name: "index_messages_on_message_thread_id"
   end
 
+  create_table "messages_tags", force: :cascade do |t|
+    t.bigint "message_id", null: false
+    t.bigint "tag_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["message_id"], name: "index_messages_tags_on_message_id"
+    t.index ["tag_id"], name: "index_messages_tags_on_tag_id"
+  end
+
+  create_table "tags", force: :cascade do |t|
+    t.bigint "tenant_id", null: false
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tenant_id"], name: "index_tags_on_tenant_id"
+  end
+
   create_table "tenants", force: :cascade do |t|
     t.string "name", null: false
     t.datetime "created_at", null: false
@@ -311,6 +331,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_14_105536) do
   add_foreign_key "folders", "boxes"
   add_foreign_key "govbox_api_connections", "boxes"
   add_foreign_key "govbox_folders", "boxes"
+  add_foreign_key "govbox_folders", "govbox_folders", column: "parent_folder_id"
   add_foreign_key "govbox_messages", "govbox_folders", column: "folder_id"
   add_foreign_key "group_memberships", "groups"
   add_foreign_key "group_memberships", "users"
@@ -319,5 +340,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_14_105536) do
   add_foreign_key "message_objects", "messages"
   add_foreign_key "message_threads", "folders"
   add_foreign_key "messages", "message_threads"
+  add_foreign_key "messages_tags", "messages"
+  add_foreign_key "messages_tags", "tags"
+  add_foreign_key "tags", "tenants"
   add_foreign_key "users", "tenants"
 end

@@ -16,7 +16,7 @@ class Tenant < ApplicationRecord
   has_many :boxes
   has_many :automation_rules, class_name: 'Automation::Rule'
   has_many :folders, through: :boxes
-
+  has_many :tags
   after_create :create_default_groups
 
   validates_presence_of :name
