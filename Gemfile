@@ -64,6 +64,3 @@ group :test do
   gem 'capybara-screenshot'
   gem 'webmock'
 end
-
-# Use Redis for Action Cable
-gem 'redis'
