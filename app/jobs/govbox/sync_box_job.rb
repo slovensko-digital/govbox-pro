@@ -8,16 +8,6 @@ module Govbox
 
       raise "Unable to fetch folders" if response_status != 200
 
-      folders.each do |folder_hash|
-        Govbox::Folder.find_or_initialize_by(edesk_folder_id: folder_hash['id']).tap do |f|
-          f.edesk_folder_id = folder_hash['id']
-          f.name = folder_hash['name']
-          f.system = folder_hash['system'] || false
-          f.box = box
-          f.save!
-        end
-      end
-
       find_or_create_folder_with_parent(folders, box)
     end
 
