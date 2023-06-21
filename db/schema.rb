@@ -48,8 +48,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_19_152249) do
   end
 
   create_table "automation_actions", force: :cascade do |t|
-    t.string "name"
-    t.string "params"
+    t.string "type"
+    t.jsonb "params"
     t.bigint "automation_rule_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -58,7 +58,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_19_152249) do
 
   create_table "automation_conditions", force: :cascade do |t|
     t.string "attr"
-    t.string "operator"
+    t.string "type"
     t.string "value"
     t.bigint "automation_rule_id", null: false
     t.datetime "created_at", null: false

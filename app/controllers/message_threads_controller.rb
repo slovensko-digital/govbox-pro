@@ -1,8 +1,4 @@
 class MessageThreadsController < ApplicationController
-  include Pagination
-  # TODO - vyhodit, len pre debug
-  include Automate
-
   before_action :set_message_thread, only: %i[show]
 
   MESSAGE_THREADS_PER_PAGE = 10
@@ -16,7 +12,7 @@ class MessageThreadsController < ApplicationController
     @cursor = params[:cursor] || {delivered_at: time_to_millis(Time.now)}
     @cursor[:delivered_at] = millis_to_time(@cursor[:delivered_at]) || Time.now
 
-    @message_threads, @next_cursor = paginate(collection: policy_scope(MessageThread)
+    @message_threads, @next_cursor = Pagination.paginate(collection: policy_scope(MessageThread)
         .where("message_threads.id in (select mt.id from message_threads mt
                   join messages m on m.message_thread_id = mt.id
                   join messages_tags mtags on m.id = mtags.message_id
@@ -49,14 +45,6 @@ class MessageThreadsController < ApplicationController
       format.html # GET
       format.turbo_stream # POST
     end
-  end
-
-  # TODO - vyhodit, len pre debug
-  def run_rules
-    skip_authorization
-    @message_thread = policy_scope(MessageThread).find(params[:id])
-    run_rules_for(@message_thread.messages.last, :message_created)
-    render plain: 'Success'
   end
 
   private

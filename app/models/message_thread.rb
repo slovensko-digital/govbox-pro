@@ -20,4 +20,8 @@ class MessageThread < ApplicationRecord
   after_create_commit ->(thread) { EventBus.publish(:message_thread_created, thread) }
 
   delegate :tenant, to: :folder
+
+  def automation_rules_for_event(event)
+    folder.tenant.automation_rules.where(trigger_event: event)
+  end
 end

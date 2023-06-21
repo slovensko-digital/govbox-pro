@@ -3,7 +3,7 @@ module Automation
     queue_as :default
 
     def perform(message_thread)
-      Automation.run(message_thread, :message_thread_created)
+      Automation.run_rules_for(message_thread, :message_thread_created)
       #tenant = message_thread.tenant
 
       #tenant.automation_rules.where(trigger_event: :message_thread_created).find_each do |rule|

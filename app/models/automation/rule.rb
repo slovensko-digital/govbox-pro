@@ -6,7 +6,7 @@ module Automation
     has_many :actions, class_name: 'Automation::Action', dependent: :destroy, foreign_key: :automation_rule_id, inverse_of: :automation_rule
 
     def run!(thing, event)
-      Current.tenant.automation_rules.where(trigger_event: event).each do |rule|
+      thing.automation_rules_for(event).each do |rule|
         break unless conditions_met?(rule, thing)
 
         rule.actions.each do |action|
