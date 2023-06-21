@@ -10,7 +10,7 @@ class BoxPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      @user.site_admin? ? scope.all : scope.where(tenant_id: @user.tenant_id)
+      @user.site_admin? ? scope.all : scope.where(tenant: @user.tenant)
     end
   end
 
@@ -19,7 +19,7 @@ class BoxPolicy < ApplicationPolicy
   end
 
   def show?
-    @user.site_admin? || @user.admin?
+    @user.site_admin? || @user.admin? || @box.tenant_id == @user.tenant_id
   end
 
   def sync?
@@ -44,5 +44,7 @@ class BoxPolicy < ApplicationPolicy
 
   def destroy?
     @user.site_admin? || @user.admin?
+  def sync?
+    show?
   end
 end

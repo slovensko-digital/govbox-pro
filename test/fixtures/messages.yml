@@ -5,13 +5,15 @@ one:
   title: MyString
   sender_name: MyString
   recipient_name: MyString
+  html_visualization: MyString
   delivered_at: 2023-05-18 16:18:26
-  message_thread: one
+  thread: one
 
 two:
   uuid: <%= SecureRandom.uuid %>
   title: MyString
   sender_name: MyString
   recipient_name: MyString
+  html_visualization: MyString
   delivered_at: 2023-05-18 16:18:26
-  message_thread: one
+  thread: one

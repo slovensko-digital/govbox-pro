@@ -40,7 +40,6 @@ Rails.application.routes.draw do
   resources :drafts, path: 'drafty', only: %i[index show destroy] do
     post :submit
     post :submit_all, on: :collection
-    delete :destroy_all, path: 'zmazat', on: :collection
   end
 
   resources :sessions do

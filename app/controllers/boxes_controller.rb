@@ -2,7 +2,7 @@ class BoxesController < ApplicationController
   before_action :load_box, only: [:show, :sync]
 
   def index
-    authorize Box, policy_class: BoxPolicy
+    authorize Box
     @boxes = policy_scope(Box)
   end
 

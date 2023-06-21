@@ -21,26 +21,23 @@ class Govbox::Message < ApplicationRecord
   def self.create_message_with_thread!(govbox_message)
     folder = Folder.find_or_create_by!(
       name: "Inbox",
-      box_id: govbox_message.box.id
+      box: govbox_message.box
     ) # TODO create folder for threads
 
-    message_thread = MessageThread.find_or_create_by(
-      merge_uuids: "{#{govbox_message.correlation_id}}"
-    )
+    Message.transaction do
+      message = self.create_message(govbox_message.payload)
 
-    message = self.create_message(govbox_message.payload)
+      message.thread = govbox_message.box.message_threads.find_or_create_by_merge_uuid!(
+        folder: folder,
+        merge_uuid: govbox_message.correlation_id,
+        title: message.title,
+        delivered_at: govbox_message.delivered_at
+      )
 
-    message_thread.update!(
-      folder: folder,
-      title: message.title,
-      original_title: message.title, # TODO
-      delivered_at: govbox_message.delivered_at
-    )
+      message.save!
 
-    message.message_thread = message_thread
-    message.save!
-
-    self.create_message_objects(message, govbox_message.payload)
+      self.create_message_objects(message, govbox_message.payload)
+    end
   end
 
   private
@@ -51,13 +48,14 @@ class Govbox::Message < ApplicationRecord
       title: raw_message["subject"],
       sender_name: raw_message["sender_name"],
       recipient_name: raw_message["recipient_name"],
-      delivered_at: Time.parse(raw_message["delivered_at"])
+      delivered_at: Time.parse(raw_message["delivered_at"]),
+      html_visualization: raw_message["original_html"]
     )
   end
 
   def self.create_message_objects(message, raw_message)
     raw_message["objects"].each do |raw_object|
-      object = message.message_objects.create!(
+      object = message.objects.create!(
         name: raw_object["name"],
         mimetype: raw_object["mime_type"],
         is_signed: raw_object["signed"],
