@@ -9,6 +9,8 @@ gem 'pg', '~> 1.0'
 
 gem 'puma', '~> 5.0'
 
+gem 'turbo-rails'
+
 # Styles
 gem 'sprockets-rails'
 gem 'importmap-rails'
@@ -19,12 +21,12 @@ gem 'view_component'
 gem 'clockwork'
 
 # Workers
-gem "good_job"
+gem 'good_job'
 
 # Auth
-gem "omniauth-google-oauth2"
-gem "omniauth-rails_csrf_protection"
-gem "pundit"
+gem 'omniauth-google-oauth2'
+gem 'omniauth-rails_csrf_protection'
+gem 'pundit'
 
 # Utilities
 gem 'rest-client'
@@ -32,7 +34,7 @@ gem 'rack-attack'
 gem 'rubyzip', require: 'zip'
 gem 'jwt'
 gem 'stimulus-rails'
-gem "jsbundling-rails"
+gem 'jsbundling-rails'
 
 # Monitoring
 gem 'rollbar'

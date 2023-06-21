@@ -15,6 +15,22 @@ Rails.application.routes.draw do
     post :sync
   end
 
+  resources :folders do
+    resources :message_threads
+  end
+
+  resources :message_threads do
+    resources :messages
+  end
+
+  resources :messages do
+    resources :message_objects do
+      member do
+        get 'download'
+      end
+    end
+  end
+
   namespace :drafts, path: 'drafty' do
     resources :imports, path: 'importy', only: :create do
       get :upload_new, path: 'novy', on: :collection

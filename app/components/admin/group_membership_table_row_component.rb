@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class GroupMembershipTableRowComponent < ViewComponent::Base
+class Admin::GroupMembershipTableRowComponent < ViewComponent::Base
   with_collection_parameter :group_membership
 
   def initialize(group_membership:)

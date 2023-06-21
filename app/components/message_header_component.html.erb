@@ -1,0 +1,17 @@
+<li class="flex justify-between gap-x-6 py-5">
+  <div class="flex gap-x-4">
+    <span class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-gray-500">
+      <span class="font-medium leading-none text-white"></span>
+    </span>
+    <div class="min-w-0 flex-auto">
+      <!-- TODO - strasne vela nemame, zatial davam NULL, ale treba doriesit, zatial verime, ze na PRODe to uz bude inak -->
+      <p class="text-sm font-semibold leading-6 text-gray-900">Od: <%= @message.sender_name || 'NULL' %></p>
+      <p class="text-sm font-semibold leading-6 text-gray-900">Komu: <%= @message.recipient_name || 'NULL' %></p>
+      <p class="mt-1 flex text-xs leading-5 text-gray-500"><%= link_to @message.title, @message, class:"relative truncate hover:underline" %></p>
+    </div>
+  </div>
+  <div class="hidden sm:flex sm:flex-col sm:items-end">
+    <!-- TODO - nahardcodovane strasne na slovencinu , neviem ako spravne, ani som nevygooglil -->
+    <p class="text-sm leading-6 text-gray-500"><%= "#{@message.delivered_at} (pred #{time_ago_in_words(@message.delivered_at)})" %></p>
+  </div>
+</li>

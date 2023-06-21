@@ -331,6 +331,10 @@ GEM
     thor (1.2.2)
     tilt (2.1.0)
     timeout (0.3.2)
+    turbo-rails (1.4.0)
+      actionpack (>= 6.0.0)
+      activejob (>= 6.0.0)
+      railties (>= 6.0.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unf (0.1.4)
@@ -400,6 +404,7 @@ DEPENDENCIES
   sprockets-rails
   stimulus-rails
   tailwindcss-rails
+  turbo-rails
   view_component
   web-console
   webdrivers

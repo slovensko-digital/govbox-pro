@@ -62,7 +62,7 @@ Tu zacina tabulka s groupami
                     </tr>
                   </thead>
                   <tbody class="divide-y divide-gray-200 bg-white">
-                    <%= render GroupTableRowComponent.with_collection(@tenant.groups) %>
+                    <%= render Admin::GroupTableRowComponent.with_collection(@tenant.groups) %>
                   </tbody>
                 </table>
               </div>
@@ -115,7 +115,7 @@ Tu zacina tabulka s usermi
                     </tr>
                   </thead>
                   <tbody class="divide-y divide-gray-200 bg-white">
-                    <%= render(UserTableRowComponent.with_collection(@tenant.users)) %>
+                    <%= render(Admin::UserTableRowComponent.with_collection(@tenant.users)) %>
                   </tbody>
                 </table>
               </div>
@@ -167,7 +167,7 @@ Tu zacina tabulka s boxmi
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200 bg-white">
-                  <%= render(BoxTableRowComponent.with_collection(@tenant.boxes)) %>
+                  <%= render(Admin::BoxTableRowComponent.with_collection(@tenant.boxes)) %>
                 </tbody>
               </table>
             </div>

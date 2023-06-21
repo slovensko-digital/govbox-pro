@@ -15,7 +15,7 @@ class BoxPolicy < ApplicationPolicy
   end
 
   def index?
-    true
+    @user.site_admin? || @user.admin?
   end
 
   def show?
@@ -23,6 +23,26 @@ class BoxPolicy < ApplicationPolicy
   end
 
   def sync?
-    show?
+    @user.site_admin? || @user.admin?
+  end
+
+  def create?
+    @user.site_admin? || @user.admin?
+  end
+
+  def new?
+    create?
+  end
+
+  def update?
+    @user.site_admin? || @user.admin?
+  end
+
+  def edit?
+    update?
+  end
+
+  def destroy?
+    @user.site_admin? || @user.admin?
   end
 end
