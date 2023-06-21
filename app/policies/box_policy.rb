@@ -44,6 +44,8 @@ class BoxPolicy < ApplicationPolicy
 
   def destroy?
     @user.site_admin? || @user.admin?
+  end
+
   def sync?
     show?
   end
