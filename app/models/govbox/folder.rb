@@ -23,4 +23,8 @@ class Govbox::Folder < ApplicationRecord
       name
     end
   end
+
+  def bin?
+    name == "Bin"
+  end
 end

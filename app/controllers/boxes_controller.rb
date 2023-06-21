@@ -2,8 +2,8 @@ class BoxesController < ApplicationController
   before_action :load_box, only: [:show, :sync]
 
   def index
-    @boxes = policy_scope(Box)
     authorize Box
+    @boxes = policy_scope(Box)
   end
 
   def show
@@ -19,7 +19,6 @@ class BoxesController < ApplicationController
   private
 
   def load_box
-    @box = policy_scope(Box).find(params[:id] || params[:box_id])
-    authorize @box
+    @box = policy_scope(Box).find(Current.box.id)
   end
 end

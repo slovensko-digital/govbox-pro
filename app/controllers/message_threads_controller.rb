@@ -1,7 +1,6 @@
 class MessageThreadsController < ApplicationController
   before_action :set_message_thread, only: %i[show]
 
-  MESSAGE_THREADS_PER_PAGE = 10
 
   def show
     authorize @message_thread
@@ -9,8 +8,8 @@ class MessageThreadsController < ApplicationController
 
   def index
     authorize MessageThread
-    @cursor = params[:cursor] || {delivered_at: time_to_millis(Time.now)}
-    @cursor[:delivered_at] = millis_to_time(@cursor[:delivered_at]) || Time.now
+    @cursor = params[:cursor] || {}
+    @cursor[:delivered_at] = @cursor[:delivered_at] ? millis_to_time(@cursor[:delivered_at]) : Time.now
 
     @message_threads, @next_cursor = Pagination.paginate(collection: policy_scope(MessageThread)
         .where("message_threads.id in (select mt.id from message_threads mt
@@ -22,25 +21,16 @@ class MessageThreadsController < ApplicationController
           (select count(messages.id) from messages where messages.message_thread_id = message_threads.id) as messages_count,
           coalesce((select max(coalesce(recipient_name)) from messages where messages.message_thread_id = message_threads.id),
           (select max(coalesce(sender_name)) from messages where messages.message_thread_id = message_threads.id)) as with_whom"),
-        params: {
-          items_per_page: MESSAGE_THREADS_PER_PAGE,
-          direction: "desc"
-        },
-        cursor: [
-          {
-            name: "delivered_at",
-            value: @cursor[:delivered_at]
+        cursor: {
+            delivered_at: @cursor[:delivered_at],
+            id: @cursor[:id]
           },
-          {
-            name: "id",
-            value: @cursor[:id] ? @cursor[:id]: nil
-          }
-        ]
+        items_per_page: MESSAGE_THREADS_PER_PAGE,
+        direction: "desc"
         )
 
-    @next_cursor[:delivered_at] = time_to_millis(@next_cursor[:delivered_at]) unless @next_cursor.empty?
+    @next_cursor[:delivered_at] = time_to_millis(@next_cursor[:delivered_at]) if @next_cursor
 
-    
     respond_to do |format|
       format.html # GET
       format.turbo_stream # POST
@@ -49,12 +39,14 @@ class MessageThreadsController < ApplicationController
 
   private
 
+  MESSAGE_THREADS_PER_PAGE = 10
+
   def time_to_millis(time)
-    time.strftime("%s%L").to_f
+    time.strftime('%s%L').to_f
   end
 
   def millis_to_time(millis)
-    Time.at(millis.to_f/1000)
+    Time.at(millis.to_f / 1000)
   end
 
   def set_message_thread
