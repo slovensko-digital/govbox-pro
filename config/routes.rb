@@ -11,6 +11,10 @@ Rails.application.routes.draw do
     resources :group_memberships
   end
 
+  resources :boxes, path: 'schranky', only: [:index, :show] do
+    post :sync
+  end
+
   namespace :drafts, path: 'drafty' do
     resources :imports, path: 'importy', only: :create do
       get :upload_new, path: 'novy', on: :collection
@@ -20,7 +24,6 @@ Rails.application.routes.draw do
   resources :drafts, path: 'drafty', only: %i[index show destroy] do
     post :submit
     post :submit_all, on: :collection
-    delete :destroy_all, path: 'zmazat', on: :collection
   end
 
   resources :sessions do

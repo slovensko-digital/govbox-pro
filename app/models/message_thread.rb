@@ -1,3 +1,15 @@
+# == Schema Information
+#
+# Table name: message_threads
+#
+#  id                                          :integer          not null, primary key
+#  title                                       :string           not null
+#  original_title                              :string           not null
+#  merge_uuids                                 :uuid             not null
+#  delivered_at                                :datetime         not null
+#  created_at                                  :datetime         not null
+#  updated_at                                  :datetime         not null
+
 class MessageThread < ApplicationRecord
   belongs_to :folder
   has_many :messages do

@@ -3,7 +3,7 @@
 # Table name: drafts
 #
 #  id                                          :integer          not null, primary key
-#  subject_id                                  :integer
+#  box_id                                      :integer
 #  package_id                                  :integer
 #  status                                      :integer          default("created")
 #  recipient_uri                               :string
@@ -13,17 +13,19 @@
 #  message_subject                             :string
 #  sender_business_reference                   :string
 #  recipient_business_reference                :string
-#  import_subfolder                           :string
+#  import_subfolder                            :string
 #  message_id                                  :uuid
 #  correlation_id                              :uuid
 #  created_at                                  :datetime         not null
 #  updated_at                                  :datetime         not null
 
 class Draft < ApplicationRecord
-  belongs_to :subject
+  belongs_to :box
   belongs_to :import, class_name: 'Drafts::Import', optional: true
 
   has_many :objects, class_name: 'Drafts::Object', :dependent => :destroy
+
+  delegate :tenant, to: :box
 
   with_options on: :validate_data do |loaded_draft|
     loaded_draft.validates :recipient_uri, :posp_id, :posp_version, :message_type, :message_subject, :message_id, :correlation_id, presence: true

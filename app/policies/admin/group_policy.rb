@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
-class UserPolicy < ApplicationPolicy
-  attr_reader :user
+class Admin::GroupPolicy < ApplicationPolicy
+  attr_reader :user, :group
 
-  def initialize(user_logged_in, user_to_authorize)
-    @user = user_logged_in
+  def initialize(user, group)
+    @user = user
+    @group = group
   end
 
   class Scope < Scope

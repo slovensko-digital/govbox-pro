@@ -31,6 +31,8 @@ gem 'rest-client'
 gem 'rack-attack'
 gem 'rubyzip', require: 'zip'
 gem 'jwt'
+gem 'stimulus-rails'
+gem "jsbundling-rails"
 
 # Monitoring
 gem 'rollbar'

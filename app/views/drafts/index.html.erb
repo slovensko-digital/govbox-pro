@@ -7,7 +7,6 @@
   <% if @drafts.any? %>
     <br />
     <%= button_to "Podať všetky", submit_all_drafts_path, method: :post %>
-    <%= button_to "Zmazať všetky", destroy_all_drafts_path, method: :delete %>
   <% end %>
 </div>
 

@@ -1,24 +1,20 @@
 # frozen_string_literal: true
 
-class TenantPolicy < ApplicationPolicy
-  attr_reader :user, :tenant
+class Admin::BoxPolicy < ApplicationPolicy
+  attr_reader :user, :box
 
-  def initialize(user, tenant)
+  def initialize(user, box)
     @user = user
-    @tenant = tenant
+    @box = box
   end
 
   class Scope < Scope
     def resolve
-      if @user.site_admin?
-        scope.all
-      else
-        scope.where(id: @user.tenant_id)
-      end
+      @user.site_admin? ? scope.all : scope.where(tenant: @user.tenant)
     end
   end
 
-  def index?
+  def index
     @user.site_admin? || @user.admin?
   end
 
@@ -27,7 +23,7 @@ class TenantPolicy < ApplicationPolicy
   end
 
   def create?
-    @user.site_admin?
+    @user.site_admin? || @user.admin?
   end
 
   def new?
@@ -35,7 +31,7 @@ class TenantPolicy < ApplicationPolicy
   end
 
   def update?
-    @user.site_admin?
+    @user.site_admin? || @user.admin?
   end
 
   def edit?
@@ -43,6 +39,6 @@ class TenantPolicy < ApplicationPolicy
   end
 
   def destroy?
-    @user.site_admin?
+    @user.site_admin? || @user.admin?
   end
 end

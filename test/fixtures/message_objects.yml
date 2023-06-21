@@ -4,10 +4,10 @@ one:
   message: one
   name: MyString
   mimetype: MyString
-  type: Attachment
+  object_type: Attachment
 
 two:
   message: two
   name: MyString
   mimetype: MyString
-  type: Form
+  object_type: Form

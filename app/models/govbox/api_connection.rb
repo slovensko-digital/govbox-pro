@@ -1,17 +1,14 @@
 # == Schema Information
 #
-# Table name: subjects
+# Table name: govbox_api_connections
 #
 #  id                                          :integer          not null, primary key
-#  name                                        :string           not null
-#  uri                                         :string           not null
 #  sub                                         :string           not null
+#  obo                                         :uuid
+#  api_token_private_key                       :string           not null
 #  created_at                                  :datetime         not null
 #  updated_at                                  :datetime         not null
 
-class Subject < ApplicationRecord
-  belongs_to :tenant
-
-  has_many :drafts_imports, class_name: 'Drafts::Import'
-  has_many :drafts
+class Govbox::ApiConnection < ApplicationRecord
+  belongs_to :box
 end

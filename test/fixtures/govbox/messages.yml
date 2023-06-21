@@ -3,9 +3,19 @@
 one:
   message_id: <%= SecureRandom.uuid %>
   correlation_id: <%= SecureRandom.uuid %>
+  edesk_message_id: 1
+  delivered_at: <%= DateTime.current %>
+  edesk_class: 'TEST'
+  folder: one
   body: MyText
+  payload: {"data": "json"}
 
 two:
   message_id: <%= SecureRandom.uuid %>
   correlation_id: <%= SecureRandom.uuid %>
+  edesk_message_id: 2
+  delivered_at: <%= DateTime.current %>
+  edesk_class: 'TEST'
+  folder: one
   body: MyText
+  payload: {"data": "json"}

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class GroupMembershipPolicy < ApplicationPolicy
+class Admin::GroupMembershipPolicy < ApplicationPolicy
   attr_reader :user, :group_membership
 
   def initialize(user, group_membership)

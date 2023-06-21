@@ -10,35 +10,19 @@ class BoxPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      @user.site_admin? ? scope.all : scope.where(tenant_id: @user.tenant_id)
+      @user.site_admin? ? scope.all : scope.where(tenant: @user.tenant)
     end
   end
 
-  def index
-    @user.site_admin? || @user.admin?
+  def index?
+    true
   end
 
   def show?
-    @user.site_admin? || @user.admin?
+    @user.site_admin? || @user.admin? || @box.tenant_id == @user.tenant_id
   end
 
-  def create?
-    @user.site_admin? || @user.admin?
-  end
-
-  def new?
-    create?
-  end
-
-  def update?
-    @user.site_admin? || @user.admin?
-  end
-
-  def edit?
-    update?
-  end
-
-  def destroy?
-    @user.site_admin? || @user.admin?
+  def sync?
+    show?
   end
 end
