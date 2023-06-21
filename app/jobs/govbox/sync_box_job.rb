@@ -18,22 +18,15 @@ module Govbox
         end
       end
 
-      folders.each do |folder_hash|
-        folder = Govbox::Folder.find_or_initialize_by(edesk_folder_id: folder_hash['id'])
-        folder.update!(
-          parent_folder_id: Govbox::Folder.find_by(edesk_folder_id: folder_hash['parent_id'])&.id
-        )
-
-        SyncFolderJob.perform_later(folder)
-      end
+      find_or_create_folder_with_parent(folders, box)
     end
 
     private
 
-    def find_or_create_folder_with_parent(folders_list, box)
-      return if folders_list.empty?
+    def find_or_create_folder_with_parent(folders, box)
+      return if folders.empty?
 
-      folder_hash = folders_list.pop
+      folder_hash = folders.pop
 
       folder = Govbox::Folder.find_or_initialize_by(edesk_folder_id: folder_hash['id']).tap do |f|
         f.edesk_folder_id = folder_hash['id']
@@ -43,9 +36,11 @@ module Govbox
         f.save!
       end
 
-      find_or_create_folder_with_parent(folders_list, box)
+      find_or_create_folder_with_parent(folders, box)
 
       folder.update!(parent_folder_id: Govbox::Folder.find_by(edesk_folder_id: folder_hash['parent_id'])&.id)
+
+      SyncFolderJob.perform_later(folder)
     end
   end
 end
