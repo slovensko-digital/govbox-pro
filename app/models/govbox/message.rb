@@ -25,7 +25,7 @@ class Govbox::Message < ApplicationRecord
     ) # TODO create folder for threads
 
     Message.transaction do
-      message = self.create_message(govbox_message.payload)
+      message = self.create_message_with_tag(govbox_message)
 
       message.thread = govbox_message.box.message_threads.find_or_create_by_merge_uuid!(
         folder: folder,
