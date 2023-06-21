@@ -27,6 +27,16 @@ module GovboxPro
     config.active_job.default_queue_name = :medium_priority
     config.action_mailer.deliver_later_queue_name = :high_priority
 
+    config.good_job.enable_cron = true
+    if ENV['AUTO_SYNC_BOXES'] == "ON"
+      config.good_job.cron = {
+        sync_boxes: {
+          cron: "1 */2 * * *",  # run every 2 hours, "00:01", "02:01", "04:01", ...
+          class: "Govbox::SyncAllBoxesJob",
+          description: "Regular job to synchronize all boxes"
+        }
+      }
+    end
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files

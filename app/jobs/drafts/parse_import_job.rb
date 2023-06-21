@@ -20,8 +20,8 @@ class Drafts::ParseImportJob < ApplicationJob
     Dir.each_child(extracted_import_path) do |entry_name|
       if File.directory?(File.join(extracted_import_path, entry_name))
         draft = Draft.find_or_create_by!(
-          subject_id: import.subject.id,
-          import_id: import.id,
+          box: import.box,
+          import: import,
           import_subfolder: File.basename(entry_name),
         )
         draft.being_loaded!
@@ -51,8 +51,8 @@ class Drafts::ParseImportJob < ApplicationJob
 
     CSV.parse(File.read(csv_path), **csv_options) do |row|
       Draft.create!(
-        subject_id: import.subject_id,
-        import_id: import.id,
+        box: import.box,
+        import: import,
         import_subfolder: row['subfolder'],
         recipient_uri: row['recipient_uri'],
         posp_id: row['posp_id'],

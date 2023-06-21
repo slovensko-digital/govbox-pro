@@ -1,0 +1,5 @@
+<h2>Schránka <%= @box.name %></h2>
+
+<%= form_tag box_sync_path(@box), method: :post do %>
+  <%= submit_tag 'Stiahnúť nové správy' %>
+<% end %>

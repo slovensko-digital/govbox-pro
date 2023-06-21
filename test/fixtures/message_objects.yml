@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  message: one
+  name: MyString
+  mimetype: MyString
+  object_type: Attachment
+
+two:
+  message: two
+  name: MyString
+  mimetype: MyString
+  object_type: Form

@@ -1,21 +1,36 @@
 <!DOCTYPE html>
-<html>
+<html class = "h-full bg-white">
   <head>
     <title>GovboxPro</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
-
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
   </head>
-
-  <body>
-    <h1>GovBox PRO</h1>
-    <% if Current.user %>
-      <p><%= Current.user.email %></p>
-      <%= button_to "Odhlásiť sa", sessions_path, method: :delete %>
+  <body class = "h-full">
+    <%= render TW::LightLayoutWithSidebarComponent.new do |component| %>
+      <% component.with_sidebar do %>
+        <%= render TW::SidebarComponent.new do |sidebar| %>
+          <% sidebar.with_folder_list do%>
+            <%= render Layout::FolderListComponent.new %>
+          <% end %>
+        <% end %>
+      <% end %>
+      <% component.with_static_sidebar do %>
+        <%= render TW::StaticSidebarComponent.new do |sidebar| %>
+          <% sidebar.with_folder_list do%>
+            <%= render Layout::FolderListComponent.new %>
+          <% end %>
+        <% end %>
+      <% end %>
+      <% component.with_user_menu do %>
+        <%= render TW::UserMenuComponent.new(user: Current.user) %>
+      <% end %>
+      <% component.with_main_content do %>
+        <%= yield %>
+      <% end %>
     <% end %>
-  <%= yield %>
   </body>
 </html>

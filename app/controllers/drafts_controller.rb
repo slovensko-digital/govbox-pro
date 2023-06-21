@@ -1,7 +1,6 @@
 class DraftsController < ApplicationController
   before_action :load_draft, only: [:show, :submit]
-  before_action :load_drafts, only: [:index, :destroy, :destroy_all, :submit_all]
-  before_action :load_drafts_imports, only: [:destroy_all]
+  before_action :load_drafts, only: [:index, :destroy, :submit_all]
 
   def index
     @drafts = @drafts.order(created_at: :desc)
@@ -12,13 +11,6 @@ class DraftsController < ApplicationController
 
   def destroy
     @drafts.find(params[:id]).destroy
-
-    redirect_to drafts_path
-  end
-
-  def destroy_all
-    @drafts_imports.destroy_all
-    @drafts.destroy_all
 
     redirect_to drafts_path
   end
@@ -41,14 +33,12 @@ class DraftsController < ApplicationController
   end
 
   def load_draft
-    @draft = Current.subject.drafts.find(params[:id] || params[:draft_id])
+    @draft = policy_scope(Draft).find(params[:id] || params[:draft_id])
+    authorize @draft
   end
 
   def load_drafts
-    @drafts = Current.subject.drafts
-  end
-
-  def load_drafts_imports
-    @drafts_imports = Current.subject.drafts_imports
+    authorize Draft
+    @drafts = policy_scope(Draft)
   end
 end

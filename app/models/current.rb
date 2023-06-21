@@ -1,5 +1,5 @@
 class Current < ActiveSupport::CurrentAttributes
-  attribute :subject
-  attribute :user
   attribute :tenant
+  attribute :box
+  attribute :user
 end

@@ -4,13 +4,13 @@
 #
 #  id                                          :integer          not null, primary key
 #  name                                        :string           not null
-#  subject_id                                  :integer          not null
+#  box_id                                      :integer          not null
 #  content_path                                :string           not null
 #  created_at                                  :datetime         not null
 #  updated_at                                  :datetime         not null
 
 class Drafts::Import < ApplicationRecord
-  belongs_to :subject, class_name: 'Subject'
+  belongs_to :box, class_name: 'Box'
   has_many :drafts, :dependent => :destroy
 
   validates_with DraftsImportValidator, if: :content_path
