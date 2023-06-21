@@ -16,5 +16,5 @@ tenant.tags.create!(name: 'RuleTest')
 if tenant.users.first
   rule = tenant.automation_rules.create!(name: 'Message Thread Name Rule Test', user: tenant.users.first, trigger_event: :message_created)
   rule.conditions.create!(attr: :title, operator: :contains, value: 'neplat')
-  rule.actions.create!(name: :add_tag, params: { name: 'RuleTest' })
+  rule.actions.create!(name: :add_tag, params: 'RuleTest')
 end
