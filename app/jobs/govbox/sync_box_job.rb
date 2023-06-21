@@ -9,8 +9,8 @@ module Govbox
       raise "Unable to fetch folders" if response_status != 200
 
       raw_folders = raw_folders.index_by {|f| f["id"]}
-      raw_folders.each do |folder_hash|
-        folder = find_or_create_folder_with_parent(folder_hash[1], folders, box)
+      raw_folders.each_value do |folder_hash|
+        folder = find_or_create_folder_with_parent(folder_hash, raw_folders, box)
         SyncFolderJob.perform_later(folder)
       end
     end
