@@ -1,0 +1,23 @@
+<div class="flex flex-col justify-start items-start self-stretch flex-grow-0 flex-shrink-0 overflow-hidden rounded-md bg-white border border-gray-200">
+  <div class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200" >
+    <p class="flex-grow w-[1074px] text-xl font-semibold text-left text-gray-900">
+      Automatické pravidlá
+    </p>
+    <div
+      class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md bg-blue-600"
+    >
+      <p class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-white">
+        Vytvoriť pravidlo
+      </p>
+    </div>
+  </div>
+  <div class="flex flex-col justify-start items-start self-stretch flex-grow-0 flex-shrink-0">
+    <div
+      class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200"
+    >
+      <% automation_rules.each do |automation_rule| %>
+        <%= automation_rule %>
+      <% end %>
+    </div>
+  </div>
+</div>

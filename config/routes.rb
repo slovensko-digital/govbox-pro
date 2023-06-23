@@ -1,5 +1,12 @@
 Rails.application.routes.draw do
-  resource :dashboard
+  namespace :settings do
+    resources :automation_rules do
+      resources :automation_conditions
+      resources :automation_actions
+    end
+    resources :tags
+    resource :profile
+  end
 
   namespace :admin do
     resources :tenants do
@@ -35,6 +42,8 @@ Rails.application.routes.draw do
       end
     end
   end
+
+  resource :settings
 
   namespace :drafts, path: 'drafty' do
     resources :imports, path: 'importy', only: :create do

@@ -7,5 +7,9 @@ module Automation
     def satisfied?(thing)
       thing[attr].match?(value)
     end
+
+    def type_human_string
+      'obsahuje'
+    end
   end
 end

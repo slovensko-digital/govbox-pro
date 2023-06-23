@@ -11,19 +11,8 @@
   </head>
   <body class = "h-full">
     <%= render TW::LightLayoutWithSidebarComponent.new do |component| %>
-      <% component.with_sidebar do %>
-        <%= render TW::SidebarComponent.new do |sidebar| %>
-          <% sidebar.with_tag_list do%>
-            <%= render Layout::TagListComponent.new %>
-          <% end %>
-        <% end %>
-      <% end %>
       <% component.with_static_sidebar do %>
-        <%= render TW::StaticSidebarComponent.new do |sidebar| %>
-          <% sidebar.with_tag_list do%>
-            <%= render Layout::TagListComponent.new %>
-          <% end %>
-        <% end %>
+        <%= render TW::StaticSidebarComponent.new %>
       <% end %>
       <% component.with_user_menu do %>
         <%= render TW::UserMenuComponent.new(user: Current.user) %>
