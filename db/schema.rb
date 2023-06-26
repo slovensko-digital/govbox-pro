@@ -280,6 +280,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_26_161950) do
     t.bigint "tag_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["message_thread_id", "tag_id"], name: "index_message_threads_tags_on_message_thread_id_and_tag_id", unique: true
     t.index ["message_thread_id"], name: "index_message_threads_tags_on_message_thread_id"
     t.index ["tag_id"], name: "index_message_threads_tags_on_tag_id"
   end
@@ -311,7 +312,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_26_161950) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "system", default: false, null: false
+    t.boolean "visible", default: true, null: false
     t.index ["tenant_id"], name: "index_tags_on_tenant_id"
   end
 

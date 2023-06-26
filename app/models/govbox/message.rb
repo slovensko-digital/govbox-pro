@@ -17,7 +17,7 @@ class Govbox::Message < ApplicationRecord
   belongs_to :folder, class_name: 'Govbox::Folder'
 
   delegate :box, to: :folder
-
+  
   def self.create_message_with_thread!(govbox_message)
     folder = Folder.find_or_create_by!(
       name: "Inbox",
@@ -80,13 +80,13 @@ class Govbox::Message < ApplicationRecord
   end
 
   def self.create_message_tag(message, govbox_message)
-    message_tag = Tag.find_or_create_by!(
+    tag = Tag.find_or_create_by!(
       name: "slovensko.sk:#{govbox_message.folder.full_name}",
       tenant: govbox_message.box.tenant,
-      system: govbox_message.folder.system?
+      visible: !govbox_message.folder.system?
     )
 
-    message.tags << message_tag
-    message.thread.tags << message_tag
+    message.tags << tag
+    message.thread.tags << tag unless message.thread.tags.include?(tag)
   end
 end
