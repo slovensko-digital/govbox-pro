@@ -7,6 +7,7 @@ class CreateMessageThreadsTags < ActiveRecord::Migration[7.0]
       t.timestamps
     end
 
-    add_index :message_threads_tags, [:message_thread_id, :tag_id], unique: true
+    add_index :message_threads_tags, [:tag_id, :message_thread_id], unique: true
+    add_index :message_threads_tags, [:message_thread_id, :tag_id]
   end
 end
