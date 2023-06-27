@@ -11,6 +11,7 @@
 #  updated_at                                  :datetime         not null
 
 class MessageThread < ApplicationRecord
+  has_and_belongs_to_many :tags
   belongs_to :folder
   has_many :messages do
     def find_or_create_by_uuid!(uuid:) end
