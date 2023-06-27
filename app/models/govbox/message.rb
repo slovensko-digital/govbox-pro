@@ -10,6 +10,7 @@
 #  delivered_at                                :datetime         not null
 #  edesk_class                                 :string           not null
 #  body                                        :text             not null
+#  payload                                     :json             not null
 #  created_at                                  :datetime         not null
 #  updated_at                                  :datetime         not null
 
@@ -25,7 +26,7 @@ class Govbox::Message < ApplicationRecord
     ) # TODO create folder for threads
 
     Message.transaction do
-      message = self.create_message_with_tag(govbox_message)
+      message = self.create_message(govbox_message)
 
       message.thread = govbox_message.box.message_threads.find_or_create_by_merge_uuid!(
         folder: folder,
@@ -33,6 +34,8 @@ class Govbox::Message < ApplicationRecord
         title: message.title,
         delivered_at: govbox_message.delivered_at
       )
+
+      self.create_message_tag(message, govbox_message)
 
       message.save!
 
@@ -42,15 +45,10 @@ class Govbox::Message < ApplicationRecord
 
   private
 
-  def self.create_message_with_tag(govbox_message)
-    message_tag = Tag.find_or_create_by!(
-      name: "slovensko.sk:#{govbox_message.folder.full_name}",
-      tenant: govbox_message.box.tenant
-    )
-
+  def self.create_message(govbox_message)
     raw_message = govbox_message.payload
 
-    message = ::Message.create(
+    ::Message.create(
       uuid: raw_message["message_id"],
       title: raw_message["subject"],
       sender_name: raw_message["sender_name"],
@@ -58,9 +56,6 @@ class Govbox::Message < ApplicationRecord
       delivered_at: Time.parse(raw_message["delivered_at"]),
       html_visualization: raw_message["original_html"]
     )
-
-    message.tags << message_tag
-    message
   end
 
   def self.create_message_objects(message, raw_message)
@@ -83,5 +78,16 @@ class Govbox::Message < ApplicationRecord
         message_object_id: object.id
       )
     end
+  end
+
+  def self.create_message_tag(message, govbox_message)
+    tag = Tag.find_or_create_by!(
+      name: "slovensko.sk:#{govbox_message.folder.full_name}",
+      tenant: govbox_message.box.tenant,
+      visible: !govbox_message.folder.system?
+    )
+
+    message.tags << tag
+    message.thread.tags << tag unless message.thread.tags.include?(tag)
   end
 end

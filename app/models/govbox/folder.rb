@@ -4,7 +4,7 @@
 #
 #  id                                          :integer          not null, primary key
 #  edesk_folder_id                             :integer          not null
-#  parent_folder_id                            :integer          not null
+#  parent_folder_id                            :integer
 #  box_id                                      :integer          not null
 #  name                                        :string           not null
 #  system                                      :boolean          not null
