@@ -22,6 +22,10 @@ class MessageThread < ApplicationRecord
 
   delegate :tenant, to: :folder
 
+  def read?
+    messages.all?(&:read)
+  end
+
   def automation_rules_for_event(event)
     folder.tenant.automation_rules.where(trigger_event: event)
   end
