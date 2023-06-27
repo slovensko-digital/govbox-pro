@@ -5,7 +5,7 @@
 #  id                                          :integer          not null, primary key
 #  tenant_id                                   :integer
 #  name                                        :string
-#  system                                      :boolean          not null
+#  visible                                     :boolean          not null
 #  created_at                                  :datetime         not null
 #  updated_at                                  :datetime         not null
 

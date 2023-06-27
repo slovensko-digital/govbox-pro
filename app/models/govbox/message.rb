@@ -10,6 +10,7 @@
 #  delivered_at                                :datetime         not null
 #  edesk_class                                 :string           not null
 #  body                                        :text             not null
+#  payload                                     :json             not null
 #  created_at                                  :datetime         not null
 #  updated_at                                  :datetime         not null
 
@@ -17,7 +18,7 @@ class Govbox::Message < ApplicationRecord
   belongs_to :folder, class_name: 'Govbox::Folder'
 
   delegate :box, to: :folder
-  
+
   def self.create_message_with_thread!(govbox_message)
     folder = Folder.find_or_create_by!(
       name: "Inbox",

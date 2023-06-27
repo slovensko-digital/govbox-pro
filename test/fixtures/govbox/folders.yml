@@ -1,0 +1,14 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  edesk_folder_id: 123456
+  box: one
+  name: Inbox
+  system: true
+
+two:
+  edesk_folder_id: 7890123
+  parent_folder: one
+  box: one
+  name: MyName
+  system: false
