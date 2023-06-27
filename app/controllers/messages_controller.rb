@@ -2,8 +2,9 @@ class MessagesController < ApplicationController
   before_action :set_message
 
   def show
-    @message.update(read: true)
     authorize @message
+    @message.update(read: true)
+    @message_thread = @message.thread
   end
 
   private
