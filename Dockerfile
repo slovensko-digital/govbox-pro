@@ -1,11 +1,14 @@
 FROM ruby:3.2.2
 
 # Install packages
-RUN apt-get update && apt-get install -y build-essential nodejs libpq-dev
+RUN apt-get update && apt-get install -y build-essential nodejs libpq-dev npm
 
 # Set working directory
 RUN mkdir /app
 WORKDIR /app
+
+RUN npm i -g yarn
+RUN npm i npx
 
 # Bundle and cache Ruby gems
 COPY Gemfile* ./
