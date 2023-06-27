@@ -1,0 +1,23 @@
+<div class="relative" data-controller="dropdown"
+                data-dropdown-active-target="#dropdown-button"
+                data-dropdown-active-class="bg-gray-50"
+                data-dropdown-invisible-class ="opacity-0 scale-95"
+                data-dropdown-visible-class ="opacity-100 scale-100"
+                data-dropdown-entering-class="ease-out duration-100"
+                data-dropdown-enter-timeout="100"
+                data-dropdown-leaving-class="ease-in duration-75"
+                data-dropdown-leave-timeout="75"
+                >
+  <div id="dropdown-button" data-action="click->dropdown#toggle click@window->dropdown#hide" role="button" data-dropdown-target="button" tabindex="0" class="inline-block select-none">
+    <button type="button" class="flex items-center" aria-expanded="false" aria-haspopup="true">
+      <div class="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-visible gap-1.5 px-2 py-2 rounded-md bg-blue-100">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" class="flex-grow-0 flex-shrink-0 w-4 h-4 relative" preserveAspectRatio="xMidYMid meet">
+          <path d="M8 4V8M8 8V12M8 8H12M8 8H4" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+      </div>
+    </button>
+  </div>
+  <div data-dropdown-target="menu">
+    <%= render Common::TagSelectorPopupComponent.new(@object) %>
+  </div>
+</div>

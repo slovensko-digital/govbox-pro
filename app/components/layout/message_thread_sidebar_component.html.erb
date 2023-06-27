@@ -1,4 +1,4 @@
-  <%= link_to message_threads_path, class:"flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-4 p-4" do %>
+<%= link_to message_threads_path, class:"flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-4 p-4" do %>
   <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" class="flex-grow-0 flex-shrink-0 w-8 h-8 relative" preserveAspectRatio="xMidYMid meet">
     <path d="M20.0003 25.3333L10.667 16L20.0003 6.66666" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
   </svg>
@@ -22,7 +22,7 @@
           <rect x="2" y="2" width="36" height="36" rx="18" stroke="white" stroke-width="4"></rect>
         </svg>
         <div class="flex flex-col justify-start items-start flex-grow relative">
-          <p class="flex-grow-0 flex-shrink-0 text-sm text-center text-black"><%= message.recipient_name || message.sender_name || "Ministerstvo neznáma SR" %></p>
+          <p class="flex-grow-0 flex-shrink-0 text-sm text-center text-black"><%= message.recipient_name || message.sender_name || "Neidentifikovaný komunikačný partner" %></p>
           <p class="flex-grow-0 flex-shrink-0 text-sm text-center text-gray-500"><%= l message.delivered_at, format: :short %></p>
         </div>
       </div>

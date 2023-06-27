@@ -17,6 +17,7 @@ class MessageThread < ApplicationRecord
     def find_or_create_by_uuid!(uuid:) end
   end
   has_and_belongs_to_many :tags, through: :messages
+  has_many :message_threads_tags
 
   after_create_commit ->(thread) { EventBus.publish(:message_thread_created, thread) }
 
@@ -24,5 +25,9 @@ class MessageThread < ApplicationRecord
 
   def automation_rules_for_event(event)
     folder.tenant.automation_rules.where(trigger_event: event)
+  end
+
+  def visible_tags
+    tags.where(visible: true)
   end
 end
