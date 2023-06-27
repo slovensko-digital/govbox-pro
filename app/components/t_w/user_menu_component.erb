@@ -10,15 +10,10 @@
                 data-dropdown-leave-timeout="75"
                 >
   <div id="dropdown-button" data-action="click->dropdown#toggle click@window->dropdown#hide" role="button" data-dropdown-target="button" tabindex="0" class="inline-block select-none">
-    <button type="button" class="-m-1.5 flex items-center p-1.5" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
+    <button type="button" class="m-1.5 flex items-center p-1.5" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
       <span class="sr-only">Open user menu</span>
       <img class="h-8 w-8 rounded-full bg-gray-50" src=<%= session[:user_profile_picture_url]%> alt="">
       <span class="hidden lg:flex lg:items-center">
-        <span class="ml-4 text-sm font-semibold leading-6 text-gray-900" aria-hidden="true">
-          <% if @user %>
-            <%= @user.email %>
-          <% end %>
-        </span>
         <svg class="ml-2 h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
           <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
         </svg>
@@ -26,9 +21,32 @@
     </button>
   </div>
   <div data-dropdown-target="menu">
-    <div class="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
-      <a href="#" class="block px-3 py-1 text-sm leading-6 text-gray-900" role="menuitem" tabindex="-1" id="user-menu-item-0">Your profile</a>
-      <%= button_to "Odhlásiť sa", sessions_path, method: :delete, class: "cursor-pointer block px-3 py-1 text-sm leading-6 text-gray-900", role:"menuitem", tabindex:"-1", id:"user-menu-item-1"%>
+    <div class="flex flex-col justify-start items-start overflow-hidden gap-px py-0.5 rounded-lg bg-white border border-gray-300 fixed top-30 right-0" style="box-shadow: 1px 1px 4px 0 rgba(0,0,0,0.1);">
+      <div class="flex justify-start items-start self-stretch flex-grow-0 flex-shrink-0 px-4 py-3">
+        <div class="flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 relative gap-1">
+          <% if @user %>
+            <p class="flex-grow-0 flex-shrink-0 text-base text-center text-gray-900">Prihlásený ako</p>
+            <p class="flex-grow-0 flex-shrink-0 text-base font-medium text-center text-gray-900"><%= @user.email %></p>
+          <% else %>
+            <p class="flex-grow-0 flex-shrink-0 text-base text-center text-gray-900">Neprihlásený</p>
+          <% end %>
+        </div>
+      </div>
+      <div class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative">
+        <svg width="183" height="1" viewBox="0 0 183 1" fill="none" xmlns="http://www.w3.org/2000/svg" class="flex-grow" preserveAspectRatio="xMidYMid meet">
+          <line y1="0.5" x2="183" y2="0.5" stroke="#E5E7EB"></line>
+        </svg>
+      </div>
+      <div class="flex justify-start items-start self-stretch flex-grow-0 flex-shrink-0 px-4 py-2">
+        <%= button_to sessions_path, method: :delete, class: "flex-grow-0 flex-shrink-0 text-base font-medium text-left text-gray-900 hover:underline", role:"menuitem", tabindex:"-1", id:"user-menu-item-1" do %>
+          <div class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-3">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="flex-grow-0 flex-shrink-0 w-6 h-6 relative" preserveAspectRatio="xMidYMid meet">
+              <path d="M17 16L21 12M21 12L17 8M21 12H7M13 16V17C13 17.7956 12.6839 18.5587 12.1213 19.1213C11.5587 19.6839 10.7956 20 10 20H6C5.20435 20 4.44129 19.6839 3.87868 19.1213C3.31607 18.5587 3 17.7956 3 17V7C3 6.20435 3.31607 5.44129 3.87868 4.87868C4.44129 4.31607 5.20435 4 6 4H10C10.7956 4 11.5587 4.31607 12.1213 4.87868C12.6839 5.44129 13 6.20435 13 7V8" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+            Odhlásiť sa
+          </div>
+        <% end %>
+      </div>
     </div>
   </div>
 </div>

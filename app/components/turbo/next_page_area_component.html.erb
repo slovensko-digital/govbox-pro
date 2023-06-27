@@ -1,0 +1,7 @@
+<turbo-frame id="next_page_area">
+  <%= render Turbo::NextPageComponent.new(
+    id:@next_cursor, 
+    url:@url
+    ) %>
+  <%= render TW::CenteredSpinnerComponent.new %>
+</turbo-frame>

@@ -14,6 +14,6 @@ class ApplicationController < ActionController::Base
   end
 
   def set_menu_context
-    @menu = SidebarMenu.new(controller_name)
+    @menu = SidebarMenu.new(controller_name, action_name)
   end
 end

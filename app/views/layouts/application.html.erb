@@ -14,8 +14,8 @@
       <% component.with_static_sidebar do %>
         <%= render TW::StaticSidebarComponent.new %>
       <% end %>
-      <% component.with_user_menu do %>
-        <%= render TW::UserMenuComponent.new(user: Current.user) %>
+      <% component.with_top_navigation do %>
+        <%= render TW::TopNavigationComponent.new %>
       <% end %>
       <% component.with_main_content do %>
         <%= yield %>

@@ -1,6 +1,8 @@
-<a href=<%= @url %> class="text-indigo-200 hover:text-white hover:bg-indigo-700 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold">
-  <% if @icon_component %>
-    <%= render @icon_component.new %>
-  <% end %>
-  <%= @name %>
+<a href=<%= @url %> class="flex justify-start items-start self-stretch flex-grow-0 flex-shrink-0 px-4 py-2">
+  <div class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-3">
+    <% if @icon_component %>
+      <%= render @icon_component.new %>
+    <% end %>
+    <p class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-gray-900"><%= @name %></p>
+  </div>
 </a>

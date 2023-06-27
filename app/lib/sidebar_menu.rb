@@ -1,8 +1,8 @@
 class SidebarMenu
   include Rails.application.routes.url_helpers
 
-  def initialize(context)
-    @menu = initial_structure(context)
+  def initialize(controller, action)
+    @menu = initial_structure(controller, action)
   end
 
   def get_menu
@@ -11,13 +11,10 @@ class SidebarMenu
 
   private
 
-  def initial_structure(context)
-    #    case context
-    #when :main_menu
+  def initial_structure(controller, action)
+    return initial_message_thread_menu if controller == 'messages'
+
     initial_main_menu
-    #when :settings_menu
-    #initial_settings_menu
-    #end
   end
 
   def initial_main_menu
@@ -29,6 +26,10 @@ class SidebarMenu
       { icon: 'Settings', url: settings_automation_rules_path, name: 'Rules Settings' },
       :tagsplaceholder
     ]
+  end
+
+  def initial_message_thread_menu
+    %i[back_to_box_placeholder message_thread_placeholder]
   end
 
   def initial_settings_menu
