@@ -5,10 +5,12 @@
 #  id                                          :integer          not null, primary key
 #  uuid                                        :uuid             not null
 #  title                                       :string           not null
+#  message_type                                :string           not null
 #  message_thread_id                           :integer          not null
 #  sender_name                                 :string
 #  recipient_name                              :string
 #  html_visualization                          :text             not null
+#  metadata                                    :json
 #  delivered_at                                :datetime         not null
 #  created_at                                  :datetime         not null
 #  updated_at                                  :datetime         not null
