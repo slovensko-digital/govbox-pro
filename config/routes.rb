@@ -37,6 +37,7 @@ Rails.application.routes.draw do
   resources :message_threads_tags
 
   resources :messages do
+    # TODO change to resources :replies
     member do
       get 'reply'
       post 'submit_reply'
