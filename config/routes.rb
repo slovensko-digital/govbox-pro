@@ -36,6 +36,11 @@ Rails.application.routes.draw do
   end
 
   resources :messages do
+    member do
+      get 'reply'
+      post 'submit_reply'
+    end
+    
     resources :message_objects do
       member do
         get 'download'

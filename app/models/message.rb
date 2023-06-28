@@ -21,7 +21,24 @@ class Message < ApplicationRecord
   has_many :objects, class_name: 'MessageObject'
   delegate :tenant, to: :thread
 
+  DELIVERY_NOTIFICATION_CLASS = 'ED_DELIVERY_NOTIFICATION'
+  EGOV_DOCUMENT_CLASS = 'EGOV_DOCUMENT'
+
   def automation_rules_for_event(event)
     tenant.automation_rules.where(trigger_event: event)
+  end
+
+  def can_be_replied?
+    tags.where(name: "slovensko.sk:Inbox").present? && egov_document?
+  end
+
+  def delivery_notification?
+    metadata["edesk_class"] == DELIVERY_NOTIFICATION_CLASS
+  end
+
+  private
+
+  def egov_document?
+    metadata["edesk_class"] == EGOV_DOCUMENT_CLASS
   end
 end

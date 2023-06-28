@@ -64,7 +64,8 @@
           <p class="flex-grow-0 flex-shrink-0 w-[743px] text-base text-left text-gray-900">
             <span class="flex-grow-0 flex-shrink-0 w-[743px] text-base text-left text-gray-900">Správa obsahuje
               <span class="flex-grow-0 flex-shrink-0 w-[743px] text-base font-semibold text-left text-gray-900"><%= pluralize(@message.objects.count, "prílohu", plural: 'príloh') %></span>
-            </p>
+            </span>
+          </p>
           </div>
         </div>
         <div class="flex flex-col justify-start items-start self-stretch flex-grow-0 flex-shrink-0 relative gap-4 px-6 py-4 bg-white border-t-0 border-r-0 border-b border-l-0 border-gray-200">
@@ -72,11 +73,19 @@
             <%= render MessageAttachmentComponent.new(object, index == @message.objects.count - 1) %>
           <% end %>
         </div>
-        <div class="flex justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
-          <div class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md bg-blue-600">
-            <p class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-white"> Prevziať správu </p>
+        <% if @message.delivery_notification? %>
+          <div class="flex justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
+            <div class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md bg-blue-600">
+              <p class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-white"> Prevziať správu </p>
+            </div>
           </div>
-        </div>
+        <% elsif @message.can_be_replied? %>
+          <div class="flex justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
+            <%= link_to reply_message_path(@message), class: "text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3.5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" do %>
+              Odpovedať
+            <% end %>
+          </div>
+        <% end %>
       </div>
     </div>
   </div>

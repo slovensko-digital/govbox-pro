@@ -18,4 +18,11 @@ class MessagePolicy < ApplicationPolicy
     true
   end
 
+  def reply?
+    true # TODO can everyone reply?
+  end
+
+  def submit_reply?
+    reply?
+  end
 end

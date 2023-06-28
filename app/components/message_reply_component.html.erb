@@ -1,0 +1,32 @@
+<div class="flex flex-col justify-stretch items-start w-full">
+  <div class="flex flex-col justify-stretch items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-4">
+    <div class="flex flex-col justify-stretch items-start self-stretch flex-grow-0 flex-shrink-0 overflow-hidden rounded-md bg-white border border-gray-200">
+      <div class="flex flex-col justify-stretch items-start self-stretch flex-grow-0 flex-shrink-0 overflow-hidden gap-4 px-6 pt-6 pb-4 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
+        <div class="flex justify-stretch items-start self-stretch flex-grow-0 flex-shrink-0 gap-4">
+          <div class="flex flex-col justify-stretch items-start flex-grow gap-2">
+            <div class="flex justify-strech items-start flex-grow-0 flex-shrink-0 relative gap-2">
+              <p class="flex-grow-0 flex-shrink-0 w-[100px] text-base text-left text-gray-900">Odosielateľ:</p>
+              <p class="flex-grow-0 flex-shrink-0 text-base font-semibold text-left text-gray-900"><%= @message.recipient_name || 'Neznámy' %> </p>
+            </div>
+            <div class="flex justify-strech items-start flex-grow-0 flex-shrink-0 relative gap-2">
+              <p class="flex-grow-0 flex-shrink-0 w-[100px] text-base text-left text-gray-900"> Adresát: </p>
+              <p class="flex-grow-0 flex-shrink-0 text-base font-semibold text-left text-gray-900"><%= @message.sender_name || 'Neznámy' %></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <%= form_tag submit_reply_message_path(@message), method: :post, class: "w-full" do %>
+        <div class="flex flex-col justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 relative gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
+          <div class="mb-3 pt-0 w-full">
+            <%= text_field_tag "reply_title", nil, placeholder: "Predmet", class:"mb-3 px-3 py-4 placeholder-slate-300 text-slate-í00 relative bg-white bg-white rounded-lg text-base border-0 shadow outline-none focus:outline-none focus:ring w-full" %>
+            <%= text_area_tag "reply_text", nil, placeholder: "Text", rows: 10, class:"px-3 py-4 placeholder-slate-300 text-slate-í00 relative bg-white bg-white rounded-lg text-base border-0 shadow outline-none focus:outline-none focus:ring w-full h-full" %>
+          </div>
+        </div>
+        <div class="flex justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
+            <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3.5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Odoslať</button>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
