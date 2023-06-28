@@ -1,0 +1,36 @@
+timeout: 120
+service:
+  externalPort: 3000
+  internalPort: 3000
+image:
+  secrets:
+  - name: skdigital-bonet-registry
+application.migrateCommand: ["bundle", "exec", "rails", "db:migrate"]
+livenessProbe:
+  initialDelaySeconds: 5
+  timeoutSeconds: 5
+  probeType: "exec"
+  command:
+    - "true"
+readinessProbe:
+  initialDelaySeconds: 5
+  timeoutSeconds: 10
+  probeType: "exec"
+  command:
+    - "true"
+resources:
+  requests:
+    cpu: 10m
+    memory: 400Mi
+  limits:
+    memory: 1Gi
+persistence:
+  enabled: true
+  volumes:
+  - name: govbox-pro-storage
+    mount:
+      path: /app/storage
+    claim:
+      accessMode: ReadWriteMany
+      size: 10Gi
+      storageClass: nfs-client
