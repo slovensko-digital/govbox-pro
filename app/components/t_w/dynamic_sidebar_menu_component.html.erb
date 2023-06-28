@@ -5,8 +5,9 @@
     <% case item ; when :tagsplaceholder %>
     <%= render Layout::TagListComponent.new %>
     <% when :back_to_box_placeholder %>
-    <%= render Layout::MessageThreadSidebarComponent.new %>
+    <%= render Layout::BackToBoxComponent.new %>
     <% when :message_thread_placeholder %>
+    <%= render Layout::MessageThreadSidebarComponent.new %>
   <% else %>
     <%= render TW::SidebarMenuItemComponent.new(name: item[:name], url: item[:url], icon: item[:icon]) %>
   <% end %>
