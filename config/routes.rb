@@ -71,9 +71,7 @@ Rails.application.routes.draw do
 
   class GoodJobAdmin
     def self.matches?(request)
-      admin_ids = ENV.fetch('ADMIN_IDS', '').split(',')
-
-      admin_ids.include?(request.session['user_id'].to_s)
+      User.find_by(id: request.session['user_id'])&.site_admin?
     end
   end
 
