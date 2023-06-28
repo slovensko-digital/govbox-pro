@@ -3,6 +3,8 @@ class MessagesController < ApplicationController
 
   def show
     authorize @message
+
+    @notice = notice
   end
 
   def reply
