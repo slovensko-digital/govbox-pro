@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class FolderPolicy < ApplicationPolicy
+class TagPolicy < ApplicationPolicy
   attr_reader :user, :tag
 
   def initialize(user, tag)
