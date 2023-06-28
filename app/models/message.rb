@@ -9,6 +9,7 @@
 #  sender_name                                 :string
 #  recipient_name                              :string
 #  html_visualization                          :text             not null
+#  read                                        :boolean          not null, default: false
 #  delivered_at                                :datetime         not null
 #  created_at                                  :datetime         not null
 #  updated_at                                  :datetime         not null

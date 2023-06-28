@@ -3,6 +3,8 @@ class MessagesController < ApplicationController
 
   def show
     authorize @message
+    @message.update(read: true)
+    @message_thread = @message.thread
   end
 
   private
