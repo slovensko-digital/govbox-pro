@@ -21,8 +21,8 @@
           <path d="M26.3996 18.4944L19.9996 21.6944L13.5996 18.4944V23.2C13.5996 23.6243 13.7682 24.0313 14.0682 24.3314C14.3683 24.6314 14.7753 24.8 15.1996 24.8H24.7996C25.224 24.8 25.6309 24.6314 25.931 24.3314C26.231 24.0313 26.3996 23.6243 26.3996 23.2V18.4944Z" fill="<%= message.read? ? "#4B5563" : "#2563EB" %>"></path>
         </svg>
         <div class="flex flex-col justify-start items-start flex-grow relative">
-          <p class="flex-grow-0 flex-shrink-0 text-sm text-center text-black" style="<%='font-weight: 600;' unless message.read? %><%='color: #2563EB; font-weight: 600;' if @selected_message == message %>"><%= message.recipient_name || message.sender_name || "Ministerstvo neznáma SR" %></p>
-          <p class="flex-grow-0 flex-shrink-0 text-sm text-center text-gray-500" style="<%='color: #2563EB; font-weight: 600;' if @selected_message == message %>"><%= l message.delivered_at, format: :short %></p>
+          <p class="flex-grow-0 flex-shrink-0 text-sm text-center text-black"><%= message.recipient_name || message.sender_name || "Neidentifikovaný komunikačný partner" %></p>
+          <p class="flex-grow-0 flex-shrink-0 text-sm text-center text-gray-500"><%= l message.delivered_at, format: :short %></p>
         </div>
       </div>
     <% end %>

@@ -16,6 +16,7 @@
 
 class Message < ApplicationRecord
   has_and_belongs_to_many :tags
+  has_many :messages_tags
   belongs_to :thread, class_name: 'MessageThread', foreign_key: 'message_thread_id'
   has_many :objects, class_name: 'MessageObject'
   delegate :tenant, to: :thread
