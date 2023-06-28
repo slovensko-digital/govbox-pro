@@ -24,7 +24,7 @@ Rails.application.routes.draw do
 
   resources :tags do
     resources :message_threads do
-    end    
+    end
   end
 
   resources :message_threads do
@@ -71,7 +71,7 @@ Rails.application.routes.draw do
 
   class GoodJobAdmin
     def self.matches?(request)
-      User.find_by(id: request.session['user_id'])&.site_admin?
+      User.find(request.session['user_id'])&.site_admin?
     end
   end
 
