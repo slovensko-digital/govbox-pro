@@ -4,6 +4,9 @@ class MessagesController < ApplicationController
   def show
     authorize @message
 
+    @message.update(read: true)
+    @message_thread = @message.thread
+
     @notice = notice
   end
 
@@ -22,7 +25,6 @@ class MessagesController < ApplicationController
 
     if permitted_params[:reply_title].present? && permitted_params[:reply_text].present?
       Govbox::SubmitMessageReplyJob.perform_later(@message, permitted_params[:reply_title], permitted_params[:reply_text])
-      Govbox::SyncBoxJob.set(wait: 2.minutes).perform_later(@message.thread.folder.box)
 
       redirect_to message_path(@message), notice: "Správa bola odoslaná."
     else

@@ -10,18 +10,23 @@ class MessageThreadsController < ApplicationController
     @cursor = params[:cursor] || {}
     @cursor[:delivered_at] = @cursor[:delivered_at] ? millis_to_time(@cursor[:delivered_at]) : Time.now
 
+    @message_threads_collection = policy_scope(MessageThread)
+    if params[:tag_id]
+      @message_threads_collection = @message_threads_collection.where(
+            'message_threads.id in (select mt.id from message_threads mt
+                  join message_threads_tags mtags on mt.id = mtags.message_thread_id
+                  where mtags.tag_id = ?)',
+            params[:tag_id]
+          )
+    end
+ 
+    
     @message_threads, @next_cursor =
       Pagination.paginate(
         collection:
-          policy_scope(MessageThread).where(
-            'message_threads.id in (select mt.id from message_threads mt
-                  join messages m on m.message_thread_id = mt.id
-                  join messages_tags mtags on m.id = mtags.message_id
-                  where mtags.tag_id = ?)',
-            params[:tag_id]
-          )# TODO - mame tu velmi hruby sposob ako zistit, s kym je dany thread komunikacie, vedeny, len pre ucely zobrazenia. Dohodnut aj s @Taja, co s tym
-          .
-            select(
+          # TODO - mame tu velmi hruby sposob ako zistit, s kym je dany thread komunikacie, vedeny, len pre ucely zobrazenia. Dohodnut aj s @Taja, co s tym
+          @message_threads_collection
+          .select(
             'message_threads.*,
           (select count(messages.id) from messages where messages.message_thread_id = message_threads.id) as messages_count,
           coalesce((select max(coalesce(recipient_name)) from messages where messages.message_thread_id = message_threads.id),
@@ -45,7 +50,7 @@ class MessageThreadsController < ApplicationController
 
   private
 
-  MESSAGE_THREADS_PER_PAGE = 5
+  MESSAGE_THREADS_PER_PAGE = 10
 
   def time_to_millis(time)
     time.strftime('%s%L').to_f

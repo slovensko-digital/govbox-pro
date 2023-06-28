@@ -34,6 +34,7 @@ Rails.application.routes.draw do
       get 'run_rules'
     end
   end
+  resources :message_threads_tags
 
   resources :messages do
     member do
@@ -47,6 +48,7 @@ Rails.application.routes.draw do
       end
     end
   end
+  resources :messages_tags
 
   resource :settings
 

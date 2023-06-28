@@ -5,18 +5,19 @@
 #  id                                          :integer          not null, primary key
 #  uuid                                        :uuid             not null
 #  title                                       :string           not null
-#  message_type                                :string           not null
 #  message_thread_id                           :integer          not null
 #  sender_name                                 :string
 #  recipient_name                              :string
 #  html_visualization                          :text             not null
 #  metadata                                    :json
+#  read                                        :boolean          not null, default: false
 #  delivered_at                                :datetime         not null
 #  created_at                                  :datetime         not null
 #  updated_at                                  :datetime         not null
 
 class Message < ApplicationRecord
   has_and_belongs_to_many :tags
+  has_many :messages_tags
   belongs_to :thread, class_name: 'MessageThread', foreign_key: 'message_thread_id'
   has_many :objects, class_name: 'MessageObject'
   delegate :tenant, to: :thread
@@ -29,7 +30,7 @@ class Message < ApplicationRecord
   end
 
   def can_be_replied?
-    tags.where(name: "slovensko.sk:Inbox").present? && egov_document?
+    tags.where("name LIKE ?", "#{"slovensko.sk:Inbox%"}").present? && egov_document?
   end
 
   def delivery_notification?

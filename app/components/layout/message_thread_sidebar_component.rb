@@ -1,6 +1,7 @@
 class Layout::MessageThreadSidebarComponent < ViewComponent::Base
   def before_render
     # TODO: Fix security hole - no pundit
-    @message_thread = Message.find(params[:id]).thread
+    @selected_message = Message.find(params[:id])
+    @message_thread = @selected_message.thread
   end
 end
