@@ -1,14 +1,12 @@
 # frozen_string_literal: true
 
-class BoxPolicy < ApplicationPolicy
-  attr_reader :user, :box
+class Admin::TagPolicy < ApplicationPolicy
+  attr_reader :user, :tag
 
-  def initialize(user, box)
+  def initialize(user, tag)
     @user = user
-    @box = box
+    @tag = tag
   end
-
-  # TODO: Cely tento policy file je asi na prerabku, kedze vacsina z neho je adminova, a je vlastne kopiou z admina
 
   class Scope < Scope
     def resolve
@@ -16,15 +14,11 @@ class BoxPolicy < ApplicationPolicy
     end
   end
 
-  def index?
+  def index
     @user.site_admin? || @user.admin?
   end
 
   def show?
-    @user.site_admin? || @user.admin?
-  end
-
-  def sync?
     @user.site_admin? || @user.admin?
   end
 

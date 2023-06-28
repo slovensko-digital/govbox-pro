@@ -1,8 +1,8 @@
 <div class="relative" data-controller="dropdown"
                 data-dropdown-active-target="#dropdown-button"
                 data-dropdown-active-class="bg-gray-50"
-                data-dropdown-invisible-class ="opacity-0 scale-95"
-                data-dropdown-visible-class ="opacity-100 scale-100"
+                data-dropdown-invisible-class="opacity-0 scale-95"
+                data-dropdown-visible-class="opacity-100 scale-100"
                 data-dropdown-entering-class="ease-out duration-100"
                 data-dropdown-enter-timeout="100"
                 data-dropdown-leaving-class="ease-in duration-75"
@@ -17,7 +17,7 @@
       </div>
     </button>
   </div>
-  <div data-dropdown-target="menu">
+  <div data-dropdown-target="menu" class="z-50 absolute right-0 transform transition hidden opacity-0 scale-95" >
     <%= render Common::TagSelectorPopupComponent.new(@object) %>
   </div>
 </div>

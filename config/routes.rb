@@ -13,9 +13,11 @@ Rails.application.routes.draw do
       resources :groups
       resources :users
       resources :boxes
+      resources :tags
     end
 
     resources :group_memberships
+    resources :tag_users
   end
 
   resources :boxes, path: 'schranky', only: [:index, :show] do

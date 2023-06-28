@@ -13,8 +13,15 @@ class MessageThreadsTagPolicy < ApplicationPolicy
       if @user.site_admin?
         scope.all
       else
-        # TODO: toto zrejme nestaci, potrebujeme obmedzit aj na konkretneho usera a jeho boxy
-        scope.includes(:message_thread, :tag).where(message_thread: {tenant_id: Current.tenant.id}, tag: {tenant_id: Current.tenant.id})
+        scope.where(
+          'message_thread_id in (
+        select mt.id
+        from message_threads mt
+        join message_threads_tags mt_tags on mt.id = mt_tags.message_thread_id
+        join tag_users tu on mt_tags.tag_id = tu.user_id
+        where user_id = ?)',
+          @user.id
+        ).where("tag_id in (select tag_id from tag_users where user_id = ?)", user.id)
       end
     end
   end
