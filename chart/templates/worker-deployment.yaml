@@ -184,6 +184,6 @@ items:
             {{- end}}
           {{- end }}
           resources:
-{{ toYaml $.Values.resources | indent 12 }}
+{{ $workerConfig.resources | default $.Values.resources | toYaml | indent 12 }}
 {{- end -}}
 {{- end -}}
