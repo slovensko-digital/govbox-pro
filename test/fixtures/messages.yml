@@ -7,7 +7,6 @@ one:
   recipient_name: MyString
   html_visualization: MyString
   delivered_at: 2023-05-18 16:18:26
-  message_type: MyType
   thread: one
 
 two:
@@ -17,5 +16,4 @@ two:
   recipient_name: MyString
   html_visualization: MyString
   delivered_at: 2023-05-18 16:18:26
-  message_type: MyType
   thread: one
