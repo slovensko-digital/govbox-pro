@@ -40,7 +40,7 @@ Rails.application.routes.draw do
       get 'reply'
       post 'submit_reply'
     end
-    
+
     resources :message_objects do
       member do
         get 'download'
