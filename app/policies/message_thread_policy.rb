@@ -34,6 +34,10 @@ class MessageThreadPolicy < ApplicationPolicy
     true
   end
 
+  def update?
+    true
+  end
+
   def merge?
     true
   end

@@ -1,8 +1,17 @@
 class MessageThreadsController < ApplicationController
-  before_action :set_message_thread, only: %i[show]
+  before_action :set_message_thread, only: %i[show, update]
 
   def show
     authorize @message_thread
+  end
+
+  def update
+    authorize @message_thread
+    if @message_thread.update(message_thread_params)
+      redirect_back fallback_location:messages_path(@message_thread.messages.first)
+    else
+      render :edit, status: :unprocessable_entity
+    end
   end
 
   def index
@@ -81,6 +90,7 @@ class MessageThreadsController < ApplicationController
               (select max(coalesce(sender_name)) from messages where messages.message_thread_id = message_threads.id)) as with_whom'
     )
   end
+
   def time_to_millis(time)
     time.strftime('%s%L').to_f
   end
@@ -93,7 +103,7 @@ class MessageThreadsController < ApplicationController
     @message_thread = policy_scope(MessageThread).find(params[:id])
   end
 
-  def page_params
-    params.permit(:cursor)
+  def message_thread_params
+    params.require(:message_thread).permit(:title, :original_title, :merge_uuids)
   end
 end

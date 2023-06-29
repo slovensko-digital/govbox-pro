@@ -1,7 +1,7 @@
 <div class="flex flex-col justify-start items-start w-full overflow-visible gap-4 px-6 py-4 bg-white border-t-0 border-r-0 border-b border-l-0 border-gray-200">
   <div class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 gap-8">
     <div class="flex justify-start items-center flex-grow relative gap-4">
-      <p class="flex-grow-0 flex-shrink-0 text-xl font-semibold text-left text-gray-900"><%= @message_thread.title %></p>
+      <%= render MessageThreadRenameComponent.new(message_thread: @message_thread) %>
       <div class="flex justify-start items-start flex-grow-0 flex-shrink-0 gap-2">
         <%# TODO: Toto by bolo vhodne prerobit na message_threads_tags a nie tags %>
         <% @message_thread.visible_tags.each do |tag|%>
