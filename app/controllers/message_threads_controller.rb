@@ -29,6 +29,7 @@ class MessageThreadsController < ApplicationController
     end
   end
 
+  # TODO: presunut logiku do modelu
   def merge
     authorize MessageThread
     @selected_message_threads = policy_scope(MessageThread).where(id: params[:message_thread_ids]).order(:delivered_at)
