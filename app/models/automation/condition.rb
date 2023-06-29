@@ -5,7 +5,7 @@ module Automation
 
   class ContainsCondition < Automation::Condition
     def satisfied?(thing)
-      thing[attr].match?(value)
+      thing[attr]&.match?(value)
     end
 
     def type_human_string

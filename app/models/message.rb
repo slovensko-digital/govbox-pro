@@ -18,6 +18,7 @@ class Message < ApplicationRecord
   belongs_to :thread, class_name: 'MessageThread', foreign_key: 'message_thread_id'
   has_many :objects, class_name: 'MessageObject'
   delegate :tenant, to: :thread
+  after_create_commit ->(message) { EventBus.publish(:message_created, message) }
 
   def automation_rules_for_event(event)
     tenant.automation_rules.where(trigger_event: event)
