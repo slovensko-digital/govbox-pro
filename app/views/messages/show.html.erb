@@ -1,3 +1,4 @@
+<%= render TW::FlashComponent.new(flash: flash) %>
 <%= render MessageComponent.new(message: @message) do |component| %>
   <% @message.objects.each do |message_object| %>
     <% component.with_attachment do %>

@@ -33,4 +33,8 @@ class MessageThreadPolicy < ApplicationPolicy
   def index?
     true
   end
+
+  def merge?
+    true
+  end
 end
