@@ -31,13 +31,13 @@
             </div>
           </div>
           <div class="flex flex-col justify-strech items-start flex-grow gap-1">
-            <div class="flex justify-strech items-start flex-grow-0 flex-shrink-0 relative gap-2">
+            <div class="todo flex justify-strech items-start flex-grow-0 flex-shrink-0 relative gap-2">
               <p class="flex-grow-0 flex-shrink-0 w-[140px] text-base text-left text-gray-900">Typ doručenia:</p>
-              <p class="flex-grow-0 flex-shrink-0 text-base font-semibold text-left text-gray-900">Taketo mame?</p>
+              <p class="flex-grow-0 flex-shrink-0 text-base font-semibold text-left text-gray-900">TODO</p>
             </div>
           </div>
           <div class="flex flex-col justify-strech items-end flex-grow-0 flex-shrink-0 relative gap-1">
-            <div class="flex flex-col justify-strech items-end flex-grow-0 flex-shrink-0 gap-1 pb-1">
+            <div class="todo flex flex-col justify-strech items-end flex-grow-0 flex-shrink-0 gap-1 pb-1">
               <div class="flex justify-strech items-start flex-grow-0 flex-shrink-0">
                 <div class="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-tr-md rounded-br-md bg-white border border-gray-300">
                   <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="flex-grow-0 flex-shrink-0 w-5 h-5 relative" preserveAspectRatio="xMidYMid meet">
@@ -47,7 +47,7 @@
               </div>
             </div>
             <p class="flex-grow-0 flex-shrink-0 text-base text-left text-gray-900"><%= l @message.delivered_at, format: :long %></p>
-            <p class="flex-grow-0 flex-shrink-0 text-base text-left text-gray-500">TODO: Bez podpisu</p>
+            <!--p class="todo flex-grow-0 flex-shrink-0 text-base text-left text-gray-500">(Ne)podpísané</p-->
           </div>
         </div>
       </div>
@@ -69,7 +69,7 @@
         <div class="flex flex-col justify-start items-start self-stretch flex-grow-0 flex-shrink-0 relative gap-4 px-6 py-4 bg-white border-t-0 border-r-0 border-b border-l-0 border-gray-200">
           <%= render MessageAttachmentComponent.with_collection(@message.objects) %>
         </div>
-        <div class="flex justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
+        <div class="todo flex justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
           <div class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md bg-blue-600">
             <p class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-white"> Prevziať správu </p>
           </div>

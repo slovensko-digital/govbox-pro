@@ -11,3 +11,9 @@
 }
 
 */
+
+.todo:after {
+  @apply hidden hover:block absolute bg-gray-700 text-white rounded p-1 text-xs;
+  content: 'Zatial neimplementovane';
+  /* Additional styles for positioning and visibility */
+}
