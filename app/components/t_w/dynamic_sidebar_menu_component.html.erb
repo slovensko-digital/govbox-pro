@@ -1,0 +1,17 @@
+<!--div class="flex flex-col justify-start items-start self-stretch flex-grow-0 flex-shrink-0 gap-2">
+  <div class="flex justify-start items-start self-stretch flex-grow-0 flex-shrink-0 px-4 py-2"-->
+<% if @menu %>
+  <% @menu.each do |item| %>
+    <% case item ; when :tagsplaceholder %>
+    <%= render Layout::TagListComponent.new %>
+    <% when :back_to_box_placeholder %>
+    <%= render Layout::BackToBoxComponent.new %>
+    <% when :message_thread_placeholder %>
+    <%= render Layout::MessageThreadSidebarComponent.new %>
+  <% else %>
+    <%= render TW::SidebarMenuItemComponent.new(name: item[:name], url: item[:url], icon: item[:icon]) %>
+  <% end %>
+<% end %>
+<% end %>
+<!--/div>
+</div-->

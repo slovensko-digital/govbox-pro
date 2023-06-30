@@ -1,0 +1,23 @@
+<div class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative">
+  <svg width="275" height="1" viewBox="0 0 275 1" fill="none" xmlns="http://www.w3.org/2000/svg" class="flex-grow" preserveAspectRatio="xMidYMid meet">
+    <line y1="0.5" x2="275" y2="0.5" stroke="#E5E7EB"></line>
+  </svg>
+</div>
+<div class="flex flex-col justify-start items-start self-stretch flex-grow-0 flex-shrink-0 gap-8 p-0">
+  <% @message_thread.messages.each do |message| %>
+    <%= link_to message do %>
+      <div class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-4">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" class="flex-grow-0 flex-shrink-0 w-10 h-10 relative" preserveAspectRatio="none">
+          <circle cx="20" cy="20" r="15" fill="#F9FAFB" stroke="#4B5563" stroke-width="2"></circle>
+          <path d="M24.8001 15.7L24.8002 15.7C25.081 15.6999 25.3511 15.8072 25.5553 15.9999C25.6824 16.1198 25.778 16.2672 25.836 16.429L20.0001 19.3466L14.1643 16.429C14.2223 16.2672 14.3178 16.1198 14.445 15.9999C14.6492 15.8072 14.9193 15.6999 15.2 15.7H15.2001L24.8001 15.7Z" fill="#4B5563" stroke="#4B5563"></path>
+          <path d="M26.3996 18.4944L19.9996 21.6944L13.5996 18.4944V23.2C13.5996 23.6243 13.7682 24.0313 14.0682 24.3314C14.3683 24.6314 14.7753 24.8 15.1996 24.8H24.7996C25.224 24.8 25.6309 24.6314 25.931 24.3314C26.231 24.0313 26.3996 23.6243 26.3996 23.2V18.4944Z" fill="#4B5563"></path>
+          <rect x="2" y="2" width="36" height="36" rx="18" stroke="white" stroke-width="4"></rect>
+        </svg>
+        <div class="flex flex-col justify-start items-start flex-grow relative">
+          <p class="flex-grow-0 flex-shrink-0 text-sm text-center text-black"><%= message.recipient_name || message.sender_name || "Neidentifikovaný komunikačný partner" %></p>
+          <p class="flex-grow-0 flex-shrink-0 text-sm text-center text-gray-500"><%= l message.delivered_at, format: :short %></p>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
+</div>

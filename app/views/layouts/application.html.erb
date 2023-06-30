@@ -11,22 +11,11 @@
   </head>
   <body class = "h-full">
     <%= render TW::LightLayoutWithSidebarComponent.new do |component| %>
-      <% component.with_sidebar do %>
-        <%= render TW::SidebarComponent.new do |sidebar| %>
-          <% sidebar.with_folder_list do%>
-            <%= render Layout::FolderListComponent.new %>
-          <% end %>
-        <% end %>
-      <% end %>
       <% component.with_static_sidebar do %>
-        <%= render TW::StaticSidebarComponent.new do |sidebar| %>
-          <% sidebar.with_folder_list do%>
-            <%= render Layout::FolderListComponent.new %>
-          <% end %>
-        <% end %>
+        <%= render TW::StaticSidebarComponent.new %>
       <% end %>
-      <% component.with_user_menu do %>
-        <%= render TW::UserMenuComponent.new(user: Current.user) %>
+      <% component.with_top_navigation do %>
+        <%= render TW::TopNavigationComponent.new %>
       <% end %>
       <% component.with_main_content do %>
         <%= yield %>

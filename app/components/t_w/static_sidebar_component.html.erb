@@ -1,0 +1,18 @@
+<div class="flex flex-col justify-start items-start w-full pb-4 bg-white border-t-0 border-r border-b-0 border-l-0 border-gray-200 overflow-y-scroll">
+  <div class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 h-16 relative gap-2 px-4 py-2 bg-white">
+    <div class="flex-grow-0 flex-shrink-0 w-[35px] h-[33.06px] relative overflow-hidden">
+      <%= image_tag("SD_icon.png", alt: "logo", class:"w-[35px] h-[35px] absolute left-[-1px] top-[-5.97px] object-cover") %>
+    </div>
+    <div class="flex justify-start items-center flex-grow h-[45px] relative overflow-hidden gap-2.5">
+      <p class="flex-grow-0 flex-shrink-0 text-xl font-medium text-left text-[#111928]"> GovBox Pro </p>
+    </div>
+  </div>
+  <div class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 h-0 relative">
+    <svg width="275" height="1" viewBox="0 0 275 1" fill="none" xmlns="http://www.w3.org/2000/svg" class="flex-grow" preserveAspectRatio="xMidYMid meet">
+      <line y1="0.5" x2="275" y2="0.5" stroke="#E5E7EB"></line>
+    </svg>
+  </div>
+  <div class="flex flex-col justify-start items-start self-stretch flex-grow-0 flex-shrink-0 gap-4 px-2 py-4">
+    <%= render TW::DynamicSidebarMenuComponent.new %>
+  </div>
+</div>

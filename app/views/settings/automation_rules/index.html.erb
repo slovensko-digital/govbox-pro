@@ -1,0 +1,7 @@
+<%= render Settings::Rules::AutomationRulesListComponent.new do |component| %>
+  <% @automation_rules.each do |automation_rule| %>
+    <% component.with_automation_rule do %>
+      <%= render Settings::Rules::AutomationRulesTableRowComponent.new(automation_rule) %>
+    <% end %>
+  <% end %>
+<% end %>

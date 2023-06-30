@@ -1,8 +1,5 @@
 class MessageThreadsController < ApplicationController
-  include Pagination
-
   before_action :set_message_thread, only: %i[show]
-
 
   def show
     authorize @message_thread
@@ -13,20 +10,36 @@ class MessageThreadsController < ApplicationController
     @cursor = params[:cursor] || {}
     @cursor[:delivered_at] = @cursor[:delivered_at] ? millis_to_time(@cursor[:delivered_at]) : Time.now
 
-    @message_threads, @next_cursor = paginate(collection: policy_scope(MessageThread)
-        .where(folder_id: params[:folder_id])
-        # TODO - mame tu velmi hruby sposob ako zistit, s kym je dany thread komunikacie, vedeny, len pre ucely zobrazenia. Dohodnut aj s @Taja, co s tym
-        .select("message_threads.*,
+    @message_threads_collection = policy_scope(MessageThread)
+    if params[:tag_id]
+      # TODO: Janovi sa nepacilo, prejst
+      @message_threads_collection = @message_threads_collection.where(
+            'message_threads.id in (select mt.id from message_threads mt
+                  join message_threads_tags mtags on mt.id = mtags.message_thread_id
+                  where mtags.tag_id = ?)',
+            params[:tag_id]
+          )
+    end
+ 
+    
+    @message_threads, @next_cursor =
+      Pagination.paginate(
+        collection:
+          # TODO - mame tu velmi hruby sposob ako zistit, s kym je dany thread komunikacie, vedeny, len pre ucely zobrazenia. Dohodnut aj s @Taja, co s tym
+          @message_threads_collection
+          .select(
+            'message_threads.*,
           (select count(messages.id) from messages where messages.message_thread_id = message_threads.id) as messages_count,
           coalesce((select max(coalesce(recipient_name)) from messages where messages.message_thread_id = message_threads.id),
-          (select max(coalesce(sender_name)) from messages where messages.message_thread_id = message_threads.id)) as with_whom"),
+          (select max(coalesce(sender_name)) from messages where messages.message_thread_id = message_threads.id)) as with_whom'
+          ),
         cursor: {
-            delivered_at: @cursor[:delivered_at],
-            id: @cursor[:id]
-          },
+          delivered_at: @cursor[:delivered_at],
+          id: @cursor[:id]
+        },
         items_per_page: MESSAGE_THREADS_PER_PAGE,
-        direction: "desc"
-        )
+        direction: 'desc'
+      )
 
     @next_cursor[:delivered_at] = time_to_millis(@next_cursor[:delivered_at]) if @next_cursor
 

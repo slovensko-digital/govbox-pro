@@ -27,3 +27,4 @@ EventBus.reset!
 
 # wiring
 EventBus.subscribe_job :message_thread_created, Automation::MessageThreadCreatedJob
+EventBus.subscribe_job :message_created, Automation::MessageCreatedJob

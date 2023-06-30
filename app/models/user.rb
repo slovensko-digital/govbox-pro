@@ -13,6 +13,10 @@ class User < ApplicationRecord
   belongs_to :tenant
   has_many :group_memberships, dependent: :destroy
   has_many :groups, through: :group_memberships
+  has_many :tag_users, dependent: :destroy
+  has_many :tags, through: :tag_users
+  has_many :own_tags, class_name: 'Tag', foreign_key: 'user_id', inverse_of: :owner
+  has_many :automation_rules, class_name: 'Automation::Rule'
 
   validates_presence_of :name, :email
   validates_uniqueness_of :name, :email, scope: :tenant_id

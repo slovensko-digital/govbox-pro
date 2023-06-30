@@ -1,27 +1,42 @@
 Rails.application.routes.draw do
-  resource :dashboard
+  namespace :settings do
+    resources :automation_rules do
+      resources :automation_conditions
+      resources :automation_actions
+    end
+    resources :tags
+    resource :profile
+  end
 
   namespace :admin do
     resources :tenants do
       resources :groups
       resources :users
       resources :boxes
+      resources :tags
     end
 
     resources :group_memberships
+    resources :tag_users
   end
 
   resources :boxes, path: 'schranky', only: [:index, :show] do
     post :sync
   end
 
-  resources :folders do
-    resources :message_threads
+  resources :tags do
+    resources :message_threads do
+    end    
   end
 
   resources :message_threads do
     resources :messages
+    # vyhodit, len na debug
+    member do
+      get 'run_rules'
+    end
   end
+  resources :message_threads_tags
 
   resources :messages do
     resources :message_objects do
@@ -30,6 +45,9 @@ Rails.application.routes.draw do
       end
     end
   end
+  resources :messages_tags
+
+  resource :settings
 
   namespace :drafts, path: 'drafty' do
     resources :imports, path: 'importy', only: :create do
