@@ -74,6 +74,7 @@ class MessageThreadsController < ApplicationController
   def message_threads_collection
     @message_threads_collection = policy_scope(MessageThread)
     if params[:tag_id]
+      # TODO: Janovi sa nepacilo, prejst
       @message_threads_collection =
         @message_threads_collection.where(
           'message_threads.id in (select mt.id from message_threads mt
