@@ -1,3 +1,4 @@
+<%= render TW::FlashComponent.new(flash: flash) %>
 <%= render MessageThreadsTableComponent.new do |component| %>
   <% @message_threads.each do |message_thread| %>
     <% component.with_message_thread do %>

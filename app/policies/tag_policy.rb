@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class FolderPolicy < ApplicationPolicy
+class TagPolicy < ApplicationPolicy
   attr_reader :user, :tag
 
   def initialize(user, tag)
@@ -10,12 +10,13 @@ class FolderPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      @user.site_admin? ? scope.all : scope.where(tenant_id: @user.tenant_id)
+      scope.all if @user.site_admin?
+      scope.where(tenant_id: @user.tenant_id) if @user.admin?
+      scope.includes(:tag_users).where(tag_users: { user_id: @user.id })
     end
   end
 
   def show?
     true
   end
-
 end

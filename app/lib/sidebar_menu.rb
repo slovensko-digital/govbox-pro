@@ -20,21 +20,21 @@ class SidebarMenu
 
   def default_main_menu
     [
-      { icon: 'Dashboard', url: root_path, name: 'Dashboard' },
-      { icon: 'Schranka', url: message_threads_path, name: 'Správy' },
-      { icon: 'Settings', url: settings_automation_rules_path, name: 'Rules Settings' },
+      { icon: Icons::DashboardComponent.new, url: root_path, name: 'Dashboard' },
+      { icon: Icons::SchrankaComponent.new, url: message_threads_path, name: 'Správy' },
+      { icon: Icons::SettingsComponent.new, url: settings_automation_rules_path, name: 'Rules Settings' },
       :tagsplaceholder
     ]
   end
 
   def admin_main_menu
     [
-      { icon: 'Dashboard', url: root_path, name: 'Dashboard' },
-      { icon: 'Boxes', url: boxes_path, name: 'Schranky' },
-      { icon: 'Schranka', url: message_threads_path, name: 'Správy' },
-      { icon: 'Admin', url: admin_tenants_path, name: 'Administracia' },
-      { icon: 'GoodJob', url: good_job_path, name: 'Good Job Dashboard' },
-      { icon: 'Settings', url: settings_automation_rules_path, name: 'Rules Settings' },
+      { icon: Icons::DashboardComponent.new, url: root_path, name: 'Dashboard' },
+      { icon: Icons::BoxesComponent.new, url: boxes_path, name: 'Schranky' },
+      { icon: Icons::SchrankaComponent.new, url: message_threads_path, name: 'Správy' },
+      { icon: Icons::AdminComponent.new, url: admin_tenants_path, name: 'Administracia' },
+      { icon: Icons::GoodJobComponent.new, url: good_job_path, name: 'Good Job Dashboard' },
+      { icon: Icons::SettingsComponent.new, url: settings_automation_rules_path, name: 'Rules Settings' },
       :tagsplaceholder
     ]
   end
