@@ -2,9 +2,17 @@ class MessageReply
   include ActiveModel::Model
   include ActiveModel::Validations
 
-  attr_accessor(:title, :text)
+  attr_accessor(:message, :title, :text)
 
-  def valid?
-    title.present? && text.present?
+  validates_presence_of :message, :title, :text
+
+  def save
+    binding.pry
+
+    if valid?
+      Govbox::SubmitMessageReplyJob.perform_later(message, title, text)
+    else
+      false
+    end
   end
 end

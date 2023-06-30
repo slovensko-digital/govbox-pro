@@ -23,11 +23,10 @@ class MessagesController < ApplicationController
 
     permitted_params = permit_reply_params
 
-    @reply = MessageReply.new(title: permitted_params[:reply_title], text: permitted_params[:reply_text])
+    @reply = MessageReply.new(message: @message, title: permitted_params[:reply_title], text: permitted_params[:reply_text])
 
-    if @reply.valid?
-      Govbox::SubmitMessageReplyJob.perform_later(@message, @reply.title, @reply.text)
-      redirect_to message_path(@message), notice: "Správa bola odoslaná."
+    if @reply.save
+      redirect_to message_path(@message), notice: "Správa bola zaradená na odoslanie."
     else
       redirect_to reply_message_path(@message), notice: "Vyplňte predmet a text odpovede."
     end
