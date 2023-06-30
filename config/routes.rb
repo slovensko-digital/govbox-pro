@@ -30,11 +30,10 @@ Rails.application.routes.draw do
   end
 
   resources :message_threads do
-    resources :messages
-    # vyhodit, len na debug
-    member do
-      get 'run_rules'
+    collection do
+      get 'merge'
     end
+    resources :messages
   end
   resources :message_threads_tags
 
