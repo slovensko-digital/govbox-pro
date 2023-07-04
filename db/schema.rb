@@ -317,6 +317,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_28_155135) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "html_visualization", null: false
+    t.json "metadata"
+    t.boolean "read", default: false, null: false
     t.index ["message_thread_id"], name: "index_messages_on_message_thread_id"
   end
 

@@ -40,7 +40,7 @@ module Upvs
     class SkTalk < Namespace
       def receive_and_save_to_outbox(data)
         response_status, response_body = @api.request(:post, "#{@api.url}/api/sktalk/receive_and_save_to_outbox", data.to_json, header)
-        [response_status, response_body['receive_result'], response_body['save_to_outbox_result']]
+        [submit_successful?(response_status, response_body['receive_result'], response_body['save_to_outbox_result']), response_status]
       end
 
       private
@@ -50,6 +50,10 @@ module Upvs
           "Authorization": authorization_payload,
           "Content-Type": "application/vnd.sktalk+json;type=SkTalk"
         }
+      end
+
+      def submit_successful?(response_status, receive_result, save_to_outbox_result)
+        response_status == 200 && receive_result == 0 && save_to_outbox_result == 0
       end
     end
 

@@ -1,5 +1,4 @@
-class MessageComponent < ViewComponent::Base
-  renders_many :attachments
+class MessageReplyComponent < ViewComponent::Base
 
   def initialize(message:, notice:)
     @message = message

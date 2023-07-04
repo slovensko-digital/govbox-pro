@@ -1,8 +1,13 @@
 <div class="flex flex-col justify-stretch items-start w-full">
   <%= render MessageThreadHeaderComponent.new(@message.thread) %>
   <div class="flex flex-col justify-stretch items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-4">
-    <div class="flex flex-col justify-stretch items-start self-stretch flex-grow-0 flex-shrink-0 rounded-md bg-white border border-gray-200">
-      <div class="flex flex-col justify-stretch items-start self-stretch flex-grow-0 flex-shrink-0 gap-4 px-6 pt-6 pb-4 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
+    <% if @notice %>
+      <div class="bg-blue-100 border-t border-b border-blue-500 text-blue-700 px-4 py-3" style="width:100%;" role="alert">
+        <p class="font-bold"><%= @notice %></p>
+      </div>
+    <% end %>
+    <div class="flex flex-col justify-stretch items-start self-stretch flex-grow-0 flex-shrink-0 overflow-hidden rounded-md bg-white border border-gray-200">
+      <div class="flex flex-col justify-stretch items-start self-stretch flex-grow-0 flex-shrink-0 overflow-hidden gap-4 px-6 pt-6 pb-4 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
         <div class="flex justify-stretch items-start self-stretch flex-grow-0 flex-shrink-0 gap-4">
           <div class="flex flex-col justify-stretch items-start flex-grow gap-2">
             <div class="flex justify-strech items-start flex-grow-0 flex-shrink-0 relative gap-2">
@@ -63,17 +68,26 @@
           <p class="flex-grow-0 flex-shrink-0 w-[743px] text-base text-left text-gray-900">
             <span class="flex-grow-0 flex-shrink-0 w-[743px] text-base text-left text-gray-900">Správa obsahuje
               <span class="flex-grow-0 flex-shrink-0 w-[743px] text-base font-semibold text-left text-gray-900"><%= pluralize(@message.objects.count, "prílohu", plural: 'príloh') %></span>
-            </p>
+            </span>
+          </p>
           </div>
         </div>
         <div class="flex flex-col justify-start items-start self-stretch flex-grow-0 flex-shrink-0 relative gap-4 px-6 py-4 bg-white border-t-0 border-r-0 border-b border-l-0 border-gray-200">
           <%= render MessageAttachmentComponent.with_collection(@message.objects) %>
         </div>
-        <div class="todo flex justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
-          <div class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md bg-blue-600">
-            <p class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-white"> Prevziať správu </p>
+        <% if @message.delivery_notification? %>
+          <div class="flex justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
+            <div class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md bg-blue-600">
+              <p class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-white"> Prevziať správu </p>
+            </div>
           </div>
-        </div>
+        <% elsif @message.can_be_replied? %>
+          <div class="flex justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
+            <%= link_to reply_message_path(@message), class: "text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3.5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-700" do %>
+              Odpovedať
+            <% end %>
+          </div>
+        <% end %>
       </div>
     </div>
   </div>

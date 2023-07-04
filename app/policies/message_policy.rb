@@ -18,7 +18,7 @@ class MessagePolicy < ApplicationPolicy
         select mt.id
         from message_threads mt
         join message_threads_tags mt_tags on mt.id = mt_tags.message_thread_id
-        join tag_users tu on mt_tags.tag_id = tu.user_id
+        join tag_users tu on mt_tags.tag_id = tu.tag_id
         where user_id = ?)',
           @user.id
         )
@@ -28,5 +28,13 @@ class MessagePolicy < ApplicationPolicy
 
   def show?
     true
+  end
+
+  def reply?
+    true # TODO can everyone reply?
+  end
+
+  def submit_reply?
+    reply?
   end
 end

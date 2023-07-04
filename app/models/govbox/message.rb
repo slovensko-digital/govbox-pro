@@ -54,7 +54,12 @@ class Govbox::Message < ApplicationRecord
       sender_name: raw_message["sender_name"],
       recipient_name: raw_message["recipient_name"],
       delivered_at: Time.parse(raw_message["delivered_at"]),
-      html_visualization: raw_message["original_html"]
+      html_visualization: raw_message["original_html"],
+      metadata: {
+        "correlation_id": govbox_message.payload["correlation_id"],
+        "sender_uri": govbox_message.payload["sender_uri"],
+        "edesk_class": govbox_message.payload["class"],
+      }
     )
   end
 

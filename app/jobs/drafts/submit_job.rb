@@ -14,8 +14,8 @@ class Drafts::SubmitJob < ApplicationJob
     sktalk_api = upvs_client.api(folder.box).sktalk
 
     begin
-      response_status, receive_result, save_to_outbox_result = sktalk_api.receive_and_save_to_outbox(draft_data)
-      if submit_successful?(response_status, receive_result, save_to_outbox_result)
+      success, response_status = sktalk_api.receive_and_save_to_outbox(draft_data)
+      if success
         draft.update!(status: "submitted")
       else
         handle_submit_fail(draft, response_status)
@@ -42,10 +42,6 @@ class Drafts::SubmitJob < ApplicationJob
     end
 
     objects
-  end
-
-  def submit_successful?(response_status, receive_result, save_to_outbox_result)
-    response_status == 200 && receive_result == 0 && save_to_outbox_result == 0
   end
 
   def handle_submit_fail(draft, response_status)
