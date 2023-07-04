@@ -24,13 +24,14 @@ class Message < ApplicationRecord
 
   DELIVERY_NOTIFICATION_CLASS = 'ED_DELIVERY_NOTIFICATION'
   EGOV_DOCUMENT_CLASS = 'EGOV_DOCUMENT'
+  EGOV_NOTIFICATION_CLASS = 'EGOV_NOTIFICATION'
 
   def automation_rules_for_event(event)
     tenant.automation_rules.where(trigger_event: event)
   end
 
   def can_be_replied?
-    tags.where("name LIKE ?", "#{"slovensko.sk:Inbox%"}").present? && egov_document?
+    tags.where("name LIKE ?", "#{"slovensko.sk:Inbox%"}").present? && (egov_document? || egov_notification?)
   end
 
   def delivery_notification?
@@ -41,5 +42,9 @@ class Message < ApplicationRecord
 
   def egov_document?
     metadata["edesk_class"] == EGOV_DOCUMENT_CLASS
+  end
+
+  def egov_notification?
+    metadata["edesk_class"] == EGOV_NOTIFICATION_CLASS
   end
 end
