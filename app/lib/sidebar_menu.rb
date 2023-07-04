@@ -21,7 +21,7 @@ class SidebarMenu
   def default_main_menu
     [
       { icon: Icons::DashboardComponent.new, url: root_path, name: 'Dashboard' },
-      { icon: Icons::SchrankaComponent.new, url: message_threads_path, name: 'Správy' },
+      # { icon: Icons::SchrankaComponent.new, url: message_threads_path, name: 'Správy' },
       { icon: Icons::SettingsComponent.new, url: settings_automation_rules_path, name: 'Rules Settings' },
       :tagsplaceholder
     ]
@@ -30,7 +30,7 @@ class SidebarMenu
   def admin_main_menu
     [
       { icon: Icons::DashboardComponent.new, url: root_path, name: 'Dashboard' },
-      { icon: Icons::BoxesComponent.new, url: boxes_path, name: 'Schranky' },
+      { icon: Icons::BoxesComponent.new, url: boxes_path, name: 'Schránky' },
       { icon: Icons::SchrankaComponent.new, url: message_threads_path, name: 'Správy' },
       { icon: Icons::AdminComponent.new, url: admin_tenants_path, name: 'Administracia' },
       { icon: Icons::GoodJobComponent.new, url: good_job_path, name: 'Good Job Dashboard' },

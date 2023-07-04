@@ -7,8 +7,6 @@ class MessageReply
   validates_presence_of :message, :title, :text
 
   def save
-    binding.pry
-
     if valid?
       Govbox::SubmitMessageReplyJob.perform_later(message, title, text)
     else

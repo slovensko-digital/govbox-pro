@@ -19,6 +19,6 @@ class BoxesController < ApplicationController
   private
 
   def load_box
-    @box = policy_scope(Box).find(params[:id])
+    @box = policy_scope(Box).find(params[:id] || params[:box_id])
   end
 end
