@@ -1,9 +1,7 @@
 <div class="flex justify-stretch items-center self-stretch flex-shrink-0 relative gap-4 p-4 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
   <div class="flex justify-stretch items-center flex-shrink-0 relative gap-4 pt-1 pb-[30px] rounded-full">
     <%= check_box_tag('message_thread_ids[]', @message_thread.id) %>
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="flex-grow-0 flex-shrink-0 w-6 h-6 relative" preserveAspectRatio="xMidYMid meet">
-      <path d="M3 8L10.89 13.26C11.2187 13.4793 11.6049 13.5963 12 13.5963C12.3951 13.5963 12.7813 13.4793 13.11 13.26L21 8M5 19H19C19.5304 19 20.0391 18.7893 20.4142 18.4142C20.7893 18.0391 21 17.5304 21 17V7C21 6.46957 20.7893 5.96086 20.4142 5.58579C20.0391 5.21071 19.5304 5 19 5H5C4.46957 5 3.96086 5.21071 3.58579 5.58579C3.21071 5.96086 3 6.46957 3 7V17C3 17.5304 3.21071 18.0391 3.58579 18.4142C3.96086 18.7893 4.46957 19 5 19Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-    </svg>
+    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512" style=<%= "visibility:hidden;" if @message_thread.read? %>><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M464 64H48C21.49 64 0 85.49 0 112v288c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V112c0-26.51-21.49-48-48-48zm0 48v40.805c-22.422 18.259-58.168 46.651-134.587 106.49-16.841 13.247-50.201 45.072-73.413 44.701-23.208.375-56.579-31.459-73.413-44.701C106.18 199.465 70.425 171.067 48 152.805V112h416zM48 400V214.398c22.914 18.251 55.409 43.862 104.938 82.646 21.857 17.205 60.134 55.186 103.062 54.955 42.717.231 80.509-37.199 103.053-54.947 49.528-38.783 82.032-64.401 104.947-82.653V400H48z"/></svg>
     <%= link_to @message_thread.messages.max { |a, b| a.delivered_at <=> b.delivered_at },class:"justify-stretch grow" do %>
       <div class="flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 pr-[7px]">
         <div class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-1.5 px-2 py-1 rounded-md bg-yellow-50 border border-yellow-300">
@@ -13,7 +11,7 @@
     </div>
     <div class="flex flex-col overflow-hidden justify-stretch items-start flex-grow relative gap-1">
       <div class="flex justify-stretch items-center flex-shrink-0 relative gap-4">
-        <p class="grow flex-shrink-0 text-lg text-center text-gray-900"><%= @message_thread.title %></p>
+        <p class="grow flex-shrink-0 text-lg text-center text-gray-900" style=<%= "font-weight:600;" unless @message_thread.read? %>><%= @message_thread.title %></p>
         <% @message_thread.visible_tags.each do |tag| %>
           <div class="flex justify-start items-start flex-grow-0 flex-shrink-0 gap-2">
             <div class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-1.5 px-2 py-1 rounded-md bg-gray-50 border border-gray-300">
