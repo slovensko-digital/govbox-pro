@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_28_155135) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_04_140216) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -276,7 +276,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_28_155135) do
 
   create_table "message_objects", force: :cascade do |t|
     t.bigint "message_id", null: false
-    t.string "name", null: false
+    t.string "name"
     t.string "mimetype", null: false
     t.string "object_type", null: false
     t.datetime "created_at", null: false
@@ -316,9 +316,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_28_155135) do
     t.datetime "delivered_at", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.text "html_visualization", null: false
-    t.json "metadata"
+    t.text "html_visualization"
     t.boolean "read", default: false, null: false
+    t.json "metadata"
     t.index ["message_thread_id"], name: "index_messages_on_message_thread_id"
   end
 
