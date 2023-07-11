@@ -57,6 +57,7 @@ class Govbox::Message < ApplicationRecord
         "correlation_id": govbox_message.payload["correlation_id"],
         "sender_uri": govbox_message.payload["sender_uri"],
         "edesk_class": govbox_message.payload["class"],
+        "delivery_notification": govbox_message.payload["delivery_notification"]
       }
     )
   end

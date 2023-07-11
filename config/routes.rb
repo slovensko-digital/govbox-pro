@@ -42,6 +42,7 @@ Rails.application.routes.draw do
     member do
       get 'reply'
       post 'submit_reply'
+      post 'authorize_delivery_notification'
     end
 
     resources :message_objects do

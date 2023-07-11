@@ -30,6 +30,10 @@ class MessagePolicy < ApplicationPolicy
     true
   end
 
+  def authorize_delivery_notification?
+    true # TODO can everyone authorize delivery notifications?
+  end
+
   def reply?
     true # TODO can everyone reply?
   end

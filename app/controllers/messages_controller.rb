@@ -10,6 +10,13 @@ class MessagesController < ApplicationController
     @notice = notice
   end
 
+  def authorize_delivery_notification
+    authorize @message
+
+    notice = Message.authorize_delivery_notification(@message) ? "Správa bola zaradená na prevzatie." : "Správu nie je možné prevziať."
+    redirect_to message_path(@message), notice: notice
+  end
+
   def reply
     authorize @message
 

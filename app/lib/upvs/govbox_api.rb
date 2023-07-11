@@ -28,12 +28,21 @@ module Upvs
         @api.request(:get, "#{@api.url}/api/edesk/messages/#{message_id}", {}, header)
       end
 
+      def authorize_delivery_notification(authorization_url)
+        response_status, response_body = @api.request(:post, authorization_url, {}, header)
+        authorization_successful?(response_status, response_body['code'])
+      end
+
       private
 
       def header
         {
           "Authorization": authorization_payload,
         }
+      end
+
+      def authorization_successful?(response_status, authorization_code)
+        response_status == 200 && authorization_code == 0
       end
     end
 

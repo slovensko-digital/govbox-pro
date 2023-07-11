@@ -36,9 +36,15 @@
             </div>
           </div>
           <div class="flex flex-col justify-strech items-start flex-grow gap-1">
-            <div class="todo flex justify-strech items-start flex-grow-0 flex-shrink-0 relative gap-2">
-              <p class="flex-grow-0 flex-shrink-0 w-[140px] text-base text-left text-gray-900">Typ doručenia:</p>
-              <p class="flex-grow-0 flex-shrink-0 text-base font-semibold text-left text-gray-900">TODO</p>
+            <div class="flex justify-strech items-start flex-grow-0 flex-shrink-0 relative gap-2">
+              <% if @message.authorized? %>
+                <div class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-1.5 px-2 py-1 rounded-md bg-blue-50 border border-blue-300">
+                  <p class="flex-grow-0 flex-shrink-0 text-sm text-left text-blue-600">Prevzatá doručenka</p>
+                </div>
+              <% else %>
+                <p class="flex-grow-0 flex-shrink-0 w-[140px] text-base text-left text-gray-900">Typ doručenia:</p>
+                <p class="flex-grow-0 flex-shrink-0 text-base font-semibold text-left text-gray-900">TODO</p>
+              <% end %>
             </div>
           </div>
           <div class="flex flex-col justify-strech items-end flex-grow-0 flex-shrink-0 relative gap-1">
@@ -75,12 +81,14 @@
         <div class="flex flex-col justify-start items-start self-stretch flex-grow-0 flex-shrink-0 relative gap-4 px-6 py-4 bg-white border-t-0 border-r-0 border-b border-l-0 border-gray-200">
           <%= render MessageAttachmentComponent.with_collection(@message.objects) %>
         </div>
-        <% if @message.delivery_notification? %>
-          <div class="flex justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
-            <div class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md bg-blue-600">
-              <p class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-white"> Prevziať správu </p>
+        <% if @message.can_be_authorized? %>
+          <%= form_with(url: authorize_delivery_notification_message_path(@message), method: :post, local: true, style:'width: 100%;') do |form| %>
+            <div class="flex justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
+              <div class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md bg-blue-600">
+                <%= form.submit "Prevziať správu", data: { turbo_confirm: 'Naozaj chcete prevziať správu?' }, class: "flex-grow-0 flex-shrink-0 bg-blue-600 text-base font-medium text-left text-white" %>
+              </div>
             </div>
-          </div>
+          <% end %>
         <% elsif @message.can_be_replied? %>
           <div class="flex justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
             <%= link_to reply_message_path(@message), class: "text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3.5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-700" do %>
