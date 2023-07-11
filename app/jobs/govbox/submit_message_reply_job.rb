@@ -19,7 +19,7 @@ class Govbox::SubmitMessageReplyJob < ApplicationJob
 
     success, response_status = sktalk_api.receive_and_save_to_outbox(reply_data)
 
-    raise StandardError "Message reply submission failed!" unless success
+    raise StandardError, "Message reply submission failed!" unless success
 
     Govbox::SyncBoxJob.set(wait: 2.minutes).perform_later(message.thread.folder.box)
   end
