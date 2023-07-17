@@ -25,22 +25,20 @@ class Govbox::Message < ApplicationRecord
       box: govbox_message.box
     ) # TODO create folder for threads
 
-    Message.transaction do
-      message = self.create_message(govbox_message)
+    message = self.create_message(govbox_message)
 
-      message.thread = govbox_message.box.message_threads.find_or_create_by_merge_uuid!(
-        folder: folder,
-        merge_uuid: govbox_message.correlation_id,
-        title: message.title,
-        delivered_at: govbox_message.delivered_at
-      )
+    message.thread = govbox_message.box.message_threads.find_or_create_by_merge_uuid!(
+      folder: folder,
+      merge_uuid: govbox_message.correlation_id,
+      title: message.title,
+      delivered_at: govbox_message.delivered_at
+    )
 
-      self.create_message_tag(message, govbox_message)
+    self.create_message_tag(message, govbox_message)
 
-      message.save!
+    message.save!
 
-      self.create_message_objects(message, govbox_message.payload)
-    end
+    self.create_message_objects(message, govbox_message.payload)
   end
 
   private
@@ -54,7 +52,12 @@ class Govbox::Message < ApplicationRecord
       sender_name: raw_message["sender_name"],
       recipient_name: raw_message["recipient_name"],
       delivered_at: Time.parse(raw_message["delivered_at"]),
-      html_visualization: raw_message["original_html"]
+      html_visualization: raw_message["original_html"],
+      metadata: {
+        "correlation_id": govbox_message.payload["correlation_id"],
+        "sender_uri": govbox_message.payload["sender_uri"],
+        "edesk_class": govbox_message.payload["class"],
+      }
     )
   end
 

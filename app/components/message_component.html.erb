@@ -1,6 +1,11 @@
 <div class="flex flex-col justify-stretch items-start w-full">
   <%= render MessageThreadHeaderComponent.new(@message.thread) %>
   <div class="flex flex-col justify-stretch items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-4">
+    <% if @notice %>
+      <div class="bg-blue-100 border-t border-b border-blue-500 text-blue-700 px-4 py-3" style="width:100%;" role="alert">
+        <p class="font-bold"><%= @notice %></p>
+      </div>
+    <% end %>
     <div class="flex flex-col justify-stretch items-start self-stretch flex-grow-0 flex-shrink-0 overflow-hidden rounded-md bg-white border border-gray-200">
       <div class="flex flex-col justify-stretch items-start self-stretch flex-grow-0 flex-shrink-0 overflow-hidden gap-4 px-6 pt-6 pb-4 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
         <div class="flex justify-stretch items-start self-stretch flex-grow-0 flex-shrink-0 gap-4">
@@ -20,7 +25,7 @@
               <% @message.tags.each do |tag| %>
                 <div class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-1 px-2 py-1 rounded-md bg-gray-50 border border-gray-300">
                   <p class="flex-grow-0 flex-shrink-0 text-sm text-left text-gray-600"><%= tag.name %></p>
-                  <%= button_to messages_tag_path(@message.messages_tags.find_by(tag_id: tag.id)), method: :delete do %>
+                  <%= button_to messages_tag_path(MessagesTag.find_by(message_id: @message.id, tag_id: tag.id)), method: :delete, form: { data: { turbo_confirm: "Naozaj odstrániť štítok #{tag.name} zo správy?" } } do %>
                     <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" class="flex-grow-0 flex-shrink-0 w-3.5 h-3.5 relative" preserveAspectRatio="xMidYMid meet">
                       <path d="M3.5 3.5L10.5 10.5M3.5 10.5L10.5 3.5L3.5 10.5Z" stroke="#6B7280" stroke-linecap="round" stroke-linejoin="round"></path>
                     </svg>
@@ -31,13 +36,13 @@
             </div>
           </div>
           <div class="flex flex-col justify-strech items-start flex-grow gap-1">
-            <div class="flex justify-strech items-start flex-grow-0 flex-shrink-0 relative gap-2">
+            <div class="todo flex justify-strech items-start flex-grow-0 flex-shrink-0 relative gap-2">
               <p class="flex-grow-0 flex-shrink-0 w-[140px] text-base text-left text-gray-900">Typ doručenia:</p>
-              <p class="flex-grow-0 flex-shrink-0 text-base font-semibold text-left text-gray-900">Taketo mame?</p>
+              <p class="flex-grow-0 flex-shrink-0 text-base font-semibold text-left text-gray-900">TODO</p>
             </div>
           </div>
           <div class="flex flex-col justify-strech items-end flex-grow-0 flex-shrink-0 relative gap-1">
-            <div class="flex flex-col justify-strech items-end flex-grow-0 flex-shrink-0 gap-1 pb-1">
+            <div class="todo flex flex-col justify-strech items-end flex-grow-0 flex-shrink-0 gap-1 pb-1">
               <div class="flex justify-strech items-start flex-grow-0 flex-shrink-0">
                 <div class="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-tr-md rounded-br-md bg-white border border-gray-300">
                   <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="flex-grow-0 flex-shrink-0 w-5 h-5 relative" preserveAspectRatio="xMidYMid meet">
@@ -47,7 +52,7 @@
               </div>
             </div>
             <p class="flex-grow-0 flex-shrink-0 text-base text-left text-gray-900"><%= l @message.delivered_at, format: :long %></p>
-            <p class="flex-grow-0 flex-shrink-0 text-base text-left text-gray-500">TODO: Bez podpisu</p>
+            <!--p class="todo flex-grow-0 flex-shrink-0 text-base text-left text-gray-500">(Ne)podpísané</p-->
           </div>
         </div>
       </div>
@@ -63,19 +68,26 @@
           <p class="flex-grow-0 flex-shrink-0 w-[743px] text-base text-left text-gray-900">
             <span class="flex-grow-0 flex-shrink-0 w-[743px] text-base text-left text-gray-900">Správa obsahuje
               <span class="flex-grow-0 flex-shrink-0 w-[743px] text-base font-semibold text-left text-gray-900"><%= pluralize(@message.objects.count, "prílohu", plural: 'príloh') %></span>
-            </p>
+            </span>
+          </p>
           </div>
         </div>
         <div class="flex flex-col justify-start items-start self-stretch flex-grow-0 flex-shrink-0 relative gap-4 px-6 py-4 bg-white border-t-0 border-r-0 border-b border-l-0 border-gray-200">
-          <% @message.objects.each_with_index do |object, index| %>
-            <%= render MessageAttachmentComponent.new(object, index == @message.objects.count - 1) %>
-          <% end %>
+          <%= render MessageAttachmentComponent.with_collection(@message.objects) %>
         </div>
-        <div class="flex justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
-          <div class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md bg-blue-600">
-            <p class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-white"> Prevziať správu </p>
+        <% if @message.delivery_notification? %>
+          <div class="flex justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
+            <div class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md bg-blue-600">
+              <p class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-white"> Prevziať správu </p>
+            </div>
           </div>
-        </div>
+        <% elsif @message.can_be_replied? %>
+          <div class="flex justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
+            <%= link_to reply_message_path(@message), class: "text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3.5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-700" do %>
+              Odpovedať
+            <% end %>
+          </div>
+        <% end %>
       </div>
     </div>
   </div>

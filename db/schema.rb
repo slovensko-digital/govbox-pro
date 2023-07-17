@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_27_075220) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_04_140216) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -68,11 +68,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_27_075220) do
 
   create_table "automation_rules", force: :cascade do |t|
     t.bigint "tenant_id", null: false
-    t.bigint "user_id", null: false
     t.string "name", null: false
     t.string "trigger_event", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
     t.index ["tenant_id"], name: "index_automation_rules_on_tenant_id"
     t.index ["user_id"], name: "index_automation_rules_on_user_id"
   end
@@ -276,7 +276,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_27_075220) do
 
   create_table "message_objects", force: :cascade do |t|
     t.bigint "message_id", null: false
-    t.string "name", null: false
+    t.string "name"
     t.string "mimetype", null: false
     t.string "object_type", null: false
     t.datetime "created_at", null: false
@@ -316,8 +316,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_27_075220) do
     t.datetime "delivered_at", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.text "html_visualization", null: false
+    t.text "html_visualization"
     t.boolean "read", default: false, null: false
+    t.json "metadata"
     t.index ["message_thread_id"], name: "index_messages_on_message_thread_id"
   end
 
@@ -330,13 +331,24 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_27_075220) do
     t.index ["tag_id"], name: "index_messages_tags_on_tag_id"
   end
 
+  create_table "tag_users", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "tag_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tag_id"], name: "index_tag_users_on_tag_id"
+    t.index ["user_id"], name: "index_tag_users_on_user_id"
+  end
+
   create_table "tags", force: :cascade do |t|
     t.bigint "tenant_id", null: false
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "visible", default: true, null: false
+    t.bigint "user_id"
     t.index ["tenant_id"], name: "index_tags_on_tenant_id"
+    t.index ["user_id"], name: "index_tags_on_user_id"
   end
 
   create_table "tenants", force: :cascade do |t|
@@ -381,6 +393,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_27_075220) do
   add_foreign_key "messages", "message_threads"
   add_foreign_key "messages_tags", "messages"
   add_foreign_key "messages_tags", "tags"
+  add_foreign_key "tag_users", "tags"
+  add_foreign_key "tag_users", "users"
   add_foreign_key "tags", "tenants"
+  add_foreign_key "tags", "users"
   add_foreign_key "users", "tenants"
 end

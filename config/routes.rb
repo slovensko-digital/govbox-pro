@@ -13,9 +13,11 @@ Rails.application.routes.draw do
       resources :groups
       resources :users
       resources :boxes
+      resources :tags
     end
 
     resources :group_memberships
+    resources :tag_users
   end
 
   resources :boxes, path: 'schranky', only: [:index, :show] do
@@ -28,15 +30,20 @@ Rails.application.routes.draw do
   end
 
   resources :message_threads do
-    resources :messages
-    # vyhodit, len na debug
-    member do
-      get 'run_rules'
+    collection do
+      get 'merge'
     end
+    resources :messages
   end
   resources :message_threads_tags
 
   resources :messages do
+    # TODO change to resources :replies
+    member do
+      get 'reply'
+      post 'submit_reply'
+    end
+
     resources :message_objects do
       member do
         get 'download'

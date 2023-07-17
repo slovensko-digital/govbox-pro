@@ -10,7 +10,19 @@ class MessageThreadPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      @user.site_admin? ? scope.all : scope.where(tenant_id: @user.tenant_id)
+      if @user.site_admin?
+        scope.all
+      else
+        scope.where(
+          'id in (
+        select mt.id
+        from message_threads mt
+        join message_threads_tags mt_tags on mt.id = mt_tags.message_thread_id
+        join tag_users tu on mt_tags.tag_id = tu.tag_id
+        where user_id = ?)',
+          @user.id
+        )
+      end
     end
   end
 
@@ -22,4 +34,11 @@ class MessageThreadPolicy < ApplicationPolicy
     true
   end
 
+  def update?
+    true
+  end
+
+  def merge?
+    true
+  end
 end
