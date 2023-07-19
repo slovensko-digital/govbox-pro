@@ -8,7 +8,7 @@ class MessageThreadsController < ApplicationController
   def update
     authorize @message_thread
     if @message_thread.update(message_thread_params)
-      redirect_back fallback_location:messages_path(@message_thread.messages.first)
+      redirect_back fallback_location: messages_path(@message_thread.messages.first)
     else
       render :edit, status: :unprocessable_entity
     end
@@ -16,21 +16,23 @@ class MessageThreadsController < ApplicationController
 
   def index
     authorize MessageThread
+    @delivered_at = 'message_threads.delivered_at'
+    @id = 'message_threads.id'
     @cursor = params[:cursor] || {}
-    @cursor[:delivered_at] = @cursor[:delivered_at] ? millis_to_time(@cursor[:delivered_at]) : Time.now
+    @cursor[@delivered_at] = @cursor[@delivered_at] ? millis_to_time(@cursor[@delivered_at]) : Time.now
 
     @message_threads, @next_cursor =
       Pagination.paginate(
         collection: message_threads_collection,
         cursor: {
-          delivered_at: @cursor[:delivered_at],
-          id: @cursor[:id]
+          @delivered_at => @cursor[@delivered_at],
+          @id => @cursor[@id]
         },
         items_per_page: MESSAGE_THREADS_PER_PAGE,
         direction: 'desc'
       )
 
-    @next_cursor[:delivered_at] = time_to_millis(@next_cursor[:delivered_at]) if @next_cursor
+    @next_cursor[@delivered_at] = time_to_millis(@next_cursor[@delivered_at]) if @next_cursor
 
     respond_to do |format|
       format.html # GET
@@ -56,9 +58,7 @@ class MessageThreadsController < ApplicationController
             message.thread = @target_thread
             message.save!
           end
-          thread.tags.each do |tag|
-            @target_thread.tags.push(tag) if !@target_thread.tags.include?(tag)
-          end 
+          thread.tags.each { |tag| @target_thread.tags.push(tag) if !@target_thread.tags.include?(tag) }
           thread.destroy!
         end
       end
@@ -72,21 +72,16 @@ class MessageThreadsController < ApplicationController
   MESSAGE_THREADS_PER_PAGE = 10
 
   def message_threads_collection
-    @message_threads_collection = policy_scope(MessageThread)
+    @message_threads_collection = policy_scope(MessageThread).joins(:tags).includes(:tags)
     if params[:tag_id]
       # TODO: Janovi sa nepacilo, prejst
-      @message_threads_collection =
-        @message_threads_collection.where(
-          'message_threads.id in (select mt.id from message_threads mt
-                  join message_threads_tags mtags on mt.id = mtags.message_thread_id
-                  where mtags.tag_id = ?)',
-          params[:tag_id]
-        )
+      @message_threads_collection = @message_threads_collection.where(tags: { id: params[:tag_id] })
     end
     # TODO - mame tu velmi hruby sposob ako zistit, s kym je dany thread komunikacie, vedeny, len pre ucely zobrazenia. Dohodnut aj s @Taja, co s tym
     @message_threads_collection.select(
-      'message_threads.*,
-              (select count(messages.id) from messages where messages.message_thread_id = message_threads.id) as messages_count,
+      'message_threads.*',
+      'tags.*',
+      '(select count(messages.id) from messages where messages.message_thread_id = message_threads.id) as messages_count,
               coalesce((select max(coalesce(recipient_name)) from messages where messages.message_thread_id = message_threads.id),
               (select max(coalesce(sender_name)) from messages where messages.message_thread_id = message_threads.id)) as with_whom'
     )

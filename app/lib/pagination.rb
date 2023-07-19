@@ -6,7 +6,7 @@ module Pagination
         .order(order_clause(cursor, direction))
         .limit(items_per_page)
     last_row = rows&.last
-    next_cursor = cursor.map { |key, _value| [key, last_row[key]] }.to_h if last_row
+    next_cursor = cursor.map { |key, _value| [key, last_row[key.to_s.split('.')[-1]]] }.to_h if last_row
     [rows, next_cursor]
   end
 
