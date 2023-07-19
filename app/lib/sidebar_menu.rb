@@ -12,7 +12,7 @@ class SidebarMenu
   private
 
   def initial_structure(controller, action)
-    return default_message_thread_menu if controller == 'messages'
+    return default_message_thread_menu if ['messages', 'message_replies'].include?(controller)
     return admin_main_menu if Current.user.admin? || Current.user.site_admin?
 
     default_main_menu

@@ -1,5 +1,14 @@
 class MessageObjectsController < ApplicationController
-  before_action :set_message_object
+  before_action :set_message_object, except: :create
+  before_action :set_message, only: :create
+
+  def create
+    authorize @message
+
+    MessageObject.create_message_objects(@message, params[:attachments])
+
+    redirect_to MessageHelper.message_link(@message)
+  end
 
   def show
     authorize @message_object
@@ -15,5 +24,9 @@ class MessageObjectsController < ApplicationController
 
   def set_message_object
     @message_object = policy_scope(MessageObject).find(params[:id])
+  end
+
+  def set_message
+    @message = Message.find(params[:message_id])
   end
 end

@@ -38,18 +38,26 @@ Rails.application.routes.draw do
   resources :message_threads_tags
 
   resources :messages do
-    # TODO change to resources :replies
-    member do
-      get 'reply'
-      post 'submit_reply'
-    end
-
     resources :message_objects do
       member do
         get 'download'
       end
     end
+
+    resources :replies, controller: "message_replies" do
+      member do
+        post 'submit'
+      end
+
+      resources :message_objects do
+        member do
+          get 'download'
+        end
+      end
+    end
   end
+
+
   resources :messages_tags
 
   resource :settings

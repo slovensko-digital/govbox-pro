@@ -8,7 +8,7 @@
 #  message_thread_id                           :integer          not null
 #  sender_name                                 :string
 #  recipient_name                              :string
-#  html_visualization                          :text             not null
+#  html_visualization                          :text
 #  metadata                                    :json
 #  read                                        :boolean          not null, default: false
 #  delivered_at                                :datetime         not null

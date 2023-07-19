@@ -3,15 +3,15 @@ class Govbox::SubmitMessageReplyJob < ApplicationJob
     delegate :uuid, to: SecureRandom
   end
 
-  def perform(message, reply_title, reply_text, upvs_client: UpvsEnvironment.upvs_client)
+  def perform(message_reply, upvs_client: UpvsEnvironment.upvs_client)
     reply_data = {
-      message_id: uuid,
-      correlation_id: message.metadata["correlation_id"],
-      reference_id: message.uuid,
-      recipient_uri: message.metadata["sender_uri"],
+      message_id: message_reply.uuid,
+      correlation_id: message_reply.metadata["correlation_id"],
+      reference_id: message_reply.metadata["uuid"],
+      recipient_uri: message_reply.metadata["recipient_uri"],
       general_agenda: {
-        subject: reply_title,
-        body: reply_text
+        subject: message_reply.title,
+        body: message_reply.metadata["body"]
       }
     }
 
