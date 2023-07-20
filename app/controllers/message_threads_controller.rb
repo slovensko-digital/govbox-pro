@@ -108,6 +108,6 @@ class MessageThreadsController < ApplicationController
   end
 
   def message_thread_params
-    params.permit(:message_thread, :title, :original_title, :merge_uuIDs, :tag_ID, :tags, :format, cursor: [DELIVERED_AT, ID])
+    params.permit(:message_thread, :title, :original_title, :merge_uuIDs, :tag_id, :tags, :format, cursor: [DELIVERED_AT, ID])
   end
 end
