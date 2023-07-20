@@ -73,10 +73,15 @@ class MessageThreadsController < ApplicationController
 
   def message_threads_collection
     @message_threads_collection = policy_scope(MessageThread).joins(:tags).includes(:tags)
-    if params[:tag_id]
-      # TODO: Janovi sa nepacilo, prejst
-      @message_threads_collection = @message_threads_collection.where(tags: { id: params[:tag_id] })
-    end
+    @message_threads_collection = @message_threads_collection.where(tags: { id: params[:tag_id] }) if params[:tag_id]
+    @message_threads_collection =
+      @message_threads_collection
+        .where.not(message_threads:
+          {id: (MessageThread.joins(:tags).where(tags: {visible: true}))})  if params[:tags] && params[:tags] == 'none' && Current.user.admin?
+    add_calculated_fields
+  end
+
+  def add_calculated_fields
     @message_threads_collection.select(
       'message_threads.*',
       'tags.*',
@@ -102,6 +107,6 @@ class MessageThreadsController < ApplicationController
   end
 
   def message_thread_params
-    params.require(:message_thread).permit(:title, :original_title, :merge_uuids)
+    params.require(:message_thread).permit(:title, :original_title, :merge_uuids, :tags)
   end
 end
