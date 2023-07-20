@@ -77,13 +77,15 @@ class MessageThreadsController < ApplicationController
       # TODO: Janovi sa nepacilo, prejst
       @message_threads_collection = @message_threads_collection.where(tags: { id: params[:tag_id] })
     end
-    # TODO - mame tu velmi hruby sposob ako zistit, s kym je dany thread komunikacie, vedeny, len pre ucely zobrazenia. Dohodnut aj s @Taja, co s tym
     @message_threads_collection.select(
       'message_threads.*',
       'tags.*',
+      # TODO - mame tu velmi hruby sposob ako zistit, s kym je dany thread komunikacie, vedeny, len pre ucely zobrazenia. Dohodnut aj s @Taja, co s tym
       '(select count(messages.id) from messages where messages.message_thread_id = message_threads.id) as messages_count,
-              coalesce((select max(coalesce(recipient_name)) from messages where messages.message_thread_id = message_threads.id),
-              (select max(coalesce(sender_name)) from messages where messages.message_thread_id = message_threads.id)) as with_whom'
+      coalesce((select max(coalesce(recipient_name)) from messages where messages.message_thread_id = message_threads.id),
+        (select max(coalesce(sender_name)) from messages where messages.message_thread_id = message_threads.id)) as with_whom',
+      # last_message_id - potrebujeme kvoli spravnej linke na konkretny message, ktory chceme otvorit, a nech to netahame potom pre kazdy thread
+      '(select max(messages.id) from messages where messages.message_thread_id = message_threads.id and messages.delivered_at = message_threads.delivered_at) as last_message_id'
     )
   end
 
