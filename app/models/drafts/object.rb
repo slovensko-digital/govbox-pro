@@ -3,7 +3,7 @@
 # Table name: drafts_objects
 #
 #  id                                          :integer          not null, primary key
-#  draf_id                                     :string           not null
+#  draft_id                                    :string           not null
 #  uuid                                        :uuid             not null
 #  name                                        :string           not null
 #  signed                                      :boolean

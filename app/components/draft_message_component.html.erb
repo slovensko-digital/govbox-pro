@@ -11,17 +11,17 @@
           <div class="flex flex-col justify-stretch items-start flex-grow gap-2">
             <div class="flex justify-strech items-start flex-grow-0 flex-shrink-0 relative gap-2">
               <p class="flex-grow-0 flex-shrink-0 w-[100px] text-base text-left text-gray-900">Odosielateľ:</p>
-              <p class="flex-grow-0 flex-shrink-0 text-base font-semibold text-left text-gray-900"><%= @message.recipient_name || 'Neznámy' %> </p>
+              <p class="flex-grow-0 flex-shrink-0 text-base font-semibold text-left text-gray-900"><%= @message.sender_name || 'Neznámy' %> </p>
             </div>
             <div class="flex justify-strech items-start flex-grow-0 flex-shrink-0 relative gap-2">
               <p class="flex-grow-0 flex-shrink-0 w-[100px] text-base text-left text-gray-900"> Adresát: </p>
-              <p class="flex-grow-0 flex-shrink-0 text-base font-semibold text-left text-gray-900"><%= @message.sender_name || 'Neznámy' %></p>
+              <p class="flex-grow-0 flex-shrink-0 text-base font-semibold text-left text-gray-900"><%= @message.recipient_name || 'Neznámy' %></p>
             </div>
           </div>
         </div>
       </div>
 
-      <%= form_tag submit_message_reply_path(@message, @message_reply), method: :post, class: "w-full" do %>
+      <%= form_tag submit_draft_message_path(@message), method: :post, class: "w-full" do %>
         <div class="flex flex-col justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 relative gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
           <div class="mb-3 pt-0 w-full">
             <%= text_field_tag "reply_title", nil, placeholder: "Predmet", class:"mb-3 px-3 py-4 placeholder-slate-300 text-slate-í00 relative bg-white bg-white rounded-lg text-base border-0 shadow outline-none focus:outline-none focus:ring w-full" %>
@@ -54,7 +54,7 @@
         </div>
       <% end %>
 
-      <%= form_tag message_message_objects_path(@message_reply), id: "attachment_form", method: :post, multipart: true, class: "w-full" do %>
+      <%= form_tag message_message_objects_path(@message), id: "attachment_form", method: :post, multipart: true, class: "w-full" do %>
         <%= label_tag :attachments_, "Pridať prílohy", class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" %>
         <%= file_field_tag 'attachments[]', class: "block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400", multiple: true %>
     <% end %>

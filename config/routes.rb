@@ -43,20 +43,19 @@ Rails.application.routes.draw do
         get 'download'
       end
     end
+  end
 
-    resources :replies, controller: "message_replies" do
+  resources :draft_messages do
+    member do
+      post 'submit'
+    end
+
+    resources :message_objects do
       member do
-        post 'submit'
-      end
-
-      resources :message_objects do
-        member do
-          get 'download'
-        end
+        get 'download'
       end
     end
   end
-
 
   resources :messages_tags
 

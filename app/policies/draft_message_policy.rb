@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class MessageReplyPolicy < ApplicationPolicy
+class DraftMessagePolicy < ApplicationPolicy
   attr_reader :user, :message
 
   def initialize(user, message)
@@ -27,7 +27,7 @@ class MessageReplyPolicy < ApplicationPolicy
   end
 
   def create?
-    true # TODO can everyone reply?
+    true # TODO can everyone create new messages?
   end
 
   def show?
