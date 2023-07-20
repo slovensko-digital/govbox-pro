@@ -1,10 +1,10 @@
-class DraftMessage < Message
+class MessageDraft < Message
   DRAFT_DEFAULT_POSP_ID = "App.GeneralAgenda"
   DRAFT_DEFAULT_POSP_VERSION = "1.9"
   DRAFT_DEFAULT_MESSAGE_TYPE = "App.GeneralAgenda"
 
   def self.create_from_message(message)
-    draft_message = DraftMessage.create!(
+    draft_message = MessageDraft.create!(
       uuid: SecureRandom.uuid,
       thread: message.thread,
       sender_name: message.recipient_name,

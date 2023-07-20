@@ -45,15 +45,9 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :draft_messages do
+  resources :message_drafts do
     member do
       post 'submit'
-    end
-
-    resources :message_objects do
-      member do
-        get 'download'
-      end
     end
   end
 
