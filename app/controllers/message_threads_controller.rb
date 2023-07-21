@@ -31,7 +31,8 @@ class MessageThreadsController < ApplicationController
       )
 
     @next_cursor[DELIVERED_AT] = time_to_millis(@next_cursor[DELIVERED_AT]) if @next_cursor
-    @next_page_params = message_thread_params.merge(cursor: @next_cursor).merge(format: :turbo_stream)
+    # TODO: Toto reviewnime pls niekedy(to_unsage_h). Chcelo by elegantnejsie riesenie, ale domotal som sa v tom
+    @next_page_params = params.to_unsafe_h.merge(cursor: @next_cursor).merge(format: :turbo_stream)
 
     respond_to do |format|
       format.html # GET
@@ -73,8 +74,11 @@ class MessageThreadsController < ApplicationController
   ID = 'message_threads.id'
 
   def message_threads_collection
-    @message_threads_collection = policy_scope(MessageThread).joins(:tags).includes(:tags)
-    @message_threads_collection = @message_threads_collection.where(tags: { id: params[:tag_id] }) if params[:tag_id]
+    @message_threads_collection =
+      policy_scope(MessageThread).includes(:tags).joins(
+        'INNER JOIN message_threads_tags mtts ON mtts.message_thread_id = message_threads.id INNER JOIN tags ts ON ts.id = mtts.tag_id'
+      )
+    @message_threads_collection = @message_threads_collection.where(ts: { id: params[:tag_id] }) if params[:tag_id]
     if params[:tags] && params[:tags] == 'none' && Current.user.admin?
       @message_threads_collection =
         @message_threads_collection.where.not(message_threads: { id: (MessageThread.joins(:tags).where('tags.name not like ?', 'slovensko.sk:%')) })
@@ -85,7 +89,6 @@ class MessageThreadsController < ApplicationController
   def add_calculated_fields
     @message_threads_collection.select(
       'message_threads.*',
-      'tags.*',
       # TODO: - mame tu velmi hruby sposob ako zistit, s kym je dany thread komunikacie, vedeny, len pre ucely zobrazenia. Dohodnut aj s @Taja, co s tym
       '(select count(messages.id) from messages where messages.message_thread_id = message_threads.id) as messages_count,
       coalesce((select max(coalesce(recipient_name)) from messages where messages.message_thread_id = message_threads.id),
@@ -108,6 +111,6 @@ class MessageThreadsController < ApplicationController
   end
 
   def message_thread_params
-    params.permit(:message_thread, :title, :original_title, :merge_uuIDs, :tag_id, :tags, :format, cursor: [DELIVERED_AT, ID])
+    params.require(:message_thread).permit(:title, :original_title, :merge_uuIDs, :tag_id, :tags, :format, cursor: [DELIVERED_AT, ID])
   end
 end
