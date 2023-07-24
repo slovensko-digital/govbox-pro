@@ -1,13 +1,11 @@
 <div class="bg-gray-100">
-  <div class="flex flex-col justify-start items-start fixed top-0 w-80 max-h-full pb-4 bg-white border-t-0 border-r border-b-0 border-l-0 border-gray-200 overflow-y-auto overflow-x-hidden">
+  <div class="flex flex-col justify-start items-start fixed top-0 w-80 max-h-full pb-4 bg-white border-t-0 border-r border-b-0 border-l-0 border-gray-200  ">
     <%= static_sidebar %>
   </div>
   <div class="pl-80">
     <div class="sticky z-40 top-0 flex justify-stretch items-stretch h-16 gap-4 px-4 bg-white border-t-0 border-r-0 border-b border-l-0 border-gray-200">
       <%= top_navigation %>
     </div>
-    <div class="flex justify-stretch items-start">
-      <%= main_content %>
-    </div>
+    <%= main_content %>
   </div>
 </div>
