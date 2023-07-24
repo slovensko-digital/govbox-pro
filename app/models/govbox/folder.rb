@@ -17,14 +17,14 @@ class Govbox::Folder < ApplicationRecord
   has_many :messages, class_name: 'Govbox::Message'
 
   def full_name
-    if parent_folder_id.present?
-      "#{parent_folder.full_name}/#{name}"
-    else
-      name
-    end
+    parent_folder_id.present? ? "#{parent_folder.full_name}/#{name}" : name
   end
 
   def bin?
-    name == "Bin"
+    name == 'Bin'
+  end
+
+  def drafts?
+    name == 'Drafts'
   end
 end
