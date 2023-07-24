@@ -19,7 +19,7 @@ class MessageThreadTest < ActiveSupport::TestCase
     box = boxes(:one)
 
     thread = box.message_threads.find_or_create_by_merge_uuid!(
-      merge_uuid: message_threads(:one).merge_uuids.second,
+      merge_uuid: message_threads(:one).merge_identifiers.second.merge_identifier,
       folder: folders(:one),
       title: 'Title',
       delivered_at: Time.current,

@@ -1,7 +1,7 @@
 class Box
   module MessageThreadsExtensions
     def find_or_create_by_merge_uuid!(folder:, merge_uuid:, title:, delivered_at:)
-      thread = where('? = ANY(merge_uuids)', merge_uuid).first # TODO make sure this is fast
+      thread = MessageThreadMergeIdentifier.find_by(merge_identifier: merge_uuid)&.message_thread # TODO make sure this is fast
 
       if thread
         if thread.delivered_at > delivered_at
@@ -13,12 +13,12 @@ class Box
         end
       else
         thread = build(
-          merge_uuids: [merge_uuid],
           folder: folder,
           title: title,
           original_title: title,
           delivered_at: delivered_at,
         )
+        thread.merge_identifiers.build(merge_identifier: merge_uuid)
       end
 
       thread.save!
