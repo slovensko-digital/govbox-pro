@@ -30,6 +30,10 @@ class MessageDraft < Message
     draft_message
   end
 
+  def submittable?
+    title.present? && metadata["message_body"].present?
+  end
+
   def original_message
     Message.find(metadata["original_message_id"])
   end

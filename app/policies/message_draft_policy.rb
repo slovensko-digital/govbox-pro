@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class MessageDraftsPolicy < ApplicationPolicy
+class MessageDraftPolicy < ApplicationPolicy
   attr_reader :user, :message
 
   def initialize(user, message)
@@ -32,6 +32,10 @@ class MessageDraftsPolicy < ApplicationPolicy
 
   def show?
     true
+  end
+
+  def update?
+    create?
   end
 
   def submit?

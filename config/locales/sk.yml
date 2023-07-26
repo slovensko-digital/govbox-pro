@@ -1,0 +1,5 @@
+ sk:
+  message_object:
+    one: '1 prílohu'
+    few: "%{count} prílohy"
+    other: "%{count} príloh"
