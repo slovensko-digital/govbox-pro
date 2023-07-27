@@ -1,7 +1,7 @@
 class Box
   module MessageThreadsExtensions
     def find_or_create_by_merge_uuid!(folder:, merge_uuid:, title:, delivered_at:)
-      thread = MessageThreadMergeIdentifier.find_by(uuid: merge_uuid)&.message_thread # TODO make sure this is fast
+      thread = MessageThread.joins(:merge_identifiers).where("message_thread_merge_identifiers.uuid = ?", merge_uuid).take
 
       # Make sure that thread belongs to the tenant
       if thread&.tenant != folder.tenant
