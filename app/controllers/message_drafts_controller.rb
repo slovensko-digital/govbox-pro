@@ -29,7 +29,11 @@ class MessageDraftsController < ApplicationController
     authorize @message_draft
 
     if @message_draft.submittable?
-      Govbox::SubmitMessageReplyJob.perform_later(@message_draft)
+      Govbox::SubmitMessageDraftJob.perform_later(@message_draft)
+
+      @message_draft.metadata["status"] = "being_submitted"
+      @message_draft.save!
+
       redirect_to message_path(@message_draft.original_message), notice: "Správa bola zaradená na odoslanie."
     else
       redirect_to message_draft_path(@message_draft), notice: "Vyplňte predmet a text odpovede."

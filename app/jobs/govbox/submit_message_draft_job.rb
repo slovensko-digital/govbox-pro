@@ -1,9 +1,9 @@
-class Govbox::SubmitMessageReplyJob < ApplicationJob
+class Govbox::SubmitMessageDraftJob < ApplicationJob
   class << self
     delegate :uuid, to: SecureRandom
   end
 
-  def perform(message_draft, upvs_client: UpvsEnvironment.upvs_client, jobs_batch: GoodJob::Batch.new)
+  def perform(message_draft, upvs_client: UpvsEnvironment.upvs_client)
     reply_data = {
       message_id: message_draft.uuid,
       correlation_id: message_draft.draft.correlation_id,
@@ -22,11 +22,12 @@ class Govbox::SubmitMessageReplyJob < ApplicationJob
 
     raise StandardError, "Message reply submission failed!" unless success
 
-    jobs_batch.add do
-      Govbox::SyncBoxJob.set(wait: 2.minutes).perform_later(message_draft.thread.folder.box)
-    end
+    message_draft.metadata["status"] = "submitted"
+    message_draft.save!
 
-    jobs_batch.enqueue(on_success: DeleteMessageDraftJob, message_draft: message_draft)
+    # TODO try to use batch job with success callback job
+    Govbox::SyncBoxJob.set(wait: 3.minutes).perform_later(message_draft.thread.folder.box)
+    DeleteMessageDraftJob.set(wait: 3.minutes).perform_later(message_draft)
   end
 
   private
