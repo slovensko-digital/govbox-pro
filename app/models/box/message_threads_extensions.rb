@@ -15,6 +15,8 @@ class Box
           thread.original_title = title
           thread.folder = folder
           thread.delivered_at = delivered_at
+        else
+          thread.last_message_delivered_at = delivered_at
         end
       else
         thread = build(
@@ -22,6 +24,7 @@ class Box
           title: title,
           original_title: title,
           delivered_at: delivered_at,
+          last_message_delivered_at: delivered_at
         )
         thread.merge_identifiers.build(uuid: merge_uuid)
       end

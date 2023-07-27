@@ -302,6 +302,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_27_121624) do
     t.datetime "delivered_at", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "last_message_delivered_at", null: false
     t.index ["folder_id"], name: "index_message_threads_on_folder_id"
   end
 
