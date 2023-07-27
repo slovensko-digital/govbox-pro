@@ -33,16 +33,19 @@ class MessageThread < ApplicationRecord
     folder.tenant.automation_rules.where(trigger_event: event)
   end
 
-  def merge_threads(threads)
+  def self.merge_threads
     transaction do
-      threads.each do |thread|
-        if thread != self
-          merge_uuids.union(thread.merge_uuids)
+      target_thread = self.first
+      self.all.each do |thread|
+        if thread != target_thread
+          target_thread.merge_uuids.union(thread.merge_uuids)
           thread.messages.each do |message|
-            message.thread = self
+            message.thread = target_thread
             message.save!
           end
-          thread.tags.each { |tag| tags.push(tag) unless tags.include?(tag) }
+          thread.tags.each do |tag|
+            target_thread.tags.push(tag) unless target_thread.tags.include?(tag)
+          end
           thread.destroy!
         end
       end

@@ -48,7 +48,7 @@ class MessageThreadsController < ApplicationController
       redirect_back fallback_location: message_threads_path
       return
     end
-    @selected_message_threads.first.merge_threads(@selected_message_threads)
+    @selected_message_threads.merge_threads
     flash[:notice] = 'Vlákna boli úspešne spojené'
     redirect_to @selected_message_threads.first.messages.first
   end
