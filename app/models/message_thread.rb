@@ -7,6 +7,7 @@
 #  original_title                              :string           not null
 #  merge_uuids                                 :uuid             not null
 #  delivered_at                                :datetime         not null
+#  last_message_delivered_at                   :datetime         not null
 #  created_at                                  :datetime         not null
 #  updated_at                                  :datetime         not null
 

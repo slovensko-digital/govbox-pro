@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_04_140216) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_21_142114) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -293,6 +293,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_04_140216) do
     t.datetime "delivered_at", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "last_message_delivered_at", null: false
     t.index ["folder_id"], name: "index_message_threads_on_folder_id"
   end
 

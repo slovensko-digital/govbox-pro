@@ -17,20 +17,20 @@ class MessageThreadsController < ApplicationController
   def index
     authorize MessageThread
     @cursor = params[:cursor] || {}
-    @cursor[:delivered_at] = @cursor[:delivered_at] ? millis_to_time(@cursor[:delivered_at]) : Time.now
+    @cursor[:last_message_delivered_at] = @cursor[:last_message_delivered_at] ? millis_to_time(@cursor[:last_message_delivered_at]) : Time.now
 
     @message_threads, @next_cursor =
       Pagination.paginate(
         collection: message_threads_collection,
         cursor: {
-          delivered_at: @cursor[:delivered_at],
+          last_message_delivered_at: @cursor[:last_message_delivered_at],
           id: @cursor[:id]
         },
         items_per_page: MESSAGE_THREADS_PER_PAGE,
         direction: 'desc'
       )
 
-    @next_cursor[:delivered_at] = time_to_millis(@next_cursor[:delivered_at]) if @next_cursor
+    @next_cursor[:last_message_delivered_at] = time_to_millis(@next_cursor[:last_message_delivered_at]) if @next_cursor
 
     respond_to do |format|
       format.html # GET
@@ -41,7 +41,7 @@ class MessageThreadsController < ApplicationController
   # TODO: presunut logiku do modelu
   def merge
     authorize MessageThread
-    @selected_message_threads = policy_scope(MessageThread).where(id: params[:message_thread_ids]).order(:delivered_at)
+    @selected_message_threads = policy_scope(MessageThread).where(id: params[:message_thread_ids]).order(:last_message_delivered_at)
     if !@selected_message_threads || @selected_message_threads.size < 2
       flash[:error] = 'Označte zaškrtávacími políčkami minimálne 2 vlákna, ktoré chcete spojiť'
       redirect_back fallback_location: message_threads_path
