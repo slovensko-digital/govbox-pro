@@ -4,7 +4,7 @@
 #
 #  id                                          :integer          not null, primary key
 #  message_thread_id                           :integer          not null
-#  merge_identifier                            :uuid             not null
+#  uuid                                        :uuid             not null
 #  created_at                                  :datetime         not null
 #  updated_at                                  :datetime         not null
 

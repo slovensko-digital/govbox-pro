@@ -2,12 +2,12 @@
 
 one:
   message_thread: one
-  merge_identifier: <%= SecureRandom.uuid %>
+  uuid: <%= SecureRandom.uuid %>
 
 two:
   message_thread: one
-  merge_identifier: <%= SecureRandom.uuid %>
+  uuid: <%= SecureRandom.uuid %>
 
 three:
   message_thread: two
-  merge_identifier: <%= SecureRandom.uuid %>
+  uuid: <%= SecureRandom.uuid %>

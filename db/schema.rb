@@ -287,11 +287,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_24_110003) do
 
   create_table "message_thread_merge_identifiers", force: :cascade do |t|
     t.bigint "message_thread_id", null: false
-    t.uuid "merge_identifier", null: false
+    t.uuid "uuid", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["merge_identifier"], name: "index_message_thread_merge_identifiers_on_merge_identifier", unique: true
     t.index ["message_thread_id"], name: "index_message_thread_merge_identifiers_on_message_thread_id"
+    t.index ["uuid"], name: "index_message_thread_merge_identifiers_on_uuid", unique: true
   end
 
   create_table "message_threads", force: :cascade do |t|
