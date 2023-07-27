@@ -33,7 +33,7 @@ class MessageThreadTest < ActiveSupport::TestCase
     older_delivered_at = message_threads(:one).delivered_at - 1.day
 
     thread = box.message_threads.find_or_create_by_merge_uuid!(
-      merge_uuid: message_threads(:one).merge_uuids.second,
+      merge_uuid: message_threads(:one).merge_identifiers.second.uuid,
       folder: folders(:two),
       title: 'New Title',
       delivered_at: older_delivered_at,
@@ -50,7 +50,7 @@ class MessageThreadTest < ActiveSupport::TestCase
     new_delivered_at = message_threads(:one).delivered_at + 1.day
 
     thread = box.message_threads.find_or_create_by_merge_uuid!(
-      merge_uuid: message_threads(:one).merge_uuids.second,
+      merge_uuid: message_threads(:one).merge_identifiers.second.uuid,
       folder: folders(:two),
       title: 'New Title',
       delivered_at: new_delivered_at,
@@ -65,7 +65,7 @@ class MessageThreadTest < ActiveSupport::TestCase
     last_message_delivered_at = message_threads(:one).last_message_delivered_at
 
     thread = box.message_threads.find_or_create_by_merge_uuid!(
-      merge_uuid: message_threads(:one).merge_uuids.second,
+      merge_uuid: message_threads(:one).merge_identifiers.second.uuid,
       folder: folders(:two),
       title: 'New Title',
       delivered_at: older_delivered_at,
