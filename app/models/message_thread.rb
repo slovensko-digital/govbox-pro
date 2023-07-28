@@ -41,6 +41,7 @@ class MessageThread < ApplicationRecord
       self.all.each do |thread|
         if thread != target_thread
           thread.merge_identifiers.update_all(message_thread_id: target_thread.id)
+          target_thread.last_message_delivered_at = max(target_thread.last_message_delivered_at, thread.last_message_delivered_at)
           thread.messages.each do |message|
             message.thread = target_thread
             message.save!

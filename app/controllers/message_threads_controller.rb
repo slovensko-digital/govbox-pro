@@ -60,8 +60,7 @@ class MessageThreadsController < ApplicationController
   ID = 'message_threads.id'
 
   def message_threads_collection
-    @message_threads_collection = policy_scope(MessageThread).includes(:tags)
-    #        joins('INNER JOIN message_threads_tags mtts ON mtts.message_thread_id = message_threads.id INNER JOIN tags ts ON ts.id = mtts.tag_id')
+    @message_threads_collection = policy_scope(MessageThread).includes(:tags).includes(:messages)
     @message_threads_collection =
       @message_threads_collection #.where(ts: { id: params[:tag_id] }) if params[:tag_id]
         .where(message_threads: { id: MessageThread.joins(:tags).where(tags: { id: params[:tag_id] }) }) if params[:tag_id]
