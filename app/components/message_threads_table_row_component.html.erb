@@ -23,7 +23,7 @@
       <% end %>
     </div>
     <div class="flex justify-end items-center gap-2">
-      <p class="whitespace-nowrap text-lg text-center text-gray-900"><%= l @message_thread.delivered_at, :format => :long %></p>
+      <p class="whitespace-nowrap text-lg text-center text-gray-900"><%= l @message_thread.last_message_delivered_at, :format => :long %></p>
     </div>
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="  w-6 h-6 " preserveAspectRatio="xMidYMid meet">
       <path d="M9 5L16 12L9 19" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>

@@ -7,3 +7,7 @@ one:
 two:
   box: two
   name: MyString
+
+three:
+  box: one
+  name: MyString

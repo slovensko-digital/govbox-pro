@@ -42,7 +42,7 @@ class MessageThreadsController < ApplicationController
 
   def merge
     authorize MessageThread
-    @selected_message_threads = policy_scope(MessageThread).where(id: params[:message_thread_ids]).order(:delivered_at)
+    @selected_message_threads = policy_scope(MessageThread).where(id: params[:message_thread_ids]).order(:last_message_delivered_at)
     if !@selected_message_threads || @selected_message_threads.size < 2
       flash[:error] = 'Označte zaškrtávacími políčkami minimálne 2 vlákna, ktoré chcete spojiť'
       redirect_back fallback_location: message_threads_path
@@ -56,7 +56,7 @@ class MessageThreadsController < ApplicationController
   private
 
   MESSAGE_THREADS_PER_PAGE = 20
-  DELIVERED_AT = 'message_threads.delivered_at'
+  DELIVERED_AT = 'message_threads.last_message_delivered_at'
   ID = 'message_threads.id'
 
   def message_threads_collection

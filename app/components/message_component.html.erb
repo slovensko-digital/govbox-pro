@@ -75,13 +75,13 @@
       <div class="flex flex-col justify-stretch items-stretch  relative gap-4 px-6 py-4 bg-white border-t-0 border-r-0 border-b border-l-0 border-gray-200">
         <%= render MessageAttachmentComponent.with_collection(@message.objects) %>
       </div>
-      <% if @message.delivery_notification? %>
+      <% if @message.metadata["delivery_notification"] %>
         <div class="flex justify-stretch items-start    gap-2 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
           <div class="flex justify-center items-center   relative  gap-2.5 px-3.5 py-2.5 rounded-md bg-blue-600">
             <p class="  text-base font-medium text-left text-white"> Prevziať správu </p>
           </div>
         </div>
-      <% elsif @message.can_be_replied? %>
+      <% elsif @message.replyable? %>
         <div class="flex justify-stretch items-start    gap-2 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
           <%= link_to reply_message_path(@message), class: "text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3.5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-700" do %>
             Odpovedať

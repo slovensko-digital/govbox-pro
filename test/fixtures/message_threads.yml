@@ -6,6 +6,7 @@ one:
   original_title: MyString
   merge_uuids: <%= [SecureRandom.uuid, SecureRandom.uuid] %>
   delivered_at: 2023-05-18 16:06:56
+  last_message_delivered_at: 2023-05-18 16:06:56
 
 two:
   folder: two
@@ -13,3 +14,4 @@ two:
   original_title: MyString
   merge_uuids: <%= [SecureRandom.uuid] %>
   delivered_at: 2023-05-18 16:06:56
+  last_message_delivered_at: 2023-05-18 16:06:56

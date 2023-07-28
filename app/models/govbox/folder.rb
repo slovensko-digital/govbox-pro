@@ -20,6 +20,10 @@ class Govbox::Folder < ApplicationRecord
     parent_folder_id.present? ? "#{parent_folder.full_name}/#{name}" : name
   end
 
+  def inbox?
+    name == "Inbox"
+  end
+
   def bin?
     name == 'Bin'
   end
