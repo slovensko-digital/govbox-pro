@@ -4,14 +4,16 @@ class Govbox::AuthorizeDeliveryNotificationJob < ApplicationJob
   end
 
   def perform(message, upvs_client: UpvsEnvironment.upvs_client)
-    message.metadata["authorized"] = nil
-    message.save!
-
     edesk_api = upvs_client.api(message.thread.folder.box).edesk
 
     success = edesk_api.authorize_delivery_notification(message.metadata["delivery_notification"]["authorize_url"])
 
-    raise StandardError, "Delivery notification authorization failed!" unless success
+    unless success
+      message.metadata["authorized"] = nil
+      message.save!
+
+      raise StandardError, "Delivery notification authorization failed!"
+    end
 
     message.metadata["authorized"] = true
     message.save!

@@ -44,10 +44,10 @@ class Message < ApplicationRecord
   end
 
   def can_be_authorized?
-    delivery_notification? && !metadata["authorized"] && Time.parse(metadata["delivery_notification"]["delivery_period_end_at"]) > Time.now
+    metadata["delivery_notification"] && !metadata["authorized"] && Time.parse(metadata["delivery_notification"]["delivery_period_end_at"]) > Time.now
   end
 
   def authorized?
-    delivery_notification? && metadata["authorized"] == true
+    metadata["delivery_notification"] && metadata["authorized"] == true
   end
 end

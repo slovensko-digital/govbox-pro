@@ -35,9 +35,9 @@ class Govbox::Message < ApplicationRecord
     message = self.create_message(govbox_message)
 
     thread_title = if message.metadata["delivery_notification"].present?
-     message.metadata["delivery_notification"]["consignment"]["subject"]
+      message.metadata["delivery_notification"]["consignment"]["subject"]
     else
-     message.title
+      message.title
     end
 
     message.thread = govbox_message.box.message_threads.find_or_create_by_merge_uuid!(
