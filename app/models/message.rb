@@ -23,10 +23,6 @@ class Message < ApplicationRecord
   delegate :tenant, to: :thread
   after_create_commit ->(message) { EventBus.publish(:message_created, message) }
 
-  DELIVERY_NOTIFICATION_CLASS = 'ED_DELIVERY_NOTIFICATION'
-  EGOV_DOCUMENT_CLASS = 'EGOV_DOCUMENT'
-  EGOV_NOTIFICATION_CLASS = 'EGOV_NOTIFICATION'
-
   def self.authorize_delivery_notification(message)
     can_be_authorized = message.can_be_authorized?
     if can_be_authorized
