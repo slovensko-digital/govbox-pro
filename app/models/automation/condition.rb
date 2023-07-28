@@ -12,4 +12,10 @@ module Automation
       'obsahuje'
     end
   end
+
+  class HasValueCondition < Automation::Condition
+    def satisfied?(thing)
+      thing[attr]&.has_value?(value)
+    end
+  end
 end
