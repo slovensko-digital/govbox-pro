@@ -79,7 +79,7 @@ class MessageThreadsController < ApplicationController
       coalesce((select max(coalesce(recipient_name)) from messages where messages.message_thread_id = message_threads.id),
         (select max(coalesce(sender_name)) from messages where messages.message_thread_id = message_threads.id)) as with_whom',
       # last_message_id - potrebujeme kvoli spravnej linke na konkretny message, ktory chceme otvorit, a nech to netahame potom pre kazdy thread
-      '(select max(messages.id) from messages where messages.message_thread_id = message_threads.id and messages.delivered_at = message_threads.delivered_at) as last_message_id'
+      '(select max(messages.id) from messages where messages.message_thread_id = message_threads.id and messages.delivered_at = message_threads.last_message_delivered_at) as last_message_id'
     )
   end
 
