@@ -22,7 +22,7 @@ class Govbox::Message < ApplicationRecord
   EGOV_DOCUMENT_CLASS = 'EGOV_DOCUMENT'
   EGOV_NOTIFICATION_CLASS = 'EGOV_NOTIFICATION'
 
-  def can_be_replied?
+  def replyable?
     folder.inbox? && [EGOV_DOCUMENT_CLASS, EGOV_NOTIFICATION_CLASS].include?(payload["class"])
   end
 
@@ -65,7 +65,7 @@ class Govbox::Message < ApplicationRecord
         "sender_uri": govbox_message.payload["sender_uri"],
         "edesk_class": govbox_message.payload["class"],
         "delivery_notification": govbox_message.payload["delivery_notification"],
-        "can_be_replied": govbox_message.can_be_replied?
+        "replyable": govbox_message.replyable?
       }
     )
   end
