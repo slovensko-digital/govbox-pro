@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_27_121624) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_28_092356) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -329,6 +329,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_27_121624) do
     t.text "html_visualization"
     t.boolean "read", default: false, null: false
     t.json "metadata"
+    t.boolean "replyable", default: true, null: false
     t.index ["message_thread_id"], name: "index_messages_on_message_thread_id"
   end
 
