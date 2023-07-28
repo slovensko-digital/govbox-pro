@@ -25,9 +25,7 @@ class Govbox::SubmitMessageDraftJob < ApplicationJob
     message_draft.metadata["status"] = "submitted"
     message_draft.save!
 
-    # TODO try to use batch job with success callback job
     Govbox::SyncBoxJob.set(wait: 3.minutes).perform_later(message_draft.thread.folder.box)
-    DeleteMessageDraftJob.set(wait: 3.minutes).perform_later(message_draft)
   end
 
   private
