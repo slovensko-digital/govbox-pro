@@ -40,7 +40,7 @@ class MessageThread < ApplicationRecord
       target_thread = self.first
       self.all.each do |thread|
         if thread != target_thread
-          target_thread.merge_uuids.union(thread.merge_uuids)
+          thread.merge_identifiers.update_all(message_thread_id: target_thread.id)
           thread.messages.each do |message|
             message.thread = target_thread
             message.save!
