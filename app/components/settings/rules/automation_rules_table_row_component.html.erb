@@ -1,31 +1,34 @@
-<div class="flex flex-col justify-start items-start flex-grow relative gap-1">
-  <p class="flex-grow-0 flex-shrink-0 text-lg text-left text-gray-900">
-    <span class="flex-grow-0 flex-shrink-0 text-lg text-left text-gray-900">Správy, kde</span>
-    <% @automation_rule.conditions.each_with_index do |condition, index| %>
-      <span class="flex-grow-0 flex-shrink-0 text-lg font-medium text-left text-gray-900"><%= condition.attr %></span>
-      <span class="flex-grow-0 flex-shrink-0 text-lg text-left text-gray-900"><%= condition.type_human_string %></span>
-      <% if index < @automation_rule.conditions.size - 1 %>
-        <% @suffix = ' a' %>
-      <% else %>
-        <% @suffix = '' %>
+<div class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
+  <div class="flex flex-col justify-start items-start flex-grow relative gap-1">
+    <p class="flex-grow-0 flex-shrink-0 text-lg text-left text-gray-900">
+      <span class="flex-grow-0 flex-shrink-0 text-lg text-left text-gray-900">Správy, kde</span>
+      <% @automation_rule.conditions.each_with_index do |condition, index| %>
+        <span class="flex-grow-0 flex-shrink-0 text-lg font-medium text-left text-gray-900"><%= t condition.attr %></span>
+        <span class="flex-grow-0 flex-shrink-0 text-lg text-left text-gray-900"><%= t condition.type %></span>
+        <% if index < @automation_rule.conditions.size - 1 %>
+          <% @suffix = ' a' %>
+        <% else %>
+          <% @suffix = '' %>
+        <% end %>
+        <span class="flex-grow-0 flex-shrink-0 text-lg font-medium text-left text-gray-900"><%= "'#{condition.value}'#{@suffix}"%></span>
       <% end %>
-      <span class="flex-grow-0 flex-shrink-0 text-lg font-medium text-left text-gray-900"><%= "'#{condition.value}'#{@suffix}"%></span>
+    </p>
+    <p class="flex-grow-0 flex-shrink-0 text-base text-left text-gray-500">
+      <% @automation_rule.actions.each_with_index do |action, index| %>
+        <span class="flex-grow-0 flex-shrink-0 text-base text-left text-gray-500"><%= t action.type %></span>
+        <span class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-gray-500"><%= action.params['tag_name'] %></span>
+        <%if index < @automation_rule.actions.length - 1%><%= ', '%><% end %>
+      <% end %>
+    </p>
+  </div>
+  <div class="flex justify-start items-start flex-grow-0 flex-shrink-0 gap-2">
+    <%= link_to edit_settings_automation_rule_path(@automation_rule), data: { turbo_frame: :modal }  do %>
+      <div class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300">
+        <svg width="20" height="20"viewBox="0 0 20 20"fill="none"xmlns="http://www.w3.org/2000/svg"class="flex-grow-0 flex-shrink-0 w-5 h-5 relative"preserveAspectRatio="xMidYMid meet">
+          <path d="M12.6933 4.36003L15.64 7.3067M13.9433 3.11003C14.3341 2.71928 14.8641 2.49976 15.4167 2.49976C15.9693 2.49976 16.4992 2.71928 16.89 3.11003C17.2808 3.50078 17.5003 4.03076 17.5003 4.58336C17.5003 5.13597 17.2808 5.66595 16.89 6.0567L5.41667 17.53H2.5V14.5534L13.9433 3.11003Z"stroke="#111827"stroke-width="2"stroke-linecap="round"stroke-linejoin="round"></path>
+        </svg>
+      </div>
     <% end %>
-  </p>
-  <p class="flex-grow-0 flex-shrink-0 text-base text-left text-gray-500">
-    <% @automation_rule.actions.each_with_index do |action, index| %>
-      <span class="flex-grow-0 flex-shrink-0 text-base text-left text-gray-500"><%= action.type_human_string %></span>
-      <span class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-gray-500"><%= action.params['tag_name'] %></span>
-    <% end %>
-  </p>
-</div>
-<div class="flex justify-start items-start flex-grow-0 flex-shrink-0 gap-2">
-  <a href=<%= edit_settings_automation_rule_path(@automation_rule) %>>
-    <div class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300">
-      <svg width="20" height="20"viewBox="0 0 20 20"fill="none"xmlns="http://www.w3.org/2000/svg"class="flex-grow-0 flex-shrink-0 w-5 h-5 relative"preserveAspectRatio="xMidYMid meet">
-        <path d="M12.6933 4.36003L15.64 7.3067M13.9433 3.11003C14.3341 2.71928 14.8641 2.49976 15.4167 2.49976C15.9693 2.49976 16.4992 2.71928 16.89 3.11003C17.2808 3.50078 17.5003 4.03076 17.5003 4.58336C17.5003 5.13597 17.2808 5.66595 16.89 6.0567L5.41667 17.53H2.5V14.5534L13.9433 3.11003Z"stroke="#111827"stroke-width="2"stroke-linecap="round"stroke-linejoin="round"></path>
-      </svg>
-    </div>
     <a href=<%= settings_automation_rule_path(@automation_rule) %>>
       <div class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300">
         <svg width="20"height="20"viewBox="0 0 20 20"fill="none"xmlns="http://www.w3.org/2000/svg"class="flex-grow-0 flex-shrink-0 w-5 h-5 relative"preserveAspectRatio="xMidYMid meet">
@@ -34,3 +37,4 @@
       </div>
     </a>
   </div>
+</div>

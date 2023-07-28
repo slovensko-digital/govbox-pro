@@ -1,8 +1,17 @@
 Rails.application.routes.draw do
+
+
   namespace :settings do
+    namespace :rules do
+      resources :condition_forms
+      resources :action_forms
+    end
     resources :automation_rules do
       resources :automation_conditions
       resources :automation_actions
+      member do
+        get 'edit_actions'
+      end
     end
     resources :tags
     resource :profile

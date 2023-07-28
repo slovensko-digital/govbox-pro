@@ -8,7 +8,7 @@ class MessageThreadsController < ApplicationController
   def update
     authorize @message_thread
     if @message_thread.update(message_thread_params)
-      redirect_back fallback_location:messages_path(@message_thread.messages.first)
+      redirect_back fallback_location: messages_path(@message_thread.messages.first)
     else
       render :edit, status: :unprocessable_entity
     end
@@ -56,9 +56,7 @@ class MessageThreadsController < ApplicationController
             message.thread = @target_thread
             message.save!
           end
-          thread.tags.each do |tag|
-            @target_thread.tags.push(tag) if !@target_thread.tags.include?(tag)
-          end 
+          thread.tags.each { |tag| @target_thread.tags.push(tag) if !@target_thread.tags.include?(tag) }
           thread.destroy!
         end
       end

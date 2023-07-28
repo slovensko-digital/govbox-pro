@@ -8,10 +8,6 @@ module Automation
       tag = thing.tenant.tags.find_by(name: params['tag_name'])
       thing.tags << tag if tag && !thing.tags.include?(tag)
     end
-
-    def type_human_string
-      'Pridaj štítok'
-    end
   end
 
   class DeleteTagAction < Automation::Action
@@ -19,10 +15,6 @@ module Automation
       tag = thing.tenant.tags.find_by(name: params['tag_name'])
       # TODO: nemozme mazat tag, ale jeho vazbu s vecou
       # thing.tags.delete(tag) if tag
-    end
-
-    def type_human_string
-      'Odober štítok'
     end
   end
 

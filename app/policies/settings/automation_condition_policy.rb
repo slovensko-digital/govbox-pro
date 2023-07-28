@@ -1,14 +1,14 @@
-class Settings::AutomationRulePolicy < ApplicationPolicy
-  attr_reader :user, :automation_rule
+class Settings::AutomationConditionPolicy < ApplicationPolicy
+  attr_reader :user, :automation_condition
 
-  def initialize(user, automation_rule)
+  def initialize(user, automation_condition)
     @user = user
-    @automation_rule = automation_rule
+    @automation_condition = automation_condition
   end
 
   class Scope < Scope
     def resolve
-      scope.where(tenant_id: @user.tenant_id, user: @user)
+      scope.joins(:automation_rule).where(automation_rule: {user_id: @user.id})
     end
   end
 
@@ -33,10 +33,6 @@ class Settings::AutomationRulePolicy < ApplicationPolicy
   end
 
   def edit?
-    true
-  end
-
-  def edit_actions?
     true
   end
 

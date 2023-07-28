@@ -1,5 +1,5 @@
 class Settings::AutomationRulesController < ApplicationController
-  before_action :set_automation_rule, only: %i[show edit update destroy]
+  before_action :set_automation_rule, only: %i[show edit edit_actions update destroy]
 
   def index
     authorize Automation::Rule, policy_class: Settings::AutomationRulePolicy
@@ -7,6 +7,10 @@ class Settings::AutomationRulesController < ApplicationController
   end
 
   def edit
+    authorize @automation_rule, policy_class: Settings::AutomationRulePolicy
+  end
+
+  def edit_actions
     authorize @automation_rule, policy_class: Settings::AutomationRulePolicy
   end
 

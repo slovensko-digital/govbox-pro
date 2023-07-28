@@ -1,0 +1,17 @@
+ <%= tag.turbo_frame id: "rule_#{@action_form.id}", class:"flex justify-start self-stretch grow" do %>
+  <div class="flex justify-between items-center self-stretch flex-grow flex-shrink-0 relative">
+    <div class="flex gap-1">
+      <p class="text-base font-medium text-left text-gray-900"><%= t @action_form.type %></p>
+      <p class="text-base text-left text-gray-900"><%= t @action_form.attr %></p>
+      <p class="text-base text-left text-gray-900"><%= @action_form.value %></p>
+    </div>
+    <div class="flex">
+      <%= link_to edit_settings_rules_action_form_path(@action_form.id, rule_form: @rule_form.to_json) do %>
+        <%= render Common::EditButtonComponent.new %>
+      <% end %>
+      <%= link_to settings_rules_action_form_path(@action_form.id, rule_form: @rule_form.to_json), data: {turbo_method: :delete, turbo_confirm: 'Are you sure?'} do %>
+        <%= render Common::DeleteButtonComponent.new %>
+      <% end %>
+    </div>
+  </div>
+<% end %>

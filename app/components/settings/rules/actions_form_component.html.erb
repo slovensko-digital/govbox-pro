@@ -1,0 +1,45 @@
+<%= tag.turbo_frame(id: 'modal') do %>
+  <div class="fixed inset-0 z-50 p-2" role="dialog" aria-modal="true">
+    <div class="fixed inset-0 transition-opacity bg-gray-400 bg-opacity-75" aria-hidden="true"></div>
+    <div class="relative flex items-center justify-center h-full">
+      <div class="flex flex-col justify-start items-start w-[900] overflow-hidden rounded-lg bg-white border border-gray-300" role="dialog" style="box-shadow: 1px 1px 4px 0 rgba(0,0,0,0.1);">
+        <div class="flex flex-col justify-start items-start self-stretch flex-grow-0 flex-shrink-0">
+          <div class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 overflow-hidden gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
+            <div class="flex flex-col justify-start items-start flex-grow relative">
+              <p class="self-stretch flex-grow w-[788px] text-xl font-semibold text-left text-gray-900"> Úprava pravidla </p>
+              <p class="flex-grow-0 flex-shrink-0 text-xs text-left text-gray-500"> Krok 2 z 2 – Akcie pravidla </p>
+            </div>
+            <%= link_to settings_automation_rules_path, data: { turbo_frame: "_top" } do %>
+              <%= render Common::CloseButtonComponent.new %>
+            <% end %>
+          </div>
+          <div class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-4 p-6 bg-white border-t-0 border-r-0 border-b border-l-0 border-gray-200">
+            <%= render Icons::InfoComponent.new %>
+            <p class="flex-grow w-[804px] text-base text-left text-gray-900"> Pravidlo tvorí ľubovoľný počet akcií, pričom všetky budú spustené, ak budú splnené všetky podmienky pre pravidlo. </p>
+          </div>
+          <div class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
+            <%= render Settings::Rules::ActionFormComponent.new(
+              action_form: Settings::Rules::ActionForm.new(attr: '', type: '', value: ''),
+              rule_form: @rule_form
+              )%>
+          </div>
+          <div class="flex flex-col justify-between items-start self-stretch flex-grow-0 flex-shrink-0 gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
+            <% if @rule_form.action_forms %>
+              <% @rule_form.action_forms.each do |action_form| %>
+                <%= render Settings::Rules::ActionsFormRowComponent.new(action_form: action_form, rule_form: @rule_form) %>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+        <div class="flex justify-start items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6">
+          <div class="flex justify-center items-center flex-grow relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300">
+            <p class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-gray-900"> Zahodiť zmeny </p>
+          </div>
+          <%= link_to root_path, class:"flex justify-center items-center flex-grow relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md bg-blue-600" do %>
+            <p class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-white">Pokračovať</p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

@@ -1,0 +1,13 @@
+ <%= tag.turbo_frame id: "action_#{@action_form.id}", class:"flex justify-start self-stretch grow" do %>
+  <%= form_with model:[@action_form], scope: :action_form, class:"flex justify-between self-stretch grow" do |form| %>
+    <div class="flex justify-stretch gap-2">
+      <%= form.select :attr, @attr_list, {}, {class:"mt-2 block rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-400 ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"} %>
+      <%= form.select :type, @action_type_list, {}, {class:"mt-2 block rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-400 ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"} %>
+      <%= form.hidden_field :rule_form, value: @rule_form.to_json %>
+      <%= form.text_field :value, class:"mt-2 block rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-400 ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6" %>
+    </div>
+    <%= button_tag :submit do %>
+      <%= render Common::AddButtonComponent.new %>
+    <% end %>
+  <% end %>
+<% end %>

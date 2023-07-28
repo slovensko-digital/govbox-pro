@@ -1,0 +1,6 @@
+sk:
+  sender_name: "Odosielateľ"
+  recipient_name: "Prijímateľ"
+  "Automation::ContainsCondition": "obsahuje"
+  'Automation::AddTagAction': 'Pridaj štítok'
+  'Automation::AddMessageThreadTagAction': 'Pridaj štítok na vlákno'
