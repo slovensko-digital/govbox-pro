@@ -81,7 +81,7 @@
               <p class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-white"> Prevziať správu </p>
             </div>
           </div>
-        <% elsif @message.metadata["replyable"] %>
+        <% elsif @message.replyable? %>
           <div class="flex justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
             <%= link_to reply_message_path(@message), class: "text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3.5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-700" do %>
               Odpovedať

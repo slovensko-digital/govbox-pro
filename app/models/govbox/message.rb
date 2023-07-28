@@ -60,12 +60,12 @@ class Govbox::Message < ApplicationRecord
       recipient_name: raw_message["recipient_name"],
       delivered_at: Time.parse(raw_message["delivered_at"]),
       html_visualization: raw_message["original_html"],
+      replyable: govbox_message.replyable?,
       metadata: {
         "correlation_id": govbox_message.payload["correlation_id"],
         "sender_uri": govbox_message.payload["sender_uri"],
         "edesk_class": govbox_message.payload["class"],
-        "delivery_notification": govbox_message.payload["delivery_notification"],
-        "replyable": govbox_message.replyable?
+        "delivery_notification": govbox_message.payload["delivery_notification"]
       }
     )
   end

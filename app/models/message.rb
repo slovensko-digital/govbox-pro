@@ -11,6 +11,7 @@
 #  html_visualization                          :text             not null
 #  metadata                                    :json
 #  read                                        :boolean          not null, default: false
+#  replyable                                   :boolean          not null, default: true
 #  delivered_at                                :datetime         not null
 #  created_at                                  :datetime         not null
 #  updated_at                                  :datetime         not null
