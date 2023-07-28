@@ -19,6 +19,13 @@ class Govbox::Message < ApplicationRecord
 
   delegate :box, to: :folder
 
+  EGOV_DOCUMENT_CLASS = 'EGOV_DOCUMENT'
+  EGOV_NOTIFICATION_CLASS = 'EGOV_NOTIFICATION'
+
+  def replyable?
+    folder.inbox? && [EGOV_DOCUMENT_CLASS, EGOV_NOTIFICATION_CLASS].include?(payload["class"])
+  end
+
   def self.create_message_with_thread!(govbox_message)
     folder = Folder.find_or_create_by!(
       name: "Inbox",
@@ -59,6 +66,7 @@ class Govbox::Message < ApplicationRecord
       recipient_name: raw_message["recipient_name"],
       delivered_at: Time.parse(raw_message["delivered_at"]),
       html_visualization: raw_message["original_html"],
+      replyable: govbox_message.replyable?,
       metadata: {
         "correlation_id": govbox_message.payload["correlation_id"],
         "sender_uri": govbox_message.payload["sender_uri"],

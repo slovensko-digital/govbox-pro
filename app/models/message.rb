@@ -11,6 +11,7 @@
 #  html_visualization                          :text             not null
 #  metadata                                    :json
 #  read                                        :boolean          not null, default: false
+#  replyable                                   :boolean          not null, default: true
 #  delivered_at                                :datetime         not null
 #  created_at                                  :datetime         not null
 #  updated_at                                  :datetime         not null
@@ -42,29 +43,11 @@ class Message < ApplicationRecord
     tenant.automation_rules.where(trigger_event: event)
   end
 
-  def can_be_replied?
-    tags.where("name LIKE ?", "#{"slovensko.sk:Inbox%"}").present? && (egov_document? || egov_notification?)
-  end
-
   def can_be_authorized?
     delivery_notification? && !metadata["authorized"] && Time.parse(metadata["delivery_notification"]["delivery_period_end_at"]) > Time.now
   end
 
   def authorized?
     delivery_notification? && metadata["authorized"] == true
-  end
-
-  private
-
-  def delivery_notification?
-    metadata["edesk_class"] == DELIVERY_NOTIFICATION_CLASS
-  end
-
-  def egov_document?
-    metadata["edesk_class"] == EGOV_DOCUMENT_CLASS
-  end
-
-  def egov_notification?
-    metadata["edesk_class"] == EGOV_NOTIFICATION_CLASS
   end
 end

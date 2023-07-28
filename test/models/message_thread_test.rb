@@ -19,7 +19,7 @@ class MessageThreadTest < ActiveSupport::TestCase
     box = boxes(:one)
 
     thread = box.message_threads.find_or_create_by_merge_uuid!(
-      merge_uuid: message_threads(:one).merge_uuids.second,
+      merge_uuid: message_threads(:one).merge_identifiers.second.uuid,
       folder: folders(:one),
       title: 'Title',
       delivered_at: Time.current,
@@ -33,8 +33,8 @@ class MessageThreadTest < ActiveSupport::TestCase
     older_delivered_at = message_threads(:one).delivered_at - 1.day
 
     thread = box.message_threads.find_or_create_by_merge_uuid!(
-      merge_uuid: message_threads(:one).merge_uuids.second,
-      folder: folders(:two),
+      merge_uuid: message_threads(:one).merge_identifiers.second.uuid,
+      folder: folders(:three),
       title: 'New Title',
       delivered_at: older_delivered_at,
     )
@@ -42,6 +42,35 @@ class MessageThreadTest < ActiveSupport::TestCase
     assert_equal 'New Title', thread.title
     assert_equal 'New Title', thread.original_title
     assert_equal older_delivered_at, thread.delivered_at
-    assert_equal folders(:two), thread.folder # yes, we WANT to update folder here
+    assert_equal folders(:three), thread.folder # yes, we WANT to update folder here
+  end
+
+  test "should update last_message_delivered_at attribute when new message in message thread" do
+    box = boxes(:one)
+    new_delivered_at = message_threads(:one).delivered_at + 1.day
+
+    thread = box.message_threads.find_or_create_by_merge_uuid!(
+      merge_uuid: message_threads(:one).merge_identifiers.second.uuid,
+      folder: folders(:three),
+      title: 'New Title',
+      delivered_at: new_delivered_at,
+      )
+
+    assert_equal new_delivered_at, thread.last_message_delivered_at
+  end
+
+  test "should not update last_message_delivered_at attribute when creating thread in wrong chronological order" do
+    box = boxes(:one)
+    older_delivered_at = message_threads(:one).delivered_at - 1.day
+    last_message_delivered_at = message_threads(:one).last_message_delivered_at
+
+    thread = box.message_threads.find_or_create_by_merge_uuid!(
+      merge_uuid: message_threads(:one).merge_identifiers.second.uuid,
+      folder: folders(:three),
+      title: 'New Title',
+      delivered_at: older_delivered_at,
+    )
+
+    assert_equal last_message_delivered_at, thread.last_message_delivered_at
   end
 end

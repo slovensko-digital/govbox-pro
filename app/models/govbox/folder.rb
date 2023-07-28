@@ -24,6 +24,10 @@ class Govbox::Folder < ApplicationRecord
     end
   end
 
+  def inbox?
+    name == "Inbox"
+  end
+
   def bin?
     name == "Bin"
   end
