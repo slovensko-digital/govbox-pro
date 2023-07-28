@@ -13,9 +13,9 @@ module Automation
     end
   end
 
-  class HasValueCondition < Automation::Condition
+  class MetadataValueCondition < Automation::Condition
     def satisfied?(thing)
-      thing[attr]&.has_value?(value)
+      thing.metadata && thing.metadata[attr]&.match?(value)
     end
   end
 end

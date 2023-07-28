@@ -23,7 +23,7 @@ if tenant.users.first
   rule2.actions.find_or_create_by!(type: 'Automation::AddTagAction', params: { tag_name: 'NASES' })
   rule2.actions.find_or_create_by!(type: 'Automation::AddMessageThreadTagAction', params: { tag_name: 'NASES' })
   rule = tenant.automation_rules.create!(name: 'NASES Tag URI Sender Rule', user: tenant.users.first, trigger_event: :message_created)
-  rule.conditions.find_or_create_by!(attr: :metadata, type: 'Automation::HasValueCondition', value: 'ico://sk/42156424_10037')
+  rule.conditions.find_or_create_by!(attr: 'sender_uri', type: 'Automation::MetadataValueCondition', value: 'ico://sk/42156424_10037')
   rule.actions.find_or_create_by!(type: 'Automation::AddTagAction', params: { tag_name: 'NASES' })
   rule.actions.find_or_create_by!(type: 'Automation::AddMessageThreadTagAction', params: { tag_name: 'NASES' })
  end
