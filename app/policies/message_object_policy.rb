@@ -10,7 +10,20 @@ class MessageObjectPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      @user.site_admin? ? scope.all : scope.where(tenant_id: @user.tenant_id)
+      if @user.site_admin?
+        scope.all
+      else
+        scope.where(
+          'message_id in (
+        select m.id
+        from messages m
+        join message_threads mt on mt.id = m.message_thread_id
+        join message_threads_tags mt_tags on mt.id = mt_tags.message_thread_id
+        join tag_users tu on mt_tags.tag_id = tu.tag_id
+        where user_id = ?)',
+          @user.id
+        )
+      end
     end
   end
 

@@ -21,7 +21,7 @@ class SidebarMenu
   def default_main_menu
     [
       { icon: Icons::DashboardComponent.new, url: root_path, name: 'Dashboard' },
-      # { icon: Icons::SchrankaComponent.new, url: message_threads_path, name: 'Správy' },
+      { icon: Icons::SchrankaComponent.new, url: message_threads_path, name: 'Správy' },
       { icon: Icons::SettingsComponent.new, url: settings_automation_rules_path, name: 'Rules Settings' },
       :tagsplaceholder
     ]
