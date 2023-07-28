@@ -51,7 +51,10 @@ class MessageThreadsController < ApplicationController
     MessageThread.transaction do
       @selected_message_threads.each_with_index do |thread, i|
         if i.positive?
-          @target_thread.merge_uuids.union(thread.merge_uuids)
+          thread.merge_identifiers.update_all(
+              message_thread_id: @target_thread.id
+          )
+
           thread.messages.each do |message|
             message.thread = @target_thread
             message.save!

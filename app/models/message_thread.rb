@@ -20,6 +20,7 @@ class MessageThread < ApplicationRecord
   has_and_belongs_to_many :tags, through: :messages
   has_many :message_threads_tags
   has_many :tag_users, through: :message_threads_tags
+  has_many :merge_identifiers, class_name: 'MessageThreadMergeIdentifier'
 
   after_create_commit ->(thread) { EventBus.publish(:message_thread_created, thread) }
 

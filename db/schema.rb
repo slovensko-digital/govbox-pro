@@ -285,6 +285,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_28_092356) do
     t.index ["message_id"], name: "index_message_objects_on_message_id"
   end
 
+  create_table "message_thread_merge_identifiers", force: :cascade do |t|
+    t.bigint "message_thread_id", null: false
+    t.uuid "uuid", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["message_thread_id"], name: "index_message_thread_merge_identifiers_on_message_thread_id"
+    t.index ["uuid"], name: "index_message_thread_merge_identifiers_on_uuid", unique: true
+  end
+
   create_table "message_threads", force: :cascade do |t|
     t.bigint "folder_id", null: false
     t.string "title", null: false
@@ -389,6 +398,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_28_092356) do
   add_foreign_key "groups", "tenants"
   add_foreign_key "message_object_data", "message_objects"
   add_foreign_key "message_objects", "messages"
+  add_foreign_key "message_thread_merge_identifiers", "message_threads"
   add_foreign_key "message_threads", "folders"
   add_foreign_key "message_threads_tags", "message_threads"
   add_foreign_key "message_threads_tags", "tags"
