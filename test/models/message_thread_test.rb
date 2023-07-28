@@ -34,7 +34,7 @@ class MessageThreadTest < ActiveSupport::TestCase
 
     thread = box.message_threads.find_or_create_by_merge_uuid!(
       merge_uuid: message_threads(:one).merge_identifiers.second.uuid,
-      folder: folders(:two),
+      folder: folders(:three),
       title: 'New Title',
       delivered_at: older_delivered_at,
     )
@@ -42,7 +42,7 @@ class MessageThreadTest < ActiveSupport::TestCase
     assert_equal 'New Title', thread.title
     assert_equal 'New Title', thread.original_title
     assert_equal older_delivered_at, thread.delivered_at
-    assert_equal folders(:two), thread.folder # yes, we WANT to update folder here
+    assert_equal folders(:three), thread.folder # yes, we WANT to update folder here
   end
 
   test "should update last_message_delivered_at attribute when new message in message thread" do
@@ -51,7 +51,7 @@ class MessageThreadTest < ActiveSupport::TestCase
 
     thread = box.message_threads.find_or_create_by_merge_uuid!(
       merge_uuid: message_threads(:one).merge_identifiers.second.uuid,
-      folder: folders(:two),
+      folder: folders(:three),
       title: 'New Title',
       delivered_at: new_delivered_at,
       )
@@ -66,7 +66,7 @@ class MessageThreadTest < ActiveSupport::TestCase
 
     thread = box.message_threads.find_or_create_by_merge_uuid!(
       merge_uuid: message_threads(:one).merge_identifiers.second.uuid,
-      folder: folders(:two),
+      folder: folders(:three),
       title: 'New Title',
       delivered_at: older_delivered_at,
     )
