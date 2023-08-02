@@ -26,4 +26,25 @@ class Message < ApplicationRecord
   def automation_rules_for_event(event)
     tenant.automation_rules.where(trigger_event: event)
   end
+
+  # TODO move to task/job in order to keep the domain clean
+  def self.authorize_delivery_notification(message)
+    can_be_authorized = message.can_be_authorized?
+    if can_be_authorized
+      message.metadata["authorized"] = "in_progress"
+      message.save!
+
+      Govbox::AuthorizeDeliveryNotificationJob.perform_later(message)
+    end
+
+    can_be_authorized
+  end
+
+  def can_be_authorized?
+    metadata["delivery_notification"] && !metadata["authorized"] && Time.parse(metadata["delivery_notification"]["delivery_period_end_at"]) > Time.now
+  end
+
+  def authorized?
+    metadata["delivery_notification"] && metadata["authorized"] == true
+  end
 end
