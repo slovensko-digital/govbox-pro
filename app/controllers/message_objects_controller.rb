@@ -7,7 +7,7 @@ class MessageObjectsController < ApplicationController
 
     MessageObject.create_message_objects(@message, params[:attachments])
 
-    redirect_to MessageHelper.message_link(@message)
+    redirect_to polymorphic_url(@message)
   end
 
   def show
@@ -25,7 +25,7 @@ class MessageObjectsController < ApplicationController
 
     @message_object.destroy
 
-    redirect_to MessageHelper.message_link(@message)
+    redirect_to polymorphic_url(@message)
   end
 
   private

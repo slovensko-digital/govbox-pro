@@ -25,7 +25,7 @@
         </svg>
       </div>
     <% end %>
-    <% if @destroy_allowed %>
+    <% if @message_attachment.destroyable? %>
       <%= button_to message_message_object_path(@message_attachment.message, @message_attachment), method: :delete do %>
         <div class="flex justify-end items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300">
           <svg style="color: red" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
@@ -37,9 +37,9 @@
   </div>
 </div>
 <div class="flex justify-stretch items-center gap-4">
-  <% if !@is_last %>
-    <svg width="1245" height="1" viewBox="0 0 1245 1" fill="none" xmlns="http://www.w3.org/2000/svg" class=" grow " preserveAspectRatio="none">
-      <line y1="0.5" x2="1245" y2="0.5" stroke="#E5E7EB"></line>
-    </svg>
+  <% unless @is_last %>
+  <svg width="1245" height="1" viewBox="0 0 1245 1" fill="none" xmlns="http://www.w3.org/2000/svg" class=" grow " preserveAspectRatio="none">
+    <line y1="0.5" x2="1245" y2="0.5" stroke="#E5E7EB"></line>
+  </svg>
   <% end %>
 </div>

@@ -32,4 +32,8 @@ class MessageObject < ApplicationRecord
       )
     end
   end
+
+  def destroyable?
+    message.is_a?(MessageDraft)
+  end
 end
