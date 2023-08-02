@@ -14,6 +14,7 @@ class MessagesController < ApplicationController
 
   def set_message
     @message = policy_scope(Message).find(params[:id])
+    @menu = SidebarMenu.new(controller_name, action_name, { message: @message })
   end
 
   def permit_reply_params

@@ -55,6 +55,7 @@ class MessageDraftsController < ApplicationController
 
   def set_message_draft
     @message_draft = policy_scope(MessageDraft).find(params[:id])
+    @menu = SidebarMenu.new(controller_name, action_name, { message: @message_draft })
   end
 
   def message_params

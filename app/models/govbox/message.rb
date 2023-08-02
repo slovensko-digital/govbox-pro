@@ -53,9 +53,11 @@ class Govbox::Message < ApplicationRecord
   def self.create_message(govbox_message)
     raw_message = govbox_message.payload
 
+    message_title = [raw_message["subject"], raw_message.dig("general_agenda", "subject")].compact.join(' - ')
+
     ::Message.create(
       uuid: raw_message["message_id"],
-      title: raw_message["subject"],
+      title: message_title,
       sender_name: raw_message["sender_name"],
       recipient_name: raw_message["recipient_name"],
       delivered_at: Time.parse(raw_message["delivered_at"]),

@@ -28,6 +28,16 @@ class Govbox::MessageTest < ActiveSupport::TestCase
     assert_equal message.tags.first, message.thread.tags.first
   end
 
+  test "should include general agenda subject in message title" do
+    govbox_message = govbox_messages(:four)
+
+    Govbox::Message.create_message_with_thread!(govbox_message)
+
+    message = Message.last
+
+    assert_equal message.title, "Všeobecná Agenda - Rozhodnutie ..."
+  end
+
   test "should not create new tag if already exists" do
     govbox_message = govbox_messages(:one)
 

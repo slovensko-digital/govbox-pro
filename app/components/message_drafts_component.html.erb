@@ -1,9 +1,9 @@
-<div class="flex flex-col justify-stretch items-start w-full">
+<div class="flex flex-col justify-stretch items-stretch">
   <%= render MessageThreadHeaderComponent.new(@message.thread) %>
-  <div class="flex flex-col justify-stretch items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-4">
+  <div class="flex flex-col justify-stretch items-stretch gap-2 p-4">
     <% if @notice %>
-      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" style="width:100%;" role="alert">
-        <strong class="font-bold"><%= @notice %></strong>
+      <div class="bg-blue-100 border-t border-b border-blue-500 text-blue-700 px-4 py-3 w-full" role="alert">
+        <p class="font-bold"><%= @notice %></p>
       </div>
     <% end %>
     <div class="flex flex-col justify-stretch items-start self-stretch flex-grow-0 flex-shrink-0 overflow-hidden rounded-md bg-white border border-gray-200">

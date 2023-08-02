@@ -1,7 +1,6 @@
 class Layout::MessageThreadSidebarComponent < ViewComponent::Base
-  def before_render
-    # TODO: Fix security hole - no pundit
-    @selected_message = Message.find(params[:id])
-    @message_thread = @selected_message.thread
+  def initialize(message:)
+    @selected_message = message
+    @thread_messages = @selected_message.thread.messages.order(delivered_at: :desc)
   end
 end

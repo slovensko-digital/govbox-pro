@@ -8,7 +8,7 @@ class MessageThreadsController < ApplicationController
   def update
     authorize @message_thread
     if @message_thread.update(message_thread_params)
-      redirect_back fallback_location:messages_path(@message_thread.messages.first)
+      redirect_back fallback_location: messages_path(@message_thread.messages.first)
     else
       render :edit, status: :unprocessable_entity
     end
@@ -17,20 +17,22 @@ class MessageThreadsController < ApplicationController
   def index
     authorize MessageThread
     @cursor = params[:cursor] || {}
-    @cursor[:last_message_delivered_at] = @cursor[:last_message_delivered_at] ? millis_to_time(@cursor[:last_message_delivered_at]) : Time.now
+    @cursor[DELIVERED_AT] = @cursor[DELIVERED_AT] ? millis_to_time(@cursor[DELIVERED_AT]) : Time.now
 
     @message_threads, @next_cursor =
       Pagination.paginate(
         collection: message_threads_collection,
         cursor: {
-          last_message_delivered_at: @cursor[:last_message_delivered_at],
-          id: @cursor[:id]
+          DELIVERED_AT => @cursor[DELIVERED_AT],
+          ID => @cursor[ID]
         },
         items_per_page: MESSAGE_THREADS_PER_PAGE,
         direction: 'desc'
       )
 
-    @next_cursor[:last_message_delivered_at] = time_to_millis(@next_cursor[:last_message_delivered_at]) if @next_cursor
+    @next_cursor[DELIVERED_AT] = time_to_millis(@next_cursor[DELIVERED_AT]) if @next_cursor
+    # TODO: Toto reviewnime pls niekedy(to_unsage_h). Chcelo by elegantnejsie riesenie, ale domotal som sa v tom
+    @next_page_params = params.to_unsafe_h.merge(cursor: @next_cursor).merge(format: :turbo_stream)
 
     respond_to do |format|
       format.html # GET
@@ -38,7 +40,6 @@ class MessageThreadsController < ApplicationController
     end
   end
 
-  # TODO: presunut logiku do modelu
   def merge
     authorize MessageThread
     @selected_message_threads = policy_scope(MessageThread).where(id: params[:message_thread_ids]).order(:last_message_delivered_at)
@@ -47,51 +48,38 @@ class MessageThreadsController < ApplicationController
       redirect_back fallback_location: message_threads_path
       return
     end
-    @target_thread = @selected_message_threads.first
-    MessageThread.transaction do
-      @selected_message_threads.each_with_index do |thread, i|
-        if i.positive?
-          thread.merge_identifiers.update_all(
-              message_thread_id: @target_thread.id
-          )
-
-          thread.messages.each do |message|
-            message.thread = @target_thread
-            message.save!
-          end
-          thread.tags.each do |tag|
-            @target_thread.tags.push(tag) if !@target_thread.tags.include?(tag)
-          end 
-          thread.destroy!
-        end
-      end
-      flash[:notice] = 'Vlákna boli úspešne spojené'
-    end
+    @selected_message_threads.merge_threads
+    flash[:notice] = 'Vlákna boli úspešne spojené'
     redirect_to @selected_message_threads.first.messages.first
   end
 
   private
 
-  MESSAGE_THREADS_PER_PAGE = 10
+  MESSAGE_THREADS_PER_PAGE = 20
+  DELIVERED_AT = 'message_threads.last_message_delivered_at'
+  ID = 'message_threads.id'
 
   def message_threads_collection
-    @message_threads_collection = policy_scope(MessageThread)
-    if params[:tag_id]
-      # TODO: Janovi sa nepacilo, prejst
+    @message_threads_collection = policy_scope(MessageThread).includes(:tags).includes(:messages)
+    @message_threads_collection =
+      @message_threads_collection #.where(ts: { id: params[:tag_id] }) if params[:tag_id]
+        .where(message_threads: { id: MessageThread.joins(:tags).where(tags: { id: params[:tag_id] }) }) if params[:tag_id]
+    if params[:tags] && params[:tags] == 'none' && Current.user.admin?
       @message_threads_collection =
-        @message_threads_collection.where(
-          'message_threads.id in (select mt.id from message_threads mt
-                  join message_threads_tags mtags on mt.id = mtags.message_thread_id
-                  where mtags.tag_id = ?)',
-          params[:tag_id]
-        )
+        @message_threads_collection.where.not(message_threads: { id: (MessageThread.joins(:tags).where('tags.name not like ?', 'slovensko.sk:%')) })
     end
-    # TODO - mame tu velmi hruby sposob ako zistit, s kym je dany thread komunikacie, vedeny, len pre ucely zobrazenia. Dohodnut aj s @Taja, co s tym
+    add_calculated_fields
+  end
+
+  def add_calculated_fields
     @message_threads_collection.select(
-      'message_threads.*,
-              (select count(messages.id) from messages where messages.message_thread_id = message_threads.id) as messages_count,
-              coalesce((select max(coalesce(recipient_name)) from messages where messages.message_thread_id = message_threads.id),
-              (select max(coalesce(sender_name)) from messages where messages.message_thread_id = message_threads.id)) as with_whom'
+      'message_threads.*',
+      # TODO: - mame tu velmi hruby sposob ako zistit, s kym je dany thread komunikacie, vedeny, len pre ucely zobrazenia. Dohodnut aj s @Taja, co s tym
+      '(select count(messages.id) from messages where messages.message_thread_id = message_threads.id) as messages_count,
+      coalesce((select max(coalesce(recipient_name)) from messages where messages.message_thread_id = message_threads.id),
+        (select max(coalesce(sender_name)) from messages where messages.message_thread_id = message_threads.id)) as with_whom',
+      # last_message_id - potrebujeme kvoli spravnej linke na konkretny message, ktory chceme otvorit, a nech to netahame potom pre kazdy thread
+      '(select max(messages.id) from messages where messages.message_thread_id = message_threads.id and messages.delivered_at = message_threads.last_message_delivered_at) as last_message_id'
     )
   end
 
@@ -108,6 +96,6 @@ class MessageThreadsController < ApplicationController
   end
 
   def message_thread_params
-    params.require(:message_thread).permit(:title, :original_title, :merge_uuids)
+    params.require(:message_thread).permit(:title, :original_title, :merge_uuids, :tag_id, :tags, :format, cursor: [DELIVERED_AT, ID])
   end
 end

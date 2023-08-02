@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_28_092356) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_02_071745) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -298,7 +298,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_28_092356) do
     t.bigint "folder_id", null: false
     t.string "title", null: false
     t.string "original_title", null: false
-    t.uuid "merge_uuids", default: [], null: false, array: true
     t.datetime "delivered_at", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

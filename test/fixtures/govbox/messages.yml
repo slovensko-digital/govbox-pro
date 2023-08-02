@@ -29,3 +29,13 @@ three:
   folder: one
   body: MyText
   payload: { "message_id": "<%= SecureRandom.uuid %>", "subject": "MySubject 3", "sender_name": "MySender 3", "recipient_name": "MyRecipient 3", "delivered_at": "<%= DateTime.current.to_s %>", "original_html": "MyHtml 3", "objects": [{"name": "MyName", "mime_type": "MyMimeType", "signed": true, "class": "MyClass", "content": "MyContent"}]}
+
+four:
+  message_id: <%= SecureRandom.uuid %>
+  correlation_id: <%= SecureRandom.uuid %>
+  edesk_message_id: 4
+  delivered_at: <%= DateTime.current %>
+  edesk_class: 'TEST'
+  folder: one
+  body: MyText
+  payload: {"message_id": "<%= SecureRandom.uuid %>", "subject": "Všeobecná Agenda", "sender_name": "MySender", "recipient_name": "MyRecipient", "delivered_at": "<%= DateTime.current.to_s %>", "original_html": "MyHtml", "general_agenda": {"subject": "Rozhodnutie ...", "text": "Popis ..."}, "objects": [{"name": "MyName", "mime_type": "MyMimeType", "signed": true, "class": "MyClass", "content": "MyContent"}]}
