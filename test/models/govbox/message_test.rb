@@ -75,4 +75,15 @@ class Govbox::MessageTest < ActiveSupport::TestCase
     assert_equal message2.thread.tags.count, 1
     assert_equal message2.thread.tags.first, tag
   end
+
+  test "should not use delivery notification title for message thread title" do
+    govbox_message = govbox_messages(:delivery_notification)
+
+    Govbox::Message.create_message_with_thread!(govbox_message)
+    message = Message.last
+    message_thread = MessageThread.last
+
+    assert_not_equal message.title, message_thread.title
+    assert_equal message.metadata["delivery_notification"]["consignment"]["subject"], message_thread.title
+    end
 end

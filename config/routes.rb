@@ -38,6 +38,10 @@ Rails.application.routes.draw do
   resources :message_threads_tags
 
   resources :messages do
+    member do
+      post 'authorize_delivery_notification'
+    end
+
     resources :message_objects do
       member do
         get 'download'
