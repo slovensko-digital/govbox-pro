@@ -36,8 +36,4 @@ class MessageDraft < Message
   def original_message
     Message.find(metadata["original_message_id"])
   end
-
-  def draft
-    Draft.find_by(message_id: uuid)
-  end
 end
