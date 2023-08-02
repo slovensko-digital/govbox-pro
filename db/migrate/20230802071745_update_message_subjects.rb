@@ -1,19 +1,23 @@
 class UpdateMessageSubjects < ActiveRecord::Migration[7.0]
   def up
+    upvs_client = UpvsEnvironment.upvs_client
+
     Message.find_each do |message|
       govbox_message = Govbox::Message.find_by(message_id: message.uuid)
-      raw_message = govbox_message.payload
+
+      edesk_api = upvs_client.api(govbox_message.folder.box).edesk
+      _, raw_message = edesk_api.fetch_message(govbox_message.edesk_message_id)
+
+      govbox_message.update(
+        payload: raw_message
+      )
 
       folder = Folder.find_or_create_by!(
         name: "Inbox",
         box: govbox_message.box
       )
 
-      message_title = if raw_message["general_agenda"]
-        [raw_message["subject"], raw_message["general_agenda"]["subject"]].join(' - ')
-      else
-        raw_message["subject"]
-      end
+      message_title = [raw_message["subject"], raw_message.dig("general_agenda", "subject")].compact.join(' - ')
 
       message.update(title: message_title)
 
