@@ -22,7 +22,7 @@ class MessageObject < ApplicationRecord
         message: message,
         name: raw_object.original_filename,
         mimetype: Utils.detect_mime_type(entry_name: raw_object.original_filename),
-        is_signed: false, #TODO detect if signed
+        is_signed: Utils.is_signed?(entry_name: raw_object.original_filename),
         object_type: "ATTACHMENT"
       )
 

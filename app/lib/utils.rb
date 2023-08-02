@@ -49,6 +49,16 @@ module Utils
     end
   end
 
+  # TODO use UPVS API to detect if document is signed
+  def is_signed?(entry_name:)
+    case File.extname(entry_name).downcase
+    when '.asice', '.asics', '.xzep'
+      true
+    else
+      false
+    end
+  end
+
   def delete_file(path)
     FileUtils.rm_rf(path)
   end
