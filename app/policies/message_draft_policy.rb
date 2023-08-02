@@ -41,4 +41,8 @@ class MessageDraftPolicy < ApplicationPolicy
   def submit?
     create?
   end
+
+  def destroy?
+    create?
+  end
 end

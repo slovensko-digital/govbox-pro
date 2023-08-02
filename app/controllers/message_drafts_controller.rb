@@ -1,6 +1,6 @@
 class MessageDraftsController < ApplicationController
   before_action :set_message, only: :create
-  before_action :set_message_draft, only: [:update, :submit, :show]
+  before_action :set_message_draft, except: :create
 
   def create
     authorize @message
@@ -40,6 +40,13 @@ class MessageDraftsController < ApplicationController
     end
   end
 
+  def destroy
+    authorize @message_draft
+
+    @message_draft.destroy
+    redirect_to message_path(@message_draft.original_message)
+  end
+
   private
 
   def set_message
@@ -47,7 +54,7 @@ class MessageDraftsController < ApplicationController
   end
 
   def set_message_draft
-    @message_draft = MessageDraft.find(params[:id])
+    @message_draft = policy_scope(MessageDraft).find(params[:id])
   end
 
   def message_params
