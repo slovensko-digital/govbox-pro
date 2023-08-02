@@ -38,10 +38,7 @@ Rails.application.routes.draw do
   resources :message_threads_tags
 
   resources :messages do
-    # TODO change to resources :replies
     member do
-      get 'reply'
-      post 'submit_reply'
       post 'authorize_delivery_notification'
     end
 
@@ -51,6 +48,13 @@ Rails.application.routes.draw do
       end
     end
   end
+
+  resources :message_drafts do
+    member do
+      post 'submit'
+    end
+  end
+
   resources :messages_tags
 
   resource :settings

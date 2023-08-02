@@ -25,12 +25,21 @@
         </svg>
       </div>
     <% end %>
+    <% if @message_attachment.destroyable? %>
+      <%= button_to message_message_object_path(@message_attachment.message, @message_attachment), method: :delete do %>
+        <div class="flex justify-end items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300">
+          <svg style="color: red" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" fill="red"></path> <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" fill="red"></path>
+          </svg>
+        </div>
+      <% end %>
+    <% end %>
   </div>
 </div>
 <div class="flex justify-stretch items-center gap-4">
-  <% if !@is_last %>
-    <svg width="1245" height="1" viewBox="0 0 1245 1" fill="none" xmlns="http://www.w3.org/2000/svg" class=" grow " preserveAspectRatio="none">
-      <line y1="0.5" x2="1245" y2="0.5" stroke="#E5E7EB"></line>
-    </svg>
+  <% unless @is_last %>
+  <svg width="1245" height="1" viewBox="0 0 1245 1" fill="none" xmlns="http://www.w3.org/2000/svg" class=" grow " preserveAspectRatio="none">
+    <line y1="0.5" x2="1245" y2="0.5" stroke="#E5E7EB"></line>
+  </svg>
   <% end %>
 </div>

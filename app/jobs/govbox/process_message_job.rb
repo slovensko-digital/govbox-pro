@@ -9,6 +9,10 @@ module Govbox
         Govbox::Message.create_message_with_thread!(govbox_message)
       end
 
+      # Remove message draft if exists
+      message_draft = MessageDraft.where(uuid: govbox_message.message_id).joins(thread: :folder).where(folders: { box_id: govbox_message.box.id }).take
+      message_draft.destroy if message_draft
+
       # Mark message as authorized if there is a delivery notification
       delivery_notification_govbox_message = Govbox::Message.where("payload -> 'delivery_notification' -> 'consignment' ->> 'message_id' = ?", govbox_message.message_id)
                                                             .joins(folder: :box).where(folders: { boxes: { id: govbox_message.box.id } }).take

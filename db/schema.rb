@@ -319,7 +319,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_02_071745) do
   create_table "messages", force: :cascade do |t|
     t.uuid "uuid", null: false
     t.bigint "message_thread_id", null: false
-    t.string "title", null: false
+    t.string "title"
     t.string "sender_name"
     t.string "recipient_name"
     t.datetime "delivered_at", null: false
@@ -328,6 +328,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_02_071745) do
     t.text "html_visualization"
     t.boolean "read", default: false, null: false
     t.json "metadata"
+    t.string "type"
     t.boolean "replyable", default: true, null: false
     t.index ["message_thread_id"], name: "index_messages_on_message_thread_id"
   end

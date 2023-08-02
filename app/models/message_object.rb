@@ -15,4 +15,25 @@
 class MessageObject < ApplicationRecord
   belongs_to :message
   has_one :message_object_datum, dependent: :destroy
+
+  def self.create_message_objects(message, objects)
+    objects.each do |raw_object|
+      message_object = MessageObject.create!(
+        message: message,
+        name: raw_object.original_filename,
+        mimetype: Utils.detect_mime_type(entry_name: raw_object.original_filename),
+        is_signed: Utils.is_signed?(entry_name: raw_object.original_filename),
+        object_type: "ATTACHMENT"
+      )
+
+      MessageObjectDatum.create!(
+        message_object: message_object,
+        blob: raw_object.read.force_encoding("UTF-8")
+      )
+    end
+  end
+
+  def destroyable?
+    message.is_a?(MessageDraft)
+  end
 end

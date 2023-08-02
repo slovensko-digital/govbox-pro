@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class MessagePolicy < ApplicationPolicy
+class MessageDraftPolicy < ApplicationPolicy
   attr_reader :user, :message
 
   def initialize(user, message)
@@ -27,22 +27,22 @@ class MessagePolicy < ApplicationPolicy
   end
 
   def create?
-    true
+    true # TODO can everyone create new messages?
   end
 
   def show?
     true
   end
 
-  def authorize_delivery_notification?
-    show?
+  def update?
+    create?
   end
 
-  def reply?
-    true # TODO can everyone reply?
+  def submit?
+    create?
   end
 
-  def submit_reply?
-    reply?
+  def destroy?
+    create?
   end
 end

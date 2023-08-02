@@ -27,7 +27,7 @@ module Govbox
 
         if moved_edesk_message_ids.any?
           # TODO change tag
-          Govbox::Message.where(edesk_message_id: moved_edesk_message_ids).update_all(folder: folder)
+          Govbox::Message.where(edesk_message_id: moved_edesk_message_ids).update_all(folder_id: folder.id)
         end
 
         break if raw_messages.size < batch_size

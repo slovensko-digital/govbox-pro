@@ -1,4 +1,4 @@
-class MessageReplyComponent < ViewComponent::Base
+class MessageDraftsComponent < ViewComponent::Base
 
   def initialize(message:, notice:)
     @message = message

@@ -34,4 +34,8 @@ class MessageObjectPolicy < ApplicationPolicy
   def download?
     true
   end
+
+  def destroy?
+    @message_object.message.is_a?(MessageDraft)
+  end
 end
