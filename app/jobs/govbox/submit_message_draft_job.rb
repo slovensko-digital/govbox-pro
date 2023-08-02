@@ -6,9 +6,9 @@ class Govbox::SubmitMessageDraftJob < ApplicationJob
   def perform(message_draft, upvs_client: UpvsEnvironment.upvs_client)
     reply_data = {
       message_id: message_draft.uuid,
-      correlation_id: message_draft.draft.correlation_id,
+      correlation_id: message_draft.metadata["correlation_id"],
       reference_id: message_draft.metadata["reference_id"],
-      recipient_uri: message_draft.draft.recipient_uri,
+      recipient_uri: message_draft.metadata["recipient_uri"],
       general_agenda: {
         subject: message_draft.title,
         body: message_draft.metadata["message_body"]
