@@ -25,6 +25,12 @@ SITE_ADMIN_EMAILS=your-g-suite-sign-up-email@gmail.com
 4. install deps and setup database with `bin/setup`
 5. install javascript deps with `yarn`
 
+## Running commands
+
+- run local environment `bin/dev`
+- run tests with `bin/rails test`
+- run console `bin/rails c`
+
 ## Application Setup
 
 ### Google OAuth2
@@ -36,12 +42,6 @@ SITE_ADMIN_EMAILS=your-g-suite-sign-up-email@gmail.com
 GOOGLE_CLIENT_ID=some-numbers-and-characters.apps.googleusercontent.com
 GOOGLE_CLIENT_SECRET=GOCSPX-and-other-secret-part
 ```
-
-### Running commands
-
-- run local environment `bin/dev`
-- run tests with `bin/rails test`
-- run console `bin/rails c`
 
 ### Async Jobs
 - we use [Good Jobs](https://github.com/bensheldon/good_job)
@@ -56,4 +56,4 @@ GOOD_JOB_EXECUTION_MODE=async # make job runs along rails server (default)
 
 ### Getting sample data
 - your public IP has to be added to whitelist (ask colleague)
-- in rails console run this `Govbox::SyncBoxJob.perform_later(Box.last)`
+- in rails console run `Govbox::SyncBoxJob.perform_later(Box.last)`
