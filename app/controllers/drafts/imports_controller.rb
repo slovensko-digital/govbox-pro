@@ -13,7 +13,7 @@ class Drafts::ImportsController < ApplicationController
     import_path = file_storage.store("imports", import_path(import), zip_content.read.force_encoding("UTF-8"))
     Drafts::ParseImportJob.perform_later(import, import_path)
 
-    redirect_to drafts_path
+    redirect_to message_drafts_path
   end
 
   def upload_new

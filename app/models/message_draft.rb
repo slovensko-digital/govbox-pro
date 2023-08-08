@@ -17,6 +17,10 @@ class MessageDraft < Message
     )
   end
 
+  def import
+    Drafts::Import.find(metadata["import_id"]) if metadata["import_id"]
+  end
+
   def submittable?
     title.present? && metadata["message_body"].present? && not_yet_submitted?
   end

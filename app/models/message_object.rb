@@ -4,11 +4,11 @@
 #
 #  id                                          :integer          not null, primary key
 #  name                                        :string           not null
-#  encoding                                    :string           not null
 #  mimetype                                    :string           not null
-#  signed                                      :boolean
+#  is_signed                                   :boolean
+#  to_be_signed                                :boolean          not null, default: false
 #  object_type                                 :string           not null
-#  message_id                                  :datetime         not null
+#  message_id                                  :integer          not null
 #  created_at                                  :datetime         not null
 #  updated_at                                  :datetime         not null
 
@@ -31,6 +31,10 @@ class MessageObject < ApplicationRecord
         blob: raw_object.read.force_encoding("UTF-8")
       )
     end
+  end
+
+  def form?
+    object_type == "FORM"
   end
 
   def destroyable?

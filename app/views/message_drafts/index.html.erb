@@ -1,0 +1,27 @@
+<h2>Drafty</h2>
+
+<div>
+  <%= link_to "Nahrať import", upload_new_drafts_imports_path %>
+</div>
+
+<% if @message_drafts.any? %>
+  <br />
+  <h3>Vytvorené podania</h3>
+  <div>
+    <table>
+      <tr>
+        <th>Podanie</th>
+        <th>Balík</th>
+        <th>Stav</th>
+      </tr>
+
+      <% @message_drafts.each do |message_draft| %>
+        <tr>
+<!--          <td><%#= link_to message_draft.title, message_draft_path(message_draft.id) %></td>-->
+          <td><%= " #{message_draft.import&.base_name}" %></td>
+          <td><%= " #{message_draft.metadata["status"]}" %></td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
+<% end %>

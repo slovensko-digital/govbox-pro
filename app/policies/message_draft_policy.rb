@@ -24,6 +24,22 @@ class MessageDraftPolicy < ApplicationPolicy
         )
       end
     end
+
+    def resolve_index
+      scope.where(
+          'import_id in (
+        select imports.id
+        from drafts_imports imports
+        join boxes on boxes.id = imports.box_id
+        join tenants on tenants.id = boxes.tenant_id
+        where tenant_id = ?)',
+        @user.tenant_id
+      )
+    end
+  end
+
+  def index?
+    true
   end
 
   def create?

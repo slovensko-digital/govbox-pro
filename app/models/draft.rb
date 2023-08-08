@@ -4,7 +4,7 @@
 #
 #  id                                          :integer          not null, primary key
 #  box_id                                      :integer
-#  package_id                                  :integer
+#  import_id                                   :integer
 #  status                                      :integer          default("created")
 #  recipient_uri                               :string
 #  posp_id                                     :string

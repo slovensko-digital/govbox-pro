@@ -1,6 +1,10 @@
 class MessageDraftsController < ApplicationController
+  before_action :load_message_drafts, only: :index
   before_action :set_message, only: :create
-  before_action :set_message_draft, except: :create
+  before_action :set_message_draft, except: [:index, :create]
+
+  def index
+  end
 
   def create
     authorize @message
@@ -48,6 +52,11 @@ class MessageDraftsController < ApplicationController
   end
 
   private
+
+  def load_message_drafts
+    authorize MessageDraft
+    @message_drafts = policy_scope(MessageDraft)
+  end
 
   def set_message
     @message = policy_scope(Message).find(params[:original_message_id])
