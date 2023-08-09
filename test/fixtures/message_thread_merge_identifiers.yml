@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  message_thread: one
+  uuid: <%= SecureRandom.uuid %>
+
+two:
+  message_thread: one
+  uuid: <%= SecureRandom.uuid %>
+
+three:
+  message_thread: two
+  uuid: <%= SecureRandom.uuid %>

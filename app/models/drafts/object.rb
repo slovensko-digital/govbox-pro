@@ -3,7 +3,7 @@
 # Table name: drafts_objects
 #
 #  id                                          :integer          not null, primary key
-#  draf_id                                     :string           not null
+#  draft_id                                    :string           not null
 #  uuid                                        :uuid             not null
 #  name                                        :string           not null
 #  signed                                      :boolean
@@ -29,7 +29,7 @@ class Drafts::Object < ApplicationRecord
   end
 
   def allowed_mime_type?
-    Utils.detect_mime_type(self)
+    Utils.detect_mime_type(entry_name: self.name, is_form: self.form?)
   rescue StandardError
     errors.add(:mime_type, "of #{name} object is disallowed", allowed_mime_types: Utils::EXTENSIONS_ALLOW_LIST.join(', '))
   end

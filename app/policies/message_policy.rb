@@ -26,8 +26,16 @@ class MessagePolicy < ApplicationPolicy
     end
   end
 
+  def create?
+    true
+  end
+
   def show?
     true
+  end
+
+  def authorize_delivery_notification?
+    show?
   end
 
   def reply?

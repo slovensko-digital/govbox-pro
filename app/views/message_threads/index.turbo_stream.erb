@@ -7,9 +7,9 @@
   <%= turbo_stream.append "next_page_area" do %>
     <%= render Turbo::NextPageComponent.new(
     id:@next_cursor, 
-    url:params[:tag_id] ?
-        tag_message_threads_url(tag_id: params[:tag_id], :cursor => @next_cursor, format: :turbo_stream) :
-        message_threads_url(:cursor => @next_cursor, format: :turbo_stream)
+    url: params[:tag_id] ?
+      tag_message_threads_url(@next_page_params) :
+      message_threads_url(@next_page_params)
     ) %>
   <% end %>
 <% else %>

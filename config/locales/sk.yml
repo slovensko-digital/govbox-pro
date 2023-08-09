@@ -1,4 +1,8 @@
-sk:
+ sk:
+  message_object:
+    one: '1 prílohu'
+    few: "%{count} prílohy"
+    other: "%{count} príloh"
   sender_name: "Odosielateľ"
   recipient_name: "Prijímateľ"
   "Automation::ContainsCondition": "obsahuje"

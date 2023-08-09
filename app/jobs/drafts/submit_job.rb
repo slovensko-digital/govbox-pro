@@ -35,7 +35,7 @@ class Drafts::SubmitJob < ApplicationJob
         name: object.name,
         encoding: "Base64",
         signed: object.signed,
-        mime_type: Utils.detect_mime_type(object),
+        mime_type: Utils.detect_mime_type(entry_name: object.name, is_form: object.form?),
         form: (object.form if object.form),
         content: Base64.strict_encode64(object.content.download)
       }.compact

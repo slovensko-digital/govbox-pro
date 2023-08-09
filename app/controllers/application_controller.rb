@@ -14,6 +14,7 @@ class ApplicationController < ActionController::Base
   end
 
   def set_menu_context
-    @menu = SidebarMenu.new(controller_name, action_name)
+    @tags = policy_scope(Tag, policy_scope_class: TagPolicy::Scope).where(visible: true)
+    @menu = SidebarMenu.new(controller_name, action_name, { tags: @tags })
   end
 end

@@ -12,4 +12,10 @@ module Automation
       thing[attr]&.match?(value)
     end
   end
+
+  class MetadataValueCondition < Automation::Condition
+    def satisfied?(thing)
+      thing.metadata && thing.metadata[attr]&.match?(value)
+    end
+  end
 end
