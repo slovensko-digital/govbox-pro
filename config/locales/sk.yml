@@ -5,6 +5,9 @@
     other: "%{count} príloh"
   sender_name: "Odosielateľ"
   recipient_name: "Prijímateľ"
+  sender_uri: "URI odosielateľa"
+  recipient_uri: "URI prijímateľa"
   "Automation::ContainsCondition": "obsahuje"
-  'Automation::AddTagAction': 'Pridaj štítok'
+  "Automation::MetadataValueCondition": "Metadáta obsahujú"
   'Automation::AddMessageThreadTagAction': 'Pridaj štítok na vlákno'
+  'Automation::AddTagAction': 'Pridaj štítok'

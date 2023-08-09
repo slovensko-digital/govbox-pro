@@ -4,7 +4,7 @@ module Automation
 
     belongs_to :automation_rule, class_name: 'Automation::Rule'
     # neviem ich z kodu vylistovat, vid conditions_form_component.rb
-    enum attr: %i[sender_name recipient_name title sender_uri]
+    enum attr: %i[sender_name recipient_name title sender_uri recipient_uri]
   end
 
   class ContainsCondition < Automation::Condition

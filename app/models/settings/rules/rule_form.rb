@@ -14,12 +14,12 @@ module Settings
 
       def initialize(attributes = {})
         super
-        @condition_forms = [] unless @condition_forms
-        @action_forms = [] unless @action_forms
+        @condition_forms ||= []
+        @action_forms ||= []
       end
 
       def persisted?
-        @id ? true: false
+        @id ? true : false
       end
 
       def attributes
