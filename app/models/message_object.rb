@@ -16,6 +16,8 @@ class MessageObject < ApplicationRecord
   belongs_to :message
   has_one :message_object_datum, dependent: :destroy
 
+  scope :to_be_signed, -> { where('to_be_signed = true') }
+
   def self.create_message_objects(message, objects)
     objects.each do |raw_object|
       message_object = MessageObject.create!(
@@ -35,6 +37,10 @@ class MessageObject < ApplicationRecord
 
   def form?
     object_type == "FORM"
+  end
+
+  def signable?
+    message.is_a?(MessageDraft)
   end
 
   def destroyable?

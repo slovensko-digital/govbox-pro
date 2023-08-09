@@ -45,6 +45,7 @@ Rails.application.routes.draw do
     resources :message_objects do
       member do
         get 'download'
+        get 'signing_data'
       end
     end
   end

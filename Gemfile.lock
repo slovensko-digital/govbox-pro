@@ -142,6 +142,9 @@ GEM
       actionpack (>= 6.0.0)
       railties (>= 6.0.0)
     jaro_winkler (1.5.4)
+    jbuilder (2.11.5)
+      actionview (>= 5.0.0)
+      activesupport (>= 5.0.0)
     jsbundling-rails (1.1.1)
       railties (>= 6.0.0)
     json (2.6.3)
@@ -383,6 +386,7 @@ DEPENDENCIES
   good_job
   htmlbeautifier
   importmap-rails
+  jbuilder
   jsbundling-rails
   jwt
   listen

@@ -31,6 +31,7 @@ gem 'pundit'
 # Utilities
 gem 'rest-client'
 gem 'rack-attack'
+gem 'jbuilder'
 gem 'rubyzip', require: 'zip'
 gem 'jwt'
 gem 'stimulus-rails'

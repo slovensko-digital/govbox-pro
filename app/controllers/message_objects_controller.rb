@@ -20,6 +20,10 @@ class MessageObjectsController < ApplicationController
     send_data @message_object.message_object_datum.blob, filename: @message_object.name, type: @message_object.mimetype, disposition: :download
   end
 
+  def signing_data
+    authorize @message_object
+  end
+
   def destroy
     authorize @message_object
 

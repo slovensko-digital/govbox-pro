@@ -32,7 +32,11 @@ class MessageObjectPolicy < ApplicationPolicy
   end
 
   def download?
-    true
+    show?
+  end
+
+  def signing_data?
+    show?
   end
 
   def destroy?
