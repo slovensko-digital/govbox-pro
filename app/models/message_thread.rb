@@ -52,7 +52,7 @@ class MessageThread < ApplicationRecord
           thread.destroy!
         end
       end
-      target_thread.save
+      target_thread.save!
     end
   end
 end
