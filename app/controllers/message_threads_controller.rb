@@ -1,8 +1,10 @@
 class MessageThreadsController < ApplicationController
-  before_action :set_message_thread, only: %i[show, update]
+  before_action :set_message_thread, only: %i[show update]
 
   def show
     authorize @message_thread
+    redirect_to @message_thread.messages.where(read: false).order(delivered_at: :asc).first ||
+      @message_thread.messages.order(delivered_at: :desc).first
   end
 
   def update
