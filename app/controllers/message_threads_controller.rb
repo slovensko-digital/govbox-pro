@@ -52,7 +52,7 @@ class MessageThreadsController < ApplicationController
     end
     @selected_message_threads.merge_threads
     flash[:notice] = 'Vlákna boli úspešne spojené'
-    redirect_to @selected_message_threads.first.messages.first
+    redirect_to @selected_message_threads.first
   end
 
   private
