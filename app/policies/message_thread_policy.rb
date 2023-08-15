@@ -13,7 +13,7 @@ class MessageThreadPolicy < ApplicationPolicy
       if @user.site_admin?
         scope.all
       else
-        scope.joins(tags: :users).where(users: { id: @user.id })
+        scope.joins(tags: { groups: :group_memberships }).where(group_memberships: { user_id: @user.id })
       end
     end
   end

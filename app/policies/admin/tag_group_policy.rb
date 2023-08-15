@@ -13,7 +13,7 @@ class Admin::TagGroupPolicy < ApplicationPolicy
       if @user.site_admin?
         scope.all
       else
-        scope.includes(:group, :tag).where(tag: { tenant_id: Current.tenant.id }, tag: { tenant_id: Current.tenant.id })
+        scope.includes(:group, :tag).where(group: { tenant_id: Current.tenant.id }, tag: { tenant_id: Current.tenant.id })
       end
     end
   end

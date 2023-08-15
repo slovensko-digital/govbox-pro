@@ -18,10 +18,18 @@ class MessageThreadsTagPolicy < ApplicationPolicy
         select mt.id
         from message_threads mt
         join message_threads_tags mt_tags on mt.id = mt_tags.message_thread_id
-        join tag_users tu on mt_tags.tag_id = tu.user_id
+        join tag_groups tg on mt_tags.tag_id = tg.tag_id
+        join group_memberships gm on tg.group_id = gm.group_id
         where user_id = ?)',
           @user.id
-        ).where("tag_id in (select tag_id from tag_users where user_id = ?)", user.id)
+        ).where(
+          "tag_id in (
+        select tag_id
+        from tag_groups tg
+        join group_memberships gm on tg.group_id = gm.group_id
+        where user_id = ?)",
+          @user.id
+        )
       end
     end
   end
