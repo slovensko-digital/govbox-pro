@@ -12,7 +12,12 @@ class TagPolicy < ApplicationPolicy
     def resolve
       return scope.where(tenant_id: Current.tenant.id) if @user.site_admin?
       return scope.where(tenant_id: @user.tenant_id) if @user.admin?
-      joins(groups: :group_memberships).where(group_memberships: {user_id: @user.id})
+
+      scope.where('id IN (
+        SELECT tag_id FROM tag_groups tg
+        JOIN group_memberships gm on tg.group_id = gm.group_id
+        WHERE gm.user_id = ?
+      )', @user.id)
     end
   end
 
