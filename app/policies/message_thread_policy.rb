@@ -13,12 +13,12 @@ class MessageThreadPolicy < ApplicationPolicy
       return scope.all if @user.site_admin?
 
       scope.where(
-        'id IN (
-      SELECT message_thread_id FROM message_threads_tags mt_tags
-      JOIN tag_groups tg on mt_tags.tag_id = tg.tag_id
-      JOIN group_memberships gm on tg.group_id = gm.group_id
-      WHERE gm.user_id = ?)',
-        @user.id
+        MessageThreadsTag
+          .select("1")
+          .joins(:tag_groups => :group_memberships)
+          .where("message_threads_tags.message_thread_id = message_threads.id")
+          .where(group_memberships: { user_id: @user.id })
+          .arel.exists
       )
     end
   end
