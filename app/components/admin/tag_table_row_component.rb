@@ -3,9 +3,9 @@
 class Admin::TagTableRowComponent < ViewComponent::Base
   with_collection_parameter :tag
 
-  def initialize(tag:, user: "", tag_action: "")
+  def initialize(tag:, group: "", tag_action: "")
     @tag = tag
-    @user = user
+    @group = group
     @tag_action = tag_action
   end
 end

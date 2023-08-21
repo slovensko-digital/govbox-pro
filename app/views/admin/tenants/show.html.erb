@@ -6,7 +6,7 @@
           <div class="flex justify-between items-center">
             <h1 class='font-bold text-4xl'>Tenant</h1>
           </div>
-          <div class="mx-auto md:w-2/3 w-full flex">
+          <div class="mx-auto w-full flex">
             <div class="mx-auto">
               <% if notice.present? %>
                 <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
@@ -23,7 +23,7 @@
         <!--
 Tu zacina tabulka s groupami
 -->
-        <li>
+        <li class="px-6 py-4">
           <div class="w-full">
             <div class="flex justify-between items-center">
               <h1 class="font-bold text-4xl">Groups</h1>
@@ -76,7 +76,7 @@ Tu zacina tabulka s groupami
         <!--
 Tu zacina tabulka s usermi
 -->
-        <li>
+        <li class="px-6 py-4">
           <div class="w-full">
             <div class="flex justify-between items-center">
               <h1 class="font-bold text-4xl">Users</h1>
@@ -102,7 +102,7 @@ Tu zacina tabulka s usermi
                           </th>
                           <th>
                             <a href="#" class="group inline-flex">
-                              E-Mail
+                              Email
                               <!-- Active: "bg-gray-200 text-gray-900 group-hover:bg-gray-300", Not Active: "invisible text-gray-400 group-hover:visible group-focus:visible" -->
                               <span class="invisible ml-2 flex-none rounded text-gray-400 group-hover:visible group-focus:visible">
                                 <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -124,12 +124,12 @@ Tu zacina tabulka s usermi
                 </div>
               </div>
             </div>
-          </li>
-          <!--
+          </div>
+        </li>
+        <!--
 Tu zacina tabulka s boxmi
 -->
-        </li>
-        <li>
+        <li class="px-6 py-4">
           <div class="w-full">
             <div class="flex justify-between items-center">
               <h1 class="font-bold text-4xl">Boxes</h1>
@@ -180,7 +180,7 @@ Tu zacina tabulka s boxmi
           </div>
         </li>
         <!-- no tak zatial dajme este aj Tagy takto -->
-        <li>
+        <li class="px-6 py-4">
           <div class="w-full">
             <div class="flex justify-between items-center">
               <h1 class="font-bold text-4xl">Tags</h1>
@@ -206,7 +206,7 @@ Tu zacina tabulka s boxmi
                           </th>
                           <th>
                             <a href="#" class="group inline-flex">
-                              URI
+                              Visible
                               <!-- Active: "bg-gray-200 text-gray-900 group-hover:bg-gray-300", Not Active: "invisible text-gray-400 group-hover:visible group-focus:visible" -->
                               <span class="invisible ml-2 flex-none rounded text-gray-400 group-hover:visible group-focus:visible">
                                 <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">

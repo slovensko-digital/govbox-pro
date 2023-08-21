@@ -9,12 +9,12 @@
     case @tag_action
     when 'add' %>
   <td>
-    <%= form_with model: [:admin, TagUser.new(tag_id: @tag.id, user_id: @user.id)], class: "contents" do |form| %>
+    <%= form_with model: [:admin, TagGroup.new(tag_id: @tag.id, group_id: @group.id)], class: "contents" do |form| %>
       <%= form.hidden_field :tag_id %>
-      <%= form.hidden_field :user_id %>
+      <%= form.hidden_field :group_id %>
       <%= form.submit 'Assign tag' ,class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
-    </td>
-  <% end %>
+    <% end %>
+  </td>
 <% else %>
   <td>
     <%= link_to 'Edit this tag', edit_admin_tenant_tag_path(Current.tenant, @tag), class: "rounded-lg py-3 ml-2 px-5 bg-gray-100 inline-block font-medium" %>

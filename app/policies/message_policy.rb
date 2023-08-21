@@ -10,19 +10,16 @@ class MessagePolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      if @user.site_admin?
-        scope.all
-      else
-        scope.where(
-          'message_thread_id in (
-        select mt.id
-        from message_threads mt
-        join message_threads_tags mt_tags on mt.id = mt_tags.message_thread_id
-        join tag_users tu on mt_tags.tag_id = tu.tag_id
-        where user_id = ?)',
-          @user.id
-        )
-      end
+      scope.all if @user.site_admin?
+
+      scope.where(
+        MessageThreadsTag
+          .select(1)
+          .joins(tag_groups: :group_memberships)
+          .where("message_threads_tags.message_thread_id = messages.message_thread_id")
+          .where(group_memberships: { user_id: @user.id })
+          .arel.exists
+      )
     end
   end
 
