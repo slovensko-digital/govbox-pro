@@ -14,7 +14,7 @@ class MessageThreadPolicy < ApplicationPolicy
 
       scope.where(
         MessageThreadsTag
-          .select("1")
+          .select(1)
           .joins(:tag_groups => :group_memberships)
           .where("message_threads_tags.message_thread_id = message_threads.id")
           .where(group_memberships: { user_id: @user.id })
