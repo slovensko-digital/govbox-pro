@@ -10,7 +10,7 @@ class MessagePolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      scope.all if @user.site_admin?
+      return scope.all if @user.site_admin?
 
       scope.where(
         MessageThreadsTag
