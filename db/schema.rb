@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_04_122837) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_09_145031) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -84,48 +84,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_04_122837) do
     t.datetime "updated_at", null: false
     t.bigint "tenant_id", null: false
     t.index ["tenant_id"], name: "index_boxes_on_tenant_id"
-  end
-
-  create_table "drafts", force: :cascade do |t|
-    t.bigint "import_id"
-    t.integer "status", default: 0
-    t.string "recipient_uri"
-    t.string "posp_id"
-    t.string "posp_version"
-    t.string "message_type"
-    t.string "message_subject"
-    t.string "import_subfolder"
-    t.string "sender_business_reference"
-    t.string "recipient_business_reference"
-    t.uuid "message_id"
-    t.uuid "correlation_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "box_id", null: false
-    t.index ["box_id"], name: "index_drafts_on_box_id"
-    t.index ["import_id"], name: "index_drafts_on_import_id"
-  end
-
-  create_table "drafts_imports", force: :cascade do |t|
-    t.string "name", null: false
-    t.integer "status", default: 0
-    t.string "content_path"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "box_id", null: false
-    t.index ["box_id"], name: "index_drafts_imports_on_box_id"
-  end
-
-  create_table "drafts_objects", force: :cascade do |t|
-    t.bigint "draft_id", null: false
-    t.uuid "uuid", null: false
-    t.string "name", null: false
-    t.boolean "signed"
-    t.boolean "to_be_signed"
-    t.boolean "form"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["draft_id"], name: "index_drafts_objects_on_draft_id"
   end
 
   create_table "folders", force: :cascade do |t|
@@ -266,6 +224,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_04_122837) do
     t.index ["tenant_id"], name: "index_groups_on_tenant_id"
   end
 
+  create_table "message_drafts_imports", force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "status", default: 0
+    t.string "content_path"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "box_id", null: false
+    t.index ["box_id"], name: "index_message_drafts_imports_on_box_id"
+  end
+
   create_table "message_object_data", force: :cascade do |t|
     t.bigint "message_object_id", null: false
     t.binary "blob", null: false
@@ -329,8 +297,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_04_122837) do
     t.text "html_visualization"
     t.boolean "read", default: false, null: false
     t.json "metadata"
-    t.boolean "replyable", default: true, null: false
     t.string "type"
+    t.boolean "replyable", default: true, null: false
     t.index ["message_thread_id"], name: "index_messages_on_message_thread_id"
   end
 
@@ -385,10 +353,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_04_122837) do
   add_foreign_key "automation_rules", "tenants"
   add_foreign_key "automation_rules", "users"
   add_foreign_key "boxes", "tenants"
-  add_foreign_key "drafts", "boxes"
-  add_foreign_key "drafts", "drafts_imports", column: "import_id"
-  add_foreign_key "drafts_imports", "boxes"
-  add_foreign_key "drafts_objects", "drafts"
   add_foreign_key "folders", "boxes"
   add_foreign_key "govbox_api_connections", "boxes"
   add_foreign_key "govbox_folders", "boxes"
@@ -397,6 +361,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_04_122837) do
   add_foreign_key "group_memberships", "groups"
   add_foreign_key "group_memberships", "users"
   add_foreign_key "groups", "tenants"
+  add_foreign_key "message_drafts_imports", "boxes"
   add_foreign_key "message_object_data", "message_objects"
   add_foreign_key "message_objects", "messages"
   add_foreign_key "message_thread_merge_identifiers", "message_threads"

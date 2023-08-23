@@ -1,6 +1,6 @@
 <h2>Nový import draftov</h2>
 
-<%= form_tag drafts_imports_path, method: :post, multipart: true do %>
+<%= form_tag message_drafts_imports_path, method: :post, multipart: true do %>
   <%= label_tag :content, 'Import' %>
   <%= file_field_tag :content, accept: "application/zip" %>
   <br/><br/>

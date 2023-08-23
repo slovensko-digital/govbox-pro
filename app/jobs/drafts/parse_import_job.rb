@@ -29,6 +29,7 @@ class Drafts::ParseImportJob < ApplicationJob
               thread: thread,
               title: File.basename(entry_name),
               replyable: false,
+              read: true,
               delivered_at: Time.now,
               metadata: {
                 "import_id": import.id,
@@ -81,6 +82,7 @@ class Drafts::ParseImportJob < ApplicationJob
         thread: message_thread,
         title: row['message_subject'],
         replyable: false,
+        read: true,
         delivered_at: Time.now,
         metadata: {
           "recipient_uri": row['recipient_uri'],

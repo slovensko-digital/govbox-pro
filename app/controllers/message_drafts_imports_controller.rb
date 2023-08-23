@@ -1,11 +1,11 @@
-class Drafts::ImportsController < ApplicationController
+class MessageDraftsImportsController < ApplicationController
   def create
-    authorize Drafts::Import, policy_class: Drafts::ImportPolicy
+    authorize MessageDraftsImport
 
     file_storage = FileStorage.new
 
     zip_content = params[:content]
-    import = Drafts::Import.create!(
+    import = MessageDraftsImport.create!(
       name: "#{Time.now.to_i}_#{zip_content.original_filename}",
       box: Current.box
     )
@@ -17,7 +17,7 @@ class Drafts::ImportsController < ApplicationController
   end
 
   def upload_new
-    authorize Drafts::Import, policy_class: Drafts::ImportPolicy
+    authorize MessageDraftsImport
   end
 
   private
