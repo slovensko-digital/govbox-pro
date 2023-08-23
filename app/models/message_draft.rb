@@ -71,6 +71,14 @@ class MessageDraft < Message
     MessageDraftsImport.find(metadata["import_id"]) if metadata["import_id"]
   end
   
+  def editable?
+    metadata["posp_id"] == GENERAL_AGENDA_POSP_ID && !form.is_signed? && not_yet_submitted?
+  end
+
+  def custom_visualization?
+    metadata["posp_id"] == GENERAL_AGENDA_POSP_ID
+  end
+
   def submittable?
     title.present? && metadata["message_body"].present? && not_yet_submitted?
   end
@@ -88,7 +96,7 @@ class MessageDraft < Message
   end
 
   def original_message
-    Message.find(metadata["original_message_id"])
+    Message.find(metadata["original_message_id"]) if metadata["original_message_id"]
   end
 
   private
