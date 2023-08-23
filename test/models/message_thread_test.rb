@@ -73,4 +73,43 @@ class MessageThreadTest < ActiveSupport::TestCase
 
     assert_equal last_message_delivered_at, thread.last_message_delivered_at
   end
+
+  test "should merge threads with correct last_message_delivered_at" do
+    threads = MessageThread.all
+    target_last_message_delivered_at = message_threads(:two).last_message_delivered_at
+
+    threads.merge_threads
+
+    assert_equal target_last_message_delivered_at, message_threads(:two).last_message_delivered_at
+  end
+
+  test "should merge threads with correct delivered_at" do
+    threads = MessageThread.all
+    target_delivered_at = message_threads(:one).last_message_delivered_at
+
+    threads.merge_threads
+
+    assert_equal target_delivered_at, message_threads(:one).delivered_at
+  end
+
+  test "should delete older thread during merge threads" do
+    threads = MessageThread.all
+
+    threads.merge_threads
+
+    assert_raises(ActiveRecord::RecordNotFound) do
+      message_threads(:one)
+    end
+  end
+
+  test "should contain all messages in target thread after merge threads" do
+    threads = MessageThread.all
+
+    threads.merge_threads
+
+    assert_includes message_threads(:two).messages, messages(:one)
+    assert_includes message_threads(:two).messages, messages(:two)
+    assert_includes message_threads(:two).messages, messages(:three)
+    assert_includes message_threads(:two).messages, messages(:four)
+  end
 end

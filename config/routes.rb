@@ -18,6 +18,8 @@ Rails.application.routes.draw do
 
     resources :group_memberships
     resources :tag_users
+
+    resources :tag_groups, only: [:create, :destroy]
   end
 
   resources :boxes, path: 'schranky', only: [:index, :show] do
