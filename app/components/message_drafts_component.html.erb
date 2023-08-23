@@ -63,7 +63,7 @@
                     <%= label_tag :attachments_, "Pridať prílohy", class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" %>
                     <%= file_field_tag 'attachments[]', onchange: 'document.getElementById("attachment_form").submit()', class: "text-gray-900 bg-white focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm font-semibold px-5 py-2.5 dark:border-gray-600", multiple: true %>
 
-                    <button id="sign_all_attachments" class="flex justify-end items-center gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300">
+                    <button id="sign_all_attachments" type="button" class="flex justify-end items-center gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300">
                       <b>Podpísať všetky prílohy</b>
                     </button>
                   <% end %>
@@ -115,10 +115,10 @@
       return response.json();
     }).then(function (data) {
       return data.batchId;
-    }).then(function (batchId) {
-      objectIdsToBeSigned.forEach((objectId) => {
-        sign(batchId, objectId);
-      });
+    }).then(async function (batchId) {
+      for(const objectId of objectIdsToBeSigned) {
+        await sign(batchId, objectId);
+      }
     }).catch(function (err) {
     });
   }
@@ -126,70 +126,74 @@
   const signAllAttachmentsButton = document.querySelector("#sign_all_attachments");
   signAllAttachmentsButton.onclick = signAllAttachments;
 
-  function sign(batchId, messageObjectId) {
-    fetch(`/messages/${messageId}/message_objects/${messageObjectId}/signing_data.json`)
-    .then(function (response) {
-      return response.json();
-    }).then(function (messageObjectData) {
-      let payloadMimeType = `${messageObjectData.mime_type};base64`;
-      let signatureLevel;
-      let signatureContainer = "ASiC_E";
+  async function sign(batchId, messageObjectId) {
+    return new Promise((resolve, reject) => {
+      fetch(`/messages/${messageId}/message_objects/${messageObjectId}/signing_data.json`)
+        .then(function (response) {
+          return response.json();
+        }).then(function (messageObjectData) {
+        let payloadMimeType = `${messageObjectData.mime_type};base64`;
+        let signatureLevel;
+        let signatureContainer = "ASiC_E";
 
-      switch(messageObjectData.mime_type) {
-        case "application/pdf":
-          signatureLevel = "PAdES_BASELINE_B";
-          break;
-        case 'application/x-eform-xml':
+        switch(messageObjectData.mime_type) {
+          case "application/pdf":
+            signatureLevel = "PAdES_BASELINE_B";
+            signatureContainer = null;
+            break;
+          case 'application/x-eform-xml':
           // TODO zistit
-        case 'application/xml':
+          case 'application/xml':
           // TODO zistit
-        case 'text/plain':
-          signatureLevel = "XAdES_BASELINE_B";
-        case 'application/msword':
-        case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
-          payloadMimeType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64"
-          signatureLevel = "XAdES_BASELINE_B";
-          break;
-        case 'image/jpeg':
-        case 'image/tiff':
-        case 'image/png':
-          signatureLevel = "CAdES_BASELINE_B";
-          break;
-      }
+          case 'text/plain':
+            signatureLevel = "XAdES_BASELINE_B";
+          case 'application/msword':
+          case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+            payloadMimeType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64"
+            signatureLevel = "XAdES_BASELINE_B";
+            break;
+          case 'image/jpeg':
+          case 'image/tiff':
+          case 'image/png':
+            signatureLevel = "CAdES_BASELINE_B";
+            break;
+        }
 
-      fetch("http://localhost:37200/sign", {
-        method: "POST",
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-          batchId: batchId,
-          document: {
-            filename: messageObjectData.file_name,
-            content: messageObjectData.content
-          },
-          parameters: {
-            level: signatureLevel,
-            container: signatureContainer
-          },
-          payloadMimeType: payloadMimeType
+        fetch("http://localhost:37200/sign", {
+          method: "POST",
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            batchId: batchId,
+            document: {
+              filename: messageObjectData.file_name,
+              content: messageObjectData.content
+            },
+            parameters: {
+              level: signatureLevel,
+              container: signatureContainer
+            },
+            payloadMimeType: payloadMimeType
+          })
+        }).then(function (response) {
+            // debugger;
+            return response.json();
+          }).then(function (signedData) {
+            // fetch(``, {
+            //   method: "POST",
+            //   headers: {"Content-Type": "application/json"},
+            //   body: JSON.stringify({
+            //     blob: signedData.content
+            //   })
+            // }).then(function (response) {
+            //   return response.json();
+            // }).then(function (data) {
+            //   return data.batchId;
+            // })
+
+            resolve(); // TODO move to upper then
+          })
         })
-      })
-      }).then(function (response) {
-        debugger;
-        return response.json();
-      }).then(function (signedData) {
-        // fetch(``, {
-        //   method: "POST",
-        //   headers: {"Content-Type": "application/json"},
-        //   body: JSON.stringify({
-        //     blob: signedData.content
-        //   })
-        // }).then(function (response) {
-        //   return response.json();
-        // }).then(function (data) {
-        //   return data.batchId;
-        // })
-    }).catch(function (err) {
-    });
+      });
   }
 </script>
 
