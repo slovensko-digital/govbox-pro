@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_14_111339) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_23_200907) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -346,6 +346,25 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_14_111339) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "upvs_form_template_related_documents", force: :cascade do |t|
+    t.bigint "upvs_form_template_id", null: false
+    t.string "data", null: false
+    t.string "language", null: false
+    t.string "document_type", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["upvs_form_template_id", "language", "document_type"], name: "index_related_documents_on_template_id_and_language_and_type", unique: true
+    t.index ["upvs_form_template_id"], name: "index_upvs_form_template_related_documents_on_form_template_id"
+  end
+
+  create_table "upvs_form_templates", force: :cascade do |t|
+    t.string "identifier", null: false
+    t.string "version", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["identifier", "version"], name: "index_form_templates_on_identifier_and_version", unique: true
+  end
+
   create_table "users", force: :cascade do |t|
     t.bigint "tenant_id"
     t.string "email", null: false
@@ -386,5 +405,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_14_111339) do
   add_foreign_key "tag_users", "users"
   add_foreign_key "tags", "tenants"
   add_foreign_key "tags", "users"
+  add_foreign_key "upvs_form_template_related_documents", "upvs_form_templates"
   add_foreign_key "users", "tenants"
 end
