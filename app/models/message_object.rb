@@ -38,6 +38,6 @@ class MessageObject < ApplicationRecord
   end
 
   def destroyable?
-    message.is_a?(MessageDraft)
+    message.is_a?(MessageDraft) && !form?
   end
 end

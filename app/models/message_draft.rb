@@ -1,7 +1,7 @@
 class MessageDraft < Message
-  MESSAGE_REPLY_POSP_ID ||= "App.GeneralAgenda"
-  MESSAGE_REPLY_POSP_VERSION ||= "1.9"
-  MESSAGE_REPLY_MESSAGE_TYPE ||= "App.GeneralAgenda"
+  GENERAL_AGENDA_POSP_ID ||= "App.GeneralAgenda"
+  GENERAL_AGENDA_POSP_VERSION ||= "1.9"
+  GENERAL_AGENDA_MESSAGE_TYPE ||= "App.GeneralAgenda"
 
   with_options on: :validate_data do |message_draft|
     message_draft.validates :uuid, format: { with: Utils::UUID_PATTERN }, allow_blank: false
@@ -20,9 +20,9 @@ class MessageDraft < Message
       delivered_at: Time.now,
       metadata: {
         "recipient_uri": message.metadata["sender_uri"],
-        "posp_id": MESSAGE_REPLY_POSP_ID,
-        "posp_version": MESSAGE_REPLY_POSP_VERSION,
-        "message_type": MESSAGE_REPLY_MESSAGE_TYPE,
+        "posp_id": GENERAL_AGENDA_POSP_ID,
+        "posp_version": GENERAL_AGENDA_POSP_VERSION,
+        "message_type": GENERAL_AGENDA_MESSAGE_TYPE,
         "correlation_id": message.metadata["correlation_id"],
         "reference_id": message.uuid,
         "original_message_id": message.id,
@@ -31,17 +31,23 @@ class MessageDraft < Message
     )
   end
 
-  def self.submit(message_draft)
-    Govbox::SubmitMessageDraftJob.perform_later(message_draft)
+  def submit
+    Govbox::SubmitMessageDraftJob.perform_later(self)
 
-    message_draft.metadata["status"] = "being_submitted"
-    message_draft.save!
+    metadata["status"] = "being_submitted"
+    save!
   end
 
   def update_content(title:, body:)
-    form = objects.select { |o| o.form? }&.first
+    self.title = title
+    metadata["message_body"] = body
+    save!
 
-    unless form
+    if form
+      form.message_object_datum.update(
+        blob: Upvs::GeneralAgendaBuilder.build_xml(subject: title, body: body)
+      )
+    else
       form = MessageObject.create(
         message_id: id,
         name: "form.xml",
@@ -50,18 +56,21 @@ class MessageDraft < Message
         is_signed: false
       )
 
-      form.message_object_datum.create
+      form.message_object_datum = MessageObjectDatum.create(
+        message_object: form,
+        blob: Upvs::GeneralAgendaBuilder.build_xml(subject: title, body: body)
+      )
     end
-
-    form.message_object_datum.update(
-      blob: GeneralAgendaBuilder.build_xml(subject: title, body: body)
-    )
+  end
+  
+  def form 
+    objects.select { |o| o.form? }&.first
   end
 
   def import
     MessageDraftsImport.find(metadata["import_id"]) if metadata["import_id"]
   end
-
+  
   def submittable?
     title.present? && metadata["message_body"].present? && not_yet_submitted?
   end

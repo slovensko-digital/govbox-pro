@@ -32,7 +32,7 @@ class MessageDraftsController < ApplicationController
     authorize @message_draft
 
     if @message_draft.submittable?
-      MessageDraft.submit(@message_draft)
+      @message_draft.submit
       redirect_to message_path(@message_draft.original_message), notice: "Správa bola zaradená na odoslanie."
     else
       # TODO prisposobit importovanym draftom
@@ -42,7 +42,7 @@ class MessageDraftsController < ApplicationController
   
   def submit_all
     @message_drafts.each do |message_draft|
-      MessageDraft.submit(@message_draft) if message_draft.submittable?
+      message_draft.submit if message_draft.submittable?
     end
   end
 

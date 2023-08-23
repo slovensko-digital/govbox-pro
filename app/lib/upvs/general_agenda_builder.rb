@@ -1,4 +1,4 @@
-class GeneralAgendaBuilder
+class Upvs::GeneralAgendaBuilder
   GENERAL_AGENDA_SCHEMA ||= 'http://schemas.gov.sk/form/App.GeneralAgenda/1.9'
 
   def self.build_xml(subject:, body:)
