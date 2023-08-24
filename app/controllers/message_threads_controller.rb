@@ -1,8 +1,10 @@
 class MessageThreadsController < ApplicationController
-  before_action :set_message_thread, only: %i[show, update]
+  before_action :set_message_thread, only: %i[show update]
 
   def show
     authorize @message_thread
+    redirect_to @message_thread.messages.where(read: false).order(delivered_at: :asc).first ||
+      @message_thread.messages.order(delivered_at: :desc).first
   end
 
   def update
@@ -50,7 +52,7 @@ class MessageThreadsController < ApplicationController
     end
     @selected_message_threads.merge_threads
     flash[:notice] = 'Vlákna boli úspešne spojené'
-    redirect_to @selected_message_threads.first.messages.first
+    redirect_to @selected_message_threads.first
   end
 
   private

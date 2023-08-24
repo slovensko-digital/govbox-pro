@@ -33,14 +33,18 @@
         </div>
       </div>
 
-      <%= form_tag message_draft_path(@message), method: :put, class: "w-full", id: "reply_form" do %>
-        <div class="flex flex-col justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 relative gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
-          <div class="mb-3 pt-0 w-full">
-            <%= text_field_tag "message_title", @message.title, placeholder: "Predmet", onchange: 'document.getElementById("reply_form").submit();', disabled: !@message.not_yet_submitted?, class:"mb-3 px-3 py-4 placeholder-slate-300 text-slate-í00 relative bg-white bg-white rounded-lg text-base border-0 shadow outline-none focus:outline-none focus:ring w-full" %>
-            <%= text_area_tag "message_text", @message.metadata["message_body"], placeholder: "Text", onchange: 'document.getElementById("reply_form").submit();', rows: 10, disabled: !@message.not_yet_submitted?, class:"px-3 py-4 placeholder-slate-300 text-slate-í00 relative bg-white bg-white rounded-lg text-base border-0 shadow outline-none focus:outline-none focus:ring w-full h-full" %>
+      <% if @message.custom_visualization? %>
+        <%= form_tag message_draft_path(@message), method: :put, class: "w-full", id: "reply_form" do %>
+          <div class="flex flex-col justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 relative gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
+            <div class="mb-3 pt-0 w-full">
+              <%= text_field_tag "message_title", @message.title, placeholder: "Predmet", onchange: 'document.getElementById("reply_form").submit();', disabled: !@message.editable?, class:"mb-3 px-3 py-4 placeholder-slate-300 text-slate-í00 relative bg-white bg-white rounded-lg text-base border-0 shadow outline-none focus:outline-none focus:ring w-full" %>
+              <%= text_area_tag "message_text", @message.metadata["message_body"], placeholder: "Text", onchange: 'document.getElementById("reply_form").submit();', rows: 10, disabled: !@message.editable?, class:"px-3 py-4 placeholder-slate-300 text-slate-í00 relative bg-white bg-white rounded-lg text-base border-0 shadow outline-none focus:outline-none focus:ring w-full h-full" %>
+            </div>
           </div>
-        </div>
-      <% end %>
+        <% end %>
+      <% else %>
+        <%= @message.html_visualization&.html_safe %>
+    <% end %>
 
       <% if @message.not_yet_submitted? || @message.objects.present? %>
         <div class="border-b w-full">
@@ -86,7 +90,7 @@
             <% end %>
           </div>
           <div class="gap-2 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
-            <%= button_to message_draft_path(@message), method: :delete, class: "flex justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6 rounded-lg border border-gray-400 px-3.5 py-2.5 hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 rounded-lg", title: "Zahodiť draft" do %>
+            <%= button_to message_draft_path(@message), method: :delete, params: { redirect_url: (message_path(@message.original_message) if @message.original_message  || nil) }, class: "flex justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6 rounded-lg border border-gray-400 px-3.5 py-2.5 hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 rounded-lg", title: "Zahodiť draft" do %>
               <svg style="color: red" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
                 <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" fill="red"></path> <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" fill="red"></path>
               </svg>

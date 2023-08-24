@@ -12,7 +12,15 @@ class TagPolicy < ApplicationPolicy
     def resolve
       return scope.where(tenant_id: Current.tenant.id) if @user.site_admin?
       return scope.where(tenant_id: @user.tenant_id) if @user.admin?
-      scope.includes(:tag_users).where(tag_users: { user_id: @user.id })
+
+      scope.where(
+        TagGroup
+          .select(1)
+          .joins(:group_memberships)
+          .where("tag_groups.tag_id = tags.id")
+          .where(group_memberships: { user_id: @user.id })
+          .arel.exists
+      )
     end
   end
 

@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: drafts_imports
+# Table name: message_drafts_imports
 #
 #  id                                          :integer          not null, primary key
 #  name                                        :string           not null
@@ -9,12 +9,12 @@
 #  created_at                                  :datetime         not null
 #  updated_at                                  :datetime         not null
 
-class Drafts::Import < ApplicationRecord
+class MessageDraftsImport < ApplicationRecord
   belongs_to :box, class_name: 'Box'
 
   after_destroy_commit { MessageDraft.where("metadata ->> 'import_subfolder' = ?", id.to_s).destroy_all }
 
-  validates_with DraftsImportValidator, if: :content_path
+  validates_with MessageDraftsImportValidator, if: :content_path
 
   enum status: { uploaded: 0, parsed: 1, parsing_failed: 2 }
 

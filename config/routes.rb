@@ -18,6 +18,8 @@ Rails.application.routes.draw do
 
     resources :group_memberships
     resources :tag_users
+
+    resources :tag_groups, only: [:create, :destroy]
   end
 
   resources :boxes, path: 'schranky', only: [:index, :show] do
@@ -26,7 +28,7 @@ Rails.application.routes.draw do
 
   resources :tags do
     resources :message_threads do
-    end    
+    end
   end
 
   resources :message_threads do
@@ -60,15 +62,8 @@ Rails.application.routes.draw do
 
   resource :settings
 
-  namespace :drafts, path: 'drafty' do
-    resources :imports, path: 'importy', only: :create do
-      get :upload_new, path: 'novy', on: :collection
-    end
-  end
-
-  resources :drafts, path: 'drafty', only: %i[index show destroy] do
-    post :submit
-    post :submit_all, on: :collection
+  resources :message_drafts_imports, only: :create do
+    get :upload_new, path: 'novy', on: :collection
   end
 
   resources :sessions do

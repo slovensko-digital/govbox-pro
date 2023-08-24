@@ -2,9 +2,9 @@ class Drafts::FinishImportJob < ApplicationJob
   def perform(batch, params)
     batch.properties[:import].message_drafts.find_each do |message_draft|
       if message_draft.valid?(:validate_data)
-        message_draft.metadata["status"] = "loading_done"
+        message_draft.metadata["status"] = "created"
       else
-        message_draft.metadata["status"] = "invalid_data"
+        message_draft.metadata["status"] = "invalid"
       end
 
       message_draft.save
