@@ -9,4 +9,16 @@ class Upvs::GeneralAgendaBuilder
       </GeneralAgenda>
     GENERAL_AGENDA
   end
+
+  def self.parse_text(general_agenda_xml)
+    general_agenda_xml = delete_extra_whitespaces(general_agenda_xml)
+    xml_doc = Nokogiri::XML(general_agenda_xml)
+    xml_doc.at('text').text
+  end
+
+  private
+
+  def self.delete_extra_whitespaces(xml)
+    xml.gsub(/\\n/, '').gsub(/>\s*/, ">").gsub(/\s*</, "<")
+  end
 end

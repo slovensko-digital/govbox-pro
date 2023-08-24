@@ -1,6 +1,6 @@
 class MessageDraftsController < ApplicationController
   before_action :load_message_drafts, only: :index
-  before_action :set_message, only: :create
+  before_action :load_message, only: :create
   before_action :load_draft, except: [:index, :create]
 
   def index
@@ -31,26 +31,29 @@ class MessageDraftsController < ApplicationController
   def submit
     authorize @message_draft
 
-    if @message_draft.submittable?
-      @message_draft.submit
-      redirect_to message_path(@message_draft.original_message), notice: "Správa bola zaradená na odoslanie."
+    if @message_draft.submit
+      redirect_path = if @message_draft.original_message.present?
+        message_path(@message_draft.original_message)
+      else
+        message_drafts_path
+      end
+      redirect_to redirect_path, notice: "Správa bola zaradená na odoslanie."
     else
-      # TODO prisposobit importovanym draftom
+      # TODO prisposobit chybovu hlasku aj importovanym draftom
       redirect_to message_draft_path(@message_draft), notice: "Vyplňte predmet a text odpovede."
     end
   end
   
   def submit_all
-    @message_drafts.each do |message_draft|
-      message_draft.submit if message_draft.submittable?
-    end
+    @message_drafts.each { |message_draft| message_draft.submit }
   end
 
   def destroy
     authorize @message_draft
 
     @message_draft.destroy
-    redirect_to (params[:redirect_url] || message_drafts_path)
+
+    redirect_to (params[:redirect_url].presence || message_drafts_path)
   end
 
   private
@@ -60,7 +63,7 @@ class MessageDraftsController < ApplicationController
     @message_drafts = policy_scope(MessageDraft)
   end
 
-  def set_message
+  def load_message
     @message = policy_scope(Message).find(params[:original_message_id])
   end
 

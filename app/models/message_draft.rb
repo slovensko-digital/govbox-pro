@@ -32,6 +32,8 @@ class MessageDraft < Message
   end
 
   def submit
+    return false unless submittable?
+
     Govbox::SubmitMessageDraftJob.perform_later(self)
 
     metadata["status"] = "being_submitted"
@@ -42,6 +44,8 @@ class MessageDraft < Message
     self.title = title
     metadata["message_body"] = body
     save!
+
+    return unless title.present? && body.present?
 
     if form
       form.message_object_datum.update(
@@ -72,7 +76,7 @@ class MessageDraft < Message
   end
   
   def editable?
-    metadata["posp_id"] == GENERAL_AGENDA_POSP_ID && !form.is_signed? && not_yet_submitted?
+    metadata["posp_id"] == GENERAL_AGENDA_POSP_ID && !form&.is_signed? && not_yet_submitted?
   end
 
   def custom_visualization?
@@ -80,11 +84,11 @@ class MessageDraft < Message
   end
 
   def submittable?
-    title.present? && metadata["message_body"].present? && not_yet_submitted?
+    form.present? && objects.to_be_signed.all? { |o| o.is_signed? } && not_yet_submitted?
   end
 
   def not_yet_submitted?
-    metadata["status"] == "created"
+    !%w[being_submitted submitted].include? metadata["status"]
   end
 
   def being_submitted?

@@ -56,6 +56,7 @@ class Drafts::LoadContentJob < ApplicationJob
   def save_form_visualisation(message_draft)
     upvs_form_template = Upvs::FormTemplate.find_by(identifier: message_draft.metadata["posp_id"], version: message_draft.metadata["posp_version"])
     upvs_form_template_xslt_html = upvs_form_template&.xslt_html
+
     raise MissingFormTemplateError.new unless upvs_form_template_xslt_html
 
     xslt_template = Nokogiri::XSLT(upvs_form_template_xslt_html)
@@ -69,6 +70,11 @@ class Drafts::LoadContentJob < ApplicationJob
       message_draft.update(
         html_visualization: xslt_template.transform(Nokogiri::XML(message_draft.form.message_object_datum.blob)).to_s.gsub('"', '\'')
       )
+
+      if message_draft.custom_visualization?
+        message_draft.metadata["message_body"] = Upvs::GeneralAgendaBuilder.parse_text(message_draft.form.message_object_datum.blob)
+        message_draft.save!
+      end
     end
   end
 
