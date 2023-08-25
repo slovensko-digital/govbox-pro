@@ -10,6 +10,11 @@ class MessageObjectsController < ApplicationController
     redirect_to polymorphic_url(@message)
   end
 
+  def update
+    authorize @message_object
+    update_message_object(@message_object)
+  end
+
   def show
     authorize @message_object
     send_data @message_object.message_object_datum.blob, filename: @message_object.name, type: @message_object.mimetype, disposition: :inline
@@ -40,5 +45,23 @@ class MessageObjectsController < ApplicationController
 
   def set_message
     @message = Message.find(params[:message_id])
+  end
+
+  def message_object_params
+    params.permit(:name, :mimetype, :is_signed, :blob)
+  end
+
+  def update_message_object(message_object)
+    permitted_params = message_object_params
+
+    message_object.update!(
+      name: permitted_params[:name],
+      mimetype: permitted_params[:mimetype],
+      is_signed: permitted_params[:is_signed],
+    )
+
+    message_object.message_object_datum.update!(
+      blob: Base64.decode64(permitted_params[:blob])
+    )
   end
 end

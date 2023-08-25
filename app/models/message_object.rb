@@ -16,6 +16,7 @@ class MessageObject < ApplicationRecord
   belongs_to :message
   has_one :message_object_datum, dependent: :destroy
 
+  scope :unsigned, -> { where('is_signed = false') }
   scope :to_be_signed, -> { where('to_be_signed = true') }
 
   def self.create_message_objects(message, objects)

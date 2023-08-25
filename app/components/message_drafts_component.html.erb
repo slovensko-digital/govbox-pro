@@ -63,13 +63,15 @@
                       <b>Pridať prílohu</b>
                     <% end %>
                   </p>
-                  <% if @message.not_yet_submitted? && @message.objects.present? %>
+                  <% if @message.not_yet_submitted? %>
                     <%= label_tag :attachments_, "Pridať prílohy", class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" %>
                     <%= file_field_tag 'attachments[]', onchange: 'document.getElementById("attachment_form").submit()', class: "text-gray-900 bg-white focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm font-semibold px-5 py-2.5 dark:border-gray-600", multiple: true %>
 
-                    <button id="sign_all_attachments" type="button" class="flex justify-end items-center gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300">
-                      <b>Podpísať všetky prílohy</b>
-                    </button>
+                    <% if @message.objects.unsigned.present? %>
+                      <button id="sign_all_attachments" type="button" class="flex justify-end items-center gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300">
+                        <b>Podpísať všetky nepodpísané dokumenty</b>
+                      </button>
+                    <% end %>
                   <% end %>
                 </div>
               </div>
@@ -103,10 +105,8 @@
 </div>
 
 <script type="text/javascript">
-  let authenticityToken = document.getElementById('authenticity-token').getAttribute('content')
-
-  let messageId = <%= @message.id %>;
-  let objectIdsToBeSigned = <%= @message.objects.to_be_signed.map(&:id).to_json.html_safe %>;
+  var messageId = <%= @message.id %>;
+  var objectIdsToBeSigned = <%= @message.objects.unsigned.map(&:id).to_json.html_safe %>;
 
   function signAllAttachments() {
     fetch("http://localhost:37200/batch", {
@@ -127,23 +127,29 @@
     });
   }
 
-  const signAllAttachmentsButton = document.querySelector("#sign_all_attachments");
-  signAllAttachmentsButton.onclick = signAllAttachments;
-
   async function sign(batchId, messageObjectId) {
     return new Promise((resolve, reject) => {
       fetch(`/messages/${messageId}/message_objects/${messageObjectId}/signing_data.json`)
-        .then(function (response) {
-          return response.json();
-        }).then(function (messageObjectData) {
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (messageObjectData) {
         let payloadMimeType = `${messageObjectData.mime_type};base64`;
         let signatureLevel;
         let signatureContainer = "ASiC_E";
+
+        // let signedFileName = (messageObjectData.name.substring(0, messageObjectData.name.lastIndexOf('.')) || messageObjectData.name).concat(".asice");
+        let signedFileName = messageObjectData.file_name;
+        console.log(signedFileName);
+        let signedFileMimeType = "application/vnd.etsi.asic-e+zip";
 
         switch(messageObjectData.mime_type) {
           case "application/pdf":
             signatureLevel = "PAdES_BASELINE_B";
             signatureContainer = null;
+
+            signedFileName = messageObjectData.file_name;
+            signedFileMimeType = messageObjectData.mime_type;
             break;
           case 'application/x-eform-xml':
           // TODO zistit
@@ -179,25 +185,33 @@
             payloadMimeType: payloadMimeType
           })
         }).then(function (response) {
-            // debugger;
+          return response.json();
+        }).then(function (signedData) {
+          fetch(`/messages/${messageId}/message_objects/${messageObjectId}`, {
+            method: "PATCH",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+              authenticity_token: authenticityToken,
+              name: signedFileName,
+              mimetype: signedFileMimeType,
+              is_signed: true,
+              blob: signedData.content
+            })
+          }).then(function (response) {
             return response.json();
-          }).then(function (signedData) {
-            // fetch(``, {
-            //   method: "POST",
-            //   headers: {"Content-Type": "application/json"},
-            //   body: JSON.stringify({
-            //     blob: signedData.content
-            //   })
-            // }).then(function (response) {
-            //   return response.json();
-            // }).then(function (data) {
-            //   return data.batchId;
-            // })
-
-            resolve(); // TODO move to upper then
+          }).then(function (data) {
           })
+          resolve();
         })
-      });
+      })
+    });
   }
+
+  var signAllAttachmentsButton = document.querySelector("#sign_all_attachments");
+  if (signAllAttachmentsButton) {
+    signAllAttachmentsButton.onclick = signAllAttachments;
+  }
+
+  const authenticityToken = document.getElementById('authenticity-token').getAttribute('content')
 </script>
 

@@ -27,6 +27,10 @@ class MessageObjectPolicy < ApplicationPolicy
     true
   end
 
+  def update?
+    show?
+  end
+
   def download?
     show?
   end
