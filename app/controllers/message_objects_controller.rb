@@ -27,6 +27,16 @@ class MessageObjectsController < ApplicationController
 
   def signing_data
     authorize @message_object
+
+    @message_object_content = @message_object.content
+
+    if @message_object.mimetype == "application/x-eform-xml"
+      upvs_form_template = Upvs::FormTemplate.find_by(identifier: @message_object.message.metadata["posp_id"], version: @message_object.message.metadata["posp_version"])
+
+      @message_object_schema = upvs_form_template&.xsd_schema
+      @message_object_transformation = upvs_form_template&.xslt_html
+      @message_object_content = Upvs::XmlDataContainerBuilder.build_xml(@message_object.message)
+    end
   end
 
   def destroy
