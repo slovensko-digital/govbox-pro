@@ -68,7 +68,7 @@
                     <%= file_field_tag 'attachments[]', onchange: 'document.getElementById("attachment_form").submit()', class: "text-gray-900 bg-white focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm font-semibold px-5 py-2.5 dark:border-gray-600", multiple: true %>
 
                     <% if @message.objects.unsigned.present? %>
-                      <button id="sign_all_attachments" type="button" class="flex justify-end items-center gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300">
+                      <button id="sign_all_objects" type="button" class="flex justify-end items-center gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300">
                         <b>Podpísať všetky nepodpísané dokumenty</b>
                       </button>
                     <% end %>
@@ -108,7 +108,7 @@
   var messageId = <%= @message.id %>;
   var objectIdsToBeSigned = <%= @message.objects.unsigned.map(&:id).to_json.html_safe %>;
 
-  function signAllAttachments() {
+  function signAllObjects() {
     fetch("http://localhost:37200/batch", {
       method: "POST",
       headers: {"Content-Type": "application/json"},
@@ -133,14 +133,12 @@
       .then(function (response) {
         return response.json();
       })
-      .then(function (messageObjectData) {
+      .then(async function (messageObjectData) {
         let payloadMimeType = `${messageObjectData.mime_type};base64`;
-        let signatureLevel;
+        let signatureLevel = "XAdES_BASELINE_B";
         let signatureContainer = "ASiC_E";
 
-        // let signedFileName = (messageObjectData.name.substring(0, messageObjectData.name.lastIndexOf('.')) || messageObjectData.name).concat(".asice");
-        let signedFileName = messageObjectData.file_name;
-        console.log(signedFileName);
+        let signedFileName = await setSignedFileName(messageObjectData);
         let signedFileMimeType = "application/vnd.etsi.asic-e+zip";
 
         switch(messageObjectData.mime_type) {
@@ -151,16 +149,15 @@
             signedFileName = messageObjectData.file_name;
             signedFileMimeType = messageObjectData.mime_type;
             break;
+          // TODO check what in this case
+          // case 'application/xml':
+          //   break;
           case 'application/x-eform-xml':
-          // TODO zistit
-          case 'application/xml':
-          // TODO zistit
-          case 'text/plain':
-            signatureLevel = "XAdES_BASELINE_B";
+            payloadMimeType = "application/vnd.gov.sk.xmldatacontainer+xml;base64"
+            break;
           case 'application/msword':
           case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
             payloadMimeType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64"
-            signatureLevel = "XAdES_BASELINE_B";
             break;
           case 'image/jpeg':
           case 'image/tiff':
@@ -180,38 +177,50 @@
             },
             parameters: {
               level: signatureLevel,
-              container: signatureContainer
+              container: signatureContainer,
+              schema: messageObjectData.schema,
+              transformation: messageObjectData.transformation
             },
             payloadMimeType: payloadMimeType
           })
         }).then(function (response) {
           return response.json();
         }).then(function (signedData) {
-          fetch(`/messages/${messageId}/message_objects/${messageObjectId}`, {
-            method: "PATCH",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({
-              authenticity_token: authenticityToken,
-              name: signedFileName,
-              mimetype: signedFileMimeType,
-              is_signed: true,
-              blob: signedData.content
-            })
-          }).then(function (response) {
-            return response.json();
-          }).then(function (data) {
-          })
+          updateObject(messageId, messageObjectId, signedFileName, signedFileMimeType, signedData.content);
+        }).then(function () {
           resolve();
         })
       })
     });
   }
 
-  var signAllAttachmentsButton = document.querySelector("#sign_all_attachments");
-  if (signAllAttachmentsButton) {
-    signAllAttachmentsButton.onclick = signAllAttachments;
+  async function updateObject(messageId, messageObjectId, signedFileName, signedFileMimeType, signedContent) {
+    return new Promise((resolve, reject) => {
+      fetch(`/messages/${messageId}/message_objects/${messageObjectId}`, {
+        method: "PATCH",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          authenticity_token: authenticityToken,
+          name: signedFileName,
+          mimetype: signedFileMimeType,
+          is_signed: true,
+          content: signedContent
+        })
+      }).then(function () {
+        resolve();
+      })
+    });
   }
 
-  const authenticityToken = document.getElementById('authenticity-token').getAttribute('content')
+  async function setSignedFileName(messageObjectData) {
+    return messageObjectData.file_name.substring(0, messageObjectData.file_name.lastIndexOf('.')).concat(".asice") || messageObjectData.file_name;
+  }
+
+  var signAllObjectsButton = document.querySelector("#sign_all_objects");
+  if (signAllObjectsButton) {
+    signAllObjectsButton.onclick = signAllObjects;
+  }
+
+  var authenticityToken = document.getElementById('authenticity-token').getAttribute('content')
 </script>
 
