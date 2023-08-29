@@ -36,6 +36,10 @@ class MessageObject < ApplicationRecord
     end
   end
 
+  def content
+    message_object_datum.blob
+  end
+
   def form?
     object_type == "FORM"
   end

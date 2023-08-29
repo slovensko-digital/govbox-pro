@@ -45,7 +45,7 @@ class Govbox::SubmitMessageDraftJob < ApplicationJob
         signed: object.is_signed,
         mime_type: object.mimetype,
         form: object.form?,
-        content: Base64.strict_encode64(object.message_object_datum.blob)
+        content: Base64.strict_encode64(object.content)
       }.compact
     end
 
