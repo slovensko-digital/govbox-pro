@@ -66,10 +66,6 @@ class MessageDraft < Message
       )
     end
   end
-  
-  def form 
-    objects.select { |o| o.form? }&.first
-  end
 
   def import
     MessageDraftsImport.find(metadata["import_id"]) if metadata["import_id"]
