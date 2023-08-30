@@ -156,7 +156,7 @@
           // case 'application/xml':
           //   break;
           case 'application/x-eform-xml':
-            payloadMimeType = "application/vnd.gov.sk.xmldatacontainer+xml;base64"
+            payloadMimeType = "application/xml;base64"
             break;
           case 'application/msword':
           case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
@@ -181,7 +181,9 @@
             parameters: {
               level: signatureLevel,
               container: signatureContainer,
+              identifier: messageObjectData.identifier,
               schema: messageObjectData.schema,
+              containerXmlns: messageObjectData.container_xmlns,
               transformation: messageObjectData.transformation
             },
             payloadMimeType: payloadMimeType
