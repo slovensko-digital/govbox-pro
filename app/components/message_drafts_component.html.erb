@@ -124,6 +124,9 @@
         await sign(batchId, objectId);
       }
     }).catch(function (err) {
+      if (err.message === "Failed to fetch") {
+        alert("Spustite aplikáciu autogram.")
+      }
     });
   }
 
