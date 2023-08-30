@@ -18,6 +18,7 @@ class MessageObject < ApplicationRecord
 
   scope :unsigned, -> { where('is_signed = false') }
   scope :to_be_signed, -> { where('to_be_signed = true') }
+  scope :should_be_signed, -> { where('to_be_signed = true AND is_signed = false') }
 
   def self.create_message_objects(message, objects)
     objects.each do |raw_object|
