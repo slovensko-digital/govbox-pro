@@ -1,4 +1,4 @@
-class Settings::AutomationConditionsController < ApplicationController
+class Settings::AutomationActionsController < ApplicationController
   before_action :set_automation_rule
 
   def create
@@ -19,9 +19,10 @@ class Settings::AutomationConditionsController < ApplicationController
   end
 
   def set_automation_rule
-    @automation_rule = Automation::Rule.new(automation_rule_params)
+    @automation_rule = automation_rule_params[:id].blank? ? Automation::Rule.new : Automation::Rule.find(automation_rule_params[:id]) 
+    @automation_rule.assign_attributes(automation_rule_params)
     @index = params[:index].to_i
-    @new_rule = Automation::Rule.new(conditions: [Automation::Condition.new])
+    @new_rule = Automation::Rule.new(actions: [Automation::Action.new])
   end
 
   def automation_rule_params

@@ -1,17 +1,22 @@
- <%= tag.turbo_frame id: "condition_form_#{@condition_form.id}", class:"flex justify-start self-stretch grow" do %>
+ <%= tag.turbo_frame id: "condition-#{@index}", class:"flex justify-start self-stretch grow" do %>
   <div class="flex justify-between items-center self-stretch flex-grow flex-shrink-0 relative">
     <div class="flex gap-1">
-      <p class="text-base text-left text-gray-900"><%= t @condition_form.attr %></p>
-      <p class="text-base font-medium text-left text-gray-900"><%= t @condition_form.type %></p>
-      <p class="text-base text-left text-gray-900"><%= @condition_form.value %></p>
+      <p class="text-base text-left text-gray-900"><%= t @form.object.attr %></p>
+      <p class="text-base font-medium text-left text-gray-900"><%= t @form.object.type %></p>
+      <p class="text-base text-left text-gray-900"><%= @form.object.value %></p>
+      <%= @form.hidden_field :attr %>
+      <%= @form.hidden_field :type %>
+      <%= @form.hidden_field :value %>
     </div>
-    <div class="flex">
-      <%= link_to edit_settings_rules_condition_form_path(@condition_form.id, rule_form: @rule_form.as_json) do %>
-        <%= render Common::EditButtonComponent.new %>
-      <% end %>
-      <%= link_to settings_rules_condition_form_path(@condition_form.id, rule_form: @rule_form.as_json), data: {turbo_method: :delete, turbo_confirm: 'Are you sure?'} do %>
-        <%= render Common::DeleteButtonComponent.new %>
-      <% end %>
-    </div>
+    <% if @editable %>
+      <div class="flex">
+        <%= button_tag type: "submit", formaction: settings_automation_condition_path(index: @index), formmethod: :post, data: {turbo_frame: "condition-#{@index}"} do %>
+          <%= render Common::EditButtonComponent.new %>
+        <% end %>
+        <%= button_tag type: "submit", formaction: settings_automation_condition_path(id: @form.object.id, index: @index), formmethod: :delete, data: {turbo_frame: "condition-#{@index}"} do %>
+          <%= render Common::DeleteButtonComponent.new %>
+        <% end %>
+      </div>
+    <% end %>
   </div>
 <% end %>

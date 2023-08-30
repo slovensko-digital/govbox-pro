@@ -1,13 +1,23 @@
- <%= tag.turbo_frame id: "action_#{@action_form.id}", class:"flex justify-start self-stretch grow" do %>
-  <%= form_with model:[@action_form], scope: :action_form, class:"flex justify-between self-stretch grow" do |form| %>
-    <div class="flex justify-stretch gap-2">
-      <%= form.select :attr, @attr_list, {}, {class:"mt-2 block rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-400 ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"} %>
-      <%= form.select :type, @action_type_list, {}, {class:"mt-2 block rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-400 ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"} %>
-      <%= form.hidden_field :rule_form, value: @rule_form.to_json %>
-      <%= form.text_field :value, class:"mt-2 block rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-400 ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6" %>
+<%= tag.turbo_frame id: "action-#{@index}", class:"flex justify-between self-stretch grow" do %>
+  <div class="flex justify-stretch gap-2">
+    <%= @form.select :type, @action_type_list, {}, class:"mt-2 block rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-400 ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6", disabled: !@enabled %>
+    <%= @form.text_field :value, class:"mt-2 block rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-400 ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6", disabled: !@enabled %>
+  </div>
+  <% if @enabled %>
+    <div>
+      <% if @form.object.type %>
+        <%= button_tag type: "submit", formaction: settings_automation_action_path(id: @form.object.id, index: @index), formmethod: :delete, data: {turbo_frame: "condition-#{@index}"} do %>
+          <%= render Common::DeleteButtonComponent.new %>
+        <% end %>
+        <%= button_tag type: "submit", formaction: settings_automation_action_path(index: @index), formmethod: :patch do %>
+          <%= render Common::AddButtonComponent.new %>
+        <% end %>
+      <% else %>
+        <%= button_tag type: "submit", formaction: settings_automation_actions_path(index: @index), formmethod: :post do %>
+          <%= render Common::AddButtonComponent.new %>
+        <% end %>
+      <% end %>
     </div>
-    <%= button_tag :submit do %>
-      <%= render Common::AddButtonComponent.new %>
-    <% end %>
   <% end %>
+</div>
 <% end %>

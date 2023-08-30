@@ -12,6 +12,7 @@ module Automation
              dependent: :destroy,
              foreign_key: :automation_rule_id,
              inverse_of: :automation_rule
+    accepts_nested_attributes_for :conditions, :actions, allow_destroy: true
 
     def run!(thing, event)
       return unless conditions_met?(thing)

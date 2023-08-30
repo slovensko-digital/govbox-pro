@@ -7,7 +7,7 @@
           <div class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 overflow-hidden gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
             <div class="flex flex-col justify-start items-start flex-grow relative">
               <p class="self-stretch flex-grow w-[788px] text-xl font-semibold text-left text-gray-900"> Úprava pravidla </p>
-              <p class="flex-grow-0 flex-shrink-0 text-xs text-left text-gray-500"> Krok 2 z 2 – Akcie pravidla </p>
+              <p class="flex-grow-0 flex-shrink-0 text-xs text-left text-gray-500"> Krok 3 z 3 – Akcie pravidla </p>
             </div>
             <%= link_to settings_automation_rules_path, data: { turbo_frame: "_top" } do %>
               <%= render Common::CloseButtonComponent.new %>
@@ -15,28 +15,33 @@
           </div>
           <div class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-4 p-6 bg-white border-t-0 border-r-0 border-b border-l-0 border-gray-200">
             <%= render Icons::InfoComponent.new %>
-            <p class="flex-grow w-[804px] text-base text-left text-gray-900"> Pravidlo tvorí ľubovoľný počet akcií, pričom všetky budú spustené, ak budú splnené všetky podmienky pre pravidlo. </p>
+            <p class="flex-grow w-[804px] text-base text-left text-gray-900"> Pravidlo spúšťa ľubovoľný počet akcií, pričom všetky budú vykonané ak sú splnené všetky podmienky pravidla.</p>
           </div>
-          <div class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
-            <%= render Settings::Rules::ActionFormComponent.new(
-              action_form: Settings::Rules::ActionForm.new(attr: '', type: '', value: ''),
-              rule_form: @rule_form
-              )%>
-          </div>
-          <div class="flex flex-col justify-between items-start self-stretch flex-grow-0 flex-shrink-0 gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
-            <% if @rule_form.action_forms %>
-              <% @rule_form.action_forms.each do |action_form| %>
-                <%= render Settings::Rules::ActionsFormRowComponent.new(action_form: action_form, rule_form: @rule_form) %>
+          <%= form_with model: [:settings, @new_rule], class:"flex justify-start items-center self-stretch gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200" do |new_rule_form| %>
+            <%= new_rule_form.fields_for :actions do |new_action_form| %>
+              <%= tag.turbo_frame id: "action-new", class:"flex justify-between grow" do %>
+                <%= render Settings::Rules::ActionFormComponent.new(form: new_action_form, index: @automation_rule.actions.size) %>
               <% end %>
             <% end %>
-          </div>
-        </div>
-        <div class="flex justify-start items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6">
-          <div class="flex justify-center items-center flex-grow relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300">
-            <p class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-gray-900"> Zahodiť zmeny </p>
-          </div>
-          <%= link_to root_path, class:"flex justify-center items-center flex-grow relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md bg-blue-600" do %>
-            <p class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-white">Pokračovať</p>
+          <% end %>
+          <%= form_with model: [:settings, @automation_rule], class:"flex flex-col self-stretch" do |rule_form| %>
+            <%= tag.turbo_frame id: 'actions', class:"flex flex-col justify-start items-start grow gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200" do %>
+              <%= rule_form.fields_for :actions do |action_form| %>
+                <% if action_form.object.delete_record %>
+                  <%= action_form.hidden_field :delete_record, value:true %>
+                <% else %>
+                  <%= render Settings::Rules::ActionsFormRowComponent.new(form: action_form, index: action_form.index) %>
+                <% end %>
+              <% end %>
+            <% end %>
+            <%= render Settings::Rules::HiddenRuleFormComponent.new(form: rule_form) %>
+            <%= rule_form.fields_for :conditions do |condition_form| %>
+              <%= render Settings::Rules::HiddenConditionRowComponent.new(form:condition_form) %>
+            <% end %>
+            <div class="flex justify-start items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6">
+              <%= rule_form.button "Späť", formaction: conditions_step_settings_automation_rule_path, class:"flex justify-center items-center flex-grow relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md border border-gray-300 text-base font-medium text-left text-gray-900 bg-white" %>
+              <%= rule_form.button "Uložiť zmeny", class:"flex justify-center items-center flex-grow relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md text-base font-medium text-left text-white bg-blue-600" %>
+            </div>
           <% end %>
         </div>
       </div>

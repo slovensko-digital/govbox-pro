@@ -2,16 +2,20 @@ Rails.application.routes.draw do
 
 
   namespace :settings do
-    namespace :rules do
-      resources :condition_forms
-      resources :action_forms
+    resources :automation_rules
+    resource :automation_rule do
+      post 'header_step'
+      patch 'header_step'
+      post 'conditions_step'
+      patch 'conditions_step'
+      post 'actions_step'
+      patch 'actions_step'
     end
-    resources :automation_rules do
-      resources :automation_conditions
-      resources :automation_actions
-      member do
-        get 'edit_actions'
-      end
+    resources :automation_conditions, param: :index do
+      post '/', to: 'automation_conditions#edit', on: :member
+    end
+    resources :automation_actions, param: :index do
+      post '/', to: 'automation_actions#edit', on: :member
     end
     resources :tags
     resource :profile

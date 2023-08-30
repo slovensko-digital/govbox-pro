@@ -1,11 +1,10 @@
 # frozen_string_literal: true
 
 class Settings::Rules::ConditionFormComponent < ViewComponent::Base
-  def initialize(condition_form:, rule_form:)
-    @condition_form = condition_form
-    # TODO: testik
-    @condition_form.id = @condition_form.id.to_i if @condition_form.id
-    @rule_form = rule_form
+  def initialize(form:, index:, enabled: true)
+    @form = form
+    @index = index
+    @enabled = enabled
   end
 
   def before_render

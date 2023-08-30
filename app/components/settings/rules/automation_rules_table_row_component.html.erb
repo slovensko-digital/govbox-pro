@@ -16,25 +16,17 @@
     <p class="flex-grow-0 flex-shrink-0 text-base text-left text-gray-500">
       <% @automation_rule.actions.each_with_index do |action, index| %>
         <span class="flex-grow-0 flex-shrink-0 text-base text-left text-gray-500"><%= t action.type %></span>
-        <span class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-gray-500"><%= action.params['tag_name'] %></span>
+        <span class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-gray-500"><%= action.value %></span>
         <%if index < @automation_rule.actions.length - 1%><%= ', '%><% end %>
       <% end %>
     </p>
   </div>
   <div class="flex justify-start items-start flex-grow-0 flex-shrink-0 gap-2">
-    <%= link_to edit_settings_automation_rule_path(@automation_rule), data: { turbo_frame: :modal }  do %>
-      <div class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300">
-        <svg width="20" height="20"viewBox="0 0 20 20"fill="none"xmlns="http://www.w3.org/2000/svg"class="flex-grow-0 flex-shrink-0 w-5 h-5 relative"preserveAspectRatio="xMidYMid meet">
-          <path d="M12.6933 4.36003L15.64 7.3067M13.9433 3.11003C14.3341 2.71928 14.8641 2.49976 15.4167 2.49976C15.9693 2.49976 16.4992 2.71928 16.89 3.11003C17.2808 3.50078 17.5003 4.03076 17.5003 4.58336C17.5003 5.13597 17.2808 5.66595 16.89 6.0567L5.41667 17.53H2.5V14.5534L13.9433 3.11003Z"stroke="#111827"stroke-width="2"stroke-linecap="round"stroke-linejoin="round"></path>
-        </svg>
-      </div>
+    <%= link_to edit_settings_automation_rule_path(@automation_rule), data: { turbo_frame: :modal } do %>
+      <%= render Common::EditButtonComponent.new %>
     <% end %>
-    <a href=<%= settings_automation_rule_path(@automation_rule) %>>
-      <div class="flex justify-center items-center   relative  gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300">
-        <svg width="20"height="20"viewBox="0 0 20 20"fill="none"xmlns="http://www.w3.org/2000/svg"class="  w-5 h-5 relative"preserveAspectRatio="xMidYMid meet">
-          <path d="M8.33301 9.16667V14.1667M11.6663 9.16667V14.1667M3.33301 5.83333H16.6663M15.833 5.83333L15.1105 15.9517C15.0806 16.3722 14.8924 16.7657 14.5839 17.053C14.2755 17.3403 13.8696 17.5 13.448 17.5H6.55134C6.12979 17.5 5.7239 17.3403 5.41541 17.053C5.10693 16.7657 4.91877 16.3722 4.88884 15.9517L4.16634 5.83333H15.833ZM12.4997 5.83333V3.33333C12.4997 3.11232 12.4119 2.90036 12.2556 2.74408C12.0993 2.5878 11.8874 2.5 11.6663 2.5H8.33301C8.11199 2.5 7.90003 2.5878 7.74375 2.74408C7.58747 2.90036 7.49967 3.11232 7.49967 3.33333V5.83333H12.4997Z"stroke="#DC2626"stroke-width="2"stroke-linecap="round"stroke-linejoin="round"></path>
-        </svg>
-      </div>
-    </a>
+    <%= button_to settings_automation_rule_path(@automation_rule), method: :delete do %>
+      <%= render Common::DeleteButtonComponent.new %>
+    <% end %>
   </div>
 </div>

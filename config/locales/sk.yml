@@ -7,6 +7,7 @@
   recipient_name: "Prijímateľ"
   sender_uri: "URI odosielateľa"
   recipient_uri: "URI prijímateľa"
+  message_created: "Nová správa"
   "Automation::ContainsCondition": "obsahuje"
   "Automation::MetadataValueCondition": "Metadáta obsahujú"
   'Automation::AddMessageThreadTagAction': 'Pridaj štítok na vlákno'

@@ -36,7 +36,15 @@ class Settings::AutomationRulePolicy < ApplicationPolicy
     true
   end
 
-  def edit_actions?
+  def header_step?
+    true
+  end
+
+  def conditions_step?
+    true
+  end
+
+  def actions_step?
     true
   end
 
