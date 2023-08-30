@@ -194,7 +194,11 @@
             updateObject(messageObjectId, messageId, signedFileName, signedFileMimeType, signedData.content);
           }).then(function () {
             resolve();
-          })
+          }).catch(function (err) {
+            if (err.message === "Failed to fetch") {
+              alert("Spustite aplikáciu autogram.")
+            }
+          });
         })
     });
   }
