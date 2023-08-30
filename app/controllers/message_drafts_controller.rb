@@ -1,7 +1,7 @@
 class MessageDraftsController < ApplicationController
-  before_action :load_message_drafts, only: :index
+  before_action :load_message_drafts, only: [:index, :submit_all]
   before_action :load_message, only: :create
-  before_action :load_draft, except: [:index, :create]
+  before_action :load_draft, except: [:index, :create, :submit_all]
 
   def index
     @message_drafts = @message_drafts.order(created_at: :desc)

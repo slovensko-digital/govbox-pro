@@ -1,4 +1,6 @@
 class MessageDraft < Message
+  after_destroy { self.thread.destroy! if self.thread.messages.none? }
+
   GENERAL_AGENDA_POSP_ID ||= "App.GeneralAgenda"
   GENERAL_AGENDA_POSP_VERSION ||= "1.9"
   GENERAL_AGENDA_MESSAGE_TYPE ||= "App.GeneralAgenda"

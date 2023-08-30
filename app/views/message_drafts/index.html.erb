@@ -24,4 +24,8 @@
       <% end %>
     </table>
   </div>
+  
+  <% if @message_drafts.any?(&:submittable?) %>
+    <%= button_to "Podať všetky", submit_all_message_drafts_path, method: :post %>
+  <% end %>
 <% end %>

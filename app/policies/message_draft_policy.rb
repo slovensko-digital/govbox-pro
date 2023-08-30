@@ -55,6 +55,10 @@ class MessageDraftPolicy < ApplicationPolicy
     create?
   end
 
+  def submit_all?
+    submit?
+  end
+
   def destroy?
     create?
   end
