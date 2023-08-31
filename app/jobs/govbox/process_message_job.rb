@@ -4,6 +4,8 @@ module Govbox
   class ProcessMessageJob < ApplicationJob
     queue_as :default
 
+    retry_on ActiveRecord::RecordNotUnique, wait: :exponentially_longer, attempts: 5
+
     def perform(govbox_message)
       ActiveRecord::Base.transaction do
         Govbox::Message.create_message_with_thread!(govbox_message)
