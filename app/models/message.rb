@@ -21,7 +21,7 @@
 class Message < ApplicationRecord
   has_and_belongs_to_many :tags
   belongs_to :thread, class_name: 'MessageThread', foreign_key: :message_thread_id
-  belongs_to :author, class_name: 'User', foreign_key: :author_id
+  belongs_to :author, class_name: 'User', foreign_key: :author_id, optional: true
   has_many :objects, class_name: 'MessageObject', dependent: :destroy
   delegate :tenant, to: :thread
 
