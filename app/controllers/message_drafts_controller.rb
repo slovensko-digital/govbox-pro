@@ -32,11 +32,7 @@ class MessageDraftsController < ApplicationController
     authorize @message_draft
 
     if @message_draft.submit
-      redirect_path = if @message_draft.original_message.present?
-        message_path(@message_draft.original_message)
-      else
-        message_drafts_path
-      end
+      redirect_path = @message_draft.original_message.present? ? message_path(@message_draft.original_message) : message_drafts_path
       redirect_to redirect_path, notice: "Správa bola zaradená na odoslanie."
     else
       # TODO prisposobit chybovu hlasku aj importovanym draftom
@@ -45,15 +41,17 @@ class MessageDraftsController < ApplicationController
   end
   
   def submit_all
-    @message_drafts.each { |message_draft| message_draft.submit }
+    @message_drafts.each(&:submit)
   end
 
   def destroy
     authorize @message_draft
 
+    redirect_path = @message_draft.original_message.present? ? message_path(@message_draft.original_message) : message_drafts_path
+
     @message_draft.destroy
 
-    redirect_to (params[:redirect_url].presence || message_drafts_path)
+    redirect_to redirect_path
   end
 
   private
