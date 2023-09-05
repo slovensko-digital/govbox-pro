@@ -21,7 +21,7 @@ class Drafts::ParseImportJob < ApplicationJob
       Dir.each_child(extracted_import_path) do |entry_name|
         if File.directory?(File.join(extracted_import_path, entry_name))
 
-          message_draft = MessageDraft.where("metadata ->> 'import_id' = ?", import.id.to_s).where("metadata ->> 'import_subfolder' = ?", File.basename(entry_name)).take
+          message_draft = MessageDraft.where(import: import).where("metadata ->> 'import_subfolder' = ?", File.basename(entry_name)).take
 
           unless message_draft
             MessageDraft.create(
@@ -31,8 +31,8 @@ class Drafts::ParseImportJob < ApplicationJob
               replyable: false,
               read: true,
               delivered_at: Time.now,
+              import: import,
               metadata: {
-                "import_id": import.id,
                 "import_subfolder": File.basename(entry_name),
                 "status": "being_loaded"
               }
@@ -90,6 +90,7 @@ class Drafts::ParseImportJob < ApplicationJob
         replyable: false,
         read: true,
         delivered_at: Time.now,
+        import: import,
         metadata: {
           "recipient_uri": row['recipient_uri'],
           "posp_id": row['posp_id'],
@@ -98,7 +99,6 @@ class Drafts::ParseImportJob < ApplicationJob
           "correlation_id": uuid,
           "sender_business_reference": row['sender_business_reference'],
           "recipient_business_reference": row['recipient_business_reference'],
-          "import_id": import.id,
           "import_subfolder": row['subfolder'],
           "status": "being_loaded"
         }

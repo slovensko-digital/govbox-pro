@@ -1,4 +1,6 @@
 class MessageDraft < Message
+  belongs_to :import, class_name: 'MessageDraftsImport', foreign_key: :import_id, optional: true
+
   after_destroy { self.thread.destroy! if self.thread.messages.none? }
 
   GENERAL_AGENDA_POSP_ID = "App.GeneralAgenda"
@@ -74,10 +76,6 @@ class MessageDraft < Message
     objects.select { |o| o.form? }&.first
   end
 
-  def import
-    MessageDraftsImport.find(metadata["import_id"]) if metadata["import_id"]
-  end
-  
   def editable?
     metadata["posp_id"] == GENERAL_AGENDA_POSP_ID && !form&.is_signed? && not_yet_submitted?
   end
