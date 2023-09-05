@@ -12,10 +12,10 @@ Rails.application.routes.draw do
       patch 'actions_step'
     end
     resources :automation_conditions, param: :index do
-      post '/', to: 'automation_conditions#edit', on: :member
+      post '/', to: 'automation_conditions#edit_form', on: :member
     end
     resources :automation_actions, param: :index do
-      post '/', to: 'automation_actions#edit', on: :member
+      post '/', to: 'automation_actions#edit_form', on: :member
     end
     resources :tags
     resource :profile

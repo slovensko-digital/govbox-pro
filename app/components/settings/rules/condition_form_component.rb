@@ -9,12 +9,6 @@ class Settings::Rules::ConditionFormComponent < ViewComponent::Base
 
   def before_render
     @condition_type_list = Automation::Condition.subclasses.map { |subclass| [t(subclass.name), subclass.name] }
-    # TODO: Toto som chcel vytiahnut ako ENUM, nepodarilo sa
-    @attr_list = [
-      [t('sender_name'), 'sender_name'],
-      [t('recipient_name'), 'recipient_name'],
-      [t('sender_uri'), 'sender_uri'],
-      [t('recipient_uri'), 'recipient_uri']
-    ]
+    @attr_list = Automation::Condition::ATTR_LIST.map { |attr| [t(attr), attr] }
   end
 end
