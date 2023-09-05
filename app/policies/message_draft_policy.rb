@@ -12,6 +12,7 @@ class MessageDraftPolicy < ApplicationPolicy
     def resolve
       return scope.all if @user.site_admin?
 
+      # TODO: this does not work for imported drafts (no tags present)
       scope.where(
         MessageThreadsTag
           .select(1)
@@ -19,18 +20,6 @@ class MessageDraftPolicy < ApplicationPolicy
           .where("message_threads_tags.message_thread_id = messages.message_thread_id")
           .where(group_memberships: { user_id: @user.id })
           .arel.exists
-      )
-    end
-
-    def resolve_index
-      scope.where(
-          'import_id in (
-        select imports.id
-        from drafts_imports imports
-        join boxes on boxes.id = imports.box_id
-        join tenants on tenants.id = boxes.tenant_id
-        where tenant_id = ?)',
-        @user.tenant_id
       )
     end
   end
