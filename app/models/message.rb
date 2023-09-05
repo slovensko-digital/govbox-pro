@@ -20,6 +20,9 @@ class Message < ApplicationRecord
   has_and_belongs_to_many :tags
   belongs_to :thread, class_name: 'MessageThread', foreign_key: 'message_thread_id'
   has_many :objects, class_name: 'MessageObject', dependent: :destroy
+  # used for joins only
+  has_many :message_threads_tags, primary_key: :message_thread_id, foreign_key: :message_thread_id
+
   delegate :tenant, to: :thread
   after_create_commit ->(message) { EventBus.publish(:message_created, message) }
 
