@@ -30,6 +30,10 @@ class MessageThread < ApplicationRecord
     messages.all?(&:read)
   end
 
+  def messages_visible_to_user(user)
+    messages.where(messages: { author_id: user.id }).or(messages.where(messages: { author_id: nil }))
+  end
+
   def automation_rules_for_event(event)
     folder.tenant.automation_rules.where(trigger_event: event)
   end

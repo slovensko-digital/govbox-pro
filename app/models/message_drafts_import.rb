@@ -11,16 +11,11 @@
 
 class MessageDraftsImport < ApplicationRecord
   belongs_to :box, class_name: 'Box'
-
-  after_destroy_commit { MessageDraft.where("metadata ->> 'import_subfolder' = ?", id.to_s).destroy_all }
+  has_many :message_drafts, foreign_key: :import_id, dependent: :destroy
 
   validates_with MessageDraftsImportValidator, if: :content_path
 
   enum status: { uploaded: 0, parsed: 1, parsing_failed: 2 }
-
-  def message_drafts
-    MessageDraft.where("metadata ->> 'import_id' = ?", id.to_s)
-  end
 
   def base_name
     name.split('_', 2).last

@@ -1,7 +1,11 @@
 class MessageDraft < Message
-  GENERAL_AGENDA_POSP_ID ||= "App.GeneralAgenda"
-  GENERAL_AGENDA_POSP_VERSION ||= "1.9"
-  GENERAL_AGENDA_MESSAGE_TYPE ||= "App.GeneralAgenda"
+  belongs_to :import, class_name: 'MessageDraftsImport', foreign_key: :import_id, optional: true
+
+  after_destroy { self.thread.destroy! if self.thread.messages.none? }
+
+  GENERAL_AGENDA_POSP_ID = "App.GeneralAgenda"
+  GENERAL_AGENDA_POSP_VERSION = "1.9"
+  GENERAL_AGENDA_MESSAGE_TYPE = "App.GeneralAgenda"
 
   with_options on: :validate_data do |message_draft|
     message_draft.validates :uuid, format: { with: Utils::UUID_PATTERN }, allow_blank: false
@@ -10,22 +14,23 @@ class MessageDraft < Message
     message_draft.validate :validate_objects
   end
 
-  def self.create_message_reply(message)
+  def self.create_message_reply(original_message: , author:)
     MessageDraft.create!(
       uuid: SecureRandom.uuid,
-      thread: message.thread,
-      sender_name: message.recipient_name,
-      recipient_name: message.sender_name,
+      thread: original_message.thread,
+      sender_name: original_message.recipient_name,
+      recipient_name: original_message.sender_name,
       read: true,
       delivered_at: Time.now,
+      author: author,
       metadata: {
-        "recipient_uri": message.metadata["sender_uri"],
+        "recipient_uri": original_message.metadata["sender_uri"],
         "posp_id": GENERAL_AGENDA_POSP_ID,
         "posp_version": GENERAL_AGENDA_POSP_VERSION,
         "message_type": GENERAL_AGENDA_MESSAGE_TYPE,
-        "correlation_id": message.metadata["correlation_id"],
-        "reference_id": message.uuid,
-        "original_message_id": message.id,
+        "correlation_id": original_message.metadata["correlation_id"],
+        "reference_id": original_message.uuid,
+        "original_message_id": original_message.id,
         "status": "created"
       }
     )
@@ -47,6 +52,7 @@ class MessageDraft < Message
 
     return unless title.present? && body.present?
 
+    # TODO clean the domain (no UPVS stuff)
     if form
       form.message_object_datum.update(
         blob: Upvs::FormBuilder.build_general_agenda_xml(subject: title, body: body)
@@ -67,10 +73,6 @@ class MessageDraft < Message
     end
   end
 
-  def import
-    MessageDraftsImport.find(metadata["import_id"]) if metadata["import_id"]
-  end
-  
   def editable?
     metadata["posp_id"] == GENERAL_AGENDA_POSP_ID && !form&.is_signed? && not_yet_submitted?
   end

@@ -31,6 +31,9 @@
     <button id="sign_objects" type="button" class="flex justify-end items-center gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300">
       <b>Podpísať všetky dokumenty na podpis</b>
     </button>
+
+  <% if @message_drafts.any?(&:submittable?) %>
+    <%= button_to "Podať všetky", submit_all_message_drafts_path, method: :post %>
   <% end %>
 <% end %>
 

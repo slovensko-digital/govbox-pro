@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_23_200907) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_05_100110) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -299,6 +299,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_23_200907) do
     t.json "metadata"
     t.string "type"
     t.boolean "replyable", default: true, null: false
+    t.bigint "import_id"
+    t.bigint "author_id"
+    t.index ["author_id"], name: "index_messages_on_author_id"
+    t.index ["import_id"], name: "index_messages_on_import_id"
     t.index ["message_thread_id"], name: "index_messages_on_message_thread_id"
   end
 
@@ -396,7 +400,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_23_200907) do
   add_foreign_key "message_threads", "folders"
   add_foreign_key "message_threads_tags", "message_threads"
   add_foreign_key "message_threads_tags", "tags"
+  add_foreign_key "messages", "message_drafts_imports", column: "import_id"
   add_foreign_key "messages", "message_threads"
+  add_foreign_key "messages", "users", column: "author_id"
   add_foreign_key "messages_tags", "messages"
   add_foreign_key "messages_tags", "tags"
   add_foreign_key "tag_groups", "groups"

@@ -56,6 +56,8 @@ Rails.application.routes.draw do
     member do
       post 'submit'
     end
+
+    post 'submit_all', on: :collection
   end
 
   resources :messages_tags

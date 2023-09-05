@@ -12,25 +12,14 @@ class MessageDraftPolicy < ApplicationPolicy
     def resolve
       return scope.all if @user.site_admin?
 
-      scope.where(
+      # TODO: this does not work for imported drafts (no tags present)
+      scope.where(author_id: @user.id).where(
         MessageThreadsTag
           .select(1)
           .joins(tag_groups: :group_memberships)
           .where("message_threads_tags.message_thread_id = messages.message_thread_id")
           .where(group_memberships: { user_id: @user.id })
           .arel.exists
-      )
-    end
-
-    def resolve_index
-      scope.where(
-          'import_id in (
-        select imports.id
-        from drafts_imports imports
-        join boxes on boxes.id = imports.box_id
-        join tenants on tenants.id = boxes.tenant_id
-        where tenant_id = ?)',
-        @user.tenant_id
       )
     end
   end
@@ -53,6 +42,10 @@ class MessageDraftPolicy < ApplicationPolicy
 
   def submit?
     create?
+  end
+
+  def submit_all?
+    submit?
   end
 
   def destroy?
