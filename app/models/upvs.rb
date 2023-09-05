@@ -1,5 +1,5 @@
-module Drafts
+module Upvs
   def self.table_name_prefix
-    'drafts_'
+    "upvs_"
   end
 end

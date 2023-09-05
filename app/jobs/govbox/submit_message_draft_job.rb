@@ -1,47 +1,65 @@
 class Govbox::SubmitMessageDraftJob < ApplicationJob
-  class << self
-    delegate :uuid, to: SecureRandom
-  end
-
   def perform(message_draft, upvs_client: UpvsEnvironment.upvs_client)
-    reply_data = {
+    message_draft_data = {
+      posp_id: message_draft.metadata["posp_id"],
+      posp_version: message_draft.metadata["posp_version"],
+      message_type: message_draft.metadata["message_type"],
       message_id: message_draft.uuid,
       correlation_id: message_draft.metadata["correlation_id"],
-      reference_id: message_draft.metadata["reference_id"],
       recipient_uri: message_draft.metadata["recipient_uri"],
-      general_agenda: {
-        subject: message_draft.title,
-        body: message_draft.metadata["message_body"]
-      },
-      attachments: (message_attachments_data(message_draft) if message_draft.objects.any?)
+      message_subject: message_draft.title,
+      sender_business_reference: message_draft.metadata["sender_business_reference"],
+      recipient_business_reference: message_draft.metadata["recipient_business_reference"],
+      objects: build_objects(message_draft)
     }.compact
 
     sktalk_api = upvs_client.api(message_draft.thread.folder.box).sktalk
 
-    success, response_status = sktalk_api.receive_and_save_to_outbox(reply_data)
+    begin
+      success, response_status = sktalk_api.receive_and_save_to_outbox(message_draft_data)
+      if success
+        message_draft.metadata["status"] = "submitted"
+        Govbox::SyncBoxJob.set(wait: 3.minutes).perform_later(message_draft.thread.folder.box)
+      else
+        handle_submit_fail(message_draft, response_status)
+      end
 
-    raise StandardError, "Message reply submission failed!" unless success
+      message_draft.save!
+    rescue Error => error
+      message_draft.metadata["status"] = "submit_failed_temporary"
+      message_draft.save!
 
-    message_draft.metadata["status"] = "submitted"
-    message_draft.save!
-
-    Govbox::SyncBoxJob.set(wait: 3.minutes).perform_later(message_draft.thread.folder.box)
+      raise error
+    end
   end
 
   private
 
-  def message_attachments_data(message_draft)
-    message_draft.objects.map do |message_attachment|
-      {
-        id: uuid,
-        name: message_attachment.name,
-        signed: message_attachment.is_signed,
+  def build_objects(message_draft)
+    objects = []
+    message_draft.objects.each do |object|
+      objects << {
+        id: SecureRandom.uuid,
+        name: object.name,
         encoding: "Base64",
-        mime_type: Utils.detect_mime_type(entry_name: message_attachment.name),
-        content: Base64.strict_encode64(message_attachment.message_object_datum.blob)
-      }
+        signed: object.is_signed,
+        mime_type: object.mimetype,
+        form: object.form?,
+        content: Base64.strict_encode64(object.message_object_datum.blob)
+      }.compact
     end
+
+    objects
   end
 
-  delegate :uuid, to: self
+  def handle_submit_fail(message_draft, response_status)
+    case response_status
+    when 408
+      # TODO
+    when 422
+      message_draft.metadata["status"] = "submit_failed_unprocessable"
+    else
+      message_draft.metadata["status"] = "submit_failed_temporary"
+    end
+  end
 end
