@@ -10,7 +10,7 @@ class MessageDraftsController < ApplicationController
   def create
     authorize @message
 
-    @message_draft = MessageDraft.create_message_reply(@message)
+    @message_draft = MessageDraft.create_message_reply(original_message: @message, author: Current.user)
 
     redirect_to message_draft_path(@message_draft)
   end

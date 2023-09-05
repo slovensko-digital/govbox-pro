@@ -14,22 +14,23 @@ class MessageDraft < Message
     message_draft.validate :validate_objects
   end
 
-  def self.create_message_reply(message)
+  def self.create_message_reply(original_message: , author:)
     MessageDraft.create!(
       uuid: SecureRandom.uuid,
-      thread: message.thread,
-      sender_name: message.recipient_name,
-      recipient_name: message.sender_name,
+      thread: original_message.thread,
+      sender_name: original_message.recipient_name,
+      recipient_name: original_message.sender_name,
       read: true,
       delivered_at: Time.now,
+      author: author,
       metadata: {
-        "recipient_uri": message.metadata["sender_uri"],
+        "recipient_uri": original_message.metadata["sender_uri"],
         "posp_id": GENERAL_AGENDA_POSP_ID,
         "posp_version": GENERAL_AGENDA_POSP_VERSION,
         "message_type": GENERAL_AGENDA_MESSAGE_TYPE,
-        "correlation_id": message.metadata["correlation_id"],
-        "reference_id": message.uuid,
-        "original_message_id": message.id,
+        "correlation_id": original_message.metadata["correlation_id"],
+        "reference_id": original_message.uuid,
+        "original_message_id": original_message.id,
         "status": "created"
       }
     )

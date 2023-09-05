@@ -14,14 +14,17 @@
 #  replyable                                   :boolean          not null, default: true
 #  delivered_at                                :datetime         not null
 #  import_id                                   :integer
+#  author_id                                   :integer
 #  created_at                                  :datetime         not null
 #  updated_at                                  :datetime         not null
 
 class Message < ApplicationRecord
   has_and_belongs_to_many :tags
   belongs_to :thread, class_name: 'MessageThread', foreign_key: :message_thread_id
+  belongs_to :author, class_name: 'User', foreign_key: :author_id
   has_many :objects, class_name: 'MessageObject', dependent: :destroy
   delegate :tenant, to: :thread
+
   after_create_commit ->(message) { EventBus.publish(:message_created, message) }
 
   def automation_rules_for_event(event)

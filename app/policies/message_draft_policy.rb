@@ -13,7 +13,7 @@ class MessageDraftPolicy < ApplicationPolicy
       return scope.all if @user.site_admin?
 
       # TODO: this does not work for imported drafts (no tags present)
-      scope.where(
+      scope.where(author_id: @user.id).where(
         MessageThreadsTag
           .select(1)
           .joins(tag_groups: :group_memberships)
