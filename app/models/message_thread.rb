@@ -53,6 +53,8 @@ class MessageThread < ApplicationRecord
           thread.tags.each do |tag|
             target_thread.tags.push(tag) unless target_thread.tags.include?(tag)
           end
+
+          thread.reload
           thread.destroy!
         end
       end
