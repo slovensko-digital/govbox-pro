@@ -1,3 +1,12 @@
+# == Schema Information
+#
+# Table name: tag_groups
+#
+#  tag_id                                      :integer          not null
+#  group_id                                    :integer          not null
+#  created_at                                  :datetime         not null
+#  updated_at                                  :datetime         not null
+
 class TagGroup < ApplicationRecord
   belongs_to :group
   belongs_to :tag

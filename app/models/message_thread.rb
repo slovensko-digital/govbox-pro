@@ -13,12 +13,12 @@
 class MessageThread < ApplicationRecord
   has_and_belongs_to_many :tags
   belongs_to :folder
-  has_many :messages do
+  has_many :messages, dependent: :destroy do
     def find_or_create_by_uuid!(uuid:)
     end
   end
   has_and_belongs_to_many :tags, through: :messages
-  has_many :message_threads_tags
+  has_many :message_threads_tags, dependent: :destroy
   has_many :tag_users, through: :message_threads_tags
   has_many :merge_identifiers, class_name: 'MessageThreadMergeIdentifier', dependent: :destroy
 

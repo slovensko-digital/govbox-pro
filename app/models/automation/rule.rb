@@ -1,3 +1,15 @@
+# == Schema Information
+#
+# Table name: automation_rules
+#
+#  id                                          :integer          not null, primary key
+#  name                                        :string
+#  trigger_event                               :string
+#  tenant_id                                   :integer          not null
+#  user_id                                     :integer          not null
+#  created_at                                  :datetime         not null
+#  updated_at                                  :datetime         not null
+
 module Automation
   class Rule < ApplicationRecord
     belongs_to :tenant
