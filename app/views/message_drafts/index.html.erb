@@ -32,11 +32,11 @@
       <b>Podpísať všetky dokumenty na podpis</b>
     </button>
 
-  <% if @message_drafts.any?(&:submittable?) %>
-    <%= button_to "Podať všetky", submit_all_message_drafts_path, method: :post %>
+    <% if @message_drafts.any?(&:submittable?) %>
+      <%= button_to "Podať všetky", submit_all_message_drafts_path, method: :post %>
+    <% end %>
   <% end %>
 <% end %>
-
 
 <script type="text/javascript">
   var objectsToBeSigned = <%= @message_drafts.map{|message_draft| message_draft.objects.should_be_signed.map{|o| {id: o.id, message_id: o.message_id}}}.flatten(1).to_json.html_safe %>;
