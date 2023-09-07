@@ -27,7 +27,7 @@ class Govbox::Message < ApplicationRecord
   end
 
   def self.create_message_with_thread!(govbox_message)
-    message = MessageThread.with_advisory_lock(govbox_message.correlation_id) do
+    message = MessageThread.with_advisory_lock(govbox_message.correlation_id, transaction: true) do
       folder = Folder.find_or_create_by!(
         name: "Inbox",
         box: govbox_message.box
