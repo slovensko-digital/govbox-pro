@@ -4,7 +4,7 @@ module Govbox
 
     def perform
       Box.find_each do |box|
-        SyncBoxJob.perform_later(box)
+        SyncBoxJob.perform_later(box) if box.syncable?
       end
     end
   end
