@@ -3,6 +3,8 @@ module Govbox
     queue_as :default
 
     def perform(box, upvs_client: UpvsEnvironment.upvs_client)
+      return unless box.syncable?
+
       edesk_api = upvs_client.api(box).edesk
       response_status, raw_folders = edesk_api.fetch_folders
 

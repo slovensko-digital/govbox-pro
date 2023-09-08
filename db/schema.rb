@@ -83,49 +83,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_18_084605) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "tenant_id", null: false
+    t.boolean "syncable", default: true, null: false
     t.index ["tenant_id"], name: "index_boxes_on_tenant_id"
-  end
-
-  create_table "drafts", force: :cascade do |t|
-    t.bigint "import_id"
-    t.integer "status", default: 0
-    t.string "recipient_uri"
-    t.string "posp_id"
-    t.string "posp_version"
-    t.string "message_type"
-    t.string "message_subject"
-    t.string "import_subfolder"
-    t.string "sender_business_reference"
-    t.string "recipient_business_reference"
-    t.uuid "message_id"
-    t.uuid "correlation_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "box_id", null: false
-    t.index ["box_id"], name: "index_drafts_on_box_id"
-    t.index ["import_id"], name: "index_drafts_on_import_id"
-  end
-
-  create_table "drafts_imports", force: :cascade do |t|
-    t.string "name", null: false
-    t.integer "status", default: 0
-    t.string "content_path"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "box_id", null: false
-    t.index ["box_id"], name: "index_drafts_imports_on_box_id"
-  end
-
-  create_table "drafts_objects", force: :cascade do |t|
-    t.bigint "draft_id", null: false
-    t.uuid "uuid", null: false
-    t.string "name", null: false
-    t.boolean "signed"
-    t.boolean "to_be_signed"
-    t.boolean "form"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["draft_id"], name: "index_drafts_objects_on_draft_id"
   end
 
   create_table "folders", force: :cascade do |t|
@@ -266,6 +225,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_18_084605) do
     t.index ["tenant_id"], name: "index_groups_on_tenant_id"
   end
 
+  create_table "message_drafts_imports", force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "status", default: 0
+    t.string "content_path"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "box_id", null: false
+    t.index ["box_id"], name: "index_message_drafts_imports_on_box_id"
+  end
+
   create_table "message_object_data", force: :cascade do |t|
     t.bigint "message_object_id", null: false
     t.binary "blob", null: false
@@ -282,6 +251,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_18_084605) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "is_signed"
+    t.boolean "to_be_signed", default: false, null: false
     t.index ["message_id"], name: "index_message_objects_on_message_id"
   end
 
@@ -330,6 +300,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_18_084605) do
     t.json "metadata"
     t.string "type"
     t.boolean "replyable", default: true, null: false
+    t.bigint "import_id"
+    t.bigint "author_id"
+    t.index ["author_id"], name: "index_messages_on_author_id"
+    t.index ["import_id"], name: "index_messages_on_import_id"
     t.index ["message_thread_id"], name: "index_messages_on_message_thread_id"
   end
 
@@ -340,6 +314,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_18_084605) do
     t.datetime "updated_at", null: false
     t.index ["message_id"], name: "index_messages_tags_on_message_id"
     t.index ["tag_id"], name: "index_messages_tags_on_tag_id"
+  end
+
+  create_table "tag_groups", force: :cascade do |t|
+    t.bigint "group_id", null: false
+    t.bigint "tag_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["group_id"], name: "index_tag_groups_on_group_id"
+    t.index ["tag_id"], name: "index_tag_groups_on_tag_id"
   end
 
   create_table "tag_users", force: :cascade do |t|
@@ -368,6 +351,25 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_18_084605) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "upvs_form_template_related_documents", force: :cascade do |t|
+    t.bigint "upvs_form_template_id", null: false
+    t.string "data", null: false
+    t.string "language", null: false
+    t.string "document_type", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["upvs_form_template_id", "language", "document_type"], name: "index_related_documents_on_template_id_and_language_and_type", unique: true
+    t.index ["upvs_form_template_id"], name: "index_upvs_form_template_related_documents_on_form_template_id"
+  end
+
+  create_table "upvs_form_templates", force: :cascade do |t|
+    t.string "identifier", null: false
+    t.string "version", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["identifier", "version"], name: "index_form_templates_on_identifier_and_version", unique: true
+  end
+
   create_table "users", force: :cascade do |t|
     t.bigint "tenant_id"
     t.string "email", null: false
@@ -384,10 +386,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_18_084605) do
   add_foreign_key "automation_rules", "tenants"
   add_foreign_key "automation_rules", "users"
   add_foreign_key "boxes", "tenants"
-  add_foreign_key "drafts", "boxes"
-  add_foreign_key "drafts", "drafts_imports", column: "import_id"
-  add_foreign_key "drafts_imports", "boxes"
-  add_foreign_key "drafts_objects", "drafts"
   add_foreign_key "folders", "boxes"
   add_foreign_key "govbox_api_connections", "boxes"
   add_foreign_key "govbox_folders", "boxes"
@@ -396,18 +394,24 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_18_084605) do
   add_foreign_key "group_memberships", "groups"
   add_foreign_key "group_memberships", "users"
   add_foreign_key "groups", "tenants"
+  add_foreign_key "message_drafts_imports", "boxes"
   add_foreign_key "message_object_data", "message_objects"
   add_foreign_key "message_objects", "messages"
   add_foreign_key "message_thread_merge_identifiers", "message_threads"
   add_foreign_key "message_threads", "folders"
   add_foreign_key "message_threads_tags", "message_threads"
   add_foreign_key "message_threads_tags", "tags"
+  add_foreign_key "messages", "message_drafts_imports", column: "import_id"
   add_foreign_key "messages", "message_threads"
+  add_foreign_key "messages", "users", column: "author_id"
   add_foreign_key "messages_tags", "messages"
   add_foreign_key "messages_tags", "tags"
+  add_foreign_key "tag_groups", "groups"
+  add_foreign_key "tag_groups", "tags"
   add_foreign_key "tag_users", "tags"
   add_foreign_key "tag_users", "users"
   add_foreign_key "tags", "tenants"
   add_foreign_key "tags", "users"
+  add_foreign_key "upvs_form_template_related_documents", "upvs_form_templates"
   add_foreign_key "users", "tenants"
 end

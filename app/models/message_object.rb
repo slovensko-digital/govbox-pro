@@ -4,17 +4,19 @@
 #
 #  id                                          :integer          not null, primary key
 #  name                                        :string           not null
-#  encoding                                    :string           not null
 #  mimetype                                    :string           not null
-#  signed                                      :boolean
+#  is_signed                                   :boolean
+#  to_be_signed                                :boolean          not null, default: false
 #  object_type                                 :string           not null
-#  message_id                                  :datetime         not null
+#  message_id                                  :integer          not null
 #  created_at                                  :datetime         not null
 #  updated_at                                  :datetime         not null
 
 class MessageObject < ApplicationRecord
   belongs_to :message
   has_one :message_object_datum, dependent: :destroy
+
+  scope :to_be_signed, -> { where(to_be_signed: true) }
 
   def self.create_message_objects(message, objects)
     objects.each do |raw_object|
@@ -33,7 +35,11 @@ class MessageObject < ApplicationRecord
     end
   end
 
+  def form?
+    object_type == "FORM"
+  end
+
   def destroyable?
-    message.is_a?(MessageDraft)
+    message.is_a?(MessageDraft) && message.not_yet_submitted? && !form?
   end
 end

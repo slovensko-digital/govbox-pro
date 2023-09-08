@@ -9,6 +9,7 @@ class Admin::GroupsController < ApplicationController
   def show
     @group = policy_scope([:admin, Group]).find(params[:id])
     authorize([:admin, @group])
+    @other_tags = other_tags
   end
 
   def new
@@ -47,11 +48,18 @@ class Admin::GroupsController < ApplicationController
   end
 
   private
-    def set_group
-      @group = Group.find(params[:id])
-    end
+  def set_group
+    @group = Group.find(params[:id])
+  end
 
-    def group_params
-      params.require(:group).permit(:name, :group_type)
-    end
+  def group_params
+    params.require(:group).permit(:name, :group_type)
+  end
+
+  def other_tags
+    @other_tags =
+      Tag
+        .where(tenant_id: params[:tenant_id])
+        .where.not(id: @group.tag_ids)
+  end
 end
