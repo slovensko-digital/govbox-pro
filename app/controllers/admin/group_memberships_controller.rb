@@ -1,5 +1,5 @@
 class Admin::GroupMembershipsController < ApplicationController
-  before_action :set_group_membership, only: %i[ destroy ]
+  before_action :set_group_membership, only: %i[destroy]
   # TODO - rediscuss the whole concept of SITE_ADMIN vs TENANT admin responsibilities and functionality
 
   def create
@@ -7,7 +7,8 @@ class Admin::GroupMembershipsController < ApplicationController
     authorize([:admin, @group_membership])
 
     if @group_membership.save
-      redirect_back fallback_location:"/", notice: "Group membership was successfully created."
+      @group = @group_membership.group
+      flash[:notice] = 'Group was membership was successfully created'
     else
       render :new, status: :unprocessable_entity
     end
@@ -16,16 +17,16 @@ class Admin::GroupMembershipsController < ApplicationController
   def destroy
     authorize([:admin, @group_membership])
     @group_membership.destroy
-    redirect_back fallback_location:"/", notice: "Group membership was successfully destroyed."
+    redirect_to edit_admin_tenant_group_path(Current.tenant, @group_membership.group),
+                notice: 'Group was membership was successfully deleted'
   end
 
   private
 
   def set_group_membership
-    @group_membership = policy_scope([:admin, GroupMembership]).find(params[:id])
+    @group_membership = policy_scope([:admin,GroupMembership]).find(params[:id])
   end
 
-  # Only allow a list of trusted parameters through.
   def group_membership_params
     params.require(:group_membership).permit(:group_id, :user_id)
   end

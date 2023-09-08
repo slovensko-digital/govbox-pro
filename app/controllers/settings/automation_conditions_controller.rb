@@ -15,7 +15,6 @@ class Settings::AutomationConditionsController < ApplicationController
 
   def destroy
     authorize @automation_rule, policy_class: Settings::AutomationRulePolicy
-    @id = params[:id]
   end
 
   def set_automation_rule

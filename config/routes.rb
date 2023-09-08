@@ -4,12 +4,12 @@ Rails.application.routes.draw do
   namespace :settings do
     resources :automation_rules
     resource :automation_rule do
-      post 'header_step'
-      patch 'header_step'
-      post 'conditions_step'
-      patch 'conditions_step'
-      post 'actions_step'
-      patch 'actions_step'
+      post :header_step
+      patch :header_step
+      post :conditions_step
+      patch :conditions_step
+      post :actions_step
+      patch :actions_step
     end
     resources :automation_conditions, param: :index do
       post '/', to: 'automation_conditions#edit', on: :member
@@ -23,7 +23,11 @@ Rails.application.routes.draw do
 
   namespace :admin do
     resources :tenants do
-      resources :groups
+      resources :groups do
+        get :edit_members, on: :member
+        post :search_non_members, on: :member
+        resources :group_memberships, param: :index
+      end
       resources :users
       resources :boxes
       resources :tags

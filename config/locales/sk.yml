@@ -12,3 +12,5 @@
   "Automation::MetadataValueCondition": "Metadáta obsahujú"
   'Automation::AddMessageThreadTagAction': 'Pridaj štítok na vlákno'
   'Automation::AddTagAction': 'Pridaj štítok'
+  user: 'používateľ'
+  title: 'Názov'

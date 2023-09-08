@@ -1,0 +1,32 @@
+<div class="self-stretch p-6 border-b border-gray-200 justify-start items-center gap-4 inline-flex">
+  <div class="relative inline-flex items-center justify-center w-16 h-16 overflow-hidden bg-blue-600 rounded-full">
+    <span class="text-white text-2xl font-normal"><%= @group.name[0] %></span>
+  </div>
+  <div class="grow shrink basis-0 flex-col justify-start items-start gap-1 inline-flex">
+    <div class="text-center text-gray-900 text-lg font-medium leading-loose"><%= render Admin::Groups::GroupRenameComponent.new(@group) %></div>
+    <div class="text-center text-gray-500 text-base font-normal leading-normal">
+      <%= link_to (@group.is_modifiable? ? edit_admin_tenant_group_path(@group.tenant, @group) : admin_tenant_group_path(@group.tenant, @group)), data: {turbo_frame: :modal} do %>
+        <%= @group.users.count %>
+        <%# TODO: Toto je asi nepekne, pluralize defaultne nesiel. Mas nejaky dobry priklad na tie Inflections? %>
+        <%= 'používateľ' if @group.users.count == 1 %>
+        <%= 'používateľov' if @group.users.count >= 5 %>
+        <%= 'používateľov' if @group.users.count == 0 %>
+        <%= 'používatelia' if @group.users.count.in? [2,3,4] %>
+      <% end %>
+    </div>
+  </div>
+  <div class="justify-start items-start gap-2 flex">
+    <% if @group.is_modifiable? %>
+      <%= link_to edit_admin_tenant_group_path(@group.tenant, @group), data: { turbo_frame: :modal }  do %>
+        <%= render Common::EditButtonComponent.new %>
+      <% end %>
+      <%= button_to admin_tenant_group_path(@group.tenant, @group), method: :delete, data: { turbo_frame: :modal }  do %>
+        <%= render Common::DeleteButtonComponent.new %>
+      <% end %>
+    <% else %>
+      <%= link_to admin_tenant_group_path(@group.tenant, @group), data: { turbo_frame: :modal }  do %>
+        <%= render Common::ShowButtonComponent.new %>
+      <% end %>
+    <% end %>
+  </div>
+</div>
