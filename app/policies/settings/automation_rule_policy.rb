@@ -36,6 +36,22 @@ class Settings::AutomationRulePolicy < ApplicationPolicy
     true
   end
 
+  def header_step?
+    true
+  end
+
+  def conditions_step?
+    true
+  end
+
+  def actions_step?
+    true
+  end
+
+  def edit_form?
+    true
+  end
+
   def destroy?
     true
   end

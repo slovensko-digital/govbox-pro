@@ -1,0 +1,14 @@
+<%= fields_for @automation_rule do |rule_form| %>
+  <%= turbo_stream.append 'actions' do %>
+    <%= rule_form.fields_for :actions, child_index: @index do |action_form| %>
+      <%= render Settings::Rules::ActionsFormRowComponent.new(form: action_form, index: @index) %>
+    <% end %>
+  <% end %>
+<% end %>
+<%= fields_for @new_rule do |new_rule_form| %>
+  <%= turbo_stream.update 'action-new' do %>
+    <%= new_rule_form.fields_for :actions, child_index: @index+1 do |action_form| %>
+      <%= render Settings::Rules::ActionFormComponent.new(form: action_form, index: @index+1) %>
+    <% end %>
+  <% end %>
+<% end %>

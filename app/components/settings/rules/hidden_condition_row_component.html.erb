@@ -1,0 +1,4 @@
+<%= @form.hidden_field :type if @form.object.type %>
+<%= @form.hidden_field :attr if @form.object.attr %>
+<%= @form.hidden_field :value if @form.object.value %>
+<%= @form.hidden_field :delete_record if @form.object.delete_record%>
