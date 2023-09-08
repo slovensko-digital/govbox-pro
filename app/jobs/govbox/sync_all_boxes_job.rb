@@ -3,8 +3,8 @@ module Govbox
     queue_as :default
 
     def perform
-      Box.find_each do |box|
-        SyncBoxJob.perform_later(box) if box.syncable?
+      Box.where(syncable: true).find_each do |box|
+        SyncBoxJob.perform_later(box)
       end
     end
   end
