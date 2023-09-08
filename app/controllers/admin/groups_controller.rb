@@ -3,12 +3,11 @@ class Admin::GroupsController < ApplicationController
 
   def index
     authorize([:admin, Group])
-    @custom_groups = policy_scope([:admin, Group]).where.not(group_type: %w[ALL USER])
-    @system_groups = policy_scope([:admin, Group]).where(group_type: %w[ALL USER])
+    @custom_groups = policy_scope([:admin, Group]).where(tenant_id: Current.tenant.id).where.not(group_type: %w[ALL USER])
+    @system_groups = policy_scope([:admin, Group]).where(tenant_id: Current.tenant.id, group_type: %w[ALL USER])
   end
 
   def show
-    @group = policy_scope([:admin, Group]).find(params[:id])
     authorize([:admin, @group])
   end
 
@@ -71,7 +70,7 @@ class Admin::GroupsController < ApplicationController
   end
 
   def set_group
-    @group = Group.find(params[:id])
+    @group = policy_scope([:admin,Group]).find(params[:id])
   end
 
   def group_params

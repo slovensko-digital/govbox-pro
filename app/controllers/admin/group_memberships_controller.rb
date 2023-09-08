@@ -3,6 +3,7 @@ class Admin::GroupMembershipsController < ApplicationController
   # TODO - rediscuss the whole concept of SITE_ADMIN vs TENANT admin responsibilities and functionality
 
   def create
+    # TODO: Takto mi teoreticky moze vzniknut neopravneny membership, lebo nekontrolujem tenanta. Ako spravit tak, aby som nezacal pisat exlpicitne rucne kontroly?
     @group_membership = GroupMembership.new(group_membership_params)
     authorize([:admin, @group_membership])
 
