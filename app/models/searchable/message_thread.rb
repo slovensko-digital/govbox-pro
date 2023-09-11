@@ -17,7 +17,14 @@ class Searchable::MessageThread < ApplicationRecord
     else
       scope = scope.none
     end
-    scope = scope.where("tag_ids @> ARRAY[?]", query_filter[:filter_tag_ids]) if query_filter[:filter_tag_ids].present?
+
+    if query_filter[:filter_tag_ids].present?
+      if query_filter[:filter_tag_ids] == :missing_tag
+        scope = scope.none
+      else
+        scope = scope.where("tag_ids @> ARRAY[?]", query_filter[:filter_tag_ids])
+      end
+    end
     scope = scope.where.not("tag_ids && ARRAY[?]", query_filter[:filter_out_tag_ids]) if query_filter[:filter_out_tag_ids].present?
     scope = scope.fulltext_search(query_filter[:fulltext]) if query_filter[:fulltext].present?
     scope = scope.select(:message_thread_id, :last_message_delivered_at)

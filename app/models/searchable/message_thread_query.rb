@@ -39,13 +39,20 @@ class Searchable::MessageThreadQuery
     filter_out_tag_ids.concat(treads_ids_without_custom_tags()) if no_custom_tags
 
     result = {}
-    result[:filter_tag_ids] = filter_tag_ids if filter_tag_ids.present?
+
+    if parsed_query[:filter_labels].present?
+      if parsed_query[:filter_labels].length == filter_tag_ids.length
+        result[:filter_tag_ids] = filter_tag_ids
+      else
+        result[:filter_tag_ids] = :missing_tag
+      end
+    end
+
     result[:filter_out_tag_ids] = filter_out_tag_ids if filter_out_tag_ids.present?
     result[:fulltext] = parsed_query[:fulltext] if parsed_query[:fulltext].present?
 
     result
   end
-
 
   def self.label_names_to_tag_ids(label_names)
     Tag.where(name: label_names).pluck(:id)
