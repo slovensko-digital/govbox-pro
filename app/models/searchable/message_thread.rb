@@ -9,9 +9,14 @@ class Searchable::MessageThread < ApplicationRecord
     )
   end
 
-  def self.search_ids(query_filter, cursor:, per_page:, direction: )
+  def self.search_ids(query_filter, permitted_tag_ids:, cursor:, per_page:, direction: )
     scope = self
-    # scope = scope.where.not("tag_ids && ARRAY[?]", allowed_tag_ids)
+
+    if permitted_tag_ids.length > 0
+      scope = scope.where("tag_ids && ARRAY[?]", permitted_tag_ids)
+    else
+      scope = scope.none
+    end
     scope = scope.where("tag_ids @> ARRAY[?]", query_filter[:filter_tag_ids]) if query_filter[:filter_tag_ids].present?
     scope = scope.where.not("tag_ids && ARRAY[?]", query_filter[:filter_out_tag_ids]) if query_filter[:filter_out_tag_ids].present?
     scope = scope.fulltext_search(query_filter[:fulltext]) if query_filter[:fulltext].present?

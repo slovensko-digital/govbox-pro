@@ -23,6 +23,7 @@ class MessageThreadsController < ApplicationController
 
     @message_threads, @next_cursor = MessageThreadCollection.all(
       scope: message_thread_policy_scope.includes(:tags),
+      permitted_tag_ids: permitted_tag_ids,
       query: search_params[:q],
       no_custom_tags: search_params[:no_custom_tags] == '1' && Current.user.admin?,
       cursor: cursor
@@ -58,6 +59,10 @@ class MessageThreadsController < ApplicationController
 
   def message_thread_policy_scope
     policy_scope(MessageThread)
+  end
+
+  def permitted_tag_ids
+    policy_scope(Tag).pluck(:id)
   end
 
   def message_thread_params
