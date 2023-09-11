@@ -5,7 +5,6 @@
 #  id                                          :integer          not null, primary key
 #  title                                       :string           not null
 #  original_title                              :string           not null
-#  merge_uuids                                 :uuid             not null
 #  delivered_at                                :datetime         not null
 #  last_message_delivered_at                   :datetime         not null
 #  created_at                                  :datetime         not null
@@ -28,6 +27,10 @@ class MessageThread < ApplicationRecord
   delegate :tenant, to: :folder
 
   after_save :update_search_record
+
+  def messages_visible_to_user(user)
+    messages.where(messages: { author_id: user.id }).or(messages.where(messages: { author_id: nil }))
+  end
 
   def automation_rules_for_event(event)
     folder.tenant.automation_rules.where(trigger_event: event)

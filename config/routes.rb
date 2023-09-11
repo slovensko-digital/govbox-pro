@@ -1,8 +1,21 @@
 Rails.application.routes.draw do
+
+
   namespace :settings do
-    resources :automation_rules do
-      resources :automation_conditions
-      resources :automation_actions
+    resources :automation_rules
+    resource :automation_rule do
+      post 'header_step'
+      patch 'header_step'
+      post 'conditions_step'
+      patch 'conditions_step'
+      post 'actions_step'
+      patch 'actions_step'
+    end
+    resources :automation_conditions, param: :index do
+      post '/', to: 'automation_conditions#edit_form', on: :member
+    end
+    resources :automation_actions, param: :index do
+      post '/', to: 'automation_actions#edit_form', on: :member
     end
     resources :tags
     resource :profile
@@ -42,6 +55,7 @@ Rails.application.routes.draw do
     resources :message_objects do
       member do
         get 'download'
+        get 'signing_data'
       end
     end
   end
@@ -50,21 +64,16 @@ Rails.application.routes.draw do
     member do
       post 'submit'
     end
+
+    post 'submit_all', on: :collection
   end
 
   resources :messages_tags
 
   resource :settings
 
-  namespace :drafts, path: 'drafty' do
-    resources :imports, path: 'importy', only: :create do
-      get :upload_new, path: 'novy', on: :collection
-    end
-  end
-
-  resources :drafts, path: 'drafty', only: %i[index show destroy] do
-    post :submit
-    post :submit_all, on: :collection
+  resources :message_drafts_imports, only: :create do
+    get :upload_new, path: 'novy', on: :collection
   end
 
   resources :sessions do
@@ -80,9 +89,7 @@ Rails.application.routes.draw do
 
   class GoodJobAdmin
     def self.matches?(request)
-      admin_ids = ENV.fetch('ADMIN_IDS', '').split(',')
-
-      admin_ids.include?(request.session['user_id'].to_s)
+      User.find(request.session['user_id'])&.site_admin?
     end
   end
 

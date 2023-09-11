@@ -1,0 +1,21 @@
+<%= fields_for @automation_rule do |rule_form| %>
+  <%= turbo_stream.update 'actions' do %>
+    <% @adjusted_index = 0 %>
+    <%= rule_form.fields_for :actions do |action_form| %>
+      <% if action_form.index == @index || action_form.object.delete_record %>
+        <%= action_form.hidden_field :delete_record, value:true %>
+        <% @adjusted_index += 1 %>
+      <% elsif action_form.index != @index %>
+        <%= render Settings::Rules::ActionsFormRowComponent.new(form: action_form, index: @adjusted_index, editable: true) %>
+        <% @adjusted_index += 1 %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>
+<%= fields_for @new_rule do |new_rule_form| %>
+  <%= new_rule_form.fields_for :actions, child_index: @automation_rule.actions.size do |new_action_form| %>
+    <%= turbo_stream.update 'action-new' do %>
+      <%= render Settings::Rules::ActionFormComponent.new(form: new_action_form, index: @automation_rule.actions.size, enabled: true) %>
+    <% end %>
+  <% end %>
+<% end %>

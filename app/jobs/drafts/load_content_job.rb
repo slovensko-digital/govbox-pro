@@ -5,47 +5,80 @@ class Drafts::LoadContentJob < ApplicationJob
     delegate :uuid, to: SecureRandom
   end
 
-  def perform(draft, draft_path)
-    Dir.each_child(draft_path) do |subdirectory_name|
+  def perform(message_draft, message_draft_path)
+    Dir.each_child(message_draft_path) do |subdirectory_name|
       case subdirectory_name
       when "podpisane"
-        load_draft_objects(draft, File.join(draft_path, subdirectory_name), signed: true, to_be_signed: false)
+        load_message_draft_objects(message_draft, File.join(message_draft_path, subdirectory_name), signed: true, to_be_signed: false)
       when "podpisat"
-        load_draft_objects(draft, File.join(draft_path, subdirectory_name), signed: false, to_be_signed: true)
+        load_message_draft_objects(message_draft, File.join(message_draft_path, subdirectory_name), signed: false, to_be_signed: true)
       when "nepodpisovat"
-        load_draft_objects(draft, File.join(draft_path, subdirectory_name), signed: false, to_be_signed: false)
+        load_message_draft_objects(message_draft, File.join(message_draft_path, subdirectory_name), signed: false, to_be_signed: false)
       end
     end
+
+    save_form_visualisation(message_draft)
   end
 
   private
 
-  def load_draft_objects(draft, objects_path, signed:, to_be_signed:)
-    Dir.foreach(objects_path) do |filename|
-      next if filename == '.' or filename == '..'
+  def load_message_draft_objects(message_draft, objects_path, signed:, to_be_signed:)
+    Dir.foreach(objects_path) do |file_name|
+      next if file_name == '.' or file_name == '..'
 
-      draft_object = Drafts::Object.create(
-        draft_id: draft.id,
-        uuid: uuid,
-        name: filename,
-        form: form?(draft, filename),
-        signed: signed,
-        to_be_signed: to_be_signed
+      is_form = form?(message_draft, file_name)
+
+      message_draft_object = MessageObject.create(
+        name: file_name,
+        mimetype: Utils.detect_mime_type(entry_name: file_name, is_form: is_form),
+        object_type: is_form ? "FORM" : "ATTACHMENT",
+        is_signed: signed,
+        to_be_signed: to_be_signed,
+        message: message_draft
       )
 
-      File.open(File.join(objects_path, filename)) do |io|
-        draft_object.content.attach(io: io, filename: filename)
-      end
-
-      draft_object.save!
+      MessageObjectDatum.create(
+        message_object: message_draft_object,
+        blob: File.read(File.join(objects_path, file_name))
+      )
+      
+      message_draft_object.save!
     end
   end
 
-  def form?(draft, filename)
-    file_basename = File.basename(filename, ".*")
+  def form?(message_draft, file_name)
+    file_base_name = File.basename(file_name, ".*")
 
     # Form file must have the same name as subfolder
-    file_basename == draft.import_subfolder
+    file_base_name == message_draft.metadata["import_subfolder"]
+  end
+  
+  def save_form_visualisation(message_draft)
+    upvs_form_template = Upvs::FormTemplate.find_by(identifier: message_draft.metadata["posp_id"], version: message_draft.metadata["posp_version"])
+    upvs_form_template_xslt_html = upvs_form_template&.xslt_html
+
+    raise MissingFormTemplateError.new unless upvs_form_template_xslt_html
+
+    xslt_template = Nokogiri::XSLT(upvs_form_template_xslt_html)
+
+    if message_draft.form.is_signed?
+      # TODO add unsigned_content method which calls UPVS OdpodpisanieDat endpoint and uncomment
+      # message_draft.update(
+      #   html_visualization: xslt_template.transform(Nokogiri::XML(message_draft.form.unsigned_content)).to_s.gsub('"', '\'')
+      # )
+    else
+      message_draft.update(
+        html_visualization: xslt_template.transform(Nokogiri::XML(message_draft.form.message_object_datum.blob)).to_s.gsub('"', '\'')
+      )
+
+      if message_draft.custom_visualization?
+        message_draft.metadata["message_body"] = Upvs::GeneralAgendaBuilder.parse_text(message_draft.form.message_object_datum.blob)
+        message_draft.save!
+      end
+    end
+  end
+
+  class MissingFormTemplateError < StandardError
   end
 
   delegate :uuid, to: self

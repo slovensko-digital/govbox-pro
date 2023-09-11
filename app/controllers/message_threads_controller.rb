@@ -3,8 +3,8 @@ class MessageThreadsController < ApplicationController
 
   def show
     authorize @message_thread
-    redirect_to @message_thread.messages.where(read: false).order(delivered_at: :asc).first ||
-      @message_thread.messages.order(delivered_at: :desc).first
+
+    redirect_to @message_thread.messages.where(read: false).order(delivered_at: :asc).first || @message_thread.messages_visible_to_user(Current.user).order(delivered_at: :desc).first
   end
 
   def update
