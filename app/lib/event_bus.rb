@@ -28,3 +28,7 @@ EventBus.reset!
 # wiring
 EventBus.subscribe_job :message_thread_created, Automation::MessageThreadCreatedJob
 EventBus.subscribe_job :message_created, Automation::MessageCreatedJob
+
+EventBus.subscribe_job :message_thread_changed, Searchable::ReindexMessageThreadJob
+EventBus.subscribe_job :tag_renamed, Searchable::ReindexTagJob
+EventBus.subscribe_job :tag_removed, Searchable::ReindexTagJob

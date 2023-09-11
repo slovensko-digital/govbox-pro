@@ -29,6 +29,7 @@ class Message < ApplicationRecord
   delegate :tenant, to: :thread
 
   after_create_commit ->(message) { EventBus.publish(:message_created, message) }
+  after_commit ->(message) { EventBus.publish(:message_thread_changed, message.thread) }
 
   def automation_rules_for_event(event)
     tenant.automation_rules.where(trigger_event: event)
