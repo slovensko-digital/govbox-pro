@@ -18,23 +18,18 @@ class MessageThreadsController < ApplicationController
 
   def index
     authorize MessageThread
-    @cursor = params[:cursor] || {}
-    @cursor[DELIVERED_AT] = @cursor[DELIVERED_AT] ? millis_to_time(@cursor[DELIVERED_AT]) : Time.now
 
-    @message_threads, @next_cursor =
-      Pagination.paginate(
-        collection: message_threads_collection,
-        cursor: {
-          DELIVERED_AT => @cursor[DELIVERED_AT],
-          ID => @cursor[ID]
-        },
-        items_per_page: MESSAGE_THREADS_PER_PAGE,
-        direction: 'desc'
-      )
+    cursor = MessageThreadCollection.init_cursor(search_params[:cursor])
 
-    @next_cursor[DELIVERED_AT] = time_to_millis(@next_cursor[DELIVERED_AT]) if @next_cursor
-    # TODO: Toto reviewnime pls niekedy(to_unsage_h). Chcelo by elegantnejsie riesenie, ale domotal som sa v tom
-    @next_page_params = params.to_unsafe_h.merge(cursor: @next_cursor).merge(format: :turbo_stream)
+    @message_threads, @next_cursor = MessageThreadCollection.all(
+      scope: message_thread_policy_scope.includes(:tags),
+      query: search_params[:q],
+      no_custom_tags: search_params[:no_custom_tags] == '1' && Current.user.admin?,
+      cursor: cursor
+    )
+
+    @next_cursor = MessageThreadCollection.serialize_cursor(@next_cursor)
+    @next_page_params = search_params.to_h.merge(cursor: @next_cursor).merge(format: :turbo_stream)
 
     respond_to do |format|
       format.html # GET
@@ -57,26 +52,6 @@ class MessageThreadsController < ApplicationController
 
   private
 
-  MESSAGE_THREADS_PER_PAGE = 20
-  DELIVERED_AT = 'message_threads.last_message_delivered_at'
-  ID = 'message_threads.id'
-
-  def message_threads_collection
-    MessageThreadCollection.all(
-      message_thread_scope: message_thread_policy_scope.includes(:tags),
-      tag_id: params[:tag_id],
-      no_tag: params[:tags] && params[:tags] == 'none' && Current.user.admin?
-    )
-  end
-
-  def time_to_millis(time)
-    time.strftime('%s%L').to_f
-  end
-
-  def millis_to_time(millis)
-    Time.at(millis.to_f / 1000)
-  end
-
   def set_message_thread
     @message_thread = message_thread_policy_scope.find(params[:id])
   end
@@ -86,6 +61,10 @@ class MessageThreadsController < ApplicationController
   end
 
   def message_thread_params
-    params.require(:message_thread).permit(:title, :original_title, :merge_uuids, :tag_id, :tags, :format, cursor: [DELIVERED_AT, ID])
+    params.require(:message_thread).permit(:title, :original_title, :merge_uuids, :tag_id, :tags)
+  end
+
+  def search_params
+    params.permit(:q, :no_custom_tags, :format, cursor: MessageThreadCollection::CURSOR_PARAMS)
   end
 end

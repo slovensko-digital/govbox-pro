@@ -1,24 +1,42 @@
 class MessageThreadCollection
-  def self.thread_ids_for_tag(tag_id)
-    Tag.find(tag_id).message_thread_ids
+  DELIVERED_AT = :last_message_delivered_at
+  ID = :message_thread_id
+  CURSOR_PARAMS = [DELIVERED_AT, ID]
+  PER_PAGE = 20
+  DIRECTION = :desc
+
+  def self.init_cursor(cursor_params)
+    cursor_params = cursor_params || {}
+
+    {
+      DELIVERED_AT => cursor_params[DELIVERED_AT] ? millis_to_time(cursor_params[DELIVERED_AT]) : Time.now,
+      ID => cursor_params[ID]
+    }
   end
 
-  def self.treads_ids_without_custom_tags()
-    Tag.joins(:message_threads_tags).where('tags.name not like ?', 'slovensko.sk:%').pluck('message_threads_tags.message_thread_id')
+  def self.serialize_cursor(cursor)
+    return nil if cursor.nil?
+
+    cursor[DELIVERED_AT] = time_to_millis(cursor[DELIVERED_AT])
+    cursor
   end
 
-  def self.all(message_thread_scope:, tag_id: nil, no_tag: false)
-    message_thread_scope ||= MessageThread
+  def self.all(scope: nil, query: nil, no_custom_tags: false, cursor:)
+    parsed_query = Searchable::MessageThreadQuery.parse(query.to_s)
+    filter = Searchable::MessageThreadQuery.labels_to_ids(parsed_query, no_custom_tags: no_custom_tags)
 
-    if tag_id
-      message_thread_scope = message_thread_scope.where(id: thread_ids_for_tag(tag_id))
-    end
+    message_thread_ids, next_cursor = Searchable::MessageThread.search_ids(
+      filter,
+      cursor: cursor,
+      direction: DIRECTION,
+      per_page: PER_PAGE
+    )
 
-    if no_tag
-      message_thread_scope = message_thread_scope.where.not(id: treads_ids_without_custom_tags())
-    end
+    message_thread_scope = (scope || MessageThread).
+      where(id: message_thread_ids).
+      order(Pagination.order_clause(searchable_cursor_to_cursor(cursor), DIRECTION))
 
-    message_thread_scope.select(
+    records = message_thread_scope.select(
       'message_threads.*',
       '(select bool_and(read) from messages where messages.message_thread_id = message_threads.id) as all_read',
       # TODO: - mame tu velmi hruby sposob ako zistit, s kym je dany thread komunikacie, vedeny, len pre ucely zobrazenia. Dohodnut aj s @Taja, co s tym
@@ -27,5 +45,24 @@ class MessageThreadCollection
       # last_message_id - potrebujeme kvoli spravnej linke na konkretny message, ktory chceme otvorit, a nech to netahame potom pre kazdy thread
       '(select max(messages.id) from messages where messages.message_thread_id = message_threads.id and messages.delivered_at = message_threads.last_message_delivered_at) as last_message_id'
     )
+
+    [records, next_cursor]
+  end
+
+  def self.searchable_cursor_to_cursor(cursor)
+    return nil if cursor.nil?
+
+    {
+      DELIVERED_AT => cursor[DELIVERED_AT],
+      :id => cursor[ID]
+    }
+  end
+
+  def self.time_to_millis(time)
+    time.strftime('%s%L').to_f
+  end
+
+  def self.millis_to_time(millis)
+    Time.at(millis.to_f / 1000)
   end
 end

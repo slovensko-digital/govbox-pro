@@ -27,6 +27,8 @@ class MessageThread < ApplicationRecord
 
   delegate :tenant, to: :folder
 
+  after_save :update_search_record
+
   def automation_rules_for_event(event)
     folder.tenant.automation_rules.where(trigger_event: event)
   end
@@ -51,5 +53,9 @@ class MessageThread < ApplicationRecord
       end
       target_thread.save!
     end
+  end
+
+  def update_search_record
+    Searchable::MessageThread.index_record(self)
   end
 end
