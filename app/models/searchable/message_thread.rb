@@ -42,7 +42,7 @@ class Searchable::MessageThread < ApplicationRecord
     record = ::Searchable::MessageThread.find_or_initialize_by(message_thread_id: message_thread.id)
     record.title = Searchable::IndexHelpers.searchable_string(message_thread.title)
     record.tag_ids = message_thread.tags.map(&:id)
-    record.tag_names = Searchable::IndexHelpers.searchable_string(message_thread.tags.map(&:name).join(' '))
+    record.tag_names = Searchable::IndexHelpers.searchable_string(message_thread.tags.map(&:name).join(' ').gsub(/[:\/]/, " "))
     record.content = message_thread.messages.map do |message|
       [
         Searchable::IndexHelpers.searchable_string(message.title),
