@@ -6,11 +6,7 @@
         <div class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 overflow-hidden gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
           <div class="flex flex-col justify-start items-start flex-grow relative">
             <p class="self-stretch flex-grow w-[521px] text-xl font-semibold text-left text-gray-900"><%= @group.name %></p>
-            <p class="flex-grow-0 flex-shrink-0 text-xs text-left text-gray-500">
-              <%= 'Krok 2 z 2 - Pridanie používateľov' if @step == :new %>
-              <%= 'Zmena používateľov v skupine' if @step == :edit %>
-              <%= 'Zoznam používateľov v skupine' if @step == :show %>
-            </p>
+            <p class="flex-grow-0 flex-shrink-0 text-xs text-left text-gray-500">Používatelia v skupine</p>
           </div>
           <%= link_to admin_tenant_groups_path(Current.tenant), data: { turbo_frame: "_top" } do %>
             <%= render Common::CloseButtonComponent.new %>

@@ -26,6 +26,7 @@ class Admin::GroupsController < ApplicationController
 
   def create
     @group = Current.tenant.groups.new(group_params)
+    @group.group_type = 'CUSTOM'
     authorize([:admin, @group])
 
     if @group.save

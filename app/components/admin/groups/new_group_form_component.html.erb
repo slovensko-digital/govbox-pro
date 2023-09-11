@@ -5,32 +5,18 @@
       <div class="flex flex-col justify-start items-start overflow-hidden rounded-lg bg-white border border-gray-300" style="box-shadow: 1px 1px 4px 0 rgba(0,0,0,0.1);">
         <div class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 overflow-hidden gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
           <div class="flex flex-col justify-start items-start flex-grow relative">
-            <p class="self-stretch flex-grow-0 flex-shrink-0 text-xl font-semibold text-left text-gray-900"> Nová skupina </p>
-            <p class="flex-grow-0 flex-shrink-0 text-xs text-left text-gray-500"> Krok 1 z 2 – Pomenovanie skupiny </p>
+            <p class="self-stretch flex-grow-0 flex-shrink-0 text-xl font-semibold text-left text-gray-900">Nová skupina</p>
+            <p class="flex-grow-0 flex-shrink-0 text-xs text-left text-gray-500">Názov skupiny</p>
           </div>
           <%= link_to admin_tenant_groups_path(Current.tenant), data: { turbo_frame: "_top" } do %>
             <%= render Common::CloseButtonComponent.new %>
           <% end %>
         </div>
         <%= form_with model:[:admin, Current.tenant, @group] do |form| %>
-          <div class="flex flex-col justify-start items-start self-stretch flex-grow-0 flex-shrink-0">
+          <div class="flex flex-col justify-start items-start self-stretch flex-grow-0 flex-shrink-0 w-400">
             <div class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
               <div class="flex flex-col justify-start items-start self-stretch flex-grow overflow-hidden gap-2 rounded-md">
                 <%= form.text_field :name, placeholder: "Názov skupiny", class:"block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" %>
-              </div>
-            </div>
-            <div class="flex-col justify-start items-center self-stretch flex-grow-0 flex-shrink-0 gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
-              <legend class="text-sm font-semibold leading-6 text-gray-900">Typ skupiny</legend>
-              <p class="mt-1 text-sm leading-6 text-gray-600">Používatelia v administrátorskej skupine získavajú administrátorské práva</p>
-              <div class="mt-6 space-y-6">
-                <div class="flex items-center gap-x-3">
-                  <%= form.radio_button :group_type, 'ADMIN', class:"h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600" %>
-                  <%= form.label :group_type_admin, 'Skupina s administrátorskými právami', class:"block text-sm font-medium leading-6 text-gray-900" %>
-                </div>
-                <div class="flex items-center gap-x-3">
-                  <%= form.radio_button :group_type, 'CUSTOM', checked: true, class:"h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600" %>
-                  <%= form.label :group_type_custom, 'Skupina s používateľskými právami', class:"block text-sm font-medium leading-6 text-gray-900" %>
-                </div>
               </div>
             </div>
           </div>
