@@ -65,12 +65,12 @@ class Admin::GroupsController < ApplicationController
     policy_scope([:admin, User])
       .where(tenant: Current.tenant.id)
       .where.not(id: User.joins(:group_memberships).where(group_memberships: { group_id: @group.id }))
-      .where('name ILIKE ?', "%#{params[:name_search]}%")
+      .where('unaccent(name) ILIKE unaccent(?)', "%#{params[:name_search]}%")
       .order(:name)
   end
 
   def set_group
-    @group = policy_scope([:admin,Group]).find(params[:id])
+    @group = policy_scope([:admin, Group]).find(params[:id])
   end
 
   def group_params

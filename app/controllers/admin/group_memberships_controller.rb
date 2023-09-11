@@ -18,7 +18,7 @@ class Admin::GroupMembershipsController < ApplicationController
   def destroy
     authorize([:admin, @group_membership])
     @group_membership.destroy
-    redirect_to edit_admin_tenant_group_path(Current.tenant, @group_membership.group),
+    redirect_to edit_members_admin_tenant_group_path(Current.tenant, @group_membership.group),
                 notice: 'Group was membership was successfully deleted'
   end
 
