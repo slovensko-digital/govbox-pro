@@ -2,7 +2,7 @@ class Admin::TagsController < ApplicationController
   before_action :set_tag, only: %i[show edit update destroy]
 
   def index
-    authorize Tag
+    authorize [:admin, Tag]
     @tags = policy_scope([:admin, Tag])
   end
 

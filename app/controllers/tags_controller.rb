@@ -3,7 +3,7 @@ class TagsController < ApplicationController
   before_action :set_visible_tags
 
   def show
-    authorize @tag
+    authorize [:admin, @tag]
   end
 
   private
