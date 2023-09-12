@@ -25,7 +25,7 @@ class MessageThreadsController < ApplicationController
       scope: message_thread_policy_scope.includes(:tags),
       permitted_tag_ids: permitted_tag_ids,
       query: search_params[:q],
-      no_custom_tags: search_params[:no_custom_tags] == '1' && Current.user.admin?,
+      no_visible_tags: search_params[:no_visible_tags] == '1' && Current.user.admin?,
       cursor: cursor
     )
 
@@ -70,6 +70,6 @@ class MessageThreadsController < ApplicationController
   end
 
   def search_params
-    params.permit(:q, :no_custom_tags, :format, cursor: MessageThreadCollection::CURSOR_PARAMS)
+    params.permit(:q, :no_visible_tags, :format, cursor: MessageThreadCollection::CURSOR_PARAMS)
   end
 end

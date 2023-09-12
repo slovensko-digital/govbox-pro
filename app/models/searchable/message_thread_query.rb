@@ -32,11 +32,11 @@ class Searchable::MessageThreadQuery
     }
   end
 
-  def self.labels_to_ids(parsed_query, no_custom_tags: false)
+  def self.labels_to_ids(parsed_query, no_visible_tags: false)
     filter_tag_ids = label_names_to_tag_ids(parsed_query[:filter_labels])
     filter_out_tag_ids = label_names_to_tag_ids(parsed_query[:filter_out_labels])
 
-    filter_out_tag_ids.concat(treads_ids_without_custom_tags()) if no_custom_tags
+    filter_out_tag_ids.concat(visible_tag_ids()) if no_visible_tags
 
     result = {}
 
@@ -58,7 +58,7 @@ class Searchable::MessageThreadQuery
     Tag.where(name: label_names).pluck(:id)
   end
 
-  def self.treads_ids_without_custom_tags()
-    Tag.where('tags.name not like ?', 'slovensko.sk:%').pluck(:id)
+  def self.visible_tag_ids()
+    Tag.where(visible: true).pluck(:id)
   end
 end
