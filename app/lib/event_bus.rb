@@ -30,5 +30,7 @@ EventBus.subscribe_job :message_thread_created, Automation::MessageThreadCreated
 EventBus.subscribe_job :message_created, Automation::MessageCreatedJob
 
 EventBus.subscribe_job :message_thread_changed, Searchable::ReindexMessageThreadJob
-EventBus.subscribe_job :tag_renamed, Searchable::ReindexTagJob
-EventBus.subscribe_job :tag_removed, Searchable::ReindexTagJob
+EventBus.subscribe :message_thread_tag_changed,
+                   ->(message_thread_tag) { Searchable::ReindexMessageThreadJob.perform_later(message_thread_tag.message_thread) }
+EventBus.subscribe :tag_renamed, ->(tag) { Searchable::ReindexMessageThreadsWithTagIdJob.perform_later(tag.id) }
+EventBus.subscribe :tag_removed, ->(tag) { Searchable::ReindexMessageThreadsWithTagIdJob.perform_later(tag.id) }

@@ -19,12 +19,6 @@ class Tag < ApplicationRecord
   has_many :groups, through: :tag_groups
   belongs_to :owner, class_name: 'User', optional: true
 
-  after_update_commit :reindex_if_renamed
-  after_destroy ->(tag) { EventBus.publish(:tag_removed, tag.id) }
-
-  def reindex_if_renamed
-    if previous_changes.key?("name")
-      EventBus.publish(:tag_renamed, id)
-    end
-  end
+  after_update_commit ->(tag) { EventBus.publish(:tag_renamed, tag) if previous_changes.key?("name") }
+  after_destroy ->(tag) { EventBus.publish(:tag_removed, tag) }
 end

@@ -12,7 +12,7 @@ class Searchable::MessageThread < ApplicationRecord
   def self.search_ids(query_filter, permitted_tag_ids:, cursor:, per_page:, direction: )
     scope = self
 
-    if permitted_tag_ids.length > 0
+    if permitted_tag_ids.any?
       scope = scope.where("tag_ids && ARRAY[?]", permitted_tag_ids)
     else
       scope = scope.none
@@ -44,7 +44,6 @@ class Searchable::MessageThread < ApplicationRecord
     [ids, next_cursor]
   end
 
-
   def self.index_record(message_thread)
     record = ::Searchable::MessageThread.find_or_initialize_by(message_thread_id: message_thread.id)
     record.title = Searchable::IndexHelpers.searchable_string(message_thread.title)
@@ -58,9 +57,15 @@ class Searchable::MessageThread < ApplicationRecord
       ].compact.join(' ')
     end.join(' ')
 
-    record.last_message_delivered_at = message_thread.messages.map(&:delivered_at).max
+    record.last_message_delivered_at = message_thread.last_message_delivered_at
 
     record.save!
+  end
+
+  def self.reindex_with_tag_id(tag_id)
+    Searchable::MessageThread.select(:id, :message_thread_id).where("tag_ids && ARRAY[?]", [tag_id]).find_each do |searchable_mt|
+      Searchable::ReindexMessageThreadJob.perform_later(::MessageThread.find(searchable_mt.message_thread_id))
+    end
   end
 
   def self.reindex_all
