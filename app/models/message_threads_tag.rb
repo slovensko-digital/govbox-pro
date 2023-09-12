@@ -11,4 +11,7 @@
 class MessageThreadsTag < ApplicationRecord
   belongs_to :message_thread
   belongs_to :tag
+
+  # used for joins only
+  has_many :tag_groups, primary_key: :tag_id, foreign_key: :tag_id
 end

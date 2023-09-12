@@ -6,6 +6,7 @@
 #  tenant_id                                   :integer          not null
 #  name                                        :string           not null
 #  uri                                         :string
+#  syncable                                    :boolean          not null, default: true
 #  created_at                                  :datetime         not null
 #  updated_at                                  :datetime         not null
 
@@ -14,8 +15,6 @@ class Box < ApplicationRecord
 
   has_many :folders
   has_many :message_threads, through: :folders, extend: MessageThreadsExtensions
-
-  has_many :drafts_imports, class_name: 'Drafts::Import'
-  has_many :drafts
+  has_many :message_drafts_imports
 end
 

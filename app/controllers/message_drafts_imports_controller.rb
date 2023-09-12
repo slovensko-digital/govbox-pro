@@ -1,11 +1,11 @@
-class Drafts::ImportsController < ApplicationController
+class MessageDraftsImportsController < ApplicationController
   def create
-    authorize Drafts::Import, policy_class: Drafts::ImportPolicy
+    authorize MessageDraftsImport
 
     file_storage = FileStorage.new
 
     zip_content = params[:content]
-    import = Drafts::Import.create!(
+    import = MessageDraftsImport.create!(
       name: "#{Time.now.to_i}_#{zip_content.original_filename}",
       box: Current.box
     )
@@ -13,11 +13,11 @@ class Drafts::ImportsController < ApplicationController
     import_path = file_storage.store("imports", import_path(import), zip_content.read.force_encoding("UTF-8"))
     Drafts::ParseImportJob.perform_later(import, import_path)
 
-    redirect_to drafts_path
+    redirect_to message_drafts_path
   end
 
   def upload_new
-    authorize Drafts::Import, policy_class: Drafts::ImportPolicy
+    authorize MessageDraftsImport
   end
 
   private

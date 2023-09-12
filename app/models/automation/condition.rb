@@ -5,6 +5,8 @@ module Automation
     attr_accessor :delete_record
     # neviem ich z kodu vylistovat, vid conditions_form_component.rb
     # enum attr: %i[sender_name recipient_name title sender_uri recipient_uri]
+
+    ATTR_LIST = %i[sender_name recipient_name title sender_uri recipient_uri]
   end
 
   class ContainsCondition < Automation::Condition

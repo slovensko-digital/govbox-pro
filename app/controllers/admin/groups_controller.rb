@@ -9,6 +9,7 @@ class Admin::GroupsController < ApplicationController
 
   def show
     authorize([:admin, @group])
+    @other_tags = other_tags
   end
 
   def new

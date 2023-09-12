@@ -1,4 +1,4 @@
-class DraftsImportValidator < ActiveModel::Validator
+class MessageDraftsImportValidator < ActiveModel::Validator
   def validate(record)
     record.errors.add(:drafts, "No drafts found") if Utils.sub_folders(record.content_path).empty?
 

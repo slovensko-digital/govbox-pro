@@ -48,6 +48,10 @@ class Settings::AutomationRulePolicy < ApplicationPolicy
     true
   end
 
+  def edit_form?
+    true
+  end
+
   def destroy?
     true
   end

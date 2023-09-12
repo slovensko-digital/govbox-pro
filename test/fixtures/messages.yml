@@ -17,3 +17,21 @@ two:
   html_visualization: MyString
   delivered_at: 2023-05-18 16:18:26
   thread: one
+
+three:
+  uuid: <%= SecureRandom.uuid %>
+  title: MyString
+  sender_name: MyString
+  recipient_name: MyString
+  html_visualization: MyString
+  delivered_at: 2023-05-18 16:19:26
+  thread: two
+
+four:
+  uuid: <%= SecureRandom.uuid %>
+  title: MyString
+  sender_name: MyString
+  recipient_name: MyString
+  html_visualization: MyString
+  delivered_at: 2023-05-18 16:20:26
+  thread: two

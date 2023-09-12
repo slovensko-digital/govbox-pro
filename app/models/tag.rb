@@ -15,6 +15,8 @@ class Tag < ApplicationRecord
   has_and_belongs_to_many :message_threads
   has_many :tag_users, dependent: :destroy
   has_many :users, through: :tag_users
+  has_many :tag_groups, dependent: :destroy
+  has_many :groups, through: :tag_groups
   belongs_to :owner, class_name: 'User', optional: true
  
 end

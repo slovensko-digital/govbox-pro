@@ -5,7 +5,7 @@ class Settings::AutomationConditionsController < ApplicationController
     authorize @automation_rule, policy_class: Settings::AutomationRulePolicy
   end
 
-  def edit
+  def edit_form
     authorize @automation_rule, policy_class: Settings::AutomationRulePolicy
   end
 

@@ -10,20 +10,22 @@ class MessageDraftPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      if @user.site_admin?
-        scope.all
-      else
-        scope.where(
-          'message_thread_id in (
-        select mt.id
-        from message_threads mt
-        join message_threads_tags mt_tags on mt.id = mt_tags.message_thread_id
-        join tag_users tu on mt_tags.tag_id = tu.tag_id
-        where user_id = ?)',
-          @user.id
-        )
-      end
+      return scope.all if @user.site_admin?
+
+      # TODO: this does not work for imported drafts (no tags present)
+      scope.where(author_id: @user.id).where(
+        MessageThreadsTag
+          .select(1)
+          .joins(tag_groups: :group_memberships)
+          .where("message_threads_tags.message_thread_id = messages.message_thread_id")
+          .where(group_memberships: { user_id: @user.id })
+          .arel.exists
+      )
     end
+  end
+
+  def index?
+    true
   end
 
   def create?
@@ -40,6 +42,10 @@ class MessageDraftPolicy < ApplicationPolicy
 
   def submit?
     create?
+  end
+
+  def submit_all?
+    submit?
   end
 
   def destroy?
