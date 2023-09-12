@@ -21,12 +21,13 @@ class MessageThreadCollection
     cursor
   end
 
-  def self.all(scope: nil, permitted_tag_ids:, query: nil, no_visible_tags: false, cursor:)
+  def self.all(scope: nil, tenant_id:, permitted_tag_ids:, query: nil, no_visible_tags: false, cursor:)
     parsed_query = Searchable::MessageThreadQuery.parse(query.to_s)
     filter = Searchable::MessageThreadQuery.labels_to_ids(parsed_query, no_visible_tags: no_visible_tags)
 
     message_thread_ids, next_cursor = Searchable::MessageThread.search_ids(
       filter,
+      tenant_id: tenant_id,
       permitted_tag_ids: permitted_tag_ids,
       cursor: cursor,
       direction: DIRECTION,

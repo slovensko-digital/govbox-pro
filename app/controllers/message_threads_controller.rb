@@ -23,6 +23,7 @@ class MessageThreadsController < ApplicationController
 
     @message_threads, @next_cursor = MessageThreadCollection.all(
       scope: message_thread_policy_scope.includes(:tags),
+      tenant_id: Current.tenant,
       permitted_tag_ids: permitted_tag_ids,
       query: search_params[:q],
       no_visible_tags: search_params[:no_visible_tags] == '1' && Current.user.admin?,

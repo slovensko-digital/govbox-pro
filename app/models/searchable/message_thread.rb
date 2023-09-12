@@ -1,4 +1,8 @@
 class Searchable::MessageThread < ApplicationRecord
+
+  belongs_to :message_thread, class_name: '::MessageThread'
+  belongs_to :tenant, class_name: '::Tenant'
+
   include PgSearch::Model
   pg_search_scope :pg_search_all,
                   against: [:title, :content, :tag_names]
@@ -9,8 +13,10 @@ class Searchable::MessageThread < ApplicationRecord
     )
   end
 
-  def self.search_ids(query_filter, permitted_tag_ids:, cursor:, per_page:, direction: )
+  def self.search_ids(query_filter, tenant_id:, permitted_tag_ids:, cursor:, per_page:, direction: )
     scope = self
+
+    scope = scope.where(tenant_id: tenant_id)
 
     if permitted_tag_ids.any?
       scope = scope.where("tag_ids && ARRAY[?]", permitted_tag_ids)
@@ -58,6 +64,7 @@ class Searchable::MessageThread < ApplicationRecord
     end.join(' ')
 
     record.last_message_delivered_at = message_thread.last_message_delivered_at
+    record.tenant_id = message_thread.folder.box.tenant_id
 
     record.save!
   end
@@ -69,6 +76,6 @@ class Searchable::MessageThread < ApplicationRecord
   end
 
   def self.reindex_all
-    ::MessageThread.includes(:tags, :messages).find_each { |mt| index_record(mt) }
+    ::MessageThread.includes(:tags, :messages, folder: :box).find_each { |mt| index_record(mt) }
   end
 end
