@@ -6,6 +6,8 @@ class MessageObjectsController < ApplicationController
     authorize @message
 
     MessageObject.create_message_objects(@message, params[:attachments])
+
+    render partial: "list"
   end
 
   def update
@@ -40,6 +42,8 @@ class MessageObjectsController < ApplicationController
     authorize @message_object
 
     @message_object.destroy
+
+    render partial: "list"
   end
 
   private
