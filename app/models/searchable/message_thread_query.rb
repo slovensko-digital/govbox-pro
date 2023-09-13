@@ -7,7 +7,7 @@ class Searchable::MessageThreadQuery
     filter_labels = []
     filter_out_labels = []
 
-    with_text = query
+    with_text = query.to_s
 
     query.to_s.scan(/(-?label):\(([^)]+)\)/).each do |match|
       raise "unexpected label case" if match.length != 2
