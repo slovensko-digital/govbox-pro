@@ -1,0 +1,3 @@
+<%= turbo_stream.replace "attachments" do %>
+  <%= render MessageAttachmentComponent.with_collection(@message.objects) %>
+<% end %>

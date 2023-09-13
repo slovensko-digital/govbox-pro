@@ -65,7 +65,7 @@
                   </p>
                   <% if @message.not_yet_submitted? %>
                     <%= label_tag :attachments_, "Pridať prílohy", class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" %>
-                    <%= file_field_tag 'attachments[]', onchange: 'document.getElementById("attachment_form").submit()', class: "text-gray-900 bg-white focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm font-semibold px-5 py-2.5 dark:border-gray-600", multiple: true %>
+                    <%= file_field_tag 'attachments[]', onchange: 'document.getElementById("attachment_form").requestSubmit()', class: "text-gray-900 bg-white focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm font-semibold px-5 py-2.5 dark:border-gray-600", multiple: true %>
 
                     <% if @message.objects.unsigned.present? %>
                       <button id="sign_objects" type="button" class="flex justify-end items-center gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300">
@@ -79,8 +79,10 @@
           </div>
 
           <div class="flex flex-col justify-stretch items-stretch  relative gap-4 px-6 py-4 bg-white border-t-0 border-r-0 border-b border-l-0 border-gray-200">
-            <%= render MessageAttachmentComponent.with_collection(@message.objects) %>
-           </div>
+            <div id="attachments" is="turbo-frame">
+              <%= render MessageAttachmentComponent.with_collection(@message.objects) %>
+            </div>
+          </div>
         </div>
       <% end %>
 

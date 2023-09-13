@@ -6,8 +6,6 @@ class MessageObjectsController < ApplicationController
     authorize @message
 
     MessageObject.create_message_objects(@message, params[:attachments])
-
-    redirect_to polymorphic_url(@message)
   end
 
   def update
@@ -42,8 +40,6 @@ class MessageObjectsController < ApplicationController
     authorize @message_object
 
     @message_object.destroy
-
-    redirect_to polymorphic_url(@message)
   end
 
   private
