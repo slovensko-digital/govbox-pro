@@ -8,9 +8,7 @@
   <% component.with_next_page_area do %>
     <%= render Turbo::NextPageAreaComponent.new(
       id: @next_cursor,
-      url: params[:tag_id] ?
-        tag_message_threads_url(@next_page_params) :
-        message_threads_url(@next_page_params)
+      url: message_threads_url(@next_page_params)
       )
     %>
   <% end %>

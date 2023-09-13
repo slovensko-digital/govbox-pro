@@ -53,6 +53,6 @@ class Admin::TagsController < ApplicationController
   end
 
   def tag_params
-    params.require(:tag).permit(:name, :visible, :user_id)
+    params.require(:tag).permit(:name, :visible, :user_id, :tenant_id)
   end
 end

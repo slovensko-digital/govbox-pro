@@ -23,12 +23,9 @@ class MessageThread < ApplicationRecord
   has_many :merge_identifiers, class_name: 'MessageThreadMergeIdentifier', dependent: :destroy
 
   after_create_commit ->(thread) { EventBus.publish(:message_thread_created, thread) }
+  after_commit ->(thread) { EventBus.publish(:message_thread_changed, thread) }, on: [:create, :update]
 
   delegate :tenant, to: :folder
-
-  def read?
-    messages.all?(&:read)
-  end
 
   def messages_visible_to_user(user)
     messages.where(messages: { author_id: user.id }).or(messages.where(messages: { author_id: nil }))
