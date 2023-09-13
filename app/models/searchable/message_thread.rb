@@ -1,5 +1,4 @@
 class Searchable::MessageThread < ApplicationRecord
-
   belongs_to :message_thread, class_name: '::MessageThread'
   belongs_to :tenant, class_name: '::Tenant'
 
@@ -65,6 +64,7 @@ class Searchable::MessageThread < ApplicationRecord
 
     record.last_message_delivered_at = message_thread.last_message_delivered_at
     record.tenant_id = message_thread.folder.box.tenant_id
+    record.box_id = message_thread.folder.box_id
 
     record.save!
   end
