@@ -32,11 +32,11 @@ class Searchable::MessageThreadQuery
     }
   end
 
-  def self.labels_to_ids(parsed_query, no_visible_tags: false)
-    filter_tag_ids = label_names_to_tag_ids(parsed_query[:filter_labels])
-    filter_out_tag_ids = label_names_to_tag_ids(parsed_query[:filter_out_labels])
+  def self.labels_to_ids(parsed_query, tenant_id:, no_visible_tags: false)
+    filter_tag_ids = label_names_to_tag_ids(tenant_id, parsed_query[:filter_labels])
+    filter_out_tag_ids = label_names_to_tag_ids(tenant_id, parsed_query[:filter_out_labels])
 
-    filter_out_tag_ids.concat(visible_tag_ids()) if no_visible_tags
+    filter_out_tag_ids.concat(visible_tag_ids(tenant_id)) if no_visible_tags
 
     result = {}
 
@@ -54,11 +54,11 @@ class Searchable::MessageThreadQuery
     result
   end
 
-  def self.label_names_to_tag_ids(label_names)
-    Tag.where(name: label_names).pluck(:id)
+  def self.label_names_to_tag_ids(tenant_id, label_names)
+    Tag.where(tenant_id: tenant_id, name: label_names).pluck(:id)
   end
 
-  def self.visible_tag_ids()
-    Tag.where(visible: true).pluck(:id)
+  def self.visible_tag_ids(tenant_id)
+    Tag.where(tenant_id: tenant_id, visible: true).pluck(:id)
   end
 end
