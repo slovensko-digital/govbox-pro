@@ -12,15 +12,17 @@ class Searchable::MessageThread < ApplicationRecord
     )
   end
 
-  def self.search_ids(query_filter, tenant_id:, permitted_tag_ids:, cursor:, per_page:, direction: )
+  def self.search_ids(query_filter, search_permissions:, cursor:, per_page:, direction: )
     scope = self
 
-    scope = scope.where(tenant_id: tenant_id)
+    scope = scope.where(tenant_id: search_permissions.fetch(:tenant_id))
 
-    if permitted_tag_ids.any?
-      scope = scope.where("tag_ids && ARRAY[?]", permitted_tag_ids)
-    else
-      scope = scope.none
+    if search_permissions.key?(:tag_ids)
+      if search_permissions[:tag_ids].any?
+        scope = scope.where("tag_ids && ARRAY[?]", search_permissions[:tag_ids])
+      else
+        scope = scope.none
+      end
     end
 
     if query_filter[:filter_tag_ids].present?
