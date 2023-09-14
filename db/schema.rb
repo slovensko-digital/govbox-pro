@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_13_122730) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_14_140353) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -355,6 +355,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_13_122730) do
     t.datetime "updated_at", null: false
     t.boolean "visible", default: true, null: false
     t.bigint "user_id"
+    t.index "tenant_id, lower((name)::text)", name: "index_tags_on_tenant_id_and_lowercase_name", unique: true
     t.index ["tenant_id"], name: "index_tags_on_tenant_id"
     t.index ["user_id"], name: "index_tags_on_user_id"
   end
@@ -390,7 +391,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_13_122730) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["tenant_id", "email"], name: "index_users_on_tenant_id_and_email", unique: true
+    t.index "tenant_id, lower((email)::text)", name: "index_users_on_tenant_id_and_lowercase_email", unique: true
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
