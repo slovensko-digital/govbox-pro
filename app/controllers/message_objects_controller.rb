@@ -1,6 +1,6 @@
 class MessageObjectsController < ApplicationController
   before_action :set_message_object, except: :create
-  before_action :set_message, only: [:create, :destroy]
+  before_action :set_message, only: [:create, :update, :destroy]
 
   def create
     authorize @message
@@ -13,6 +13,8 @@ class MessageObjectsController < ApplicationController
   def update
     authorize @message_object
     update_message_object(@message_object)
+
+    # render partial: "list"
   end
 
   def show
