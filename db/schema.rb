@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_13_122730) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_14_155237) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -189,7 +189,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_13_122730) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["box_id"], name: "index_govbox_folders_on_box_id"
-    t.index ["edesk_folder_id"], name: "index_govbox_folders_on_edesk_folder_id", unique: true
+    t.index ["edesk_folder_id", "box_id"], name: "index_govbox_folders_on_edesk_folder_id_and_box_id", unique: true
     t.index ["parent_folder_id"], name: "index_govbox_folders_on_parent_folder_id"
   end
 
@@ -261,7 +261,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_13_122730) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["message_thread_id"], name: "index_message_thread_merge_identifiers_on_message_thread_id"
-    t.index ["uuid"], name: "index_message_thread_merge_identifiers_on_uuid", unique: true
+    t.index ["uuid"], name: "index_message_thread_merge_identifiers_on_uuid"
   end
 
   create_table "message_threads", force: :cascade do |t|

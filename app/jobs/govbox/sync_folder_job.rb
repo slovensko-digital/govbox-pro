@@ -11,7 +11,7 @@ module Govbox
 
         raise "Unable to fetch folder messages" if response_status != 200
 
-        edesk_message_ids_to_folder_ids = Govbox::Message.where(edesk_message_id: raw_messages.pluck('id')).pluck(:edesk_message_id, :folder_id).to_h
+        edesk_message_ids_to_folder_ids = Govbox::Message.joins(:folder).where(folder: { box_id: folder.box.id }).where(edesk_message_id: raw_messages.pluck('id')).pluck(:edesk_message_id, :folder_id).to_h
         moved_edesk_message_ids = []
 
         raw_messages.each do |raw_message|
