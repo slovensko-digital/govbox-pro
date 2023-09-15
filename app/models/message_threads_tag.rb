@@ -14,4 +14,6 @@ class MessageThreadsTag < ApplicationRecord
 
   # used for joins only
   has_many :tag_groups, primary_key: :tag_id, foreign_key: :tag_id
+
+  after_commit ->(message_threads_tag) { EventBus.publish(:message_thread_tag_changed, message_threads_tag) }
 end
