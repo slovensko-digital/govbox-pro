@@ -6,6 +6,7 @@
 #  tenant_id                                   :integer          not null
 #  name                                        :string           not null
 #  uri                                         :string
+#  syncable                                    :boolean          not null, default: true
 #  created_at                                  :datetime         not null
 #  updated_at                                  :datetime         not null
 
