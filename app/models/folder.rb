@@ -10,7 +10,7 @@
 
 class Folder < ApplicationRecord
   belongs_to :box
-  has_many :message_threads
+  has_many :message_threads, dependent: :destroy
 
   delegate :tenant, to: :box
 end
