@@ -21,7 +21,7 @@
       <%= link_to edit_members_admin_tenant_group_path(@group.tenant, @group), data: { turbo_frame: :modal }  do %>
         <%= render Common::EditButtonComponent.new %>
       <% end %>
-      <%= button_to admin_tenant_group_path(@group.tenant, @group), method: :delete, data: { turbo_frame: :modal }  do %>
+      <%= button_to admin_tenant_group_path(@group.tenant, @group), method: :delete do %>
         <%= render Common::DeleteButtonComponent.new %>
       <% end %>
     <% else %>

@@ -1,6 +1,6 @@
 class Admin::Groups::GroupFormComponent < ViewComponent::Base
-  def initialize(group:, step:)
+  def initialize(group:, action:)
     @group = group
-    @step = step
+    @action = action
   end
 end

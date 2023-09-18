@@ -1,0 +1,12 @@
+<tr>
+  <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
+    <%= link_to @tag_group.tag.name, admin_tenant_tag_path(Current.tenant, @tag_group.tag) %>
+  </td>
+  <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
+    <%= @tag_group.tag.visible %>
+  </td>
+  <td>
+    <%= button_to 'Unassign tag', admin_tag_group_path(@tag_group),
+      method: :delete, class: "mt-2 rounded-lg py-3 px-5 bg-gray-100 font-medium cursor-pointer" %>
+  </td>
+</tr>

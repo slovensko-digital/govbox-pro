@@ -1,5 +1,5 @@
 class Admin::GroupsController < ApplicationController
-  before_action :set_group, only: %i[show edit update destroy edit_members search_non_members]
+  before_action :set_group, only: %i[show edit update destroy edit_members edit_permissions search_non_members search_non_tags]
 
   def index
     authorize([:admin, Group])
@@ -25,13 +25,17 @@ class Admin::GroupsController < ApplicationController
     authorize([:admin, @group])
   end
 
+  def edit_permissions
+    authorize([:admin, @group])
+  end
+
   def create
     @group = Current.tenant.groups.new(group_params)
     @group.group_type = 'CUSTOM'
     authorize([:admin, @group])
 
     if @group.save
-      redirect_to edit_members_admin_tenant_group_url(Current.tenant, @group, step: :new), notice: 'Group was successfully created.'
+      redirect_to edit_members_admin_tenant_group_url(Current.tenant, @group, step: :new), notice: 'Group was successfully created'
     else
       render :new, status: :unprocessable_entity
     end
@@ -40,8 +44,7 @@ class Admin::GroupsController < ApplicationController
   def update
     authorize([:admin, @group])
     if @group.update(group_params)
-      flash[:notice] = 'Group was successfully updated'
-      render turbo_stream: turbo_stream.action(:redirect, admin_tenant_groups_url)
+      redirect_to admin_tenant_groups_url(Current.tenant), notice: 'Group was successfully updated'
     else
       render :edit, status: :unprocessable_entity
     end
@@ -50,8 +53,7 @@ class Admin::GroupsController < ApplicationController
   def destroy
     authorize([:admin, @group])
     @group.destroy
-    flash[:notice] = 'Group was successfully updated'
-    render turbo_stream: turbo_stream.action(:redirect, admin_tenant_groups_url)
+    redirect_to admin_tenant_groups_url(Current.tenant), notice: 'Group was successfully destroyed'
   end
 
   def search_non_members
@@ -61,12 +63,27 @@ class Admin::GroupsController < ApplicationController
     @users = non_members_search_clause
   end
 
+  def search_non_tags
+    authorize([:admin, @group])
+    return if params[:name_search].blank?
+
+    @tags = non_tags_search_clause
+  end
+
   private
 
   def non_members_search_clause
     policy_scope([:admin, User])
       .where(tenant: Current.tenant.id)
       .where.not(id: User.joins(:group_memberships).where(group_memberships: { group_id: @group.id }))
+      .where('unaccent(name) ILIKE unaccent(?)', "%#{params[:name_search]}%")
+      .order(:name)
+  end
+
+  def non_tags_search_clause
+    policy_scope([:admin, Tag])
+      .where(tenant: Current.tenant.id)
+      .where.not(id: Tag.joins(:tag_groups).where(tag_groups: { group_id: @group.id }))
       .where('unaccent(name) ILIKE unaccent(?)', "%#{params[:name_search]}%")
       .order(:name)
   end

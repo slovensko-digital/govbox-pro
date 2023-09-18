@@ -1,4 +1,14 @@
 <!--<h1 class="text-9xl leading-relaxed">&#129426;</h1>-->
 <% unless Current.user %>
-  <p><%= button_to "Sign in with Google", "/auth/google_oauth2", method: :post, data: { turbo: false }, class: "rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" %></p>
+  <%= turbo_stream.replace "login_screen" do %>
+    <div class="fixed inset-0 z-40 p-2" role="dialog" aria-modal="true">
+      <div class="fixed inset-0 transition-opacity bg-gray-400 bg-opacity-75" aria-hidden="true"></div>
+      <div class="relative flex items-center justify-center h-full">
+        <div class="flex flex-col justify-start items-center gap-6 p-10 rounded-lg bg-white border border-gray-300" style="box-shadow: 1px 1px 4px 0 rgba(0,0,0,0.1);">
+          <p class="justify-stretch">Tuto raz bude krásna login obrazovka</p>
+          <%= button_to "Sign in with Google", "/auth/google_oauth2", method: :post, data: { turbo: false }, class: "rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" %>
+        </div>
+      </div>
+    </div>
+  <% end %>
 <% end %>

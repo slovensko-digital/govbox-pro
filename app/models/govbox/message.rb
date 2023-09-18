@@ -104,6 +104,7 @@ class Govbox::Message < ApplicationRecord
     tag = Tag.find_or_create_by!(
       name: "slovensko.sk:#{govbox_message.folder.full_name}",
       tenant: govbox_message.box.tenant,
+      external: true,
       visible: !govbox_message.folder.system?
     )
 

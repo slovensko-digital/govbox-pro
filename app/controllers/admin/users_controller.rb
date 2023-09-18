@@ -20,8 +20,7 @@ class Admin::UsersController < ApplicationController
     authorize([:admin, @user])
 
     if @user.save
-      flash[:notice] = 'User was successfully created'
-      render turbo_stream: turbo_stream.action(:redirect, admin_tenant_users_path(Current.tenant))
+      redirect_to admin_tenant_users_url(Current.tenant), notice: 'User was successfully created'
     else
       render :new, status: :unprocessable_entity
     end
@@ -30,8 +29,7 @@ class Admin::UsersController < ApplicationController
   def update
     authorize([:admin, @user])
     if @user.update(user_params)
-      flash[:notice] = 'User was successfully updated'
-      render turbo_stream: turbo_stream.action(:redirect, admin_tenant_users_path(Current.tenant))
+      redirect_to admin_tenant_users_url(Current.tenant), notice: 'User was successfully updated'
     else
       render :edit, status: :unprocessable_entity
     end
@@ -40,8 +38,7 @@ class Admin::UsersController < ApplicationController
   def destroy
     authorize([:admin, @user])
     @user.destroy
-    flash[:notice] = 'User was successfully destroyed'
-    render turbo_stream: turbo_stream.action(:redirect, admin_tenant_users_path(Current.tenant))
+    redirect_to admin_tenant_users_url(Current.tenant), notice: 'User was successfully destroyed'
   end
 
   private

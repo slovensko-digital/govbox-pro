@@ -16,5 +16,30 @@ class Box < ApplicationRecord
   has_many :folders
   has_many :message_threads, through: :folders, extend: MessageThreadsExtensions
   has_many :message_drafts_imports
-end
 
+  enum :color,
+       {
+         slate: 'slate',
+         gray: 'gray',
+         zinc: 'zinc',
+         neutral: 'neutral',
+         stone: 'stone',
+         red: 'red',
+         orange: 'orange',
+         amber: 'amber',
+         yellow: 'yellow',
+         lime: 'lime',
+         green: 'green',
+         emerald: 'emerald',
+         teal: 'teal',
+         cyan: 'cyan',
+         sky: 'sky',
+         blue: 'blue',
+         indigo: 'indigo',
+         violet: 'violet',
+         purple: 'purple',
+         fuchsia: 'fuchsia',
+         pink: 'pink',
+         rose: 'rose',
+       }
+end

@@ -23,6 +23,7 @@ class Admin::BoxesController < ApplicationController
   def create
     @box = Current.tenant.boxes.new(box_params)
     authorize([:admin, @box])
+    @box.color = Box.colors.keys[Digest::MD5.hexdigest(@box.name).to_i(16) % Box.colors.size]
 
     if @box.save
       redirect_to admin_tenant_url(Current.tenant), notice: "Box was successfully created."
@@ -53,6 +54,6 @@ class Admin::BoxesController < ApplicationController
   end
 
   def box_params
-    params.require(:box).permit(:name, :uri)
+    params.require(:box).permit(:name, :uri, :short_name, :color)
   end
 end

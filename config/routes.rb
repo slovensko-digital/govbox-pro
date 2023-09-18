@@ -1,6 +1,4 @@
 Rails.application.routes.draw do
-
-
   namespace :settings do
     resources :automation_rules
     resource :automation_rule do
@@ -25,18 +23,18 @@ Rails.application.routes.draw do
     resources :tenants do
       resources :groups do
         get :edit_members, on: :member
+        get :edit_permissions, on: :member
         post :search_non_members, on: :member
+        post :search_non_tags, on: :member
         resources :group_memberships, param: :index
       end
       resources :users
       resources :boxes
-      resources :tags
+      resources :tags do
+        patch :visibility_toggle, on: :member
+      end
+      resources :tag_groups
     end
-
-    resources :group_memberships
-    resources :tag_users
-
-    resources :tag_groups, only: [:create, :destroy]
   end
 
   resources :boxes, path: 'schranky', only: [:index, :show] do

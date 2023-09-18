@@ -22,8 +22,7 @@ class Settings::AutomationRulesController < ApplicationController
     @automation_rule.user = Current.user
     authorize @automation_rule, policy_class: Settings::AutomationRulePolicy
     if @automation_rule.save
-      flash[:notice] = 'Thing was successfully created'
-      render turbo_stream: turbo_stream.action(:redirect, settings_automation_rules_path)
+      redirect_to settings_automation_rules_path, notice: 'Rule was successfully created'
     else
       render :new, status: :unprocessable_entity
     end
@@ -32,8 +31,7 @@ class Settings::AutomationRulesController < ApplicationController
   def update
     authorize @automation_rule, policy_class: Settings::AutomationRulePolicy
     if @automation_rule.update(automation_rule_params)
-      flash[:notice] = 'Thing was successfully updated'
-      render turbo_stream: turbo_stream.action(:redirect, settings_automation_rules_path)
+      redirect_to settings_automation_rules_path, notice: 'Rule was successfully created'
     else
       # TODO: Vieme nejako zachranit?
       render :new, status: :unprocessable_entity
@@ -53,7 +51,6 @@ class Settings::AutomationRulesController < ApplicationController
   def actions_step
     authorize @automation_rule, policy_class: Settings::AutomationRulePolicy
   end
-
 
   def conditions_step
     authorize @automation_rule, policy_class: Settings::AutomationRulePolicy
