@@ -6,3 +6,7 @@ import { application } from "./application"
 
 import HelloController from "./hello_controller"
 application.register("hello", HelloController)
+
+import AutogramSigningController from "./autogram_signing_controller"
+application.register("autogram_signing", AutogramSigningController)
+
