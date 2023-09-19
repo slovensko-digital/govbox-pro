@@ -1,8 +1,16 @@
-module BoxTailwindColorHelper
+module Common
+  class BoxLabelComponent < ViewComponent::Base
+    def initialize(box)
+      @box = box
+    end
+  end
 end
-# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
-# Necessary to generate proper CSS for dynamically generated colors 
-# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
+
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# Necessary to generate proper CSS for dynamically generated colors
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# !!!!!!   Change values here, if values in template change  !!!!!!
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # class="bg-slate-100 border border-slate-400 text-slate-600"
 # class="bg-gray-100 border border-gray-400 text-gray-600"
 # class="bg-zinc-100 border border-zinc-400 text-zinc-600"

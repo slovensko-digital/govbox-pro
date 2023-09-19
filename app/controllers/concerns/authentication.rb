@@ -36,12 +36,13 @@ module Authentication
     session[:user_id] = nil
     session[:login_expires_at] = nil
     session[:tenant_id] = nil
+    session[:box_id] = nil
   end
 
   def load_current_user
     Current.user = User.find(session[:user_id]) if session[:user_id]
     Current.tenant = Tenant.find(session[:tenant_id]) if session[:tenant_id]
-    Current.box ||= Current.tenant&.boxes&.first
+    Current.box = Current.tenant.boxes.find(session[:box_id]) if session[:box_id]
   end
 
   def valid_session?(session)

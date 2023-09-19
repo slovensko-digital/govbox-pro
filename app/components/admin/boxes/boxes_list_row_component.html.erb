@@ -1,8 +1,6 @@
 <div class="self-stretch p-6 border-b border-gray-200 justify-start items-center gap-4 inline-flex">
   <div class="flex justify-start items-start flex-grow-0 flex-shrink-0 w-[45px] gap-2">
-    <div class="flex justify-center items-center relative overflow-hidden gap-1.5 px-2 py-1 rounded-md bg-<%= @box.color %>-100 border border-<%= @box.color %>-400">
-      <p class="flex-grow-0 flex-shrink-0 text-sm text-left text-<%= @box.color %>-600"><%= @box.short_name || @box.name[0] %></p>
-    </div>
+    <%= render Common::BoxLabelComponent.new(@box) %>
   </div>
   <div class="grow shrink basis-0 flex-col justify-start items-start gap-1 inline-flex">
     <div class="text-center text-gray-900 text-lg font-medium leading-loose">

@@ -1,0 +1,6 @@
+<%# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! %>
+<%# If color values are changed, adjust the color list in the component .rb file %>
+<%# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! %>
+<div class="flex justify-center items-center relative overflow-hidden gap-1.5 px-2 py-1 rounded-md bg-<%= @box.color %>-100 border border-<%= @box.color %>-400">
+  <p class="flex-grow-0 flex-shrink-0 text-sm text-left text-<%= @box.color %>-600"><%= @box.short_name || @box.name[0] %></p>
+</div>

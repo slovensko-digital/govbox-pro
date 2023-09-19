@@ -41,6 +41,8 @@ class MessageThreadCollection
       where(id: message_thread_ids).
       order(Pagination.order_clause(searchable_cursor_to_cursor(cursor), DIRECTION))
 
+    message_thread_scope = message_thread_scope.where(box: { id: Current.box.id }) if Current.box
+
     records = message_thread_scope.select(
       'message_threads.*',
       '(select bool_and(read) from messages where messages.message_thread_id = message_threads.id) as all_read',

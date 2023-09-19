@@ -1,8 +1,12 @@
 <h2>Nový import draftov</h2>
-
-<%= form_tag message_drafts_imports_path, method: :post, multipart: true do %>
-  <%= label_tag :content, 'Import' %>
-  <%= file_field_tag :content, accept: "application/zip" %>
-  <br/><br/>
-  <%= submit_tag 'Nahrať' %>
+<% if !Current.box %>
+  <p>Pre import draftov vyberte v hornej liste schranku, do ktorej sa ma import realizovat</p>
+<% else %>
+  <%= form_tag message_drafts_imports_path, method: :post, multipart: true do %>
+    <%= label_tag :content, 'Import' %>
+    <%= file_field_tag :content, accept: "application/zip" %>
+    <br/>
+    <br/>
+    <%= submit_tag 'Nahrať' %>
+  <% end %>
 <% end %>
