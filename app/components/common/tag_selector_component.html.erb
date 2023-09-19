@@ -18,6 +18,6 @@
     </button>
   </div>
   <div data-dropdown-target="menu" class="z-50 absolute transform transition hidden opacity-0 scale-95" >
-    <%= render Common::TagSelectorPopupComponent.new(@object) %>
+    <%= render Common::TagSelectorPopupComponent.new(@object, @available_tags) %>
   </div>
 </div>
