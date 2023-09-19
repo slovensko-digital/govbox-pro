@@ -18,5 +18,10 @@ class Tag < ApplicationRecord
   has_many :tag_groups, dependent: :destroy
   has_many :groups, through: :tag_groups
   belongs_to :owner, class_name: 'User', optional: true
- 
+
+  validates :name, presence: true
+  validates :name, uniqueness: { scope: :tenant_id, case_sensitive: false }
+
+  after_update_commit ->(tag) { EventBus.publish(:tag_renamed, tag) if previous_changes.key?("name") }
+  after_destroy ->(tag) { EventBus.publish(:tag_removed, tag) }
 end
