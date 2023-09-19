@@ -18,7 +18,7 @@ class Admin::GroupPolicy < ApplicationPolicy
     end
   end
 
-  def index
+  def index?
     @user.site_admin? || @user.admin?
   end
 
@@ -42,7 +42,23 @@ class Admin::GroupPolicy < ApplicationPolicy
     update?
   end
 
+  def edit_members?
+    update?
+  end
+
+  def edit_permissions?
+    update?
+  end
+
   def destroy?
+    @user.site_admin? || @user.admin?
+  end
+
+  def search_non_members?
+    @user.site_admin? || @user.admin?
+  end
+
+  def search_non_tags?
     @user.site_admin? || @user.admin?
   end
 

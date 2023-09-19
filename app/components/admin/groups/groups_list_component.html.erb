@@ -1,0 +1,54 @@
+<div class="w-full p-4 flex-col justify-start items-start gap-4 inline-flex">
+  <div class="self-stretch bg-white rounded-md border border-gray-200 flex-col justify-start items-start flex">
+    <div class="self-stretch p-6 border-b border-gray-200 justify-start items-center gap-4 inline-flex">
+      <div class="grow shrink basis-0 text-gray-900 text-xl font-semibold leading-[35px]">Skupiny</div>
+      <%= link_to new_admin_tenant_group_path, class:"px-3.5 py-2.5 bg-blue-600 rounded-md justify-center items-center gap-2.5 flex" do %>
+        <p class="text-white text-base font-medium leading-normal">Vytvoriť skupinu</p>
+      <% end %>
+    </div>
+    <div class="self-stretch flex-col justify-start items-start flex">
+      <% @custom_groups.each do |custom_group| %>
+        <%= render Admin::Groups::GroupsListRowComponent.new(custom_group) %>
+      <% end %>
+    </div>
+  </div>
+  <div class="self-stretch bg-white rounded-md border border-gray-200 flex-col justify-start items-start flex">
+    <div class="self-stretch p-6 border-b border-gray-200 justify-start items-center gap-4 inline-flex">
+      <div class="flex-col">
+        <div class="grow shrink basis-0 text-gray-900 text-xl font-semibold leading-[35px]">Systémové skupiny</div>
+        <div class="grow shrink basis-0 text-gray-900 text-m leading-[35px]">Zakladané automaticky, nie je možné upravovať</div>
+      </div>
+    </div>
+    <div class="self-stretch flex-col justify-start items-start flex">
+      <% @system_groups.each do |system_group| %>
+        <%= render Admin::Groups::GroupsListRowComponent.new(system_group) %>
+      <% end %>
+    </div>
+  </div>
+  <div class="self-stretch bg-white rounded-md border border-gray-200 flex-col justify-start items-start flex">
+    <div class="self-stretch p-6 border-b border-gray-200 justify-start items-center gap-4 inline-flex">
+      <div class="w-8 h-8 relative">
+        <%= render Icons::InfoComponent.new %>
+      </div>
+      <div class="grow shrink basis-0 flex-col justify-start items-start gap-1 inline-flex">
+        <div class="text-center text-gray-900 text-lg font-medium leading-loose">Pridať používateľov</div>
+        <div class="text-center text-gray-500 text-base font-normal leading-normal">Existujúci používatelia môžu byť rozdelení do skupín, napríklad podľa zodpovednosti</div>
+      </div>
+      <%= link_to admin_tenant_users_path, class:"px-3.5 py-2.5 bg-white rounded-md border border-gray-300 justify-center items-center gap-2.5 flex" do %>
+        <p class="text-gray-900 text-base font-medium leading-normal">Nastaviť používateľov</p>
+      <% end %>
+    </div>
+    <div class="self-stretch p-6 border-b border-gray-200 justify-start items-center gap-4 inline-flex">
+      <div class="w-8 h-8 relative">
+        <%= render Icons::InfoComponent.new %>
+      </div>
+      <div class="grow shrink basis-0 flex-col justify-start items-start gap-1 inline-flex">
+        <div class="text-center text-gray-900 text-lg font-medium leading-loose">Určiť prístup skupín k správam</div>
+        <div class="text-center text-gray-500 text-base font-normal leading-normal">Jednotlivé skupiny používateľov (ako aj samotný používatelia) môžu mať rozdielny prístup k správam</div>
+      </div>
+      <%= link_to admin_tenant_tag_groups_path, class:"px-3.5 py-2.5 bg-white rounded-md border border-gray-300 justify-center items-center gap-2.5 flex" do %>
+        <p class="text-gray-900 text-base font-medium leading-normal">Nastaviť prístup</p>
+      <% end %>
+    </div>
+  </div>
+</div>

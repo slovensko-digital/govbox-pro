@@ -1,8 +1,8 @@
 class Admin::TagsController < ApplicationController
-  before_action :set_tag, only: %i[show edit update destroy]
+  before_action :set_tag, only: %i[show edit update destroy visibility_toggle]
 
   def index
-    authorize Tag
+    authorize [:admin, Tag]
     @tags = policy_scope([:admin, Tag])
   end
 
@@ -22,10 +22,11 @@ class Admin::TagsController < ApplicationController
 
   def create
     @tag = Current.tenant.tags.new(tag_params)
+    @tag.user_id = Current.user.id
     authorize([:admin, @tag])
 
     if @tag.save
-      redirect_to admin_tenant_url(Current.tenant), notice: "Tag was successfully created."
+      redirect_to admin_tenant_tags_path(Current.tenant), notice: 'Tag was successfully created'
     else
       render :new, status: :unprocessable_entity
     end
@@ -34,16 +35,21 @@ class Admin::TagsController < ApplicationController
   def update
     authorize([:admin, @tag])
     if @tag.update(tag_params)
-      redirect_to admin_tenant_url(Current.tenant), notice: "Tag was successfully updated."
+      redirect_to admin_tenant_tags_path(Current.tenant), notice: 'Tag was successfully updated'
     else
       render :edit, status: :unprocessable_entity
     end
   end
 
+  def visibility_toggle
+    authorize([:admin, @tag])
+    @tag.update(tag_params_visibility)
+  end
+
   def destroy
     authorize([:admin, @tag])
     @tag.destroy
-    redirect_to admin_tenant_url(Current.tenant), notice: "Tag was successfully destroyed."
+    redirect_to admin_tenant_tags_path(Current.tenant), notice: 'Tag was successfully created'
   end
 
   private
@@ -54,5 +60,9 @@ class Admin::TagsController < ApplicationController
 
   def tag_params
     params.require(:tag).permit(:name, :visible, :user_id, :tenant_id)
+  end
+
+  def tag_params_visibility
+    params.permit(:visible)
   end
 end

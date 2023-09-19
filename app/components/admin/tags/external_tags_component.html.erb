@@ -1,0 +1,19 @@
+<div class="flex flex-col justify-start items-start self-stretch flex-grow-0 flex-shrink-0 overflow-hidden rounded-md bg-white border border-gray-200">
+  <div class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
+    <div class="flex flex-col justify-center items-start flex-grow relative gap-1">
+      <p class="flex-grow-0 flex-shrink-0 w-[631px] text-xl font-semibold text-left text-gray-900">Zobraziť štítky zo štátnej schránky</p>
+    </div>
+  </div>
+  <% @tags.each do |tag| %>
+    <div class="flex flex-col justify-start items-start self-stretch flex-grow-0 flex-shrink-0">
+      <div class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-2 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
+        <div class="flex justify-start items-start flex-grow gap-2">
+          <div class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-1.5 px-2 py-1 rounded-md bg-gray-50 border border-gray-300">
+            <p class="flex-grow-0 flex-shrink-0 text-sm text-left text-gray-600"><%= tag.name %></p>
+          </div>
+        </div>
+        <%= render Admin::Tags::VisibilityToggleComponent.new(tag) %>
+      </div>
+    </div>
+  <% end %>
+</div>

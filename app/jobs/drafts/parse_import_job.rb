@@ -77,9 +77,11 @@ class Drafts::ParseImportJob < ApplicationJob
         last_message_delivered_at: Time.now
       )
 
+      # TODO: Nemali by sme tento vytvorit hned s tenantom? Co ked niekto zalozi rucne medzitym? A to external je v tomto pripade matuce, mozno by to malo byt "system". Povedzme si
       message_thread.tags << Tag.find_or_create_by!(
         name: "Drafts",
         tenant: import.box.tenant,
+        external: false
         visible: true
       )
       

@@ -1,0 +1,40 @@
+<%= tag.turbo_frame id: 'modal' do %>
+  <div class="fixed inset-0 z-40 p-2" role="dialog" aria-modal="true">
+    <div class="fixed inset-0 transition-opacity bg-gray-400 bg-opacity-75" aria-hidden="true"></div>
+    <div class="relative flex items-center justify-center">
+      <div class="flex flex-col justify-start items-start overflow-hidden rounded-lg bg-white border border-gray-300" style="box-shadow: 1px 1px 4px 0 rgba(0,0,0,0.1);">
+        <div class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 overflow-hidden gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
+          <div class="flex flex-col justify-start items-start flex-grow relative">
+            <p class="self-stretch flex-grow-0 flex-shrink-0 text-xl font-semibold text-left text-gray-900"><%= @action == 'new' ? 'Nový používateľ' : 'Zmena používateľa'%></p>
+            <p class="flex-grow-0 flex-shrink-0 text-xs text-left text-gray-500">Základné údaje o používateľovi</p>
+          </div>
+          <%= link_to admin_tenant_users_path(Current.tenant), data: { turbo_frame: "_top" } do %>
+            <%= render Common::CloseButtonComponent.new %>
+          <% end %>
+        </div>
+        <%= form_with model:[:admin, Current.tenant, @user], data: { turbo_frame: "_top" } do |form| %>
+          <div class="flex flex-col justify-start items-start self-stretch w-96">
+            <div class="flex justify-start items-center self-stretch gap-4 p-6">
+              <div class="flex flex-col justify-start items-start self-stretch flex-grow overflow-hidden gap-2 rounded-md">
+                <%= form.text_field :name, placeholder: "Meno používateľa", class:"block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" %>
+              </div>
+            </div>
+            <div class="flex justify-start items-center self-stretch gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
+              <div class="flex flex-col justify-start items-start self-stretch flex-grow overflow-hidden gap-2 rounded-md">
+                <%= form.email_field :email, placeholder: "jan.novak@email.sk", class:"block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" %>
+              </div>
+            </div>
+          </div>
+          <div class="flex justify-start items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6">
+            <%= link_to admin_tenant_users_path(Current.tenant), class: "flex justify-center items-center flex-grow relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300", data: { turbo_frame: "_top" } do %>
+              <p class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-gray-900">Zahodiť</p>
+            <% end %>
+            <%= form.button class:"flex justify-center items-center flex-grow relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md bg-blue-600" do %>
+              <p class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-white"><%= @action == 'new' ? 'Vytvoriť' : 'Uložiť' %></p>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>

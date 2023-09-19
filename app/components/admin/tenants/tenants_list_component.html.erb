@@ -1,0 +1,15 @@
+<div class="w-full p-4 flex-col justify-start items-start gap-4 inline-flex">
+  <div class="self-stretch bg-white rounded-md border border-gray-200 flex-col justify-start items-start flex">
+    <div class="self-stretch p-6 border-b border-gray-200 justify-start items-center gap-4 inline-flex">
+      <div class="grow shrink basis-0 text-gray-900 text-xl font-semibold leading-[35px]">Tenanti / Organizácie</div>
+      <%= link_to new_admin_tenant_path, class:"px-3.5 py-2.5 bg-blue-600 rounded-md justify-center items-center gap-2.5 flex" do %>
+        <p class="text-white text-base font-medium leading-normal">Vytvoriť nového tenanta</p>
+      <% end %>
+    </div>
+    <div class="self-stretch flex-col justify-start items-start flex">
+      <% @tenants.each do |tenant| %>
+        <%= render Admin::Tenants::TenantsListRowComponent.new(tenant) %>
+      <% end %>
+    </div>
+  </div>
+</div>

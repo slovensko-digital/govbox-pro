@@ -14,7 +14,7 @@ class Admin::TagPolicy < ApplicationPolicy
     end
   end
 
-  def index
+  def index?
     @user.site_admin? || @user.admin?
   end
 
@@ -35,6 +35,10 @@ class Admin::TagPolicy < ApplicationPolicy
   end
 
   def edit?
+    update?
+  end
+
+  def visibility_toggle?
     update?
   end
 

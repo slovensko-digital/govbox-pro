@@ -2,10 +2,12 @@
 
 one:
   name: MyString
+  external: false
   visible: true
   tenant: solver
 
 two:
-  name: MyString2
+  name: MyString
+  external: false
   visible: false
   tenant: solver

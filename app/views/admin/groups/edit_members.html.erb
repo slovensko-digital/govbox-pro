@@ -1,0 +1,2 @@
+<%= render Admin::Groups::GroupFormComponent.new(group: @group, step: :new) if params[:step] && params[:step] == 'new' %>
+<%= render Admin::Groups::GroupFormComponent.new(group: @group, step: :edit) if !params[:step] || params[:step] != 'edit' %>
