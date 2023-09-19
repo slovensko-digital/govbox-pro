@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_05_100110) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_19_111034) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -49,10 +49,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_05_100110) do
 
   create_table "automation_actions", force: :cascade do |t|
     t.string "type"
-    t.jsonb "params"
     t.bigint "automation_rule_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "value"
     t.index ["automation_rule_id"], name: "index_automation_actions_on_automation_rule_id"
   end
 
@@ -83,6 +83,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_05_100110) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "tenant_id", null: false
+    t.boolean "syncable", default: true, null: false
     t.index ["tenant_id"], name: "index_boxes_on_tenant_id"
   end
 
@@ -315,6 +316,20 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_05_100110) do
     t.index ["tag_id"], name: "index_messages_tags_on_tag_id"
   end
 
+  create_table "searchable_message_threads", force: :cascade do |t|
+    t.integer "message_thread_id", null: false
+    t.text "title", null: false
+    t.text "content", null: false
+    t.text "tag_names", null: false
+    t.integer "tag_ids", default: [], null: false, array: true
+    t.datetime "last_message_delivered_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "tenant_id", null: false
+    t.integer "box_id", null: false
+    t.index ["message_thread_id"], name: "index_searchable_message_threads_on_message_thread_id", unique: true
+  end
+
   create_table "tag_groups", force: :cascade do |t|
     t.bigint "group_id", null: false
     t.bigint "tag_id", null: false
@@ -405,6 +420,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_05_100110) do
   add_foreign_key "messages", "users", column: "author_id"
   add_foreign_key "messages_tags", "messages"
   add_foreign_key "messages_tags", "tags"
+  add_foreign_key "searchable_message_threads", "message_threads", on_delete: :cascade
   add_foreign_key "tag_groups", "groups"
   add_foreign_key "tag_groups", "tags"
   add_foreign_key "tag_users", "tags"
