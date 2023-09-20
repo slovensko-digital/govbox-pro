@@ -1,3 +1,14 @@
+# == Schema Information
+#
+# Table name: automation_actions
+#
+#  id                                          :integer          not null, primary key
+#  type                                        :string
+#  params                                      :jsonb
+#  automation_rule_id                          :integer
+#  created_at                                  :datetime         not null
+#  updated_at                                  :datetime         not null
+
 module Automation
   class Action < ApplicationRecord
     belongs_to :automation_rule, class_name: 'Automation::Rule'

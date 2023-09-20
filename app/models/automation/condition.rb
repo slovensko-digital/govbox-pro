@@ -1,3 +1,15 @@
+# == Schema Information
+#
+# Table name: automation_conditions
+#
+#  id                                          :integer          not null, primary key
+#  attr                                        :string
+#  type                                        :string
+#  value                                       :string
+#  automation_rule_id                          :integer
+#  created_at                                  :datetime         not null
+#  updated_at                                  :datetime         not null
+
 module Automation
   class Condition < ApplicationRecord
     belongs_to :automation_rule, class_name: 'Automation::Rule'
