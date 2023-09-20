@@ -21,7 +21,7 @@ class Govbox::Folder < ApplicationRecord
   end
 
   def inbox?
-    name == "Inbox"
+    name.start_with? 'Inbox'
   end
 
   def bin?
@@ -29,6 +29,6 @@ class Govbox::Folder < ApplicationRecord
   end
 
   def drafts?
-    name == 'Drafts'
+    name.start_with? == 'Drafts'
   end
 end
