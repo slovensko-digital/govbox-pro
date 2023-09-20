@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_13_122730) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_20_093653) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -401,8 +401,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_13_122730) do
   add_foreign_key "automation_rules", "users"
   add_foreign_key "boxes", "tenants"
   add_foreign_key "folders", "boxes"
-  add_foreign_key "govbox_api_connections", "boxes"
-  add_foreign_key "govbox_folders", "boxes"
   add_foreign_key "govbox_folders", "govbox_folders", column: "parent_folder_id"
   add_foreign_key "govbox_messages", "govbox_folders", column: "folder_id"
   add_foreign_key "group_memberships", "groups"

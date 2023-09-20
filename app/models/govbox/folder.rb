@@ -12,10 +12,13 @@
 #  updated_at                                  :datetime         not null
 
 class Govbox::Folder < ApplicationRecord
-  belongs_to :box
   belongs_to :parent_folder, class_name: 'Govbox::Folder', dependent: :destroy, optional: true
   has_many :messages, class_name: 'Govbox::Message', dependent: :destroy
   has_many :child_folders, class_name: 'Govbox::Folder', foreign_key: :parent_folder_id, dependent: :destroy
+
+  def box
+    Box.find(box_id)
+  end
 
   def full_name
     parent_folder_id.present? ? "#{parent_folder.full_name}/#{name}" : name

@@ -11,5 +11,4 @@
 #  updated_at                                  :datetime         not null
 
 class Govbox::ApiConnection < ApplicationRecord
-  belongs_to :box
 end
