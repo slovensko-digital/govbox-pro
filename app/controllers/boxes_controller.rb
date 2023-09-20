@@ -24,7 +24,7 @@ class BoxesController < ApplicationController
 
   def select_all
     authorize Box
-    # TODO: Ako toto riesit? Toto funguje, ale je ako z 80ich rokov. Dalsia session premenna?
+    # TODO: Chceme to takto? nil = vsetky Alebo chceme pridavat inu variablu pre tento stav?
     session[:box_id] = nil
     redirect_to request.referrer
   end
@@ -32,8 +32,8 @@ class BoxesController < ApplicationController
   def search
     authorize(Box)
     @boxes = policy_scope(Box)
-            .where(tenant_id: Current.tenant.id).where("unaccent(name) ILIKE unaccent(?)", "%#{params[:name_search]}%")
-            .or(policy_scope(Box).where(tenant_id: Current.tenant.id).where("unaccent(short_name) ILIKE unaccent(?)", "%#{params[:name_search]}%"))
+            .where(tenant_id: Current.tenant.id)
+            .where("unaccent(name) ILIKE unaccent(?) OR unaccent(short_name) ILIKE unaccent(?)", "%#{params[:name_search]}%", "%#{params[:name_search]}%")
             .order(:name)
   end
 
