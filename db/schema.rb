@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_14_140353) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_14_151243) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -361,6 +361,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_14_140353) do
     t.boolean "visible", default: true, null: false
     t.bigint "user_id"
     t.boolean "external", default: false
+    t.index "tenant_id, lower((name)::text)", name: "index_tags_on_tenant_id_and_lowercase_name", unique: true
     t.index ["tenant_id"], name: "index_tags_on_tenant_id"
     t.index ["user_id"], name: "index_tags_on_user_id"
   end
