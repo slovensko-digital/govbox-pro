@@ -1,5 +1,5 @@
 class Govbox::SubmitMessageDraftJob < ApplicationJob
-  def perform(message_draft, upvs_client: UpvsEnvironment.upvs_client)
+  def perform(message_draft, schedule_sync: true, upvs_client: UpvsEnvironment.upvs_client)
     message_draft_data = {
       posp_id: message_draft.metadata["posp_id"],
       posp_version: message_draft.metadata["posp_version"],
@@ -19,7 +19,7 @@ class Govbox::SubmitMessageDraftJob < ApplicationJob
       success, response_status = sktalk_api.receive_and_save_to_outbox(message_draft_data)
       if success
         message_draft.metadata["status"] = "submitted"
-        Govbox::SyncBoxJob.set(wait: 3.minutes).perform_later(message_draft.thread.folder.box)
+        Govbox::SyncBoxJob.set(wait: 3.minutes).perform_later(message_draft.thread.folder.box) if schedule_sync
       else
         handle_submit_fail(message_draft, response_status)
       end

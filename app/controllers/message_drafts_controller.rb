@@ -41,7 +41,7 @@ class MessageDraftsController < ApplicationController
   end
   
   def submit_all
-    @message_drafts.each(&:submit)
+    Govbox::SubmitMultipleMessageDraftsJob.perform_later(@message_drafts.to_a)
   end
 
   def destroy
