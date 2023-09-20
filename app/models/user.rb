@@ -20,7 +20,7 @@ class User < ApplicationRecord
   has_many :automation_rules, class_name: 'Automation::Rule'
 
   validates_presence_of :name, :email
-  validates_uniqueness_of :name, :email, scope: :tenant_id
+  validates_uniqueness_of :name, :email, scope: :tenant_id, case_sensitive: false
 
   before_destroy :delete_user_group, prepend: true
   after_create :handle_default_groups
