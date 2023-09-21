@@ -2,43 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
 
-  signMultipleFiles() {
-    // const objectsToBeSigned = JSON.parse(document.getElementById('files_to_be_signed').getAttribute('value'));
-    const objectsToBeSigned = this.data.get("autogram_signing-files").value;
-
-    debugger;
-
-    fetch("http://localhost:37200/batch", {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({
-        "totalNumberOfDocuments": objectsToBeSigned.length
-      })
-    }).then(function (response) {
-      return response.json();
-    }).then(function (data) {
-      return data.batchId;
-    }).then(async function (batchId) {
-      for(const object of objectsToBeSigned) {
-        await sign(object.id, object.message_id, batchId);
-      }
-    }).catch(function (err) {
-      if (err.message === "Failed to fetch") {
-        alert("Spustite aplikáciu autogram.")
-      }
-    });
-  }
-
-  async signSingleFile() {
-    const messageObjectId = this.data.get("objectId");
-    const messageId = this.data.get("messageId");
-
-    debugger;
-
-    await sign(messageObjectId, messageId);
-  }
-
-  async sign(messageObjectId, messageId, batchId = null) {
+  async sign(messageObjectId, messageId, that, batchId = null) {
     return new Promise((resolve, reject) => {
       fetch(`/messages/${messageId}/message_objects/${messageObjectId}/signing_data.json`)
         .then(function (response) {
@@ -49,7 +13,7 @@ export default class extends Controller {
           let signatureLevel = "XAdES_BASELINE_B";
           let signatureContainer = "ASiC_E";
 
-          let signedFileName = await setSignedFileName(messageObjectData);
+          let signedFileName = await that.setSignedFileName(messageObjectData);
           let signedFileMimeType = "application/vnd.etsi.asic-e+zip";
 
           switch(messageObjectData.mime_type) {
@@ -99,7 +63,7 @@ export default class extends Controller {
           }).then(function (response) {
             return response.json();
           }).then(function (signedData) {
-            updateObject(messageObjectId, messageId, signedFileName, signedFileMimeType, signedData.content);
+            that.updateObject(messageObjectId, messageId, signedFileName, signedFileMimeType, signedData.content);
           }).then(function () {
             resolve();
           }).catch(function (err) {
@@ -112,7 +76,7 @@ export default class extends Controller {
   }
 
   async updateObject(messageObjectId, messageId, signedFileName, signedFileMimeType, signedContent) {
-    authenticityToken = document.getElementById('authenticity-token').getAttribute('content');
+    const authenticityToken = this.data.get("authenticityToken");
 
     return new Promise((resolve, reject) => {
       fetch(`/messages/${messageId}/message_objects/${messageObjectId}`, {
@@ -134,5 +98,37 @@ export default class extends Controller {
 
   async setSignedFileName(messageObjectData) {
     return messageObjectData.file_name.substring(0, messageObjectData.file_name.lastIndexOf('.')).concat(".asice") || messageObjectData.file_name;
+  }
+
+  signMultipleFiles() {
+    const objectsToBeSigned = JSON.parse(this.data.get("filesToBeSigned"));
+    const that = this;
+
+    fetch("http://localhost:37200/batch", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        "totalNumberOfDocuments": objectsToBeSigned.length
+      })
+    }).then(function (response) {
+      return response.json();
+    }).then(function (data) {
+      return data.batchId;
+    }).then(async function (batchId) {
+      for(const object of objectsToBeSigned) {
+        await that.sign(object.id, object.message_id, that, batchId);
+      }
+    }).catch(function (err) {
+      if (err.message === "Failed to fetch") {
+        alert("Spustite aplikáciu autogram.")
+      }
+    });
+  }
+
+  async signSingleFile() {
+    const messageObjectId = this.data.get("objectId");
+    const messageId = this.data.get("messageId");
+
+    await this.sign(messageObjectId, messageId, this);
   }
 }
