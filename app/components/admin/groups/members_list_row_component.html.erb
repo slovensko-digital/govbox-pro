@@ -1,4 +1,3 @@
-  
 <div class="w-16 h-16 justify-center items-center flex">
   <img class="w-16 h-16 rounded-full" src="https://via.placeholder.com/64x64" />
 </div>
@@ -6,6 +5,6 @@
   <div class="text-center text-gray-900 text-lg font-medium leading-loose"><%= @user.name %></div>
   <div class="text-center text-gray-500 text-base font-normal leading-normal"><%= @user.email %></div>
 </div>
-<%= button_to admin_group_membership_path(@group_membership), method: :delete do %>
+<%= button_to admin_tenant_group_group_membership_path(Current.tenant, @group_membership.group, @group_membership), method: :delete do %>
   <%= render Common::DeleteButtonComponent.new %>
 <% end %>

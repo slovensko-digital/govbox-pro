@@ -46,6 +46,10 @@ class Admin::GroupPolicy < ApplicationPolicy
     update?
   end
 
+  def show_members?
+    update?
+  end
+
   def edit_permissions?
     update?
   end

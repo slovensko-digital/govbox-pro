@@ -13,7 +13,7 @@
           <% end %>
         </div>
         <div class="flex flex-col justify-start items-start self-stretch flex-grow-0 flex-shrink-0">
-          <% if @action.in? [:new, :edit] %>
+          <% if !@readonly %>
             <%= form_with url: search_non_members_admin_tenant_group_path(Current.tenant, @group), class:"flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200" do |form| %>
               <div class="flex w-full items-center rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600">
                 <div class="p-2">
@@ -29,8 +29,8 @@
           <% end %>
           <div class="flex flex-col justify-start items-start self-stretch divide-y relative gap-2 p-2 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
             <% @group.group_memberships.each do |group_membership| %>
-              <div class="self-stretch p-6 flex justify-start items-start gap-6 flex">
-                <% if @action.in? [:new, :edit] %>
+              <div class="self-stretch p-6 flex justify-start items-start gap-6">
+                <% if !@readonly %>
                   <%= render Admin::Groups::MembersListRowComponent.new(group_membership) %>
                 <% else %>
                   <%= render Admin::Groups::MembersListRowViewOnlyComponent.new(group_membership) %>

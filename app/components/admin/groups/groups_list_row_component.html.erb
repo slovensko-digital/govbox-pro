@@ -18,14 +18,14 @@
   </div>
   <div class="justify-start items-start gap-2 flex">
     <% if @group.is_modifiable? %>
-      <%= link_to edit_members_admin_tenant_group_path(@group.tenant, @group), data: { turbo_frame: :modal }  do %>
+      <%= link_to edit_members_admin_tenant_group_path(@group.tenant, @group) do %>
         <%= render Common::EditButtonComponent.new %>
       <% end %>
       <%= button_to admin_tenant_group_path(@group.tenant, @group), method: :delete do %>
         <%= render Common::DeleteButtonComponent.new %>
       <% end %>
     <% else %>
-      <%= link_to admin_tenant_group_path(@group.tenant, @group), data: { turbo_frame: :modal }  do %>
+      <%= link_to show_members_admin_tenant_group_path(@group.tenant, @group) do %>
         <%= render Common::ShowButtonComponent.new %>
       <% end %>
     <% end %>

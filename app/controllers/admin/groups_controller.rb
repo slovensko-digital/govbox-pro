@@ -1,5 +1,5 @@
 class Admin::GroupsController < ApplicationController
-  before_action :set_group, only: %i[show edit update destroy edit_members edit_permissions search_non_members search_non_tags]
+  before_action :set_group, only: %i[show edit update destroy edit_members show_members edit_permissions search_non_members search_non_tags]
 
   def index
     authorize([:admin, Group])
@@ -22,6 +22,10 @@ class Admin::GroupsController < ApplicationController
   end
 
   def edit_members
+    authorize([:admin, @group])
+  end
+
+  def show_members
     authorize([:admin, @group])
   end
 

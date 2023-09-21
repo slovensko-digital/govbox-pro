@@ -23,10 +23,12 @@ Rails.application.routes.draw do
     resources :tenants do
       resources :groups do
         get :edit_members, on: :member
+        get :show_members, on: :member
         get :edit_permissions, on: :member
         post :search_non_members, on: :member
         post :search_non_tags, on: :member
-        resources :group_memberships, param: :index
+        resources :group_memberships do
+        end
       end
       resources :users
       resources :boxes
