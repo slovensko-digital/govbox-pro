@@ -13,15 +13,16 @@
 
 class Govbox::Folder < ApplicationRecord
   belongs_to :box
-  belongs_to :parent_folder, class_name: 'Govbox::Folder', optional: true
-  has_many :messages, class_name: 'Govbox::Message'
+  belongs_to :parent_folder, class_name: 'Govbox::Folder', dependent: :destroy, optional: true
+  has_many :messages, class_name: 'Govbox::Message', dependent: :destroy
+  has_many :child_folders, class_name: 'Govbox::Folder', foreign_key: :parent_folder_id, dependent: :destroy
 
   def full_name
     parent_folder_id.present? ? "#{parent_folder.full_name}/#{name}" : name
   end
 
   def inbox?
-    name == "Inbox"
+    name.start_with? 'Inbox'
   end
 
   def bin?
@@ -29,6 +30,6 @@ class Govbox::Folder < ApplicationRecord
   end
 
   def drafts?
-    name == 'Drafts'
+    name.start_with? == 'Drafts'
   end
 end

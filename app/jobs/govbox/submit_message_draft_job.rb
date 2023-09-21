@@ -14,23 +14,22 @@ class Govbox::SubmitMessageDraftJob < ApplicationJob
     }.compact
 
     sktalk_api = upvs_client.api(message_draft.thread.folder.box).sktalk
+    success, response_status, response_body = sktalk_api.receive_and_save_to_outbox(message_draft_data)
 
-    begin
-      success, response_status = sktalk_api.receive_and_save_to_outbox(message_draft_data)
-      if success
-        message_draft.metadata["status"] = "submitted"
-        Govbox::SyncBoxJob.set(wait: 3.minutes).perform_later(message_draft.thread.folder.box)
-      else
-        handle_submit_fail(message_draft, response_status)
-      end
-
-      message_draft.save!
-    rescue Error => error
-      message_draft.metadata["status"] = "submit_failed_temporary"
+    if success
+      message_draft.metadata["status"] = "submitted"
       message_draft.save!
 
-      raise error
+      Govbox::SyncBoxJob.set(wait: 3.minutes).perform_later(message_draft.thread.folder.box)
+    else
+      handle_submit_fail(message_draft, response_status, response_body.dig("message"))
     end
+  end
+
+  class SubmissionError < StandardError
+  end
+
+  class TemporarySubmissionError < SubmissionError
   end
 
   private
@@ -52,14 +51,18 @@ class Govbox::SubmitMessageDraftJob < ApplicationJob
     objects
   end
 
-  def handle_submit_fail(message_draft, response_status)
+  def handle_submit_fail(message_draft, response_status, response_message)
     case response_status
-    when 408
-      # TODO
-    when 422
-      message_draft.metadata["status"] = "submit_failed_unprocessable"
+    when 408, 503
+      message_draft.metadata["status"] = "temporary_submit_fail"
+      message_draft.save
+
+      raise TemporarySubmissionError, "#{response_status}, #{response_message}"
     else
-      message_draft.metadata["status"] = "submit_failed_temporary"
+      message_draft.metadata["status"] = "submit_fail"
+      message_draft.save
+
+      raise SubmissionError, "#{response_status}, #{response_message}"
     end
   end
 end

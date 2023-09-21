@@ -6,6 +6,6 @@ one:
   tenant: solver
 
 two:
-  name: MyString
+  name: MyString2
   visible: false
   tenant: solver
