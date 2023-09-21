@@ -80,6 +80,7 @@ export default class extends Controller {
     const authenticityToken = this.data.get("authenticityToken");
 
     return new Promise((resolve, reject) => {
+      // request.js lib is used, responseKind: "turbo-stream" option is very important (be careful if case of changes)
       patch(`/messages/${messageId}/message_objects/${messageObjectId}`, {
         body: JSON.stringify({
           authenticity_token: authenticityToken,
