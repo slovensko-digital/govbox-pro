@@ -22,6 +22,12 @@ class Tag < ApplicationRecord
   validates :name, presence: true
   validates :name, uniqueness: { scope: :tenant_id, case_sensitive: false }
 
+  INBOX_TAG_NAME = 'Inbox'
+
   after_update_commit ->(tag) { EventBus.publish(:tag_renamed, tag) if previous_changes.key?("name") }
   after_destroy ->(tag) { EventBus.publish(:tag_removed, tag) }
+
+  def self.inbox_tag(tenant_id)
+    where(tenant_id: tenant_id).find_by_name!(INBOX_TAG_NAME)
+  end
 end

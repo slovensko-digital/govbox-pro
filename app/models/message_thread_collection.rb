@@ -21,8 +21,14 @@ class MessageThreadCollection
     cursor
   end
 
-  def self.all(scope: nil, search_permissions:, query: nil, no_visible_tags: false, cursor:)
+  def self.all(scope: nil, search_permissions:, query: nil, inbox_part:, no_visible_tags: false, cursor:)
     parsed_query = Searchable::MessageThreadQuery.parse(query.to_s)
+    if inbox_part == 'inbox'
+      parsed_query[:filter_labels] << Tag::INBOX_TAG_NAME
+    elsif inbox_part == 'archived'
+      parsed_query[:filter_out_labels] << Tag::INBOX_TAG_NAME
+    end
+
     filter = Searchable::MessageThreadQuery.labels_to_ids(
       parsed_query,
       tenant_id: search_permissions.fetch(:tenant_id),

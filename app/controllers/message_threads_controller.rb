@@ -1,5 +1,5 @@
 class MessageThreadsController < ApplicationController
-  before_action :set_message_thread, only: %i[show update]
+  before_action :set_message_thread, only: %i[show update archive move_to_inbox]
 
   def show
     authorize @message_thread
@@ -24,6 +24,7 @@ class MessageThreadsController < ApplicationController
     @message_threads, @next_cursor = MessageThreadCollection.all(
       scope: message_thread_policy_scope.includes(:tags),
       search_permissions: search_permissions,
+      inbox_part: search_params[:type] || 'inbox',
       query: search_params[:q],
       no_visible_tags: search_params[:no_visible_tags] == '1' && Current.user.admin?,
       cursor: cursor
@@ -51,6 +52,24 @@ class MessageThreadsController < ApplicationController
     redirect_to @selected_message_threads.first
   end
 
+  def archive
+    authorize MessageThread
+    @message_thread.archive
+
+    flash[:notice] = 'Vlákno bolo úspešne archivované'
+
+    redirect_to message_thread_path(@message_thread)
+  end
+
+  def move_to_inbox
+    authorize MessageThread
+    @message_thread.move_to_inbox
+
+    flash[:notice] = 'Vlákno bolo presunuté do doručených správ'
+
+    redirect_to message_thread_path(@message_thread)
+  end
+
   private
 
   def set_message_thread
@@ -72,6 +91,6 @@ class MessageThreadsController < ApplicationController
   end
 
   def search_params
-    params.permit(:q, :no_visible_tags, :format, cursor: MessageThreadCollection::CURSOR_PARAMS)
+    params.permit(:q, :no_visible_tags, :type, :format, cursor: MessageThreadCollection::CURSOR_PARAMS)
   end
 end

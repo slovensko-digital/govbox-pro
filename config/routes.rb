@@ -43,6 +43,10 @@ Rails.application.routes.draw do
     collection do
       post 'merge'
     end
+    member do
+      post 'archive'
+      post 'move_to_inbox'
+    end
     resources :messages
   end
   resources :message_threads_tags

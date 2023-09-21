@@ -38,4 +38,12 @@ class MessageThreadPolicy < ApplicationPolicy
   def merge?
     true
   end
+
+  def archive?
+    true
+  end
+
+  def move_to_inbox?
+    true
+  end
 end

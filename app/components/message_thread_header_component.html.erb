@@ -15,6 +15,12 @@
         <% end %>
       <% end %>
       <%= render Common::TagSelectorComponent.new(@message_thread) %>
+
+      <% if @message_thread.tags.include?(@inbox_tag) %>
+        <%= button_to 'Archivovať', archive_message_thread_path(@message_thread), method: :post, class: "flex justify-center items-center gap-2.5 px-3.5 py-2.5 rounded-md bg-blue-600 text-base font-medium text-left text-white hover:cursor-pointer" %>
+      <% else %>
+        <%= button_to 'Presunúť do doručených', move_to_inbox_message_thread_path(@message_thread), method: :post, class: "flex justify-center items-center gap-2.5 px-3.5 py-2.5 rounded-md bg-blue-600 text-base font-medium text-left text-white hover:cursor-pointer" %>
+      <% end %>
     </div>
   </div>
   <div class="todo flex flex-col justify-start items-end   gap-1">

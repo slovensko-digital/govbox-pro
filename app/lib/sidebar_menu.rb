@@ -22,16 +22,16 @@ class SidebarMenu
   def default_main_menu
     [
       TW::SidebarMenuItemComponent.new(name: 'Prehľad', url: root_path, icon: Icons::DashboardComponent.new),
-      TW::SidebarMenuItemComponent.new(name: 'Správy', url: message_threads_path, icon: Icons::SchrankaComponent.new),
+      TW::SidebarMenuItemComponent.new(name: 'Doručené', url: message_threads_path, icon: Icons::SchrankaComponent.new),
+      TW::SidebarMenuItemComponent.new(name: 'Archivované', url: message_threads_path(type: 'archived'), icon: Icons::ArchivedMessagesComponent.new),
+      TW::SidebarMenuItemComponent.new(name: 'Všetky správy', url: message_threads_path(type: 'all'), icon: Icons::SchrankaComponent.new),
       Layout::TagListComponent.new(tags: @parameters[:tags])
     ]
   end
 
   def admin_main_menu
+    default_main_menu +
     [
-      TW::SidebarMenuItemComponent.new(name: 'Prehľad', url: root_path, icon: Icons::DashboardComponent.new),
-      TW::SidebarMenuItemComponent.new(name: 'Správy', url: message_threads_path, icon: Icons::SchrankaComponent.new),
-      Layout::TagListComponent.new(tags: @parameters[:tags]),
       TW::SidebarMenuDividerComponent.new(name: 'Nastavenia'),
       TW::SidebarMenuItemComponent.new(name: 'Nastavenie pravidiel', url: settings_automation_rules_path, icon: Icons::SettingsComponent.new),
       TW::SidebarMenuDividerComponent.new(name: 'Administrácia'),

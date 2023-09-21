@@ -101,6 +101,7 @@ class Govbox::Message < ApplicationRecord
   end
 
   def self.create_message_tag(message, govbox_message)
+    inbox_tag = Tag.inbox_tag(govbox_message.box.tenant)
     tag = Tag.find_or_create_by!(
       name: "slovensko.sk:#{govbox_message.folder.full_name}",
       tenant: govbox_message.box.tenant,
@@ -109,5 +110,6 @@ class Govbox::Message < ApplicationRecord
 
     message.tags << tag
     message.thread.tags << tag unless message.thread.tags.include?(tag)
+    message.thread.tags << inbox_tag unless message.thread.tags.include?(inbox_tag)
   end
 end

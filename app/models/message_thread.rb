@@ -56,4 +56,18 @@ class MessageThread < ApplicationRecord
       target_thread.save!
     end
   end
+
+  def move_to_inbox
+    inbox_tag = Tag.inbox_tag(folder.box.tenant_id)
+
+    tags << inbox_tag unless tags.include?(inbox_tag)
+    save! # to fire events
+  end
+
+  def archive
+    inbox_tag = Tag.inbox_tag(folder.box.tenant_id)
+
+    tags.delete(inbox_tag) if tags.include?(inbox_tag)
+    save! # to fire events
+  end
 end
