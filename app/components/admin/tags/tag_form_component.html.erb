@@ -8,9 +8,7 @@
             <p class="self-stretch flex-grow-0 flex-shrink-0 text-xl font-semibold text-left text-gray-900"><%= @action == :new ? "Nový štítok" : "Úprava štítku" %></p>
             <p class="flex-grow-0 flex-shrink-0 text-xs text-left text-gray-500">Názov štítku</p>
           </div>
-          <%= link_to admin_tenant_tags_path(Current.tenant), data: { turbo_frame: "_top" } do %>
-            <%= render Common::CloseButtonComponent.new %>
-          <% end %>
+          <%= render Common::CloseButtonComponent.new(link_to: admin_tenant_tags_path(Current.tenant)) %>
         </div>
         <%= form_with model:[:admin, Current.tenant, @tag] do |form| %>
           <div class="flex flex-col justify-start items-start self-stretch flex-grow-0 flex-shrink-0 w-400">

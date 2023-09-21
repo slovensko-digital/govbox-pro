@@ -5,9 +5,7 @@
         <div class="flex flex-col justify-start items-start flex-grow relative">
           <p class="self-stretch flex-grow text-m font-semibold text-left text-gray-900">Pridaj právo na štítok skupine</p>
         </div>
-        <%= link_to edit_permissions_admin_tenant_group_path(Current.tenant, @group), data: { turbo_frame: "modal" } do %>
-          <%= render Common::CloseButtonComponent.new %>
-        <% end %>
+        <%= render Common::CloseButtonComponent.new(link_to: edit_permissions_admin_tenant_group_path(Current.tenant, @group), target_frame: 'modal') %>
       </div>
       <div class="flex flex-wrap gap-2 p-6 max-w-3xl">
         <% @tags.each do |tag| %>

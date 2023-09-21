@@ -8,9 +8,7 @@
             <p class="flex-grow-0 flex-shrink-0 text-xs text-left text-gray-500">Nastaviť prístup</p>
             <p class="self-stretch flex-grow w-[521px] text-xl font-semibold text-left text-gray-900">Štítky</p>
           </div>
-          <%= link_to admin_tenant_tag_groups_path(Current.tenant), data: { turbo_frame: "_top" } do %>
-            <%= render Common::CloseButtonComponent.new %>
-          <% end %>
+          <%= render Common::CloseButtonComponent.new(link_to admin_tenant_tag_groups_path(Current.tenant)) %>
         </div>
         <div class="flex flex-col justify-start items-start self-stretch flex-grow-0 flex-shrink-0">
           <%= form_with url: search_non_tags_admin_tenant_group_path(Current.tenant, @group),
