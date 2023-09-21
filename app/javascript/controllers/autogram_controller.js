@@ -1,12 +1,13 @@
 import { Controller } from "@hotwired/stimulus"
+import { get, patch } from '@rails/request.js'
 
 export default class extends Controller {
 
   async sign(messageObjectId, messageId, that, batchId = null) {
     return new Promise((resolve, reject) => {
-      fetch(`/messages/${messageId}/message_objects/${messageObjectId}/signing_data.json`)
+      get(`/messages/${messageId}/message_objects/${messageObjectId}/signing_data.json`)
         .then(function (response) {
-          return response.json();
+          return response.json;
         })
         .then(async function (messageObjectData) {
           let payloadMimeType = `${messageObjectData.mime_type};base64`;
@@ -79,17 +80,15 @@ export default class extends Controller {
     const authenticityToken = this.data.get("authenticityToken");
 
     return new Promise((resolve, reject) => {
-      fetch(`/messages/${messageId}/message_objects/${messageObjectId}`, {
-        method: "PATCH",
-        headers: {"Content-Type": "application/json"},
+      patch(`/messages/${messageId}/message_objects/${messageObjectId}`, {
         body: JSON.stringify({
           authenticity_token: authenticityToken,
           name: signedFileName,
           mimetype: signedFileMimeType,
           is_signed: true,
-          content: signedContent,
-          format: "turbo_stream"
-        })
+          content: signedContent
+        }),
+        responseKind: "turbo-stream"
       }).then(function () {
         resolve();
       })
