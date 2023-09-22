@@ -1,4 +1,0 @@
-<%# TODO: Toto sa mi nepodarilo vyriesit standartnym redirectom, len takymto hackom. Nahodou nejake napady? Problem je, ze create sa vola z ineho turbo framu, z ktoreho neviem inak uniknut %>
-<%= turbo_stream.update 'modal' do %>
-  <%= render Admin::Groups::GroupFormComponent.new(group: @group, step: :new)%>
-<% end %>

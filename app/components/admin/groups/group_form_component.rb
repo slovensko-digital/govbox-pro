@@ -1,6 +1,6 @@
 class Admin::Groups::GroupFormComponent < ViewComponent::Base
-  def initialize(group:, step:)
+  def initialize(group:, readonly: false)
     @group = group
-    @step = step
+    @readonly = readonly
   end
 end

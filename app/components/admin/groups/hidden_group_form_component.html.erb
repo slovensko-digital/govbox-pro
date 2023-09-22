@@ -1,8 +1,0 @@
-<%= @form.hidden_field :id %>
-<%= @form.hidden_field :tenant_id %>
-<%= @form.fields_for :group_memberships do |membership_form| %>
-  <%= membership_form.hidden_field :group_id %>
-  <%= membership_form.hidden_field :user_id %>
-  <%= membership_form.hidden_field :id if membership_form.object.id %>
-  <%= membership_form.hidden_field :delete_record if membership_form.object.delete_record %>
-<% end %>

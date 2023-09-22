@@ -14,7 +14,7 @@
           </div>
         <% end %>
       <% end %>
-      <%= render Common::TagSelectorComponent.new(@message_thread) %>
+      <%= render Common::TagSelectorComponent.new(@message_thread, @available_tags) %>
     </div>
   </div>
   <div class="todo flex flex-col justify-start items-end   gap-1">

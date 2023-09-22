@@ -17,14 +17,15 @@ class Tenant < ApplicationRecord
   has_many :automation_rules, class_name: 'Automation::Rule', dependent: :destroy
   has_many :folders, through: :boxes
   has_many :tags, dependent: :destroy
-  after_create :create_default_groups
+  after_create :create_default_objects
 
   validates_presence_of :name
 
   private
 
-  def create_default_groups
+  def create_default_objects
     groups.create!(name: 'all', group_type: 'ALL')
     groups.create!(name: 'admins', group_type: 'ADMIN')
+    tags.create!(name: 'Drafts', external: false, visible: true)
   end
 end
