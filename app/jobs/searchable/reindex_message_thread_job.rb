@@ -8,10 +8,11 @@ class Searchable::ReindexMessageThreadJob < ApplicationJob
     # Can be an Integer or Lambda/Proc that is invoked in the context of the job
     total_limit: 1,
 
-    key: -> { "Searchable::ReindexMessageThreadJob-#{arguments.first.id}" }
+    key: -> { "Searchable::ReindexMessageThreadJob-#{arguments.first.try(:id)}" }
   )
 
   retry_on ::ApplicationRecord::FailedToAcquireLockError, wait: :exponentially_longer, attempts: Float::INFINITY
+  discard_on ActiveJob::DeserializationError
 
   def perform(message_thread)
     ::Searchable::MessageThread.transaction do
