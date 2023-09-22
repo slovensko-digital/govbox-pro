@@ -47,6 +47,7 @@ gem 'pg_search'
 gem 'bootsnap', '>= 1.4.4', require: false
 
 group :development, :test do
+  gem "brakeman"
   gem 'dotenv-rails'
   gem 'pry-rails'
   gem 'pry-byebug'
