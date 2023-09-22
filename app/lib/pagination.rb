@@ -21,6 +21,6 @@ module Pagination
     # only for keys where value is provided (therefore .compact)
     where_args_string = cursor.compact.keys.join(',')
     questionmarks = cursor.compact.keys.map { '?' }.join(',')
-    "(#{where_args_string})" + (direction == 'desc' ? '<' : '>') + "(#{questionmarks})"
+    "(#{where_args_string})" + (direction.to_s == 'desc' ? '<' : '>') + "(#{questionmarks})"
   end
 end

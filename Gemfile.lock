@@ -214,6 +214,9 @@ GEM
     parser (3.2.2.1)
       ast (~> 2.4.1)
     pg (1.5.3)
+    pg_search (2.3.6)
+      activerecord (>= 5.2)
+      activesupport (>= 5.2)
     pry (0.14.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
@@ -368,6 +371,8 @@ GEM
     websocket-driver (0.7.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
+    with_advisory_lock (4.6.0)
+      activerecord (>= 4.2)
     xpath (3.2.0)
       nokogiri (~> 1.8)
     yard (0.9.34)
@@ -394,6 +399,7 @@ DEPENDENCIES
   omniauth-google-oauth2
   omniauth-rails_csrf_protection
   pg (~> 1.0)
+  pg_search
   pry-byebug
   pry-rails
   puma (~> 5.0)
@@ -414,6 +420,7 @@ DEPENDENCIES
   web-console
   webdrivers
   webmock
+  with_advisory_lock
 
 RUBY VERSION
    ruby 3.2.2p53

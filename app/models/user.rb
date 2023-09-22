@@ -15,12 +15,12 @@ class User < ApplicationRecord
   has_many :groups, through: :group_memberships
   has_many :tag_users, dependent: :destroy
   has_many :tags, through: :tag_users
-  has_many :own_tags, class_name: 'Tag', foreign_key: 'user_id', inverse_of: :owner
+  has_many :own_tags, class_name: 'Tag', foreign_key: 'user_id', inverse_of: :owner, dependent: :nullify
   has_many :message_drafts, foreign_key: :author_id
   has_many :automation_rules, class_name: 'Automation::Rule'
 
   validates_presence_of :name, :email
-  validates_uniqueness_of :name, :email, scope: :tenant_id
+  validates_uniqueness_of :name, :email, scope: :tenant_id, case_sensitive: false
 
   before_destroy :delete_user_group, prepend: true
   after_create :handle_default_groups

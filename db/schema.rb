@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_14_151243) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_20_093653) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -194,7 +194,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_14_151243) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["box_id"], name: "index_govbox_folders_on_box_id"
-    t.index ["edesk_folder_id"], name: "index_govbox_folders_on_edesk_folder_id", unique: true
+    t.index ["edesk_folder_id", "box_id"], name: "index_govbox_folders_on_edesk_folder_id_and_box_id", unique: true
     t.index ["parent_folder_id"], name: "index_govbox_folders_on_parent_folder_id"
   end
 
@@ -265,8 +265,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_14_151243) do
     t.uuid "uuid", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "tenant_id", null: false
     t.index ["message_thread_id"], name: "index_message_thread_merge_identifiers_on_message_thread_id"
-    t.index ["uuid"], name: "index_message_thread_merge_identifiers_on_uuid", unique: true
+    t.index ["tenant_id"], name: "index_message_thread_merge_identifiers_on_tenant_id"
+    t.index ["uuid", "tenant_id"], name: "index_message_thread_merge_identifiers_on_uuid_and_tenant_id", unique: true
   end
 
   create_table "message_threads", force: :cascade do |t|
@@ -321,6 +323,20 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_14_151243) do
     t.index ["tag_id"], name: "index_messages_tags_on_tag_id"
   end
 
+  create_table "searchable_message_threads", force: :cascade do |t|
+    t.integer "message_thread_id", null: false
+    t.text "title", null: false
+    t.text "content", null: false
+    t.text "tag_names", null: false
+    t.integer "tag_ids", default: [], null: false, array: true
+    t.datetime "last_message_delivered_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "tenant_id", null: false
+    t.integer "box_id", null: false
+    t.index ["message_thread_id"], name: "index_searchable_message_threads_on_message_thread_id", unique: true
+  end
+
   create_table "tag_groups", force: :cascade do |t|
     t.bigint "group_id", null: false
     t.bigint "tag_id", null: false
@@ -346,6 +362,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_14_151243) do
     t.datetime "updated_at", null: false
     t.boolean "visible", default: true, null: false
     t.bigint "user_id"
+    t.index "tenant_id, lower((name)::text)", name: "index_tags_on_tenant_id_and_lowercase_name", unique: true
     t.boolean "external", default: false
     t.index ["tenant_id"], name: "index_tags_on_tenant_id"
     t.index ["user_id"], name: "index_tags_on_user_id"
@@ -382,7 +399,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_14_151243) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["tenant_id", "email"], name: "index_users_on_tenant_id_and_email", unique: true
+    t.index "tenant_id, lower((email)::text)", name: "index_users_on_tenant_id_and_lowercase_email", unique: true
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
@@ -393,8 +410,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_14_151243) do
   add_foreign_key "automation_rules", "users"
   add_foreign_key "boxes", "tenants"
   add_foreign_key "folders", "boxes"
-  add_foreign_key "govbox_api_connections", "boxes"
-  add_foreign_key "govbox_folders", "boxes"
   add_foreign_key "govbox_folders", "govbox_folders", column: "parent_folder_id"
   add_foreign_key "govbox_messages", "govbox_folders", column: "folder_id"
   add_foreign_key "group_memberships", "groups"
@@ -404,6 +419,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_14_151243) do
   add_foreign_key "message_object_data", "message_objects"
   add_foreign_key "message_objects", "messages"
   add_foreign_key "message_thread_merge_identifiers", "message_threads"
+  add_foreign_key "message_thread_merge_identifiers", "tenants"
   add_foreign_key "message_threads", "folders"
   add_foreign_key "message_threads_tags", "message_threads"
   add_foreign_key "message_threads_tags", "tags"
@@ -412,6 +428,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_14_151243) do
   add_foreign_key "messages", "users", column: "author_id"
   add_foreign_key "messages_tags", "messages"
   add_foreign_key "messages_tags", "tags"
+  add_foreign_key "searchable_message_threads", "message_threads", on_delete: :cascade
   add_foreign_key "tag_groups", "groups"
   add_foreign_key "tag_groups", "tags"
   add_foreign_key "tag_users", "tags"

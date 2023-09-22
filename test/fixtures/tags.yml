@@ -7,7 +7,7 @@ one:
   tenant: solver
 
 two:
-  name: MyString
+  name: MyString2
   external: false
   visible: false
   tenant: solver

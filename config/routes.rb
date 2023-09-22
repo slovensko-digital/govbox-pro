@@ -45,14 +45,9 @@ Rails.application.routes.draw do
     post :sync
   end
 
-  resources :tags do
-    resources :message_threads do
-    end
-  end
-
   resources :message_threads do
     collection do
-      get 'merge'
+      post 'merge'
     end
     resources :messages
   end

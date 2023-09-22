@@ -13,9 +13,11 @@
 class Box < ApplicationRecord
   belongs_to :tenant
 
-  has_many :folders
-  has_many :message_threads, through: :folders, extend: MessageThreadsExtensions
-  has_many :message_drafts_imports
+  has_many :folders, dependent: :destroy
+  has_many :message_threads, through: :folders, extend: MessageThreadsExtensions, dependent: :destroy
+  has_many :message_drafts_imports, dependent: :destroy
+
+  before_destroy ->(box) { EventBus.publish(:box_destroyed, box.id) }
 
   before_create { self.color = Box.colors.keys[name.hash % Box.colors.size] if color.blank? }
 
