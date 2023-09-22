@@ -1,14 +1,14 @@
-import { Controller } from "@hotwired/stimulus"
+import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = [ "form" ]
+  static targets = ["form"];
 
-  connect() { console.log("debounce controller connected") }
+  connect() {}
 
-  search() {
-    clearTimeout(this.timeout)
+  debounce() {
+    clearTimeout(this.timeout);
     this.timeout = setTimeout(() => {
-        this.formTarget.requestSubmit()
-      }, 300)
+      this.formTarget.requestSubmit();
+    }, 300);
   }
 }

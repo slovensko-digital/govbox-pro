@@ -5,7 +5,7 @@ class AddColorToBoxes < ActiveRecord::Migration[7.0]
       t.enum :color, enum_type: 'color'
     end
     Box.all.each do |box|
-      box.color = Box.colors.keys[Digest::MD5.hexdigest(@box.name).to_i(16) % Box.colors.size]
+      box.color = Box.colors.keys[@box.name.hash % Box.colors.size]
       box.short_name = box.name[0]
     end
   end
