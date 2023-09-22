@@ -54,12 +54,7 @@ class Govbox::Message < ApplicationRecord
       message
     end
 
-    raise FailedToAcquireLockError unless message
-
     self.create_message_objects(message, govbox_message.payload)
-  end
-
-  class FailedToAcquireLockError < StandardError
   end
 
   private
