@@ -3,6 +3,7 @@ class SessionsController < ApplicationController
   skip_after_action :verify_authorized
   skip_after_action :verify_policy_scoped
   skip_before_action :set_menu_context
+  layout 'login'
 
   def login
   end

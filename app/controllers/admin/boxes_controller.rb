@@ -26,7 +26,7 @@ class Admin::BoxesController < ApplicationController
     @box.color = Box.colors.keys[Digest::MD5.hexdigest(@box.name).to_i(16) % Box.colors.size]
 
     if @box.save
-      redirect_to admin_tenant_url(Current.tenant), notice: "Box was successfully created."
+      redirect_to admin_tenant_boxes_url(Current.tenant), notice: "Box was successfully created."
     else
       render :new, status: :unprocessable_entity
     end
@@ -35,7 +35,7 @@ class Admin::BoxesController < ApplicationController
   def update
     authorize([:admin, @box])
     if @box.update(box_params)
-      redirect_to admin_tenant_url(Current.tenant), notice: "Box was successfully updated."
+      redirect_to admin_tenant_boxes_url(Current.tenant), notice: "Box was successfully updated."
     else
       render :edit, status: :unprocessable_entity
     end
@@ -44,7 +44,7 @@ class Admin::BoxesController < ApplicationController
   def destroy
     authorize([:admin, @box])
     @box.destroy
-    redirect_to admin_tenant_url(Current.tenant), notice: "Box was successfully destroyed."
+    redirect_to admin_tenant_boxes_url(Current.tenant), notice: "Box was successfully destroyed."
   end
 
   private
