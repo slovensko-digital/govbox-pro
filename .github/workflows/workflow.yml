@@ -5,6 +5,21 @@ on:
     branches: '**'
 
 jobs:
+  brakeman:
+    name: Brakeman
+
+    if: ${{github.repository == 'solver-it-sro/govbox-pro'}}
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - run: bundle exec brakeman
+
   test:
     if: ${{github.repository == 'solver-it-sro/govbox-pro'}}
 
@@ -30,7 +45,6 @@ jobs:
         with:
           bundler-cache: true
 
-      - run: bundle exec brakeman
       - run: bundle exec rails db:setup --trace
       - run: bundle exec rails test
 
