@@ -1,5 +1,6 @@
 class Admin::Tags::TagsListRowComponent < ViewComponent::Base
-  def initialize(tag)
+  with_collection_parameter :tag
+  def initialize(tag:)
     @tag = tag
   end
 end

@@ -27,4 +27,8 @@ class TagPolicy < ApplicationPolicy
   def show?
     true
   end
+
+  def get_available?
+    true
+  end
 end

@@ -32,11 +32,13 @@ Rails.application.routes.draw do
       end
       resources :users
       resources :boxes
-      resources :tags do
-        patch :visibility_toggle, on: :member
-      end
+      resources :tags
       resources :tag_groups
     end
+  end
+
+  resources :tags do
+    get :get_available, on: :collection
   end
 
   resources :boxes, path: 'schranky', only: [:index, :show] do

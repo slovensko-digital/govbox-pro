@@ -41,11 +41,6 @@ class Admin::TagsController < ApplicationController
     end
   end
 
-  def visibility_toggle
-    authorize([:admin, @tag])
-    @tag.update(tag_params_visibility)
-  end
-
   def destroy
     authorize([:admin, @tag])
     @tag.destroy

@@ -4,9 +4,7 @@
       <div class="grow shrink basis-0 text-gray-900 text-xl font-semibold leading-[35px]">Skupiny</div>
     </div>
     <div class="self-stretch flex-col justify-start items-start flex">
-      <% @groups.each do |group| %>
-        <%= render Admin::Permissions::GroupsListRowComponent.new(group) %>
-      <% end %>
+      <%= render Admin::Permissions::GroupsListRowComponent.with_collection(@groups) %>
     </div>
   </div>
   <div class="self-stretch bg-white rounded-md border border-gray-200 flex-col justify-start items-start flex">

@@ -7,9 +7,7 @@
       <% end %>
     </div>
     <div class="self-stretch flex-col justify-start items-start flex">
-      <% @internal_tags.each do |tag| %>
-        <%= render Admin::Tags::TagsListRowComponent.new(tag) %>
-      <% end %>
+      <%= render Admin::Tags::TagsListRowComponent.with_collection(@internal_tags) %>
     </div>
   </div>
   <%= render Admin::Tags::ExternalTagsComponent.new(@external_tags) %>

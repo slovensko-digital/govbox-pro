@@ -17,7 +17,7 @@ class Box < ApplicationRecord
   has_many :message_threads, through: :folders, extend: MessageThreadsExtensions
   has_many :message_drafts_imports
 
-  before_create { self.color = Box.colors.keys[Digest::MD5.hexdigest(name).to_i(16) % Box.colors.size] if color.blank? }
+  before_create { self.color = Box.colors.keys[name.hash % Box.colors.size] if color.blank? }
 
   enum :color,
        {

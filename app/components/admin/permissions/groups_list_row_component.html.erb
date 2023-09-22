@@ -17,9 +17,7 @@
     </div>
     <div class="flex justify-start items-start overflow-hidden gap-2 px-4">
       <div class="flex flex-wrap justify-start items-start gap-2">
-        <% @group.tag_groups.each do |tag_group| %>
-          <%= render Admin::Permissions::TagComponent.new(tag_group.tag) %>
-        <% end %>
+        <%= render Admin::Permissions::TagComponent.with_collection(@group.tags) %>
       </div>
     </div>
   </div>

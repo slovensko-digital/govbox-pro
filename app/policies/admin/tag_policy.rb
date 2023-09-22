@@ -38,10 +38,6 @@ class Admin::TagPolicy < ApplicationPolicy
     update?
   end
 
-  def visibility_toggle?
-    update?
-  end
-
   def destroy?
     @user.site_admin? || @user.admin?
   end
