@@ -8,8 +8,6 @@ class BoxPolicy < ApplicationPolicy
     @box = box
   end
 
-  # TODO: Cely tento policy file je asi na prerabku, kedze vacsina z neho je adminova, a je vlastne kopiou z admina
-
   class Scope < Scope
     def resolve
       @user.site_admin? ? scope.all : scope.where(tenant: @user.tenant)
@@ -28,23 +26,16 @@ class BoxPolicy < ApplicationPolicy
     @user.site_admin? || @user.admin?
   end
 
-  def create?
-    @user.site_admin? || @user.admin?
+  def select?
+    true
   end
 
-  def new?
-    create?
+  def select_all?
+    true
   end
 
-  def update?
-    @user.site_admin? || @user.admin?
+  def search?
+    true
   end
 
-  def edit?
-    update?
-  end
-
-  def destroy?
-    @user.site_admin? || @user.admin?
-  end
 end

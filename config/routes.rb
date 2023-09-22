@@ -43,6 +43,9 @@ Rails.application.routes.draw do
 
   resources :boxes, path: 'schranky', only: [:index, :show] do
     post :sync
+    get :select, on: :member
+    get :select_all, on: :collection
+    post :search, on: :collection
   end
 
   resources :message_threads do

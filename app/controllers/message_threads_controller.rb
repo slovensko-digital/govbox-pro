@@ -22,7 +22,7 @@ class MessageThreadsController < ApplicationController
     cursor = MessageThreadCollection.init_cursor(search_params[:cursor])
 
     @message_threads, @next_cursor = MessageThreadCollection.all(
-      scope: message_thread_policy_scope.includes(:tags),
+      scope: message_thread_policy_scope.includes(:tags, :box),
       search_permissions: search_permissions,
       query: search_params[:q],
       no_visible_tags: search_params[:no_visible_tags] == '1' && Current.user.admin?,
@@ -63,6 +63,7 @@ class MessageThreadsController < ApplicationController
 
   def search_permissions
     result = { tenant_id: Current.tenant }
+    result[:box_id] = Current.box if Current.box
     result[:tag_ids] = policy_scope(Tag).pluck(:id) unless Current.user.admin?
     result
   end
