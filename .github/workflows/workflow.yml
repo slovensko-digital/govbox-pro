@@ -8,8 +8,6 @@ jobs:
   brakeman:
     name: Brakeman
 
-    if: ${{github.repository == 'solver-it-sro/govbox-pro'}}
-
     runs-on: ubuntu-latest
 
     steps:
@@ -21,8 +19,6 @@ jobs:
       - run: bundle exec brakeman
 
   test:
-    if: ${{github.repository == 'solver-it-sro/govbox-pro'}}
-
     runs-on: ubuntu-latest
 
     env:
