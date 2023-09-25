@@ -15,6 +15,8 @@ class Searchable::ReindexMessageThreadJob < ApplicationJob
   discard_on ActiveJob::DeserializationError
 
   def perform(message_thread)
+    return if message_thread.nil?
+
     ::Searchable::MessageThread.transaction do
       ::Searchable::MessageThread.with_advisory_lock!("mt_#{message_thread.id}", transaction: true, timeout_seconds: 10) do
         ::Searchable::MessageThread.index_record(message_thread)
