@@ -15,6 +15,7 @@ class Box < ApplicationRecord
 
   has_many :folders, dependent: :destroy
   has_many :message_threads, through: :folders, extend: MessageThreadsExtensions, dependent: :destroy
+  has_many :messages, through: :message_threads
   has_many :message_drafts_imports, dependent: :destroy
 
   before_destroy ->(box) { EventBus.publish(:box_destroyed, box.id) }
