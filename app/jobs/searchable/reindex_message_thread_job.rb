@@ -11,16 +11,11 @@ class Searchable::ReindexMessageThreadJob < ApplicationJob
     key: -> { "Searchable::ReindexMessageThreadJob-#{arguments.first.try(:id)}" }
   )
 
-  retry_on ::ApplicationRecord::FailedToAcquireLockError, wait: :exponentially_longer, attempts: Float::INFINITY
   discard_on ActiveJob::DeserializationError
 
   def perform(message_thread)
     return if message_thread.nil?
 
-    ::Searchable::MessageThread.transaction do
-      ::Searchable::MessageThread.with_advisory_lock!("mt_#{message_thread.id}", transaction: true, timeout_seconds: 10) do
-        ::Searchable::MessageThread.index_record(message_thread)
-      end
-    end
+    ::Searchable::MessageThread.index_record(message_thread)
   end
 end
