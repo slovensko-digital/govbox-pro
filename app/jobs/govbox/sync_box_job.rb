@@ -26,12 +26,11 @@ module Govbox
         parent_folder = find_or_create_folder_with_parent(folders[folder_hash['parent_id']], folders, box)
       end
 
-      folder = Govbox::Folder.find_or_initialize_by(edesk_folder_id: folder_hash['id']).tap do |f|
+      folder = Govbox::Folder.find_or_initialize_by(edesk_folder_id: folder_hash['id'], box: box).tap do |f|
         f.edesk_folder_id = folder_hash['id']
         f.parent_folder = parent_folder
         f.name = folder_hash['name']
         f.system = folder_hash['system'] || false
-        f.box = box
         f.save!
       end
 

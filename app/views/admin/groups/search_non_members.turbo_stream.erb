@@ -1,0 +1,5 @@
+<%= turbo_stream.update 'user-search-results' do %>
+  <% if !params[:name_search].empty? %>
+    <%= render Admin::Groups::MemberAddPopupComponent.new(users: @users, group: @group) %>
+  <% end %>
+<% end %>

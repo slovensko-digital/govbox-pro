@@ -9,6 +9,7 @@
 
 .idea
 .vscode
+.streerc
 .rdbg*
 
 # Ignore all logfiles and tempfiles.

@@ -1,0 +1,23 @@
+<div class="flex flex-col absolute z-50 mt-2 w-200 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+  <div class="flex flex-col justify-start items-start overflow-hidden rounded-lg bg-white border border-gray-300" style="box-shadow: 1px 1px 4px 0 rgba(0,0,0,0.1);">
+    <% if @users && @users.any? %>
+      <div class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 overflow-hidden gap-6 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
+        <div class="flex flex-col justify-start items-start flex-grow relative">
+          <p class="self-stretch flex-grow text-m font-semibold text-left text-gray-900">Pridaj používateľa do skupiny</p>
+        </div>
+        <%= render Common::CloseButtonComponent.new(link_to: edit_members_admin_tenant_group_path(Current.tenant, @group), target_frame: 'modal') %>
+      </div>
+      <div class="flex flex-col justify-start items-start self-stretch flex-grow-0 flex-shrink-0">
+        <div class="flex flex-col justify-start items-start self-stretch p-6 divide-y">
+          <% @users.each do |user| %>
+            <%= render Admin::Groups::UserAddComponent.new(user: user, group: @group) %>
+          <% end %>
+        </div>
+      </div>
+    <% else %>
+      <div class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 overflow-hidden gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
+        <%= 'Používateľ nenájdený' %>
+      </div>
+    <% end %>
+  </div>
+</div>

@@ -4,9 +4,10 @@ one:
   name: MyString
   uri: MyString
   tenant: solver
+  short_name: MY1
 
 two:
   name: MyString
   uri: MyString
   tenant: solver
-
+  short_name: MY2

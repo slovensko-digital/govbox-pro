@@ -23,9 +23,8 @@ class Admin::BoxesController < ApplicationController
   def create
     @box = Current.tenant.boxes.new(box_params)
     authorize([:admin, @box])
-
     if @box.save
-      redirect_to admin_tenant_url(Current.tenant), notice: "Box was successfully created."
+      redirect_to admin_tenant_boxes_url(Current.tenant), notice: "Box was successfully created."
     else
       render :new, status: :unprocessable_entity
     end
@@ -34,7 +33,7 @@ class Admin::BoxesController < ApplicationController
   def update
     authorize([:admin, @box])
     if @box.update(box_params)
-      redirect_to admin_tenant_url(Current.tenant), notice: "Box was successfully updated."
+      redirect_to admin_tenant_boxes_url(Current.tenant), notice: "Box was successfully updated."
     else
       render :edit, status: :unprocessable_entity
     end
@@ -43,7 +42,7 @@ class Admin::BoxesController < ApplicationController
   def destroy
     authorize([:admin, @box])
     @box.destroy
-    redirect_to admin_tenant_url(Current.tenant), notice: "Box was successfully destroyed."
+    redirect_to admin_tenant_boxes_url(Current.tenant), notice: "Box was successfully destroyed."
   end
 
   private
@@ -53,6 +52,6 @@ class Admin::BoxesController < ApplicationController
   end
 
   def box_params
-    params.require(:box).permit(:name, :uri)
+    params.require(:box).permit(:name, :uri, :short_name, :color)
   end
 end

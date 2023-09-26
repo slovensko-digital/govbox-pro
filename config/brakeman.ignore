@@ -1,0 +1,108 @@
+{
+  "ignored_warnings": [
+    {
+      "warning_type": "Dynamic Render Path",
+      "warning_code": 15,
+      "fingerprint": "0d7a447e47382893b06895c67cb02fc7084b4904e795f2488049b4083d5ef829",
+      "check_name": "Render",
+      "message": "Render path contains parameter value",
+      "file": "app/views/admin/tags/show.html.erb",
+      "line": 6,
+      "link": "https://brakemanscanner.org/docs/warning_types/dynamic_render_path/",
+      "code": "render(action => policy_scope([:admin, Tag]).find(params[:id]), {})",
+      "render_path": [
+        {
+          "type": "controller",
+          "class": "Admin::TagsController",
+          "method": "show",
+          "line": 12,
+          "file": "app/controllers/admin/tags_controller.rb",
+          "rendered": {
+            "name": "admin/tags/show",
+            "file": "app/views/admin/tags/show.html.erb"
+          }
+        }
+      ],
+      "location": {
+        "type": "template",
+        "template": "admin/tags/show"
+      },
+      "user_input": "params[:id]",
+      "confidence": "Weak",
+      "cwe_id": [
+        22
+      ],
+      "note": ""
+    },
+    {
+      "warning_type": "Dynamic Render Path",
+      "warning_code": 15,
+      "fingerprint": "206fab310dd6225cc18046a3fa3d8d2e15898077ebf7140753f6104ac8952297",
+      "check_name": "Render",
+      "message": "Render path contains parameter value",
+      "file": "app/views/admin/boxes/show.html.erb",
+      "line": 6,
+      "link": "https://brakemanscanner.org/docs/warning_types/dynamic_render_path/",
+      "code": "render(action => policy_scope([:admin, Box]).find(params[:id]), {})",
+      "render_path": [
+        {
+          "type": "controller",
+          "class": "Admin::BoxesController",
+          "method": "show",
+          "line": 12,
+          "file": "app/controllers/admin/boxes_controller.rb",
+          "rendered": {
+            "name": "admin/boxes/show",
+            "file": "app/views/admin/boxes/show.html.erb"
+          }
+        }
+      ],
+      "location": {
+        "type": "template",
+        "template": "admin/boxes/show"
+      },
+      "user_input": "params[:id]",
+      "confidence": "Weak",
+      "cwe_id": [
+        22
+      ],
+      "note": ""
+    },
+    {
+      "warning_type": "Dynamic Render Path",
+      "warning_code": 15,
+      "fingerprint": "b8a2fb69d5ae58b1a2ef3054ed2a602436392f1db28b5ef31c0ec249e0fec16a",
+      "check_name": "Render",
+      "message": "Render path contains parameter value",
+      "file": "app/views/admin/tenants/show.html.erb",
+      "line": 14,
+      "link": "https://brakemanscanner.org/docs/warning_types/dynamic_render_path/",
+      "code": "render(action => policy_scope([:admin, Tenant]).find(params[:id]), {})",
+      "render_path": [
+        {
+          "type": "controller",
+          "class": "Admin::TenantsController",
+          "method": "show",
+          "line": 14,
+          "file": "app/controllers/admin/tenants_controller.rb",
+          "rendered": {
+            "name": "admin/tenants/show",
+            "file": "app/views/admin/tenants/show.html.erb"
+          }
+        }
+      ],
+      "location": {
+        "type": "template",
+        "template": "admin/tenants/show"
+      },
+      "user_input": "params[:id]",
+      "confidence": "Weak",
+      "cwe_id": [
+        22
+      ],
+      "note": ""
+    }
+  ],
+  "updated": "2023-09-22 12:38:37 +0200",
+  "brakeman_version": "6.0.1"
+}

@@ -17,6 +17,8 @@ class MessageDraftsImportsController < ApplicationController
   end
 
   def upload_new
+    @box = Current.box if Current.box
+    @box = Current.tenant.boxes.first if Current.tenant.boxes.count == 1
     authorize MessageDraftsImport
   end
 

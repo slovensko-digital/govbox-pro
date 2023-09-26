@@ -9,9 +9,7 @@
               <p class="self-stretch flex-grow w-[788px] text-xl font-semibold text-left text-gray-900"> Úprava pravidla </p>
               <p class="flex-grow-0 flex-shrink-0 text-xs text-left text-gray-500"> Krok 3 z 3 – Akcie pravidla </p>
             </div>
-            <%= link_to settings_automation_rules_path, data: { turbo_frame: "_top" } do %>
-              <%= render Common::CloseButtonComponent.new %>
-            <% end %>
+            <%= render Common::CloseButtonComponent.new(link_to: settings_automation_rules_path) %>
           </div>
           <div class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-4 p-6 bg-white border-t-0 border-r-0 border-b border-l-0 border-gray-200">
             <%= render Icons::InfoComponent.new %>
@@ -40,7 +38,7 @@
             <% end %>
             <div class="flex justify-start items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6">
               <%= rule_form.button "Späť", formaction: conditions_step_settings_automation_rule_path, class:"flex justify-center items-center flex-grow relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md border border-gray-300 text-base font-medium text-left text-gray-900 bg-white" %>
-              <%= rule_form.button "Uložiť zmeny", class:"flex justify-center items-center flex-grow relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md text-base font-medium text-left text-white bg-blue-600" %>
+              <%= rule_form.button "Uložiť zmeny", class:"flex justify-center items-center flex-grow relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md text-base font-medium text-left text-white bg-blue-600", data: { turbo_frame: "_top" } %>
             </div>
           <% end %>
         </div>

@@ -6,6 +6,7 @@ gem 'rails', '~> 7.0'
 gem 'rails-i18n'
 
 gem 'pg', '~> 1.0'
+gem 'with_advisory_lock'
 
 gem 'puma', '~> 5.0'
 
@@ -46,6 +47,7 @@ gem 'pg_search'
 gem 'bootsnap', '>= 1.4.4', require: false
 
 group :development, :test do
+  gem "brakeman"
   gem 'dotenv-rails'
   gem 'pry-rails'
   gem 'pry-byebug'
