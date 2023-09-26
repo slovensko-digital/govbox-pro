@@ -6,6 +6,9 @@ image:
   secrets:
   - name: skdigital-bonet-registry
 application.migrateCommand: ["bundle", "exec", "rails", "db:migrate"]
+ingress:
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: 256m
 livenessProbe:
   initialDelaySeconds: 5
   timeoutSeconds: 5
