@@ -10,13 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_20_093653) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_22_090015) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
+  enable_extension "unaccent"
 
   # Custom types defined in this database.
   # Note that some types may not work with other database engines. Be careful if changing database.
+  create_enum "color", ["slate", "gray", "zinc", "neutral", "stone", "red", "orange", "amber", "yellow", "lime", "green", "emerald", "teal", "cyan", "sky", "blue", "indigo", "violet", "purple", "fuchsia", "pink", "rose"]
   create_enum "group_type", ["ALL", "USER", "CUSTOM", "ADMIN"]
 
   create_table "active_storage_attachments", force: :cascade do |t|
@@ -84,6 +86,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_20_093653) do
     t.datetime "updated_at", null: false
     t.bigint "tenant_id", null: false
     t.boolean "syncable", default: true, null: false
+    t.string "short_name"
+    t.enum "color", enum_type: "color"
+    t.index ["tenant_id", "short_name"], name: "index_boxes_on_tenant_id_and_short_name", unique: true
     t.index ["tenant_id"], name: "index_boxes_on_tenant_id"
   end
 
@@ -357,6 +362,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_20_093653) do
     t.datetime "updated_at", null: false
     t.boolean "visible", default: true, null: false
     t.bigint "user_id"
+    t.boolean "external", default: false
     t.index "tenant_id, lower((name)::text)", name: "index_tags_on_tenant_id_and_lowercase_name", unique: true
     t.index ["tenant_id"], name: "index_tags_on_tenant_id"
     t.index ["user_id"], name: "index_tags_on_user_id"

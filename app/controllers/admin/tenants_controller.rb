@@ -25,28 +25,20 @@ class Admin::TenantsController < ApplicationController
   def create
     @tenant = Tenant.new(tenant_params)
     authorize([:admin, @tenant])
-    respond_to do |format|
-      if @tenant.save
-        format.html { redirect_to admin_tenant_url(@tenant), notice: 'Tenant was successfully created.' }
-        format.json { render :show, status: :created, location: @tenant }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @tenant.errors, status: :unprocessable_entity }
-      end
+    if @tenant.save
+      redirect_to admin_tenants_url, notice: 'Tenant was successfully created'
+    else
+      render :new, status: :unprocessable_entity
     end
   end
 
   # PATCH/PUT /tenants/1 or /tenants/1.json
   def update
     authorize([:admin, @tenant])
-    respond_to do |format|
-      if @tenant.update(tenant_params)
-        format.html { redirect_to admin_tenant_url(@tenant), notice: 'Tenant was successfully updated.' }
-        format.json { render :show, status: :ok, location: @tenant }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @tenant.errors, status: :unprocessable_entity }
-      end
+    if @tenant.update(tenant_params)
+      redirect_to admin_tenants_url, notice: 'Tenant was successfully updated'
+    else
+      render :edit, status: :unprocessable_entity
     end
   end
 
@@ -54,11 +46,8 @@ class Admin::TenantsController < ApplicationController
   def destroy
     authorize([:admin, @tenant])
     @tenant.destroy
-    session[:tenant_id] = nil
-    respond_to do |format|
-      format.html { redirect_to admin_tenants_url, notice: 'Tenant was successfully destroyed.' }
-      format.json { head :no_content }
-    end
+    session[:tenant_id] = nil if Current.tenant == @tenant
+    redirect_to admin_tenants_url, notice: 'Tenant was successfully destroyed'
   end
 
   private

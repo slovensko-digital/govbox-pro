@@ -7,3 +7,5 @@ import { application } from "./application"
 import AutogramController from "./autogram_controller"
 application.register("autogram", AutogramController)
 
+import DebounceController from "./debounce_controller"
+application.register("debounce", DebounceController)

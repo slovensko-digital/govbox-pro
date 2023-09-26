@@ -3,6 +3,7 @@ class SessionsController < ApplicationController
   skip_after_action :verify_authorized
   skip_after_action :verify_policy_scoped
   skip_before_action :set_menu_context
+  layout 'login'
 
   def login
   end
@@ -18,6 +19,6 @@ class SessionsController < ApplicationController
   end
 
   def failure
-    render html: "Authorization failed (#{request.params['message']})", status: :forbidden
+    render html: "Authorization failed (#{request.params["message"]})", status: :forbidden
   end
 end

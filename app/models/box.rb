@@ -15,8 +15,36 @@ class Box < ApplicationRecord
 
   has_many :folders, dependent: :destroy
   has_many :message_threads, through: :folders, extend: MessageThreadsExtensions, dependent: :destroy
+  has_many :messages, through: :message_threads
   has_many :message_drafts_imports, dependent: :destroy
 
   before_destroy ->(box) { EventBus.publish(:box_destroyed, box.id) }
-end
 
+  before_create { self.color = Box.colors.keys[name.hash % Box.colors.size] if color.blank? }
+
+  enum :color,
+       {
+         slate: 'slate',
+         gray: 'gray',
+         zinc: 'zinc',
+         neutral: 'neutral',
+         stone: 'stone',
+         red: 'red',
+         orange: 'orange',
+         amber: 'amber',
+         yellow: 'yellow',
+         lime: 'lime',
+         green: 'green',
+         emerald: 'emerald',
+         teal: 'teal',
+         cyan: 'cyan',
+         sky: 'sky',
+         blue: 'blue',
+         indigo: 'indigo',
+         violet: 'violet',
+         purple: 'purple',
+         fuchsia: 'fuchsia',
+         pink: 'pink',
+         rose: 'rose'
+       }
+end

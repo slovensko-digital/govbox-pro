@@ -18,7 +18,7 @@ class Admin::TagGroupPolicy < ApplicationPolicy
     end
   end
 
-  def index
+  def index?
     @user.site_admin? || @user.admin?
   end
 

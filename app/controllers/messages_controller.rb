@@ -6,8 +6,6 @@ class MessagesController < ApplicationController
 
     @message.update(read: true)
     @message_thread = @message.thread
-
-    @notice = notice
   end
 
   def authorize_delivery_notification
@@ -16,7 +14,7 @@ class MessagesController < ApplicationController
     notice = Message.authorize_delivery_notification(@message) ? "Správa bola zaradená na prevzatie." : "Správu nie je možné prevziať."
     redirect_to message_path(@message), notice: notice
   end
-  
+
   private
 
   def set_message

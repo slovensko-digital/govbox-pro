@@ -1,0 +1,29 @@
+<div class="self-stretch p-6 border-b border-gray-200 justify-between items-center gap-4 inline-flex">
+  <div class="flex gap-4 justify-start">
+    <div class="inline-flex shrink-0 grow-0 items-center justify-center w-16 h-16 bg-blue-600 rounded-full">
+      <span class="text-white text-2xl font-normal"><%= @group.name[0] %></span>
+    </div>
+    <div class="flex-col justify-start items-start shrink-0 w-48 gap-1 inline-flex">
+      <div class="text-center text-gray-900 text-lg font-medium leading-loose">
+        <% if @group.is_modifiable? %>
+          <%= render Admin::Groups::GroupRenameComponent.new(@group) if @group.is_modifiable? %>
+        <% else %>
+          <%= @group.name %>
+        <% end %>
+      </div>
+      <div class="text-center text-gray-500 text-base font-normal leading-normal">
+        <%= t :user, count: @group.users.count %>
+      </div>
+    </div>
+    <div class="flex justify-start items-start overflow-hidden gap-2 px-4">
+      <div class="flex flex-wrap justify-start items-start gap-2">
+        <%= render Admin::Permissions::TagComponent.with_collection(@group.tags) %>
+      </div>
+    </div>
+  </div>
+  <div class="justify-start items-start gap-2 flex">
+    <%= link_to edit_permissions_admin_tenant_group_path(@group.tenant, @group), data: { turbo_frame: :modal }  do %>
+      <%= render Common::EditButtonComponent.new %>
+    <% end %>
+  </div>
+</div>

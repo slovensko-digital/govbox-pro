@@ -1,8 +1,8 @@
 module Common
   class TagSelectorPopupComponent < ViewComponent::Base
-    def initialize(object)
+    def initialize(object, available_tags)
       @object = object
-      @tags = Current.tenant.tags.where.not(id: object.tags.ids)
+      @tags = available_tags
     end
   end
 end

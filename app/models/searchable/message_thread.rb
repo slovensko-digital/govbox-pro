@@ -16,6 +16,7 @@ class Searchable::MessageThread < ApplicationRecord
     scope = self
 
     scope = scope.where(tenant_id: search_permissions.fetch(:tenant_id))
+    scope = scope.where(box_id: search_permissions.fetch(:box_id)) if search_permissions[:box_id]
 
     if search_permissions.key?(:tag_ids)
       if search_permissions[:tag_ids].any?

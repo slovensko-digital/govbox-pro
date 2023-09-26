@@ -22,7 +22,7 @@
     </p>
   </div>
   <div class="flex justify-start items-start flex-grow-0 flex-shrink-0 gap-2">
-    <%= link_to edit_settings_automation_rule_path(@automation_rule), data: { turbo_frame: :modal } do %>
+    <%= link_to edit_settings_automation_rule_path(@automation_rule) do %>
       <%= render Common::EditButtonComponent.new %>
     <% end %>
     <%= button_to settings_automation_rule_path(@automation_rule), method: :delete do %>
