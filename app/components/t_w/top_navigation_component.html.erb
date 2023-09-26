@@ -21,6 +21,12 @@
         <% end %>
         <%= f.search_field :q, value: params[:q], placeholder: 'Vyhľadaj správu', class: 'pl-10 text-base text-left text-gray-900 placeholder-gray-400', style: 'width: 100%' %>
       <% end %>
+      <%= form_with model: Filter.new(query: params[:q]) do |f| %>
+        <%= f.hidden_field(:query) %>
+        <%= f.button type: :submit do %>
+          <%= render Icons::AddFilterComponent.new(query: params[:q]) %>
+        <% end %>
+      <% end %>
     </div>
   </div>
   <svg width="1" height="64" viewBox="0 0 1 64" fill="none" xmlns="http://www.w3.org/2000/svg" class="  " preserveAspectRatio="xMidYMid meet">

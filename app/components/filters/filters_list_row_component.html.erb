@@ -1,0 +1,21 @@
+<div class="self-stretch p-6 border-b border-gray-200 justify-start items-center gap-4 inline-flex">
+  <div class="relative inline-flex items-center justify-center w-16 h-16 overflow-hidden bg-blue-600 rounded-full">
+    <span class="text-white text-2xl font-normal"><%= @filter.name[0] %></span>
+  </div>
+  <div class="grow shrink basis-0 flex-col justify-start items-start gap-1 inline-flex">
+    <div class="text-center text-gray-900 text-lg font-medium leading-loose">
+      <%= render Filters::FilterRenameComponent.new(@filter) %>
+    </div>
+    <div class="text-center text-gray-500 text-base font-normal leading-normal">
+      <%= @filter.query %>
+    </div>
+  </div>
+  <div class="justify-start items-start gap-2 flex">
+    <%= link_to edit_filter_path(@filter) do %>
+      <%= render Common::EditButtonComponent.new %>
+    <% end %>
+    <%= button_to filter_path(@filter), method: :delete do %>
+      <%= render Common::DeleteButtonComponent.new %>
+    <% end %>
+  </div>
+</div>
