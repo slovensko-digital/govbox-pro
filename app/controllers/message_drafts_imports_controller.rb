@@ -13,7 +13,7 @@ class MessageDraftsImportsController < ApplicationController
     )
 
     import_path = file_storage.store("imports", import_path(import), zip_content.read.force_encoding("UTF-8"))
-    Drafts::ParseImportJob.perform_later(import, import_path)
+    Drafts::ParseImportJob.perform_later(import, import_path, author: Current.user)
 
     redirect_to message_drafts_path
   end
