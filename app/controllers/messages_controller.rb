@@ -4,7 +4,7 @@ class MessagesController < ApplicationController
   def show
     authorize @message
 
-    @message.update(read: true) if @message.read == false
+    @message.update(read: true)
     @message_thread = @message.thread
   end
 
