@@ -22,13 +22,13 @@
       <% @tags.each do |tag|%>
         <div class="flex justify-center items-center gap-1.5 px-2 py-1 rounded-md bg-blue-50 border border-blue-300 hover:cursor-pointer">
           <% if @object.class.name == 'MessageThread' %>
-            <%= form_with model: [MessageThreadsTag.new(message_thread: @object, tag: tag)], class: "contents" do |form| %>
+            <%= form_with model: [MessageThreadsTag.new(message_thread: @object, tag: tag)], data: { turbo_frame: '_top' }, class: "contents" do |form| %>
               <%= form.hidden_field :message_thread_id %>
               <%= form.hidden_field :tag_id %>
               <%= form.submit "#{tag.name}" ,class:"text-sm text-left text-blue-600 hover:cursor-pointer" %>
             <% end %>
           <% else %>
-            <%= form_with model: [MessagesTag.new(message: @object, tag: tag)], class: "contents" do |form| %>
+            <%= form_with model: [MessagesTag.new(message: @object, tag: tag)], data: { turbo_frame: '_top' }, class: "contents" do |form| %>
               <%= form.hidden_field :message_id %>
               <%= form.hidden_field :tag_id %>
               <%= form.submit "#{tag.name}", class:"text-sm text-left text-blue-600 hover:cursor-pointer" %>

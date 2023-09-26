@@ -1,9 +1,9 @@
 <div class="flex flex-col justify-stretch items-stretch">
-  <%= render MessageThreadHeaderComponent.new(@message.thread, @available_tags) %>
+  <%= render MessageThreadHeaderComponent.new(@message.thread, @thread_tags_with_deletable_flag) %>
   <div class="flex flex-col justify-stretch items-stretch gap-2 p-4">
-    <% if @notice %>
+    <% @notice.each do |type, msg| %>
       <div class="bg-blue-100 border-t border-b border-blue-500 text-blue-700 px-4 py-3 w-full" role="alert">
-        <p class="font-bold"><%= @notice %></p>
+        <p class="font-bold"><%= msg %></p>
       </div>
     <% end %>
     <div class="flex flex-col justify-stretch items-stretch rounded-md bg-white border border-gray-200">
@@ -19,19 +19,10 @@
               <p class="  text-base font-semibold text-left text-gray-900"><%= @message.recipient_name || 'Neznámy' %></p>
             </div>
             <div class="flex justify-stretch items-start   gap-2 pt-1">
-              <% @message.tags.each do |tag| %>
-                <% if tag.visible %>
-                  <div class="flex justify-center items-center   relative  gap-1 px-2 py-1 rounded-md bg-gray-50 border border-gray-300">
-                    <p class="  text-sm text-left text-gray-600"><%= tag.name %></p>
-                    <%= button_to messages_tag_path(MessagesTag.find_by(message_id: @message.id, tag_id: tag.id)), method: :delete, form: { data: { turbo_confirm: "Naozaj odstrániť štítok #{tag.name} zo správy?" } } do %>
-                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" class="  w-3.5 h-3.5 relative" preserveAspectRatio="xMidYMid meet">
-                        <path d="M3.5 3.5L10.5 10.5M3.5 10.5L10.5 3.5L3.5 10.5Z" stroke="#6B7280" stroke-linecap="round" stroke-linejoin="round"></path>
-                      </svg>
-                    <% end %>
-                  </div>
-                <% end %>
+              <% @message_tags_with_deletable_flag.each do |message_tag| %>
+                <%= render Common::AttachedTagLabelComponent.new(message_tag) %>
               <% end %>
-              <%= render Common::TagSelectorComponent.new(@message, @available_tags) %>
+              <%= render Common::TagSelectorComponent.new(@message) %>
             </div>
           </div>
           <div class="flex flex-col justify-strech items-start flex-grow gap-1">
