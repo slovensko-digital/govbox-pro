@@ -7,7 +7,7 @@ class MessageDraftsImportsController < ApplicationController
     zip_content = params[:content]
     import = MessageDraftsImport.create!(
       name: "#{Time.now.to_i}_#{zip_content.original_filename}",
-      box: Current.box
+      box_id: params[:box_id]&.to_i
     )
 
     import_path = file_storage.store("imports", import_path(import), zip_content.read.force_encoding("UTF-8"))
