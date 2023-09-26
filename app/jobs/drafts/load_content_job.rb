@@ -6,18 +6,20 @@ class Drafts::LoadContentJob < ApplicationJob
   end
 
   def perform(message_draft, message_draft_path)
-    Dir.each_child(message_draft_path) do |subdirectory_name|
-      case subdirectory_name
-      when "podpisane"
-        load_message_draft_objects(message_draft, File.join(message_draft_path, subdirectory_name), signed: true, to_be_signed: false)
-      when "podpisat"
-        load_message_draft_objects(message_draft, File.join(message_draft_path, subdirectory_name), signed: false, to_be_signed: true)
-      when "nepodpisovat"
-        load_message_draft_objects(message_draft, File.join(message_draft_path, subdirectory_name), signed: false, to_be_signed: false)
+    ActiveRecord::Base.transaction do
+      Dir.each_child(message_draft_path) do |subdirectory_name|
+        case subdirectory_name
+        when "podpisane"
+          load_message_draft_objects(message_draft, File.join(message_draft_path, subdirectory_name), signed: true, to_be_signed: false)
+        when "podpisat"
+          load_message_draft_objects(message_draft, File.join(message_draft_path, subdirectory_name), signed: false, to_be_signed: true)
+        when "nepodpisovat"
+          load_message_draft_objects(message_draft, File.join(message_draft_path, subdirectory_name), signed: false, to_be_signed: false)
+        end
       end
-    end
 
-    save_form_visualisation(message_draft)
+      save_form_visualisation(message_draft)
+    end
   end
 
   private
