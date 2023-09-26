@@ -29,9 +29,8 @@ class MessagesController < ApplicationController
     @message_tags_with_deletable_flag =
       @message
         .messages_tags
-        .joins(:tag)
         .includes(:tag)
-        .select("messages_tags.*, tags.*, case when exists (#{permitted_tag_query.to_sql} and tags.id = messages_tags.tag_id) then true else false end as deletable")
+        .select("messages_tags.*, #{deletable_subquery('tags.id = messages_tags.tag_id').to_sql} as deletable")
         .order("tags.name")
   end
 
@@ -40,14 +39,18 @@ class MessagesController < ApplicationController
       @message
         .thread
         .message_threads_tags
-        .joins(:tag)
         .includes(:tag)
-        .select("message_threads_tags.*, tags.*, case when exists (#{permitted_tag_query.to_sql} and tags.id = message_threads_tags.tag_id) then true else false end as deletable")
-        .order("tags.name")
+        .select("message_threads_tags.*, #{deletable_subquery('tags.id = message_threads_tags.tag_id').to_sql} as deletable")
+        .order('tags.name')
   end
 
-  def permitted_tag_query
-    Tag.joins(:groups, { groups: :group_memberships }).where(group_memberships: { user_id: Current.user.id })
+  def deletable_subquery(where_clause)
+    Tag
+      .joins(:groups, { groups: :group_memberships })
+      .where('group_memberships.user_id = ?', Current.user.id)
+      .where(where_clause)
+      .arel
+      .exists
   end
 
   def permit_reply_params

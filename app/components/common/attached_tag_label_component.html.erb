@@ -2,7 +2,7 @@
   <div class="flex justify-center items-center   relative  gap-1 px-2 py-1 rounded-md bg-gray-50 border border-gray-300">
     <p class="  text-sm text-left text-gray-600"><%= @tag.name %></p>
     <% if @object_tag.deletable %>
-      <%= button_to url_for(@object_tag), method: :delete, form: { data: { turbo_confirm: "Naozaj odstrániť štítok #{tag.name} zo správy?" } } do %>
+      <%= button_to url_for(@object_tag), method: :delete, form: { data: { turbo_confirm: "Naozaj odstrániť štítok #{@tag.name} zo správy?" } } do %>
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" class="  w-3.5 h-3.5 relative" preserveAspectRatio="xMidYMid meet">
           <path d="M3.5 3.5L10.5 10.5M3.5 10.5L10.5 3.5L3.5 10.5Z" stroke="#6B7280" stroke-linecap="round" stroke-linejoin="round"></path>
         </svg>
