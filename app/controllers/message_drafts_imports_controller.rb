@@ -1,5 +1,5 @@
 class MessageDraftsImportsController < ApplicationController
-  before_action :check_selected_box, only: :create
+  before_action :load_box, only: :create
 
   def create
     authorize MessageDraftsImport
@@ -8,7 +8,7 @@ class MessageDraftsImportsController < ApplicationController
     import_name = "#{Time.now.to_i}_#{zip_content.original_filename}"
     import_path = FileStorage.new.store("imports", import_path(import_name), zip_content.read.force_encoding("UTF-8"))
 
-    import = MessageDraftsImport.create(
+    import = @box.message_drafts_imports.create!(
       name: import_name,
       content_path: import_path,
       box: @box
@@ -31,10 +31,9 @@ class MessageDraftsImportsController < ApplicationController
     File.join(String(@box.id), import_name)
   end
 
-  def check_selected_box
+  def load_box
     return unless params[:box_id].present?
 
-    @box = Box.find(params[:box_id].to_i)
-    render_forbidden(:box_id, value: params[:box_id]) unless @box.tenant == Current.tenant
+    @box = Current.tenant.boxes.find(params[:box_id])
   end
 end

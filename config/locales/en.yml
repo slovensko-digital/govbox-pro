@@ -31,5 +31,3 @@
 
 en:
   hello: "Hello world"
-  forbidden:
-    box_id: 'Forbidden box ID: %{value}'
