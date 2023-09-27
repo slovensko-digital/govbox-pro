@@ -18,24 +18,28 @@ class MessageThreadsController < ApplicationController
 
   def index
     authorize MessageThread
+    index_common
+  end
 
+  def scroll
+    authorize MessageThread
+    index_common
+  end
+
+  def index_common
     cursor = MessageThreadCollection.init_cursor(search_params[:cursor])
 
-    @message_threads, @next_cursor = MessageThreadCollection.all(
-      scope: message_thread_policy_scope.includes(:tags, :box),
-      search_permissions: search_permissions,
-      query: search_params[:q],
-      no_visible_tags: search_params[:no_visible_tags] == '1' && Current.user.admin?,
-      cursor: cursor
-    )
+    @message_threads, @next_cursor =
+      MessageThreadCollection.all(
+        scope: message_thread_policy_scope.includes(:tags, :box),
+        search_permissions: search_permissions,
+        query: search_params[:q],
+        no_visible_tags: search_params[:no_visible_tags] == "1" && Current.user.admin?,
+        cursor: cursor
+      )
 
     @next_cursor = MessageThreadCollection.serialize_cursor(@next_cursor)
     @next_page_params = search_params.to_h.merge(cursor: @next_cursor).merge(format: :turbo_stream)
-
-    respond_to do |format|
-      format.html # GET
-      format.turbo_stream # POST
-    end
   end
 
   def merge

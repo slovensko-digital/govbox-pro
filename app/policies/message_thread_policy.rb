@@ -31,6 +31,10 @@ class MessageThreadPolicy < ApplicationPolicy
     true
   end
 
+  def scroll?
+    true
+  end
+
   def update?
     true
   end
