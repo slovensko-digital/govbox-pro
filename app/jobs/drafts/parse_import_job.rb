@@ -63,6 +63,7 @@ class Drafts::ParseImportJob < ApplicationJob
     Utils.delete_file(import_zip_path)
 
     import.update(content_path: extracted_import_path)
+    import.unzipped!
 
     extracted_import_path
   end
