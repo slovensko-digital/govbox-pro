@@ -89,7 +89,7 @@ class Drafts::ParseImportJob < ApplicationJob
         last_message_delivered_at: Time.now
       )
 
-      message_thread.tags << Tag.find_by!(name: "Drafts", tenant: import.box.tenant)
+      message_thread.tags << Tag.find_or_create_by!(name: "Drafts", tenant: import.box.tenant)
       
       MessageDraft.create!(
         uuid: uuid,
