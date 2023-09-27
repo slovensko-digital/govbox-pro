@@ -14,7 +14,7 @@
     <%= link_to edit_filter_path(@filter) do %>
       <%= render Common::EditButtonComponent.new %>
     <% end %>
-    <%= button_to filter_path(@filter), method: :delete do %>
+    <%= link_to filter_path(@filter), data: { turbo_confirm: "Naozaj?", turbo_method: :delete } do %>
       <%= render Common::DeleteButtonComponent.new %>
     <% end %>
   </div>

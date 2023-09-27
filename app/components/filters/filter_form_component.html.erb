@@ -5,7 +5,7 @@
       <div class="flex flex-col justify-start items-start overflow-hidden rounded-lg bg-white border border-gray-300" style="box-shadow: 1px 1px 4px 0 rgba(0,0,0,0.1);">
         <div class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 overflow-hidden gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
           <div class="flex flex-col justify-start items-start flex-grow relative">
-            <p class="self-stretch flex-grow-0 flex-shrink-0 text-xl font-semibold text-left text-gray-900"><%= @action == 'new' ? 'Nový filter' : 'Zmena filtra'%></p>
+            <p class="self-stretch flex-grow-0 flex-shrink-0 text-xl font-semibold text-left text-gray-900"><%= @action == :new ? 'Nový filter' : 'Zmena filtra'%></p>
             <p class="flex-grow-0 flex-shrink-0 text-xs text-left text-gray-500">Údaje</p>
           </div>
           <%= render Common::CloseButtonComponent.new(link_to: filters_path) %>
@@ -28,7 +28,7 @@
               <p class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-gray-900">Zahodiť</p>
             <% end %>
             <%= form.button class:"flex justify-center items-center flex-grow relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md bg-blue-600" do %>
-              <p class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-white"><%= @action == 'new' ? 'Vytvoriť' : 'Uložiť' %></p>
+              <p class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-white"><%= @action == :new ? 'Vytvoriť' : 'Uložiť' %></p>
             <% end %>
           </div>
         <% end %>

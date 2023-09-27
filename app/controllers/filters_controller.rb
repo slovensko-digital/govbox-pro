@@ -18,7 +18,12 @@ class FiltersController < ApplicationController
 
     @filter = Current.user.filters.build(filter_params)
     if @filter.save
-      redirect_to filters_path, notice: 'Filter bol úspešne uložený'
+      flash[:notice] = 'Filter bol úspešne vytvorený'
+      if params[:to] == 'search'
+        redirect_to message_threads_path(q: @filter.query)
+      else
+        redirect_to filters_path
+      end
     else
       render :new
     end

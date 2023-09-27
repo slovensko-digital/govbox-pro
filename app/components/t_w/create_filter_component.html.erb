@@ -1,0 +1,49 @@
+<div class="relative" data-controller="dropdown"
+     data-dropdown-active-target="#dropdown-button"
+     data-dropdown-active-class="bg-gray-50"
+     data-dropdown-invisible-class ="opacity-0 scale-95"
+     data-dropdown-visible-class ="opacity-100 scale-100"
+     data-dropdown-entering-class="ease-out duration-100"
+     data-dropdown-enter-timeout="100"
+     data-dropdown-leaving-class="ease-in duration-75"
+     data-dropdown-leave-timeout="75"
+>
+  <div id="dropdown-button" data-action="click->dropdown#toggle click@window->dropdown#hide" role="button" data-dropdown-target="button" tabindex="0" class="inline-block select-none">
+    <button type="button" class="flex items-center gap-2" aria-expanded="false" aria-haspopup="true">
+      <%= render Icons::AddFilterComponent.new(query: params[:q]) %>
+    </button>
+  </div>
+  <div data-dropdown-target="menu" class="z-50 right-0 absolute transform transition hidden opacity-0 scale-95">
+    <div class="flex flex-col justify-start items-start w-[360px] gap-px py-0.5 rounded-lg bg-white border border-gray-300" style="box-shadow: 1px 1px 4px 0 rgba(0,0,0,0.1);">
+      <div class="flex justify-between items-center self-stretch flex-grow-0 flex-shrink-0 px-4 py-2">
+        <div class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[29px]">
+          <p class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-gray-900">Pridať filter</p>
+        </div>
+      </div>
+      <div class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative">
+        <svg width="360" height="1" viewBox="0 0 360 1" fill="none" xmlns="http://www.w3.org/2000/svg" class="flex-grow" preserveAspectRatio="xMidYMid meet">
+          <line y1="0.5" x2="360" y2="0.5" stroke="#E5E7EB"></line>
+        </svg>
+      </div>
+      <%= form_with model: Filter.new(query: params[:q]), url: filters_path(to: 'search'), class: "flex flex-col self-stretch flex-grow-0 flex-shrink-0 gap-2 p-4 border-t-0 border-r-0 border-l-0" do |f| %>
+        <div>
+          <%= f.label :name, "Názov", class: "block text-sm font-medium leading-6 text-gray-900" %>
+          <div class="mt-2">
+            <%= f.text_field :name, class: "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" %>
+          </div>
+        </div>
+
+        <div>
+          <%= f.label :query, "Dopyt na vyhľadávanie", class: "block text-sm font-medium leading-6 text-gray-900" %>
+          <div class="mt-2">
+            <%= f.text_field :query, class: "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" %>
+          </div>
+        </div>
+
+        <div>
+          <%= f.submit 'Vytvoriť', class: "flex justify-center items-center gap-2.5 px-3.5 py-2.5 rounded-md bg-blue-600 text-base font-medium text-left text-white hover:cursor-pointer" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
