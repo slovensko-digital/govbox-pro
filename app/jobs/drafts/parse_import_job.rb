@@ -5,11 +5,8 @@ class Drafts::ParseImportJob < ApplicationJob
     delegate :uuid, to: SecureRandom
   end
 
-  def perform(import, import_zip_path, author: , jobs_batch: GoodJob::Batch.new, load_content_job: Drafts::LoadContentJob, on_success_job: Drafts::FinishImportJob)
-    extracted_import_path = File.join(Utils.file_directory(import_zip_path), File.basename(import_zip_path, ".*"))
-    system("unzip", import_zip_path, '-d', extracted_import_path)
-
-    import.update(content_path: extracted_import_path)
+  def perform(import, author: , jobs_batch: GoodJob::Batch.new, load_content_job: Drafts::LoadContentJob, on_success_job: Drafts::FinishImportJob)
+    extracted_import_path = unzip_import(import)
 
     raise "Invalid import" unless import.valid?
 
@@ -46,16 +43,29 @@ class Drafts::ParseImportJob < ApplicationJob
         end
       end
 
-      jobs_batch.enqueue(on_success: on_success_job, import: import, zip_path: import_zip_path, extracted_data_path: extracted_import_path)
+      jobs_batch.enqueue(on_success: on_success_job, import: import)
 
       import.parsed!
     end
   rescue
     # TODO Send notification
+    Utils.delete_file(import.content_path)
     import.destroy!
   end
 
   private
+
+  def unzip_import(import)
+    import_zip_path = import.content_path
+    extracted_import_path = File.join(Utils.file_directory(import_zip_path), File.basename(import_zip_path, ".*"))
+
+    system("unzip", import_zip_path, '-d', extracted_import_path)
+    Utils.delete_file(import_zip_path)
+
+    import.update(content_path: extracted_import_path)
+
+    extracted_import_path
+  end
 
   def load_import_csv(import, csv_path, author:)
     csv_options = {

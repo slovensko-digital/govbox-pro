@@ -1,6 +1,8 @@
 class Drafts::FinishImportJob < ApplicationJob
   def perform(batch, params)
-    batch.properties[:import].message_drafts.find_each do |message_draft|
+    import = batch.properties[:import]
+
+    import.message_drafts.find_each do |message_draft|
       if message_draft.valid?(:validate_data)
         message_draft.metadata["status"] = "created"
       else
@@ -10,7 +12,7 @@ class Drafts::FinishImportJob < ApplicationJob
       message_draft.save
     end
 
-    Utils.delete_file(batch.properties[:zip_path])
-    Utils.delete_file(batch.properties[:extracted_data_path])
+    Utils.delete_file(import.content_path)
+    import.update(content_path: nil)
   end
 end

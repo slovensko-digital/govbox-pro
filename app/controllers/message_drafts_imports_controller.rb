@@ -7,13 +7,15 @@ class MessageDraftsImportsController < ApplicationController
     file_storage = FileStorage.new
 
     zip_content = params[:content]
+    import_path = file_storage.store("imports", import_path(import), zip_content.read.force_encoding("UTF-8"))
+
     import = MessageDraftsImport.create!(
       name: "#{Time.now.to_i}_#{zip_content.original_filename}",
+      content_path: import_path,
       box: @box
     )
 
-    import_path = file_storage.store("imports", import_path(import), zip_content.read.force_encoding("UTF-8"))
-    Drafts::ParseImportJob.perform_later(import, import_path, author: Current.user)
+    Drafts::ParseImportJob.perform_later(import, author: Current.user)
 
     redirect_to message_drafts_path
   end
