@@ -8,7 +8,7 @@
   <% component.with_next_page_area do %>
     <%= render Turbo::NextPageAreaComponent.new(
       id: @next_cursor,
-      url: message_threads_url(@next_page_params)
+      url: scroll_message_threads_url(@next_page_params)
       )
     %>
   <% end %>
