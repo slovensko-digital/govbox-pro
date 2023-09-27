@@ -5,9 +5,20 @@ on:
     branches: '**'
 
 jobs:
-  test:
-    if: ${{github.repository == 'solver-it-sro/govbox-pro'}}
+  brakeman:
+    name: Brakeman
 
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - run: bundle exec brakeman
+
+  test:
     runs-on: ubuntu-latest
 
     env:
