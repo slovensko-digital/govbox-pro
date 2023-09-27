@@ -14,7 +14,7 @@ class SidebarMenu
 
   def initial_structure(controller, action)
     return default_message_thread_menu if controller.in? %w[messages message_drafts]
-    return admin_main_menu if (controller.in? %w[groups users tags tag_groups automation_rules boxes tenants]) && (Current.user.admin? || Current.user.site_admin?)
+    return admin_main_menu if (controller.in? %w[groups users tags tag_groups automation_rules boxes tenants filters]) && (Current.user.admin? || Current.user.site_admin?)
 
     default_main_menu
   end
@@ -25,7 +25,7 @@ class SidebarMenu
       TW::SidebarMenuItemComponent.new(name: 'Správy', url: message_threads_path, icon: Icons::SchrankaComponent.new),
       Layout::FilterListComponent.new(filters: @parameters[:filters]),
       Layout::TagListComponent.new(tags: @parameters[:tags]),
-      TW::SidebarMenuItemComponent.new(name: 'Nastavenia', url: admin_tenant_users_path(Current.tenant), icon: Icons::SettingsComponent.new)
+      TW::SidebarMenuItemComponent.new(name: 'Nastavenia', url: filters_path, icon: Icons::SettingsComponent.new)
     ]
   end
 
@@ -33,10 +33,12 @@ class SidebarMenu
     [
       Layout::BackToBoxComponent.new(),
       Layout::SidebarDividerComponent.new(),
-      TW::SidebarMenuDividerComponent.new(name: 'Produkt'),
+      TW::SidebarMenuDividerComponent.new(name: 'Nastavenia'),
+      TW::SidebarMenuItemComponent.new(name: 'Filtre', url: filters_path, icon: Icons::FiltersComponent.new),
+      TW::SidebarMenuItemComponent.new(name: 'Pravidlá', url: settings_automation_rules_path, icon: Icons::RulesComponent.new),
+      TW::SidebarMenuDividerComponent.new(name: 'Administrácia'),
       Current.user.site_admin? ? TW::SidebarMenuItemComponent.new(name: 'Tenanti', url: admin_tenants_path, icon: Icons::GroupsComponent.new) : nil,
       TW::SidebarMenuItemComponent.new(name: 'Používatelia', url: admin_tenant_users_path(Current.tenant), icon: Icons::UsersComponent.new),
-      TW::SidebarMenuItemComponent.new(name: 'Pravidlá', url: settings_automation_rules_path, icon: Icons::RulesComponent.new),
       TW::SidebarMenuItemComponent.new(name: 'Prístup', url: admin_tenant_tag_groups_path(Current.tenant), icon: Icons::ClosedLockComponent.new),
       TW::SidebarMenuItemComponent.new(name: 'Schránky', url: admin_tenant_boxes_path(Current.tenant), icon: Icons::BoxesComponent.new),
       TW::SidebarMenuItemComponent.new(name: 'Skupiny', url: admin_tenant_groups_path(Current.tenant), icon: Icons::GroupsComponent.new),
