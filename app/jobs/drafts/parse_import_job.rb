@@ -5,18 +5,15 @@ class Drafts::ParseImportJob < ApplicationJob
     delegate :uuid, to: SecureRandom
   end
 
-  def perform(import, import_zip_path, jobs_batch: GoodJob::Batch.new, load_content_job: Drafts::LoadContentJob, on_success_job: Drafts::FinishImportJob)
-    extracted_import_path = File.join(Utils.file_directory(import_zip_path), File.basename(import_zip_path, ".*"))
-    system("unzip", import_zip_path, '-d', extracted_import_path)
-
-    import.update(content_path: extracted_import_path)
+  def perform(import, author: , jobs_batch: GoodJob::Batch.new, load_content_job: Drafts::LoadContentJob, on_success_job: Drafts::FinishImportJob)
+    extracted_import_path = unzip_import(import)
 
     raise "Invalid import" unless import.valid?
 
     csv_paths = Dir[extracted_import_path + "/*.csv"]
 
     ActiveRecord::Base.transaction do
-      load_import_csv(import, csv_paths.first)
+      load_import_csv(import, csv_paths.first, author: author)
 
       Dir.each_child(extracted_import_path) do |entry_name|
         if File.directory?(File.join(extracted_import_path, entry_name))
@@ -32,6 +29,7 @@ class Drafts::ParseImportJob < ApplicationJob
               read: true,
               delivered_at: Time.now,
               import: import,
+              author: author,
               metadata: {
                 "import_subfolder": File.basename(entry_name),
                 "status": "being_loaded"
@@ -45,18 +43,32 @@ class Drafts::ParseImportJob < ApplicationJob
         end
       end
 
-      jobs_batch.enqueue(on_success: on_success_job, import: import, zip_path: import_zip_path, extracted_data_path: extracted_import_path)
+      jobs_batch.enqueue(on_success: on_success_job, import: import)
 
       import.parsed!
     end
   rescue
     # TODO Send notification
+    Utils.delete_file(import.content_path)
     import.destroy!
   end
 
   private
 
-  def load_import_csv(import, csv_path)
+  def unzip_import(import)
+    import_zip_path = import.content_path
+    extracted_import_path = File.join(Utils.file_directory(import_zip_path), File.basename(import_zip_path, ".*"))
+
+    system("unzip", import_zip_path, '-d', extracted_import_path)
+    Utils.delete_file(import_zip_path)
+
+    import.update(content_path: extracted_import_path)
+    import.unzipped!
+
+    extracted_import_path
+  end
+
+  def load_import_csv(import, csv_path, author:)
     csv_options = {
       encoding: 'UTF-8',
       col_sep: File.open(csv_path) { |f| f.readline }.include?(';') ? ';' : ',',
@@ -77,7 +89,7 @@ class Drafts::ParseImportJob < ApplicationJob
         last_message_delivered_at: Time.now
       )
 
-      message_thread.tags << Tag.find_by!(name: "Drafts", tenant: import.box.tenant)
+      message_thread.tags << Tag.find_or_create_by!(name: "Drafts", tenant: import.box.tenant)
       
       MessageDraft.create!(
         uuid: uuid,
@@ -87,6 +99,7 @@ class Drafts::ParseImportJob < ApplicationJob
         read: true,
         delivered_at: Time.now,
         import: import,
+        author: author,
         metadata: {
           "recipient_uri": row['recipient_uri'],
           "posp_id": row['posp_id'],
