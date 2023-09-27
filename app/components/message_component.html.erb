@@ -20,7 +20,7 @@
             </div>
             <div class="flex justify-stretch items-start   gap-2 pt-1">
               <% @message_tags_with_deletable_flag.each do |message_tag| %>
-                <%= render Common::AttachedTagLabelComponent.new(message_tag) %>
+                <%= render Common::RemovableTagComponent.new(message_tag) %>
               <% end %>
               <%= render Common::TagSelectorComponent.new(@message) %>
             </div>

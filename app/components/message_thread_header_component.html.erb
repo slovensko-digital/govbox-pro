@@ -3,7 +3,7 @@
     <%= render MessageThreadRenameComponent.new(message_thread: @message_thread) %>
     <div class="flex justify-start items-start   gap-2">
       <% @thread_tags_with_deletable_flag.each do |thread_tag|%>
-        <%= render Common::AttachedTagLabelComponent.new(thread_tag) %>
+        <%= render Common::RemovableTagComponent.new(thread_tag) %>
       <% end %>
       <%= render Common::TagSelectorComponent.new(@message_thread) %>
     </div>

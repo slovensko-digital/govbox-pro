@@ -1,5 +1,5 @@
 module Common
-  class AttachedTagLabelComponent < ViewComponent::Base
+  class RemovableTagComponent < ViewComponent::Base
     def initialize(object_tag)
       @object_tag = object_tag
       @tag = @object_tag.tag
