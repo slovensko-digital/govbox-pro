@@ -1,5 +1,5 @@
 <%= render TW::FlashComponent.new(flash: flash) %>
-<%= render MessageComponent.new(message: @message, notice: @notice, available_tags: @available_tags) do |component| %>
+<%= render MessageComponent.new(message: @message, notice: @notice, message_tags_with_deletable_flag: @message_tags_with_deletable_flag, thread_tags_with_deletable_flag: @thread_tags_with_deletable_flag) do |component| %>
   <% @message.objects.each do |message_object| %>
     <% component.with_attachment do %>
       <% render MessageAttachmentComponent.new(message_attachment: message_object) %>

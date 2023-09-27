@@ -1,12 +1,12 @@
 class MessagesTagsController < ApplicationController
-  before_action :set_messages_tag, only: %i[ destroy ]
+  before_action :set_messages_tag, only: %i[destroy]
 
   def create
     @messages_tag = MessagesTag.new(messages_tag_params)
     authorize @messages_tag
 
     if @messages_tag.save
-      redirect_back fallback_location:"/", notice: "Tag was successfully added"
+      redirect_back fallback_location: "/", notice: "Tag was successfully added"
     else
       render :new, status: :unprocessable_entity
     end
@@ -15,7 +15,7 @@ class MessagesTagsController < ApplicationController
   def destroy
     authorize @messages_tag
     @messages_tag.destroy
-    redirect_back fallback_location:"/", notice: "Tag was successfully removed"
+    redirect_back fallback_location: '/', notice: 'Tag was successfully removed'
   end
 
   private
