@@ -31,7 +31,10 @@ class MessageDraftsController < ApplicationController
   def submit
     authorize @message_draft
 
-    if @message_draft.submit
+    if @message_draft.submittable?
+      Govbox::SubmitMessageDraftJob.perform_later(@message_draft)
+      @message_draft.being_submitted!
+
       redirect_path = @message_draft.original_message.present? ? message_path(@message_draft.original_message) : message_drafts_path
       redirect_to redirect_path, notice: "Správa bola zaradená na odoslanie."
     else
@@ -41,7 +44,16 @@ class MessageDraftsController < ApplicationController
   end
   
   def submit_all
-    Govbox::SubmitMultipleMessageDraftsJob.perform_later(@message_drafts.to_a)
+    jobs_batch = GoodJob::Batch.new
+
+    @message_drafts.each do |message_draft|
+      next unless message_draft.submittable?
+
+      jobs_batch.add { Govbox::SubmitMessageDraftJob.perform_later(message_draft, schedule_sync: false) }
+      message_draft.being_submitted!
+    end
+
+    jobs_batch.enqueue(on_finish: Govbox::FinishMessageDraftsSubmitJob, box: @message_drafts.first.thread.folder.box)
   end
 
   def destroy

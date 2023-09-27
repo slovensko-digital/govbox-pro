@@ -56,19 +56,6 @@ class MessageDraft < Message
     )
   end
 
-  def submit(jobs_batch: nil)
-    return false unless submittable?
-
-    if jobs_batch
-      jobs_batch.add { Govbox::SubmitMessageDraftJob.perform_later(self, schedule_sync: false) }
-    else
-      Govbox::SubmitMessageDraftJob.perform_later(self)
-    end
-
-    metadata["status"] = "being_submitted"
-    save!
-  end
-
   def update_content(title:, body:)
     self.title = title
     metadata["message_body"] = body
@@ -123,6 +110,11 @@ class MessageDraft < Message
 
   def submitted?
     metadata["status"] == "submitted"
+  end
+
+  def being_submitted!
+    metadata["status"] = "being_submitted"
+    save!
   end
 
   def original_message

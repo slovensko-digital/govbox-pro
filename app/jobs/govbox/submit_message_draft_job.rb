@@ -20,7 +20,7 @@ class Govbox::SubmitMessageDraftJob < ApplicationJob
       message_draft.metadata["status"] = "submitted"
       message_draft.save!
 
-      Govbox::SyncBoxJob.set(wait: 3.minutes).perform_later(message_draft.thread.folder.box)
+      Govbox::SyncBoxJob.set(wait: 3.minutes).perform_later(message_draft.thread.folder.box) if schedule_sync
     else
       handle_submit_fail(message_draft, response_status, response_body.dig("message"))
     end
