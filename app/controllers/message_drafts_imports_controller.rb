@@ -1,5 +1,5 @@
 class MessageDraftsImportsController < ApplicationController
-  before_action :check_selected_box, only: :create
+  before_action :load_box, only: :create
 
   def create
     authorize MessageDraftsImport
@@ -30,7 +30,7 @@ class MessageDraftsImportsController < ApplicationController
     File.join(String(Current.box.id), import.name)
   end
 
-  def check_selected_box
+  def load_box
     return unless params[:box_id].present?
 
     @box = Box.find(params[:box_id].to_i)
