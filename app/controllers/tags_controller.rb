@@ -10,10 +10,7 @@ class TagsController < ApplicationController
     authorize [Tag]
     set_object
     @tenant = Current.tenant
-    @tags =
-      @tenant.tags.where.not(id: @object.tags.ids).where(visible: true)
-                  .where(id: TagGroup.select(:tag_id).joins(:group, :tag, group: :users).where(group: { tenant_id: @tenant.id }, tag: { tenant_id: @tenant.id }, users: { id: Current.user.id }))
-    respond_to { |format| format.html }
+    @tags = @tenant.tags.where.not(id: @object.tags.ids).where(visible: true)
   end
 
   private

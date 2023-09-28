@@ -48,9 +48,10 @@ class Govbox::Message < ApplicationRecord
         delivered_at: govbox_message.delivered_at
       )
 
-      self.create_message_tag(message, govbox_message)
-
       message.save!
+
+      self.create_message_tag(message, govbox_message)
+      
       message
     end
 
