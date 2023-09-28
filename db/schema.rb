@@ -93,14 +93,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_25_124255) do
   end
 
   create_table "filters", force: :cascade do |t|
-    t.bigint "user_id", null: false
+    t.bigint "tenant_id", null: false
+    t.bigint "author_id", null: false
     t.string "name", null: false
     t.string "query", null: false
     t.integer "position", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["user_id", "position"], name: "index_filters_on_user_id_and_position", unique: true
-    t.index ["user_id"], name: "index_filters_on_user_id"
+    t.index ["author_id"], name: "index_filters_on_author_id"
+    t.index ["tenant_id", "position"], name: "index_filters_on_tenant_id_and_position", unique: true
+    t.index ["tenant_id"], name: "index_filters_on_tenant_id"
   end
 
   create_table "folders", force: :cascade do |t|
@@ -420,7 +422,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_25_124255) do
   add_foreign_key "automation_rules", "tenants"
   add_foreign_key "automation_rules", "users"
   add_foreign_key "boxes", "tenants"
-  add_foreign_key "filters", "users", on_delete: :cascade
+  add_foreign_key "filters", "tenants", on_delete: :cascade
+  add_foreign_key "filters", "users", column: "author_id", on_delete: :cascade
   add_foreign_key "folders", "boxes"
   add_foreign_key "govbox_folders", "govbox_folders", column: "parent_folder_id"
   add_foreign_key "govbox_messages", "govbox_folders", column: "folder_id"

@@ -10,7 +10,11 @@ class FilterPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      scope.where(user_id: @user.id)
+      scoped = scope.where(tenant_id: Current.tenant)
+
+      return scoped if @user.admin? || @user.site_admin?
+
+      scoped.where(author_id: @user.id)
     end
   end
 
@@ -27,14 +31,20 @@ class FilterPolicy < ApplicationPolicy
   end
 
   def edit?
-    true
+    true if @user.admin? || @user.site_admin?
+
+    @filter.author_id == @user.id
   end
 
   def update?
-    true
+    true if @user.admin? || @user.site_admin?
+
+    @filter.author_id == @user.id
   end
 
   def destroy?
-    true
+    true if @user.admin? || @user.site_admin?
+
+    @filter.author_id == @user.id
   end
 end
