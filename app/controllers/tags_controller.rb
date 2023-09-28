@@ -17,6 +17,7 @@ class TagsController < ApplicationController
 
   def set_object
     @object = policy_scope(Message).find(params[:object_id]) if params[:object_class] == 'Message'
+    @object = policy_scope(MessageDraft).find(params[:object_id]) if params[:object_class] == 'MessageDraft'
     @object = policy_scope(MessageThread).find(params[:object_id]) if params[:object_class] == 'MessageThread'
   end
 

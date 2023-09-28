@@ -1,10 +1,10 @@
 <h2>Drafty</h2>
 
 <div>
-  <%= link_to "Nahrať import", upload_new_message_drafts_imports_path %>
+  <%= link_to "Nahrať import", upload_new_messages_imports_path %>
 </div>
 
-<% if @message_drafts.any? %>
+<% if @messages.any? %>
   <br />
   <h3>Podania</h3>
   <div>
@@ -15,17 +15,17 @@
         <th>Stav</th>
       </tr>
 
-      <% @message_drafts.each do |message_draft| %>
+      <% @messages.each do |message| %>
         <tr>
-          <td><%= link_to message_draft.title, message_draft_path(message_draft.id) %></td>
-          <td><%= " #{message_draft.import&.base_name || '-'}" %></td>
-          <td><%= " #{message_draft.metadata["status"]}" %></td>
+          <td><%= link_to message.title, message_path(message.id) %></td>
+          <td><%= " #{message.import&.base_name || '-'}" %></td>
+          <td><%= " #{message.metadata["status"]}" %></td>
         </tr>
       <% end %>
     </table>
   </div>
   
-  <% if @message_drafts.any?(&:submittable?) %>
-    <%= button_to "Podať všetky", submit_all_message_drafts_path, method: :post %>
+  <% if @messages.any?(&:submittable?) %>
+    <%= button_to "Podať všetky", submit_all_messages_path, method: :post %>
   <% end %>
 <% end %>
