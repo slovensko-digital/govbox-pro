@@ -29,6 +29,12 @@ class Message < ApplicationRecord
 
   delegate :tenant, to: :thread
 
+  SEARCHABLE_FIELDS = [
+    { name: :title, formatter: :string },
+    { name: :sender_name, formatter: :string },
+    { name: :html_visualization, formatter: :html_string },
+  ]
+
   after_create_commit ->(message) { EventBus.publish(:message_created, message) }
   after_commit ->(message) { EventBus.publish(:message_changed, message) }
 
@@ -55,5 +61,25 @@ class Message < ApplicationRecord
 
   def authorized?
     metadata["delivery_notification"] && metadata["authorized"] == true
+  end
+
+  def to_searchable_string
+    SEARCHABLE_FIELDS.map do |searchable_field|
+      field_name, formatter = searchable_field.fetch_values(:name, :formatter)
+      value = public_send(field_name)
+
+      case formatter
+        when :string
+          Searchable::IndexHelpers.searchable_string(value)
+        when :html_string
+          Searchable::IndexHelpers.html_to_searchable_string(value)
+        else
+          throw :unsupported_searchable_formatter
+      end
+    end.compact.join(' ')
+  end
+
+  def changed_searchable_fields?
+    SEARCHABLE_FIELDS.any?{ |field| saved_changes.key?(field[:name].to_s) }
   end
 end

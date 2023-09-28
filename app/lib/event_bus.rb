@@ -28,7 +28,9 @@ EventBus.reset!
 # wiring
 EventBus.subscribe_job :message_thread_created, Automation::MessageThreadCreatedJob
 EventBus.subscribe_job :message_created, Automation::MessageCreatedJob
-EventBus.subscribe :message_changed, ->(message) { Searchable::ReindexMessageThreadJob.perform_later(message.thread) }
+EventBus.subscribe :message_changed, ->(message) {
+  Searchable::ReindexMessageThreadJob.perform_later(message.thread) if message.changed_searchable_fields?
+}
 EventBus.subscribe_job :message_thread_changed, Searchable::ReindexMessageThreadJob
 EventBus.subscribe :message_thread_tag_changed,
                    ->(message_thread_tag) { Searchable::ReindexMessageThreadJob.perform_later(message_thread_tag.message_thread) }

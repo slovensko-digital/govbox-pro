@@ -57,14 +57,7 @@ class Searchable::MessageThread < ApplicationRecord
     record.title = Searchable::IndexHelpers.searchable_string(message_thread.title)
     record.tag_ids = message_thread.tags.map(&:id)
     record.tag_names = Searchable::IndexHelpers.searchable_string(message_thread.tags.map(&:name).join(' ').gsub(/[:\/]/, " "))
-    record.content = message_thread.messages.map do |message|
-      [
-        Searchable::IndexHelpers.searchable_string(message.title),
-        Searchable::IndexHelpers.searchable_string(message.sender_name),
-        Searchable::IndexHelpers.html_to_searchable_string(message.html_visualization)
-      ].compact.join(' ')
-    end.join(' ')
-
+    record.content = message_thread.messages.map { |message| message.to_searchable_string }.join(' ')
     record.last_message_delivered_at = message_thread.last_message_delivered_at
     record.tenant_id = message_thread.folder.box.tenant_id
     record.box_id = message_thread.folder.box_id
