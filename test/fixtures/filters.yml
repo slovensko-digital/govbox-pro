@@ -1,13 +1,15 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  user: one
+  tenant: solver
+  author: one
   name: MyString
   query: MyString
   position: 1
 
 two:
-  user: two
+  tenant: solver
+  author: two
   name: MyString
   query: MyString
   position: 1

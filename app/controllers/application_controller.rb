@@ -15,7 +15,7 @@ class ApplicationController < ActionController::Base
 
   def set_menu_context
     @tags = policy_scope(Tag, policy_scope_class: TagPolicy::Scope).where(visible: true)
-    @filters = policy_scope(Filter, policy_scope_class: FilterPolicy::Scope).order(:position)
+    @filters = Filter.where(tenant_id: Current.tenant).order(:position)
     @menu = SidebarMenu.new(controller_name, action_name, { tags: @tags, filters: @filters })
   end
 end
