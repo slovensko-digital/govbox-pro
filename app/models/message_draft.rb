@@ -115,7 +115,8 @@ class MessageDraft < Message
   def being_submitted!
     metadata["status"] = "being_submitted"
     save!
-
+  end
+  
   def invalid?
     metadata["status"] == "invalid"
   end
