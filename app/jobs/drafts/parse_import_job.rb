@@ -96,7 +96,7 @@ class Drafts::ParseImportJob < ApplicationJob
         thread: message_thread,
         title: row['message_subject'],
         replyable: false,
-        read: true,
+        read: false,
         delivered_at: Time.now,
         import: import,
         author: author,

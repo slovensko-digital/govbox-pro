@@ -1,22 +1,28 @@
 <div class="flex flex-col justify-stretch items-stretch">
-  <%= render MessageThreadHeaderComponent.new(@message.thread, @available_tags) %>
+  <%= render MessageThreadHeaderComponent.new(@message.thread, @thread_tags_with_deletable_flag) %>
   <div class="flex flex-col justify-stretch items-stretch gap-2 p-4">
     <% if @notice %>
       <div class="bg-blue-100 border-t border-b border-blue-500 text-blue-700 px-4 py-3 w-full" role="alert">
         <p class="font-bold"><%= @notice %></p>
       </div>
     <% end %>
-    <div class="flex flex-col justify-stretch items-start self-stretch flex-grow-0 flex-shrink-0 overflow-hidden rounded-md bg-white border border-gray-200">
-      <div class="flex flex-col justify-stretch items-start self-stretch flex-grow-0 flex-shrink-0 overflow-hidden gap-4 px-6 pt-6 pb-4 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
-        <div class="flex justify-stretch items-start self-stretch flex-grow-0 flex-shrink-0 gap-4">
-          <div class="flex flex-col justify-stretch items-start flex-grow gap-2">
-            <div class="flex justify-strech items-start flex-grow-0 flex-shrink-0 relative gap-2">
-              <p class="flex-grow-0 flex-shrink-0 w-[100px] text-base text-left text-gray-900">Odosielateľ:</p>
-              <p class="flex-grow-0 flex-shrink-0 text-base font-semibold text-left text-gray-900"><%= @message.sender_name || 'Neznámy' %> </p>
+    <div class="flex flex-col justify-stretch items-stretch rounded-md bg-white border border-gray-200">
+      <div class="flex flex-col justify-stretch items-stretch gap-4 px-6 pt-6 pb-4 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
+        <div class="flex justify-between items-start gap-4">
+          <div class="flex flex-col justify-stretch items-start  gap-2">
+            <div class="flex justify-stretch items-start   relative gap-2">
+              <p class="  w-[100px] text-base text-left text-gray-900">Odosielateľ:</p>
+              <p class="  text-base font-semibold text-left text-gray-900"><%= @message.sender_name || 'Neznámy' %> </p>
             </div>
-            <div class="flex justify-strech items-start flex-grow-0 flex-shrink-0 relative gap-2">
-              <p class="flex-grow-0 flex-shrink-0 w-[100px] text-base text-left text-gray-900"> Adresát: </p>
-              <p class="flex-grow-0 flex-shrink-0 text-base font-semibold text-left text-gray-900"><%= @message.recipient_name || 'Neznámy' %></p>
+            <div class="flex justify-stretch items-start   relative gap-2">
+              <p class="  w-[100px] text-base text-left text-gray-900"> Adresát: </p>
+              <p class="  text-base font-semibold text-left text-gray-900"><%= @message.recipient_name || 'Neznámy' %></p>
+            </div>
+            <div class="flex justify-stretch items-start   gap-2 pt-1">
+              <% @message_tags_with_deletable_flag.each do |message_tag| %>
+                <%= render Common::RemovableTagComponent.new(message_tag) %>
+              <% end %>
+              <%= render Common::TagSelectorComponent.new(@message) %>
             </div>
             <% unless @message.not_yet_submitted? %>
               <div class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-1.5 px-1.5 py-0.5 rounded-md bg-purple-50 border border-purple-300">
@@ -31,18 +37,18 @@
         </div>
       </div>
 
-      <% if @message.custom_visualization? %>
-        <%= form_tag message_draft_path(@message), method: :put, class: "w-full", id: "reply_form" do %>
-          <div class="flex flex-col justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 relative gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
+      <div class="flex flex-col justify-stretch items-start    relative gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
+        <% if @message.custom_visualization? %>
+          <%= form_tag message_draft_path(@message), method: :put, class: "w-full", id: "reply_form" do %>
             <div class="mb-3 pt-0 w-full">
               <%= text_field_tag "message_title", @message.title, placeholder: "Predmet", onchange: 'document.getElementById("reply_form").submit();', disabled: !@message.editable?, class:"mb-3 px-3 py-4 placeholder-slate-300 text-slate-í00 relative bg-white bg-white rounded-lg text-base border-0 shadow outline-none focus:outline-none focus:ring w-full" %>
               <%= text_area_tag "message_text", @message.metadata["message_body"], placeholder: "Text", onchange: 'document.getElementById("reply_form").submit();', rows: 10, disabled: !@message.editable?, class:"px-3 py-4 placeholder-slate-300 text-slate-í00 relative bg-white bg-white rounded-lg text-base border-0 shadow outline-none focus:outline-none focus:ring w-full h-full" %>
             </div>
-          </div>
+          <% end %>
+        <% else %>
+          <%= @message.html_visualization&.html_safe %>
         <% end %>
-      <% else %>
-        <%= @message.html_visualization&.html_safe %>
-    <% end %>
+      </div>
 
       <% if @message.not_yet_submitted? || @message.objects.present? %>
         <div class="border-b w-full">
@@ -76,7 +82,7 @@
         </div>
       <% end %>
 
-      <% if @message.not_yet_submitted? %>
+      <% if @message.submittable? %>
         <div class="flex justify-between w-full">
           <div class="gap-2 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
             <%= button_to submit_message_draft_path(@message), method: :post, class: "flex justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3.5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" do %>

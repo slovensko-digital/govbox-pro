@@ -3,6 +3,8 @@ class Drafts::FinishImportJob < ApplicationJob
     import = batch.properties[:import]
 
     import.message_drafts.find_each do |message_draft|
+      next if message_draft.invalid?
+
       if message_draft.valid?(:validate_data)
         message_draft.metadata["status"] = "created"
       else
