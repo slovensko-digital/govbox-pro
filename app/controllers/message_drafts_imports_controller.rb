@@ -32,8 +32,6 @@ class MessageDraftsImportsController < ApplicationController
   end
 
   def load_box
-    return unless params[:box_id].present?
-
     @box = Current.tenant.boxes.find(params[:box_id])
   end
 end
