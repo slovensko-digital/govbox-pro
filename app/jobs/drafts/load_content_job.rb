@@ -20,6 +20,9 @@ class Drafts::LoadContentJob < ApplicationJob
 
       save_form_visualisation(message_draft)
     end
+  rescue Exception
+    message_draft.metadata["status"] = "invalid"
+    message_draft.save
   end
 
   private
@@ -43,8 +46,6 @@ class Drafts::LoadContentJob < ApplicationJob
         message_object: message_draft_object,
         blob: File.read(File.join(objects_path, file_name))
       )
-      
-      message_draft_object.save!
     end
   end
 

@@ -44,8 +44,6 @@ module Utils
       'image/png'
     when '.tiff', '.tif'
       'image/tiff'
-    else
-      raise "Uknown MimeType for #{entry_name}"
     end
   end
 
