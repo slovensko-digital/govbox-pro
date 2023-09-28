@@ -7,6 +7,7 @@ class AddColorToBoxes < ActiveRecord::Migration[7.0]
     Box.all.each do |box|
       box.color = Box.colors.keys[box.name.hash % Box.colors.size]
       box.short_name = box.name[0]
+      box.save!
     end
   end
 end
