@@ -27,7 +27,7 @@ class Govbox::Message < ApplicationRecord
   end
 
   def self.create_message_with_thread!(govbox_message)
-    message = MessageThread.with_advisory_lock(govbox_message.correlation_id, transaction: true, timeout_seconds: 10) do
+    message = MessageThread.with_advisory_lock!(govbox_message.correlation_id, transaction: true, timeout_seconds: 10) do
       folder = Folder.find_or_create_by!(
         name: "Inbox",
         box: govbox_message.box
@@ -48,18 +48,14 @@ class Govbox::Message < ApplicationRecord
         delivered_at: govbox_message.delivered_at
       )
 
-      self.create_message_tag(message, govbox_message)
-
       message.save!
+
+      self.create_message_tag(message, govbox_message)
+      
       message
     end
 
-    raise FailedToAcquireLockError unless message
-
     self.create_message_objects(message, govbox_message.payload)
-  end
-
-  class FailedToAcquireLockError < StandardError
   end
 
   private

@@ -50,7 +50,8 @@ Rails.application.routes.draw do
 
   resources :message_threads do
     collection do
-      post 'merge'
+      post :merge
+      get :scroll
     end
     resources :messages
   end
