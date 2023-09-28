@@ -8,13 +8,19 @@ class FilterPolicy < ApplicationPolicy
     @filter = filter
   end
 
-  class Scope < Scope
+  class ScopeEditable < Scope
     def resolve
       scoped = scope.where(tenant_id: Current.tenant)
 
       return scoped if @user.admin? || @user.site_admin?
 
       scoped.where(author_id: @user.id)
+    end
+  end
+
+  class ScopeShowable < Scope
+    def resolve
+      scope.where(tenant_id: Current.tenant)
     end
   end
 

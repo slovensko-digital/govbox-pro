@@ -60,6 +60,6 @@ class FiltersController < ApplicationController
   end
 
   def filter_scope
-    policy_scope(Filter, policy_scope_class: FilterPolicy::Scope).order(:position)
+    policy_scope(Filter, policy_scope_class: FilterPolicy::ScopeEditable).order(:position)
   end
 end
