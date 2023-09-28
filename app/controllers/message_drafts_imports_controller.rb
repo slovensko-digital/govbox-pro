@@ -1,13 +1,14 @@
 class MessageDraftsImportsController < ApplicationController
+  before_action :load_box, only: :create
+
   def create
     authorize MessageDraftsImport
 
     file_storage = FileStorage.new
 
     zip_content = params[:content]
-    import = MessageDraftsImport.create!(
-      name: "#{Time.now.to_i}_#{zip_content.original_filename}",
-      box: Current.box
+    import = @box.message_drafts_imports.create!(
+      name: "#{Time.now.to_i}_#{zip_content.original_filename}"
     )
 
     import_path = file_storage.store("imports", import_path(import), zip_content.read.force_encoding("UTF-8"))
@@ -26,5 +27,9 @@ class MessageDraftsImportsController < ApplicationController
 
   def import_path(import)
     File.join(String(Current.box.id), import.name)
+  end
+
+  def load_box
+    @box = Current.tenant.boxes.find(params[:box_id])
   end
 end
