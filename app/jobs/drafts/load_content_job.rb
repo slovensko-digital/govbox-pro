@@ -17,9 +17,9 @@ class Drafts::LoadContentJob < ApplicationJob
           load_message_draft_objects(message_draft, File.join(message_draft_path, subdirectory_name), signed: false, to_be_signed: false)
         end
       end
-
-      save_form_visualisation(message_draft)
     end
+
+    save_form_visualisation(message_draft)
   rescue Exception
     message_draft.metadata["status"] = "invalid"
     message_draft.save
@@ -60,7 +60,8 @@ class Drafts::LoadContentJob < ApplicationJob
     upvs_form_template = Upvs::FormTemplate.find_by(identifier: message_draft.metadata["posp_id"], version: message_draft.metadata["posp_version"])
     upvs_form_template_xslt_html = upvs_form_template&.xslt_html
 
-    raise MissingFormTemplateError.new unless upvs_form_template_xslt_html
+    return unless upvs_form_template_xslt_html
+    # raise MissingFormTemplateError.new unless upvs_form_template_xslt_html
 
     xslt_template = Nokogiri::XSLT(upvs_form_template_xslt_html)
 
