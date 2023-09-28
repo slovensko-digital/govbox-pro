@@ -16,6 +16,6 @@ class Searchable::ReindexMessageThreadJob < ApplicationJob
   def perform(message_thread)
     return if message_thread.nil?
 
-    ::Searchable::MessageThread.index_record(message_thread)
+    ::Searchable::Indexer.index_message_thread(message_thread)
   end
 end

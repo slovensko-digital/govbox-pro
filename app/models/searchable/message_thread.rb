@@ -52,26 +52,6 @@ class Searchable::MessageThread < ApplicationRecord
     [ids, next_cursor]
   end
 
-  def self.index_record(message_thread)
-    record = ::Searchable::MessageThread.find_or_initialize_by(message_thread_id: message_thread.id)
-    record.title = Searchable::IndexHelpers.searchable_string(message_thread.title)
-    record.tag_ids = message_thread.tags.map(&:id)
-    record.tag_names = Searchable::IndexHelpers.searchable_string(message_thread.tags.map(&:name).join(' ').gsub(/[:\/]/, " "))
-    record.content = message_thread.messages.map do |message|
-      [
-        Searchable::IndexHelpers.searchable_string(message.title),
-        Searchable::IndexHelpers.searchable_string(message.sender_name),
-        Searchable::IndexHelpers.html_to_searchable_string(message.html_visualization)
-      ].compact.join(' ')
-    end.join(' ')
-
-    record.last_message_delivered_at = message_thread.last_message_delivered_at
-    record.tenant_id = message_thread.folder.box.tenant_id
-    record.box_id = message_thread.folder.box_id
-
-    record.save!
-  end
-
   def self.reindex_with_tag_id(tag_id)
     Searchable::MessageThread.select(:id, :message_thread_id).where("tag_ids && ARRAY[?]", [tag_id]).find_each do |searchable_mt|
       Searchable::ReindexMessageThreadJob.perform_later(::MessageThread.find(searchable_mt.message_thread_id))
@@ -79,6 +59,6 @@ class Searchable::MessageThread < ApplicationRecord
   end
 
   def self.reindex_all
-    ::MessageThread.includes(:tags, :messages, folder: :box).find_each { |mt| index_record(mt) }
+    ::MessageThread.includes(:tags, :messages, folder: :box).find_each { |mt| ::Searchable::Indexer.index_message_thread(mt) }
   end
 end
