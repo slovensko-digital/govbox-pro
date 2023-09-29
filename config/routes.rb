@@ -96,7 +96,7 @@ Rails.application.routes.draw do
   get 'auth/google_oauth2/callback', to: 'sessions#create'
   get 'auth/google_oauth2/failure', to: 'sessions#failure'
 
-  root 'dashboard#show'
+  root 'message_threads#index'
 
   class GoodJobAdmin
     def self.matches?(request)
