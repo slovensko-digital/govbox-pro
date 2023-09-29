@@ -2,7 +2,7 @@ require 'jwt'
 
 module Upvs
   class GovboxApi < Api
-    attr_reader :sub, :api_token_private_key, :url, :edesk, :sktalk
+    attr_reader :sub, :obo, :api_token_private_key, :url, :edesk, :sktalk
 
     def initialize(url, govbox_api_connection, handler: Faraday)
       @sub = govbox_api_connection.sub
