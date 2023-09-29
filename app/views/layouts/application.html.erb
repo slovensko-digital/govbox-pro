@@ -15,7 +15,7 @@
         <%= render TW::StaticSidebarComponent.new %>
       <% end %>
       <% component.with_top_navigation do %>
-        <%= render TW::TopNavigationComponent.new %>
+        <%= render TW::TopNavigationComponent.new(@current_tenant_boxes_count) %>
       <% end %>
       <% component.with_main_content do %>
         <%= yield %>

@@ -45,6 +45,7 @@ Rails.application.routes.draw do
     post :sync
     get :select, on: :member
     get :select_all, on: :collection
+    get :get_selector, on: :collection
     post :search, on: :collection
   end
 
