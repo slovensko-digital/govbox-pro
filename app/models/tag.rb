@@ -22,7 +22,7 @@ class Tag < ApplicationRecord
   validates :name, presence: true
   validates :name, uniqueness: { scope: :tenant_id, case_sensitive: false }
 
-  after_create_commit ->(tag) { EventBus.publish(:tag_created, tag) }
+  after_create_commit ->(tag) { tag.groups += tag.tenant.groups.where(group_type: "ADMIN") }
   after_update_commit ->(tag) { EventBus.publish(:tag_renamed, tag) if previous_changes.key?("name") }
   after_destroy ->(tag) { EventBus.publish(:tag_removed, tag) }
 end
