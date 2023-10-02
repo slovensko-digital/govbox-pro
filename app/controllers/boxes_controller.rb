@@ -24,7 +24,6 @@ class BoxesController < ApplicationController
 
   def select_all
     authorize Box
-    # TODO: Chceme to takto? nil = vsetky Alebo chceme pridavat inu variablu pre tento stav?
     session[:box_id] = nil
     redirect_to request.referrer
   end
@@ -35,6 +34,12 @@ class BoxesController < ApplicationController
             .where(tenant_id: Current.tenant.id)
             .where("unaccent(name) ILIKE unaccent(?) OR unaccent(short_name) ILIKE unaccent(?)", "%#{params[:name_search]}%", "%#{params[:name_search]}%")
             .order(:name)
+  end
+
+  def get_selector
+    authorize(Box)
+    @boxes = Current.tenant.boxes
+    @all_unread_messages_count = Pundit.policy_scope(Current.user, Message).joins(thread: { folder: :box }).where(box: { tenant_id: Current.tenant.id }, read: false).count
   end
 
   private
