@@ -50,8 +50,8 @@ Rails.application.routes.draw do
       post :merge
       get :scroll
     end
-    get :get_addable_tags, on: :member
-    post :get_addable_tags, on: :member
+    get :available_tags, on: :member
+    post :available_tags, on: :member
     resources :messages
   end
   resources :message_threads_tags
