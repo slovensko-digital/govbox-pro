@@ -1,8 +1,5 @@
 class GiveAdminsAccessToAllTags < ActiveRecord::Migration[7.0]
   def change
-    Tag.find_each do |tag|
-      admin_groups = tag.tenant.groups.where(group_type: "ADMIN")
-      tag.groups += admin_groups
-    end
+    Tag.find_each { |tag| tag.mark_readable_by_groups(tag.tenant.admin_groups) }
   end
 end
