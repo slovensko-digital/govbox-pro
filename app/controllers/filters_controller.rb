@@ -16,7 +16,7 @@ class FiltersController < ApplicationController
   def create
     authorize Filter
 
-    @filter = Current.user.filters.build(filter_params.merge({tenant_id: Current.tenant.id}))
+    @filter = Current.tenant.filters.build(filter_params.merge({author_id: Current.user.id}))
     if @filter.save
       flash[:notice] = 'Filter bol úspešne vytvorený'
       if params[:to] == 'search'

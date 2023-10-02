@@ -39,18 +39,24 @@ class FilterPolicy < ApplicationPolicy
   def edit?
     true if @user.admin? || @user.site_admin?
 
-    @filter.author_id == @user.id
+    is_author_current_user?
   end
 
   def update?
     true if @user.admin? || @user.site_admin?
 
-    @filter.author_id == @user.id
+    is_author_current_user?
   end
 
   def destroy?
     true if @user.admin? || @user.site_admin?
 
-    @filter.author_id == @user.id
+    is_author_current_user?
+  end
+
+  private
+
+  def is_author_current_user?
+    @filter.author == @user
   end
 end
