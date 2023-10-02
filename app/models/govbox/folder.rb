@@ -30,6 +30,6 @@ class Govbox::Folder < ApplicationRecord
   end
 
   def drafts?
-    name.start_with? == 'Drafts'
+    name.start_with? 'Drafts'
   end
 end
