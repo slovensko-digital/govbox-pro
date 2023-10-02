@@ -22,6 +22,11 @@ class Tag < ApplicationRecord
   validates :name, presence: true
   validates :name, uniqueness: { scope: :tenant_id, case_sensitive: false }
 
+  after_create_commit ->(tag) { tag.mark_readable_by_groups(tag.tenant.admin_groups) }
   after_update_commit ->(tag) { EventBus.publish(:tag_renamed, tag) if previous_changes.key?("name") }
   after_destroy ->(tag) { EventBus.publish(:tag_removed, tag) }
+
+  def mark_readable_by_groups(groups)
+    self.groups += groups
+  end
 end
