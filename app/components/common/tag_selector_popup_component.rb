@@ -1,16 +1,12 @@
 module Common
   class TagSelectorPopupComponent < ViewComponent::Base
-    def initialize(object, available_tags, name_search)
-      @object = object
+    def initialize(message_thread, available_tags, name_search)
+      @message_thread = message_thread
       @tags = available_tags
       @name_search = name_search
-      if @object.class == MessageThread
-        @new_tag = Current.tenant.tags.new(name: name_search)
-        @new_tag.message_threads << @object
-      elsif @object.class == Message
-        @new_tag = Current.tenant.tags.new(name: name_search)
-        @new_tag.messages << @object
-      end
+
+      @new_tag = Current.tenant.tags.new(name: name_search)
+      @new_tag.message_threads << @message_thread
     end
   end
 end

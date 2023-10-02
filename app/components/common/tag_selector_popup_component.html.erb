@@ -1,43 +1,25 @@
-<%= tag.turbo_frame id: "tag-selector-popup-#{@object.class}" do %>
+<%= tag.turbo_frame id: "tag-selector-popup" do %>
   <div class="flex flex-wrap justify-start items-center gap-2">
     <% if @tags.any? %>
       <% @tags.each do |tag|%>
         <div class="flex justify-center items-center gap-1.5 px-2 py-1 rounded-md bg-blue-50 border border-blue-300 hover:cursor-pointer">
-          <% if @object.class == MessageThread %>
-            <%= form_with model: [MessageThreadsTag.new(message_thread: @object, tag: tag)], data: { turbo_frame: '_top' }, class: "contents" do |form| %>
-              <%= form.hidden_field :message_thread_id %>
-              <%= form.hidden_field :tag_id %>
-              <%= form.submit "#{tag.name}", class:"text-sm text-left text-blue-600 hover:cursor-pointer" %>
-            <% end %>
-          <% elsif @object.class == Message %>
-            <%= form_with model: [MessagesTag.new(message: @object, tag: tag)], data: { turbo_frame: '_top' }, class: "contents" do |form| %>
-              <%= form.hidden_field :message_id %>
-              <%= form.hidden_field :tag_id %>
-              <%= form.submit "#{tag.name}", class:"text-sm text-left text-blue-600 hover:cursor-pointer" %>
-            <% end %>
+          <%= form_with model: [MessageThreadsTag.new(message_thread: @message_thread, tag: tag)], data: { turbo_frame: '_top' }, class: "contents" do |form| %>
+            <%= form.hidden_field :message_thread_id %>
+            <%= form.hidden_field :tag_id %>
+            <%= form.submit "#{tag.name}", class:"text-sm text-left text-blue-600 hover:cursor-pointer" %>
           <% end %>
         </div>
       <% end %>
-    </div>
-  <% else %>
-    <div class="flex justify-center items-center gap-1.5 px-2 py-1 rounded-md bg-blue-50 border border-blue-300 hover:cursor-pointer">
-      <% if @object.class == MessageThread %>
-        <%= form_with model:@new_tag, data: { turbo_frame: '_top' }, class: "contents" do |form| %>
+    <% else %>
+      <div class="flex justify-center items-center gap-1.5 px-2 py-1 rounded-md bg-blue-50 border border-blue-300 hover:cursor-pointer">
+        <%= form_with model: @new_tag, data: { turbo_frame: '_top' }, class: "contents" do |form| %>
           <%= form.hidden_field :name %>
           <%= form.fields_for :message_threads_tags do |thread_tags_form|%>
-            <%= thread_tags_form.hidden_field :message_thread_id, value: @object.id %>
+            <%= thread_tags_form.hidden_field :message_thread_id, value: @message_thread.id %>
           <% end %>
           <%= form.submit "#{@new_tag.name} (Založiť nový štítok)", class:"text-sm text-left text-blue-600 hover:cursor-pointer" %>
         <% end %>
-      <% elsif @object.class == Message %>
-        <%= form_with model:@new_tag, data: { turbo_frame: '_top' }, class: "contents" do |form| %>
-          <%= form.hidden_field :name %>
-          <%= form.fields_for :messages_tags do |message_tags_form|%>
-            <%= message_tags_form.hidden_field :message_id, value: @object.id %>
-          <% end %>
-          <%= form.submit "#{@new_tag.name} (Založiť nový štítok)", class:"text-sm text-left text-blue-600 hover:cursor-pointer" %>
-        <% end %>
-      <% end %>
-    </div>
-  <% end %>
+      </div>
+    <% end %>
+  </div>
 <% end %>

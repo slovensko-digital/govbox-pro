@@ -1,7 +1,7 @@
 module Common
   class TagSelectorComponent < ViewComponent::Base
-    def initialize(object)
-      @object = object
+    def initialize(message_thread)
+      @message_thread = message_thread
     end
   end
 end

@@ -6,16 +6,6 @@ class TagsController < ApplicationController
     authorize [:admin, @tag]
   end
 
-  def get_available
-    authorize [Tag]
-    set_object
-    @tenant = Current.tenant
-    @tags = @tenant.tags
-                   .where.not(id: @object.tags.ids)
-                   .where(visible: true)
-    @tags = @tags.where('unaccent(name) ILIKE unaccent(?)', "%#{params[:name_search]}%") if params[:name_search]
-  end
-
   def create
     @tag = Current.tenant.tags.new(tag_params)
     @tag.user_id = Current.user.id
@@ -31,13 +21,8 @@ class TagsController < ApplicationController
 
   private
 
-  def set_object
-    klass = params[:object_class]
-    @object = policy_scope(class_eval(klass)).find(params[:object_id]) if klass.in? %w[Message MessageThread]
-  end
-
   def tag_params
-    params.require(:tag).permit(:name, message_threads_tags_attributes: [:message_thread_id], messages_tags_attributes: [:message_id])
+    params.require(:tag).permit(:name, message_threads_tags_attributes: [:message_thread_id])
   end
 
   def set_visible_tags

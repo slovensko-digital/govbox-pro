@@ -42,4 +42,8 @@ class MessageThreadPolicy < ApplicationPolicy
   def merge?
     true
   end
+
+  def get_addable_tags?
+    true
+  end
 end

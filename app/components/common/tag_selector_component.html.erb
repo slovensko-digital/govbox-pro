@@ -19,7 +19,7 @@
   </div>
   <div data-dropdown-target="menu" class="z-50 absolute transform transition hidden opacity-0 scale-95" >
     <div class="flex flex-col z-50 w-[600px] shrink-0 justify-start items-stretch absolute self-stretch gap-2 p-2 rounded-lg bg-white border border-gray-300 right-0"  style="box-shadow: 1px 1px 4px 0 rgba(0,0,0,0.1);">
-      <%= form_with url: get_available_tags_path(object_class: @object.class, object_id: @object.id),
+      <%= form_with url: get_addable_tags_message_thread_path(@message_thread),
                     data: { controller: 'debounce', debounce_target: 'form'},
                     class:"flex items-center rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600" do |form| %>
         <div class="p-2">
@@ -30,7 +30,7 @@
                   onreset: "this.form.requestSubmit()",
                   class: "grow border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" %>
       <% end %>
-      <%= tag.turbo_frame id: "tag-selector-popup-#{@object.class}", loading: :lazy, src: get_available_tags_path(object_class: @object.class, object_id: @object.id) %>
+      <%= tag.turbo_frame id: "tag-selector-popup", loading: :lazy, src: get_addable_tags_message_thread_path(@message_thread) %>
     </div>
   </div>
 </div>

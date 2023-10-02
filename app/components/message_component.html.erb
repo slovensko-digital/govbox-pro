@@ -18,12 +18,6 @@
               <p class="  w-[100px] text-base text-left text-gray-900"> Adresát: </p>
               <p class="  text-base font-semibold text-left text-gray-900"><%= @message.recipient_name || 'Neznámy' %></p>
             </div>
-            <div class="flex justify-stretch items-start   gap-2 pt-1">
-              <% @message_tags_with_deletable_flag.each do |message_tag| %>
-                <%= render Common::RemovableTagComponent.new(message_tag) %>
-              <% end %>
-              <%= render Common::TagSelectorComponent.new(@message) %>
-            </div>
           </div>
           <div class="flex flex-col justify-strech items-start flex-grow gap-1">
             <div class="flex justify-strech items-start flex-grow-0 flex-shrink-0 relative gap-2">
