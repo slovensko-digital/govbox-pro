@@ -9,11 +9,11 @@ class TagsController < ApplicationController
   def create
     @tag = Current.tenant.tags.new(tag_params)
     @tag.user_id = Current.user.id
-    @tag.groups << Group.find_by(name: Current.user.name, tenant_id: Current.tenant.id, group_type: 'USER')
+    @tag.groups << Current.user.user_group
     authorize @tag
 
     if @tag.save
-      redirect_back fallback_location: "/message_threads", notice: 'Tag was successfully created'
+      redirect_back fallback_location: message_threads_path, notice: 'Tag was successfully created'
     else
       render :new, status: :unprocessable_entity
     end

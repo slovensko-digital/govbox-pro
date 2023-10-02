@@ -33,6 +33,10 @@ class User < ApplicationRecord
     groups.exists?(group_type: 'ADMIN')
   end
 
+  def user_group
+    groups.where(group_type: 'USER')
+  end
+
   private
 
   def delete_user_group
