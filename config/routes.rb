@@ -39,6 +39,7 @@ Rails.application.routes.draw do
 
   resources :tags do
     get :get_available, on: :collection
+    post :get_available, on: :collection
   end
 
   resources :boxes, path: 'schranky', only: [:index, :show] do

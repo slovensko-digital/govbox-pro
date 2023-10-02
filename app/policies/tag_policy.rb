@@ -28,6 +28,10 @@ class TagPolicy < ApplicationPolicy
     true
   end
 
+  def create?
+    true
+  end
+
   def get_available?
     true
   end
