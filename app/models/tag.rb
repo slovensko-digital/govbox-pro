@@ -19,10 +19,8 @@ class Tag < ApplicationRecord
   has_many :groups, through: :tag_groups
   belongs_to :owner, class_name: 'User', optional: true
   has_many :message_threads_tags
-  has_many :messages_tags
 
   accepts_nested_attributes_for :message_threads_tags
-  accepts_nested_attributes_for :messages_tags
 
   validates :name, presence: true
   validates :name, uniqueness: { scope: :tenant_id, case_sensitive: false }
