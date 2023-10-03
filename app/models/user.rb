@@ -18,6 +18,7 @@ class User < ApplicationRecord
   has_many :own_tags, class_name: 'Tag', foreign_key: 'user_id', inverse_of: :owner, dependent: :nullify
   has_many :message_drafts, foreign_key: :author_id
   has_many :automation_rules, class_name: 'Automation::Rule'
+  has_many :filters, foreign_key: :author_id
 
   validates_presence_of :name, :email
   validates_uniqueness_of :name, :email, scope: :tenant_id, case_sensitive: false
