@@ -1,7 +1,7 @@
 <h2>Drafty</h2>
 
 <div>
-  <%= link_to "Nahrať import", upload_new_messages_imports_path %>
+  <%= link_to "Nahrať import", upload_new_message_drafts_imports_path %>
 </div>
 
 <% if @messages.any? %>
@@ -26,6 +26,6 @@
   </div>
   
   <% if @messages.any?(&:submittable?) %>
-    <%= button_to "Podať všetky", submit_all_messages_path, method: :post %>
+    <%= button_to "Podať všetky", submit_all_message_drafts_path, method: :post %>
   <% end %>
 <% end %>

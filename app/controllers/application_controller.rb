@@ -14,7 +14,10 @@ class ApplicationController < ActionController::Base
   end
 
   def set_menu_context
-    @tags = policy_scope(Tag, policy_scope_class: TagPolicy::Scope).where(visible: true)
-    @menu = SidebarMenu.new(controller_name, action_name, { tags: @tags })
+    if Current.user
+      @tags = policy_scope(Tag, policy_scope_class: TagPolicy::Scope).where(visible: true)
+      @menu = SidebarMenu.new(controller_name, action_name, { tags: @tags })
+      @current_tenant_boxes_count = Current.tenant.boxes.count
+    end
   end
 end
