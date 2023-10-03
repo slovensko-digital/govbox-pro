@@ -29,7 +29,7 @@ class MessageThreadCollection
       no_visible_tags: no_visible_tags
     )
 
-    message_thread_ids, next_cursor = Searchable::MessageThread.search_ids(
+    search_ids_result = Searchable::MessageThread.search_ids(
       filter,
       search_permissions: search_permissions,
       cursor: cursor,
@@ -38,7 +38,7 @@ class MessageThreadCollection
     )
 
     message_thread_scope = (scope || MessageThread).
-      where(id: message_thread_ids).
+      where(id: search_ids_result.fetch(:ids)).
       order(Pagination.order_clause(searchable_cursor_to_cursor(cursor), DIRECTION))
 
     records = message_thread_scope.select(
@@ -51,7 +51,11 @@ class MessageThreadCollection
       '(select max(messages.id) from messages where messages.message_thread_id = message_threads.id and messages.delivered_at = message_threads.last_message_delivered_at) as last_message_id'
     )
 
-    [records, next_cursor]
+    {
+      records: records,
+      next_cursor: search_ids_result.fetch(:next_cursor),
+      highlights: search_ids_result.fetch(:highlights),
+    }
   end
 
   def self.searchable_cursor_to_cursor(cursor)

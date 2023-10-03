@@ -4,7 +4,21 @@ class Searchable::MessageThread < ApplicationRecord
 
   include PgSearch::Model
   pg_search_scope :pg_search_all,
-                  against: [:title, :content, :tag_names]
+                  against: [:title, :content, :tag_names],
+                  using: {
+                    tsearch: {
+                      highlight: {
+                        StartSel: '<b>',
+                        StopSel: '</b>',
+                        MaxWords: 15,
+                        MinWords: 0,
+                        ShortWord: 1,
+                        HighlightAll: true,
+                        MaxFragments: 1,
+                        FragmentDelimiter: '&hellip;'
+                      }
+                    }
+                  }
 
   def self.fulltext_search(query)
     pg_search_all(
@@ -34,7 +48,7 @@ class Searchable::MessageThread < ApplicationRecord
       end
     end
     scope = scope.where.not("tag_ids && ARRAY[?]", query_filter[:filter_out_tag_ids]) if query_filter[:filter_out_tag_ids].present?
-    scope = scope.fulltext_search(query_filter[:fulltext]) if query_filter[:fulltext].present?
+    scope = scope.fulltext_search(query_filter[:fulltext]).with_pg_search_highlight if query_filter[:fulltext].present?
     scope = scope.select(:message_thread_id, :last_message_delivered_at)
 
     # remove default order rule given by pg_search
@@ -49,7 +63,21 @@ class Searchable::MessageThread < ApplicationRecord
 
     ids = collection.map(&:message_thread_id)
 
-    [ids, next_cursor]
+    if query_filter[:fulltext].present?
+      highlights = collection.each_with_object({}) { |record, map| map[record.message_thread_id] = record.pg_search_highlight }
+
+      {
+        ids: ids,
+        next_cursor: next_cursor,
+        highlights: highlights,
+      }
+    else
+      {
+        ids: ids,
+        next_cursor: next_cursor,
+        highlights: {},
+      }
+    end
   end
 
   def self.reindex_with_tag_id(tag_id)
