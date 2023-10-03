@@ -37,7 +37,7 @@ class MessageThreadsController < ApplicationController
         cursor: cursor
       )
 
-    @message_threads, @next_cursor, @highlights = result.fetch_values(:records, :next_cursor, :highlights)
+    @message_threads, @next_cursor = result.fetch_values(:records, :next_cursor)
     @next_cursor = MessageThreadCollection.serialize_cursor(@next_cursor)
     @next_page_params = search_params.to_h.merge(cursor: @next_cursor).merge(format: :turbo_stream)
   end

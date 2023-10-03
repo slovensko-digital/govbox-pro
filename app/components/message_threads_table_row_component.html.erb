@@ -10,8 +10,8 @@
       <div class="flex flex-col justify-start items-stretch grow gap-1">
         <p title="<%= @message_thread.title%>" class="truncate text-lg text-gray-900 <%="font-semibold" unless @message_thread.all_read %>"><%= @message_thread.title %></p>
         <p class="text-base text-left text-gray-500"><%= @message_thread.with_whom %></p>
-        <% if @search_highlight.present? %>
-          <p class="text-base text-left text-gray-500"><%= raw @search_highlight %></p>
+        <% if @message_thread.search_highlight.present? %>
+          <p class="text-base text-left text-gray-500"><%= raw @message_thread.search_highlight %></p>
         <% end %>
       </div>
       <div class="flex flex-wrap truncate justify-start items-start gap-1">

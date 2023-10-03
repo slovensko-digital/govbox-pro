@@ -2,7 +2,7 @@
 <%= render MessageThreadsTableComponent.new do |component| %>
   <% @message_threads.each do |message_thread| %>
     <% component.with_message_thread do %>
-      <%= render MessageThreadsTableRowComponent.new(message_thread: message_thread, search_highlight: @highlights[message_thread.id]) %>
+      <%= render MessageThreadsTableRowComponent.new(message_thread: message_thread) %>
     <% end %>
   <% end %>
   <% component.with_next_page_area do %>

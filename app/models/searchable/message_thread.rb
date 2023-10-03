@@ -14,7 +14,7 @@ class Searchable::MessageThread < ApplicationRecord
                         MinWords: 0,
                         ShortWord: 1,
                         HighlightAll: true,
-                        MaxFragments: 1,
+                        MaxFragments: 2,
                         FragmentDelimiter: '&hellip;'
                       }
                     }
