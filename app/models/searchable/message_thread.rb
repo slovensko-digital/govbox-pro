@@ -8,8 +8,8 @@ class Searchable::MessageThread < ApplicationRecord
                   using: {
                     tsearch: {
                       highlight: {
-                        StartSel: '<b>',
-                        StopSel: '</b>',
+                        StartSel: '<mark>',
+                        StopSel: '</mark>',
                         MaxWords: 15,
                         MinWords: 0,
                         ShortWord: 1,
