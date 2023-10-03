@@ -1,4 +1,6 @@
 class Govbox::SubmitMessageDraftJob < ApplicationJob
+  retry_on Exception, attempts: 0
+
   def perform(message_draft, schedule_sync: true, upvs_client: UpvsEnvironment.upvs_client)
     message_draft_data = {
       posp_id: message_draft.metadata["posp_id"],
