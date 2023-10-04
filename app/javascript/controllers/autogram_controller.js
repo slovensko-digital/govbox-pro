@@ -62,7 +62,12 @@ export default class extends Controller {
               payloadMimeType: payloadMimeType
             })
           }).then(function (response) {
-            return response.json();
+            if (response.ok) {
+              return response.json();
+            }
+            else {
+              throw new Error("Podpisovanie neprebehlo úspešne.");
+            }
           }).then(function (signedData) {
             that.updateObject(messageObjectId, messageId, signedFileName, signedFileMimeType, signedData.content);
           }).then(function () {
@@ -70,6 +75,9 @@ export default class extends Controller {
           }).catch(function (err) {
             if (err.message === "Failed to fetch") {
               alert("Spustite aplikáciu autogram.")
+            }
+            else {
+              alert(err.message)
             }
           });
         })
@@ -92,7 +100,9 @@ export default class extends Controller {
         responseKind: "turbo-stream"
       }).then(function () {
         resolve();
-      })
+      }).catch(function () {
+        alert("Podpisovanie neprebehlo úspešne.")
+      });
     });
   }
 
@@ -121,6 +131,9 @@ export default class extends Controller {
     }).catch(function (err) {
       if (err.message === "Failed to fetch") {
         alert("Spustite aplikáciu autogram.")
+      }
+      else {
+        alert("Podpisovanie neprebehlo úspešne.")
       }
     });
   }

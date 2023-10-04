@@ -65,14 +65,16 @@ class MessageObjectsController < ApplicationController
   def update_message_object(message_object)
     permitted_params = message_object_params
 
-    message_object.update!(
-      name: permitted_params[:name],
-      mimetype: permitted_params[:mimetype],
-      is_signed: permitted_params[:is_signed],
-    )
+    message_object.transaction do
+      message_object.update!(
+        name: permitted_params[:name],
+        mimetype: permitted_params[:mimetype],
+        is_signed: permitted_params[:is_signed],
+      )
 
-    message_object.message_object_datum.update!(
-      blob: Base64.decode64(permitted_params[:content])
-    )
+      message_object.message_object_datum.update!(
+        blob: Base64.decode64(permitted_params[:content])
+      )
+    end
   end
 end
