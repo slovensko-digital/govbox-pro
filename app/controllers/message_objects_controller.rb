@@ -13,8 +13,6 @@ class MessageObjectsController < ApplicationController
   def update
     authorize @message_object
     update_message_object(@message_object)
-
-    # render partial: "list"
   end
 
   def show
