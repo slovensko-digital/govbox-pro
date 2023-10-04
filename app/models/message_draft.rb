@@ -145,7 +145,7 @@ class MessageDraft < Message
 
     if objects.size == 0
       errors.add(:objects, "No objects found for draft")
-    elsif forms.count != 1
+    elsif forms.size != 1
       errors.add(:objects, "Draft has to contain exactly one form")
     end
   end
