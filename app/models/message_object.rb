@@ -49,7 +49,8 @@ class MessageObject < ApplicationRecord
   end
 
   def signable?
-    message.is_a?(MessageDraft)
+    # TODO vymazat druhu podmienku po povoleni viacnasobneho podpisovania
+    message.is_a?(MessageDraft) && !is_signed
   end
 
   def destroyable?

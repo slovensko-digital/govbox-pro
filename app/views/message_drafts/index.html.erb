@@ -19,7 +19,7 @@
 
       <% @messages.each do |message| %>
         <tr>
-          <td><%= link_to message.title, message_path(message.id) %></td>
+          <td><%= link_to message.title, message_draft_path(message.id) %></td>
           <td><%= " #{message.import&.base_name || '-'}" %></td>
           <td><%= " #{message.metadata["status"]}" %></td>
         </tr>
