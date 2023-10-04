@@ -39,7 +39,8 @@ class Drafts::LoadContentJob < ApplicationJob
         object_type: is_form ? "FORM" : "ATTACHMENT",
         is_signed: signed,
         to_be_signed: to_be_signed,
-        message: message_draft
+        message: message_draft,
+        visualizable: is_form ? false : nil
       )
 
       MessageObjectDatum.create(
@@ -61,7 +62,6 @@ class Drafts::LoadContentJob < ApplicationJob
     upvs_form_template_xslt_html = upvs_form_template&.xslt_html
 
     return unless upvs_form_template_xslt_html
-    # raise MissingFormTemplateError.new unless upvs_form_template_xslt_html
 
     xslt_template = Nokogiri::XSLT(upvs_form_template_xslt_html)
 
@@ -69,6 +69,10 @@ class Drafts::LoadContentJob < ApplicationJob
       # TODO add unsigned_content method which calls UPVS OdpodpisanieDat endpoint and uncomment
       # message_draft.update(
       #   html_visualization: xslt_template.transform(Nokogiri::XML(message_draft.form.unsigned_content)).to_s.gsub('"', '\'')
+      # )
+      #
+      # message_draft.form.update(
+      #   visualizable: true
       # )
     else
       message_draft.update(
@@ -79,10 +83,11 @@ class Drafts::LoadContentJob < ApplicationJob
         message_draft.metadata["message_body"] = Upvs::GeneralAgendaBuilder.parse_text(message_draft.form.message_object_datum.blob)
         message_draft.save!
       end
-    end
-  end
 
-  class MissingFormTemplateError < StandardError
+      message_draft.form.update(
+        visualizable: true
+      )
+    end
   end
 
   delegate :uuid, to: self
