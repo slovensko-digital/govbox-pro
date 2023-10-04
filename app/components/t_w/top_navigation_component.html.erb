@@ -1,5 +1,5 @@
 <div class="flex justify-stretch items-center grow h-16 relative  gap-4 px-4 bg-white border-t-0 border-r-0 border-b border-l-0 border-gray-200">
-  <%= render Layout::BoxSelectorComponent.new %>
+  <%= render Layout::BoxSelectorComponent.new(@current_tenant_boxes_count) %>
   <svg width="1" height="64" viewBox="0 0 1 64" fill="none" xmlns="http://www.w3.org/2000/svg" class="todo   " preserveAspectRatio="xMidYMid meet">
     <line x1="0.5" y1="2.18557e-8" x2="0.499997" y2="64" stroke="#E5E7EB"></line>
   </svg>
@@ -21,6 +21,7 @@
         <% end %>
         <%= f.search_field :q, value: params[:q], placeholder: 'Vyhľadaj správu', class: 'pl-10 text-base text-left text-gray-900 placeholder-gray-400', style: 'width: 100%' %>
       <% end %>
+      <%= render TW::CreateFilterComponent.new %>
     </div>
   </div>
   <svg width="1" height="64" viewBox="0 0 1 64" fill="none" xmlns="http://www.w3.org/2000/svg" class="  " preserveAspectRatio="xMidYMid meet">

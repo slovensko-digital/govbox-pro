@@ -38,4 +38,8 @@ class BoxPolicy < ApplicationPolicy
     true
   end
 
+  def get_selector?
+    true
+  end
+
 end

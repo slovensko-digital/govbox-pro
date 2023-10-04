@@ -4,7 +4,21 @@ class Searchable::MessageThread < ApplicationRecord
 
   include PgSearch::Model
   pg_search_scope :pg_search_all,
-                  against: [:title, :content, :tag_names]
+                  against: [:title, :content, :tag_names],
+                  using: {
+                    tsearch: {
+                      highlight: {
+                        StartSel: '<mark>',
+                        StopSel: '</mark>',
+                        MaxWords: 15,
+                        MinWords: 0,
+                        ShortWord: 1,
+                        HighlightAll: true,
+                        MaxFragments: 2,
+                        FragmentDelimiter: '&hellip;'
+                      }
+                    }
+                  }
 
   def self.fulltext_search(query)
     pg_search_all(
@@ -34,7 +48,7 @@ class Searchable::MessageThread < ApplicationRecord
       end
     end
     scope = scope.where.not("tag_ids && ARRAY[?]", query_filter[:filter_out_tag_ids]) if query_filter[:filter_out_tag_ids].present?
-    scope = scope.fulltext_search(query_filter[:fulltext]) if query_filter[:fulltext].present?
+    scope = scope.fulltext_search(query_filter[:fulltext]).with_pg_search_highlight if query_filter[:fulltext].present?
     scope = scope.select(:message_thread_id, :last_message_delivered_at)
 
     # remove default order rule given by pg_search
@@ -49,27 +63,21 @@ class Searchable::MessageThread < ApplicationRecord
 
     ids = collection.map(&:message_thread_id)
 
-    [ids, next_cursor]
-  end
+    if query_filter[:fulltext].present?
+      highlights = collection.each_with_object({}) { |record, map| map[record.message_thread_id] = record.pg_search_highlight }
 
-  def self.index_record(message_thread)
-    record = ::Searchable::MessageThread.find_or_initialize_by(message_thread_id: message_thread.id)
-    record.title = Searchable::IndexHelpers.searchable_string(message_thread.title)
-    record.tag_ids = message_thread.tags.map(&:id)
-    record.tag_names = Searchable::IndexHelpers.searchable_string(message_thread.tags.map(&:name).join(' ').gsub(/[:\/]/, " "))
-    record.content = message_thread.messages.map do |message|
-      [
-        Searchable::IndexHelpers.searchable_string(message.title),
-        Searchable::IndexHelpers.searchable_string(message.sender_name),
-        Searchable::IndexHelpers.html_to_searchable_string(message.html_visualization)
-      ].compact.join(' ')
-    end.join(' ')
-
-    record.last_message_delivered_at = message_thread.last_message_delivered_at
-    record.tenant_id = message_thread.folder.box.tenant_id
-    record.box_id = message_thread.folder.box_id
-
-    record.save!
+      {
+        ids: ids,
+        next_cursor: next_cursor,
+        highlights: highlights,
+      }
+    else
+      {
+        ids: ids,
+        next_cursor: next_cursor,
+        highlights: {},
+      }
+    end
   end
 
   def self.reindex_with_tag_id(tag_id)
@@ -79,6 +87,6 @@ class Searchable::MessageThread < ApplicationRecord
   end
 
   def self.reindex_all
-    ::MessageThread.includes(:tags, :messages, folder: :box).find_each { |mt| index_record(mt) }
+    ::MessageThread.includes(:tags, :messages, folder: :box).find_each { |mt| ::Searchable::Indexer.index_message_thread(mt) }
   end
 end

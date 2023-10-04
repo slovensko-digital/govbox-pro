@@ -4,7 +4,7 @@
 #
 #  id                                          :integer          not null, primary key
 #  name                                        :string           not null
-#  mimetype                                    :string           not null
+#  mimetype                                    :string
 #  is_signed                                   :boolean
 #  to_be_signed                                :boolean          not null, default: false
 #  object_type                                 :string           not null
@@ -19,6 +19,9 @@ class MessageObject < ApplicationRecord
   scope :unsigned, -> { where('is_signed = false') }
   scope :to_be_signed, -> { where('to_be_signed = true') }
   scope :should_be_signed, -> { where('to_be_signed = true AND is_signed = false') }
+
+  validates :name, presence: true, on: :validate_data
+  validate :allowed_mime_type?, on: :validate_data
 
   def self.create_message_objects(message, objects)
     objects.each do |raw_object|
@@ -51,5 +54,11 @@ class MessageObject < ApplicationRecord
 
   def destroyable?
     message.is_a?(MessageDraft) && message.not_yet_submitted? && !form?
+  end
+
+  private
+
+  def allowed_mime_type?
+    errors.add(:mime_type, "of #{name} object is disallowed, allowed_mime_types: #{Utils::EXTENSIONS_ALLOW_LIST.join(', ')}") unless mimetype
   end
 end

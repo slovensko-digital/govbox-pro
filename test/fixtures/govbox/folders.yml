@@ -12,3 +12,15 @@ two:
   box: one
   name: MyName
   system: false
+
+bin:
+  edesk_folder_id: 135790
+  box: one
+  name: Bin
+  system: true
+
+drafts:
+  edesk_folder_id: 24580
+  box: one
+  name: Drafts
+  system: true

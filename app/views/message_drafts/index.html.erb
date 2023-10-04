@@ -6,7 +6,7 @@
   <%= link_to "Nahrať import", upload_new_message_drafts_imports_path %>
 </div>
 
-<% if @message_drafts.any? %>
+<% if @messages.any? %>
   <br />
   <h3>Podania</h3>
   <div>
@@ -17,25 +17,25 @@
         <th>Stav</th>
       </tr>
 
-      <% @message_drafts.each do |message_draft| %>
+      <% @messages.each do |message| %>
         <tr>
-          <td><%= link_to message_draft.title || "Draft", message_draft_path(message_draft.id) %></td>
-          <td><%= " #{message_draft.import&.base_name || '-'}" %></td>
-          <td><%= " #{message_draft.metadata["status"]}" %></td>
+          <td><%= link_to message.title, message_path(message.id) %></td>
+          <td><%= " #{message.import&.base_name || '-'}" %></td>
+          <td><%= " #{message.metadata["status"]}" %></td>
         </tr>
       <% end %>
     </table>
   </div>
 
-  <% if @message_drafts.map{|message_draft| message_draft.objects.should_be_signed.map{|o| {id: o.id, message_id: o.message_id}}}.flatten(1).any? %>
-    <div data-controller="autogram" data-autogram-authenticity-token="<%= form_authenticity_token %>" data-autogram-files-to-be-signed=<%= @message_drafts.map{|message_draft| message_draft.objects.should_be_signed.map{|o| {id: o.id, message_id: o.message_id}}}.flatten(1).to_json.html_safe %> >
+  <% if @messages.map{|message| message.objects.should_be_signed.map{|o| {id: o.id, message_id: message.id}}}.flatten(1).any? %>
+    <div data-controller="autogram" data-autogram-authenticity-token="<%= form_authenticity_token %>" data-autogram-files-to-be-signed=<%= @messages.map{|message| message.objects.should_be_signed.map{|o| {id: o.id, message_id: message.id}}}.flatten(1).to_json.html_safe %> >
       <button type="button" data-action="click->autogram#signMultipleFiles" class="flex justify-end items-center gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300">
         <b>Podpísať všetky dokumenty na podpis</b>
       </button>
     </div>
+  <% end %>
 
-    <% if @message_drafts.any?(&:submittable?) %>
-      <%= button_to "Podať všetky", submit_all_message_drafts_path, method: :post %>
-    <% end %>
+  <% if @messages.any?(&:submittable?) %>
+    <%= button_to "Podať všetky", submit_all_message_drafts_path, method: :post %>
   <% end %>
 <% end %>

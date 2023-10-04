@@ -102,7 +102,7 @@ class MessageDraft < Message
   end
 
   def submittable?
-    form.present? && objects.to_be_signed.all? { |o| o.is_signed? } && not_yet_submitted?
+    form.present? && objects.to_be_signed.all? { |o| o.is_signed? } && !invalid? && not_yet_submitted?
   end
 
   def not_yet_submitted?
@@ -115,6 +115,10 @@ class MessageDraft < Message
 
   def submitted?
     metadata["status"] == "submitted"
+  end
+
+  def invalid?
+    metadata["status"] == "invalid"
   end
 
   def original_message

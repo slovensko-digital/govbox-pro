@@ -45,6 +45,7 @@ Rails.application.routes.draw do
     post :sync
     get :select, on: :member
     get :select_all, on: :collection
+    get :get_selector, on: :collection
     post :search, on: :collection
   end
 
@@ -69,6 +70,8 @@ Rails.application.routes.draw do
       end
     end
   end
+
+  resources :filters
 
   resources :message_drafts do
     member do
@@ -95,7 +98,7 @@ Rails.application.routes.draw do
   get 'auth/google_oauth2/callback', to: 'sessions#create'
   get 'auth/google_oauth2/failure', to: 'sessions#failure'
 
-  root 'dashboard#show'
+  root 'message_threads#index'
 
   class GoodJobAdmin
     def self.matches?(request)

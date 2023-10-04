@@ -21,7 +21,7 @@
                 <%= file_field_tag 'attachments[]', onchange: 'document.getElementById("attachment_form").requestSubmit()', class: "text-gray-900 bg-white focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm font-semibold px-5 py-2.5 dark:border-gray-600", multiple: true %>
 
                 <% if @message.objects.unsigned.present? %>
-                  <div data-controller="autogram" data-autogram-authenticity-token="<%= form_authenticity_token %>" data-autogram-files-to-be-signed=<%= @message.objects.unsigned.map{|o| {id: o.id, message_id: o.message_id}}.to_json.html_safe %> >
+                  <div data-controller="autogram" data-autogram-authenticity-token="<%= form_authenticity_token %>" data-autogram-files-to-be-signed=<%= @message.objects.unsigned.map{|o| {id: o.id, message_id: o.@message.id}}.to_json.html_safe %> >
                     <button type="button" data-action="click->autogram#signMultipleFiles" class="flex justify-end items-center gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300">
                       Podpísať všetky nepodpísané dokumenty
                     </button>
