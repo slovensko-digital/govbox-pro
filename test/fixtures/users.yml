@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+basic:
+  name: Basic user
+  email: basic_user@email.com
+  tenant: solver
+
+admin:
+  name: Admin user
+  email: admin_user@email.com
+  tenant: solver

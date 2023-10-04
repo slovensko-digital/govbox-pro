@@ -33,15 +33,18 @@ class Searchable::MessageThreadQuery
   end
 
   def self.labels_to_ids(parsed_query, tenant_id:, no_visible_tags: false)
-    filter_tag_ids = label_names_to_tag_ids(tenant_id, parsed_query[:filter_labels])
-    filter_out_tag_ids = label_names_to_tag_ids(tenant_id, parsed_query[:filter_out_labels])
+    fulltext, filter_labels, filter_out_labels =
+      parsed_query.fetch_values(:fulltext, :filter_labels, :filter_out_labels)
+
+    filter_tag_ids = label_names_to_tag_ids(tenant_id, filter_labels)
+    filter_out_tag_ids = label_names_to_tag_ids(tenant_id, filter_out_labels)
 
     filter_out_tag_ids.concat(visible_tag_ids(tenant_id)) if no_visible_tags
 
     result = {}
 
-    if parsed_query[:filter_labels].present?
-      if parsed_query[:filter_labels].length == filter_tag_ids.length
+    if filter_labels.present?
+      if filter_labels.length == filter_tag_ids.length
         result[:filter_tag_ids] = filter_tag_ids
       else
         result[:filter_tag_ids] = :missing_tag
@@ -49,7 +52,7 @@ class Searchable::MessageThreadQuery
     end
 
     result[:filter_out_tag_ids] = filter_out_tag_ids if filter_out_tag_ids.present?
-    result[:fulltext] = parsed_query[:fulltext] if parsed_query[:fulltext].present?
+    result[:fulltext] = fulltext if fulltext.present?
 
     result
   end

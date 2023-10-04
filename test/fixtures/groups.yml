@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+all:
+  name: all
+  group_type: ALL
+  tenant: solver
+
+admins:
+  name: admins
+  group_type: ADMIN
+  tenant: solver

@@ -12,11 +12,13 @@ class Tenant < ApplicationRecord
   has_many :groups, dependent: :destroy
 
   has_one :all_group, -> { where(group_type: 'ALL') }, class_name: 'Group'
+  has_many :admin_groups, -> { where(group_type: 'ADMIN') }, class_name: 'Group'
 
   has_many :boxes, dependent: :destroy
   has_many :automation_rules, class_name: 'Automation::Rule', dependent: :destroy
   has_many :folders, through: :boxes
   has_many :tags, dependent: :destroy
+  has_many :filters
   after_create :create_default_objects
 
   validates_presence_of :name
