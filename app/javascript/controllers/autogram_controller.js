@@ -8,8 +8,7 @@ export default class extends Controller {
       get(`/messages/${messageId}/message_objects/${messageObjectId}/signing_data.json`)
         .then(function (response) {
           return response.json;
-        })
-        .then(async function (messageObjectData) {
+        }).then(async function (messageObjectData) {
           let payloadMimeType = `${messageObjectData.mime_type};base64`;
           let signatureLevel = "XAdES_BASELINE_B";
           let signatureContainer = "ASiC_E";
