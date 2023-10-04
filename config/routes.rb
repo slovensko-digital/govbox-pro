@@ -70,6 +70,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :filters
+
   resources :message_drafts do
     member do
       post 'submit'

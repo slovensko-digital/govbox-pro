@@ -20,7 +20,7 @@ module Upvs
       end
 
       def token
-        JWT.encode({ sub: @api.sub, exp: 5.minutes.from_now.to_i, jti: SecureRandom.uuid }, @api.api_token_private_key, 'RS256')
+        JWT.encode({ sub: @api.sub, obo: @api.obo, exp: 5.minutes.from_now.to_i, jti: SecureRandom.uuid }, @api.api_token_private_key, 'RS256')
       end
     end
 
