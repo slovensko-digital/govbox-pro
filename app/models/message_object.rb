@@ -38,12 +38,28 @@ class MessageObject < ApplicationRecord
     end
   end
 
+  def content
+    message_object_datum.blob
+  end
+
   def form?
     object_type == "FORM"
   end
 
   def destroyable?
     message.is_a?(MessageDraft) && message.not_yet_submitted? && !form?
+  end
+
+  def content_to_show
+    return self if mimetype != 'application/vnd.etsi.asic-e+zip'
+
+    documents = SignedAttachment::Asice.extract_documents_from_content(content)
+
+    if documents.size == 1
+      documents.first
+    else
+      self
+    end
   end
 
   private
