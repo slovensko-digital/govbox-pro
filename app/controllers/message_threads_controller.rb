@@ -1,5 +1,5 @@
 class MessageThreadsController < ApplicationController
-  before_action :set_message_thread, only: %i[show update available_tags]
+  before_action :set_message_thread, only: %i[show update search_available_tags]
   before_action :load_threads, only: %i[index scroll]
 
   def show
@@ -54,7 +54,7 @@ class MessageThreadsController < ApplicationController
     redirect_to @selected_message_threads.first
   end
 
-  def available_tags
+  def search_available_tags
     authorize [MessageThread]
     @tags = Current.tenant.tags
                    .where.not(id: @message_thread.tags.ids)

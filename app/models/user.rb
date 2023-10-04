@@ -34,7 +34,7 @@ class User < ApplicationRecord
   end
 
   def user_group
-    groups.where(group_type: 'USER')
+    groups.where(group_type: 'USER').first
   end
 
   private

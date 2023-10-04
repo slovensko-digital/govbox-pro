@@ -13,7 +13,7 @@ class TagsController < ApplicationController
     authorize @tag
 
     if @tag.save
-      redirect_back fallback_location: message_threads_path, notice: 'Tag was successfully created'
+      redirect_back fallback_location: message_threads_path, notice: "Tag was successfully created"
     else
       render :new, status: :unprocessable_entity
     end

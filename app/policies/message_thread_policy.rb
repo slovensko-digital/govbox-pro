@@ -43,7 +43,7 @@ class MessageThreadPolicy < ApplicationPolicy
     true
   end
 
-  def available_tags?
+  def search_available_tags?
     true
   end
 end

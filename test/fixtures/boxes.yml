@@ -11,3 +11,9 @@ two:
   uri: MyString
   tenant: solver
   short_name: MY2
+
+three:
+  name: MyString2
+  uri: MyString2
+  tenant: ssd
+  short_name: MY1
