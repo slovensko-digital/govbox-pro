@@ -3,9 +3,9 @@ import { get, patch } from '@rails/request.js'
 
 export default class extends Controller {
 
-  async sign(messageObjectId, messageId, that, batchId = null) {
+  async sign(messageObjectPath, that, batchId = null) {
     return new Promise((resolve, reject) => {
-      get(`/messages/${messageId}/message_objects/${messageObjectId}/signing_data.json`)
+      get(`${messageObjectPath}/signing_data.json`)
         .then(function (response) {
           return response.json;
         }).then(async function (messageObjectData) {
@@ -68,7 +68,7 @@ export default class extends Controller {
               throw new Error("Podpisovanie neprebehlo úspešne.");
             }
           }).then(function (signedData) {
-            that.updateObject(messageObjectId, messageId, signedFileName, signedFileMimeType, signedData.content);
+            that.updateObject(messageObjectPath, signedFileName, signedFileMimeType, signedData.content);
           }).then(function () {
             resolve();
           }).catch(function (err) {
@@ -83,12 +83,12 @@ export default class extends Controller {
     });
   }
 
-  async updateObject(messageObjectId, messageId, signedFileName, signedFileMimeType, signedContent) {
+  async updateObject(messageObjectPath, signedFileName, signedFileMimeType, signedContent) {
     const authenticityToken = this.data.get("authenticityToken");
 
     return new Promise((resolve, reject) => {
       // request.js lib is used, responseKind: "turbo-stream" option is very important (be careful if case of changes)
-      patch(`/messages/${messageId}/message_objects/${messageObjectId}`, {
+      patch(messageObjectPath, {
         body: JSON.stringify({
           authenticity_token: authenticityToken,
           name: signedFileName,
@@ -110,22 +110,22 @@ export default class extends Controller {
   }
 
   signMultipleFiles() {
-    const objectsToBeSigned = JSON.parse(this.data.get("filesToBeSigned"));
+    const messageObjectsToBeSigned = JSON.parse(this.data.get("filesToBeSigned"));
     const that = this;
 
     fetch("http://localhost:37200/batch", {
       method: "POST",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({
-        "totalNumberOfDocuments": objectsToBeSigned.length
+        "totalNumberOfDocuments": messageObjectsToBeSigned.length
       })
     }).then(function (response) {
       return response.json();
     }).then(function (data) {
       return data.batchId;
     }).then(async function (batchId) {
-      for(const object of objectsToBeSigned) {
-        await that.sign(object.id, object.message_id, that, batchId);
+      for(const messageObject of messageObjectsToBeSigned) {
+        await that.sign(messageObject.path, that, batchId);
       }
     }).catch(function (err) {
       if (err.message === "Failed to fetch") {
@@ -140,7 +140,8 @@ export default class extends Controller {
   async signSingleFile() {
     const messageObjectId = this.data.get("objectId");
     const messageId = this.data.get("messageId");
+    const messageObjectPath = this.data.get("objectPath");
 
-    await this.sign(messageObjectId, messageId, this);
+    await this.sign(messageObjectPath, this);
   }
 }

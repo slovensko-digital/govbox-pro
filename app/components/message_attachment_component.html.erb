@@ -19,7 +19,7 @@
   <% end %>
   <div class="flex justify-end items-center gap-4">
     <% if @message_attachment.signable? %>
-      <div data-controller="autogram" data-autogram-object-id="<%= @message_attachment.id %>" data-autogram-message-id="<%= @message_attachment.message_id %>" data-autogram-authenticity-token="<%= form_authenticity_token %>" >
+      <div data-controller="autogram" data-autogram-object-id="<%= @message_attachment.id %>" data-autogram-message-id="<%= @message_attachment.message_id %>" data-autogram-object-path="<%= message_message_object_path(@message_attachment.message_id, @message_attachment.id) %>" data-autogram-authenticity-token="<%= form_authenticity_token %>" >
         <button data-action="click->autogram#signSingleFile" class="flex justify-end items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300">
           Podpísať
         </button>
