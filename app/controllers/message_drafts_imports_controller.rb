@@ -4,15 +4,17 @@ class MessageDraftsImportsController < ApplicationController
   def create
     authorize MessageDraftsImport
 
-    file_storage = FileStorage.new
-
     zip_content = params[:content]
+    import_name = "#{Time.now.to_i}_#{zip_content.original_filename}"
+    import_path = FileStorage.new.store("imports", import_path(import_name), zip_content.read.force_encoding("UTF-8"))
+
     import = @box.message_drafts_imports.create!(
-      name: "#{Time.now.to_i}_#{zip_content.original_filename}"
+      name: import_name,
+      content_path: import_path,
+      box: @box
     )
 
-    import_path = file_storage.store("imports", import_path(import), zip_content.read.force_encoding("UTF-8"))
-    Drafts::ParseImportJob.perform_later(import, import_path)
+    Drafts::ParseImportJob.perform_later(import, author: Current.user)
 
     redirect_to message_drafts_path
   end
@@ -25,8 +27,8 @@ class MessageDraftsImportsController < ApplicationController
 
   private
 
-  def import_path(import)
-    File.join(String(Current.box.id), import.name)
+  def import_path(import_name)
+    File.join(String(@box.id), import_name)
   end
 
   def load_box

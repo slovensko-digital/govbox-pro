@@ -2,13 +2,13 @@ class MessageDraftsImportValidator < ActiveModel::Validator
   def validate(record)
     record.errors.add(:drafts, "No drafts found") if Utils.sub_folders(record.content_path).empty?
 
-    Dir.each_child(record.content_path) do |package_entry_name|
-      package_entry_path = File.join(record.content_path, package_entry_name)
+    Dir.each_child(record.content_path) do |import_entry_name|
+      import_entry_path = File.join(record.content_path, import_entry_name)
 
-      if File.directory?(package_entry_path)
+      if File.directory?(import_entry_path)
         # check each draft directory structure
-        Dir.each_child(package_entry_path) do |draft_subfolder_name|
-          draft_subfolder_path = File.join(package_entry_path, draft_subfolder_name)
+        Dir.each_child(import_entry_path) do |draft_subfolder_name|
+          draft_subfolder_path = File.join(import_entry_path, draft_subfolder_name)
 
           if File.directory?(draft_subfolder_path)
             case(draft_subfolder_name)
@@ -21,14 +21,14 @@ class MessageDraftsImportValidator < ActiveModel::Validator
             record.errors.add(:drafts, "Unknown signature status, files must be inside a folder.")
           end
         end
-      elsif Utils.csv?(package_entry_name)
+      elsif Utils.csv?(import_entry_name)
         # noop
       else
-        record.errors.add(:drafts, "Package contains extra file")
+        record.errors.add(:drafts, "Import contains extra file")
       end
 
       csv_paths = Dir[record.content_path + "/*.csv"]
-      record.errors.add(:drafts, "Package must contain 1 CSV file") if csv_paths.size != 1
+      record.errors.add(:drafts, "Import must contain 1 CSV file") if csv_paths.size != 1
     end
   end
 
