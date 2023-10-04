@@ -47,8 +47,7 @@ module Authentication
   end
 
   def valid_session?(session)
-    true
-#    session[:login_expires_at].try(:to_time).present? && session[:login_expires_at].to_time > Time.current
+    session[:login_expires_at].try(:to_time).present? && session[:login_expires_at].to_time > Time.current
   end
 
   private
