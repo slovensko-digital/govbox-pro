@@ -1,33 +1,50 @@
-<div class="flex justify-stretch items-center gap-4 p-4 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
-  <div class="flex justify-stretch items-center gap-4 pt-1 pb-[30px] rounded-full">
-    <%= check_box_tag('message_thread_ids[]', @message_thread.id) %>
-    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512" class=<%= "invisible" if @message_thread.all_read %>><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M464 64H48C21.49 64 0 85.49 0 112v288c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V112c0-26.51-21.49-48-48-48zm0 48v40.805c-22.422 18.259-58.168 46.651-134.587 106.49-16.841 13.247-50.201 45.072-73.413 44.701-23.208.375-56.579-31.459-73.413-44.701C106.18 199.465 70.425 171.067 48 152.805V112h416zM48 400V214.398c22.914 18.251 55.409 43.862 104.938 82.646 21.857 17.205 60.134 55.186 103.062 54.955 42.717.231 80.509-37.199 103.053-54.947 49.528-38.783 82.032-64.401 104.947-82.653V400H48z"/></svg>
-    <div class="flex flex-col justify-start items-start pr-[7px]">
-      <%= render Common::BoxLabelComponent.new(@message_thread.box) %>
-    </div>
-    </div>
-    <%= link_to @message_thread, class:"flex justify-stretch overflow-clip items-center grow gap-2" do %>
-      <div class="flex flex-col justify-start items-stretch grow gap-1">
-        <p title="<%= @message_thread.title%>" class="truncate text-lg text-gray-900 <%="font-semibold" unless @message_thread.all_read %>"><%= @message_thread.title %></p>
-        <p class="text-base text-left text-gray-500"><%= @message_thread.with_whom %></p>
-        <% if @message_thread.search_highlight.present? %>
-          <p class="text-base text-left text-gray-500"><%= raw @message_thread.search_highlight %></p>
-        <% end %>
+<li class="flex items-center justify-between gap-x-6 py-5">
+  <div class="min-w-0">
+    <div class="flex items-start gap-x-3">
+      <div class="flex gap-x-4">
+        <%= check_box_tag('message_thread_ids[]', @message_thread.id, false, { class: "my-auto" }) %>
+        <svg class="<%= "invisible" if @message_thread.all_read %> my-auto" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3 8L10.89 13.26C11.2187 13.4793 11.6049 13.5963 12 13.5963C12.3951 13.5963 12.7813 13.4793 13.11 13.26L21 8M5 19H19C19.5304 19 20.0391 18.7893 20.4142 18.4142C20.7893 18.0391 21 17.5304 21 17V7C21 6.46957 20.7893 5.96086 20.4142 5.58579C20.0391 5.21071 19.5304 5 19 5H5C4.46957 5 3.96086 5.21071 3.58579 5.58579C3.21071 5.96086 3 6.46957 3 7V17C3 17.5304 3.21071 18.0391 3.58579 18.4142C3.96086 18.7893 4.46957 19 5 19Z" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div class="flex flex-col justify-start items-start pr-[7px]">
+          <%= render Common::BoxLabelComponent.new(@message_thread.box) %>
+        </div>
       </div>
-      <div class="flex flex-wrap truncate justify-start items-start gap-1">
-        <% @message_thread.tags.each do |tag| %>
-          <% if tag.visible %>
-            <div class="flex truncate justify-center items-center gap-1.5 px-2 py-1 rounded-md bg-gray-50 border border-gray-300">
-              <p class="truncate text-sm text-left text-gray-600"><%= tag.name %></p>
-            </div>
+      <div class="flex items-start gap-x-3">
+        <div class="flex-col text-sm font-semibold leading-6 text-gray-900">
+          <p title="<%= @message_thread.title%>" class="text-lg text-gray-900 <%="font-semibold" unless @message_thread.all_read %>">
+            <%= @message_thread.title %>
+          </p>
+          <p class="text-base text-left text-gray-500">
+            <%= @message_thread.with_whom %>
+          </p>
+          <% if @message_thread.search_highlight.present? %>
+            <p class="text-base text-left text-gray-500">
+              <%= raw @message_thread.search_highlight %>
+            </p>
           <% end %>
-        <% end %>
+        </div>
+        <div class="flex flex-wrap justify-start items-start gap-1">
+          <% @message_thread.tags.each do |tag| %>
+            <% if tag.visible %>
+              <p class="rounded-md whitespace-nowrap mt-0.5 px-1.5 py-0.5 text-sm font-medium ring-1 ring-inset text-gray-600 bg-gray-50 ring-gray-500/10">
+                <%= tag.name %>
+              </p>
+            <% end %>
+          <% end %>
+        </div>
       </div>
-      <div class="flex justify-end items-center gap-2">
-        <p class="whitespace-nowrap text-lg text-center text-gray-900"><%= helpers.nice_datetime(@message_thread.last_message_delivered_at) %></p>
-      </div>
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 " preserveAspectRatio="xMidYMid meet">
-        <path d="M9 5L16 12L9 19" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-      </svg>
-    <% end %>
+    </div>
   </div>
+  <div class="flex shrink-0 items-center gap-x-4">
+    <div class="hidden sm:flex sm:flex-col sm:items-end">
+      <time class="whitespace-nowrap text-lg text-center text-gray-900" datetime="<%= @message_thread.last_message_delivered_at%>">
+        <%= helpers.nice_datetime(@message_thread.last_message_delivered_at) %>
+      </time>
+      <p class="mt-1 text-xs leading-5 text-gray-500">Last seen <time datetime="2023-01-23T13:23Z">3h ago</time></p>
+    </div>
+    <svg class="h-5 w-5 flex-none text-gray-400 cursor-pointer" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M9 5L16 12L9 19" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+</li>
