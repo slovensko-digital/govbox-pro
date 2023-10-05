@@ -53,8 +53,8 @@
         </div>
       </div>
       <div class="flex flex-col justify-stretch items-start    relative gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
-        <div id="iframe-wrapper" style="width: 100%">
-          <%= tag.iframe id: "iframe", srcdoc: @message.html_visualization, width:'100%', height:250, onload: "(
+        <div id="iframe-wrapper" class="w-full">
+          <%= tag.iframe id: "iframe", class: "relative border-none overflow-hidden h-full w-full", srcdoc: @message.html_visualization, onload: "(
             function() {
               document.getElementById('iframe').contentWindow.document.body.style['height'] = 'unset';
               document.getElementById('iframe').contentWindow.document.body.style['min-height'] = 'unset';
@@ -62,7 +62,7 @@
               document.getElementById('iframe-wrapper').style.height = document.getElementById('iframe').contentWindow.document.body.scrollHeight + 25 + 'px';
             }
             (this)
-          )", style: "position: relative; height: 100%; width: 100%; border: none; overflow: hidden;" %>
+          )" %>
         </div>
       </div>
       <div class="flex justify-start items-center    gap-4 px-6 py-4 bg-white border-t-0 border-r-0 border-b border-l-0 border-gray-200">
