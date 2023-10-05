@@ -28,7 +28,7 @@ class MessageThreadsController < ApplicationController
   def load_threads
     cursor = MessageThreadCollection.init_cursor(search_params[:cursor])
 
-    @message_threads, @next_cursor =
+    result =
       MessageThreadCollection.all(
         scope: message_thread_policy_scope.includes(:tags, :box),
         search_permissions: search_permissions,
@@ -37,6 +37,7 @@ class MessageThreadsController < ApplicationController
         cursor: cursor
       )
 
+    @message_threads, @next_cursor = result.fetch_values(:records, :next_cursor)
     @next_cursor = MessageThreadCollection.serialize_cursor(@next_cursor)
     @next_page_params = search_params.to_h.merge(cursor: @next_cursor).merge(format: :turbo_stream)
   end

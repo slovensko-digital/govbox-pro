@@ -7,9 +7,12 @@
     </div>
     </div>
     <%= link_to @message_thread, class:"flex justify-stretch overflow-clip items-center grow gap-2" do %>
-      <div class="flex flex-col truncate justify-start items-stretch grow gap-1">
+      <div class="flex flex-col justify-start items-stretch grow gap-1">
         <p title="<%= @message_thread.title%>" class="truncate text-lg text-gray-900 <%="font-semibold" unless @message_thread.all_read %>"><%= @message_thread.title %></p>
         <p class="text-base text-left text-gray-500"><%= @message_thread.with_whom %></p>
+        <% if @message_thread.search_highlight.present? %>
+          <p class="text-base text-left text-gray-500"><%= raw @message_thread.search_highlight %></p>
+        <% end %>
       </div>
       <div class="flex flex-wrap truncate justify-start items-start gap-1">
         <% @message_thread.tags.each do |tag| %>
@@ -21,7 +24,7 @@
         <% end %>
       </div>
       <div class="flex justify-end items-center gap-2">
-        <p class="whitespace-nowrap text-lg text-center text-gray-900"><%= l @message_thread.last_message_delivered_at, :format => :long %></p>
+        <p class="whitespace-nowrap text-lg text-center text-gray-900"><%= helpers.nice_datetime(@message_thread.last_message_delivered_at) %></p>
       </div>
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 " preserveAspectRatio="xMidYMid meet">
         <path d="M9 5L16 12L9 19" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>

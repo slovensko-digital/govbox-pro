@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_29_130111) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_04_085812) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -90,6 +90,19 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_29_130111) do
     t.enum "color", enum_type: "color"
     t.index ["tenant_id", "short_name"], name: "index_boxes_on_tenant_id_and_short_name", unique: true
     t.index ["tenant_id"], name: "index_boxes_on_tenant_id"
+  end
+
+  create_table "filters", force: :cascade do |t|
+    t.bigint "tenant_id", null: false
+    t.bigint "author_id", null: false
+    t.string "name", null: false
+    t.string "query", null: false
+    t.integer "position", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["author_id"], name: "index_filters_on_author_id"
+    t.index ["tenant_id", "position"], name: "index_filters_on_tenant_id_and_position", unique: true
+    t.index ["tenant_id"], name: "index_filters_on_tenant_id"
   end
 
   create_table "folders", force: :cascade do |t|
@@ -251,12 +264,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_29_130111) do
   create_table "message_objects", force: :cascade do |t|
     t.bigint "message_id", null: false
     t.string "name"
-    t.string "mimetype", null: false
+    t.string "mimetype"
     t.string "object_type", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "is_signed"
     t.boolean "to_be_signed", default: false, null: false
+    t.boolean "visualizable"
     t.index ["message_id"], name: "index_message_objects_on_message_id"
   end
 
@@ -409,6 +423,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_29_130111) do
   add_foreign_key "automation_rules", "tenants"
   add_foreign_key "automation_rules", "users"
   add_foreign_key "boxes", "tenants"
+  add_foreign_key "filters", "tenants", on_delete: :cascade
+  add_foreign_key "filters", "users", column: "author_id", on_delete: :cascade
   add_foreign_key "folders", "boxes"
   add_foreign_key "govbox_folders", "govbox_folders", column: "parent_folder_id"
   add_foreign_key "govbox_messages", "govbox_folders", column: "folder_id"
