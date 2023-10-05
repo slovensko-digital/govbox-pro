@@ -47,6 +47,35 @@ module Utils
     end
   end
 
+  def file_extension_by_mime_type(mime_type)
+    case mime_type.downcase
+    when 'application/pdf'
+      '.pdf'
+    when 'application/xml', 'application/x-eform-xml'
+      '.xml'
+    when 'application/vnd.etsi.asic-e+zip'
+      '.asice'
+    when 'application/vnd.etsi.asic-s+zip'
+      '.asics'
+    when 'application/x-xades_zep'
+      '.xzep'
+    when 'application/x-zip-compressed'
+      '.zip'
+    when 'text/plain'
+      '.txt'
+    when 'application/msword'
+      '.doc'
+    when 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      '.docx'
+    when 'image/jpeg'
+      '.jpg'
+    when 'image/png'
+      '.png'
+    when 'image/tiff'
+      '.tiff'
+    end
+  end
+
   # TODO use UPVS API to detect if document is signed
   def is_signed?(entry_name:)
     case File.extname(entry_name).downcase

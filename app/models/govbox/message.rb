@@ -88,7 +88,7 @@ class Govbox::Message < ApplicationRecord
       visualizable = (object_type == "FORM" && message.html_visualization.present?) ? true : nil
 
       object = message.objects.create!(
-        name: raw_object["name"],
+        name: raw_object["name"].presence || ("Súbor bez názvu" + Utils.file_extension_by_mime_type(raw_object["mime_type"])),
         mimetype: raw_object["mime_type"],
         is_signed: raw_object["signed"],
         object_type: object_type,
