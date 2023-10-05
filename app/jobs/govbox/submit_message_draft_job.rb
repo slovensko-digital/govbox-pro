@@ -1,5 +1,11 @@
 class Govbox::SubmitMessageDraftJob < ApplicationJob
-  retry_on Exception, attempts: 0
+  class SubmissionError < StandardError
+  end
+
+  class TemporarySubmissionError < SubmissionError
+  end
+
+  retry_on TemporarySubmissionError, wait: 2.minutes, attempts: 5
 
   def perform(message_draft, schedule_sync: true, upvs_client: UpvsEnvironment.upvs_client)
     message_draft_data = {
@@ -27,13 +33,6 @@ class Govbox::SubmitMessageDraftJob < ApplicationJob
       handle_submit_fail(message_draft, response_status, response_body.dig("message"))
     end
   end
-
-  class SubmissionError < StandardError
-  end
-
-  class TemporarySubmissionError < SubmissionError
-  end
-
   private
 
   def build_objects(message_draft)
