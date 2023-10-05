@@ -3,7 +3,7 @@
 # Table name: message_objects
 #
 #  id                                          :integer          not null, primary key
-#  name                                        :string           not null
+#  name                                        :string
 #  mimetype                                    :string
 #  is_signed                                   :boolean
 #  to_be_signed                                :boolean          not null, default: false
@@ -15,6 +15,7 @@
 class MessageObject < ApplicationRecord
   belongs_to :message
   has_one :message_object_datum, dependent: :destroy
+  has_many :nested_message_objects, class_name: 'NestedMessageObject', foreign_key: 'parent_message_object_id'
 
   scope :to_be_signed, -> { where(to_be_signed: true) }
 
@@ -35,6 +36,8 @@ class MessageObject < ApplicationRecord
         message_object: message_object,
         blob: raw_object.read.force_encoding("UTF-8")
       )
+
+      NestedMessageObject.create_from_message_object(message_object)
     end
   end
 
@@ -46,20 +49,12 @@ class MessageObject < ApplicationRecord
     object_type == "FORM"
   end
 
-  def destroyable?
-    message.is_a?(MessageDraft) && message.not_yet_submitted? && !form?
+  def asice?
+    mimetype == 'application/vnd.etsi.asic-e+zip'
   end
 
-  def content_to_show
-    return self if mimetype != 'application/vnd.etsi.asic-e+zip'
-
-    documents = SignedAttachment::Asice.extract_documents_from_content(content)
-
-    if documents.size == 1
-      documents.first
-    else
-      self
-    end
+  def destroyable?
+    message.is_a?(MessageDraft) && message.not_yet_submitted? && !form?
   end
 
   private

@@ -105,6 +105,8 @@ class Govbox::Message < ApplicationRecord
         blob: object_content,
         message_object_id: object.id
       )
+
+      NestedMessageObject.create_from_message_object(message_object)
     end
   end
 
