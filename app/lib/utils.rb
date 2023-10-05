@@ -18,7 +18,7 @@ module Utils
     File.extname(name).downcase == '.csv'
   end
 
-  def detect_mime_type(entry_name:, is_form: false)
+  def file_mime_type_by_name(entry_name:, is_form: false)
     case File.extname(entry_name).downcase
     when '.pdf'
       'application/pdf'
