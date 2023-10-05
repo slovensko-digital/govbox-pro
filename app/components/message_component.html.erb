@@ -53,13 +53,13 @@
         </div>
       </div>
       <div class="flex flex-col justify-stretch items-start    relative gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
-        <div id="iframe-wrapper" class="w-full">
-          <%= tag.iframe id: "iframe", class: "relative border-none overflow-hidden h-full w-full", srcdoc: @message.html_visualization, onload: "(
-            function() {
-              document.getElementById('iframe').contentWindow.document.body.style['height'] = 'unset';
-              document.getElementById('iframe').contentWindow.document.body.style['min-height'] = 'unset';
+        <div class="w-full">
+          <%= tag.iframe class: "relative border-none overflow-hidden h-full w-full", srcdoc: @message.html_visualization, onload: "(
+            function(iframe) {
+              iframe.contentWindow.document.body.style['height'] = 'unset';
+              iframe.contentWindow.document.body.style['min-height'] = 'unset';
 
-              document.getElementById('iframe-wrapper').style.height = document.getElementById('iframe').contentWindow.document.body.scrollHeight + 25 + 'px';
+              iframe.parentElement.style.height = iframe.contentWindow.document.body.scrollHeight + 20 + 'px';
             }
             (this)
           )" %>
