@@ -1,7 +1,7 @@
 class MessageDraftsController < ApplicationController
   before_action :load_message_drafts, only: [:index, :submit_all]
   before_action :load_original_message, only: :create
-  before_action :load_draft, except: [:index, :create, :submit_all]
+  before_action :load_message_draft, except: [:index, :create, :submit_all]
 
   include MessagesConcern
 
@@ -33,7 +33,10 @@ class MessageDraftsController < ApplicationController
   def submit
     authorize @message
 
-    if @message.submit
+    if @message.submittable?
+      Govbox::SubmitMessageDraftJob.perform_later(@message)
+      @message.being_submitted!
+
       redirect_path = @message.original_message.present? ? message_path(@message.original_message) : message_drafts_path
       redirect_to redirect_path, notice: "Správa bola zaradená na odoslanie."
     else
@@ -43,7 +46,16 @@ class MessageDraftsController < ApplicationController
   end
   
   def submit_all
-    @messages.each(&:submit)
+    jobs_batch = GoodJob::Batch.new
+
+    @messages.each do |message_draft|
+      next unless message_draft.submittable?
+
+      jobs_batch.add { Govbox::SubmitMessageDraftJob.perform_later(message_draft, schedule_sync: false) }
+      message_draft.being_submitted!
+    end
+
+    jobs_batch.enqueue(on_finish: Govbox::FinishMessageDraftsSubmitJob, box: @messages.first.thread.folder.box)
   end
 
   def destroy
@@ -67,7 +79,7 @@ class MessageDraftsController < ApplicationController
     @original_message = policy_scope(Message).find(params[:original_message_id])
   end
 
-  def load_draft
+  def load_message_draft
     @message = policy_scope(MessageDraft).find(params[:id])
     @menu = SidebarMenu.new(controller_name, action_name, { message: @message })
     @notice = flash
