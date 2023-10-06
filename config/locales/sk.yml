@@ -217,6 +217,7 @@ sk:
     one: '1 prílohu'
     few: "%{count} prílohy"
     other: "%{count} príloh"
+  no_message_object_name: "Súbor bez názvu"
   sender_name: "Odosielateľ"
   recipient_name: "Prijímateľ"
   sender_uri: "URI odosielateľa"

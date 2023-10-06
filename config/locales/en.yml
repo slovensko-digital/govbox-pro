@@ -31,3 +31,4 @@
 
 en:
   hello: "Hello world"
+  no_message_object_name: "File without name"

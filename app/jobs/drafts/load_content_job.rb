@@ -35,7 +35,7 @@ class Drafts::LoadContentJob < ApplicationJob
 
       message_draft_object = MessageObject.create(
         name: file_name,
-        mimetype: Utils.detect_mime_type(entry_name: file_name, is_form: is_form),
+        mimetype: Utils.file_mime_type_by_name(entry_name: file_name, is_form: is_form),
         object_type: is_form ? "FORM" : "ATTACHMENT",
         is_signed: signed,
         to_be_signed: to_be_signed,
