@@ -43,7 +43,7 @@ class SignedAttachment::Asice
       payload_document = PayloadDocument.new
       payload_document.name = entry.name
       payload_document.content = entry.content
-      payload_document.mimetype = Utils.detect_mime_type(entry_name: entry.name)
+      payload_document.mimetype = Utils.file_mime_type_by_name(entry_name: entry.name)
       payload_documents << payload_document
     end
 
