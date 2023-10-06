@@ -21,8 +21,10 @@ class TagsController < ApplicationController
 
   private
 
-  def tag_params
-    params.require(:tag).permit(:name, message_threads_tags_attributes: [:message_thread_id])
+  def set_object
+    @object = policy_scope(Message).find(params[:object_id]) if params[:object_class] == 'Message'
+    @object = policy_scope(MessageDraft).find(params[:object_id]) if params[:object_class] == 'MessageDraft'
+    @object = policy_scope(MessageThread).find(params[:object_id]) if params[:object_class] == 'MessageThread'
   end
 
   def set_visible_tags
@@ -31,5 +33,9 @@ class TagsController < ApplicationController
 
   def set_tag
     @tag = policy_scope(Tag).find(params[:id])
+  end
+
+  def tag_params
+    params.require(:tag).permit(:name, message_threads_tags_attributes: [:message_thread_id])
   end
 end

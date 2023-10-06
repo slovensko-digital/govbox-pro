@@ -18,7 +18,7 @@ module Utils
     File.extname(name).downcase == '.csv'
   end
 
-  def detect_mime_type(entry_name:, is_form: false)
+  def file_mime_type_by_name(entry_name:, is_form: false)
     case File.extname(entry_name).downcase
     when '.pdf'
       'application/pdf'
@@ -44,8 +44,35 @@ module Utils
       'image/png'
     when '.tiff', '.tif'
       'image/tiff'
-    else
-      raise "Uknown MimeType for #{entry_name}"
+    end
+  end
+
+  def file_extension_by_mime_type(mime_type)
+    case mime_type.downcase
+    when 'application/pdf'
+      '.pdf'
+    when 'application/xml', 'application/x-eform-xml'
+      '.xml'
+    when 'application/vnd.etsi.asic-e+zip'
+      '.asice'
+    when 'application/vnd.etsi.asic-s+zip'
+      '.asics'
+    when 'application/x-xades_zep'
+      '.xzep'
+    when 'application/x-zip-compressed'
+      '.zip'
+    when 'text/plain'
+      '.txt'
+    when 'application/msword'
+      '.doc'
+    when 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      '.docx'
+    when 'image/jpeg'
+      '.jpg'
+    when 'image/png'
+      '.png'
+    when 'image/tiff'
+      '.tiff'
     end
   end
 

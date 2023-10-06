@@ -1,6 +1,8 @@
 class MessagesController < ApplicationController
   before_action :set_message
 
+  include MessagesConcern
+
   def show
     authorize @message
 

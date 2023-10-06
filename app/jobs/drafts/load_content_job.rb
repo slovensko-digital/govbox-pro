@@ -6,18 +6,23 @@ class Drafts::LoadContentJob < ApplicationJob
   end
 
   def perform(message_draft, message_draft_path)
-    Dir.each_child(message_draft_path) do |subdirectory_name|
-      case subdirectory_name
-      when "podpisane"
-        load_message_draft_objects(message_draft, File.join(message_draft_path, subdirectory_name), signed: true, to_be_signed: false)
-      when "podpisat"
-        load_message_draft_objects(message_draft, File.join(message_draft_path, subdirectory_name), signed: false, to_be_signed: true)
-      when "nepodpisovat"
-        load_message_draft_objects(message_draft, File.join(message_draft_path, subdirectory_name), signed: false, to_be_signed: false)
+    ActiveRecord::Base.transaction do
+      Dir.each_child(message_draft_path) do |subdirectory_name|
+        case subdirectory_name
+        when "podpisane"
+          load_message_draft_objects(message_draft, File.join(message_draft_path, subdirectory_name), signed: true, to_be_signed: false)
+        when "podpisat"
+          load_message_draft_objects(message_draft, File.join(message_draft_path, subdirectory_name), signed: false, to_be_signed: true)
+        when "nepodpisovat"
+          load_message_draft_objects(message_draft, File.join(message_draft_path, subdirectory_name), signed: false, to_be_signed: false)
+        end
       end
     end
 
     save_form_visualisation(message_draft)
+  rescue Exception
+    message_draft.metadata["status"] = "invalid"
+    message_draft.save
   end
 
   private
@@ -30,19 +35,18 @@ class Drafts::LoadContentJob < ApplicationJob
 
       message_draft_object = MessageObject.create(
         name: file_name,
-        mimetype: Utils.detect_mime_type(entry_name: file_name, is_form: is_form),
+        mimetype: Utils.file_mime_type_by_name(entry_name: file_name, is_form: is_form),
         object_type: is_form ? "FORM" : "ATTACHMENT",
         is_signed: signed,
         to_be_signed: to_be_signed,
-        message: message_draft
+        message: message_draft,
+        visualizable: is_form ? false : nil
       )
 
       MessageObjectDatum.create(
         message_object: message_draft_object,
         blob: File.read(File.join(objects_path, file_name))
       )
-      
-      message_draft_object.save!
     end
   end
 
@@ -57,7 +61,7 @@ class Drafts::LoadContentJob < ApplicationJob
     upvs_form_template = Upvs::FormTemplate.find_by(identifier: message_draft.metadata["posp_id"], version: message_draft.metadata["posp_version"])
     upvs_form_template_xslt_html = upvs_form_template&.xslt_html
 
-    raise MissingFormTemplateError.new unless upvs_form_template_xslt_html
+    return unless upvs_form_template_xslt_html
 
     xslt_template = Nokogiri::XSLT(upvs_form_template_xslt_html)
 
@@ -65,6 +69,10 @@ class Drafts::LoadContentJob < ApplicationJob
       # TODO add unsigned_content method which calls UPVS OdpodpisanieDat endpoint and uncomment
       # message_draft.update(
       #   html_visualization: xslt_template.transform(Nokogiri::XML(message_draft.form.unsigned_content)).to_s.gsub('"', '\'')
+      # )
+      #
+      # message_draft.form.update(
+      #   visualizable: true
       # )
     else
       message_draft.update(
@@ -75,10 +83,11 @@ class Drafts::LoadContentJob < ApplicationJob
         message_draft.metadata["message_body"] = Upvs::GeneralAgendaBuilder.parse_text(message_draft.form.message_object_datum.blob)
         message_draft.save!
       end
-    end
-  end
 
-  class MissingFormTemplateError < StandardError
+      message_draft.form.update(
+        visualizable: true
+      )
+    end
   end
 
   delegate :uuid, to: self
