@@ -1,31 +1,27 @@
-<div class="flex justify-stretch items-center grow h-16 relative  gap-4 px-4 bg-white border-t-0 border-r-0 border-b border-l-0 border-gray-200">
-  <%= render Layout::BoxSelectorComponent.new(@current_tenant_boxes_count) %>
-  <svg width="1" height="64" viewBox="0 0 1 64" fill="none" xmlns="http://www.w3.org/2000/svg" class="todo   " preserveAspectRatio="xMidYMid meet">
-    <line x1="0.5" y1="2.18557e-8" x2="0.499997" y2="64" stroke="#E5E7EB"></line>
+<button type="button" data-action="slideover#toggle" class="-m-2.5 p-2.5 text-gray-700 lg:hidden">
+  <span class="sr-only">Open sidebar</span>
+  <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
   </svg>
-  <div class="todo flex justify-center items-center   relative  gap-2.5 px-3.5 py-2.5 rounded-md bg-white">
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="  w-5 h-5 relative" preserveAspectRatio="xMidYMid meet">
-      <path d="M9.99967 5V3.33333M9.99967 5C9.55765 5 9.13372 5.17559 8.82116 5.48815C8.5086 5.80071 8.33301 6.22464 8.33301 6.66667C8.33301 7.10869 8.5086 7.53262 8.82116 7.84518C9.13372 8.15774 9.55765 8.33333 9.99967 8.33333M9.99967 5C10.4417 5 10.8656 5.17559 11.1782 5.48815C11.4907 5.80071 11.6663 6.22464 11.6663 6.66667C11.6663 7.10869 11.4907 7.53262 11.1782 7.84518C10.8656 8.15774 10.4417 8.33333 9.99967 8.33333M9.99967 8.33333V16.6667M4.99967 15C5.4417 15 5.86563 14.8244 6.17819 14.5118C6.49075 14.1993 6.66634 13.7754 6.66634 13.3333C6.66634 12.8913 6.49075 12.4674 6.17819 12.1548C5.86563 11.8423 5.4417 11.6667 4.99967 11.6667M4.99967 15C4.55765 15 4.13372 14.8244 3.82116 14.5118C3.5086 14.1993 3.33301 13.7754 3.33301 13.3333C3.33301 12.8913 3.5086 12.4674 3.82116 12.1548C4.13372 11.8423 4.55765 11.6667 4.99967 11.6667M4.99967 15V16.6667M4.99967 11.6667V3.33333M14.9997 15C15.4417 15 15.8656 14.8244 16.1782 14.5118C16.4907 14.1993 16.6663 13.7754 16.6663 13.3333C16.6663 12.8913 16.4907 12.4674 16.1782 12.1548C15.8656 11.8423 15.4417 11.6667 14.9997 11.6667M14.9997 15C14.5576 15 14.1337 14.8244 13.8212 14.5118C13.5086 14.1993 13.333 13.7754 13.333 13.3333C13.333 12.8913 13.5086 12.4674 13.8212 12.1548C14.1337 11.8423 14.5576 11.6667 14.9997 11.6667M14.9997 15V16.6667M14.9997 11.6667V3.33333" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-    </svg>
+</button>
+<%= render Layout::BoxSelectorComponent.new(@current_tenant_boxes_count) %>
+<svg width="1" height="64" viewBox="0 0 1 64" fill="none" xmlns="http://www.w3.org/2000/svg" class="todo   " preserveAspectRatio="xMidYMid meet">
+  <line x1="0.5" y1="2.18557e-8" x2="0.499997" y2="64" stroke="#E5E7EB"></line>
+</svg>
+<div class="flex flex-col justify-center items-stretch grow gap-2">
+  <div class="flex justify-start items-center relative gap-3 p-1.5 rounded-md bg-white">
+    <%= form_with url: message_threads_path, method: :get, html: { class: 'relative flex flex-1' } do |f| %>
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class="pointer-events-none absolute inset-y-0 left-0 h-full w-5 text-gray-400" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+        <path d="M17.5 17.5L12.5 12.5M14.1667 8.33333C14.1667 9.09938 14.0158 9.85792 13.7226 10.5657C13.4295 11.2734 12.9998 11.9164 12.4581 12.4581C11.9164 12.9998 11.2734 13.4295 10.5657 13.7226C9.85792 14.0158 9.09938 14.1667 8.33333 14.1667C7.56729 14.1667 6.80875 14.0158 6.10101 13.7226C5.39328 13.4295 4.75022 12.9998 4.20854 12.4581C3.66687 11.9164 3.23719 11.2734 2.94404 10.5657C2.65088 9.85792 2.5 9.09938 2.5 8.33333C2.5 6.78624 3.11458 5.30251 4.20854 4.20854C5.30251 3.11458 6.78624 2.5 8.33333 2.5C9.88043 2.5 11.3642 3.11458 12.4581 4.20854C13.5521 5.30251 14.1667 6.78624 14.1667 8.33333Z" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+      <%= f.search_field :q, value: params[:q], placeholder: 'Vyhľadaj správu', class: 'block h-full w-full border-0 py-0 pl-8 pr-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-base' %>
+    <% end %>
+    <%= render TW::CreateFilterComponent.new %>
   </div>
-  <svg width="1" height="64" viewBox="0 0 1 64" fill="none" xmlns="http://www.w3.org/2000/svg" class="todo   " preserveAspectRatio="xMidYMid meet">
-    <line x1="0.5" y1="2.18557e-8" x2="0.499997" y2="64" stroke="#E5E7EB"></line>
-  </svg>
-  <div class="flex flex-col justify-center items-stretch grow gap-2">
-    <div class="flex justify-start items-center relative gap-3 p-1.5 rounded-md bg-white">
-      <%= form_with url: message_threads_path, method: :get, html: { class: 'relative flex flex-1' } do |f| %>
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class="pointer-events-none absolute inset-y-0 left-0 h-full w-5 text-gray-400" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-          <path d="M17.5 17.5L12.5 12.5M14.1667 8.33333C14.1667 9.09938 14.0158 9.85792 13.7226 10.5657C13.4295 11.2734 12.9998 11.9164 12.4581 12.4581C11.9164 12.9998 11.2734 13.4295 10.5657 13.7226C9.85792 14.0158 9.09938 14.1667 8.33333 14.1667C7.56729 14.1667 6.80875 14.0158 6.10101 13.7226C5.39328 13.4295 4.75022 12.9998 4.20854 12.4581C3.66687 11.9164 3.23719 11.2734 2.94404 10.5657C2.65088 9.85792 2.5 9.09938 2.5 8.33333C2.5 6.78624 3.11458 5.30251 4.20854 4.20854C5.30251 3.11458 6.78624 2.5 8.33333 2.5C9.88043 2.5 11.3642 3.11458 12.4581 4.20854C13.5521 5.30251 14.1667 6.78624 14.1667 8.33333Z" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-        </svg>
-        <%= f.search_field :q, value: params[:q], placeholder: 'Vyhľadaj správu', class: 'block h-full w-full border-0 py-0 pl-8 pr-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-base' %>
-      <% end %>
-      <%= render TW::CreateFilterComponent.new %>
-    </div>
-  </div>
-  <svg width="1" height="64" viewBox="0 0 1 64" fill="none" xmlns="http://www.w3.org/2000/svg" class="  " preserveAspectRatio="xMidYMid meet">
-    <line x1="0.5" y1="2.18557e-8" x2="0.499997" y2="64" stroke="#E5E7EB"></line>
-  </svg>
-  <div class="flex justify-start items-start   relative p-2">
-    <%= render TW::UserMenuComponent.new(user: Current.user) %>
-  </div>
+</div>
+<svg width="1" height="64" viewBox="0 0 1 64" fill="none" xmlns="http://www.w3.org/2000/svg" class="  " preserveAspectRatio="xMidYMid meet">
+  <line x1="0.5" y1="2.18557e-8" x2="0.499997" y2="64" stroke="#E5E7EB"></line>
+</svg>
+<div class="flex justify-start items-start relative p-2">
+  <%= render TW::UserMenuComponent.new(user: Current.user) %>
 </div>
