@@ -10,7 +10,7 @@
         <p class="grow text-xl font-semibold text-left text-gray-900"> Správy v schránke </p>
         <%= form.submit 'Spojiť vlákna', data: {turbo_confirm: 'Naozaj chcete spojiť označené vlákna do jedného?'}, class:"flex justify-center items-center gap-2.5 px-3.5 py-2.5 rounded-md bg-blue-600 text-base font-medium text-left text-white hover:cursor-pointer" %>
       </div>
-      <ul role="list" id="message_threads" is="turbo-frame" class="divide-y divide-gray-100 px-4">
+      <ul role="list" id="message_threads" is="turbo-frame" class="divide-y divide-gray-100">
         <% message_threads.each do |message_thread| %>
           <%= message_thread %>
         <% end %>
