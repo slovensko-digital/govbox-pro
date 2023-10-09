@@ -1,12 +1,7 @@
 <li class="flex px-4 py-5 hover:bg-blue-50">
-  <div class="flex items-start gap-1 pr-2 md:gap-4 md:pr-6">
-      <%= check_box_tag('message_thread_ids[]', @message_thread.id, false, { class: "my-auto" }) %>
-      <svg class="<%= "invisible" if @message_thread.all_read %> my-auto" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M3 8L10.89 13.26C11.2187 13.4793 11.6049 13.5963 12 13.5963C12.3951 13.5963 12.7813 13.4793 13.11 13.26L21 8M5 19H19C19.5304 19 20.0391 18.7893 20.4142 18.4142C20.7893 18.0391 21 17.5304 21 17V7C21 6.46957 20.7893 5.96086 20.4142 5.58579C20.0391 5.21071 19.5304 5 19 5H5C4.46957 5 3.96086 5.21071 3.58579 5.58579C3.21071 5.96086 3 6.46957 3 7V17C3 17.5304 3.21071 18.0391 3.58579 18.4142C3.96086 18.7893 4.46957 19 5 19Z" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      <div class="my-auto">
-        <%= render Common::BoxLabelComponent.new(@message_thread.box) %>
-      </div>
+  <div class="flex items-start gap-1 pr-2 md:gap-4 md:pr-4 items-center">
+      <%= check_box_tag('message_thread_ids[]', @message_thread.id, false, { class: "h-4 w-4 rounded border-gray-300 text-blue-500 focus:ring-0", type: "checkbox" }) %>
+      <%= render Common::BoxLabelComponent.new(@message_thread.box) %>
     </div>
   <%= link_to @message_thread, class: "flex flex-wrap md:flex-nowrap justify-between items-center grow gap-2" do %>
     <div class="flex flex-col grow order-2 md:order-1 gap-1">
@@ -17,7 +12,7 @@
         <div class="flex flex-wrap items-start gap-1">
           <% @message_thread.tags.each do |tag| %>
             <% if tag.visible %>
-              <p class="rounded-md mt-0.5 px-1.5 py-0.5 text-sm font-medium ring-1 ring-inset text-gray-600 bg-gray-50 ring-gray-500/10">
+              <p class="rounded-md px-1.5 py-0.5 text-sm font-medium ring-1 ring-inset text-gray-600 bg-gray-50 ring-gray-500/10">
                 <%= tag.name %>
               </p>
             <% end %>
@@ -35,10 +30,15 @@
         </p>
       <% end %>
     </div>
-    <div class="flex order-1 md:order-2 gap-x-4">
-      <time class="whitespace-nowrap text-lg text-center text-gray-900" datetime="<%= @message_thread.last_message_delivered_at%>">
-        <%= helpers.nice_datetime(@message_thread.last_message_delivered_at) %>
-      </time>
+    <div class="flex order-1 md:order-2 gap-x-4 items-center">
+      <div class="flex md:flex-col gap-y-1 gap-x-4 text-right whitespace-nowrap">
+        <time class="text-lg text-gray-900" datetime="<%= @message_thread.last_message_delivered_at%>">
+          <%= helpers.nice_datetime(@message_thread.last_message_delivered_at) %>
+        </time>
+<!--        <p class="rounded-md px-1.5 py-0.5 h-fit text-sm font-medium ring-1 ring-inset text-gray-600 bg-gray-50 ring-gray-500/10">-->
+<!--          2 nové správy-->
+<!--        </p>-->
+      </div>
       <svg class="h-5 w-5 hidden md:block text-gray-400" fill="none" viewBox="0 0 24 24" aria-hidden="true">
         <path d="M9 5L16 12L9 19" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
