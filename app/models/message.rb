@@ -12,6 +12,7 @@
 #  metadata                                    :json
 #  read                                        :boolean          not null, default: false
 #  replyable                                   :boolean          not null, default: true
+#  collapsed                                   :boolean          not null, default: false
 #  delivered_at                                :datetime         not null
 #  import_id                                   :integer
 #  author_id                                   :integer

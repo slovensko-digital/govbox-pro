@@ -21,9 +21,14 @@ class Govbox::Message < ApplicationRecord
 
   EGOV_DOCUMENT_CLASS = 'EGOV_DOCUMENT'
   EGOV_NOTIFICATION_CLASS = 'EGOV_NOTIFICATION'
+  COLLAPSED_MESSAGES_CLASSES = ['ED_DELIVERY_REPORT', 'POSTING_CONFIRMATION', 'POSTING_INFORMATION']
 
   def replyable?
     folder.inbox? && [EGOV_DOCUMENT_CLASS, EGOV_NOTIFICATION_CLASS].include?(payload["class"])
+  end
+
+  def collapsed?
+    COLLAPSED_MESSAGES_CLASSES.include?(payload["class"])
   end
 
   def self.create_message_with_thread!(govbox_message)
@@ -73,6 +78,7 @@ class Govbox::Message < ApplicationRecord
       delivered_at: Time.parse(raw_message["delivered_at"]),
       html_visualization: raw_message["original_html"],
       replyable: govbox_message.replyable?,
+      expandable: govbox_message.expandable?,
       metadata: {
         "correlation_id": govbox_message.payload["correlation_id"],
         "sender_uri": govbox_message.payload["sender_uri"],

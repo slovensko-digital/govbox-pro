@@ -21,6 +21,7 @@ module Govbox
 
       if delivery_notification_govbox_message
         delivery_notification_message = ::Message.find_by(uuid: delivery_notification_govbox_message.message_id)
+        delivery_notification_message.collapsed = true
         delivery_notification_message.metadata["authorized"] = true
         delivery_notification_message.save!
       end
