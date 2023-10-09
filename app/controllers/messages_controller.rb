@@ -23,7 +23,10 @@ class MessagesController < ApplicationController
     @message = policy_scope(Message).find(params[:id])
     @menu = SidebarMenu.new(controller_name, action_name, { message: @message })
     @notice = flash
-    set_message_tags_with_deletable_flag
     set_thread_tags_with_deletable_flag
+  end
+
+  def permit_reply_params
+    params.permit(:reply_title, :reply_text)
   end
 end

@@ -22,7 +22,6 @@
               <% @message_tags_with_deletable_flag.each do |message_tag| %>
                 <%= render Common::RemovableTagComponent.new(message_tag) %>
               <% end %>
-              <%= render Common::TagSelectorComponent.new(@message) %>
             </div>
             <% unless @message.not_yet_submitted? %>
               <div class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-1.5 px-1.5 py-0.5 rounded-md bg-purple-50 border border-purple-300">

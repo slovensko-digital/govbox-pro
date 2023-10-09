@@ -1,6 +1,6 @@
 <%= tag.turbo_frame id:'box-selector-popup' do %>
   <div class="flex flex-col justify-start items-start w-[360px] gap-px py-0.5 rounded-lg bg-white border border-gray-300" style="box-shadow: 1px 1px 4px 0 rgba(0,0,0,0.1);">
-    <%= link_to select_all_boxes_path, class:"flex justify-between items-center self-stretch flex-grow-0 flex-shrink-0 px-4 py-2" do %>
+    <%= link_to select_all_boxes_path, class:"flex justify-between items-center self-stretch flex-grow-0 flex-shrink-0 px-4 py-2", data: { turbo_frame: '_top' } do %>
       <div class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[29px]">
         <p class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-gray-900">Všetky schránky</p>
       </div>

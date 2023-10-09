@@ -37,10 +37,6 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :tags do
-    get :get_available, on: :collection
-  end
-
   resources :boxes, path: 'schranky', only: [:index, :show] do
     post :sync
     get :select, on: :member
@@ -54,6 +50,7 @@ Rails.application.routes.draw do
       post :merge
       get :scroll
     end
+    get :search_available_tags, on: :member
     resources :messages
   end
   resources :message_threads_tags
