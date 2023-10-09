@@ -8,16 +8,16 @@ class MessageThreadsTagsController < ApplicationController
     authorize @message_threads_tag
 
     if @message_threads_tag.save
-      redirect_back fallback_location: "/", notice: "Tag was successfully added"
+      redirect_back fallback_location: message_threads_path, notice: "Tag was successfully added"
     else
-      redirect_back fallback_location: "/", alert: "Tag was not added :("
+      redirect_back fallback_location: message_threads_path, alert: "Tag was not added :("
     end
   end
 
   def destroy
     authorize @message_threads_tag
     @message_threads_tag.destroy
-    redirect_back fallback_location: "/", notice: "Tag was successfully removed"
+    redirect_back fallback_location: message_threads_path, notice: "Tag was successfully removed"
   end
 
   private
