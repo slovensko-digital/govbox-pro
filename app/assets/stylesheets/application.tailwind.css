@@ -12,6 +12,20 @@
 
 */
 
+input:-webkit-autofill,
+input:-webkit-autofill:enabled,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:enabled,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:enabled,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0px 30px #ffffff inset;
+}
 .todo:after {
   @apply hidden hover:block absolute bg-gray-700 text-white rounded p-1 text-xs;
   content: 'Zatial neimplementovane';

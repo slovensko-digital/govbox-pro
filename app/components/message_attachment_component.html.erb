@@ -7,7 +7,7 @@
     </div>
     <div class="flex flex-col justify-start items-start overflow-clip">
       <div class="flex justify-start items-start gap-4 w-full">
-        <p class="truncate text-base font-semibold text-left text-gray-900"><%= @message_attachment.name %></p>
+        <p class="truncate text-base font-semibold text-left text-gray-900"><%= MessageObjectHelper.displayable_name(@message_attachment) %></p>
         <% if @message_attachment.is_signed? %>
           <div class="flex justify-center items-center gap-1.5 px-2 py-1 rounded-md bg-blue-50 border border-blue-300">
             <p class="text-sm text-left text-blue-600">Podpísané</p>

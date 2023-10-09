@@ -1,5 +1,13 @@
 class Govbox::SubmitMessageDraftJob < ApplicationJob
-  def perform(message_draft, upvs_client: UpvsEnvironment.upvs_client)
+  class SubmissionError < StandardError
+  end
+
+  class TemporarySubmissionError < SubmissionError
+  end
+
+  retry_on TemporarySubmissionError, wait: 2.minutes, attempts: 5
+
+  def perform(message_draft, schedule_sync: true, upvs_client: UpvsEnvironment.upvs_client)
     message_draft_data = {
       posp_id: message_draft.metadata["posp_id"],
       posp_version: message_draft.metadata["posp_version"],
@@ -20,18 +28,11 @@ class Govbox::SubmitMessageDraftJob < ApplicationJob
       message_draft.metadata["status"] = "submitted"
       message_draft.save!
 
-      Govbox::SyncBoxJob.set(wait: 3.minutes).perform_later(message_draft.thread.folder.box)
+      Govbox::SyncBoxJob.set(wait: 3.minutes).perform_later(message_draft.thread.folder.box) if schedule_sync
     else
       handle_submit_fail(message_draft, response_status, response_body.dig("message"))
     end
   end
-
-  class SubmissionError < StandardError
-  end
-
-  class TemporarySubmissionError < SubmissionError
-  end
-
   private
 
   def build_objects(message_draft)
