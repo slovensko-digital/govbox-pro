@@ -82,7 +82,7 @@ class Searchable::MessageThread < ApplicationRecord
 
   def self.reindex_with_tag_id(tag_id)
     Searchable::MessageThread.select(:id, :message_thread_id).where("tag_ids && ARRAY[?]", [tag_id]).find_each do |searchable_mt|
-      Searchable::ReindexMessageThreadJob.perform_later(::MessageThread.find(searchable_mt.message_thread_id))
+      Searchable::ReindexMessageThreadJob.perform_later(searchable_mt.message_thread_id)
     end
   end
 
