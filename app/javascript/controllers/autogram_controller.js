@@ -1,13 +1,17 @@
 import { Controller } from "@hotwired/stimulus"
-import { get, patch } from '@rails/request.js'
+import { patch } from '@rails/request.js'
 
 export default class extends Controller {
 
   async sign(messageObjectPath, that, batchId = null) {
     return new Promise((resolve, reject) => {
-      get(`${messageObjectPath}/signing_data.json`)
+      fetch(`${messageObjectPath}/signing_data.json?after_login_path=${window.location.href}`)
         .then(function (response) {
-          return response.json;
+          if (response.redirected) {
+            window.location.href = response.url;
+          }
+
+          return response.json();
         }).then(async function (messageObjectData) {
           let payloadMimeType = `${messageObjectData.mime_type};base64`;
           let signatureLevel = "XAdES_BASELINE_B";
