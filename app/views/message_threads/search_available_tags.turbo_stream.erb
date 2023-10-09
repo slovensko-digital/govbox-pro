@@ -1,0 +1,3 @@
+<%= turbo_stream.replace "tag-selector-popup" do %>
+  <%= render Common::TagSelectorPopupComponent.new(@message_thread, @tags, params[:name_search]) %>
+<% end %>

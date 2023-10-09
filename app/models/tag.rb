@@ -17,7 +17,7 @@ class Tag < ApplicationRecord
   has_many :users, through: :tag_users
   has_many :tag_groups, dependent: :destroy
   has_many :groups, through: :tag_groups
-  belongs_to :owner, class_name: 'User', optional: true
+  belongs_to :owner, class_name: 'User', optional: true, foreign_key: :user_id
 
   validates :name, presence: true
   validates :name, uniqueness: { scope: :tenant_id, case_sensitive: false }
