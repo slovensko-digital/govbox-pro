@@ -56,15 +56,6 @@ class MessageDraft < Message
     )
   end
 
-  def submit
-    return false unless submittable?
-
-    Govbox::SubmitMessageDraftJob.perform_later(self)
-
-    metadata["status"] = "being_submitted"
-    save!
-  end
-
   def update_content(title:, body:)
     self.title = title
     metadata["message_body"] = body
@@ -121,6 +112,11 @@ class MessageDraft < Message
     metadata["status"] == "submitted"
   end
 
+  def being_submitted!
+    metadata["status"] = "being_submitted"
+    save!
+  end
+  
   def invalid?
     metadata["status"] == "invalid"
   end
