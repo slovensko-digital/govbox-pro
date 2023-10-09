@@ -15,7 +15,7 @@
 class MessageObject < ApplicationRecord
   belongs_to :message
   has_one :message_object_datum, dependent: :destroy
-  has_many :nested_message_objects, class_name: 'NestedMessageObject', foreign_key: 'parent_message_object_id'
+  has_many :nested_message_objects
 
   scope :to_be_signed, -> { where(to_be_signed: true) }
 

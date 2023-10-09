@@ -341,10 +341,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_06_114400) do
     t.string "name"
     t.string "mimetype"
     t.binary "content", null: false
-    t.bigint "parent_message_object_id", null: false
+    t.bigint "message_object_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["parent_message_object_id"], name: "index_nested_message_objects_on_parent_message_object_id"
+    t.index ["message_object_id"], name: "index_nested_message_objects_on_message_object_id"
   end
 
   create_table "searchable_message_threads", force: :cascade do |t|
@@ -454,7 +454,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_06_114400) do
   add_foreign_key "messages", "users", column: "author_id"
   add_foreign_key "messages_tags", "messages"
   add_foreign_key "messages_tags", "tags"
-  add_foreign_key "nested_message_objects", "message_objects", column: "parent_message_object_id", on_delete: :cascade
+  add_foreign_key "nested_message_objects", "message_objects", on_delete: :cascade
   add_foreign_key "searchable_message_threads", "message_threads", on_delete: :cascade
   add_foreign_key "tag_groups", "groups"
   add_foreign_key "tag_groups", "tags"

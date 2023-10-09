@@ -4,11 +4,11 @@ class CreateNestedMessageObjects < ActiveRecord::Migration[7.0]
       t.string :name
       t.string :mimetype
       t.binary :content, null: false
-      t.references :parent_message_object, null: false
+      t.references :message_object, null: false
 
       t.timestamps
     end
 
-    add_foreign_key :nested_message_objects, :message_objects, column: :parent_message_object_id, on_delete: :cascade
+    add_foreign_key :nested_message_objects, :message_objects, on_delete: :cascade
   end
 end

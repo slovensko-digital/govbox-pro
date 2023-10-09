@@ -11,7 +11,7 @@
 #  updated_at                                  :datetime         not null
 
 class NestedMessageObject < ApplicationRecord
-  belongs_to :parent_message_object, class_name: 'MessageObject'
+  belongs_to :message_object
 
   validates :name, presence: true, on: :validate_data
   validate :allowed_mime_type?, on: :validate_data
@@ -22,11 +22,10 @@ class NestedMessageObject < ApplicationRecord
     nested_message_objects = SignedAttachment::Asice.extract_documents_from_content(message_object.content)
 
     nested_message_objects.each do |nested_message_object|
-      NestedMessageObject.create!(
+      message_object.nested_message_objects.create!(
         name: nested_message_object.name,
         mimetype: nested_message_object.mimetype,
-        content: nested_message_object.content,
-        parent_message_object: message_object
+        content: nested_message_object.content
       )
     end
   end
