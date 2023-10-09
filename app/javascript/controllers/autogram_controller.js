@@ -142,8 +142,6 @@ export default class extends Controller {
   }
 
   async signSingleFile() {
-    const messageObjectId = this.data.get("objectId");
-    const messageId = this.data.get("messageId");
     const messageObjectPath = this.data.get("objectPath");
 
     await this.sign(messageObjectPath, this);

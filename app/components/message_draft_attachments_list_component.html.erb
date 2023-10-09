@@ -1,5 +1,5 @@
 <div id="attachments" is="turbo-frame" class="border-b w-full">
-  <% if @message.not_yet_submitted? || @message.objects.present? %>
+  <% if @message.not_yet_submitted? || @message.attachments.present? %>
     <div class="flex justify-stretch items-center self-stretch flex-grow-0 flex-shrink-0 gap-3 px-6 py-4 border-b">
       <%= form_tag message_message_objects_path(@message), id: "attachment_form", method: :post, multipart: true, class: "w-full" do %>
         <div class="flex flex-col justify-between items-start flex-grow gap-2">
@@ -9,8 +9,8 @@
               <path d="M364.2 83.8c-24.4-24.4-64-24.4-88.4 0l-184 184c-42.1 42.1-42.1 110.3 0 152.4s110.3 42.1 152.4 0l152-152c10.9-10.9 28.7-10.9 39.6 0s10.9 28.7 0 39.6l-152 152c-64 64-167.6 64-231.6 0s-64-167.6 0-231.6l184-184c46.3-46.3 121.3-46.3 167.6 0s46.3 121.3 0 167.6l-176 176c-28.6 28.6-75 28.6-103.6 0s-28.6-75 0-103.6l144-144c10.9-10.9 28.7-10.9 39.6 0s10.9 28.7 0 39.6l-144 144c-6.7 6.7-6.7 17.7 0 24.4s17.7 6.7 24.4 0l176-176c24.4-24.4 24.4-64 0-88.4z"/>
             </svg>
             <p class="flex-grow-0 flex-shrink-0 text-base text-left text-gray-900">
-              <% if @message.objects.count > 0 %>
-                Správa obsahuje <b><%= t('message_object', :count => @message.objects.count, :locale => :sk) %></b>
+              <% if @message.attachments.count > 0 %>
+                Správa obsahuje <b><%= t('message_object', :count => @message.attachments.count, :locale => :sk) %></b>
               <% elsif @message.not_yet_submitted? %>
                 <b>Pridať prílohu</b>
               <% end %>
@@ -19,7 +19,7 @@
               <%= label_tag :attachments_, "Pridať prílohy", class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" %>
               <%= file_field_tag 'attachments[]', onchange: 'document.getElementById("attachment_form").requestSubmit()', class: "text-gray-900 bg-white focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm font-semibold px-5 py-2.5 dark:border-gray-600", multiple: true %>
 
-              <% if @message.objects.unsigned.present? %>
+              <% if @message.attachments.unsigned.present? %>
                 <div data-controller="autogram" data-autogram-authenticity-token="<%= form_authenticity_token %>" data-autogram-files-to-be-signed=<%= @message.objects.unsigned.map{|message_object| { path: message_message_object_path(message_object.message_id, message_object.id) }}.to_json.html_safe %> >
                   <button type="button" data-action="click->autogram#signMultipleFiles" class="flex justify-end items-center gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300">
                     Podpísať všetky nepodpísané dokumenty
@@ -32,8 +32,10 @@
       <% end %>
     </div>
 
-    <div class="flex flex-col justify-stretch items-stretch  relative gap-4 px-6 py-4 bg-white border-t-0 border-r-0 border-b border-l-0 border-gray-200">
-      <%= render MessageAttachmentComponent.with_collection(@message.objects.order(updated_at: :desc)) %>
-    </div>
-  <% end %>
+    <% if @message.attachments.any? %>
+      <div class="flex flex-col justify-stretch items-stretch  relative gap-4 px-6 py-4 bg-white border-t-0 border-r-0 border-b border-l-0 border-gray-200">
+        <%= render MessageAttachmentComponent.with_collection(@message.attachments.order(updated_at: :desc)) %>
+      </div>
+    <% end %>
+<% end %>
 </div>
