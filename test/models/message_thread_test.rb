@@ -5,13 +5,12 @@ class MessageThreadTest < ActiveSupport::TestCase
   test "should create a new message thread if no merge_uuid match exists" do
     box = boxes(:one)
 
-    thread =
-      box.message_threads.find_or_create_by_merge_uuid!(
-        merge_uuid: SecureRandom.uuid,
-        folder: folders(:one),
-        title: "Title",
-        delivered_at: Time.current
-      )
+    thread = box.message_threads.find_or_create_by_merge_uuid!(
+      merge_uuid: SecureRandom.uuid,
+      folder: folders(:one),
+      title: "Title",
+      delivered_at: Time.current
+    )
 
     assert_not_nil thread
   end
@@ -19,13 +18,12 @@ class MessageThreadTest < ActiveSupport::TestCase
   test "should return existing thread if merge_uuid match exists" do
     box = boxes(:one)
 
-    thread =
-      box.message_threads.find_or_create_by_merge_uuid!(
-        merge_uuid: message_threads(:one).merge_identifiers.second.uuid,
-        folder: folders(:one),
-        title: "Title",
-        delivered_at: Time.current
-      )
+    thread = box.message_threads.find_or_create_by_merge_uuid!(
+      merge_uuid: message_threads(:one).merge_identifiers.second.uuid,
+      folder: folders(:one),
+      title: "Title",
+      delivered_at: Time.current
+    )
 
     assert_equal message_threads(:one), thread
   end
@@ -34,13 +32,12 @@ class MessageThreadTest < ActiveSupport::TestCase
     box = boxes(:one)
     older_delivered_at = message_threads(:one).delivered_at - 1.day
 
-    thread =
-      box.message_threads.find_or_create_by_merge_uuid!(
-        merge_uuid: message_threads(:one).merge_identifiers.second.uuid,
-        folder: folders(:three),
-        title: "New Title",
-        delivered_at: older_delivered_at
-      )
+    thread = box.message_threads.find_or_create_by_merge_uuid!(
+      merge_uuid: message_threads(:one).merge_identifiers.second.uuid,
+      folder: folders(:three),
+      title: "New Title",
+      delivered_at: older_delivered_at
+    )
 
     assert_equal "New Title", thread.title
     assert_equal "New Title", thread.original_title
@@ -52,13 +49,12 @@ class MessageThreadTest < ActiveSupport::TestCase
     box = boxes(:one)
     new_delivered_at = message_threads(:one).delivered_at + 1.day
 
-    thread =
-      box.message_threads.find_or_create_by_merge_uuid!(
-        merge_uuid: message_threads(:one).merge_identifiers.second.uuid,
-        folder: folders(:three),
-        title: "New Title",
-        delivered_at: new_delivered_at
-      )
+    thread = box.message_threads.find_or_create_by_merge_uuid!(
+      merge_uuid: message_threads(:one).merge_identifiers.second.uuid,
+      folder: folders(:three),
+      title: "New Title",
+      delivered_at: new_delivered_at
+    )
 
     assert_equal new_delivered_at, thread.last_message_delivered_at
   end
@@ -68,13 +64,12 @@ class MessageThreadTest < ActiveSupport::TestCase
     older_delivered_at = message_threads(:one).delivered_at - 1.day
     last_message_delivered_at = message_threads(:one).last_message_delivered_at
 
-    thread =
-      box.message_threads.find_or_create_by_merge_uuid!(
-        merge_uuid: message_threads(:one).merge_identifiers.second.uuid,
-        folder: folders(:three),
-        title: "New Title",
-        delivered_at: older_delivered_at
-      )
+    thread = box.message_threads.find_or_create_by_merge_uuid!(
+      merge_uuid: message_threads(:one).merge_identifiers.second.uuid,
+      folder: folders(:three),
+      title: "New Title",
+      delivered_at: older_delivered_at
+    )
 
     assert_equal last_message_delivered_at, thread.last_message_delivered_at
   end
