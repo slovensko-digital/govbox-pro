@@ -2,10 +2,14 @@ class MessageThreadsController < ApplicationController
   before_action :set_message_thread, only: %i[show update]
   before_action :load_threads, only: %i[index scroll]
 
+  include MessageThreadsConcern
+
   def show
     authorize @message_thread
-
-    redirect_to @message_thread.messages.where(read: false).order(delivered_at: :asc).first || @message_thread.messages_visible_to_user(Current.user).order(delivered_at: :desc).first
+    set_thread_tags_with_deletable_flag
+    @notice = flash
+    @message_thread.mark_all_messages_read
+    @thread_messages = @message_thread.messages_visible_to_user(Current.user).order(delivered_at: :asc)
   end
 
   def update

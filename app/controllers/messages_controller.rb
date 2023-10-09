@@ -8,6 +8,7 @@ class MessagesController < ApplicationController
 
     @message.update(read: true)
     @message_thread = @message.thread
+    @thread_messages = @message_thread.messages_visible_to_user(Current.user).order(delivered_at: :asc)
   end
 
   def authorize_delivery_notification
@@ -23,7 +24,6 @@ class MessagesController < ApplicationController
     @message = policy_scope(Message).find(params[:id])
     @menu = SidebarMenu.new(controller_name, action_name, { message: @message })
     @notice = flash
-    set_message_tags_with_deletable_flag
     set_thread_tags_with_deletable_flag
   end
 end

@@ -1,7 +1,7 @@
 class MessageDraftsController < ApplicationController
-  before_action :load_message_drafts, only: [:index, :submit_all]
+  before_action :load_message_drafts, only: %i[index submit_all]
   before_action :load_original_message, only: :create
-  before_action :load_draft, except: [:index, :create, :submit_all]
+  before_action :load_draft, except: %i[index create submit_all]
 
   include MessagesConcern
 
@@ -19,7 +19,9 @@ class MessageDraftsController < ApplicationController
 
   def show
     authorize @message
-    @notice = notice
+    @message_thread = @message.thread
+    set_thread_tags_with_deletable_flag
+    @thread_messages = @message_thread.messages_visible_to_user(Current.user).order(delivered_at: :asc)
   end
 
   def update
@@ -37,11 +39,11 @@ class MessageDraftsController < ApplicationController
       redirect_path = @message.original_message.present? ? message_path(@message.original_message) : message_drafts_path
       redirect_to redirect_path, notice: "Správa bola zaradená na odoslanie."
     else
-      # TODO prisposobit chybovu hlasku aj importovanym draftom
+      # TODO: prisposobit chybovu hlasku aj importovanym draftom
       redirect_to message_draft_path(@message), notice: "Vyplňte predmet a text odpovede."
     end
   end
-  
+
   def submit_all
     @messages.each(&:submit)
   end
@@ -49,7 +51,7 @@ class MessageDraftsController < ApplicationController
   def destroy
     authorize @message
 
-    redirect_path = @message.original_message.present? ? message_path(@message.original_message) : message_drafts_path
+    redirect_path = @message.original_message.present? ? message_thread_path(@message.original_message.thread) : message_drafts_path
 
     @message.destroy
 
@@ -69,10 +71,7 @@ class MessageDraftsController < ApplicationController
 
   def load_draft
     @message = policy_scope(MessageDraft).find(params[:id])
-    @menu = SidebarMenu.new(controller_name, action_name, { message: @message })
     @notice = flash
-    set_message_tags_with_deletable_flag
-    set_thread_tags_with_deletable_flag
   end
 
   def message_params

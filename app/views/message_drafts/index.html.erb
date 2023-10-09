@@ -17,14 +17,14 @@
 
       <% @messages.each do |message| %>
         <tr>
-          <td><%= link_to message.title, message_path(message.id) %></td>
+          <td><%= link_to message.title, message_draft_path(message.id) %></td>
           <td><%= " #{message.import&.base_name || '-'}" %></td>
           <td><%= " #{message.metadata["status"]}" %></td>
         </tr>
       <% end %>
     </table>
   </div>
-  
+
   <% if @messages.any?(&:submittable?) %>
     <%= button_to "Podať všetky", submit_all_message_drafts_path, method: :post %>
   <% end %>

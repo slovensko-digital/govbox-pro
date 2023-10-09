@@ -1,3 +1,8 @@
 class MessageThreadComponent < ViewComponent::Base
-    renders_many :messages
+  def initialize(message_thread:, thread_tags_with_deletable_flag:, thread_messages:, notice:)
+    @message_thread = message_thread
+    @thread_tags_with_deletable_flag = thread_tags_with_deletable_flag
+    @thread_messages = thread_messages
+    @notice = notice
+  end
 end
