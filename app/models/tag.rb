@@ -18,9 +18,6 @@ class Tag < ApplicationRecord
   has_many :tag_groups, dependent: :destroy
   has_many :groups, through: :tag_groups
   belongs_to :owner, class_name: 'User', optional: true, foreign_key: :user_id
-  has_many :message_threads_tags
-
-  accepts_nested_attributes_for :message_threads_tags
 
   validates :name, presence: true
   validates :name, uniqueness: { scope: :tenant_id, case_sensitive: false }
