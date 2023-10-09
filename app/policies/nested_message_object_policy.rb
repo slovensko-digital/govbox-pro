@@ -12,7 +12,7 @@ class NestedMessageObjectPolicy < ApplicationPolicy
     def resolve
       return scope.all if @user.site_admin?
 
-      scope.joins(:parent_message_object).where(
+      scope.joins(:message_object).where(
         Message
           .select(1)
           .joins(message_threads_tags: { tag_groups: :group_memberships })

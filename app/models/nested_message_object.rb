@@ -6,7 +6,7 @@
 #  name                                        :string
 #  mimetype                                    :string
 #  content                                     :binary           not null
-#  parent_message_object_id                    :integer          not null
+#  message_object_id                           :integer          not null
 #  created_at                                  :datetime         not null
 #  updated_at                                  :datetime         not null
 
