@@ -37,6 +37,7 @@ gem 'rubyzip', require: 'zip'
 gem 'jwt'
 gem 'stimulus-rails'
 gem 'jsbundling-rails'
+gem 'pdf-reader'
 
 # Monitoring
 gem 'rollbar'

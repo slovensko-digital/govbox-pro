@@ -25,17 +25,19 @@ class MessageObject < ApplicationRecord
 
   def self.create_message_objects(message, objects)
     objects.each do |raw_object|
+      message_object_content = raw_object.read.force_encoding("UTF-8")
+
       message_object = MessageObject.create!(
         message: message,
         name: raw_object.original_filename,
         mimetype: Utils.file_mime_type_by_name(entry_name: raw_object.original_filename),
-        is_signed: Utils.is_signed?(entry_name: raw_object.original_filename),
+        is_signed: Utils.is_signed?(entry_name: raw_object.original_filename, content: message_object_content),
         object_type: "ATTACHMENT"
       )
 
       MessageObjectDatum.create!(
         message_object: message_object,
-        blob: raw_object.read.force_encoding("UTF-8")
+        blob: message_object_content
       )
     end
   end
