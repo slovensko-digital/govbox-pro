@@ -6,7 +6,7 @@ class MessageThreadsTagsController < ApplicationController
     authorize @message_threads_tag
 
     if @message_threads_tag.save
-      redirect_back fallback_location:"/", notice: "Tag was successfully added"
+      redirect_back fallback_location: "/", notice: "Tag was successfully added"
     else
       render :new, status: :unprocessable_entity
     end

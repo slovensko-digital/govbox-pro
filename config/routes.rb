@@ -51,7 +51,6 @@ Rails.application.routes.draw do
       get :scroll
     end
     get :search_available_tags, on: :member
-    post :search_available_tags, on: :member
     resources :messages
   end
   resources :message_threads_tags

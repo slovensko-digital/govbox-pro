@@ -26,26 +26,6 @@ class MessagesController < ApplicationController
     set_thread_tags_with_deletable_flag
   end
 
-  def set_thread_tags_with_deletable_flag
-    @thread_tags_with_deletable_flag =
-      @message
-      .thread
-      .message_threads_tags
-      .includes(:tag)
-      .select("message_threads_tags.*, #{deletable_subquery} as deletable")
-      .order('tags.name')
-  end
-
-  def deletable_subquery
-    Tag
-      .joins(:groups, { groups: :group_memberships })
-      .where('group_memberships.user_id = ?', Current.user.id)
-      .where('tags.id = message_threads_tags.tag_id')
-      .arel
-      .exists
-      .to_sql
-  end
-
   def permit_reply_params
     params.permit(:reply_title, :reply_text)
   end
