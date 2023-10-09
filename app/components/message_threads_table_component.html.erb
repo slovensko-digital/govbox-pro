@@ -2,19 +2,19 @@
   <div class="flex flex-col justify-stretch items-stretch rounded-md bg-white border border-gray-200">
     <%= form_with(url: merge_message_threads_path) do |form|%>
       <div class="flex justify-stretch items-center gap-4 p-4 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
-        <div class="todo flex justify-start items-start   pr-[100px]">
-          <div class="  w-4 h-4 relative">
+        <div class="todo flex justify-start items-start pr-[100px]">
+          <div class="w-4 h-4 relative">
             <div class="w-4 h-4 absolute left-[-1px] top-[-1px] rounded bg-gray-50 border border-gray-400"></div>
           </div>
         </div>
         <p class="grow text-xl font-semibold text-left text-gray-900"> Správy v schránke </p>
         <%= form.submit 'Spojiť vlákna', data: {turbo_confirm: 'Naozaj chcete spojiť označené vlákna do jedného?'}, class:"flex justify-center items-center gap-2.5 px-3.5 py-2.5 rounded-md bg-blue-600 text-base font-medium text-left text-white hover:cursor-pointer" %>
       </div>
-      <div id="message_threads" is="turbo-frame" class="flex flex-col justify-stretch items-stretch">
+      <ul role="list" id="message_threads" is="turbo-frame" class="divide-y divide-gray-100">
         <% message_threads.each do |message_thread| %>
           <%= message_thread %>
         <% end %>
-      </div>
+      </ul>
       <%= next_page_area %>
     <% end %>
   </div>
