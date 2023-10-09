@@ -30,12 +30,14 @@ EventBus.subscribe_job :message_thread_created, Automation::MessageThreadCreated
 EventBus.subscribe_job :message_created, Automation::MessageCreatedJob
 EventBus.subscribe :message_changed, ->(message) {
   if Searchable::Indexer.message_searchable_fields_changed?(message)
-    Searchable::ReindexMessageThreadJob.perform_later(message.thread)
+    Searchable::ReindexMessageThreadJob.perform_later(message.message_thread_id)
   end
 }
-EventBus.subscribe_job :message_thread_changed, Searchable::ReindexMessageThreadJob
+EventBus.subscribe :message_thread_changed, ->(message_thread) {
+  Searchable::ReindexMessageThreadJob.perform_later(message_thread.id)
+}
 EventBus.subscribe :message_thread_tag_changed,
-                   ->(message_thread_tag) { Searchable::ReindexMessageThreadJob.perform_later(message_thread_tag.message_thread) }
+                   ->(message_thread_tag) { Searchable::ReindexMessageThreadJob.perform_later(message_thread_tag.message_thread_id) }
 EventBus.subscribe :tag_renamed, ->(tag) { Searchable::ReindexMessageThreadsWithTagIdJob.perform_later(tag.id) }
 EventBus.subscribe :tag_removed, ->(tag) { Searchable::ReindexMessageThreadsWithTagIdJob.perform_later(tag.id) }
 EventBus.subscribe :box_destroyed, ->(box_id) { Govbox::DestroyBoxDataJob.perform_later(box_id) }
