@@ -17,7 +17,7 @@ class Tag < ApplicationRecord
   has_many :users, through: :tag_users
   has_many :tag_groups, dependent: :destroy
   has_many :groups, through: :tag_groups
-  belongs_to :owner, class_name: 'User', optional: true
+  belongs_to :owner, class_name: 'User', optional: true, foreign_key: :user_id
   has_many :message_threads_tags
 
   accepts_nested_attributes_for :message_threads_tags

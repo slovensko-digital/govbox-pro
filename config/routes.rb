@@ -54,7 +54,6 @@ Rails.application.routes.draw do
     resources :messages
   end
   resources :message_threads_tags
-  resources :tags
 
   resources :messages do
     member do
