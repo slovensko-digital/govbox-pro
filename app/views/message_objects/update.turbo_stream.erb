@@ -1,7 +1,7 @@
-<%#= turbo_stream.replace "message_attachment_#{@message_object.id}" do %>
-  <%#= render MessageAttachmentComponent.with_collection([@message_object]) %>
-<%# end %>
-
 <%= turbo_stream.update "attachments" do %>
-  <%= render MessageAttachmentsListComponent.new(message: @message) %>
+  <%= render MessageDraftAttachmentsListComponent.new(message: @message) %>
+<% end %>
+
+<%= turbo_stream.update "messageDraftBody" do %>
+  <%= render MessageDraftBodyComponent.new(message: @message) %>
 <% end %>
