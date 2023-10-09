@@ -69,7 +69,7 @@ export default class extends Controller {
               return response.json();
             }
             else {
-              throw new Error("Podpisovanie neprebehlo úspešne.");
+              throw new Error;
             }
           }).then(function (signedData) {
             that.updateObject(messageObjectPath, signedFileName, signedFileMimeType, signedData.content);
@@ -80,7 +80,7 @@ export default class extends Controller {
               alert("Spustite aplikáciu autogram.")
             }
             else {
-              alert(err.message)
+              alert("Podpisovanie neprebehlo úspešne.");
             }
           });
         })
