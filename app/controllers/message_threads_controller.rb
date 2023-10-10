@@ -1,5 +1,5 @@
 class MessageThreadsController < ApplicationController
-  before_action :set_message_thread, only: %i[show update]
+  before_action :set_message_thread, only: %i[show update search_available_tags]
   before_action :load_threads, only: %i[index scroll]
 
   include MessageThreadsConcern
@@ -57,6 +57,14 @@ class MessageThreadsController < ApplicationController
     @selected_message_threads.merge_threads
     flash[:notice] = 'Vlákna boli úspešne spojené'
     redirect_to @selected_message_threads.first
+  end
+
+  def search_available_tags
+    authorize [MessageThread]
+    @tags = Current.tenant.tags
+                   .where.not(id: @message_thread.tags.ids)
+                   .where(visible: true)
+    @tags = @tags.where('unaccent(name) ILIKE unaccent(?)', "%#{params[:name_search]}%") if params[:name_search]
   end
 
   private

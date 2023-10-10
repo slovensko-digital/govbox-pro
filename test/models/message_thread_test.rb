@@ -8,8 +8,8 @@ class MessageThreadTest < ActiveSupport::TestCase
     thread = box.message_threads.find_or_create_by_merge_uuid!(
       merge_uuid: SecureRandom.uuid,
       folder: folders(:one),
-      title: 'Title',
-      delivered_at: Time.current,
+      title: "Title",
+      delivered_at: Time.current
     )
 
     assert_not_nil thread
@@ -21,8 +21,8 @@ class MessageThreadTest < ActiveSupport::TestCase
     thread = box.message_threads.find_or_create_by_merge_uuid!(
       merge_uuid: message_threads(:one).merge_identifiers.second.uuid,
       folder: folders(:one),
-      title: 'Title',
-      delivered_at: Time.current,
+      title: "Title",
+      delivered_at: Time.current
     )
 
     assert_equal message_threads(:one), thread
@@ -35,12 +35,12 @@ class MessageThreadTest < ActiveSupport::TestCase
     thread = box.message_threads.find_or_create_by_merge_uuid!(
       merge_uuid: message_threads(:one).merge_identifiers.second.uuid,
       folder: folders(:three),
-      title: 'New Title',
-      delivered_at: older_delivered_at,
+      title: "New Title",
+      delivered_at: older_delivered_at
     )
 
-    assert_equal 'New Title', thread.title
-    assert_equal 'New Title', thread.original_title
+    assert_equal "New Title", thread.title
+    assert_equal "New Title", thread.original_title
     assert_equal older_delivered_at, thread.delivered_at
     assert_equal folders(:three), thread.folder # yes, we WANT to update folder here
   end
@@ -52,9 +52,9 @@ class MessageThreadTest < ActiveSupport::TestCase
     thread = box.message_threads.find_or_create_by_merge_uuid!(
       merge_uuid: message_threads(:one).merge_identifiers.second.uuid,
       folder: folders(:three),
-      title: 'New Title',
-      delivered_at: new_delivered_at,
-      )
+      title: "New Title",
+      delivered_at: new_delivered_at
+    )
 
     assert_equal new_delivered_at, thread.last_message_delivered_at
   end
@@ -67,8 +67,8 @@ class MessageThreadTest < ActiveSupport::TestCase
     thread = box.message_threads.find_or_create_by_merge_uuid!(
       merge_uuid: message_threads(:one).merge_identifiers.second.uuid,
       folder: folders(:three),
-      title: 'New Title',
-      delivered_at: older_delivered_at,
+      title: "New Title",
+      delivered_at: older_delivered_at
     )
 
     assert_equal last_message_delivered_at, thread.last_message_delivered_at
@@ -97,13 +97,11 @@ class MessageThreadTest < ActiveSupport::TestCase
 
     threads.merge_threads
 
-    assert_raises(ActiveRecord::RecordNotFound) do
-      message_threads(:one)
-    end
+    assert_raises(ActiveRecord::RecordNotFound) { message_threads(:one) }
   end
 
   test "should contain all messages in target thread after merge threads" do
-    threads = MessageThread.all
+    threads = MessageThread.where(id: [message_threads(:two).id, message_threads(:one).id])
 
     threads.merge_threads
 
@@ -111,5 +109,14 @@ class MessageThreadTest < ActiveSupport::TestCase
     assert_includes message_threads(:two).messages, messages(:two)
     assert_includes message_threads(:two).messages, messages(:three)
     assert_includes message_threads(:two).messages, messages(:four)
+  end
+
+  test "should not create tag thread relation across tenants" do
+    tag = tags(:two)
+    thread = message_threads(:three)
+
+    thread.message_threads_tags.new(tag_id: tag.id)
+
+    assert_raises(ActiveRecord::RecordInvalid) { thread.save! }
   end
 end

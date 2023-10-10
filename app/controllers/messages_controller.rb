@@ -26,4 +26,8 @@ class MessagesController < ApplicationController
     @notice = flash
     set_thread_tags_with_deletable_flag
   end
+
+  def permit_reply_params
+    params.permit(:reply_title, :reply_text)
+  end
 end

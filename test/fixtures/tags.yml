@@ -11,3 +11,9 @@ two:
   external: false
   visible: false
   tenant: solver
+
+three:
+  name: MyString3
+  external: false
+  visible: true
+  tenant: ssd
