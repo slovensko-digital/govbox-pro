@@ -16,8 +16,10 @@
               <% end %>
             </p>
             <% if @message.not_yet_submitted? %>
-              <%= label_tag :attachments_, "Pridať prílohy", class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" %>
-              <%= file_field_tag 'attachments[]', onchange: 'document.getElementById("attachment_form").requestSubmit()', class: "text-gray-900 bg-white focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm font-semibold px-5 py-2.5 dark:border-gray-600", multiple: true %>
+              <div data-controller="messageDrafts">
+                <%= label_tag :attachments_, "Pridať prílohy", class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" %>
+                <%= file_field_tag 'attachments[]', "data-action": "change->messageDrafts#uploadAttachments", class: "text-gray-900 bg-white focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm font-semibold px-5 py-2.5 dark:border-gray-600", multiple: true %>
+              </div>
 
               <% if @message.attachments.unsigned.present? %>
                 <div data-controller="autogram" data-autogram-authenticity-token="<%= form_authenticity_token %>" data-autogram-files-to-be-signed=<%= @message.objects.unsigned.map{|message_object| { path: message_message_object_path(message_object.message_id, message_object.id) }}.to_json.html_safe %> >

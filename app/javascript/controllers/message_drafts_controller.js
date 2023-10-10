@@ -1,5 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
-import { patch } from '@rails/request.js'
+import { post, patch } from '@rails/request.js'
 
 export default class extends Controller {
 
@@ -15,5 +15,9 @@ export default class extends Controller {
       }),
       responseKind: "turbo-stream"
     })
+  }
+
+  uploadAttachments() {
+    document.getElementById("attachment_form").requestSubmit();
   }
 }
