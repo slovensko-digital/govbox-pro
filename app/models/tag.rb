@@ -18,12 +18,13 @@ class Tag < ApplicationRecord
   has_many :tag_groups, dependent: :destroy
   has_many :groups, through: :tag_groups
   belongs_to :owner, class_name: 'User', optional: true, foreign_key: :user_id
+  has_many :automation_rules, as: :rule_object
 
   validates :name, presence: true
   validates :name, uniqueness: { scope: :tenant_id, case_sensitive: false }
 
   after_create_commit ->(tag) { tag.mark_readable_by_groups(tag.tenant.admin_groups) }
-  after_update_commit ->(tag) { EventBus.publish(:tag_renamed, tag) if previous_changes.key?("name") }
+  after_update_commit ->(tag) { EventBus.publish(:tag_renamed, tag) if previous_changes.key?('name') }
   after_destroy ->(tag) { EventBus.publish(:tag_removed, tag) }
 
   def mark_readable_by_groups(groups)
