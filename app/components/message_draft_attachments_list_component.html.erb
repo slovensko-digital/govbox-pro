@@ -1,4 +1,4 @@
-<div id="attachments" is="turbo-frame" class="border-b w-full">
+<div id="<%= MessageDraftHelper.attachments_tag_id(@message) %>" is="turbo-frame" class="border-b-0 w-full">
   <% if @message.not_yet_submitted? || @message.attachments.present? %>
     <div class="justify-stretch items-center self-stretch flex-grow-0 flex-shrink-0 gap-3 px-6 py-4 border-b">
       <div class="flex justify-between items-center gap-4 overflow-clip">
@@ -18,11 +18,20 @@
           </div>
 
           <% if @message.not_yet_submitted? %>
-            <%= form_tag message_message_objects_path(@message), id: "attachment_form", method: :post, multipart: true do %>
-              <div data-controller="messageDrafts" class="flex justify-start items-center gap-4 overflow-clip">
+            <%
+              attachments_form_id = "#{MessageDraftHelper.attachments_tag_id(@message)}_form"
+            %>
+            <%= form_tag message_message_objects_path(@message), id: attachments_form_id, method: :post, multipart: true do %>
+              <%= content_tag(:div,
+                {
+                  "data-controller": "messageDrafts",
+                  "data-messageDrafts-attachments-form-id": attachments_form_id,
+                  "class": "flex justify-start items-center gap-4 overflow-clip"
+                }
+              ) do %>
                 <%= label_tag :attachments_, "Pridať prílohy", class: "hidden" %>
                 <%= file_field_tag 'attachments[]', "data-action": "change->messageDrafts#uploadAttachments", class: "text-gray-900 bg-white focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm font-semibold px-5 py-2.5 dark:border-gray-600", multiple: true %>
-              </div>
+              <% end %>
             <% end %>
           <% end %>
         </div>

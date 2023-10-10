@@ -8,7 +8,7 @@
     <% end %>
     <% @thread_messages.each do |message| %>
       <% if message.type == 'MessageDraft' %>
-        <%= render MessageDraftsComponent.new(message: message) %>
+        <%= render MessageDraftComponent.new(message: message) %>
       <% elsif message.read %>
         <%= render CollapsedMessageComponent.new(message: message) %>
       <% else %>
