@@ -1,45 +1,52 @@
+# frozen_string_literal: true
+
 class Searchable::MessageThreadQuery
+  WITHOUT_ALL_VISIBLE_LABELS = "-label:*"
+
   def self.remove_label_from_text(text, match)
-    text.gsub("#{match[0]}:(#{match[1]})", '')
+    text.gsub("#{match[0]}:(#{match[1]})", "")
   end
 
   def self.parse(query)
     filter_labels = []
     filter_out_labels = []
+    filter_out_all_visible_labels = false
 
     with_text = query.to_s
 
-    query.to_s.scan(/(-?label):\(([^)]+)\)/).each do |match|
-      raise "unexpected label case" if match.length != 2
+    query.to_s.scan(/(-?label):\(([^)]+)\)|(-label:\*)/).each do |match|
+      raise "unexpected label case" if match.length != 3
 
       if match[0] == "label"
         filter_labels << match[1]
 
         with_text = remove_label_from_text(with_text, match)
-      end
-
-      if match[0] == "-label"
+      elsif match[0] == "-label"
         filter_out_labels << match[1]
 
         with_text = remove_label_from_text(with_text, match)
+      elsif match[2] == WITHOUT_ALL_VISIBLE_LABELS
+        filter_out_all_visible_labels = true
+        with_text = with_text.gsub(WITHOUT_ALL_VISIBLE_LABELS, "")
       end
     end
 
     {
       fulltext: with_text.gsub(/\s+/, ' ').strip,
       filter_labels: filter_labels,
-      filter_out_labels: filter_out_labels
+      filter_out_labels: filter_out_labels,
+      filter_out_all_visible_labels: filter_out_all_visible_labels,
     }
   end
 
-  def self.labels_to_ids(parsed_query, tenant_id:, no_visible_tags: false)
-    fulltext, filter_labels, filter_out_labels =
-      parsed_query.fetch_values(:fulltext, :filter_labels, :filter_out_labels)
+  def self.labels_to_ids(parsed_query, tenant_id:)
+    fulltext, filter_labels, filter_out_labels, filter_out_all_visible_labels =
+      parsed_query.fetch_values(:fulltext, :filter_labels, :filter_out_labels, :filter_out_all_visible_labels)
 
     filter_tag_ids = label_names_to_tag_ids(tenant_id, filter_labels)
     filter_out_tag_ids = label_names_to_tag_ids(tenant_id, filter_out_labels)
 
-    filter_out_tag_ids.concat(visible_tag_ids(tenant_id)) if no_visible_tags
+    filter_out_tag_ids.concat(visible_tag_ids(tenant_id)) if filter_out_all_visible_labels
 
     result = {}
 
