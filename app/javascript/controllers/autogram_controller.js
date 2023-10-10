@@ -114,21 +114,21 @@ export default class extends Controller {
   }
 
   signMultipleFiles() {
-    const messageObjectsToBeSigned = JSON.parse(this.data.get("filesToBeSigned"));
+    const filesToBeSigned = JSON.parse(this.data.get("filesToBeSigned"));
     const that = this;
 
     fetch("http://localhost:37200/batch", {
       method: "POST",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({
-        "totalNumberOfDocuments": messageObjectsToBeSigned.length
+        "totalNumberOfDocuments": filesToBeSigned.length
       })
     }).then(function (response) {
       return response.json();
     }).then(function (data) {
       return data.batchId;
     }).then(async function (batchId) {
-      for(const messageObject of messageObjectsToBeSigned) {
+      for(const messageObject of filesToBeSigned) {
         await that.sign(messageObject.path, that, batchId);
       }
     }).catch(function (err) {

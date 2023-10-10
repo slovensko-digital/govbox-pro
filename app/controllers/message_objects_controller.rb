@@ -29,6 +29,7 @@ class MessageObjectsController < ApplicationController
     authorize @message_object
 
     if @message_object.mimetype == "application/x-eform-xml"
+      # TODO: this should be handled by autogram
       upvs_form_template = Upvs::FormTemplate.find_by(identifier: @message_object.message.metadata["posp_id"], version: @message_object.message.metadata["posp_version"])
 
       @message_object_identifier = Upvs::FormBuilder.parse_xml_identifier(@message_object.content)
