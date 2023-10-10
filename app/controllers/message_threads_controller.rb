@@ -1,6 +1,7 @@
 class MessageThreadsController < ApplicationController
   before_action :set_message_thread, only: %i[show update search_available_tags]
   before_action :load_threads, only: %i[index scroll]
+  after_action :mark_thread_as_read, only: %i[show]
 
   include MessageThreadsConcern
 
@@ -8,7 +9,6 @@ class MessageThreadsController < ApplicationController
     authorize @message_thread
     set_thread_tags_with_deletable_flag
     @notice = flash
-    @message_thread.mark_all_messages_read
     @thread_messages = @message_thread.messages_visible_to_user(Current.user).order(delivered_at: :asc)
   end
 
@@ -71,6 +71,10 @@ class MessageThreadsController < ApplicationController
 
   def set_message_thread
     @message_thread = message_thread_policy_scope.find(params[:id])
+  end
+
+  def mark_thread_as_read
+    @message_thread.mark_all_messages_read
   end
 
   def message_thread_policy_scope
