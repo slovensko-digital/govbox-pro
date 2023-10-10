@@ -1,4 +1,4 @@
-<%= tag.turbo_frame id:"message-#{@message.id}", class:"flex flex-col justify-stretch items-stretch rounded-md bg-white border border-gray-200" do %>
+<%= tag.turbo_frame id: dom_id(@message), class: "flex flex-col justify-stretch items-stretch rounded-md bg-white border border-gray-200" do %>
   <div class="flex flex-col justify-stretch items-stretch rounded-md bg-white border border-gray-200">
     <div class="flex flex-col justify-stretch items-stretch gap-4 px-6 pt-6 pb-4 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
       <div class="flex justify-between items-start gap-4">
@@ -27,8 +27,8 @@
       <% if @message.custom_visualization? %>
         <%= form_tag message_draft_path(@message), method: :put, class: "w-full", id: "reply_form" do %>
           <div class="mb-3 pt-0 w-full">
-            <%= text_field_tag "message_title", @message.title, placeholder: "Predmet", onchange: 'document.getElementById("reply_form").submit();', disabled: !@message.editable?, class:"mb-3 px-3 py-4 placeholder-slate-300 text-slate-í00 relative bg-white bg-white rounded-lg text-base border-0 shadow outline-none focus:outline-none focus:ring w-full" %>
-            <%= text_area_tag "message_text", @message.metadata["message_body"], placeholder: "Text", onchange: 'document.getElementById("reply_form").submit();', rows: 10, disabled: !@message.editable?, class:"px-3 py-4 placeholder-slate-300 text-slate-í00 relative bg-white bg-white rounded-lg text-base border-0 shadow outline-none focus:outline-none focus:ring w-full h-full" %>
+            <%= text_field_tag "message_title", @message.title, placeholder: "Predmet", onchange: 'document.getElementById("reply_form").submit();', disabled: !@message.editable?, class: "mb-3 px-3 py-4 placeholder-slate-300 text-slate-í00 relative bg-white bg-white rounded-lg text-base border-0 shadow outline-none focus:outline-none focus:ring w-full" %>
+            <%= text_area_tag "message_text", @message.metadata["message_body"], placeholder: "Text", onchange: 'document.getElementById("reply_form").submit();', rows: 10, disabled: !@message.editable?, class: "px-3 py-4 placeholder-slate-300 text-slate-í00 relative bg-white bg-white rounded-lg text-base border-0 shadow outline-none focus:outline-none focus:ring w-full h-full" %>
           </div>
         <% end %>
       <% else %>
