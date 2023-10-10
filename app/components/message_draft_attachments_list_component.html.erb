@@ -1,10 +1,10 @@
 <div id="attachments" is="turbo-frame" class="border-b w-full">
   <% if @message.not_yet_submitted? || @message.attachments.present? %>
-    <div class="flex justify-stretch items-center self-stretch flex-grow-0 flex-shrink-0 gap-3 px-6 py-4 border-b">
-      <%= form_tag message_message_objects_path(@message), id: "attachment_form", method: :post, multipart: true, class: "w-full" do %>
-        <div class="flex flex-col justify-between items-start flex-grow gap-2">
-          <div class="flex justify-start items-center flex-grow relative rt flex-grow-0 flex-shrink-0 gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">
+    <div class="justify-stretch items-center self-stretch flex-grow-0 flex-shrink-0 gap-3 px-6 py-4 border-b">
+      <div class="flex justify-between items-center gap-4 overflow-clip">
+        <div class="flex justify-start items-center gap-4 overflow-clip">
+          <div class="flex justify-stretch items-center gap-4">
+            <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">-->
               <!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
               <path d="M364.2 83.8c-24.4-24.4-64-24.4-88.4 0l-184 184c-42.1 42.1-42.1 110.3 0 152.4s110.3 42.1 152.4 0l152-152c10.9-10.9 28.7-10.9 39.6 0s10.9 28.7 0 39.6l-152 152c-64 64-167.6 64-231.6 0s-64-167.6 0-231.6l184-184c46.3-46.3 121.3-46.3 167.6 0s46.3 121.3 0 167.6l-176 176c-28.6 28.6-75 28.6-103.6 0s-28.6-75 0-103.6l144-144c10.9-10.9 28.7-10.9 39.6 0s10.9 28.7 0 39.6l-144 144c-6.7 6.7-6.7 17.7 0 24.4s17.7 6.7 24.4 0l176-176c24.4-24.4 24.4-64 0-88.4z"/>
             </svg>
@@ -15,28 +15,39 @@
                 <b>Pridať prílohu</b>
               <% end %>
             </p>
-            <% if @message.not_yet_submitted? %>
-              <div data-controller="messageDrafts">
-                <%= label_tag :attachments_, "Pridať prílohy", class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" %>
+          </div>
+
+          <% if @message.not_yet_submitted? %>
+            <%= form_tag message_message_objects_path(@message), id: "attachment_form", method: :post, multipart: true do %>
+              <div data-controller="messageDrafts" class="flex justify-start items-center gap-4 overflow-clip">
+                <%= label_tag :attachments_, "Pridať prílohy", class: "hidden" %>
                 <%= file_field_tag 'attachments[]', "data-action": "change->messageDrafts#uploadAttachments", class: "text-gray-900 bg-white focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm font-semibold px-5 py-2.5 dark:border-gray-600", multiple: true %>
               </div>
-
-              <% if @message.attachments.unsigned.present? %>
-                  <%
-                    files_to_be_signed = @message.objects.unsigned.map do |message_object|
-                      { path: message_message_object_path(message_object.message_id, message_object.id) }
-                    end
-                  %>
-                  <div data-controller="autogram" data-autogram-authenticity-token="<%= form_authenticity_token %>" data-autogram-files-to-be-signed=<%= files_to_be_signed.to_json.html_safe %>>
-                  <button type="button" data-action="click->autogram#signMultipleFiles" class="flex justify-end items-center gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300">
-                    Podpísať všetky nepodpísané dokumenty
-                  </button>
-                </div>
-              <% end %>
             <% end %>
-          </div>
+          <% end %>
         </div>
-      <% end %>
+
+        <div class="flex justify-end items-center gap-4">
+          <% if @message.attachments.unsigned.present? %>
+            <%
+              files_to_be_signed = @message.objects.unsigned.map do |message_object|
+                { path: message_message_object_path(message_object.message_id, message_object.id) }
+             end
+            %>
+            <%= content_tag(:div,
+              {
+                "data-controller": "autogram",
+                "data-autogram-files-to-be-signed": files_to_be_signed.to_json.html_safe,
+                "data-autogram-authenticity-token": form_authenticity_token
+              }
+            ) do %>
+              <button type="button" data-action="click->autogram#signMultipleFiles" class="flex justify-end items-center gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300">
+                Podpísať všetky nepodpísané dokumenty
+              </button>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
     </div>
 
     <% if @message.attachments.any? %>
@@ -44,5 +55,5 @@
         <%= render MessageAttachmentComponent.with_collection(@message.attachments.order(updated_at: :desc)) %>
       </div>
     <% end %>
-<% end %>
+  <% end %>
 </div>
