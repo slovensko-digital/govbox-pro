@@ -22,7 +22,12 @@
               </div>
 
               <% if @message.attachments.unsigned.present? %>
-                <div data-controller="autogram" data-autogram-authenticity-token="<%= form_authenticity_token %>" data-autogram-files-to-be-signed=<%= @message.objects.unsigned.map{|message_object| { path: message_message_object_path(message_object.message_id, message_object.id) }}.to_json.html_safe %> >
+                  <%
+                    files_to_be_signed = @message.objects.unsigned.map do |message_object|
+                      { path: message_message_object_path(message_object.message_id, message_object.id) }
+                    end
+                  %>
+                  <div data-controller="autogram" data-autogram-authenticity-token="<%= form_authenticity_token %>" data-autogram-files-to-be-signed=<%= files_to_be_signed.to_json.html_safe %>>
                   <button type="button" data-action="click->autogram#signMultipleFiles" class="flex justify-end items-center gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300">
                     Podpísať všetky nepodpísané dokumenty
                   </button>

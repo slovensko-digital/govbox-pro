@@ -28,11 +28,23 @@
   </div>
 
   <% if @messages.map{|message| message.objects.should_be_signed.map{|o| {id: o.id, message_id: message.id}}}.flatten(1).any? %>
-    <div data-controller="autogram" data-autogram-authenticity-token="<%= form_authenticity_token %>" data-autogram-files-to-be-signed=<%= @messages.map{|message| message.objects.should_be_signed.map{|o| {id: o.id, message_id: message.id}}}.flatten(1).to_json.html_safe %> >
+    <%
+      files_to_be_signed = @messages.map do |message|
+        message.objects.should_be_signed.map do |message_object|
+          { path: message_message_object_path(message_object.message_id, message_object.id) }
+        end
+      end.flatten(1)
+    %>
+    <%= content_tag(:div,
+      {
+        "data-controller": "autogram",
+        "data-autogram-files-to-be-signed": files_to_be_signed.to_json.html_safe,
+      }
+    ) do %>
       <button type="button" data-action="click->autogram#signMultipleFiles" class="flex justify-end items-center gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300">
-        <b>Podpísať všetky dokumenty na podpis</b>
+        Podpísať všetky nepodpísané dokumenty
       </button>
-    </div>
+    <% end %>
   <% end %>
 
   <% if @messages.any?(&:submittable?) %>

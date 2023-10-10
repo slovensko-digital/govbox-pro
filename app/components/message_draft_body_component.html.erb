@@ -1,10 +1,17 @@
 <div id="messageDraftBody" is="turbo-frame" class="w-full">
   <div class="flex flex-col justify-stretch items-start    relative gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
     <% if @message.custom_visualization? %>
-      <div class="mb-3 pt-0 w-full" data-controller="messageDrafts" data-messageDrafts-message-draft-path="<%= message_draft_path(@message.id) %>" data-messageDrafts-authenticity-token="<%= form_authenticity_token %>">
+      <%= content_tag(:div,
+        {
+          "data-controller": "messageDrafts",
+          "data-messageDrafts-message-draft-path": message_draft_path(@message.id),
+          "data-autogram-authenticity-token": form_authenticity_token,
+          "class": "mb-3 pt-0 w-full"
+        }
+      ) do %>
         <%= text_field_tag "message_title", @message.title, placeholder: "Predmet", "data-action": "change->messageDrafts#update", disabled: !@message.editable?, class:"mb-3 px-3 py-4 placeholder-slate-300 text-slate-í00 relative bg-white bg-white rounded-lg text-base border-0 shadow outline-none focus:outline-none focus:ring w-full" %>
         <%= text_area_tag "message_text", @message.metadata["message_body"], placeholder: "Text", "data-action": "change->messageDrafts#update", rows: 10, disabled: !@message.editable?, class:"px-3 py-4 placeholder-slate-300 text-slate-í00 relative bg-white bg-white rounded-lg text-base border-0 shadow outline-none focus:outline-none focus:ring w-full h-full" %>
-      </div>
+      <% end %>
     <% else %>
       <div class="w-full">
         <%= tag.iframe class: "relative border-none overflow-hidden h-full w-full", srcdoc: @message.html_visualization, onload: "(
@@ -27,11 +34,19 @@
       <% end %>
 
       <% if @message.form&.signable? %>
-        <div data-controller="autogram" data-autogram-object-id="<%= @message.form.id %>" data-autogram-message-id="<%= @message.id %>" data-autogram-object-path="<%= message_message_object_path(@message.id, @message.form.id) %>" data-autogram-authenticity-token="<%= form_authenticity_token %>" >
+        <%= content_tag(:div,
+         {
+           "data-controller": "autogram",
+           "data-autogram-object-id": @message.form.id,
+           "data-autogram-message-id": @message.id,
+           "data-autogram-object-path": message_message_object_path(@message.id, @message.form.id),
+           "data-autogram-authenticity-token": form_authenticity_token
+         }
+        ) do %>
           <button data-action="click->autogram#signSingleFile" class="flex justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3.5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
             Podpísať
           </button>
-        </div>
+        <% end %>
       <% end %>
     </div>
   </div>
