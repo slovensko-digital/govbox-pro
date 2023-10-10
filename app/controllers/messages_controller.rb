@@ -8,6 +8,7 @@ class MessagesController < ApplicationController
 
     @message.update(read: true)
     @message_thread = @message.thread
+    @thread_messages = @message_thread.messages_visible_to_user(Current.user).order(delivered_at: :asc)
   end
 
   def authorize_delivery_notification
