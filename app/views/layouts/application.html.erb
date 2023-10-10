@@ -11,8 +11,11 @@
   </head>
   <body class = "h-full">
     <%= render TW::LightLayoutWithSidebarComponent.new do |component| %>
+      <% component.with_mobile_sidebar do %>
+        <%= render TW::MobileSidebarComponent.new(menu: @menu) %>
+      <% end %>
       <% component.with_static_sidebar do %>
-        <%= render TW::StaticSidebarComponent.new %>
+        <%= render TW::StaticSidebarComponent.new(menu: @menu) %>
       <% end %>
       <% component.with_top_navigation do %>
         <%= render TW::TopNavigationComponent.new(@current_tenant_boxes_count) %>

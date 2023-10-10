@@ -1,5 +1,5 @@
 class TW::DynamicSidebarMenuComponent < ViewComponent::Base
-  def before_render
-    @menu = controller.menu
+  def initialize(menu:)
+    @menu = menu
   end
 end

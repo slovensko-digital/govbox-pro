@@ -9,8 +9,6 @@ class ApplicationController < ActionController::Base
     Current.user
   end
 
-  attr_reader :menu
-
   def set_menu_context
     return unless Current.user
 
