@@ -38,6 +38,13 @@ class MessageThread < ApplicationRecord
     folder.tenant.automation_rules.where(trigger_event: event)
   end
 
+  def mark_all_messages_read
+    messages.where(read: false).each do |message|
+      message.read = true
+      message.save!
+    end
+  end
+
   def self.merge_threads
     transaction do
       target_thread = self.first
