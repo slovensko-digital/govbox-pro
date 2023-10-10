@@ -1,9 +1,16 @@
 <div class="flex justify-between items-center gap-4 overflow-clip">
   <%= link_to message_message_object_path(@message_attachment.message, @message_attachment), class:"flex justify-start items-center gap-4 overflow-clip" do %>
     <div class="flex justify-stretch items-center gap-4">
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" class="  w-8 h-8 " preserveAspectRatio="xMidYMid meet">
-        <path d="M12.0003 16H20.0003M12.0003 21.3333H20.0003M22.667 28H9.33366C8.62641 28 7.94814 27.719 7.44804 27.219C6.94794 26.7189 6.66699 26.0406 6.66699 25.3333V6.66667C6.66699 5.95942 6.94794 5.28115 7.44804 4.78105C7.94814 4.28095 8.62641 4 9.33366 4H16.7817C17.1353 4.00008 17.4743 4.1406 17.7243 4.39067L24.943 11.6093C25.1931 11.8593 25.3336 12.1984 25.3337 12.552V25.3333C25.3337 26.0406 25.0527 26.7189 24.5526 27.219C24.0525 27.719 23.3742 28 22.667 28Z" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-      </svg>
+      <% if @message_attachment.nested_message_objects.present? %>
+        <!--        TODO najst inu ikonku-->
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" class="  w-8 h-8 " preserveAspectRatio="xMidYMid meet">
+          <path d="M12.0003 16H20.0003M12.0003 21.3333H20.0003M22.667 28H9.33366C8.62641 28 7.94814 27.719 7.44804 27.219C6.94794 26.7189 6.66699 26.0406 6.66699 25.3333V6.66667C6.66699 5.95942 6.94794 5.28115 7.44804 4.78105C7.94814 4.28095 8.62641 4 9.33366 4H16.7817C17.1353 4.00008 17.4743 4.1406 17.7243 4.39067L24.943 11.6093C25.1931 11.8593 25.3336 12.1984 25.3337 12.552V25.3333C25.3337 26.0406 25.0527 26.7189 24.5526 27.219C24.0525 27.719 23.3742 28 22.667 28Z" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+      <% else %>
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" class="  w-8 h-8 " preserveAspectRatio="xMidYMid meet">
+          <path d="M12.0003 16H20.0003M12.0003 21.3333H20.0003M22.667 28H9.33366C8.62641 28 7.94814 27.719 7.44804 27.219C6.94794 26.7189 6.66699 26.0406 6.66699 25.3333V6.66667C6.66699 5.95942 6.94794 5.28115 7.44804 4.78105C7.94814 4.28095 8.62641 4 9.33366 4H16.7817C17.1353 4.00008 17.4743 4.1406 17.7243 4.39067L24.943 11.6093C25.1931 11.8593 25.3336 12.1984 25.3337 12.552V25.3333C25.3337 26.0406 25.0527 26.7189 24.5526 27.219C24.0525 27.719 23.3742 28 22.667 28Z" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+      <% end %>
     </div>
     <div class="flex flex-col justify-start items-start overflow-clip">
       <div class="flex justify-start items-start gap-4 w-full">
@@ -36,10 +43,13 @@
     <% end %>
   </div>
 </div>
+
+<%= render NestedMessageAttachmentComponent.with_collection(@message_attachment.nested_message_objects) %>
+
 <div class="flex justify-stretch items-center gap-4">
   <% unless @is_last %>
-  <svg width="1245" height="1" viewBox="0 0 1245 1" fill="none" xmlns="http://www.w3.org/2000/svg" class=" grow " preserveAspectRatio="none">
-    <line y1="0.5" x2="1245" y2="0.5" stroke="#E5E7EB"></line>
-  </svg>
+    <svg width="100%" height="1" viewBox="0 0 1245 1" fill="none" xmlns="http://www.w3.org/2000/svg" class=" grow " preserveAspectRatio="none">
+      <line y1="0.5" x2="1245" y2="0.5" stroke="#E5E7EB"></line>
+    </svg>
   <% end %>
 </div>

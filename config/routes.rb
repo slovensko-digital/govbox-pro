@@ -65,6 +65,10 @@ Rails.application.routes.draw do
         get 'download'
         get 'signing_data'
       end
+
+      resources :nested_message_objects do
+        get 'download'
+      end
     end
   end
 

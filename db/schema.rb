@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_04_085812) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_06_114400) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -337,6 +337,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_04_085812) do
     t.index ["tag_id"], name: "index_messages_tags_on_tag_id"
   end
 
+  create_table "nested_message_objects", force: :cascade do |t|
+    t.string "name"
+    t.string "mimetype"
+    t.binary "content", null: false
+    t.bigint "message_object_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["message_object_id"], name: "index_nested_message_objects_on_message_object_id"
+  end
+
   create_table "searchable_message_threads", force: :cascade do |t|
     t.integer "message_thread_id", null: false
     t.text "title", null: false
@@ -444,6 +454,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_04_085812) do
   add_foreign_key "messages", "users", column: "author_id"
   add_foreign_key "messages_tags", "messages"
   add_foreign_key "messages_tags", "tags"
+  add_foreign_key "nested_message_objects", "message_objects", on_delete: :cascade
   add_foreign_key "searchable_message_threads", "message_threads", on_delete: :cascade
   add_foreign_key "tag_groups", "groups"
   add_foreign_key "tag_groups", "tags"

@@ -3,7 +3,7 @@
 # Table name: message_objects
 #
 #  id                                          :integer          not null, primary key
-#  name                                        :string           not null
+#  name                                        :string
 #  mimetype                                    :string
 #  is_signed                                   :boolean
 #  to_be_signed                                :boolean          not null, default: false
@@ -15,6 +15,7 @@
 class MessageObject < ApplicationRecord
   belongs_to :message
   has_one :message_object_datum, dependent: :destroy
+  has_many :nested_message_objects
 
   scope :to_be_signed, -> { where(to_be_signed: true) }
 
@@ -35,11 +36,21 @@ class MessageObject < ApplicationRecord
         message_object: message_object,
         blob: raw_object.read.force_encoding("UTF-8")
       )
+
+      NestedMessageObject.create_from_message_object(message_object)
     end
+  end
+
+  def content
+    message_object_datum.blob
   end
 
   def form?
     object_type == "FORM"
+  end
+
+  def asice?
+    mimetype == 'application/vnd.etsi.asic-e+zip'
   end
 
   def destroyable?
