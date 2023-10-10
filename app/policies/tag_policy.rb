@@ -23,12 +23,4 @@ class TagPolicy < ApplicationPolicy
       )
     end
   end
-
-  def show?
-    true
-  end
-
-  def get_available?
-    true
-  end
 end

@@ -3,7 +3,7 @@
 # Table name: message_objects
 #
 #  id                                          :integer          not null, primary key
-#  name                                        :string           not null
+#  name                                        :string
 #  mimetype                                    :string
 #  is_signed                                   :boolean
 #  to_be_signed                                :boolean          not null, default: false
@@ -15,6 +15,7 @@
 class MessageObject < ApplicationRecord
   belongs_to :message
   has_one :message_object_datum, dependent: :destroy
+  has_many :nested_message_objects
 
   scope :unsigned, -> { where('is_signed = false') }
   scope :to_be_signed, -> { where('to_be_signed = true') }
@@ -39,6 +40,8 @@ class MessageObject < ApplicationRecord
         message_object: message_object,
         blob: message_object_content
       )
+
+      NestedMessageObject.create_from_message_object(message_object)
     end
   end
 
@@ -53,6 +56,10 @@ class MessageObject < ApplicationRecord
   def signable?
     # TODO vymazat druhu podmienku po povoleni viacnasobneho podpisovania
     message.is_a?(MessageDraft) && !is_signed
+  end
+
+  def asice?
+    mimetype == 'application/vnd.etsi.asic-e+zip'
   end
 
   def destroyable?

@@ -8,12 +8,12 @@ class Searchable::ReindexMessageThreadJob < ApplicationJob
     # Can be an Integer or Lambda/Proc that is invoked in the context of the job
     total_limit: 1,
 
-    key: -> { "Searchable::ReindexMessageThreadJob-#{arguments.first.try(:id)}" }
+    key: -> { "Searchable::ReindexMessageThreadJob-#{arguments.first}" }
   )
 
-  discard_on ActiveJob::DeserializationError
+  def perform(message_thread_id)
+    message_thread = ::MessageThread.find_by_id(message_thread_id)
 
-  def perform(message_thread)
     return if message_thread.nil?
 
     ::Searchable::Indexer.index_message_thread(message_thread)
