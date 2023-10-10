@@ -82,6 +82,8 @@ class MessageDraft < Message
         blob: Upvs::FormBuilder.build_general_agenda_xml(subject: title, body: body)
       )
     end
+
+    self.reload
   end
 
   def editable?
