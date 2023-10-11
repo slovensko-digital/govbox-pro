@@ -67,6 +67,9 @@ class MessageDraftsController < ApplicationController
 
     @message.destroy
 
+    drafts_tag = Tag.find_by(name: "Drafts", tenant: @message.thread.box.tenant)
+    @message.thread.tags.delete(drafts_tag) unless @message.thread.message_drafts.any?
+
     redirect_to redirect_path
   end
 

@@ -18,6 +18,7 @@ class MessageThread < ApplicationRecord
     def find_or_create_by_uuid!(uuid:)
     end
   end
+  has_many :message_drafts
   has_and_belongs_to_many :tags, through: :messages
   has_many :message_threads_tags, dependent: :destroy
   has_many :tag_users, through: :message_threads_tags
@@ -32,6 +33,10 @@ class MessageThread < ApplicationRecord
 
   def messages_visible_to_user(user)
     messages.where(messages: { author_id: user.id }).or(messages.where(messages: { author_id: nil }))
+  end
+
+  def add_tag(tag)
+    tags << tag unless tags.include?(tag)
   end
 
   def automation_rules_for_event(event)

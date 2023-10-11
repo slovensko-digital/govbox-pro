@@ -35,7 +35,7 @@ class MessageDraft < Message
   end
 
   def self.create_message_reply(original_message: , author:)
-    MessageDraft.create!(
+    message_draft = MessageDraft.create!(
       uuid: SecureRandom.uuid,
       thread: original_message.thread,
       sender_name: original_message.recipient_name,
@@ -54,6 +54,13 @@ class MessageDraft < Message
         "status": "created"
       }
     )
+
+    drafts_tag = Tag.find_or_create_by!(name: "Drafts", tenant: message_draft.thread.box.tenant)
+
+    message_draft.tags << drafts_tag
+    message_draft.thread.add_tag(drafts_tag)
+
+    message_draft
   end
 
   def update_content(title:, body:)

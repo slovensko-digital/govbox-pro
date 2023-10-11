@@ -89,7 +89,8 @@ class Drafts::ParseImportJob < ApplicationJob
         last_message_delivered_at: Time.now
       )
 
-      message_thread.tags << Tag.find_or_create_by!(name: "Drafts", tenant: import.box.tenant)
+      drafts_tag = Tag.find_or_create_by!(name: "Drafts", tenant: import.box.tenant)
+      message_thread.add_tag(drafts_tag)
       
       MessageDraft.create!(
         uuid: uuid,
