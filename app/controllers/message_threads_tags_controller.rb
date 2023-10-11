@@ -8,16 +8,16 @@ class MessageThreadsTagsController < ApplicationController
     authorize @message_threads_tag
 
     if @message_threads_tag.save
-      redirect_back fallback_location: message_threads_path, notice: "Tag was successfully added"
+      redirect_back fallback_location: message_threads_path, notice: "Štítok bol úspešne pridaný"
     else
-      redirect_back fallback_location: message_threads_path, alert: "Tag was not added :("
+      redirect_back fallback_location: message_threads_path, alert: "Štítok sa nepodarilo pridať :("
     end
   end
 
   def destroy
     authorize @message_threads_tag
     @message_threads_tag.destroy
-    redirect_back fallback_location: message_threads_path, notice: "Tag was successfully removed"
+    redirect_back fallback_location: message_threads_path, notice: "Štítok bol úspešne odstránený"
   end
 
   private
