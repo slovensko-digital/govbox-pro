@@ -55,8 +55,7 @@ class MessageDraft < Message
       }
     )
 
-    drafts_tag = Tag.find_or_create_by!(name: "Drafts", tenant: message_draft.thread.box.tenant)
-
+    drafts_tag = message_draft.thread.box.tenant.tags.find_by(name: "Drafts")
     message_draft.thread.add_tag(drafts_tag)
 
     message_draft

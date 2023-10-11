@@ -25,7 +25,7 @@ module Govbox
         message_thread = message_draft.thread
         message_draft.destroy
 
-        drafts_tag = Tag.find_by(name: "Drafts", tenant: message_thread.box.tenant)
+        drafts_tag = message_thread.tags.find_by(name: "Drafts")
         message_thread.tags.delete(drafts_tag) unless message_thread.message_drafts.any?
       end
     end
