@@ -78,11 +78,11 @@ class Drafts::LoadContentJob < ApplicationJob
       # )
     else
       message_draft.update(
-        html_visualization: xslt_template.transform(Nokogiri::XML(message_draft.form.message_object_datum.blob)).to_s.gsub('"', '\'')
+        html_visualization: xslt_template.transform(Nokogiri::XML(message_draft.form.content)).to_s.gsub('"', '\'')
       )
 
       if message_draft.custom_visualization?
-        message_draft.metadata["message_body"] = Upvs::GeneralAgendaBuilder.parse_text(message_draft.form.message_object_datum.blob)
+        message_draft.metadata["message_body"] = Upvs::FormBuilder.parse_general_agenda_text(message_draft.form.content)
         message_draft.save!
       end
 

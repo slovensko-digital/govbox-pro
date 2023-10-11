@@ -66,7 +66,7 @@ class MessageDraft < Message
     # TODO clean the domain (no UPVS stuff)
     if form
       form.message_object_datum.update(
-        blob: Upvs::GeneralAgendaBuilder.build_xml(subject: title, body: body)
+        blob: Upvs::FormBuilder.build_general_agenda_xml(subject: title, body: body)
       )
     else
       form = MessageObject.create(
@@ -79,13 +79,11 @@ class MessageDraft < Message
 
       form.message_object_datum = MessageObjectDatum.create(
         message_object: form,
-        blob: Upvs::GeneralAgendaBuilder.build_xml(subject: title, body: body)
+        blob: Upvs::FormBuilder.build_general_agenda_xml(subject: title, body: body)
       )
     end
-  end
-  
-  def form 
-    objects.select { |o| o.form? }&.first
+
+    self.reload
   end
 
   def editable?

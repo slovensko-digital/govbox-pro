@@ -17,24 +17,28 @@ class MessageObject < ApplicationRecord
   has_one :message_object_datum, dependent: :destroy
   has_many :nested_message_objects
 
-  scope :to_be_signed, -> { where(to_be_signed: true) }
+  scope :unsigned, -> { where('is_signed = false') }
+  scope :to_be_signed, -> { where('to_be_signed = true') }
+  scope :should_be_signed, -> { where('to_be_signed = true AND is_signed = false') }
 
   validates :name, presence: true, on: :validate_data
   validate :allowed_mime_type?, on: :validate_data
 
   def self.create_message_objects(message, objects)
     objects.each do |raw_object|
+      message_object_content = raw_object.read.force_encoding("UTF-8")
+
       message_object = MessageObject.create!(
         message: message,
         name: raw_object.original_filename,
         mimetype: Utils.file_mime_type_by_name(entry_name: raw_object.original_filename),
-        is_signed: Utils.is_signed?(entry_name: raw_object.original_filename),
+        is_signed: Utils.is_signed?(entry_name: raw_object.original_filename, content: message_object_content),
         object_type: "ATTACHMENT"
       )
 
       MessageObjectDatum.create!(
         message_object: message_object,
-        blob: raw_object.read.force_encoding("UTF-8")
+        blob: message_object_content
       )
 
       NestedMessageObject.create_from_message_object(message_object)
@@ -47,6 +51,11 @@ class MessageObject < ApplicationRecord
 
   def form?
     object_type == "FORM"
+  end
+
+  def signable?
+    # TODO vymazat druhu podmienku po povoleni viacnasobneho podpisovania
+    message.is_a?(MessageDraft) && !is_signed
   end
 
   def asice?
