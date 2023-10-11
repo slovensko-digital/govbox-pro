@@ -35,9 +35,8 @@ class MessageDraft < Message
   end
 
   def self.create_message_reply(original_message: , author:)
-    message_draft = MessageDraft.create!(
+    message_draft = original_message.thread.message_drafts.create!(
       uuid: SecureRandom.uuid,
-      thread: original_message.thread,
       sender_name: original_message.recipient_name,
       recipient_name: original_message.sender_name,
       read: true,

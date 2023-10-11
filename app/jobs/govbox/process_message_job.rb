@@ -11,14 +11,11 @@ module Govbox
         Govbox::Message.create_message_with_thread!(govbox_message)
       end
 
-      # Remove message draft if exists
-      handle_message_draft_destroy(govbox_message)
-
-      # Mark message as authorized if there is a delivery notification
-      handle_delivery_notification(govbox_message)
+      destroy_associated_message_draft(govbox_message)
+      mark_associated_delivery_notification_authorized(govbox_message)
     end
 
-    def handle_message_draft_destroy(govbox_message)
+    def destroy_associated_message_draft(govbox_message)
       message_draft = MessageDraft.where(uuid: govbox_message.message_id).joins(thread: :folder).where(folders: { box_id: govbox_message.box.id }).take
 
       if message_draft
@@ -30,7 +27,7 @@ module Govbox
       end
     end
 
-    def handle_delivery_notification(govbox_message)
+    def mark_associated_delivery_notification_authorized(govbox_message)
       delivery_notification_govbox_message = Govbox::Message.where("payload -> 'delivery_notification' -> 'consignment' ->> 'message_id' = ?", govbox_message.message_id)
                                                             .joins(folder: :box).where(folders: { boxes: { id: govbox_message.box.id } }).take
 
