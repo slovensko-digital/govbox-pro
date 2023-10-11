@@ -5,11 +5,9 @@ export default class extends Controller {
 
   async sign(messageObjectPath, that, batchId = null) {
     return new Promise((resolve, reject) => {
-      fetch(`${messageObjectPath}/signing_data.json?after_login_path=${window.location.href}`)
+      fetch(`${messageObjectPath}/signing_data.json`)
         .then(function (response) {
-          if (response.redirected) {
-            window.location.href = response.url;
-          }
+          // TODO handle login if expired session
 
           return response.json();
         }).then(async function (messageObjectData) {

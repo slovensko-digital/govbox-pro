@@ -11,7 +11,7 @@ module Authentication
     if valid_session?(session)
       session[:login_expires_at] = SESSION_TIMEOUT.from_now
     else
-      session[:after_login_path] = (params[:after_login_path] || request.fullpath) unless request.path == login_path
+      session[:after_login_path] = request.fullpath unless request.path == login_path
       redirect_to login_path
     end
 
