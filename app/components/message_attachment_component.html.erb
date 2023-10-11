@@ -15,16 +15,31 @@
     <div class="flex flex-col justify-start items-start overflow-clip">
       <div class="flex justify-start items-start gap-4 w-full">
         <p class="truncate text-base font-semibold text-left text-gray-900"><%= MessageObjectHelper.displayable_name(@message_attachment) %></p>
-        <% if @message_attachment.is_signed %>
+        <% if @message_attachment.is_signed? %>
           <div class="flex justify-center items-center gap-1.5 px-2 py-1 rounded-md bg-blue-50 border border-blue-300">
             <p class="text-sm text-left text-blue-600">Podpísané</p>
           </div>
         <% end %>
       </div>
-      <p class="text-sm text-left text-gray-900"><%= "#{number_to_human_size(@message_attachment.message_object_datum.blob.size)}, #{@message_attachment.object_type}" %> </p>
+      <p class="text-sm text-left text-gray-900"><%= "#{number_to_human_size(@message_attachment.content.size)}, #{@message_attachment.object_type}" %> </p>
     </div>
   <% end %>
   <div class="flex justify-end items-center gap-4">
+    <% if @message_attachment.signable? %>
+      <%= content_tag(:div,
+        {
+          "data-controller": "autogram",
+          "data-autogram-object-id": @message_attachment.id,
+          "data-autogram-message-id": @message_attachment.message_id,
+          "data-autogram-object-path": message_message_object_path(@message_attachment.message_id, @message_attachment.id),
+          "data-autogram-authenticity-token": form_authenticity_token,
+        }
+      ) do %>
+        <button data-action="click->autogram#signSingleFile" class="flex justify-end items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300">
+          Podpísať
+        </button>
+      <% end %>
+    <% end %>
     <%= link_to download_message_message_object_path(@message_attachment.message, @message_attachment) do %>
       <div class="flex justify-end items-center gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="  w-5 h-5 " preserveAspectRatio="xMidYMid meet">
@@ -48,8 +63,8 @@
 
 <div class="flex justify-stretch items-center gap-4">
   <% unless @is_last %>
-    <svg width="100%" height="1" viewBox="0 0 1245 1" fill="none" xmlns="http://www.w3.org/2000/svg" class=" grow " preserveAspectRatio="none">
-      <line y1="0.5" x2="1245" y2="0.5" stroke="#E5E7EB"></line>
-    </svg>
+  <svg width="1245" height="1" viewBox="0 0 1245 1" fill="none" xmlns="http://www.w3.org/2000/svg" class="grow w-full" preserveAspectRatio="none">
+    <line y1="0.5" x2="1245" y2="0.5" stroke="#E5E7EB"></line>
+  </svg>
   <% end %>
 </div>

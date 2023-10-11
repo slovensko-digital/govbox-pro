@@ -1,0 +1,3 @@
+<%= turbo_stream.replace dom_id(@message, :attachments) do %>
+  <%= render MessageDraftAttachmentsListComponent.new(message: @message) %>
+<% end %>
