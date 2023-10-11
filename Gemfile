@@ -62,6 +62,9 @@ group :development do
   gem 'web-console'
   gem 'solargraph'
   gem 'htmlbeautifier'
+  gem 'erb_lint'
+  gem 'ruby-lsp-rails'
+  gem 'rdbg'
 end
 
 group :test do

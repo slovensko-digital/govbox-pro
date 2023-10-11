@@ -1,5 +1,5 @@
-<div class="flex justify-between items-center gap-4 overflow-clip">
-  <%= link_to message_message_object_path(@message_attachment.message, @message_attachment), class:"flex justify-start items-center gap-4 overflow-clip" do %>
+<div class="flex justify-between items-center p-2 overflow-clip">
+  <%= link_to message_message_object_path(@message_attachment.message, @message_attachment), data: { turbo_frame: '_top' }, class:"flex justify-start items-center gap-4 overflow-clip" do %>
     <div class="flex justify-stretch items-center gap-4">
       <% if @message_attachment.nested_message_objects.present? %>
         <!--        TODO najst inu ikonku-->
@@ -40,7 +40,7 @@
         </button>
       <% end %>
     <% end %>
-    <%= link_to download_message_message_object_path(@message_attachment.message, @message_attachment) do %>
+    <%= link_to download_message_message_object_path(@message_attachment.message, @message_attachment), data: { turbo_frame: '_top' } do %>
       <div class="flex justify-end items-center gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="  w-5 h-5 " preserveAspectRatio="xMidYMid meet">
           <path d="M6.64661 10.3535L9.6465 13.3534C9.64652 13.3534 9.64654 13.3534 9.64655 13.3534C9.74031 13.4471 9.86744 13.4998 10 13.4998C10.1326 13.4998 10.2597 13.4471 10.3534 13.3534C10.3535 13.3534 10.3535 13.3534 10.3535 13.3534L13.3534 10.3534L13.3596 10.3473L13.3596 10.3474C13.4074 10.3012 13.4455 10.2461 13.4717 10.1851C13.4979 10.1241 13.5117 10.0584 13.5123 9.99206C13.5128 9.92567 13.5002 9.85983 13.4751 9.79838C13.4499 9.73693 13.4128 9.68111 13.3658 9.63416C13.3189 9.58721 13.2631 9.55009 13.2016 9.52495C13.1402 9.4998 13.0743 9.48715 13.0079 9.48773C12.9416 9.48831 12.8759 9.5021 12.8149 9.5283C12.7539 9.55451 12.6988 9.5926 12.6526 9.64036L12.6466 9.64661L12.6466 9.64655L11.3536 10.9396L10.5 11.7931V10.586V3C10.5 2.86739 10.4473 2.74021 10.3536 2.64645C10.2598 2.55268 10.1326 2.5 10 2.5C9.86739 2.5 9.74021 2.55268 9.64645 2.64645C9.55268 2.74021 9.5 2.86739 9.5 3V10.586V11.7931L8.64645 10.9396L7.3535 9.64661C7.35348 9.64659 7.35346 9.64657 7.35345 9.64655C7.25969 9.55285 7.13256 9.50021 7 9.50021C6.86747 9.50021 6.74036 9.55283 6.64661 9.6465C6.64657 9.64654 6.64654 9.64657 6.6465 9.64661M6.64661 10.3535L6.293 10.707C6.10553 10.5195 6.00021 10.2652 6.00021 10C6.00021 9.73484 6.10553 9.48053 6.293 9.293L6.6465 9.64661M6.64661 10.3535C6.64659 10.3535 6.64657 10.3535 6.64655 10.3534M6.64661 10.3535L6.64655 10.3534M6.6465 9.64661C6.55283 9.74036 6.50021 9.86747 6.50021 10C6.50021 10.1326 6.55285 10.2597 6.64655 10.3534M6.6465 9.64661L6.64655 10.3534M3.5 17C3.5 16.8674 3.55268 16.7402 3.64645 16.6464C3.74021 16.5527 3.86739 16.5 4 16.5H16C16.1326 16.5 16.2598 16.5527 16.3536 16.6464C16.4473 16.7402 16.5 16.8674 16.5 17C16.5 17.1326 16.4473 17.2598 16.3536 17.3536C16.2598 17.4473 16.1326 17.5 16 17.5H4C3.86739 17.5 3.74021 17.4473 3.64645 17.3536C3.55268 17.2598 3.5 17.1326 3.5 17Z" fill="#111827" stroke="#111827"></path>
@@ -58,13 +58,6 @@
     <% end %>
   </div>
 </div>
-
-<%= render NestedMessageAttachmentComponent.with_collection(@message_attachment.nested_message_objects) %>
-
-<div class="flex justify-stretch items-center gap-4">
-  <% unless @is_last %>
-  <svg width="1245" height="1" viewBox="0 0 1245 1" fill="none" xmlns="http://www.w3.org/2000/svg" class="grow w-full" preserveAspectRatio="none">
-    <line y1="0.5" x2="1245" y2="0.5" stroke="#E5E7EB"></line>
-  </svg>
-  <% end %>
+<div class="flex-col pl-12 p-2 divide_y">
+  <%= render NestedMessageAttachmentComponent.with_collection(@message_attachment.nested_message_objects) %>
 </div>
