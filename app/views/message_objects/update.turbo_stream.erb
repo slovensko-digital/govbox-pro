@@ -1,7 +1,7 @@
-<%= turbo_stream.replace MessageDraftHelper.attachments_tag_id(@message) do %>
+<%= turbo_stream.replace dom_id(@message, :attachments) do %>
   <%= render MessageDraftAttachmentsListComponent.new(message: @message) %>
 <% end %>
 
-<%= turbo_stream.replace MessageDraftHelper.body_tag_id(@message) do %>
+<%= turbo_stream.replace dom_id(@message, :body) do %>
   <%= render MessageDraftBodyComponent.new(message: @message) %>
 <% end %>
