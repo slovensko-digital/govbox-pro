@@ -40,8 +40,6 @@ class MessageObject < ApplicationRecord
         message_object: message_object,
         blob: message_object_content
       )
-
-      NestedMessageObject.create_from_message_object(message_object)
     end
   end
 
