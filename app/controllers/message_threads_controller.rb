@@ -81,8 +81,8 @@ class MessageThreadsController < ApplicationController
   end
 
   def search_permissions
-    result = { tenant_id: Current.tenant }
-    result[:box_id] = Current.box if Current.box
+    result = { tenant: Current.tenant }
+    result[:box] = Current.box if Current.box
     result[:tag_ids] = policy_scope(Tag).pluck(:id) unless Current.user.admin?
     result
   end
