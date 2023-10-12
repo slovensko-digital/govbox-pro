@@ -74,7 +74,7 @@ export default class extends Controller {
           }).then(function () {
             resolve();
           }).catch(function (err) {
-            if (err.message === "Failed to fetch") {
+            if (["Failed to fetch", "NetworkError when attempting to fetch resource.", "Load failed"].includes(err.message)) {
               alert("Spustite aplikáciu autogram.")
             }
             else {
