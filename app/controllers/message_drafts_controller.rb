@@ -14,14 +14,18 @@ class MessageDraftsController < ApplicationController
 
     @message = MessageDraft.create_message_reply(original_message: @original_message, author: Current.user)
 
+    @flash = flash
     redirect_to message_draft_path(@message)
   end
 
   def show
     authorize @message
+
     @message_thread = @message.thread
     set_thread_tags_with_deletable_flag
     @thread_messages = @message_thread.messages_visible_to_user(Current.user).order(delivered_at: :asc)
+
+    @flash = flash
   end
 
   def update
@@ -43,7 +47,7 @@ class MessageDraftsController < ApplicationController
       redirect_to redirect_path, notice: "Správa bola zaradená na odoslanie."
     else
       # TODO: prisposobit chybovu hlasku aj importovanym draftom
-      redirect_to message_draft_path(@message), notice: "Vyplňte predmet a text odpovede."
+      redirect_to message_draft_path(@message), alert: "Vyplňte predmet a text odpovede."
     end
   end
 
@@ -86,7 +90,7 @@ class MessageDraftsController < ApplicationController
 
   def load_message_draft
     @message = policy_scope(MessageDraft).find(params[:id])
-    @notice = flash
+    @flash = flash
   end
 
   def message_params
