@@ -9,7 +9,7 @@
           data-transition-leave-from="opacity-100"
           data-transition-leave-to="opacity-0">
   </div>
-    <div data-slideover-target="menu" class="fixed inset-0 flex">
+  <div data-slideover-target="menu" class="fixed inset-0 flex">
     <div data-slideover-target="menu"
             class="relative mr-16 flex w-full max-w-xs flex-1"
             data-transition-enter="transition ease-out duration-300"
@@ -26,7 +26,7 @@
           </svg>
         </button>
       </div>
-      <%= render TW::StaticSidebarComponent.new %>
+      <%= render TW::StaticSidebarComponent.new(menu: @menu) %>
     </div>
   </div>
 </div>
