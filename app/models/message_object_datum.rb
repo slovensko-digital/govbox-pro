@@ -10,4 +10,6 @@
 
 class MessageObjectDatum < ApplicationRecord
   belongs_to :message_object
+
+  after_save_commit { NestedMessageObject.create_from_message_object(message_object) }
 end
