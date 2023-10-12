@@ -37,7 +37,6 @@ class MessageThreadsController < ApplicationController
         scope: message_thread_policy_scope.includes(:tags, :box),
         search_permissions: search_permissions,
         query: search_params[:q],
-        no_visible_tags: search_params[:no_visible_tags] == "1" && Current.user.admin?,
         cursor: cursor
       )
 
@@ -82,9 +81,9 @@ class MessageThreadsController < ApplicationController
   end
 
   def search_permissions
-    result = { tenant_id: Current.tenant }
-    result[:box_id] = Current.box if Current.box
-    result[:tag_ids] = policy_scope(Tag).pluck(:id) unless Current.user.admin?
+    result = { tenant: Current.tenant }
+    result[:box] = Current.box if Current.box
+    result[:tag_ids] = policy_scope(Tag).pluck(:id)
     result
   end
 
@@ -93,6 +92,6 @@ class MessageThreadsController < ApplicationController
   end
 
   def search_params
-    params.permit(:q, :no_visible_tags, :format, cursor: MessageThreadCollection::CURSOR_PARAMS)
+    params.permit(:q, :format, cursor: MessageThreadCollection::CURSOR_PARAMS)
   end
 end

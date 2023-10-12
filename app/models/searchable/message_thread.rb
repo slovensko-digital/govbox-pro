@@ -29,8 +29,8 @@ class Searchable::MessageThread < ApplicationRecord
   def self.search_ids(query_filter, search_permissions:, cursor:, per_page:, direction: )
     scope = self
 
-    scope = scope.where(tenant_id: search_permissions.fetch(:tenant_id))
-    scope = scope.where(box_id: search_permissions.fetch(:box_id)) if search_permissions[:box_id]
+    scope = scope.where(tenant_id: search_permissions.fetch(:tenant))
+    scope = scope.where(box_id: search_permissions.fetch(:box)) if search_permissions[:box]
 
     if search_permissions.key?(:tag_ids)
       if search_permissions[:tag_ids].any?
