@@ -47,8 +47,6 @@ class Drafts::LoadContentJob < ApplicationJob
         message_object: message_draft_object,
         blob: File.read(File.join(objects_path, file_name))
       )
-
-      NestedMessageObject.create_from_message_object(message_draft_object)
     end
   end
 
