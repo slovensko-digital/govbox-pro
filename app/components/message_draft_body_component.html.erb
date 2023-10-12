@@ -39,7 +39,7 @@
         </div>
       <% end %>
 
-      <% if @message.form&.signable? %>
+      <% if @message.not_yet_submitted? && @message.form&.signable? %>
         <%= content_tag(:div,
          {
            "data-controller": "autogram",
