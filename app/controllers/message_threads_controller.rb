@@ -83,7 +83,7 @@ class MessageThreadsController < ApplicationController
   def search_permissions
     result = { tenant: Current.tenant }
     result[:box] = Current.box if Current.box
-    result[:tag_ids] = policy_scope(Tag).pluck(:id) unless Current.user.admin?
+    result[:tag_ids] = policy_scope(Tag).pluck(:id)
     result
   end
 

@@ -32,6 +32,7 @@ class Searchable::MessageThreadQuery
     fulltext, filter_labels, filter_out_labels =
       parsed_query.fetch_values(:fulltext, :filter_labels, :filter_out_labels)
 
+    # TODO maybe with one query
     found_all, filter_tag_ids = label_names_to_tag_ids(tenant, filter_labels)
     _, filter_out_tag_ids = label_names_to_tag_ids(tenant, filter_out_labels)
 
