@@ -78,9 +78,10 @@ class Govbox::Message < ApplicationRecord
       delivered_at: Time.parse(raw_message["delivered_at"]),
       html_visualization: raw_message["original_html"],
       replyable: govbox_message.replyable?,
-      expandable: govbox_message.expandable?,
+      collapsed: govbox_message.collapsed?,
       metadata: {
         "correlation_id": govbox_message.payload["correlation_id"],
+        "reference_id": govbox_message.payload["reference_id"],
         "sender_uri": govbox_message.payload["sender_uri"],
         "edesk_class": govbox_message.payload["class"],
         "delivery_notification": govbox_message.payload["delivery_notification"]
