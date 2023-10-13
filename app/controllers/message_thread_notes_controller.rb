@@ -4,7 +4,6 @@ class MessageThreadNotesController < ApplicationController
 
   def update
     authorize @message_thread_note
-    @message_thread_note.last_updated_at = Time.current
     if @message_thread_note.update(message_thread_note_params)
       redirect_back_or_to message_threads_path(@message_thread), notice: 'Note was successfully updated'
     else
@@ -14,7 +13,6 @@ class MessageThreadNotesController < ApplicationController
 
   def create
     @message_thread_note = @message_thread.build_message_thread_note(message_thread_note_params)
-    @message_thread_note.last_updated_at = Time.current
     authorize @message_thread_note
 
     if @message_thread_note.save

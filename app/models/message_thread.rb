@@ -51,20 +51,20 @@ class MessageThread < ApplicationRecord
       target_thread = self.first
       self.all.each do |thread|
         if thread != target_thread
-        thread.merge_identifiers.update_all(message_thread_id: target_thread.id)
-        target_thread.last_message_delivered_at = [target_thread.last_message_delivered_at, thread.last_message_delivered_at].max
-        target_thread.delivered_at = [target_thread.delivered_at, thread.delivered_at].min
-        thread.messages.each do |message|
-          message.thread = target_thread
-          message.save!
-        end
-        thread.tags.each do |tag|
-          target_thread.tags.push(tag) unless target_thread.tags.include?(tag)
-        end
+          thread.merge_identifiers.update_all(message_thread_id: target_thread.id)
+          target_thread.last_message_delivered_at = [target_thread.last_message_delivered_at, thread.last_message_delivered_at].max
+          target_thread.delivered_at = [target_thread.delivered_at, thread.delivered_at].min
+          thread.messages.each do |message|
+            message.thread = target_thread
+            message.save!
+          end
+          thread.tags.each do |tag|
+            target_thread.tags.push(tag) unless target_thread.tags.include?(tag)
+          end
 
-        thread.reload
-        thread.destroy!
-end
+          thread.reload
+          thread.destroy!
+        end
       end
       target_thread.save!
     end

@@ -5,8 +5,8 @@ class MessageThreadNoteComponent < ViewComponent::Base
   end
 
   def before_render
-    return unless @message_thread_note.last_updated_at
+    return unless @message_thread_note.updated_at
 
-    @formatted_last_updated_at = l @message_thread_note.last_updated_at, format: :long
+    @formatted_updated_at = l @message_thread_note.updated_at, format: :long
   end
 end

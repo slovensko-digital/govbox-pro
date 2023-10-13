@@ -65,8 +65,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_12_094539) do
     t.bigint "automation_rule_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-        t.index ["automation_rule_id"], name: "index_automation_conditions_on_automation_rule_id"
-      end
+    t.string "condition_object_type"
+    t.bigint "condition_object_id"
+    t.index ["automation_rule_id"], name: "index_automation_conditions_on_automation_rule_id"
+    t.index ["condition_object_type", "condition_object_id"], name: "index_automation_conditions_on_condition_object"
+  end
 
   create_table "automation_rules", force: :cascade do |t|
     t.bigint "tenant_id", null: false
@@ -75,7 +78,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_12_094539) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
-        t.index ["tenant_id"], name: "index_automation_rules_on_tenant_id"
+    t.string "rule_object_type"
+    t.bigint "rule_object_id"
+    t.index ["rule_object_type", "rule_object_id"], name: "index_automation_rules_on_rule_object"
+    t.index ["tenant_id"], name: "index_automation_rules_on_tenant_id"
     t.index ["user_id"], name: "index_automation_rules_on_user_id"
   end
 
@@ -288,7 +294,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_12_094539) do
   create_table "message_thread_notes", force: :cascade do |t|
     t.bigint "message_thread_id", null: false
     t.text "note"
-    t.datetime "last_updated_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["message_thread_id"], name: "index_message_thread_notes_on_message_thread_id"
