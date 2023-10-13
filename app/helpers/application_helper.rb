@@ -13,9 +13,9 @@ module ApplicationHelper
     if datetime.today?
       l(datetime, format: '%H:%M')
     elsif datetime.year == Date.current.year
-      l(datetime, format: '%e. %b %H:%M')
+      l(datetime, format: '%H:%M %e. %b')
     else
-      l(datetime, format: '%e. %b %Y %H:%M')
+      l(datetime, format: '%H:%M %e. %b %Y')
     end
   end
 end
