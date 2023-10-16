@@ -59,7 +59,7 @@
   </div>
 </div>
 <% if @message_attachment.nested_message_objects.any? %>
-  <div class="flex-col pl-12 p-2 divide_y">
+  <div class="flex-col pl-12 divide-y">
     <%= render NestedMessageAttachmentComponent.with_collection(@message_attachment.nested_message_objects) %>
   </div>
 <% end %>
