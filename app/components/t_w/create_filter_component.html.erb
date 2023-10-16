@@ -1,32 +1,28 @@
-<div class="relative" data-modal-disable-backdrop="true" data-controller="modal" data-action="keydown@window->modal#closeWithKeyboard">
-  <button type="button" data-action="click->modal#open" class="flex items-center gap-2">
-    <%= render Icons::AddFilterComponent.new(query: params[:q]) %>
-  </button>
-  <div role="dialog" aria-modal="true" aria-labelledby="modal-title" data-target="modal.container" data-action="click->modal#closeBackground keyup@window->modal#closeWithKeyboard" class="hidden animated fadeIn fixed inset-0 overflow-y-auto flex items-center justify-center" style="z-index: 10000;">
-    <div class="max-w-lg max-h-screen w-full relative" style="z-index: 1000">
-      <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-        <div class="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 w-full sm:max-w-lg sm:p-6 flex flex-col">
-          <h3 class="text-base font-semibold leading-6 text-gray-900" id="modal-title">Pridať filter</h3>
-          <%= form_with model: Filter.new(query: params[:q]), url: filters_path(to: 'search'), class: "flex flex-col self-stretch flex-grow-0 flex-shrink-0 gap-2 border-t-[1px] border-gray-200 mt-2 pt-2" do |f| %>
-            <div>
-              <%= f.label :name, "Názov", class: "block text-sm font-medium leading-6 text-gray-900" %>
-              <div class="mt-2">
-                <%= f.text_field :name, class: "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" %>
-              </div>
-            </div>
-
-            <%= f.hidden_field :query %>
-
-            <div class="mt-5 sm:mt-4 sm:flex justify-end gap-4">
-              <%= f.submit 'Vytvoriť', class: "inline-flex w-full justify-center items-center mt-3 px-3 py-2 rounded-md bg-blue-600 font-medium text-left text-sm text-white hover:cursor-pointer sm:mt-0 sm:w-auto" %>
-              <button data-action="click->modal#close" type="button" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">
-                Zavrieť
-              </button>
-            </div>
-          <% end %>
+<%= render Common::ModalComponent.new do |component| %>
+  <% component.with_button do %>
+    <button type="button" data-action="click->modal#open" class="flex items-center gap-2">
+      <%= render Icons::AddFilterComponent.new(query: params[:q]) %>
+    </button>
+  <% end %>
+  <% component.with_header do %>
+    Pridať filter
+  <% end %>
+  <% component.with_modal_content do %>
+    <%= form_with model: Filter.new(query: params[:q]), url: filters_path(to: 'search'), class: "flex flex-col self-stretch flex-grow-0 flex-shrink-0 gap-2 border-t-[1px] border-gray-200 mt-2 pt-2" do |f| %>
+      <div>
+        <%= f.label :name, "Názov", class: "block text-sm font-medium leading-6 text-gray-900" %>
+        <div class="mt-2">
+          <%= f.text_field :name, class: "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" %>
         </div>
       </div>
-    </div>
-    <div data-action="click->modal#close" class="animated fadeIn fixed inset-0 overflow-y-auto flex items-center justify-center bg-black opacity-80"></div>
-  </div>
-</div>
+
+      <%= f.hidden_field :query %>
+
+      <%= render Common::ModalActionsComponent.new do |actions| %>
+        <% actions.with_submit_button do %>
+          <%= f.submit 'Vytvoriť', class: "inline-flex w-full justify-center items-center mt-3 px-3 py-2 rounded-md bg-blue-600 font-medium text-left text-sm text-white hover:cursor-pointer sm:mt-0 sm:w-auto" %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>
