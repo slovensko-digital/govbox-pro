@@ -43,7 +43,10 @@ EventBus.subscribe :message_thread_changed, ->(message_thread) {
   Searchable::ReindexMessageThreadJob.perform_later(message_thread.id)
 }
 
-EventBus.subscribe :message_thread_note_committed, ->(note) {
+EventBus.subscribe :message_thread_note_created, ->(note) {
+  Searchable::ReindexMessageThreadJob.perform_later(note.message_thread_id)
+}
+EventBus.subscribe :message_thread_note_changed, ->(note) {
   Searchable::ReindexMessageThreadJob.perform_later(note.message_thread_id)
 }
 
