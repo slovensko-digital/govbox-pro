@@ -60,7 +60,7 @@
     </div>
 
     <% if @message.attachments.any? %>
-      <div class="flex flex-col justify-stretch items-stretch divide-y relative px-6 py-4 bg-white border-t-0 border-r-0 border-b border-l-0 border-gray-200">
+      <div class="flex flex-col justify-stretch items-stretch divide-y relative px-4 bg-white border-t-0 border-r-0 border-b border-l-0 border-gray-200">
         <%= render MessageAttachmentComponent.with_collection(@message.attachments.order(updated_at: :desc)) %>
       </div>
     <% end %>
