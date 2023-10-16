@@ -52,6 +52,7 @@ Rails.application.routes.draw do
     end
     get :search_available_tags, on: :member
     resources :messages
+    resources :message_thread_notes
   end
   resources :message_threads_tags
 
