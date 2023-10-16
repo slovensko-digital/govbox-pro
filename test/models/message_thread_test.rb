@@ -119,4 +119,13 @@ class MessageThreadTest < ActiveSupport::TestCase
 
     assert_raises(ActiveRecord::RecordInvalid) { thread.save! }
   end
+
+  test 'should contain notes from both merged threads after merge' do
+    threads = MessageThread.where(id: [message_threads(:two).id, message_threads(:one).id])
+
+    threads.merge_threads
+
+    assert_match 'Note1', message_threads(:two).message_thread_note.note
+    assert_match 'Note2', message_threads(:two).message_thread_note.note
+  end
 end

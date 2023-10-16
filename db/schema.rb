@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_06_114400) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_12_094539) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -65,7 +65,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_06_114400) do
     t.bigint "automation_rule_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "condition_object_type"
+    t.bigint "condition_object_id"
     t.index ["automation_rule_id"], name: "index_automation_conditions_on_automation_rule_id"
+    t.index ["condition_object_type", "condition_object_id"], name: "index_automation_conditions_on_condition_object"
   end
 
   create_table "automation_rules", force: :cascade do |t|
@@ -75,6 +78,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_06_114400) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.string "rule_object_type"
+    t.bigint "rule_object_id"
+    t.index ["rule_object_type", "rule_object_id"], name: "index_automation_rules_on_rule_object"
     t.index ["tenant_id"], name: "index_automation_rules_on_tenant_id"
     t.index ["user_id"], name: "index_automation_rules_on_user_id"
   end
@@ -285,6 +291,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_06_114400) do
     t.index ["uuid", "tenant_id"], name: "index_message_thread_merge_identifiers_on_uuid_and_tenant_id", unique: true
   end
 
+  create_table "message_thread_notes", force: :cascade do |t|
+    t.bigint "message_thread_id", null: false
+    t.text "note"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["message_thread_id"], name: "index_message_thread_notes_on_message_thread_id"
+  end
+
   create_table "message_threads", force: :cascade do |t|
     t.bigint "folder_id", null: false
     t.string "title", null: false
@@ -446,6 +460,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_06_114400) do
   add_foreign_key "message_objects", "messages"
   add_foreign_key "message_thread_merge_identifiers", "message_threads"
   add_foreign_key "message_thread_merge_identifiers", "tenants"
+  add_foreign_key "message_thread_notes", "message_threads"
   add_foreign_key "message_threads", "folders"
   add_foreign_key "message_threads_tags", "message_threads"
   add_foreign_key "message_threads_tags", "tags"
