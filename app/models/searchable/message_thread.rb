@@ -4,7 +4,7 @@ class Searchable::MessageThread < ApplicationRecord
 
   include PgSearch::Model
   pg_search_scope :pg_search_all,
-                  against: [:title, :content, :tag_names],
+                  against: [:title, :content, :note, :tag_names],
                   using: {
                     tsearch: {
                       highlight: {
