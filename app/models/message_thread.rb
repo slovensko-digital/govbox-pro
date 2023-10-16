@@ -76,8 +76,7 @@ class MessageThread < ApplicationRecord
     return unless message_thread_note&.note
 
     if target_thread.message_thread_note
-      join_string = "\nPripojené z vlákna #{title} #{I18n.l DateTime.now, format: :long}:\n"
-      target_thread.message_thread_note.note << join_string << message_thread_note.note
+      target_thread.message_thread_note.note = "#{target_thread.message_thread_note.note.rstrip}\n-----\n#{message_thread_note.note}"
     else
       target_thread.build_message_thread_note(note: message_thread_note.note)
     end
