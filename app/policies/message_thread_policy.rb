@@ -43,6 +43,10 @@ class MessageThreadPolicy < ApplicationPolicy
     true
   end
 
+  def bulk?
+    true
+  end
+
   def search_available_tags?
     true
   end
