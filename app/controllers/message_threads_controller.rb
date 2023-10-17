@@ -42,7 +42,7 @@ class MessageThreadsController < ApplicationController
 
     message_thread = merge_threads(@ids)
     if message_thread
-      redirect_to message_thread, notice: 'Vlákna boli úspešne spojené'
+      redirect_to message_thread_path(message_thread), notice: 'Vlákna boli úspešne spojené'
     else
       flash[:alert] = "Označte zaškrtávacími políčkami minimálne 2 vlákna, ktoré chcete spojiť"
       redirect_back fallback_location: message_threads_path
