@@ -112,8 +112,8 @@ class MessageThreadTest < ActiveSupport::TestCase
   end
 
   test "should not create tag thread relation across tenants" do
-    tag = tags(:two)
-    thread = message_threads(:three)
+    tag = tags(:one)
+    thread = message_threads(:four)
 
     thread.message_threads_tags.new(tag_id: tag.id)
 
