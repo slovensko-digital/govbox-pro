@@ -7,7 +7,12 @@
     </div>
     <p class="grow text-xl font-semibold text-left text-gray-900">Správy v schránke</p>
     <% if @ids.present? %>
-      <%= submit_tag 'Spojiť vlákna', name: 'merge', title: (@ids.length < 2 ? "Označte aspoň dve vlákna" : "Spojiť označené vlákna do jedného"), disabled: @ids.length < 2, data: { turbo_confirm: 'Naozaj chcete spojiť označené vlákna do jedného?' }, class: "flex justify-center items-center gap-2.5 px-3.5 py-2.5 rounded-md #{@ids.length < 2 ? "bg-gray-300" : "bg-blue-600"} text-base font-medium text-left text-white hover:cursor-pointer" %>
+      <%= form_with url: bulk_merge_message_threads_path, data: { turbo_frame: '_top' } do %>
+        <% @ids.each do |id| %>
+         <%= hidden_field_tag('message_thread_ids[]', id) %>
+        <% end %>
+        <%= submit_tag 'Spojiť vlákna', name: 'merge', title: (@ids.length < 2 ? "Označte aspoň dve vlákna" : "Spojiť označené vlákna do jedného"), disabled: @ids.length < 2, data: { turbo_confirm: 'Naozaj chcete spojiť označené vlákna do jedného?' }, class: "flex justify-center items-center gap-2.5 px-3.5 py-2.5 rounded-md #{@ids.length < 2 ? "bg-gray-300" : "bg-blue-600"} text-base font-medium text-left text-white hover:cursor-pointer" %>
+      <% end %>
     <% end %>
   </div>
 <% end %>

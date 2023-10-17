@@ -48,7 +48,8 @@ Rails.application.routes.draw do
   resources :message_threads do
     collection do
       get :scroll
-      post :bulk
+      post :bulk_actions
+      post :bulk_merge
     end
     get :search_available_tags, on: :member
     resources :messages

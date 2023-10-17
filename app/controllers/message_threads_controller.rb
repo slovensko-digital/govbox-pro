@@ -30,41 +30,32 @@ class MessageThreadsController < ApplicationController
     authorize MessageThread
   end
 
-  def bulk
+  def bulk_actions
     authorize MessageThread
 
     @ids = params[:message_thread_ids] || []
+  end
 
-    if params[:merge].present?
-      result, message_thread = bulk_merge(@ids)
-      if result == :ok
-        respond_to do |format|
-          format.html { redirect_to message_thread, notice: 'Vlákna boli úspešne spojené' }
-        end
-      else
-        respond_to do |format|
-          format.html do
-            flash[:alert] = "Označte zaškrtávacími políčkami minimálne 2 vlákna, ktoré chcete spojiť"
-            redirect_back fallback_location: message_threads_path
-          end
-        end
-      end
+  def bulk_merge
+    authorize MessageThread
+    @ids = params[:message_thread_ids] || []
+
+    message_thread = merge_threads(@ids)
+    if message_thread
+      redirect_to message_thread, notice: 'Vlákna boli úspešne spojené'
     else
-      respond_to do |format|
-        format.turbo_stream
-      end
+      flash[:alert] = "Označte zaškrtávacími políčkami minimálne 2 vlákna, ktoré chcete spojiť"
+      redirect_back fallback_location: message_threads_path
     end
   end
 
-  def bulk_merge(message_thread_ids)
-    authorize MessageThread, "merge?"
-
+  def merge_threads(message_thread_ids)
     selected_message_threads = message_thread_policy_scope.where(id: message_thread_ids).order(:last_message_delivered_at)
-    return :error if !selected_message_threads || selected_message_threads.size < 2
+    return nil if !selected_message_threads || selected_message_threads.size < 2
 
     selected_message_threads.merge_threads
 
-    [:ok, selected_message_threads.first]
+    selected_message_threads.first
   end
 
   def load_threads
