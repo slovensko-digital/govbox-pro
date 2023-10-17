@@ -8,7 +8,8 @@
     Pridať filter
   <% end %>
   <% component.with_modal_content do %>
-    <%= form_with model: Filter.new(query: params[:q]), url: filters_path(to: 'search'), class: "flex flex-col self-stretch flex-grow-0 flex-shrink-0 gap-2 border-t-[1px] border-gray-200 mt-2 pt-2" do |f| %>
+    <hr class="mt-2">
+    <%= form_with model: Filter.new(query: params[:q]), url: filters_path(to: 'search'), class: "flex flex-col self-stretch flex-grow-0 flex-shrink-0 gap-2 mt-4" do |f| %>
       <div>
         <%= f.label :name, "Názov", class: "block text-sm font-medium leading-6 text-gray-900" %>
         <div class="mt-2">

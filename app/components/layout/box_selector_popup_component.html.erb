@@ -1,5 +1,5 @@
 <%= tag.turbo_frame id:'box-selector-popup' do %>
-  <%= link_to select_all_boxes_path, class: "flex justify-between items-center self-stretch flex-grow-0 flex-shrink-0 py-2 border-b-[1px] border-gray-200", data: { turbo_frame: '_top' } do %>
+  <%= link_to select_all_boxes_path, class: "flex justify-between items-center self-stretch flex-grow-0 flex-shrink-0 py-2", data: { turbo_frame: '_top' } do %>
     <span class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-gray-900">
       Všetky schránky
     </span>
@@ -7,6 +7,7 @@
       <%= @all_unread_messages_count %>
     </span>
   <% end %>
+  <hr>
   <div class="flex flex-col gap-2">
     <%= form_with url: search_boxes_path, class: "flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 mt-4" do |form| %>
       <div class="flex w-full items-center rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600">
