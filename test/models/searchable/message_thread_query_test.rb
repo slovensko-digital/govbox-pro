@@ -39,4 +39,22 @@ class Searchable::MessageThreadQueryTest < ActiveSupport::TestCase
       filter_out_labels: ['without this tag']
     }
   end
+
+  test "parser no visible tags" do
+    query = 'something -label:* else'
+    assert_equal Searchable::MessageThreadQuery.parse(query), {
+      fulltext: 'something else',
+      filter_labels: [],
+      filter_out_labels: ["*"]
+    }
+  end
+
+  test "parser no visible tags with other labels to filter out" do
+    query = 'something -label:* else -label:two'
+    assert_equal Searchable::MessageThreadQuery.parse(query), {
+      fulltext: 'something else',
+      filter_labels: [],
+      filter_out_labels: ["*", "two"]
+    }
+  end
 end

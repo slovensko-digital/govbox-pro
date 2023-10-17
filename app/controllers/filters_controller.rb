@@ -25,7 +25,11 @@ class FiltersController < ApplicationController
         redirect_to filters_path
       end
     else
-      render :new
+      if params[:to] == 'search'
+        redirect_to message_threads_path(q: @filter.query), alert: 'Filter sa nepodarilo vytvoriť :('
+      else
+        render :new
+      end
     end
   end
 

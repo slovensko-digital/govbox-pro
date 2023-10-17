@@ -1,6 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    Ascii85 (1.1.0)
     actioncable (7.0.4.3)
       actionpack (= 7.0.4.3)
       activesupport (= 7.0.4.3)
@@ -68,12 +69,20 @@ GEM
       tzinfo (~> 2.0)
     addressable (2.8.4)
       public_suffix (>= 2.0.2, < 6.0)
+    afm (0.2.2)
     annotate (3.2.0)
       activerecord (>= 3.2, < 8.0)
       rake (>= 10.4, < 14.0)
     ast (2.4.2)
     backport (1.2.0)
     benchmark (0.2.1)
+    better_html (2.0.2)
+      actionview (>= 6.0)
+      activesupport (>= 6.0)
+      ast (~> 2.0)
+      erubi (~> 1.4)
+      parser (>= 2.4)
+      smart_properties
     bindex (0.8.1)
     bootsnap (1.16.0)
       msgpack (~> 1.2)
@@ -101,6 +110,9 @@ GEM
       rexml
     crass (1.0.6)
     date (3.3.3)
+    debug (1.8.0)
+      irb (>= 1.5.0)
+      reline (>= 0.3.1)
     diff-lcs (1.5.0)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
@@ -109,6 +121,13 @@ GEM
       dotenv (= 2.8.1)
       railties (>= 3.2)
     e2mmap (0.1.0)
+    erb_lint (0.5.0)
+      activesupport
+      better_html (>= 2.0.1)
+      parser (>= 2.7.1.4)
+      rainbow
+      rubocop
+      smart_properties
     erubi (1.12.0)
     et-orbi (1.2.7)
       tzinfo
@@ -132,6 +151,7 @@ GEM
       thor (>= 0.14.1)
       webrick (>= 1.3)
     hashdiff (1.0.1)
+    hashery (2.1.2)
     hashie (5.0.0)
     htmlbeautifier (1.4.2)
     http-accept (1.7.0)
@@ -142,7 +162,14 @@ GEM
     importmap-rails (1.1.6)
       actionpack (>= 6.0.0)
       railties (>= 6.0.0)
+    io-console (0.6.0)
+    irb (1.8.1)
+      rdoc
+      reline (>= 0.3.8)
     jaro_winkler (1.5.4)
+    jbuilder (2.11.5)
+      actionview (>= 5.0.0)
+      activesupport (>= 5.0.0)
     jsbundling-rails (1.1.1)
       railties (>= 6.0.0)
     json (2.6.3)
@@ -151,6 +178,7 @@ GEM
       rexml
     kramdown-parser-gfm (1.1.0)
       kramdown (~> 2.0)
+    language_server-protocol (3.17.0.3)
     launchy (2.5.2)
       addressable (~> 2.8)
     listen (3.8.0)
@@ -214,6 +242,12 @@ GEM
     parallel (1.23.0)
     parser (3.2.2.1)
       ast (~> 2.4.1)
+    pdf-reader (2.11.0)
+      Ascii85 (~> 1.0)
+      afm (~> 0.2.1)
+      hashery (~> 2.0)
+      ruby-rc4
+      ttfunk
     pg (1.5.3)
     pg_search (2.3.6)
       activerecord (>= 5.2)
@@ -226,6 +260,8 @@ GEM
       pry (>= 0.13, < 0.15)
     pry-rails (0.3.9)
       pry (>= 0.10.4)
+    psych (5.1.1)
+      stringio
     public_suffix (5.0.1)
     puma (5.6.5)
       nio4r (~> 2.0)
@@ -275,7 +311,13 @@ GEM
     rb-inotify (0.10.1)
       ffi (~> 1.0)
     rbs (2.8.4)
+    rdbg (0.1.0)
+      debug (>= 1.2.2)
+    rdoc (6.5.0)
+      psych (>= 4.0.0)
     regexp_parser (2.8.0)
+    reline (0.3.9)
+      io-console (~> 0.5)
     rest-client (2.1.0)
       http-accept (>= 1.7.0, < 2.0)
       http-cookie (>= 1.0.2, < 2.0)
@@ -297,13 +339,23 @@ GEM
       unicode-display_width (>= 2.4.0, < 3.0)
     rubocop-ast (1.28.1)
       parser (>= 3.2.1.0)
+    ruby-lsp (0.11.1)
+      language_server-protocol (~> 3.17.0)
+      sorbet-runtime (>= 0.5.5685)
+      yarp (>= 0.12, < 0.13)
+    ruby-lsp-rails (0.2.6)
+      rails (>= 6.0)
+      ruby-lsp (>= 0.11.0, < 0.12.0)
+      sorbet-runtime (>= 0.5.9897)
     ruby-progressbar (1.13.0)
+    ruby-rc4 (0.1.5)
     ruby2_keywords (0.0.5)
     rubyzip (2.3.2)
     selenium-webdriver (4.9.1)
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
+    smart_properties (1.17.0)
     snaky_hash (2.0.1)
       hashie
       version_gem (~> 1.1, >= 1.1.1)
@@ -323,6 +375,7 @@ GEM
       thor (~> 1.0)
       tilt (~> 2.0)
       yard (~> 0.9, >= 0.9.24)
+    sorbet-runtime (0.5.11068)
     sprockets (4.2.0)
       concurrent-ruby (~> 1.0)
       rack (>= 2.2.4, < 4)
@@ -332,6 +385,7 @@ GEM
       sprockets (>= 3.0.0)
     stimulus-rails (1.2.1)
       railties (>= 6.0.0)
+    stringio (3.0.8)
     tailwindcss-rails (2.0.29-x86_64-darwin)
       railties (>= 6.0.0)
     tailwindcss-rails (2.0.29-x86_64-linux)
@@ -339,6 +393,7 @@ GEM
     thor (1.2.2)
     tilt (2.1.0)
     timeout (0.3.2)
+    ttfunk (1.7.0)
     turbo-rails (1.4.0)
       actionpack (>= 6.0.0)
       activejob (>= 6.0.0)
@@ -377,6 +432,7 @@ GEM
     xpath (3.2.0)
       nokogiri (~> 1.8)
     yard (0.9.34)
+    yarp (0.12.0)
     zeitwerk (2.6.8)
 
 PLATFORMS
@@ -392,15 +448,18 @@ DEPENDENCIES
   capybara-screenshot
   clockwork
   dotenv-rails
+  erb_lint
   foreman
   good_job
   htmlbeautifier
   importmap-rails
+  jbuilder
   jsbundling-rails
   jwt
   listen
   omniauth-google-oauth2
   omniauth-rails_csrf_protection
+  pdf-reader
   pg (~> 1.0)
   pg_search
   pry-byebug
@@ -410,8 +469,10 @@ DEPENDENCIES
   rack-attack
   rails (~> 7.0)
   rails-i18n
+  rdbg
   rest-client
   rollbar
+  ruby-lsp-rails
   rubyzip
   selenium-webdriver
   solargraph
