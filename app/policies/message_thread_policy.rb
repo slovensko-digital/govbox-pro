@@ -39,7 +39,11 @@ class MessageThreadPolicy < ApplicationPolicy
     true
   end
 
-  def merge?
+  def bulk_merge?
+    true
+  end
+
+  def bulk_actions?
     true
   end
 

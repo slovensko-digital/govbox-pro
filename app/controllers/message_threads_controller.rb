@@ -30,6 +30,34 @@ class MessageThreadsController < ApplicationController
     authorize MessageThread
   end
 
+  def bulk_actions
+    authorize MessageThread
+
+    @ids = params[:message_thread_ids] || []
+  end
+
+  def bulk_merge
+    authorize MessageThread
+    @ids = params[:message_thread_ids] || []
+
+    message_thread = merge_threads(@ids)
+    if message_thread
+      redirect_to message_thread_path(message_thread), notice: 'Vlákna boli úspešne spojené'
+    else
+      flash[:alert] = "Označte zaškrtávacími políčkami minimálne 2 vlákna, ktoré chcete spojiť"
+      redirect_back fallback_location: message_threads_path
+    end
+  end
+
+  def merge_threads(message_thread_ids)
+    selected_message_threads = message_thread_policy_scope.where(id: message_thread_ids).order(:last_message_delivered_at)
+    return nil if !selected_message_threads || selected_message_threads.size < 2
+
+    selected_message_threads.merge_threads
+
+    selected_message_threads.first
+  end
+
   def load_threads
     cursor = MessageThreadCollection.init_cursor(search_params[:cursor])
 
@@ -44,19 +72,6 @@ class MessageThreadsController < ApplicationController
     @message_threads, @next_cursor = result.fetch_values(:records, :next_cursor)
     @next_cursor = MessageThreadCollection.serialize_cursor(@next_cursor)
     @next_page_params = search_params.to_h.merge(cursor: @next_cursor).merge(format: :turbo_stream)
-  end
-
-  def merge
-    authorize MessageThread
-    @selected_message_threads = message_thread_policy_scope.where(id: params[:message_thread_ids]).order(:last_message_delivered_at)
-    if !@selected_message_threads || @selected_message_threads.size < 2
-      flash[:error] = 'Označte zaškrtávacími políčkami minimálne 2 vlákna, ktoré chcete spojiť'
-      redirect_back fallback_location: message_threads_path
-      return
-    end
-    @selected_message_threads.merge_threads
-    flash[:notice] = 'Vlákna boli úspešne spojené'
-    redirect_to @selected_message_threads.first
   end
 
   def search_available_tags

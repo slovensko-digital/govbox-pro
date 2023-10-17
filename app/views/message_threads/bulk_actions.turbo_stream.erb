@@ -1,0 +1,3 @@
+<%= turbo_stream.replace "bulk_actions" do %>
+  <%= render MessageThreadsBulkActionsComponent.new(ids: @ids) %>
+<% end %>

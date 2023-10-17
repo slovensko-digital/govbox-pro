@@ -12,3 +12,6 @@ application.register("messageDrafts", MessageDraftsController)
 
 import DebounceController from "./debounce_controller"
 application.register("debounce", DebounceController)
+
+import FormController from "./form_controller"
+application.register("form", FormController)
