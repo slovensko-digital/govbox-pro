@@ -8,11 +8,12 @@ module Govbox
 
     def perform(govbox_message)
       ActiveRecord::Base.transaction do
-        Govbox::Message.create_message_with_thread!(govbox_message)
-      end
+        message = Govbox::Message.create_message_with_thread!(govbox_message)
 
-      destroy_associated_message_draft(govbox_message)
-      mark_associated_delivery_notification_authorized(govbox_message)
+        destroy_associated_message_draft(govbox_message)
+        mark_associated_delivery_notification_authorized(govbox_message)
+        create_relations_with_related_messages(message)
+      end
     end
 
     def destroy_associated_message_draft(govbox_message)
@@ -36,6 +37,22 @@ module Govbox
         delivery_notification_message.collapsed = true
         delivery_notification_message.metadata["authorized"] = true
         delivery_notification_message.save!
+      end
+    end
+
+    def create_relations_with_related_messages(message)
+      related_messages = ::Message.where("metadata ->> 'reference_id' = ?", message.uuid).joins(thread: { folder: :box })
+                                .where(thread: { folders: { boxes: { id: message.thread.folder.box.id } } })
+
+      related_messages.each do |related_message|
+        govbox_related_message = Govbox::Message.where(message_id: related_message.uuid).joins(folder: :box).where(folders: { boxes: { id: related_message.thread.folder.box.id } }).take
+
+        if govbox_related_message.related_message_type
+          message.message_relations.find_or_create_by(
+            related_message: related_message,
+            relation_type: govbox_related_message.related_message_type
+          )
+        end
       end
     end
   end

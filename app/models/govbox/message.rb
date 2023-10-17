@@ -52,7 +52,6 @@ class Govbox::Message < ApplicationRecord
       ) # TODO create folder for threads
 
       message = self.create_message(govbox_message)
-      self.create_message_relations(message, govbox_message)
 
       thread_title = if message.metadata["delivery_notification"].present?
         message.metadata["delivery_notification"]["consignment"]["subject"]
@@ -75,6 +74,10 @@ class Govbox::Message < ApplicationRecord
     end
 
     self.create_message_objects(message, govbox_message.payload)
+
+    self.create_message_relations(message, govbox_message)
+
+    message
   end
 
   private
@@ -105,7 +108,8 @@ class Govbox::Message < ApplicationRecord
 
   def self.create_message_relations(message, govbox_message)
     if govbox_message.related_message_type
-      main_message = Message.find_by(uuid: message.metadata["reference_id"])
+      main_message = Message.where(uuid: message.metadata["reference_id"]).joins(thread: { folder: :box })
+                            .where(thread: { folders: { boxes: { id: message.thread.folder.box.id } } }).take
 
       main_message.message_relations.find_or_create_by(
         related_message: message,
