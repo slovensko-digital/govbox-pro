@@ -8,13 +8,20 @@ one:
   last_message_delivered_at: 2023-05-18 16:06:56
 
 two:
-  folder: two
+  folder: one
   title: MyString
   original_title: MyString
   delivered_at: 2023-05-18 16:19:26
   last_message_delivered_at: 2023-05-18 16:20:26
 
 three:
+  folder: two
+  title: MyString
+  original_title: MyString
+  delivered_at: 2023-05-18 16:19:26
+  last_message_delivered_at: 2023-05-18 16:20:26
+
+four:
   folder: four
   title: MyString
   original_title: MyString
