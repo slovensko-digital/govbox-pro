@@ -77,10 +77,19 @@ module Utils
   end
 
   # TODO use UPVS API to detect if document is signed
-  def is_signed?(entry_name:)
+  def is_signed?(entry_name:, content:)
+
     case File.extname(entry_name).downcase
     when '.asice', '.asics', '.xzep'
       true
+    when '.pdf'
+      begin
+        reader = PDF::Reader.new(StringIO.new(content))
+      rescue StandardError
+        return false # NOTE: if pdf reading fails it is not signed
+      end
+
+      reader.objects.to_a.flatten.select { |o| o.is_a?(Hash) }.select { |o| o[:Type] == :Sig }.first.present?
     else
       false
     end

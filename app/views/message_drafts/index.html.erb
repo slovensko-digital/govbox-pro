@@ -1,3 +1,5 @@
+<meta id="authenticity-token" name="authenticity-token" content="<%= form_authenticity_token %>">
+
 <h2>Drafty</h2>
 
 <div>
@@ -17,14 +19,34 @@
 
       <% @messages.each do |message| %>
         <tr>
-          <td><%= link_to message.title, message_path(message.id) %></td>
+          <td><%= link_to message.title, message_draft_path(message.id) %></td>
           <td><%= " #{message.import&.base_name || '-'}" %></td>
           <td><%= " #{message.metadata["status"]}" %></td>
         </tr>
       <% end %>
     </table>
   </div>
-  
+
+  <% if @messages.map{|message| message.objects.should_be_signed.map{|o| {id: o.id, message_id: message.id}}}.flatten(1).any? %>
+    <%
+      files_to_be_signed = @messages.map do |message|
+        message.objects.should_be_signed.map do |message_object|
+          { path: message_message_object_path(message_object.message_id, message_object.id) }
+        end
+      end.flatten(1)
+    %>
+    <%= content_tag(:div,
+      {
+        "data-controller": "autogram",
+        "data-autogram-files-to-be-signed": files_to_be_signed.to_json.html_safe,
+      }
+    ) do %>
+      <button type="button" data-action="click->autogram#signMultipleFiles" class="flex justify-end items-center gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300">
+        Podpísať všetky nepodpísané dokumenty
+      </button>
+    <% end %>
+  <% end %>
+
   <% if @messages.any?(&:submittable?) %>
     <%= button_to "Podať všetky", submit_all_message_drafts_path, method: :post %>
   <% end %>

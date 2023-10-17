@@ -6,15 +6,13 @@ class SidebarMenu
     @menu = initial_structure(controller, action)
   end
 
-  def get_menu
-    @menu
-  end
+  attr_reader :menu
 
   private
 
-  def initial_structure(controller, action)
-    return default_message_thread_menu if controller.in? %w[messages message_drafts]
-    return admin_main_menu if (controller.in? %w[groups users tags tag_groups automation_rules boxes tenants filters]) && (Current.user.admin? || Current.user.site_admin?)
+  def initial_structure(controller, _action)
+    return admin_main_menu if (controller.in? %w[groups users tags tag_groups automation_rules boxes tenants
+                                                 filters]) && (Current.user.admin? || Current.user.site_admin?)
 
     default_main_menu
   end
@@ -46,10 +44,6 @@ class SidebarMenu
       Layout::SidebarDividerComponent.new(),
       TW::SidebarMenuDividerComponent.new(name: 'Admin'),
       TW::SidebarMenuItemComponent.new(name: 'Good Job Dashboard', url: good_job_path, icon: Icons::GoodJobComponent.new),
-  ].compact
-  end
-
-  def default_message_thread_menu
-    [Layout::BackToBoxComponent.new, Layout::SidebarDividerComponent.new, Layout::MessageThreadSidebarComponent.new(message: @parameters[:message])] if @parameters && @parameters[:message]
+    ].compact
   end
 end

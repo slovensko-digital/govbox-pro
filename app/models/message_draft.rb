@@ -35,9 +35,8 @@ class MessageDraft < Message
   end
 
   def self.create_message_reply(original_message: , author:)
-    MessageDraft.create!(
+    message_draft = original_message.thread.message_drafts.create!(
       uuid: SecureRandom.uuid,
-      thread: original_message.thread,
       sender_name: original_message.recipient_name,
       recipient_name: original_message.sender_name,
       read: true,
@@ -54,6 +53,11 @@ class MessageDraft < Message
         "status": "created"
       }
     )
+
+    drafts_tag = message_draft.thread.box.tenant.tags.find_by(name: "Drafts")
+    message_draft.thread.add_tag(drafts_tag)
+
+    message_draft
   end
 
   def update_content(title:, body:)
@@ -66,7 +70,7 @@ class MessageDraft < Message
     # TODO clean the domain (no UPVS stuff)
     if form
       form.message_object_datum.update(
-        blob: Upvs::GeneralAgendaBuilder.build_xml(subject: title, body: body)
+        blob: Upvs::FormBuilder.build_general_agenda_xml(subject: title, body: body)
       )
     else
       form = MessageObject.create(
@@ -79,13 +83,11 @@ class MessageDraft < Message
 
       form.message_object_datum = MessageObjectDatum.create(
         message_object: form,
-        blob: Upvs::GeneralAgendaBuilder.build_xml(subject: title, body: body)
+        blob: Upvs::FormBuilder.build_general_agenda_xml(subject: title, body: body)
       )
     end
-  end
-  
-  def form 
-    objects.select { |o| o.form? }&.first
+
+    self.reload
   end
 
   def editable?
@@ -141,7 +143,7 @@ class MessageDraft < Message
 
     if objects.size == 0
       errors.add(:objects, "No objects found for draft")
-    elsif forms.count != 1
+    elsif forms.size != 1
       errors.add(:objects, "Draft has to contain exactly one form")
     end
   end

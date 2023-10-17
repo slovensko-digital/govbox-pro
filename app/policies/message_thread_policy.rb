@@ -42,4 +42,8 @@ class MessageThreadPolicy < ApplicationPolicy
   def merge?
     true
   end
+
+  def search_available_tags?
+    true
+  end
 end

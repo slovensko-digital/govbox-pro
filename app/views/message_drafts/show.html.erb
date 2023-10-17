@@ -1,1 +1,1 @@
-<%= render MessageDraftsComponent.new(message: @message, notice: @notice, message_tags_with_deletable_flag: @message_tags_with_deletable_flag, thread_tags_with_deletable_flag: @thread_tags_with_deletable_flag) %>
+<%= render MessageThreadComponent.new(message_thread: @message_thread, thread_tags_with_deletable_flag: @thread_tags_with_deletable_flag, thread_messages: @thread_messages, flash: @flash) %>

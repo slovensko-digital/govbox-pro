@@ -2,17 +2,7 @@ module MessagesConcern
   extend ActiveSupport::Concern
 
   included do
-    helper_method :set_message_tags_with_deletable_flag
     helper_method :set_thread_tags_with_deletable_flag
-  end
-
-  def set_message_tags_with_deletable_flag
-    @message_tags_with_deletable_flag =
-      @message
-        .messages_tags
-        .includes(:tag)
-        .select("messages_tags.*, #{deletable_subquery('tags.id = messages_tags.tag_id').to_sql} as deletable")
-        .order("tags.name")
   end
 
   def set_thread_tags_with_deletable_flag

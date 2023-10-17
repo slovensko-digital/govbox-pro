@@ -1,11 +1,16 @@
 class MessageThreadsController < ApplicationController
-  before_action :set_message_thread, only: %i[show update]
+  before_action :set_message_thread, only: %i[show update search_available_tags]
   before_action :load_threads, only: %i[index scroll]
+  after_action :mark_thread_as_read, only: %i[show]
+
+  include MessageThreadsConcern
 
   def show
     authorize @message_thread
-
-    redirect_to @message_thread.messages.where(read: false).order(delivered_at: :asc).first || @message_thread.messages_visible_to_user(Current.user).order(delivered_at: :desc).first
+    set_thread_tags_with_deletable_flag
+    @flash = flash
+    @thread_messages = @message_thread.messages_visible_to_user(Current.user).order(delivered_at: :asc)
+    @message_thread_note = @message_thread.message_thread_note || @message_thread.build_message_thread_note
   end
 
   def update
@@ -33,7 +38,6 @@ class MessageThreadsController < ApplicationController
         scope: message_thread_policy_scope.includes(:tags, :box),
         search_permissions: search_permissions,
         query: search_params[:q],
-        no_visible_tags: search_params[:no_visible_tags] == "1" && Current.user.admin?,
         cursor: cursor
       )
 
@@ -55,10 +59,22 @@ class MessageThreadsController < ApplicationController
     redirect_to @selected_message_threads.first
   end
 
+  def search_available_tags
+    authorize [MessageThread]
+    @tags = Current.tenant.tags
+                   .where.not(id: @message_thread.tags.ids)
+                   .where(visible: true)
+    @tags = @tags.where('unaccent(name) ILIKE unaccent(?)', "%#{params[:name_search]}%") if params[:name_search]
+  end
+
   private
 
   def set_message_thread
     @message_thread = message_thread_policy_scope.find(params[:id])
+  end
+
+  def mark_thread_as_read
+    @message_thread.mark_all_messages_read
   end
 
   def message_thread_policy_scope
@@ -66,9 +82,9 @@ class MessageThreadsController < ApplicationController
   end
 
   def search_permissions
-    result = { tenant_id: Current.tenant }
-    result[:box_id] = Current.box if Current.box
-    result[:tag_ids] = policy_scope(Tag).pluck(:id) unless Current.user.admin?
+    result = { tenant: Current.tenant }
+    result[:box] = Current.box if Current.box
+    result[:tag_ids] = policy_scope(Tag).pluck(:id)
     result
   end
 
@@ -77,6 +93,6 @@ class MessageThreadsController < ApplicationController
   end
 
   def search_params
-    params.permit(:q, :no_visible_tags, :format, cursor: MessageThreadCollection::CURSOR_PARAMS)
+    params.permit(:q, :format, cursor: MessageThreadCollection::CURSOR_PARAMS)
   end
 end

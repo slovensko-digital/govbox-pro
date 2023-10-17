@@ -4,7 +4,7 @@
 - ruby (version is specified in [.tool-versions](.tool-versions))
   - [asdf version manager](https://asdf-vm.com/)
 - PostgreSQL 14
-- node.js (should not matter which version. worked on: `v15.8.0`, `v16.15.1`)
+- node.js (version is specified in [.tool-versions](.tool-versions))
 
 ## Instalation steps
 

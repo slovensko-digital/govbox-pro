@@ -1,5 +1,5 @@
 class MessageDraftsController < ApplicationController
-  before_action :load_message_drafts, only: [:index, :submit_all]
+  before_action :load_message_drafts, only: %i[index submit_all]
   before_action :load_original_message, only: :create
   before_action :load_message_draft, except: [:index, :create, :submit_all]
 
@@ -14,12 +14,18 @@ class MessageDraftsController < ApplicationController
 
     @message = MessageDraft.create_message_reply(original_message: @original_message, author: Current.user)
 
+    @flash = flash
     redirect_to message_draft_path(@message)
   end
 
   def show
     authorize @message
-    @notice = notice
+
+    @message_thread = @message.thread
+    set_thread_tags_with_deletable_flag
+    @thread_messages = @message_thread.messages_visible_to_user(Current.user).order(delivered_at: :asc)
+
+    @flash = flash
   end
 
   def update
@@ -40,11 +46,11 @@ class MessageDraftsController < ApplicationController
       redirect_path = @message.original_message.present? ? message_path(@message.original_message) : message_drafts_path
       redirect_to redirect_path, notice: "Správa bola zaradená na odoslanie."
     else
-      # TODO prisposobit chybovu hlasku aj importovanym draftom
-      redirect_to message_draft_path(@message), notice: "Vyplňte predmet a text odpovede."
+      # TODO: prisposobit chybovu hlasku aj importovanym draftom
+      redirect_to message_draft_path(@message), alert: "Vyplňte predmet a text odpovede."
     end
   end
-  
+
   def submit_all
     jobs_batch = GoodJob::Batch.new
 
@@ -61,9 +67,12 @@ class MessageDraftsController < ApplicationController
   def destroy
     authorize @message
 
-    redirect_path = @message.original_message.present? ? message_path(@message.original_message) : message_drafts_path
+    redirect_path = @message.original_message.present? ? message_thread_path(@message.original_message.thread) : message_drafts_path
 
     @message.destroy
+
+    drafts_tag = @message.thread.tags.find_by(name: "Drafts")
+    @message.thread.tags.delete(drafts_tag) unless @message.thread.message_drafts.any?
 
     redirect_to redirect_path
   end
@@ -81,10 +90,7 @@ class MessageDraftsController < ApplicationController
 
   def load_message_draft
     @message = policy_scope(MessageDraft).find(params[:id])
-    @menu = SidebarMenu.new(controller_name, action_name, { message: @message })
-    @notice = flash
-    set_message_tags_with_deletable_flag
-    set_thread_tags_with_deletable_flag
+    @flash = flash
   end
 
   def message_params

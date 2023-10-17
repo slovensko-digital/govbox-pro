@@ -4,7 +4,7 @@ class Searchable::MessageThread < ApplicationRecord
 
   include PgSearch::Model
   pg_search_scope :pg_search_all,
-                  against: [:title, :content, :tag_names],
+                  against: [:title, :content, :note, :tag_names],
                   using: {
                     tsearch: {
                       highlight: {
@@ -29,8 +29,8 @@ class Searchable::MessageThread < ApplicationRecord
   def self.search_ids(query_filter, search_permissions:, cursor:, per_page:, direction: )
     scope = self
 
-    scope = scope.where(tenant_id: search_permissions.fetch(:tenant_id))
-    scope = scope.where(box_id: search_permissions.fetch(:box_id)) if search_permissions[:box_id]
+    scope = scope.where(tenant_id: search_permissions.fetch(:tenant))
+    scope = scope.where(box_id: search_permissions.fetch(:box)) if search_permissions[:box]
 
     if search_permissions.key?(:tag_ids)
       if search_permissions[:tag_ids].any?
@@ -82,7 +82,7 @@ class Searchable::MessageThread < ApplicationRecord
 
   def self.reindex_with_tag_id(tag_id)
     Searchable::MessageThread.select(:id, :message_thread_id).where("tag_ids && ARRAY[?]", [tag_id]).find_each do |searchable_mt|
-      Searchable::ReindexMessageThreadJob.perform_later(::MessageThread.find(searchable_mt.message_thread_id))
+      Searchable::ReindexMessageThreadJob.perform_later(searchable_mt.message_thread_id)
     end
   end
 

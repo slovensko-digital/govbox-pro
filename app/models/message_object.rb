@@ -3,7 +3,7 @@
 # Table name: message_objects
 #
 #  id                                          :integer          not null, primary key
-#  name                                        :string           not null
+#  name                                        :string
 #  mimetype                                    :string
 #  is_signed                                   :boolean
 #  to_be_signed                                :boolean          not null, default: false
@@ -15,31 +15,49 @@
 class MessageObject < ApplicationRecord
   belongs_to :message
   has_one :message_object_datum, dependent: :destroy
+  has_many :nested_message_objects
 
-  scope :to_be_signed, -> { where(to_be_signed: true) }
+  scope :unsigned, -> { where('is_signed = false') }
+  scope :to_be_signed, -> { where('to_be_signed = true') }
+  scope :should_be_signed, -> { where('to_be_signed = true AND is_signed = false') }
 
   validates :name, presence: true, on: :validate_data
   validate :allowed_mime_type?, on: :validate_data
 
   def self.create_message_objects(message, objects)
     objects.each do |raw_object|
+      message_object_content = raw_object.read.force_encoding("UTF-8")
+
       message_object = MessageObject.create!(
         message: message,
         name: raw_object.original_filename,
         mimetype: Utils.file_mime_type_by_name(entry_name: raw_object.original_filename),
-        is_signed: Utils.is_signed?(entry_name: raw_object.original_filename),
+        is_signed: Utils.is_signed?(entry_name: raw_object.original_filename, content: message_object_content),
         object_type: "ATTACHMENT"
       )
 
       MessageObjectDatum.create!(
         message_object: message_object,
-        blob: raw_object.read.force_encoding("UTF-8")
+        blob: message_object_content
       )
     end
   end
 
+  def content
+    message_object_datum.blob
+  end
+
   def form?
     object_type == "FORM"
+  end
+
+  def signable?
+    # TODO vymazat druhu podmienku po povoleni viacnasobneho podpisovania
+    message.is_a?(MessageDraft) && !is_signed
+  end
+
+  def asice?
+    mimetype == 'application/vnd.etsi.asic-e+zip'
   end
 
   def destroyable?

@@ -1,5 +1,20 @@
-<ul role="list" class="divide-y divide-gray-100">
-  <% messages.each do |message| %>
-    <%= message %>
-  <% end %>
-</ul>
+<div class="flex flex-col justify-stretch items-stretch">
+  <%= render MessageThreadHeaderComponent.new(@message_thread, @thread_tags_with_deletable_flag) %>
+  <%= render MessageThreadNoteComponent.new(@message_thread_note) %>
+  <div class="flex flex-col justify-stretch items-stretch gap-2 p-4">
+    <% @flash.each do |type, msg| %>
+      <div class="border-t border-b <%= type == "notice" ? "bg-green-100 border-green-500 text-green-700" : "bg-red-100 border-red-500 text-red-700" %> px-4 py-3" role="alert">
+        <p class="font-bold"><%= msg %></p>
+      </div>
+    <% end %>
+    <% @thread_messages.each do |message| %>
+      <% if message.type == 'MessageDraft' %>
+        <%= render MessageDraftComponent.new(message: message) %>
+      <% elsif message.read %>
+        <%= render CollapsedMessageComponent.new(message: message) %>
+      <% else %>
+        <%= render MessageComponent.new(message: message) %>
+      <% end %>
+    <% end %>
+  </div>
+</div>

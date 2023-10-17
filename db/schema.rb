@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_13_100754) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_16_140436) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -295,6 +295,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_13_100754) do
     t.index ["uuid", "tenant_id"], name: "index_message_thread_merge_identifiers_on_uuid_and_tenant_id", unique: true
   end
 
+  create_table "message_thread_notes", force: :cascade do |t|
+    t.bigint "message_thread_id", null: false
+    t.text "note"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["message_thread_id"], name: "index_message_thread_notes_on_message_thread_id"
+  end
+
   create_table "message_threads", force: :cascade do |t|
     t.bigint "folder_id", null: false
     t.string "title", null: false
@@ -358,16 +366,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_13_100754) do
     t.index ["message_object_id"], name: "index_nested_message_objects_on_message_object_id"
   end
 
-  create_table "relations", force: :cascade do |t|
-    t.bigint "message_id"
-    t.bigint "related_message_id"
-    t.string "type", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["message_id"], name: "index_relations_on_message_id"
-    t.index ["related_message_id"], name: "index_relations_on_related_message_id"
-  end
-
   create_table "searchable_message_threads", force: :cascade do |t|
     t.integer "message_thread_id", null: false
     t.text "title", null: false
@@ -379,6 +377,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_13_100754) do
     t.datetime "updated_at", null: false
     t.integer "tenant_id", null: false
     t.integer "box_id", null: false
+    t.string "note", null: false
     t.index ["message_thread_id"], name: "index_searchable_message_threads_on_message_thread_id", unique: true
   end
 
@@ -469,6 +468,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_13_100754) do
   add_foreign_key "message_relations", "messages", column: "related_message_id"
   add_foreign_key "message_thread_merge_identifiers", "message_threads"
   add_foreign_key "message_thread_merge_identifiers", "tenants"
+  add_foreign_key "message_thread_notes", "message_threads"
   add_foreign_key "message_threads", "folders"
   add_foreign_key "message_threads_tags", "message_threads"
   add_foreign_key "message_threads_tags", "tags"
@@ -478,8 +478,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_13_100754) do
   add_foreign_key "messages_tags", "messages"
   add_foreign_key "messages_tags", "tags"
   add_foreign_key "nested_message_objects", "message_objects", on_delete: :cascade
-  add_foreign_key "relations", "messages"
-  add_foreign_key "relations", "messages", column: "related_message_id"
   add_foreign_key "searchable_message_threads", "message_threads", on_delete: :cascade
   add_foreign_key "tag_groups", "groups"
   add_foreign_key "tag_groups", "tags"

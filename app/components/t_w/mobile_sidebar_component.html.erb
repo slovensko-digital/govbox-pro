@@ -1,0 +1,32 @@
+<!-- Off-canvas menu for mobile, show/hide based on off-canvas menu state. -->
+<div class="relative z-50 lg:hidden" role="dialog" aria-modal="true">
+  <div data-slideover-target="overlay"
+          class="fixed inset-0 bg-gray-900/80"
+          data-transition-enter="transition ease-out duration-300"
+          data-transition-enter-from="opacity-0"
+          data-transition-enter-to="opacity-100"
+          data-transition-leave="transition ease-in duration-300"
+          data-transition-leave-from="opacity-100"
+          data-transition-leave-to="opacity-0">
+  </div>
+  <div data-slideover-target="menu" class="fixed inset-0 flex">
+    <div data-slideover-target="menu"
+            class="relative mr-16 flex w-full max-w-xs flex-1"
+            data-transition-enter="transition ease-out duration-300"
+            data-transition-enter-from="opacity-0 -translate-x-full"
+            data-transition-enter-to="opacity-100 translate-x-0"
+            data-transition-leave="transition ease-in duration-300"
+            data-transition-leave-from="opacity-100 translate-x-0"
+            data-transition-leave-to="opacity-0 -translate-x-full">
+      <div class="absolute left-full top-0 flex w-16 justify-center pt-5">
+        <button type="button" data-action="slideover#toggle" class="-m-2.5 p-2.5">
+          <span class="sr-only">Close sidebar</span>
+          <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <%= render TW::StaticSidebarComponent.new(menu: @menu) %>
+    </div>
+  </div>
+</div>

@@ -27,8 +27,16 @@ class MessageObjectPolicy < ApplicationPolicy
     true
   end
 
+  def update?
+    show?
+  end
+
   def download?
-    true
+    show?
+  end
+
+  def signing_data?
+    show?
   end
 
   def destroy?
