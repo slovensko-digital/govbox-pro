@@ -17,8 +17,6 @@
   <% end %>
   <% component.with_modal_content do %>
     <%= tag.turbo_frame id: 'box-selector-popup', loading: :lazy, src: get_selector_boxes_path %>
-    <div class="mt-5 sm:mt-4 sm:flex justify-end">
-      <%= render Common::ModalActionsComponent.new %>
-    </div>
+    <%= render Common::ModalActionsComponent.new %>
   <% end %>
 <% end %>

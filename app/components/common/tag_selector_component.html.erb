@@ -10,7 +10,6 @@
     Pridať tag
   <% end %>
   <% component.with_modal_content do %>
-    <hr class="mt-2">
     <div class="flex flex-col items-start gap-4 mt-4">
       <%= form_with url: search_available_tags_message_thread_path(@message_thread), method: :get,
                     data: { turbo_stream: true, controller: 'debounce', debounce_target: 'form' },
