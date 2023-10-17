@@ -40,4 +40,3 @@ module Govbox
     end
   end
 end
-

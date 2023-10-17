@@ -31,6 +31,19 @@ class Govbox::Message < ApplicationRecord
     COLLAPSED_MESSAGES_CLASSES.include?(payload["class"])
   end
 
+  def related_message_type
+    case edesk_class
+    when 'ED_DELIVERY_NOTIFICATION'
+      'delivery_notification'
+    when 'ED_DELIVERY_REPORT'
+      'delivery_report'
+    when 'POSTING_CONFIRMATION', 'POSTING_INFORMATION'
+      'posting_confirmation'
+    else
+      # noop
+    end
+  end
+
   def self.create_message_with_thread!(govbox_message)
     message = MessageThread.with_advisory_lock!(govbox_message.correlation_id, transaction: true, timeout_seconds: 10) do
       folder = Folder.find_or_create_by!(
@@ -39,6 +52,7 @@ class Govbox::Message < ApplicationRecord
       ) # TODO create folder for threads
 
       message = self.create_message(govbox_message)
+      self.create_message_relations(message, govbox_message)
 
       thread_title = if message.metadata["delivery_notification"].present?
         message.metadata["delivery_notification"]["consignment"]["subject"]
@@ -87,6 +101,17 @@ class Govbox::Message < ApplicationRecord
         "delivery_notification": govbox_message.payload["delivery_notification"]
       }
     )
+  end
+
+  def self.create_message_relations(message, govbox_message)
+    if govbox_message.related_message_type
+      main_message = Message.find_by(uuid: message.metadata["reference_id"])
+
+      main_message.message_relations.find_or_create_by(
+        related_message: message,
+        relation_type: govbox_message.related_message_type
+      ) if main_message
+    end
   end
 
   def self.create_message_objects(message, raw_message)
