@@ -18,6 +18,7 @@ class MessageThreadsTag < ApplicationRecord
   has_many :tag_groups, primary_key: :tag_id, foreign_key: :tag_id
 
   validates :tag_id, :message_thread_id, presence: true
+  validates_uniqueness_of :tag_id, scope: :message_thread_id
   validate :thread_and_tag_tenants_matches
 
   before_validation :create_tag_from_tag_name

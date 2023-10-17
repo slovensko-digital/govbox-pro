@@ -128,4 +128,19 @@ class MessageThreadTest < ActiveSupport::TestCase
     assert_match 'Note1', message_threads(:two).message_thread_note.note
     assert_match 'Note2', message_threads(:two).message_thread_note.note
   end
+
+  test "triggers callback event when new tags is assigned" do
+    called = false
+    EventBus.subscribe(:message_thread_tag_changed, ->(_message_thread_tag) {
+      called = true
+    })
+
+    thread = message_threads(:one)
+    thread.tags << tags(:one)
+
+    # remove callback
+    EventBus.class_variable_get(:@@subscribers_map)[:message_thread_tag_changed].pop
+
+    assert called
+  end
 end
