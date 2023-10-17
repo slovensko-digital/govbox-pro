@@ -11,19 +11,18 @@
 #  updated_at                                  :datetime         not null
 
 class MessageThread < ApplicationRecord
-  has_and_belongs_to_many :tags
   belongs_to :folder
   has_one :box, through: :folder
+  has_one :message_thread_note, dependent: :destroy
   has_many :messages, dependent: :destroy do
     def find_or_create_by_uuid!(uuid:)
     end
   end
   has_many :message_drafts
-  has_and_belongs_to_many :tags, through: :messages
   has_many :message_threads_tags, dependent: :destroy
+  has_many :tags, through: :message_threads_tags
   has_many :tag_users, through: :message_threads_tags
   has_many :merge_identifiers, class_name: 'MessageThreadMergeIdentifier', dependent: :destroy
-  has_one :message_thread_note, dependent: :destroy
 
   attr_accessor :search_highlight
 
