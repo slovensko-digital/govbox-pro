@@ -16,7 +16,7 @@
     </button>
   <% end %>
   <% component.with_modal_content do %>
-    <%= tag.turbo_frame id: 'box-selector-popup', loading: :lazy, src: get_selector_boxes_path %>
+    <%= tag.turbo_frame id: 'box-selector-popup', src: get_selector_boxes_path %>
     <%= render Common::ModalActionsComponent.new %>
   <% end %>
 <% end %>
