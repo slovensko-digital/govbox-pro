@@ -53,9 +53,9 @@ module Govbox
       main_message = ::Message.where(uuid: message.metadata['reference_id']).joins(thread: { folder: :box })
                                 .where(thread: { folders: { boxes: { id: message.thread.folder.box.id } } }).take
 
-      main_message&.message_relations&.find_or_create_by!(
+      main_message.message_relations.find_or_create_by!(
         related_message: message
-      )
+      ) if main_message
     end
   end
 end
