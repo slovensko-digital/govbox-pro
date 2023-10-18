@@ -31,19 +31,6 @@ class Govbox::Message < ApplicationRecord
     payload["class"].in?(COLLAPSED_BY_DEFAULT_MESSAGE_CLASSES)
   end
 
-  def related_message_type
-    case edesk_class
-    when 'ED_DELIVERY_NOTIFICATION'
-      'delivery_notification'
-    when 'ED_DELIVERY_REPORT'
-      'delivery_report'
-    when 'POSTING_CONFIRMATION', 'POSTING_INFORMATION'
-      'posting_confirmation'
-    else
-      # noop
-    end
-  end
-
   def self.create_message_with_thread!(govbox_message)
     message = MessageThread.with_advisory_lock!(govbox_message.correlation_id, transaction: true, timeout_seconds: 10) do
       folder = Folder.find_or_create_by!(
