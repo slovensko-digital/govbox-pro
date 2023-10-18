@@ -74,7 +74,7 @@
     <%= form_with(url: authorize_delivery_notification_message_path(@message), method: :post, local: true, style:'width: 100%;') do |form| %>
       <div class="flex justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
         <div class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md bg-blue-600">
-          <%= form.submit "Prevziať správu", data: { turbo_confirm: 'Naozaj chcete prevziať správu?' }, class: "flex-grow-0 flex-shrink-0 bg-blue-600 text-base font-medium text-left text-white" %>
+          <%= form.submit "Prevziať správu", data: { turbo_frame: '_top', turbo_confirm: 'Naozaj chcete prevziať správu?' }, class: "flex-grow-0 flex-shrink-0 bg-blue-600 text-base font-medium text-left text-white" %>
         </div>
       </div>
     <% end %>
