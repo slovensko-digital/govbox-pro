@@ -12,15 +12,18 @@ class MessagesController < ApplicationController
   def authorize_delivery_notification
     authorize @message
 
-    notice = Message.authorize_delivery_notification(@message) ? "Správa bola zaradená na prevzatie." : "Správu nie je možné prevziať."
-    redirect_to message_path(@message), notice: notice
+    if Message.authorize_delivery_notification(@message)
+      redirect_to message_thread_path(@message.thread), notice: 'Správa bola zaradená na prevzatie'
+    else
+      redirect_to message_thread_path(@message.thread), alert: 'Správu nie je možné prevziať'
+    end
   end
 
   private
 
   def set_message
     @message = policy_scope(Message).find(params[:id])
-    @notice = flash
+    @flash = flash
     set_thread_tags_with_deletable_flag
   end
 
