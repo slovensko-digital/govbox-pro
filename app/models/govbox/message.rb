@@ -75,8 +75,6 @@ class Govbox::Message < ApplicationRecord
 
     self.create_message_objects(message, govbox_message.payload)
 
-    self.create_message_relations(message, govbox_message)
-
     message
   end
 
@@ -104,18 +102,6 @@ class Govbox::Message < ApplicationRecord
         "delivery_notification": govbox_message.payload["delivery_notification"]
       }
     )
-  end
-
-  def self.create_message_relations(message, govbox_message)
-    if govbox_message.related_message_type
-      main_message = Message.where(uuid: message.metadata["reference_id"]).joins(thread: { folder: :box })
-                            .where(thread: { folders: { boxes: { id: message.thread.folder.box.id } } }).take
-
-      main_message.message_relations.find_or_create_by(
-        related_message: message,
-        relation_type: govbox_message.related_message_type
-      ) if main_message
-    end
   end
 
   def self.create_message_objects(message, raw_message)

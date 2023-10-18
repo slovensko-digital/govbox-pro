@@ -12,7 +12,7 @@ module Govbox
 
         destroy_associated_message_draft(govbox_message)
         mark_associated_delivery_notification_authorized(govbox_message)
-        create_relations_with_related_messages(message)
+        create_message_relations(message)
       end
     end
 
@@ -40,20 +40,22 @@ module Govbox
       end
     end
 
-    def create_relations_with_related_messages(message)
+    def create_message_relations(message)
       related_messages = ::Message.where("metadata ->> 'reference_id' = ?", message.uuid).joins(thread: { folder: :box })
                                 .where(thread: { folders: { boxes: { id: message.thread.folder.box.id } } })
 
       related_messages.each do |related_message|
-        govbox_related_message = Govbox::Message.where(message_id: related_message.uuid).joins(folder: :box).where(folders: { boxes: { id: related_message.thread.folder.box.id } }).take
-
-        if govbox_related_message.related_message_type
-          message.message_relations.find_or_create_by(
-            related_message: related_message,
-            relation_type: govbox_related_message.related_message_type
-          )
-        end
+        message.message_relations.find_or_create_by!(
+          related_message: related_message
+        )
       end
+
+      main_message = ::Message.where(uuid: message.metadata['reference_id']).joins(thread: { folder: :box })
+                                .where(thread: { folders: { boxes: { id: message.thread.folder.box.id } } }).take
+
+      main_message&.message_relations&.find_or_create_by!(
+        related_message: message
+      )
     end
   end
 end

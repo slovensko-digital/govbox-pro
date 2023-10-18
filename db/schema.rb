@@ -277,7 +277,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_17_132154) do
   create_table "message_relations", force: :cascade do |t|
     t.bigint "message_id"
     t.bigint "related_message_id"
-    t.string "relation_type", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["message_id"], name: "index_message_relations_on_message_id"
