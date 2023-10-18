@@ -28,7 +28,7 @@ class Govbox::Message < ApplicationRecord
   end
 
   def collapsed?
-    COLLAPSED_MESSAGES_CLASSES.include?(payload["class"])
+    payload["class"].in?(COLLAPSED_BY_DEFAULT_MESSAGE_CLASSES)
   end
 
   def related_message_type
