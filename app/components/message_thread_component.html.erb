@@ -10,7 +10,7 @@
     <% @thread_messages.each do |message| %>
       <% if message.type == 'MessageDraft' %>
         <%= render MessageDraftComponent.new(message: message) %>
-      <% elsif message.collapsed? || (message.read? && message != @thread_messages.where(collapsed: false).last) %>
+      <% elsif message.collapsed? %>
         <%= render CollapsedMessageComponent.new(message: message) %>
       <% else %>
         <%= render MessageComponent.new(message: message) %>
