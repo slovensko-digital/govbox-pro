@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: govbox_api_connections
+# Table name: upvs_api_connections
 #
 #  id                                          :integer          not null, primary key
 #  sub                                         :string           not null
@@ -10,6 +10,6 @@
 #  created_at                                  :datetime         not null
 #  updated_at                                  :datetime         not null
 
-class Govbox::ApiConnection < ApplicationRecord
+class Upvs::ApiConnection < ApplicationRecord
   belongs_to :box
 end
