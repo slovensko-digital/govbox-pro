@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_18_172416) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_18_173016) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -408,14 +408,21 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_18_172416) do
   end
 
   create_table "upvs_api_connections", force: :cascade do |t|
-    t.bigint "box_id"
     t.string "sub", null: false
-    t.uuid "obo"
     t.string "api_token_private_key", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "type"
-    t.index ["box_id"], name: "index_upvs_api_connections_on_box_id"
+  end
+
+  create_table "upvs_box_api_connections", force: :cascade do |t|
+    t.bigint "box_id", null: false
+    t.bigint "api_connection_id", null: false
+    t.uuid "obo"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["api_connection_id"], name: "index_upvs_box_api_connections_on_api_connection_id"
+    t.index ["box_id"], name: "index_upvs_box_api_connections_on_box_id"
   end
 
   create_table "upvs_form_template_related_documents", force: :cascade do |t|
@@ -485,7 +492,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_18_172416) do
   add_foreign_key "tag_users", "users"
   add_foreign_key "tags", "tenants"
   add_foreign_key "tags", "users"
-  add_foreign_key "upvs_api_connections", "boxes"
+  add_foreign_key "upvs_box_api_connections", "boxes"
+  add_foreign_key "upvs_box_api_connections", "upvs_api_connections", column: "api_connection_id"
   add_foreign_key "upvs_form_template_related_documents", "upvs_form_templates"
   add_foreign_key "users", "tenants"
 end

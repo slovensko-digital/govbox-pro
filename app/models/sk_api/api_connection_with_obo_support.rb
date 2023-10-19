@@ -8,5 +8,5 @@
 #  created_at                                  :datetime         not null
 #  updated_at                                  :datetime         not null
 
-class Upvs::ApiConnection < ApplicationRecord
+class SkApi::ApiConnectionWithOboSupport < ::Upvs::ApiConnection
 end
