@@ -1,18 +1,20 @@
 <%= render Common::ModalComponent.new do |modal| %>
   <% modal.with_button do %>
-    <button type="button" data-action="click->modal#open" class="flex items-center gap-2">
+    <div role="button" data-action="click->modal#open" class="flex items-center gap-2">
       <span class="text-xl font-semibold text-left text-gray-900">
         <%= @message_thread.title %>
       </span>
-      <%= render Icons::PencilComponent.new %>
-    </button>
+      <div>
+        <%= render Icons::PencilComponent.new %>
+      </div>
+    </div>
   <% end %>
   <% modal.with_header do %>
     Zmeniť názov vlákna
   <% end %>
   <% modal.with_modal_content do %>
     <%= form_with model:@message_thread, method: :patch, class: "flex flex-col justify-stretch w-full gap-2 mt-4" do |form| %>
-      <%= form.text_area :title, value: @message_thread.title, class: "flex w-full text-base text-left text-gray-400 grow rounded-md bg-white border border-gray-400" %>
+      <%= form.text_area :title, value: @message_thread.title, required: true, class: "flex w-full text-base text-left text-gray-400 grow rounded-md bg-white border border-gray-400" %>
       <%= render Common::ModalActionsComponent.new do |actions| %>
         <% actions.with_submit_button do %>
           <%= button_tag type: 'submit', class: 'flex justify-center items-center px-2.5 py-1.5 rounded-md bg-blue-600 text-sm font-medium text-white'  do %>
