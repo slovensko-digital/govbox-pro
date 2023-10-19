@@ -274,6 +274,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_17_132154) do
     t.index ["message_id"], name: "index_message_objects_on_message_id"
   end
 
+  create_table "message_relations", force: :cascade do |t|
+    t.bigint "message_id"
+    t.bigint "related_message_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["message_id"], name: "index_message_relations_on_message_id"
+    t.index ["related_message_id"], name: "index_message_relations_on_related_message_id"
+  end
+
   create_table "message_thread_merge_identifiers", force: :cascade do |t|
     t.bigint "message_thread_id", null: false
     t.uuid "uuid", null: false
@@ -331,6 +340,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_17_132154) do
     t.boolean "replyable", default: true, null: false
     t.bigint "import_id"
     t.bigint "author_id"
+    t.boolean "collapsed", default: false, null: false
     t.index ["author_id"], name: "index_messages_on_author_id"
     t.index ["import_id"], name: "index_messages_on_import_id"
     t.index ["message_thread_id"], name: "index_messages_on_message_thread_id"
@@ -453,6 +463,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_17_132154) do
   add_foreign_key "message_drafts_imports", "boxes"
   add_foreign_key "message_object_data", "message_objects"
   add_foreign_key "message_objects", "messages"
+  add_foreign_key "message_relations", "messages"
+  add_foreign_key "message_relations", "messages", column: "related_message_id"
   add_foreign_key "message_thread_merge_identifiers", "message_threads"
   add_foreign_key "message_thread_merge_identifiers", "tenants"
   add_foreign_key "message_thread_notes", "message_threads"
