@@ -33,7 +33,8 @@ module Govbox
                                                             .joins(folder: :box).where(folders: { boxes: { id: govbox_message.box.id } }).take
 
       if delivery_notification_govbox_message
-        delivery_notification_message = ::Message.find_by(uuid: delivery_notification_govbox_message.message_id)
+        delivery_notification_message = ::Message.where(uuid: delivery_notification_govbox_message.message_id)
+                                                 .joins(thread: :folder).where(folders: { box_id: govbox_message.box.id }).take
         delivery_notification_message.collapsed = true
         delivery_notification_message.metadata["authorized"] = true
         delivery_notification_message.save!
