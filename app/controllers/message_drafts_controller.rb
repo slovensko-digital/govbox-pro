@@ -44,11 +44,10 @@ class MessageDraftsController < ApplicationController
       Govbox::SubmitMessageDraftJob.perform_later(@message)
       @message.being_submitted!
 
-      redirect_path = @message.original_message.present? ? message_path(@message.original_message) : message_drafts_path
-      redirect_to redirect_path, notice: "Správa bola zaradená na odoslanie."
+      redirect_to message_thread_path(@message.thread), notice: "Správa bola zaradená na odoslanie"
     else
       # TODO: prisposobit chybovu hlasku aj importovanym draftom
-      redirect_to message_draft_path(@message), alert: "Vyplňte predmet a text odpovede."
+      redirect_to message_thread_path(@message.thread), error: "Vyplňte predmet a text odpovede"
     end
   end
 
