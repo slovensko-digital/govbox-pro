@@ -1,11 +1,14 @@
- <%= tag.turbo_frame id: "condition-#{@index}", class:"flex justify-start self-stretch grow" do %>
+ <%= tag.turbo_frame id: "action-#{@index}", class:"flex justify-start self-stretch grow" do %>
   <div class="flex justify-between items-center self-stretch flex-grow flex-shrink-0 relative">
+    <%= @form.hidden_field :id %>
     <div class="flex gap-1">
       <p class="text-base font-medium text-left text-gray-900"><%= t @form.object.type %></p>
-      <p class="text-base text-left text-gray-900"><%= @form.object.value %></p>
+      <p class="text-base text-left text-gray-900"><%= @form.object.action_object.name %></p>
       <%= @form.hidden_field :type %>
       <%= @form.hidden_field :value %>
     </div>
+    <%= @form.hidden_field :action_object_type %>
+    <%= @form.hidden_field :action_object_id %>
     <% if @editable %>
       <div class="flex">
         <%= button_tag type: "submit", formaction: settings_automation_action_path(index: @index), formmethod: :post do %>

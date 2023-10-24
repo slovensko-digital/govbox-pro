@@ -1,0 +1,24 @@
+<% if @index <= @automation_rule.actions.count %>
+  <%= fields_for @automation_rule do |rule_form| %>
+    <%= turbo_stream.update 'actions' do %>
+      <%= rule_form.fields_for :actions, include_id: false do |action_form| %>
+        <% if action_form.index == @index %>
+          <%= render Settings::Rules::ActionFormComponent.new(form: action_form, index: action_form.index) %>
+        <% elsif action_form.object.delete_record %>
+          <%= action_form.hidden_field :id %>
+          <%= action_form.hidden_field :delete_record, value:true %>
+        <% else %>
+          <%= render Settings::Rules::ActionsFormRowComponent.new(form: action_form, index: action_form.index, editable: false) %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
+  <%= fields_for @automation_rule do |rule_form| %>
+    <%= rule_form.fields_for :actions, include_id: false, child_index: @index do |new_action_form| %>
+      <%= turbo_stream.update 'action-new' do %>
+        <%= render Settings::Rules::ActionFormComponent.new(form: new_action_form, index: @index) %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>

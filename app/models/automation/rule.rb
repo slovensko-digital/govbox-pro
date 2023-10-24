@@ -24,7 +24,6 @@ module Automation
              dependent: :destroy,
              foreign_key: :automation_rule_id,
              inverse_of: :automation_rule
-    belongs_to :rule_object, polymorphic: true
 
     accepts_nested_attributes_for :conditions, :actions, allow_destroy: true
 
@@ -37,6 +36,33 @@ module Automation
     def conditions_met?(thing)
       conditions.each { |condition| return false unless condition.satisfied?(thing) }
       true
+    end
+
+    def nested_update_with_cast(attributes)
+      transaction do
+        recast_conditions(attributes)
+        recast_actions(attributes)
+        reload
+        update(attributes)
+      end
+    end
+
+    def recast_conditions(attributes)
+      attributes['conditions_attributes'].each do |_index, condition|
+        next if condition['id'].blank?
+
+        old_condition = conditions.find(condition['id'])
+        old_condition.update_columns(type: condition['type']) if old_condition.type != condition['type']
+      end
+    end
+
+    def recast_actions(attributes)
+      attributes['actions_attributes'].each do |_index, action|
+        next if action['id'].blank?
+
+        old_action = actions.find(action['id'])
+        old_action.update_columns(type: action['type']) if old_action.type != action['type']
+      end
     end
   end
 end

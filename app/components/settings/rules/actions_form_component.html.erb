@@ -16,7 +16,7 @@
             <p class="flex-grow w-[804px] text-base text-left text-gray-900"> Pravidlo spúšťa ľubovoľný počet akcií, pričom všetky budú vykonané ak sú splnené všetky podmienky pravidla.</p>
           </div>
           <%= form_with model: [:settings, @new_rule], class:"flex justify-start items-center self-stretch gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200" do |new_rule_form| %>
-            <%= new_rule_form.fields_for :actions do |new_action_form| %>
+            <%= new_rule_form.fields_for :actions, child_index: @automation_rule.actions.size do |new_action_form| %>
               <%= tag.turbo_frame id: "action-new", class:"flex justify-between grow" do %>
                 <%= render Settings::Rules::ActionFormComponent.new(form: new_action_form, index: @automation_rule.actions.size) %>
               <% end %>
@@ -24,8 +24,9 @@
           <% end %>
           <%= form_with model: [:settings, @automation_rule], class:"flex flex-col self-stretch" do |rule_form| %>
             <%= tag.turbo_frame id: 'actions', class:"flex flex-col justify-start items-start grow gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200" do %>
-              <%= rule_form.fields_for :actions do |action_form| %>
+              <%= rule_form.fields_for :actions, include_id: false do |action_form| %>
                 <% if action_form.object.delete_record %>
+                  <%= action_form.hidden_field :id %>
                   <%= action_form.hidden_field :delete_record, value:true %>
                 <% else %>
                   <%= render Settings::Rules::ActionsFormRowComponent.new(form: action_form, index: action_form.index) %>

@@ -4,17 +4,6 @@ module Automation
 
     def perform(message_thread)
       Automation.run_rules_for(message_thread, :message_thread_created)
-      #tenant = message_thread.tenant
-
-      #tenant.automation_rules.where(trigger_event: :message_thread_created).find_each do |rule|
-        # TODO
-
-        # simulate for now
-       # rule.conditions = [Automation::Conditions::MessageThreadFilter.new(title: /Všeobecná agenda/)]
-        #rule.action = Automation::Actions::MoveToFolder.new(Folder.second!)
-
-#        rule.run!(message_thread)
-#      end
     end
   end
 end

@@ -13,7 +13,19 @@ two:
   tenant: solver
 
 three:
-  name: MyString3
+  name: Tag3
   external: false
   visible: true
-  tenant: ssd
+  tenant: solver
+
+four:
+  name: Tag4
+  external: false
+  visible: true
+  tenant: solver
+
+five:
+  name: Tag5
+  external: false
+  visible: true
+  tenant: solver

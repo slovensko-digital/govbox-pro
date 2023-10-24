@@ -1,12 +1,12 @@
 <%= fields_for @automation_rule do |rule_form| %>
-  <%= rule_form.fields_for :conditions, child_index: @index do |condition_form| %>
+  <%= rule_form.fields_for :conditions, include_id: false, child_index: @index do |condition_form| %>
     <%= turbo_stream.append 'conditions' do %>
       <%= render Settings::Rules::ConditionsFormRowComponent.new(form: condition_form, index: @index) %>
     <% end %>
   <% end %>
 <% end %>
 <%= fields_for @new_rule do |new_rule_form| %>
-  <%= new_rule_form.fields_for :conditions, child_index: @index+1 do |new_condition_form| %>
+  <%= new_rule_form.fields_for :conditions, include_id: false, child_index: @index+1 do |new_condition_form| %>
     <%= turbo_stream.update 'condition-new' do %>
       <%= render Settings::Rules::ConditionFormComponent.new(form: new_condition_form, index: @index+1) %>
     <% end %>

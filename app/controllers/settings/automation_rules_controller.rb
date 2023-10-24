@@ -13,7 +13,7 @@ class Settings::AutomationRulesController < ApplicationController
   end
 
   def new
-    @automation_rule = Automation::Rule.new
+    @automation_rule = Current.tenant.automation_rules.create
     authorize @automation_rule, policy_class: Settings::AutomationRulePolicy
   end
 
@@ -30,11 +30,10 @@ class Settings::AutomationRulesController < ApplicationController
 
   def update
     authorize @automation_rule, policy_class: Settings::AutomationRulePolicy
-    if @automation_rule.update(automation_rule_params)
+    if @automation_rule.nested_update_with_cast(automation_rule_params)
       redirect_to settings_automation_rules_path, notice: 'Rule was successfully created'
     else
-      # TODO: Vieme nejako zachranit?
-      render :new, status: :unprocessable_entity
+      render :edit, status: :unprocessable_entity
     end
   end
 
@@ -59,12 +58,14 @@ class Settings::AutomationRulesController < ApplicationController
   private
 
   def set_automation_rule
-    @automation_rule = policy_scope(Automation::Rule, policy_scope_class: Settings::AutomationRulePolicy::Scope).find(params[:id])
+    @automation_rule = policy_scope(Automation::Rule,
+                                    policy_scope_class: Settings::AutomationRulePolicy::Scope).find(params[:id])
   end
 
   def set_form_automation_rule
     @automation_rule = Automation::Rule.new if automation_rule_params[:id].blank?
-    @automation_rule ||= policy_scope(Automation::Rule, policy_scope_class: Settings::AutomationRulePolicy::Scope).find(automation_rule_params[:id])
+    @automation_rule ||= policy_scope(Automation::Rule,
+                                      policy_scope_class: Settings::AutomationRulePolicy::Scope).find(automation_rule_params[:id])
     @automation_rule.assign_attributes(automation_rule_params)
   end
 
@@ -73,8 +74,9 @@ class Settings::AutomationRulesController < ApplicationController
       :id,
       :name,
       :trigger_event,
-      conditions_attributes: %i[id attr type value delete_record _destroy],
-      actions_attributes: %i[id type value delete_record _destroy]
+      :tenant_id,
+      conditions_attributes: %i[_destroy id attr type value condition_object_type condition_object_id delete_record],
+      actions_attributes: %i[_destroy id type value action_object_type action_object_id delete_record]
     )
   end
 
