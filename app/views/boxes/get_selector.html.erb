@@ -1,1 +1,3 @@
-<%= render Layout::BoxSelectorPopupComponent.new(@boxes, @all_unread_messages_count) %>
+<%= tag.turbo_frame id: "modal" do %>
+  <%= render Layout::BoxSelectorPopupComponent.new(@boxes, @all_unread_messages_count) %>
+<% end %>
