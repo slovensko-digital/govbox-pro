@@ -1,6 +1,14 @@
 <div class="flex justify-between items-start gap-4 px-6 py-4 bg-white border-t-0 border-r-0 border-b border-l-0 border-gray-200">
   <div class="flex justify-start items-center relative gap-4">
-    <%= render MessageThreadRenameComponent.new(message_thread: @message_thread) %>
+    <%= link_to rename_message_thread_path(@message_thread), method: :get, data: { turbo_frame: "modal" }, class: "flex gap-4" do %>
+      <span class="text-xl font-semibold text-left text-gray-900">
+        <%= @message_thread.title %>
+      </span>
+      <div class="flex flex-col justify-center">
+        <%= render Icons::PencilComponent.new %>
+      </div>
+    <% end %>
+    <%#= render MessageThreadRenameComponent.new(message_thread: @message_thread) %>
     <div class="flex justify-start items-start   gap-2">
       <% @thread_tags_with_deletable_flag.each do |thread_tag|%>
         <%= render Common::RemovableTagComponent.new(thread_tag) %>
