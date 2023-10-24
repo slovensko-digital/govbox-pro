@@ -18,11 +18,13 @@ class MessageThreadsController < ApplicationController
   end
   def update
     authorize @message_thread
+
+    path = message_thread_path(@message_thread)
+
     if @message_thread.update(message_thread_params)
-      # flash[:notice] = "ok"
-      redirect_back fallback_location: message_thread_path(@message_thread), notice: "ok"
+      redirect_back fallback_location: path, notice: "ok"
     else
-      redirect_back fallback_location: message_thread_path(@message_thread), alert: "error"
+      redirect_back fallback_location: path, alert: "error"
     end
   end
 
