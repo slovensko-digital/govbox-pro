@@ -71,10 +71,7 @@ class MessageDraftsController < ApplicationController
 
     @message.destroy
 
-    drafts_tag = @message.thread.tags.find_by(name: "Drafts")
-    @message.thread.tags.delete(drafts_tag) unless @message.thread.message_drafts.any?
-
-    redirect_to redirect_path
+    redirect_to redirect_path, notice: "Draft bol zahodený"
   end
 
   private

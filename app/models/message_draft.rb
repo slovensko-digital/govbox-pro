@@ -21,7 +21,14 @@
 class MessageDraft < Message
   belongs_to :import, class_name: 'MessageDraftsImport', foreign_key: :import_id, optional: true
 
-  after_destroy { self.thread.destroy! if self.thread.messages.none? }
+  after_destroy do
+    if self.thread.messages.none?
+      self.thread.destroy!
+    else
+      drafts_tag = self.thread.tags.find_by(name: "Drafts")
+      thread.tags.delete(drafts_tag)
+    end
+  end
 
   GENERAL_AGENDA_POSP_ID = "App.GeneralAgenda"
   GENERAL_AGENDA_POSP_VERSION = "1.9"
