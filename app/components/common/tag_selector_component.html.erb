@@ -1,4 +1,4 @@
-<%= render Common::ModalComponent.new do |component| %>
+<%= render Common::ToggleableModalComponent.new do |component| %>
   <% component.with_button do %>
     <button type="button" class="rounded-md bg-blue-100 p-2" data-action="click->modal#open">
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" class="  w-4 h-4 relative" preserveAspectRatio="xMidYMid meet">
@@ -26,6 +26,6 @@
         <%= tag.turbo_frame id: "tag-selector-popup", class: "w-100", src: search_available_tags_message_thread_path(@message_thread) %>
       </div>
     </div>
-    <%= render Common::ModalActionsComponent.new %>
+    <%= render Common::ModalActionsComponent.new(toggleable: true) %>
   <% end %>
 <% end %>

@@ -12,6 +12,7 @@
 #  metadata                                    :json
 #  read                                        :boolean          not null, default: false
 #  replyable                                   :boolean          not null, default: true
+#  collapsed                                   :boolean          not null, default: false
 #  delivered_at                                :datetime         not null
 #  import_id                                   :integer
 #  author_id                                   :integer
@@ -21,6 +22,9 @@
 class Message < ApplicationRecord
   belongs_to :thread, class_name: 'MessageThread', foreign_key: :message_thread_id
   belongs_to :author, class_name: 'User', foreign_key: :author_id, optional: true
+  has_many :message_relations, dependent: :destroy
+  has_many :message_relations_as_related_message, class_name: 'MessageRelation', foreign_key: :related_message_id, dependent: :destroy
+  has_many :related_messages, through: :message_relations
   has_many :messages_tags, dependent: :destroy
   has_many :tags, through: :messages_tags
   has_many :objects, class_name: 'MessageObject', dependent: :destroy

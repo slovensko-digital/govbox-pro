@@ -10,7 +10,13 @@ class FiltersController < ApplicationController
   def new
     authorize Filter
 
-    @filter = Filter.new
+    if params[:query].present?
+      @filter = Filter.new(query: params[:query])
+      render :new_in_modal
+    else
+      @filter = Filter.new
+      render :new
+    end
   end
 
   def create
