@@ -17,7 +17,7 @@ class ChangeMessagesCollapsedAttribute < ActiveRecord::Migration[7.0]
       if delivery_notification_govbox_message
         delivery_notification_message = ::Message.where(uuid: delivery_notification_govbox_message.message_id)
                                                  .joins(thread: :folder).where(folders: { box_id: govbox_message.box.id }).take
-        delivery_notification_message.update(collapsed: true)
+        delivery_notification_message.update(collapsed: true) if delivery_notification_message
       end
     end
 
