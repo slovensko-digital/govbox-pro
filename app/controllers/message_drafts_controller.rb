@@ -3,6 +3,7 @@ class MessageDraftsController < ApplicationController
   before_action :load_original_message, only: :create
   before_action :load_message_draft, except: [:index, :create, :submit_all]
 
+  include ActionView::RecordIdentifier
   include MessagesConcern
 
   def index
@@ -13,9 +14,9 @@ class MessageDraftsController < ApplicationController
     authorize @original_message
 
     @message = MessageDraft.create_message_reply(original_message: @original_message, author: Current.user)
-
     @flash = flash
-    redirect_to message_draft_path(@message)
+
+    redirect_to message_thread_path(@message.thread, anchor: dom_id(@message))
   end
 
   def show
