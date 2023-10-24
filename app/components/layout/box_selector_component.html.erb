@@ -1,7 +1,7 @@
 <%= render Common::ModalComponent.new do |component| %>
   <% component.with_button do %>
     <button type="button" class="flex items-center gap-2" <%= "disabled=true" if @disabled %> data-action="click->modal#open">
-      <div class="flex justify-start items-center relative gap-3 py-1.5 lg:pl-8 rounded-md bg-white">
+      <div class="flex justify-start items-center relative gap-3 py-1.5 rounded-md bg-white">
         <% if Current.box %>
           <div class="hidden lg:flex">
             <%= render Icons::BoxesComponent.new %>

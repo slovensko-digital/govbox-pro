@@ -1,15 +1,17 @@
 <div data-controller="dropdown" data-action="click->dropdown#toggle click@window->dropdown#hide">
   <div id="dropdown-button" class="relative inline-block">
-    <div role="button" tabindex="0" data-dropdown-target="button" class="inline-block select-none">
-      <button type="button" class="m-1.5 flex items-center p-1.5" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
-        <span class="sr-only">Open user menu</span>
-        <img class="h-8 w-8 rounded-full bg-gray-50" src=<%= session[:user_profile_picture_url] %>>
+    <div role="button" tabindex="0" data-dropdown-target="button" id="user-menu-button" class="select-none flex items-center py-1.5" aria-expanded="false" aria-haspopup="true">
+        <span class="sr-only">
+          Open user menu
+        </span>
+        <div class="h-8 w-8 rounded-full bg-gray-50">
+          <img class="rounded-full bg-gray-50" alt="Avatar" src=<%= session[:user_profile_picture_url] %>>
+        </div>
         <span class="hidden lg:flex lg:items-center">
           <svg class="ml-2 h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
             <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
           </svg>
         </span>
-      </button>
     </div>
     <div data-dropdown-target="menu"
           data-transition-enter="transition ease-out duration-200"
@@ -21,7 +23,7 @@
           class="hidden absolute right-0">
       <div class="flex flex-col justify-start items-start gap-px py-0.5 rounded-lg bg-white border border-gray-300" style="box-shadow: 1px 1px 4px 0 rgba(0,0,0,0.1);">
         <div class="flex justify-start items-start px-4 py-3">
-          <div class="flex flex-col justify-start items-start   relative gap-1">
+          <div class="flex flex-col justify-start items-start relative gap-1">
             <% if @user %>
               <p class="  text-base text-center text-gray-900">Prihlásený ako</p>
               <p class="  text-base font-medium text-center text-gray-900"><%= @user.email %></p>
@@ -30,13 +32,13 @@
             <% end %>
           </div>
         </div>
-        <div class="flex justify-start items-center    relative">
-          <svg width="183" height="1" viewBox="0 0 183 1" fill="none" xmlns="http://www.w3.org/2000/svg" class="" preserveAspectRatio="xMidYMid meet">
+        <div class="flex justify-start items-center relative">
+          <svg width="183" height="1" viewBox="0 0 183 1" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
             <line y1="0.5" x2="183" y2="0.5" stroke="#E5E7EB"></line>
           </svg>
         </div>
-        <div class="flex justify-start items-start    px-4 py-2">
-          <%= button_to sessions_path, method: :delete, class:"text-base font-medium text-left text-gray-900 hover:underline", role:"menuitem", tabindex:"-1", id:"user-menu-item-1" do %>
+        <div class="flex justify-start items-start px-4 py-2">
+          <%= button_to sessions_path, method: :delete, class: "text-base font-medium text-left text-gray-900 hover:underline", role:"menuitem", tabindex:"-1", id:"user-menu-item-1" do %>
             <div class="flex justify-center items-center relative gap-3">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="  w-6 h-6 relative" preserveAspectRatio="xMidYMid meet">
                 <path d="M17 16L21 12M21 12L17 8M21 12H7M13 16V17C13 17.7956 12.6839 18.5587 12.1213 19.1213C11.5587 19.6839 10.7956 20 10 20H6C5.20435 20 4.44129 19.6839 3.87868 19.1213C3.31607 18.5587 3 17.7956 3 17V7C3 6.20435 3.31607 5.44129 3.87868 4.87868C4.44129 4.31607 5.20435 4 6 4H10C10.7956 4 11.5587 4.31607 12.1213 4.87868C12.6839 5.44129 13 6.20435 13 7V8" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
