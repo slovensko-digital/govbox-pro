@@ -9,8 +9,11 @@ class UpdateMessageMetadata < ActiveRecord::Migration[7.0]
       govbox_message.update(payload: raw_message)
 
       message = Message.find_by(uuid: govbox_message.message_id)
-      message.metadata["reference_id"] = govbox_message.payload["reference_id"]
-      message.save
+
+      if message
+        message.metadata["reference_id"] = govbox_message.payload["reference_id"]
+        message.save
+      end
     end
   end
 end
