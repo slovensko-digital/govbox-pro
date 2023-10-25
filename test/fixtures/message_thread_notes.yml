@@ -1,0 +1,7 @@
+one:
+  message_thread: one
+  note: "Note1"
+
+two:
+  message_thread: two
+  note: "Note2"

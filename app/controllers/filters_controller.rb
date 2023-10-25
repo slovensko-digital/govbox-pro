@@ -10,7 +10,13 @@ class FiltersController < ApplicationController
   def new
     authorize Filter
 
-    @filter = Filter.new
+    if params[:query].present?
+      @filter = Filter.new(query: params[:query])
+      render :new_in_modal
+    else
+      @filter = Filter.new
+      render :new
+    end
   end
 
   def create
@@ -25,7 +31,11 @@ class FiltersController < ApplicationController
         redirect_to filters_path
       end
     else
-      render :new
+      if params[:to] == 'search'
+        redirect_to message_threads_path(q: @filter.query), alert: 'Filter sa nepodarilo vytvoriť :('
+      else
+        render :new
+      end
     end
   end
 

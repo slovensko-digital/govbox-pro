@@ -19,7 +19,11 @@
       </svg>
       <%= f.search_field :q, value: params[:q], placeholder: 'Vyhľadaj správu', class: 'block h-full w-full border-0 py-0 pl-8 pr-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-base' %>
     <% end %>
-    <%= render TW::CreateFilterComponent.new %>
+    <% if params[:q].present? %>
+      <%= link_to new_filter_path(query: params[:q]), data: { turbo_frame: "modal" }, class: "flex items-center gap-2", title: "Pridať filter" do %>
+        <%= render Icons::AddFilterComponent.new %>
+      <% end %>
+    <% end %>
   </div>
 </div>
 <svg width="1" height="64" viewBox="0 0 1 64" fill="none" xmlns="http://www.w3.org/2000/svg" class="  " preserveAspectRatio="xMidYMid meet">

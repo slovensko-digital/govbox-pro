@@ -8,6 +8,7 @@ class Searchable::Indexer
   def self.index_message_thread(message_thread)
     record = ::Searchable::MessageThread.find_or_initialize_by(message_thread_id: message_thread.id)
     record.title = Searchable::IndexHelpers.searchable_string(message_thread.title)
+    record.note = Searchable::IndexHelpers.searchable_string(message_thread.message_thread_note&.note.to_s)
     record.tag_ids = message_thread.tags.map(&:id)
     record.tag_names = Searchable::IndexHelpers.searchable_string(message_thread.tags.map(&:name).join(' ').gsub(/[:\/]/, " "))
     record.content = message_thread.messages.map { |message| message_to_searchable_string(message) }.join(' ')

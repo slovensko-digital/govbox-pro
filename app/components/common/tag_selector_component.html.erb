@@ -1,26 +1,19 @@
-<div class="relative" data-controller="dropdown"
-                data-dropdown-active-target="#dropdown-button"
-                data-dropdown-active-class="bg-gray-50"
-                data-dropdown-invisible-class="opacity-0 scale-95"
-                data-dropdown-visible-class="opacity-100 scale-100"
-                data-dropdown-entering-class="ease-out duration-100"
-                data-dropdown-enter-timeout="100"
-                data-dropdown-leaving-class="ease-in duration-75"
-                data-dropdown-leave-timeout="75">
-  <div id="dropdown-button" data-action="click->dropdown#toggle click@window->dropdown#hide" role="button" data-dropdown-target="button" tabindex="0" class="inline-block select-none">
-    <button type="button" class="flex items-center" aria-expanded="false" aria-haspopup="true">
-      <div class="flex justify-center items-center    relative  gap-1.5 px-2 py-2 rounded-md bg-blue-100">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" class="  w-4 h-4 relative" preserveAspectRatio="xMidYMid meet">
-          <path d="M8 4V8M8 8V12M8 8H12M8 8H4" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-        </svg>
-      </div>
+<%= render Common::ToggleableModalComponent.new do |component| %>
+  <% component.with_button do %>
+    <button type="button" class="rounded-md bg-blue-100 p-2" data-action="click->modal#open">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" class="  w-4 h-4 relative" preserveAspectRatio="xMidYMid meet">
+        <path d="M8 4V8M8 8V12M8 8H12M8 8H4" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
     </button>
-  </div>
-  <div data-dropdown-target="menu" class="z-50 absolute transform transition hidden opacity-0 scale-95">
-    <div class="flex flex-col z-50 w-[600px] shrink-0 justify-start items-stretch absolute self-stretch gap-2 p-2 rounded-lg bg-white border border-gray-300 right-0" style="box-shadow: 1px 1px 4px 0 rgba(0,0,0,0.1);">
+  <% end %>
+  <% component.with_header do %>
+    Pridať tag
+  <% end %>
+  <% component.with_modal_content do %>
+    <div class="flex flex-col items-start gap-4 mt-4">
       <%= form_with url: search_available_tags_message_thread_path(@message_thread), method: :get,
                     data: { turbo_stream: true, controller: 'debounce', debounce_target: 'form' },
-                    class: "flex items-center rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600" do |form| %>
+                    class: "flex items-center rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 w-full" do |form| %>
         <div class="p-2">
           <%= render Icons::SearchComponent.new %>
         </div>
@@ -29,7 +22,10 @@
                               onreset: "this.form.requestSubmit()",
                               class: "grow border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" %>
       <% end %>
-      <%= tag.turbo_frame id: "tag-selector-popup", loading: :lazy, src: search_available_tags_message_thread_path(@message_thread) %>
+      <div class="w-full">
+        <%= tag.turbo_frame id: "tag-selector-popup", class: "w-100", src: search_available_tags_message_thread_path(@message_thread) %>
+      </div>
     </div>
-  </div>
-</div>
+    <%= render Common::ModalActionsComponent.new(toggleable: true) %>
+  <% end %>
+<% end %>

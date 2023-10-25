@@ -4,5 +4,17 @@
 
 import { application } from "./application"
 
+import AutogramController from "./autogram_controller"
+application.register("autogram", AutogramController)
+
+import MessageDraftsController from "./message_drafts_controller"
+application.register("messageDrafts", MessageDraftsController)
+
 import DebounceController from "./debounce_controller"
 application.register("debounce", DebounceController)
+
+import FormController from "./form_controller"
+application.register("form", FormController)
+
+import TurboContentController from "./turbo_content_controller"
+application.register("turbo-content", TurboContentController)

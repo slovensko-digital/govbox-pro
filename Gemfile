@@ -32,10 +32,12 @@ gem 'pundit'
 # Utilities
 gem 'rest-client'
 gem 'rack-attack'
+gem 'jbuilder'
 gem 'rubyzip', require: 'zip'
 gem 'jwt'
 gem 'stimulus-rails'
 gem 'jsbundling-rails'
+gem 'pdf-reader'
 
 # Monitoring
 gem 'rollbar'
@@ -60,6 +62,9 @@ group :development do
   gem 'web-console'
   gem 'solargraph'
   gem 'htmlbeautifier'
+  gem 'erb_lint'
+  gem 'ruby-lsp-rails'
+  gem 'rdbg'
 end
 
 group :test do
