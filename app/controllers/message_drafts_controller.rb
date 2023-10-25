@@ -14,7 +14,6 @@ class MessageDraftsController < ApplicationController
 
     @message = MessageDraft.create_message_reply(original_message: @original_message, author: Current.user)
 
-    @flash = flash
     redirect_to message_draft_path(@message)
   end
 
@@ -22,9 +21,8 @@ class MessageDraftsController < ApplicationController
     authorize @message
 
     @message_thread = @message.thread
-    set_thread_tags_with_deletable_flag
-    @flash = flash
     @thread_messages = @message_thread.messages_visible_to_user(Current.user).order(delivered_at: :asc)
+    set_thread_tags_with_deletable_flag
   end
 
   def update
@@ -89,7 +87,6 @@ class MessageDraftsController < ApplicationController
 
   def load_message_draft
     @message = policy_scope(MessageDraft).find(params[:id])
-    @flash = flash
   end
 
   def message_params
