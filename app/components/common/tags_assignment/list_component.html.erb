@@ -1,24 +1,24 @@
-<div class="flex flex-col gap-2 overflow-y-scroll" style="max-height: 45vh">
-  <div class="divide-y divide-gray-200 border-t border-b border-gray-200">
+<div class="flex flex-col gap-2 overflow-y-scroll border rounded border-gray-200 p-1" style="max-height: 40vh">
+  <div>
     <% @all_tags.each do |tag| %>
-      <div class="relative flex <%= "hidden" if @filtered_tag_ids.exclude?(tag.id) %>">
+      <div class="flex <%= "hidden" if @filtered_tag_ids.exclude?(tag.id) %>">
         <div class="mr-3 ml-1 flex h-6 items-center">
           <%= hidden_field_tag "tags_assignments[new][#{tag.id}]", TagsAssignment::REMOVE_SIGN, id: nil %>
-          <%= check_box_tag "tags_assignments[new][#{tag.id}]", TagsAssignment::ADD_SIGN, @new_tags_assignments[tag.id.to_s] == TagsAssignment::ADD_SIGN, id: "new_tags_assignments_#{tag.id}", class: "h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600", onchange: "this.form.requestSubmit(); this.disabled = true;" %>
+          <%= check_box_tag "tags_assignments[new][#{tag.id}]", TagsAssignment::ADD_SIGN, @new_tags_assignments[tag.id.to_s] == TagsAssignment::ADD_SIGN, id: "new_tags_assignments_#{tag.id}", class: "h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer", onchange: "this.form.requestSubmit(); this.disabled = true;" %>
         </div>
         <div class="min-w-0 flex text-sm leading-6">
-          <%= label_tag "new_tags_assignments_#{tag.id}", tag.name, class: "select-none text-gray-900" %>
+          <%= label_tag "new_tags_assignments_#{tag.id}", tag.name, class: "select-none text-gray-900 cursor-pointer" %>
         </div>
       </div>
     <% end %>
-    <% if @name_search.present? && false %>
-      <div class="relative flex">
+    <% if @name_search.present? %>
+      <div class="flex <%= "border-t border-gray-200 mt-1.5 pt-1.5" if @all_tags.any? { |tag| @filtered_tag_ids.include?(tag.id) } %>">
         <div class="mr-3 ml-1 flex h-6 items-center">
-          <%= check_box_tag "tag_ids[]", "new", false, id: "tag_id_new", class: "h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600" %>
+          <%= check_box_tag "create_new_tag", @name_search, false, class: "h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer" %>
         </div>
         <div class="min-w-0 flex text-sm leading-6">
-          <%= label_tag "tag_id_new", class: "select-none text-gray-500" do %>
-            <%= @name_search %> <span class="rounded-full px-1 py-0.5 ml-2 bg-gray-400 text-white">nový štítok</span>
+          <%= label_tag "create_new_tag", class: "select-none text-gray-900 cursor-pointer" do %>
+            <%= @name_search %> <span class="rounded-full px-2 py-0.5 ml-2 bg-gray-400 text-white">zaškrtnutím vytvoríte nový štítok</span>
           <% end %>
         </div>
       </div>

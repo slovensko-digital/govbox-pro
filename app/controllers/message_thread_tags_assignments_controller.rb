@@ -14,7 +14,8 @@ class MessageThreadTagsAssignmentsController < ApplicationController
   def prepare
     authorize [MessageThreadsTag]
 
-    set_tags_for_filter
+    @name_search = params[:name_search].strip
+    set_tags_for_filter(@name_search)
     @init_tags_assignments = tags_assignments[:init].to_h
     @new_tags_assignments = tags_assignments[:new].to_h
 
@@ -46,12 +47,12 @@ class MessageThreadTagsAssignmentsController < ApplicationController
     @message_thread = message_thread_policy_scope.find(params[:id])
   end
 
-  def set_tags_for_filter
+  def set_tags_for_filter(name_search = "")
     @all_tags = tag_scope
 
     @filtered_tag_ids = @all_tags
-    if params[:name_search]
-      @filtered_tag_ids = @filtered_tag_ids.where('unaccent(name) ILIKE unaccent(?)', "%#{params[:name_search]}%")
+    if name_search
+      @filtered_tag_ids = @filtered_tag_ids.where('unaccent(name) ILIKE unaccent(?)', "%#{name_search}%")
     end
     @filtered_tag_ids = Set.new(@filtered_tag_ids.pluck(:id))
   end
@@ -65,6 +66,6 @@ class MessageThreadTagsAssignmentsController < ApplicationController
   end
 
   def tags_assignments
-    params.require(:tags_assignments).permit(init: {}, new: {})
+    params.require(:tags_assignments).permit(:create_new_tag, init: {}, new: {})
   end
 end
