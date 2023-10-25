@@ -50,5 +50,9 @@ class MessageThreadsTagPolicy < ApplicationPolicy
   def destroy?
     true
   end
+
+  def prepare?
+    true
+  end
 end
 

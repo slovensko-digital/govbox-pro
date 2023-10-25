@@ -51,11 +51,14 @@ Rails.application.routes.draw do
       post :bulk_actions
       post :bulk_merge
     end
-    get :search_available_tags, on: :member
     resources :messages
     resources :message_thread_notes
   end
+
   resources :message_threads_tags
+  resources :message_thread_tags_assignments, only: [:edit, :update] do
+    post :prepare, on: :member
+  end
 
   resources :messages do
     member do

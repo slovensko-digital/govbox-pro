@@ -1,0 +1,11 @@
+<%= tag.turbo_frame id: "modal" do %>
+  <%=
+    render Common::TagsAssignment::Component.new(
+      message_thread: @message_thread,
+      all_tags: @all_tags,
+      init_tags_assignments: @init_tags_assignments,
+      new_tags_assignments: @new_tags_assignments,
+      filtered_tag_ids: @filtered_tag_ids,
+      diff: @diff,
+      name_search: params[:name_search]) %>
+<% end %>
