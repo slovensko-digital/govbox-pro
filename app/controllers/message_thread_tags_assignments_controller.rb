@@ -5,10 +5,10 @@ class MessageThreadTagsAssignmentsController < ApplicationController
     authorize MessageThreadsTag
 
     set_tags_for_filter
-    @init_tags_assignments = TagsAssignment.init(@all_tags, @message_thread.tag_ids)
+    @init_tags_assignments = TagsAssignments.init(@all_tags, @message_thread.tag_ids)
     @new_tags_assignments = @init_tags_assignments
 
-    @diff = TagsAssignment.make_diff(@init_tags_assignments, @new_tags_assignments, tag_scope)
+    @diff = TagsAssignments.make_diff(@init_tags_assignments, @new_tags_assignments, tag_scope)
   end
 
   def prepare
@@ -22,7 +22,7 @@ class MessageThreadTagsAssignmentsController < ApplicationController
       authorize(new_tag, "create?")
 
       if new_tag.save
-        TagsAssignment.add_new_tag(@new_tags_assignments, new_tag)
+        TagsAssignments.add_new_tag(@new_tags_assignments, new_tag)
       end
 
       @reset_search_filter = true
@@ -32,13 +32,13 @@ class MessageThreadTagsAssignmentsController < ApplicationController
     end
 
     set_tags_for_filter(@name_search)
-    @diff = TagsAssignment.make_diff(@init_tags_assignments, @new_tags_assignments, tag_scope)
+    @diff = TagsAssignments.make_diff(@init_tags_assignments, @new_tags_assignments, tag_scope)
   end
 
   def update
     authorize MessageThreadsTag
 
-    diff = TagsAssignment.make_diff(
+    diff = TagsAssignments.make_diff(
       tags_assignments[:init].to_h,
       tags_assignments[:new].to_h,
       tag_scope

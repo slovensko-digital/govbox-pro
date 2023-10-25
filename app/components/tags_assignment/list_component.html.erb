@@ -3,8 +3,8 @@
     <% @all_tags.each do |tag| %>
       <div class="flex <%= "hidden" if @filtered_tag_ids.exclude?(tag.id) %>">
         <div class="mr-3 ml-1 flex h-6 items-center">
-          <%= hidden_field_tag "tags_assignments[new][#{tag.id}]", TagsAssignment::REMOVE_SIGN, id: nil %>
-          <%= check_box_tag "tags_assignments[new][#{tag.id}]", TagsAssignment::ADD_SIGN, @new_tags_assignments[tag.id.to_s] == TagsAssignment::ADD_SIGN, id: "new_tags_assignments_#{tag.id}", class: "h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer", onchange: "this.form.requestSubmit(); this.disabled = true;" %>
+          <%= hidden_field_tag "tags_assignments[new][#{tag.id}]", TagsAssignments::REMOVE_SIGN, id: nil %>
+          <%= check_box_tag "tags_assignments[new][#{tag.id}]", TagsAssignments::ADD_SIGN, @new_tags_assignments[tag.id.to_s] == TagsAssignments::ADD_SIGN, id: "new_tags_assignments_#{tag.id}", class: "h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer", onchange: "this.form.requestSubmit(); this.disabled = true;" %>
         </div>
         <div class="min-w-0 flex text-sm leading-6">
           <%= label_tag "new_tags_assignments_#{tag.id}", tag.name, class: "select-none text-gray-900 cursor-pointer" %>

@@ -1,4 +1,4 @@
-class TagsAssignment
+class TagsAssignments
   ADD_SIGN = "+"
   REMOVE_SIGN = "-"
 
