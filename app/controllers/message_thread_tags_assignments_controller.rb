@@ -2,7 +2,7 @@ class MessageThreadTagsAssignmentsController < ApplicationController
   before_action :set_message_thread
 
   def edit
-    authorize [MessageThreadsTag]
+    authorize MessageThreadsTag
 
     set_tags_for_filter
     @init_tags_assignments = TagsAssignment.init(@all_tags, @message_thread.tag_ids)
@@ -12,14 +12,16 @@ class MessageThreadTagsAssignmentsController < ApplicationController
   end
 
   def prepare
-    authorize [MessageThreadsTag]
+    authorize MessageThreadsTag
 
     @init_tags_assignments = tags_assignments[:init].to_h
     @new_tags_assignments = tags_assignments[:new].to_h
 
     if params[:create_new_tag].present?
-      new_tag = Tag.create(tag_creation_params.merge(name: params[:create_new_tag].strip))
-      if new_tag.persisted?
+      new_tag = Tag.new(tag_creation_params.merge(name: params[:create_new_tag].strip))
+      authorize(new_tag, "create?")
+
+      if new_tag.save
         TagsAssignment.add_new_tag(@new_tags_assignments, new_tag)
       end
 
@@ -34,7 +36,7 @@ class MessageThreadTagsAssignmentsController < ApplicationController
   end
 
   def update
-    authorize [MessageThreadsTag]
+    authorize MessageThreadsTag
 
     diff = TagsAssignment.make_diff(
       tags_assignments[:init].to_h,
