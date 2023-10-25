@@ -22,9 +22,9 @@ class MessageThreadsController < ApplicationController
     path = message_thread_path(@message_thread)
 
     if @message_thread.update(message_thread_params)
-      redirect_back fallback_location: path, notice: "ok"
+      redirect_back fallback_location: path, notice: "Názov vlákna bol upravený"
     else
-      redirect_back fallback_location: path, alert: "error"
+      redirect_back fallback_location: path, alert: "Názov vlákna sa nepodarilo upraviť"
     end
   end
 
