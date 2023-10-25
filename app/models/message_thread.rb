@@ -31,6 +31,10 @@ class MessageThread < ApplicationRecord
 
   delegate :tenant, to: :folder
 
+  def note
+    message_thread_note || build_message_thread_note
+  end
+
   def messages_visible_to_user(user)
     messages.where(messages: { author_id: user.id }).or(messages.where(messages: { author_id: nil }))
   end
