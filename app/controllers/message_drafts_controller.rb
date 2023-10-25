@@ -25,7 +25,6 @@ class MessageDraftsController < ApplicationController
     set_thread_tags_with_deletable_flag
     @flash = flash
     @thread_messages = @message_thread.messages_visible_to_user(Current.user).order(delivered_at: :asc)
-    @message_thread_note = @message_thread.note
   end
 
   def update
