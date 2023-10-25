@@ -55,7 +55,7 @@ Rails.application.routes.draw do
     resources :message_thread_notes
   end
 
-  resources :message_threads_tags
+  resources :message_threads_tags, only: :destroy
   resources :message_thread_tags_assignments, only: [:edit, :update] do
     post :prepare, on: :member
   end
