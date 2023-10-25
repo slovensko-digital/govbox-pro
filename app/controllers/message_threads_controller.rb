@@ -8,9 +8,7 @@ class MessageThreadsController < ApplicationController
   def show
     authorize @message_thread
     set_thread_tags_with_deletable_flag
-    @flash = flash
     @thread_messages = @message_thread.messages_visible_to_user(Current.user).order(delivered_at: :asc)
-    @message_thread_note = @message_thread.message_thread_note || @message_thread.build_message_thread_note
   end
 
   def update
