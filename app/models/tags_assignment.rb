@@ -19,6 +19,11 @@ class TagsAssignment
     all_tags.map { |tag| [tag.id.to_s, to_checkbox_value(assigned_ids.include?(tag.id))] }.to_h
   end
 
+  def self.add_new_tag(current_assignment, tag)
+    current_assignment[tag.id.to_s] = ADD_SIGN
+    current_assignment
+  end
+
   def self.make_diff(init_state, new_state, tag_scope)
     to_add = []
     to_remove = []

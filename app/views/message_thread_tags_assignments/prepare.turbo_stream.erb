@@ -1,3 +1,11 @@
+<% if @reset_search_filter %>
+  <%= turbo_stream.replace Common::TagsAssignment::Component::SEARCH_FIELD_FRAME do %>
+    <%= tag.turbo_frame id: Common::TagsAssignment::Component::SEARCH_FIELD_FRAME do %>
+      <%= render Common::TagsAssignment::SearchFieldComponent.new %>
+    <% end %>
+  <% end %>
+<% end %>
+
 <%= turbo_stream.replace Common::TagsAssignment::Component::LIST_FRAME do %>
   <%= tag.turbo_frame id: Common::TagsAssignment::Component::LIST_FRAME do %>
     <%=

@@ -14,11 +14,22 @@ class MessageThreadTagsAssignmentsController < ApplicationController
   def prepare
     authorize [MessageThreadsTag]
 
-    @name_search = params[:name_search].strip
-    set_tags_for_filter(@name_search)
     @init_tags_assignments = tags_assignments[:init].to_h
     @new_tags_assignments = tags_assignments[:new].to_h
 
+    if params[:create_new_tag].present?
+      new_tag = Tag.create(tag_creation_params.merge(name: params[:create_new_tag].strip))
+      if new_tag.persisted?
+        TagsAssignment.add_new_tag(@new_tags_assignments, new_tag)
+      end
+
+      @reset_search_filter = true
+      @name_search = ""
+    else
+      @name_search = params[:name_search].strip
+    end
+
+    set_tags_for_filter(@name_search)
     @diff = TagsAssignment.make_diff(@init_tags_assignments, @new_tags_assignments, tag_scope)
   end
 
@@ -66,6 +77,14 @@ class MessageThreadTagsAssignmentsController < ApplicationController
   end
 
   def tags_assignments
-    params.require(:tags_assignments).permit(:create_new_tag, init: {}, new: {})
+    params.require(:tags_assignments).permit(init: {}, new: {})
+  end
+
+  def tag_creation_params
+    {
+      owner: Current.user,
+      tenant: Current.tenant,
+      groups: [Current.user.user_group]
+    }
   end
 end

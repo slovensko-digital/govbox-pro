@@ -14,7 +14,7 @@
     <% if @name_search.present? %>
       <div class="flex <%= "border-t border-gray-200 mt-1.5 pt-1.5" if @all_tags.any? { |tag| @filtered_tag_ids.include?(tag.id) } %>">
         <div class="mr-3 ml-1 flex h-6 items-center">
-          <%= check_box_tag "create_new_tag", @name_search, false, class: "h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer" %>
+          <%= check_box_tag "create_new_tag", @name_search, false, class: "h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer", onchange: "this.form.requestSubmit(); this.disabled = true;" %>
         </div>
         <div class="min-w-0 flex text-sm leading-6">
           <%= label_tag "create_new_tag", class: "select-none text-gray-900 cursor-pointer" do %>
