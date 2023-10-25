@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_19_080214) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_20_095657) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -81,9 +81,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_19_080214) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
-    t.string "rule_object_type"
-    t.bigint "rule_object_id"
-    t.index ["rule_object_type", "rule_object_id"], name: "index_automation_rules_on_rule_object"
     t.index ["tenant_id"], name: "index_automation_rules_on_tenant_id"
     t.index ["user_id"], name: "index_automation_rules_on_user_id"
   end
@@ -283,6 +280,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_19_080214) do
     t.index ["message_id"], name: "index_message_objects_on_message_id"
   end
 
+  create_table "message_relations", force: :cascade do |t|
+    t.bigint "message_id"
+    t.bigint "related_message_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["message_id"], name: "index_message_relations_on_message_id"
+    t.index ["related_message_id"], name: "index_message_relations_on_related_message_id"
+  end
+
   create_table "message_thread_merge_identifiers", force: :cascade do |t|
     t.bigint "message_thread_id", null: false
     t.uuid "uuid", null: false
@@ -340,6 +346,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_19_080214) do
     t.boolean "replyable", default: true, null: false
     t.bigint "import_id"
     t.bigint "author_id"
+    t.boolean "collapsed", default: false, null: false
     t.index ["author_id"], name: "index_messages_on_author_id"
     t.index ["import_id"], name: "index_messages_on_import_id"
     t.index ["message_thread_id"], name: "index_messages_on_message_thread_id"
@@ -375,6 +382,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_19_080214) do
     t.datetime "updated_at", null: false
     t.integer "tenant_id", null: false
     t.integer "box_id", null: false
+    t.string "note", null: false
     t.index ["message_thread_id"], name: "index_searchable_message_threads_on_message_thread_id", unique: true
   end
 
@@ -461,6 +469,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_19_080214) do
   add_foreign_key "message_drafts_imports", "boxes"
   add_foreign_key "message_object_data", "message_objects"
   add_foreign_key "message_objects", "messages"
+  add_foreign_key "message_relations", "messages"
+  add_foreign_key "message_relations", "messages", column: "related_message_id"
   add_foreign_key "message_thread_merge_identifiers", "message_threads"
   add_foreign_key "message_thread_merge_identifiers", "tenants"
   add_foreign_key "message_thread_notes", "message_threads"

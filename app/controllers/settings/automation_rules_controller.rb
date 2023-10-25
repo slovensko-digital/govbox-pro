@@ -13,7 +13,7 @@ class Settings::AutomationRulesController < ApplicationController
   end
 
   def new
-    @automation_rule = Current.tenant.automation_rules.create
+    @automation_rule = Current.tenant.automation_rules.new
     authorize @automation_rule, policy_class: Settings::AutomationRulePolicy
   end
 
@@ -30,7 +30,7 @@ class Settings::AutomationRulesController < ApplicationController
 
   def update
     authorize @automation_rule, policy_class: Settings::AutomationRulePolicy
-    if @automation_rule.nested_update_with_cast(automation_rule_params)
+    if @automation_rule.update(automation_rule_params)
       redirect_to settings_automation_rules_path, notice: 'Rule was successfully created'
     else
       render :edit, status: :unprocessable_entity
@@ -74,7 +74,6 @@ class Settings::AutomationRulesController < ApplicationController
       :id,
       :name,
       :trigger_event,
-      :tenant_id,
       conditions_attributes: %i[_destroy id attr type value condition_object_type condition_object_id delete_record],
       actions_attributes: %i[_destroy id type value action_object_type action_object_id delete_record]
     )

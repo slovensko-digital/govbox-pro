@@ -18,7 +18,7 @@
           <%= form_with model: [:settings, @new_rule], class:"flex justify-start items-center self-stretch gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200" do |new_rule_form| %>
             <%= new_rule_form.fields_for :actions, child_index: @automation_rule.actions.size do |new_action_form| %>
               <%= tag.turbo_frame id: "action-new", class:"flex justify-between grow" do %>
-                <%= render Settings::Rules::ActionFormComponent.new(form: new_action_form, index: @automation_rule.actions.size) %>
+                <%= render Settings::Rules::ActionFormComponent.new(form: new_action_form, index: @automation_rule.actions.size, new: true) %>
               <% end %>
             <% end %>
           <% end %>

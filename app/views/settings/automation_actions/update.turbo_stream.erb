@@ -13,7 +13,7 @@
 <%= fields_for @new_rule do |new_rule_form| %>
   <%= new_rule_form.fields_for :actions, include_id: false, child_index: @automation_rule.actions.size do |new_action_form| %>
     <%= turbo_stream.update 'action-new' do %>
-      <%= render Settings::Rules::ActionFormComponent.new(form: new_action_form, index: @automation_rule.actions.size, enabled: true) %>
+      <%= render Settings::Rules::ActionFormComponent.new(form: new_action_form, index: @automation_rule.actions.size, enabled: true, new: true) %>
     <% end %>
   <% end %>
 <% end %>

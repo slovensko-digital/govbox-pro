@@ -14,6 +14,7 @@ module Automation
   class Condition < ApplicationRecord
     belongs_to :automation_rule, class_name: 'Automation::Rule'
     belongs_to :condition_object, polymorphic: true, optional: true
+    before_save :cleanup_record
 
     attr_accessor :delete_record
 
@@ -32,7 +33,6 @@ module Automation
   end
 
   class ContainsCondition < Automation::Condition
-    before_save :cleanup_record
     validates :value, presence: true
     VALID_ATTR_LIST = %w[sender_name recipient_name title].freeze
     validates :attr, inclusion: { in: VALID_ATTR_LIST }
@@ -47,7 +47,6 @@ module Automation
   end
 
   class MetadataValueCondition < Automation::Condition
-    before_save :cleanup_record
     validates :value, presence: true
     VALID_ATTR_LIST = %w[sender_uri recipient_uri].freeze
     validates :attr, inclusion: { in: VALID_ATTR_LIST }
@@ -62,7 +61,6 @@ module Automation
   end
 
   class BoxCondition < Automation::Condition
-    before_save :cleanup_record
     validates_associated :condition_object
     VALID_ATTR_LIST = ['box'].freeze
 

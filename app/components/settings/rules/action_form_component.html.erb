@@ -12,19 +12,19 @@
   </div>
   <% if @enabled %>
     <div>
-      <% if @form.object.id %>
+      <% if @new %>
+        <%= button_tag type: "submit", formaction: settings_automation_actions_path(index: @index), formmethod: :post do %>
+          <%= render Common::AddButtonComponent.new %>
+        <% end %>
+      <% else %>
         <%= button_tag type: "submit", formaction: settings_automation_action_path(id: @form.object.id, index: @index), formmethod: :delete do %>
           <%= render Common::DeleteButtonComponent.new %>
         <% end %>
         <%= button_tag type: "submit", formaction: settings_automation_action_path(index: @index), formmethod: :patch do %>
           <%= render Common::AddButtonComponent.new %>
         <% end %>
-      <% else %>
-        <%= button_tag type: "submit", formaction: settings_automation_actions_path(index: @index), formmethod: :post do %>
-          <%= render Common::AddButtonComponent.new %>
-        <% end %>
       <% end %>
-      <%= button_tag id: "rerender", type: "submit", formaction: settings_automation_condition_rerender_path(automation_condition_index: @index), hidden: true, formmethod: :patch %>
+      <%= button_tag id: "rerender", type: "submit", formaction: settings_automation_condition_rerender_path(automation_condition_index: @index, new: @new), hidden: true, formmethod: :patch %>
     </div>
   <% end %>
 </div>

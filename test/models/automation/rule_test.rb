@@ -13,7 +13,7 @@ class Automation::RuleTest < ActiveSupport::TestCase
       }
     }
 
-    automation_rule.nested_update_with_cast(automation_rule_params)
+    automation_rule.update(automation_rule_params)
 
     # necessary to re-read from DB due to recasting in the test
     automation_condition_one = Automation::Condition.find(automation_conditions(:one).id)

@@ -13,7 +13,7 @@
 <%= fields_for @new_rule do |f| %>
   <%= f.fields_for :conditions, include_id: false, child_index: @automation_rule.conditions.size do |form| %>
     <%= turbo_stream.update 'condition-new' do %>
-      <%= render Settings::Rules::ConditionFormComponent.new(form: form, index: @automation_rule.conditions.size, enabled: true) %>
+      <%= render Settings::Rules::ConditionFormComponent.new(form: form, index: @automation_rule.conditions.size, enabled: true, new: true) %>
     <% end %>
   <% end %>
 <% end %>

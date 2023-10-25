@@ -38,12 +38,12 @@ module Automation
       true
     end
 
-    def nested_update_with_cast(attributes)
+    def update(attributes)
       transaction do
         recast_conditions(attributes)
         recast_actions(attributes)
         reload
-        update(attributes)
+        super(attributes)
       end
     end
 
