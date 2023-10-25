@@ -4,12 +4,12 @@ module Common
       @flash = flash
     end
 
-    def is_notice(type)
+    def notice?(type)
       type == 'notice'
     end
 
-    def get_color_by_type(type)
-      is_notice(type) ? "green" : "red"
+    def color_from_type(type)
+      notice?(type) ? "green" : "red"
     end
   end
 end

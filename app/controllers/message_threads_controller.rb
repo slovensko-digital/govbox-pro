@@ -24,7 +24,7 @@ class MessageThreadsController < ApplicationController
     if @message_thread.update(message_thread_params)
       redirect_back fallback_location: path, notice: "Názov vlákna bol upravený"
     else
-      redirect_back fallback_location: path, alert: "Názov vlákna sa nepodarilo upraviť"
+      flash.now[:alert] = 'Nesprávny názov vlákna'
     end
   end
 
