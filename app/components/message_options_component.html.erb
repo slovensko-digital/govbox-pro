@@ -4,7 +4,7 @@
       <div data-controller="dropdown" data-action="click->dropdown#toggle click@window->dropdown#hide">
         <div id="dropdown-button" class="relative inline-block">
           <div role="button" tabindex="0" data-dropdown-target="button" class="inline-block select-none">
-            <div class="flex justify-center items-center relative gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300">
+            <div class="flex justify-center items-center relative gap-2.5 px-3.5 py-2.5 rounded-md bg-white">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="  w-5 h-5 relative" preserveAspectRatio="xMidYMid meet">
                 <path d="M9.41107 4.75592C9.56735 4.9122 9.77931 5 10.0003 5C10.2213 5 10.4333 4.9122 10.5896 4.75592C10.7459 4.59964 10.8337 4.38768 10.8337 4.16667C10.8337 3.94566 10.7459 3.73369 10.5896 3.57741C10.4333 3.42113 10.2213 3.33334 10.0003 3.33334C9.77931 3.33334 9.56735 3.42113 9.41107 3.57741C9.25479 3.73369 9.16699 3.94566 9.16699 4.16667C9.16699 4.38768 9.25479 4.59964 9.41107 4.75592Z" fill="#111827"></path>
                 <path d="M9.41107 10.5893C9.56735 10.7455 9.77931 10.8333 10.0003 10.8333C10.2213 10.8333 10.4333 10.7455 10.5896 10.5893C10.7459 10.433 10.8337 10.221 10.8337 10C10.8337 9.77899 10.7459 9.56703 10.5896 9.41075C10.4333 9.25447 10.2213 9.16667 10.0003 9.16667C9.77931 9.16667 9.56735 9.25447 9.41107 9.41075C9.25479 9.56703 9.16699 9.77899 9.16699 10C9.16699 10.221 9.25479 10.433 9.41107 10.5893Z" fill="#111827"></path>
@@ -14,17 +14,17 @@
             </div>
           </div>
           <div data-dropdown-target="menu"
-               data-transition-enter="transition ease-out duration-200"
-               data-transition-enter-from="opacity-0 translate-y-1"
-               data-transition-enter-to="opacity-100 translate-y-0"
-               data-transition-leave="transition ease-in duration-150"
-               data-transition-leave-from="opacity-100 translate-y-0"
-               data-transition-leave-to="opacity-0 translate-y-1"
+               data-transition-enter="transition ease-out duration-100"
+               data-transition-enter-from="transform opacity-0 scale-9"
+               data-transition-enter-to="transform opacity-100 scale-100"
+               data-transition-leave="transition ease-in duration-75"
+               data-transition-leave-from="transform opacity-100 scale-100"
+               data-transition-leave-to="transform opacity-0 scale-95"
                class="hidden absolute right-0">
-            <div class="flex flex-col justify-start items-start gap-px py-0.5 rounded-lg bg-white border border-gray-300" style="box-shadow: 1px 1px 4px 0 rgba(0,0,0,0.1);">
+            <div class="flex flex-col justify-start items-start gap-px py-0.5 rounded-lg bg-white border border-gray-300 mt-1" style="box-shadow: 1px 1px 4px 0 rgba(0,0,0,0.1);">
               <div class="flex justify-start items-start">
                 <div class="flex flex-col justify-start items-start   relative gap-1">
-                  <div class="flex justify-start items-start px-4 py-3">
+                  <div class="flex justify-start items-start px-4 py-3 rounded-lg hover:bg-gray-50">
                     <%= link_to download_message_message_object_path(@message, @message.form), data: { turbo_frame: '_top' }, class: 'whitespace-nowrap' do %>
                       <div class="flex justify-center items-center relative gap-3">
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="  w-5 h-5 " preserveAspectRatio="xMidYMid meet">
