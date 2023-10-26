@@ -74,13 +74,13 @@
     <%= form_with(url: authorize_delivery_notification_message_path(@message), method: :post, local: true, style:'width: 100%;') do |form| %>
       <div class="flex justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
         <div class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md bg-blue-600">
-          <%= form.submit "Prevziať správu", data: { turbo_frame: '_top', turbo_confirm: 'Naozaj chcete prevziať správu?' }, class: "flex-grow-0 flex-shrink-0 bg-blue-600 text-base font-medium text-left text-white" %>
+          <%= form.submit "Prevziať správu", data: { turbo_frame: "_top", turbo_confirm: 'Naozaj chcete prevziať správu?' }, class: "flex-grow-0 flex-shrink-0 bg-blue-600 text-base font-medium text-left text-white" %>
         </div>
       </div>
     <% end %>
   <% elsif @message.replyable? %>
     <div class="flex justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
-      <%= button_to message_drafts_path, method: :post, params: { original_message_id: @message.id }, data: { turbo_frame: '_top' }, class: "text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3.5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" do %>
+      <%= button_to message_drafts_path, method: :post, params: { original_message_id: @message.id }, data: { turbo: 'false' }, class: "text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3.5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" do %>
         Odpovedať
       <% end %>
     </div>

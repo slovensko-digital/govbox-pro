@@ -5,7 +5,7 @@
         <div class="flex flex-col justify-start items-start flex-grow relative">
           <p class="self-stretch flex-grow text-m font-semibold text-left text-gray-900">Pridaj používateľa do skupiny</p>
         </div>
-        <%= render Common::CloseButtonComponent.new(link_to: edit_members_admin_tenant_group_path(Current.tenant, @group), target_frame: 'modal') %>
+        <%= render Common::CloseButtonComponent.new(link_to: edit_members_admin_tenant_group_path(Current.tenant, @group), target_frame: "modal") %>
       </div>
       <div class="flex flex-col justify-start items-start self-stretch flex-grow-0 flex-shrink-0">
         <div class="flex flex-col justify-start items-start self-stretch p-6 divide-y">

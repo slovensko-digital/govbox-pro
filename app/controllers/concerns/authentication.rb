@@ -8,10 +8,13 @@ module Authentication
   SESSION_TIMEOUT = 20.minutes
 
   def authenticate
+    if request.path != login_path && request.get? && !turbo_frame_request?
+      session[:after_login_path] = request.fullpath
+    end
+
     if valid_session?(session)
       session[:login_expires_at] = SESSION_TIMEOUT.from_now
     else
-      session[:after_login_path] = request.fullpath if request.path != login_path && request.get?
       redirect_to login_path
     end
 

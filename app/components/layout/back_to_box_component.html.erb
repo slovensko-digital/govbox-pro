@@ -1,8 +1,6 @@
-<%= link_to message_threads_path, class:"flex justify-start items-center relative gap-4 p-4" do %>
-  <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" class="  w-8 h-8 relative" preserveAspectRatio="xMidYMid meet">
-    <path d="M20.0003 25.3333L10.667 16L20.0003 6.66666" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+<%= link_to message_threads_path, class: "flex justify-start items-center group w-full gap-2 p-4 text-gray-700 hover:text-indigo-600 hover:bg-gray-50" do %>
+  <svg class="h-6 w-6 shrink-0" width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+    <path d="M20.0003 25.3333L10.667 16L20.0003 6.66666" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
   </svg>
-  <div class="flex flex-col justify-start items-start  relative gap-1">
-    <p class="  text-lg font-semibold text-center text-gray-900">Späť do schránky</p>
-  </div>
+  <p class="text-lg font-semibold">Späť do schránky</p>
 <% end %>

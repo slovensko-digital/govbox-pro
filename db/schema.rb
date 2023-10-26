@@ -222,6 +222,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_20_095657) do
     t.string "edesk_class", null: false
     t.bigint "folder_id", null: false
     t.json "payload", null: false
+    t.index "((((payload -> 'delivery_notification'::text) -> 'consignment'::text) ->> 'message_id'::text))", name: "index_govbox_messages_on_delivery_notification_id", using: :hash
     t.index ["folder_id"], name: "index_govbox_messages_on_folder_id"
   end
 
