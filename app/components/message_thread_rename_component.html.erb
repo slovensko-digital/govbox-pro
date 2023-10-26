@@ -7,11 +7,11 @@
       <div>
         <div class="relative mt-2 rounded-md shadow-sm">
           <%= form.text_area :title,
-            value: @message_thread.title,
-            placeholder: "Názov vlákna",
-            "aria-invalid": @message_thread.errors.any? ? "true" : "false",
-            "aria-describedby": "thread-title-error",
-            class: (@message_thread.errors[:title].any? ? "text-red-900 ring-red-300 placeholder:text-red-300 focus:ring-red-500" : "text-gray-400 border-gray-400") + " block w-full rounded-md border-0 py-1.5 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset text-base text-left grow bg-white"
+                             value: @message_thread.title,
+                             placeholder: "Názov vlákna",
+                             "aria-invalid": @message_thread.errors.any? ? "true" : "false",
+                             "aria-describedby": "thread-title-error",
+                             class: (@message_thread.errors[:title].any? ? "text-red-900 ring-red-300 placeholder:text-red-300 focus:ring-red-500" : "text-gray-400 border-gray-400") + " block w-full rounded-md border-0 py-1.5 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset text-base text-left grow bg-white"
           %>
           <% if @message_thread.errors[:title].any? %>
             <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
@@ -22,9 +22,9 @@
           <% end %>
         </div>
         <% if @message_thread.errors[:title].any? %>
-          <p class="mt-2 text-sm text-red-600" id="thread-title-error">
-            <%= @message_thread.errors.first.full_message %>
-          </p>
+          <% @message_thread.errors.full_messages.each do |message| %>
+            <p class="mt-2 text-sm text-red-600" id="thread-title-error"><%= message %></p>
+          <% end %>
         <% end %>
       </div>
       <%= render Common::ModalActionsComponent.new do |actions| %>
