@@ -20,26 +20,17 @@ module Automation
     end
   end
 
-  class AddTagAction < Automation::Action
-    def run!(thing)
-      tag = action_object
-      return if thing.thread.tenant != tag.tenant
-
-      thing.tags << tag if tag && !thing.tags.include?(tag)
-    end
-  end
-
   class AddMessageThreadTagAction < Automation::Action
     def run!(thing)
       tag = action_object
       return if thing.tenant != tag.tenant
 
-      object = if defined? thing.thread
+      object = if thing.respond_to? :thread
                  thing.thread
                else
                  thing
                end
-      object.tags << tag if tag && !object.tags.include?(tag)
+      object.tags << tag if tag && object.tags.exclude?(tag)
     end
   end
 end

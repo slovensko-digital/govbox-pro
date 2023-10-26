@@ -23,14 +23,14 @@ class Automation::RuleTest < ActiveSupport::TestCase
     assert_equal automation_condition_one.condition_object_type, 'Box'
   end
 
-  test 'should run an automation on message created ContainsCondition AddTagAction' do
+  test 'should run an automation on message created ContainsCondition AddMessageThreadTagAction' do
     govbox_message = govbox_messages(:one)
 
     Govbox::Message.create_message_with_thread!(govbox_message)
     travel_to(15.minutes.from_now) { GoodJob.perform_inline }
     message = Message.last
 
-    assert_includes message.tags, tags(:three)
+    assert_includes message.thread.tags, tags(:three)
   end
 
   test 'should run an automation on message created MetadataValueCondition AddMessageThreadTagAction' do
@@ -41,7 +41,7 @@ class Automation::RuleTest < ActiveSupport::TestCase
     message = Message.last
 
     assert_includes message.thread.tags, tags(:four)
-    refute_includes message.tags, tags(:four)
+    assert_not_includes message.tags, tags(:four)
   end
 
   test 'should run an automation on message created BoxCondition AddMessageThreadTagAction' do
@@ -52,6 +52,6 @@ class Automation::RuleTest < ActiveSupport::TestCase
     message = Message.last
 
     assert_includes message.thread.tags, tags(:five)
-    refute_includes message.tags, tags(:five)
+    assert_not_includes message.tags, tags(:five)
   end
 end

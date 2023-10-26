@@ -1,6 +1,6 @@
 one:
   automation_rule: two
-  type: Automation::AddTagAction
+  type: Automation::AddMessageThreadTagAction
   action_object: three (Tag)
 
 two:
