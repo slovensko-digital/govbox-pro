@@ -8,7 +8,7 @@ class MessageThreadsController < ApplicationController
   def show
     authorize @message_thread
     set_thread_tags_with_deletable_flag
-    @thread_messages = @message_thread.messages_visible_to_user(Current.user).order(delivered_at: :asc)
+    @thread_messages = @message_thread.messages_visible_to_user(Current.user).includes(:objects, :attachments).order(delivered_at: :asc)
   end
 
   def update
