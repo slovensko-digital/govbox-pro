@@ -8,7 +8,6 @@
         <%= render Icons::PencilComponent.new %>
       </div>
     <% end %>
-    <%#= render MessageThreadRenameComponent.new(message_thread: @message_thread) %>
     <div class="flex justify-start items-start   gap-2">
       <% @thread_tags_with_deletable_flag.each do |thread_tag|%>
         <%= render Common::RemovableTagComponent.new(thread_tag) %>

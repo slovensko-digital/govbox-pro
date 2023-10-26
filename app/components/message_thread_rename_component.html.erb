@@ -9,11 +9,11 @@
           <%= form.text_area :title,
             value: @message_thread.title,
             placeholder: "Názov vlákna",
-            "aria-invalid": get_error ? "true" : "false",
+            "aria-invalid": @message_thread.errors.any? ? "true" : "false",
             "aria-describedby": "thread-title-error",
-            class: (get_error ? "text-red-900 ring-red-300 placeholder:text-red-300 focus:ring-red-500" : "text-gray-400 border-gray-400") + " block w-full rounded-md border-0 py-1.5 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset text-base text-left grow bg-white"
+            class: (@message_thread.errors[:title].any? ? "text-red-900 ring-red-300 placeholder:text-red-300 focus:ring-red-500" : "text-gray-400 border-gray-400") + " block w-full rounded-md border-0 py-1.5 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset text-base text-left grow bg-white"
           %>
-          <% if get_error %>
+          <% if @message_thread.errors[:title].any? %>
             <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
               <svg class="h-5 w-5 text-red-500" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                 <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
@@ -21,9 +21,9 @@
             </div>
           <% end %>
         </div>
-        <% if get_error %>
+        <% if @message_thread.errors[:title].any? %>
           <p class="mt-2 text-sm text-red-600" id="thread-title-error">
-            <%= get_error %>
+            <%= @message_thread.errors.first.full_message %>
           </p>
         <% end %>
       </div>
