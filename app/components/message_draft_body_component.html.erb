@@ -1,4 +1,30 @@
 <div id="<%= dom_id(@message, :body) %>" is="turbo-frame" class="w-full">
+  <div class="flex flex-col justify-stretch items-stretch gap-4 px-6 pt-6 pb-4 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
+    <div class="flex justify-between items-start gap-4">
+      <div class="flex flex-col justify-stretch items-start  gap-2">
+        <div class="flex justify-stretch items-start   relative gap-2">
+          <p class="  w-[100px] text-base text-left text-gray-900">Odosielateľ:</p>
+          <p class="  text-base font-semibold text-left text-gray-900"><%= @message.sender_name || 'Neznámy' %> </p>
+        </div>
+        <div class="flex justify-stretch items-start   relative gap-2">
+          <p class="  w-[100px] text-base text-left text-gray-900"> Adresát: </p>
+          <p class="  text-base font-semibold text-left text-gray-900"><%= @message.recipient_name || 'Neznámy' %></p>
+        </div>
+        <% unless @message.not_yet_submitted? %>
+          <div class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-1.5 px-1.5 py-0.5 rounded-md bg-purple-50 border border-purple-300">
+            <% if @message.being_submitted? %>
+              <p class="flex-grow-0 flex-shrink-0 text-sm text-left text-purple-600">Správa sa odosiela</p>
+            <% elsif @message.submitted? %>
+              <p class="flex-grow-0 flex-shrink-0 text-sm text-left text-purple-600">Správa je odoslaná</p>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+
+      <%= render MessageOptionsComponent.new(message: @message) %>
+    </div>
+  </div>
+
   <div class="flex flex-col justify-stretch items-start    relative gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
     <% if @message.custom_visualization? %>
       <%
@@ -33,12 +59,6 @@
     <% end %>
 
     <div class="gap-2 p-2 border-t-0 border-r-0 border-b-0 border-l-0 border-gray-200">
-      <% if @message.form&.is_signed? %>
-        <div class="flex justify-center items-center gap-1.5 px-2 py-1 rounded-md bg-blue-50 border border-blue-300">
-          <p class="text-sm text-left text-blue-600">Podpísané</p>
-        </div>
-      <% end %>
-
       <% if @message.not_yet_submitted? && @message.form&.signable? %>
         <%= content_tag(:div,
          {
