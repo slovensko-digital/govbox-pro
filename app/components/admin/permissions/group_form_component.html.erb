@@ -1,4 +1,4 @@
-<%= tag.turbo_frame id: 'modal' do %>
+<%= tag.turbo_frame id: "modal" do %>
   <div class="fixed inset-0 z-40 p-2 max-h-max overflow-y-scroll" role="dialog" aria-modal="true">
     <div class="fixed inset-0 transition-opacity bg-gray-400 bg-opacity-75" aria-hidden="true"></div>
     <div class="relative flex items-center justify-center">
@@ -13,7 +13,7 @@
         <div class="flex flex-col justify-start items-start self-stretch flex-grow-0 flex-shrink-0">
           <%= form_with url: search_non_tags_admin_tenant_group_path(Current.tenant, @group),
                         data: { controller: 'debounce', debounce_target: 'form'},
-                        class:"flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200" do |form| %>
+                        class: "flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200" do |form| %>
             <div class="flex w-full items-center rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600">
               <div class="p-2">
                 <%= render Icons::SearchComponent.new %>
@@ -34,7 +34,7 @@
           </div>
         </div>
         <div class="flex justify-start items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6">
-          <%= link_to admin_tenant_tag_groups_path(Current.tenant), data: { turbo_frame: "_top" }, class:"flex justify-center items-center flex-grow relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md bg-blue-600" do %>
+          <%= link_to admin_tenant_tag_groups_path(Current.tenant), data: { turbo_frame: "_top" }, class: "flex justify-center items-center flex-grow relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md bg-blue-600" do %>
             <p class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-white">Zatvoriť</p>
           <% end %>
         </div>

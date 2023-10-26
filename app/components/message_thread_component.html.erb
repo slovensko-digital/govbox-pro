@@ -1,8 +1,8 @@
 <div class="flex flex-col justify-stretch items-stretch">
   <%= render MessageThreadHeaderComponent.new(@message_thread, @thread_tags_with_deletable_flag) %>
-  <%= render MessageThreadNoteComponent.new(@message_thread_note) %>
+  <%= render MessageThreadNoteComponent.new(@message_thread.note) %>
   <div class="flex flex-col justify-stretch items-stretch gap-2 p-4">
-    <%= render Common::AlertComponent.new(@flash) %>
+    <%= render Common::AlertComponent.new %>
     <% @thread_messages.each do |message| %>
       <% if message.type == 'MessageDraft' %>
         <%= render MessageDraftComponent.new(message: message) %>
