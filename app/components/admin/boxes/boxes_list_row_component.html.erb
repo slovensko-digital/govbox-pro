@@ -11,13 +11,13 @@
     </div>
   </div>
   <div class="justify-start items-start gap-2 flex">
-    <%= link_to edit_admin_tenant_box_path(@box.tenant, @box), data: { turbo_frame: :modal }  do %>
+    <%= link_to edit_admin_tenant_box_path(@box.tenant, @box), data: { turbo_frame: "modal" }  do %>
       <%= render Common::EditButtonComponent.new %>
     <% end %>
     <%= button_to admin_tenant_box_path(@box.tenant, @box),
                   method: :delete,
                   disabled: @box == Current.box,
-                  data: { turbo_confirm: "Naozaj odstrániť schránku #{@box.name} ?"} do %>
+                  data: { turbo_confirm: "Naozaj odstrániť schránku \"#{@box.name}\"?"} do %>
       <%= render Common::DeleteButtonComponent.new %>
     <% end %>
   </div>

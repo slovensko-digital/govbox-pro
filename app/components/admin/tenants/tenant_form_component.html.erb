@@ -1,4 +1,4 @@
-<%= tag.turbo_frame id: 'modal' do %>
+<%= tag.turbo_frame id: "modal" do %>
   <div class="fixed inset-0 z-40 p-2" role="dialog" aria-modal="true">
     <div class="fixed inset-0 transition-opacity bg-gray-400 bg-opacity-75" aria-hidden="true"></div>
     <div class="relative flex items-center justify-center">
@@ -10,11 +10,11 @@
           </div>
           <%= render Common::CloseButtonComponent.new(link_to: admin_tenants_path) %>
         </div>
-        <%= form_with model:[:admin, @tenant] do |form| %>
+        <%= form_with model: [:admin, @tenant] do |form| %>
           <div class="flex flex-col justify-start items-start self-stretch w-96">
             <div class="flex justify-start items-center self-stretch gap-4 p-6">
               <div class="flex flex-col justify-start items-start self-stretch flex-grow overflow-hidden gap-2 rounded-md">
-                <%= form.text_field :name, placeholder: "Meno tenanta", class:"block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" %>
+                <%= form.text_field :name, placeholder: "Meno tenanta", class: "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" %>
               </div>
             </div>
           </div>
@@ -22,7 +22,7 @@
             <%= link_to admin_tenants_path, class: "flex justify-center items-center flex-grow relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300", data: { turbo_frame: "_top" } do %>
               <p class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-gray-900">Zahodiť</p>
             <% end %>
-            <%= form.button class:"flex justify-center items-center flex-grow relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md bg-blue-600", data: { turbo_frame: "_top" } do %>
+            <%= form.button class: "flex justify-center items-center flex-grow relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md bg-blue-600", data: { turbo_frame: "_top" } do %>
               <p class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-white"><%= @action == 'new' ? 'Vytvoriť' : 'Uložiť' %></p>
             <% end %>
           </div>
