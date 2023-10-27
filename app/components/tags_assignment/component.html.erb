@@ -20,10 +20,8 @@
             <%=
               render TagsAssignment::ListComponent.new(
                 message_thread: @message_thread,
-                all_tags: @all_tags,
-                new_tags_assignments: @tags_changes.init_assignments,
-                filtered_tag_ids: @filtered_tag_ids,
-                name_search_query: @name_search_query) %>
+                tags_filter: @tags_filter,
+                new_tags_assignments: @tags_changes.init_assignments) %>
           <% end %>
         </div>
       </div>

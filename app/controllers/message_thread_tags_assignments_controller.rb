@@ -8,8 +8,7 @@ class MessageThreadTagsAssignmentsController < ApplicationController
       message_thread: @message_thread,
       tag_scope: tag_scope,
     )
-
-    set_tags_for_filter
+    @tags_filter = TagsFilter.new(tag_scope: tag_scope)
   end
 
   def prepare
@@ -20,10 +19,7 @@ class MessageThreadTagsAssignmentsController < ApplicationController
       tag_scope: tag_scope,
       tags_assignments: tags_assignments.to_h
     )
-
-    @name_search_query = params[:name_search_query].strip
-
-    set_tags_for_filter(@name_search_query)
+    @tags_filter = TagsFilter.new(tag_scope: tag_scope, filter_query: params[:name_search_query].strip)
   end
 
   def create_tag
@@ -39,10 +35,8 @@ class MessageThreadTagsAssignmentsController < ApplicationController
     @tags_changes.add_new_tag(new_tag) if new_tag.save
     @tags_changes.build_diff
 
-    @reset_search_filter = true
-    @name_search_query = ""
-
-    set_tags_for_filter(@name_search_query)
+    @tags_filter = TagsFilter.new(tag_scope: tag_scope, filter_query: "")
+    @reset_search = true
 
     render :prepare
   end
@@ -66,16 +60,6 @@ class MessageThreadTagsAssignmentsController < ApplicationController
 
   def set_message_thread
     @message_thread = message_thread_policy_scope.find(params[:id])
-  end
-
-  def set_tags_for_filter(name_search = "")
-    @all_tags = tag_scope
-
-    @filtered_tag_ids = @all_tags
-    if name_search
-      @filtered_tag_ids = @filtered_tag_ids.where('unaccent(name) ILIKE unaccent(?)', "%#{name_search}%")
-    end
-    @filtered_tag_ids = Set.new(@filtered_tag_ids.pluck(:id))
   end
 
   def tag_scope
