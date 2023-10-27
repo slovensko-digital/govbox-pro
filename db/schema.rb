@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_20_095657) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_27_110014) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -342,6 +342,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_20_095657) do
     t.bigint "import_id"
     t.bigint "author_id"
     t.boolean "collapsed", default: false, null: false
+    t.boolean "outbox", default: false, null: false
     t.index ["author_id"], name: "index_messages_on_author_id"
     t.index ["import_id"], name: "index_messages_on_import_id"
     t.index ["message_thread_id"], name: "index_messages_on_message_thread_id"

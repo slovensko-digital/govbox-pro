@@ -12,20 +12,14 @@ module Govbox
 
         destroy_associated_message_draft(govbox_message)
         mark_associated_delivery_notification_authorized(govbox_message)
+        collapse_previous_outbox_messages(message)
         create_message_relations(message)
       end
     end
 
     def destroy_associated_message_draft(govbox_message)
       message_draft = MessageDraft.where(uuid: govbox_message.message_id).joins(thread: :folder).where(folders: { box_id: govbox_message.box.id }).take
-
-      if message_draft
-        message_thread = message_draft.thread
-        message_draft.destroy
-
-        drafts_tag = message_thread.tags.find_by(name: "Drafts")
-        message_thread.tags.delete(drafts_tag) unless message_thread.message_drafts.any?
-      end
+      message_draft&.destroy
     end
 
     def mark_associated_delivery_notification_authorized(govbox_message)
@@ -57,6 +51,14 @@ module Govbox
       main_message.message_relations.find_or_create_by!(
         related_message: message
       ) if main_message
+    end
+
+    def collapse_previous_outbox_messages(message)
+      return if message.collapsed?
+
+      message.previous_thread_outbox_messages.update_all(
+        collapsed: true
+      )
     end
   end
 end

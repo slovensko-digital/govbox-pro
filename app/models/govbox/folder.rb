@@ -25,6 +25,10 @@ class Govbox::Folder < ApplicationRecord
     name.start_with? 'Inbox'
   end
 
+  def outbox?
+    name.start_with? 'SentItems'
+  end
+
   def bin?
     name == 'Bin'
   end

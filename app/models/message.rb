@@ -13,6 +13,7 @@
 #  read                                        :boolean          not null, default: false
 #  replyable                                   :boolean          not null, default: true
 #  collapsed                                   :boolean          not null, default: false
+#  outbox                                      :boolean          not null, default: false
 #  delivered_at                                :datetime         not null
 #  import_id                                   :integer
 #  author_id                                   :integer
@@ -33,6 +34,8 @@ class Message < ApplicationRecord
   has_many :message_threads_tags, primary_key: :message_thread_id, foreign_key: :message_thread_id
 
   delegate :tenant, to: :thread
+
+  scope :outbox, -> { where(outbox: true) }
 
   after_create_commit ->(message) { EventBus.publish(:message_created, message) }
   after_update_commit ->(message) { EventBus.publish(:message_changed, message) }
@@ -65,5 +68,9 @@ class Message < ApplicationRecord
 
   def authorized?
     metadata["delivery_notification"] && metadata["authorized"] == true
+  end
+
+  def previous_thread_outbox_messages
+    thread.messages.outbox.where.not(id: id).where('delivered_at <= ?', delivered_at)
   end
 end
