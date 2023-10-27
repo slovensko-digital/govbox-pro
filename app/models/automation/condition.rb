@@ -65,7 +65,7 @@ module Automation
     VALID_ATTR_LIST = ['box'].freeze
 
     def satisfied?(thing)
-      object = if defined? thing.thread
+      object = if thing.respond_to? :thread
                  thing.thread
                else
                  thing
