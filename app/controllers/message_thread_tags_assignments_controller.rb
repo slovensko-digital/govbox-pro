@@ -20,6 +20,7 @@ class MessageThreadTagsAssignmentsController < ApplicationController
       tags_assignments: tags_assignments.to_h
     )
     @tags_filter = TagsFilter.new(tag_scope: tag_scope, filter_query: params[:name_search_query].strip)
+    @rerender_list = params[:assignments_update].blank?
   end
 
   def create_tag
@@ -36,6 +37,7 @@ class MessageThreadTagsAssignmentsController < ApplicationController
     @tags_changes.build_diff
 
     @tags_filter = TagsFilter.new(tag_scope: tag_scope, filter_query: "")
+    @rerender_list = true
     @reset_search = true
 
     render :prepare
