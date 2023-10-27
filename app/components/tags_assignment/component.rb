@@ -5,13 +5,11 @@ module TagsAssignment
     ACTIONS_FRAME = "tags-assignment-actions"
     SEARCH_FIELD_FRAME = "tags-assignment-search-field"
 
-    def initialize(message_thread:, all_tags:, init_tags_assignments:, new_tags_assignments:, diff:, filtered_tag_ids:, name_search_query:)
+    def initialize(message_thread:, all_tags:, tags_changes:, filtered_tag_ids:, name_search_query:)
       @message_thread = message_thread
       @all_tags = all_tags
-      @init_tags_assignments = init_tags_assignments
-      @new_tags_assignments = new_tags_assignments
+      @tags_changes = tags_changes
       @filtered_tag_ids = filtered_tag_ids
-      @diff = diff
       @name_search_query = name_search_query
     end
   end

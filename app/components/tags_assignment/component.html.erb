@@ -13,7 +13,7 @@
         </div>
 
         <div class="w-full mb-4">
-          <% @init_tags_assignments.each do |tag_id, value| %>
+          <% @tags_changes.init_assignments.each do |tag_id, value| %>
             <%= hidden_field_tag "tags_assignments[init][#{tag_id}]", value %>
           <% end %>
           <%= tag.turbo_frame id: TagsAssignment::Component::LIST_FRAME do %>
@@ -21,7 +21,7 @@
               render TagsAssignment::ListComponent.new(
                 message_thread: @message_thread,
                 all_tags: @all_tags,
-                new_tags_assignments: @new_tags_assignments,
+                new_tags_assignments: @tags_changes.init_assignments,
                 filtered_tag_ids: @filtered_tag_ids,
                 name_search_query: @name_search_query) %>
           <% end %>
