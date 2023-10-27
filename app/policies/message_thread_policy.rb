@@ -46,4 +46,8 @@ class MessageThreadPolicy < ApplicationPolicy
   def bulk_actions?
     true
   end
+
+  def rename?
+    true
+  end
 end
