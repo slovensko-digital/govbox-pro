@@ -26,13 +26,4 @@ class MessageThreadsTag < ApplicationRecord
       errors.add :name, 'Unpermitted combination of tag and message thread'
     end
   end
-
-  def self.process_changes_for_message_thread(message_thread:, tags_to_add: [], tags_to_remove: [])
-    create_attributes = tags_to_add.map { |tag| { message_thread: message_thread, tag: tag } }
-
-    MessageThreadsTag.transaction do
-      MessageThreadsTag.create(create_attributes)
-      MessageThreadsTag.where(message_thread: message_thread, tag: tags_to_remove).destroy_all
-    end
-  end
 end

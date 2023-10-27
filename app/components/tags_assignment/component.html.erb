@@ -19,15 +19,16 @@
           <%= tag.turbo_frame id: TagsAssignment::Component::LIST_FRAME do %>
             <%=
               render TagsAssignment::ListComponent.new(
+                message_thread: @message_thread,
                 all_tags: @all_tags,
                 new_tags_assignments: @new_tags_assignments,
                 filtered_tag_ids: @filtered_tag_ids,
-                name_search: @name_search) %>
+                name_search_query: @name_search_query) %>
           <% end %>
         </div>
       </div>
 
-      <%= tag.turbo_frame id: TagsAssignment::Component::CHANGES_FRAME %>
+      <%= tag.turbo_frame id: TagsAssignment::Component::DIFF_FRAME %>
 
       <%= tag.turbo_frame id: TagsAssignment::Component::ACTIONS_FRAME do %>
         <%= render Common::ModalActionsComponent.new %>

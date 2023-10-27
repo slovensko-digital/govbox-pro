@@ -8,7 +8,7 @@ class MessageThreadTagsAssignmentsController < ApplicationController
     @init_tags_assignments = TagsAssignments.init(@all_tags, @message_thread.tag_ids)
     @new_tags_assignments = @init_tags_assignments
 
-    @diff = TagsAssignments.make_diff(@init_tags_assignments, @new_tags_assignments, tag_scope)
+    @diff = TagsAssignments.build_diff(@init_tags_assignments, @new_tags_assignments, tag_scope)
   end
 
   def prepare
@@ -17,34 +17,42 @@ class MessageThreadTagsAssignmentsController < ApplicationController
     @init_tags_assignments = tags_assignments[:init].to_h
     @new_tags_assignments = tags_assignments[:new].to_h
 
-    if params[:create_new_tag].present?
-      new_tag = Tag.new(tag_creation_params.merge(name: params[:create_new_tag].strip))
-      authorize(new_tag, "create?")
+    @name_search_query = params[:name_search_query].strip
 
-      if new_tag.save
-        TagsAssignments.add_new_tag(@new_tags_assignments, new_tag)
-      end
+    set_tags_for_filter(@name_search_query)
+    @diff = TagsAssignments.build_diff(@init_tags_assignments, @new_tags_assignments, tag_scope)
+  end
 
-      @reset_search_filter = true
-      @name_search = ""
-    else
-      @name_search = params[:name_search].strip
+  def create_tag
+    new_tag = Tag.new(tag_creation_params.merge(name: params[:new_tag].strip))
+    authorize(new_tag, "create?")
+
+    @init_tags_assignments = tags_assignments[:init].to_h
+    @new_tags_assignments = tags_assignments[:new].to_h
+
+    if new_tag.save
+      TagsAssignments.add_new_tag(@new_tags_assignments, new_tag)
     end
 
-    set_tags_for_filter(@name_search)
-    @diff = TagsAssignments.make_diff(@init_tags_assignments, @new_tags_assignments, tag_scope)
+    @reset_search_filter = true
+    @name_search_query = ""
+
+    set_tags_for_filter(@name_search_query)
+    @diff = TagsAssignments.build_diff(@init_tags_assignments, @new_tags_assignments, tag_scope)
+
+    render :prepare
   end
 
   def update
     authorize MessageThreadsTag
 
-    diff = TagsAssignments.make_diff(
+    diff = TagsAssignments.build_diff(
       tags_assignments[:init].to_h,
       tags_assignments[:new].to_h,
       tag_scope
     )
 
-    MessageThreadsTag.process_changes_for_message_thread(
+    TagsAssignments.save(
       message_thread: @message_thread,
       tags_to_add: diff.to_add,
       tags_to_remove: diff.to_remove

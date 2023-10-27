@@ -1,5 +1,5 @@
 module TagsAssignment
-  class FutureChangesComponent < ViewComponent::Base
+  class DiffComponent < ViewComponent::Base
     def initialize(diff:)
       @diff = diff
     end

@@ -6,14 +6,15 @@
 
 <%= turbo_stream.update TagsAssignment::Component::LIST_FRAME do %>
   <%= render TagsAssignment::ListComponent.new(
+    message_thread: @message_thread,
     all_tags: @all_tags,
     new_tags_assignments: @new_tags_assignments,
     filtered_tag_ids: @filtered_tag_ids,
-    name_search: @name_search) %>
+    name_search_query: @name_search_query) %>
 <% end %>
 
-<%= turbo_stream.update TagsAssignment::Component::CHANGES_FRAME do %>
-  <%= render TagsAssignment::FutureChangesComponent.new(diff: @diff) %>
+<%= turbo_stream.update TagsAssignment::Component::DIFF_FRAME do %>
+  <%= render TagsAssignment::DiffComponent.new(diff: @diff) %>
 <% end %>
 
 <%= turbo_stream.update TagsAssignment::Component::ACTIONS_FRAME do %>

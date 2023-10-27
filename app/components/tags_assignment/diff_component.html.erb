@@ -1,4 +1,4 @@
-<% if @diff.to_add.present? || @diff.to_remove.present? %>
+<% if @diff.number_of_changes > 0 %>
   <div class="text-sm w-full mx-2 mb-4">
     <p class="mb-2 italic">Po uložení sa vykonajú nasledovné zmeny:</p>
     <% if @diff.to_add.present? %>

@@ -24,7 +24,7 @@ class TagsAssignments
     current_assignment
   end
 
-  def self.make_diff(init_state, new_state, tag_scope)
+  def self.build_diff(init_state, new_state, tag_scope)
     to_add = []
     to_remove = []
 
@@ -58,5 +58,14 @@ class TagsAssignments
 
   def self.to_checkbox_value(value)
     value ? ADD_SIGN : REMOVE_SIGN
+  end
+
+  def self.save(message_thread:, tags_to_add: [], tags_to_remove: [])
+    create_attributes = tags_to_add.map { |tag| { message_thread: message_thread, tag: tag } }
+
+    MessageThreadsTag.transaction do
+      MessageThreadsTag.create(create_attributes)
+      MessageThreadsTag.where(message_thread: message_thread, tag: tags_to_remove).destroy_all
+    end
   end
 end
