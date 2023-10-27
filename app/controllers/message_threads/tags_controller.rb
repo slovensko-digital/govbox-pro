@@ -1,4 +1,4 @@
-class MessageThreadTagsAssignmentsController < ApplicationController
+class MessageThreads::TagsController < ApplicationController
   before_action :set_message_thread
 
   def edit
@@ -61,7 +61,7 @@ class MessageThreadTagsAssignmentsController < ApplicationController
   private
 
   def set_message_thread
-    @message_thread = message_thread_policy_scope.find(params[:id])
+    @message_thread = message_thread_policy_scope.find(params[:message_thread_id])
   end
 
   def tag_scope

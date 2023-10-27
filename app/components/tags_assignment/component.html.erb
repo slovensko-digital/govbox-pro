@@ -3,7 +3,7 @@
     Úprava štítkov
   <% end %>
   <% modal.with_modal_content do %>
-    <%= form_with url: prepare_message_thread_tags_assignment_path(@message_thread),
+    <%= form_with url: prepare_message_thread_tags_path(@message_thread),
                   data: { controller: 'debounce', debounce_target: 'form' } do |form| %>
       <div class="flex flex-col items-start gap-4 mt-4">
         <div class="w-full">

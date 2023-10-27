@@ -53,13 +53,16 @@ Rails.application.routes.draw do
     end
     resources :messages
     resources :message_thread_notes
+    scope module: 'message_threads' do
+      resource :tags, only: [:edit, :update] do
+        post :prepare, on: :member
+        post :create_tag, on: :member
+      end
+    end
   end
 
   resources :message_threads_tags, only: :destroy
-  resources :message_thread_tags_assignments, only: [:edit, :update] do
-    post :prepare, on: :member
-    post :create_tag, on: :member
-  end
+
 
   resources :messages do
     member do
