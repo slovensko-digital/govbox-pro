@@ -1,64 +1,61 @@
 sk:
   activerecord:
-    attributes:
-      message_thread:
-        title: 'Názov'
     errors:
       messages:
         record_invalid: 'Validácia neúspešná: %{errors}'
   date:
     abbr_day_names:
-      - Ne
-      - Po
-      - Ut
-      - St
-      - Št
-      - Pi
-      - So
+    - Ne
+    - Po
+    - Ut
+    - St
+    - Št
+    - Pi
+    - So
     abbr_month_names:
-      -
-      - Jan
-      - Feb
-      - Mar
-      - Apr
-      - Máj
-      - Jún
-      - Júl
-      - Aug
-      - Sep
-      - Okt
-      - Nov
-      - Dec
+    -
+    - Jan
+    - Feb
+    - Mar
+    - Apr
+    - Máj
+    - Jún
+    - Júl
+    - Aug
+    - Sep
+    - Okt
+    - Nov
+    - Dec
     day_names:
-      - Nedeľa
-      - Pondelok
-      - Utorok
-      - Streda
-      - Štvrtok
-      - Piatok
-      - Sobota
+    - Nedeľa
+    - Pondelok
+    - Utorok
+    - Streda
+    - Štvrtok
+    - Piatok
+    - Sobota
     formats:
       default: "%d.%m.%Y"
       long: "%d. %B %Y"
       short: "%d %b"
     month_names:
-      -
-      - Január
-      - Február
-      - Marec
-      - Apríl
-      - Máj
-      - Jún
-      - Júl
-      - August
-      - September
-      - Október
-      - November
-      - December
+    -
+    - Január
+    - Február
+    - Marec
+    - Apríl
+    - Máj
+    - Jún
+    - Júl
+    - August
+    - September
+    - Október
+    - November
+    - December
     order:
-      - :day
-      - :month
-      - :year
+    - :day
+    - :month
+    - :year
   datetime:
     distance_in_words:
       about_x_hours:
