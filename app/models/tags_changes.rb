@@ -55,7 +55,7 @@ class TagsChanges
 
   attr_reader :diff
 
-  def initialize(message_thread:, tag_scope:, tags_assignments: {init: {}, new: {}})
+  def initialize(message_thread:, tag_scope:, tags_assignments: { init: {}, new: {} })
     @message_thread = message_thread
     @tag_scope = tag_scope
     @tags_assignments = tags_assignments
