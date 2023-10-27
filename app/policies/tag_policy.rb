@@ -10,8 +10,8 @@ class TagPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      return scope.where(tenant_id: Current.tenant.id) if @user.site_admin?
-      return scope.where(tenant_id: @user.tenant_id) if @user.admin?
+      return scope.where(tenant: Current.tenant) if @user.site_admin?
+      return scope.where(tenant: @user.tenant) if @user.admin?
 
       scope.where(
         TagGroup
@@ -21,6 +21,12 @@ class TagPolicy < ApplicationPolicy
           .where(group_memberships: { user_id: @user.id })
           .arel.exists
       )
+    end
+  end
+
+  class ScopeListable < Scope
+    def resolve
+      scope.where(tenant: Current.tenant)
     end
   end
 end
