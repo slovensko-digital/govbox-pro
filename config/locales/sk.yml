@@ -1,5 +1,8 @@
 sk:
   activerecord:
+    attributes:
+      message_thread:
+        title: 'Názov'
     errors:
       messages:
         record_invalid: 'Validácia neúspešná: %{errors}'
