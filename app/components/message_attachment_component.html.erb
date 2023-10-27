@@ -21,7 +21,7 @@
           </div>
         <% end %>
       </div>
-      <p class="text-sm text-left text-gray-900"><%= "#{number_to_human_size(@message_attachment.content.size)}, #{@message_attachment.object_type}" %> </p>
+      <p class="text-sm text-left text-gray-900"><%= @message_attachment.object_type %> </p>
     </div>
   <% end %>
   <div class="flex justify-end items-center gap-4">
