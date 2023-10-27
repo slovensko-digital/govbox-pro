@@ -1,5 +1,5 @@
 class MessageThreadsController < ApplicationController
-  before_action :set_message_thread, only: %i[show update search_available_tags]
+  before_action :set_message_thread, only: %i[show rename update search_available_tags]
   before_action :load_threads, only: %i[index scroll]
   after_action :mark_thread_as_read, only: %i[show]
 
@@ -11,12 +11,16 @@ class MessageThreadsController < ApplicationController
     @thread_messages = @message_thread.messages_visible_to_user(Current.user).order(delivered_at: :asc)
   end
 
+  def rename
+    authorize @message_thread
+  end
   def update
     authorize @message_thread
+
+    path = message_thread_path(@message_thread)
+
     if @message_thread.update(message_thread_params)
-      redirect_back fallback_location: messages_path(@message_thread.messages.first)
-    else
-      render :edit, status: :unprocessable_entity
+      redirect_back fallback_location: path, notice: "Názov vlákna bol upravený"
     end
   end
 

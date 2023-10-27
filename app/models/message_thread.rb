@@ -24,6 +24,8 @@ class MessageThread < ApplicationRecord
   has_many :tag_users, through: :message_threads_tags
   has_many :merge_identifiers, class_name: 'MessageThreadMergeIdentifier', dependent: :destroy
 
+  validates :title, presence: true
+
   attr_accessor :search_highlight
 
   after_create_commit ->(thread) { EventBus.publish(:message_thread_created, thread) }
