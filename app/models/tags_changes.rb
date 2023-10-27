@@ -28,13 +28,13 @@ class TagsChanges
       to_add.length + to_remove.length
     end
 
-    def self.build_from_assignments(init_state, new_state, tag_scope)
+    def self.build_from_assignments(assignements, tag_scope)
       to_add = []
       to_remove = []
 
-      new_state.each do |key, value|
-        if init_state.key?(key)
-          if init_state[key] != value
+      assignements[:new].each do |key, value|
+        if assignements[:init].key?(key)
+          if assignements[:init][key] != value
             if value == ADD_SIGN
               to_add << key
             elsif value == REMOVE_SIGN
@@ -106,7 +106,7 @@ class TagsChanges
   end
 
   def build_diff
-    @diff = Diff.build_from_assignments(@tags_assignments[:init], @tags_assignments[:new], @tag_scope)
+    @diff = Diff.build_from_assignments(@tags_assignments, @tag_scope)
   end
 
   def save
