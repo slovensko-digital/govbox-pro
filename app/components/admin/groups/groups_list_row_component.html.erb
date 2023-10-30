@@ -11,7 +11,7 @@
       <% end %>
     </div>
     <div class="text-center text-gray-500 text-base font-normal leading-normal">
-      <%= link_to (@group.is_modifiable? ? edit_admin_tenant_group_path(@group.tenant, @group) : admin_tenant_group_path(@group.tenant, @group)), data: {turbo_frame: :modal} do %>
+      <%= link_to (@group.is_modifiable? ? edit_admin_tenant_group_path(@group.tenant, @group) : admin_tenant_group_path(@group.tenant, @group)), data: { turbo_frame: "modal" } do %>
         <%= t :user, count: @group.users.count %>
       <% end %>
     </div>

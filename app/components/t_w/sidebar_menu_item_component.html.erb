@@ -1,8 +1,6 @@
-<a href="<%= @url %>" class="flex justify-start items-start px-4 py-2">
-  <div class="flex justify-center items-center relative gap-3">
-    <% if @icon_component %>
-      <%= render @icon_component %>
-    <% end %>
-    <p class="text-base font-medium text-left text-gray-900"><%= @name %></p>
-  </div>
-</a>
+<%= link_to @url, class: "items-center text-gray-700 hover:text-indigo-600 hover:bg-gray-50 w-full group flex gap-x-3 rounded-md p-4 leading-6 font-semibold data-[active=true]:bg-gray-50 data-[active=true]:text-indigo-600", data: { active: current_page?(@url, check_parameters: true) } do %>
+  <% if @icon_component %>
+    <%= render @icon_component %>
+  <% end %>
+  <%= @name %>
+<% end %>

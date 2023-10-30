@@ -50,4 +50,8 @@ class MessageThreadPolicy < ApplicationPolicy
   def search_available_tags?
     true
   end
+
+  def rename?
+    true
+  end
 end
