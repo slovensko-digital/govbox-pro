@@ -25,11 +25,6 @@ class AddUniqueNameIndexToTags < ActiveRecord::Migration[7.0]
           tg.save!
         end
 
-        TagUser.where(tag_id: other_tag).map do |tu|
-          tu.tag_id = main_tag.id
-          tu.save!
-        end
-
         other_tag.destroy
       end
     end

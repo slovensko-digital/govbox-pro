@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_20_095657) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_30_103432) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -390,15 +390,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_20_095657) do
     t.index ["tag_id"], name: "index_tag_groups_on_tag_id"
   end
 
-  create_table "tag_users", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.bigint "tag_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["tag_id"], name: "index_tag_users_on_tag_id"
-    t.index ["user_id"], name: "index_tag_users_on_user_id"
-  end
-
   create_table "tags", force: :cascade do |t|
     t.bigint "tenant_id", null: false
     t.string "name", null: false
@@ -481,8 +472,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_20_095657) do
   add_foreign_key "searchable_message_threads", "message_threads", on_delete: :cascade
   add_foreign_key "tag_groups", "groups"
   add_foreign_key "tag_groups", "tags"
-  add_foreign_key "tag_users", "tags"
-  add_foreign_key "tag_users", "users"
   add_foreign_key "tags", "tenants"
   add_foreign_key "tags", "users"
   add_foreign_key "upvs_form_template_related_documents", "upvs_form_templates"

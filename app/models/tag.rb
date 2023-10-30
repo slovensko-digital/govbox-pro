@@ -12,8 +12,6 @@
 class Tag < ApplicationRecord
   belongs_to :tenant
   belongs_to :owner, class_name: 'User', optional: true, foreign_key: :user_id
-  has_many :tag_users, dependent: :destroy
-  has_many :users, through: :tag_users
   has_many :tag_groups, dependent: :destroy
   has_many :groups, through: :tag_groups
   has_many :messages_tags
