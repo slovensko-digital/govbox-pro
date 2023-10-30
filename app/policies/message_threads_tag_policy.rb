@@ -13,11 +13,10 @@ class MessageThreadsTagPolicy < ApplicationPolicy
       return scope.all if @user.site_admin?
 
       scope.where(
-        TagGroup
+        Tag
           .select(1)
-          .joins(:group_memberships)
-          .where("tag_groups.tag_id = message_threads_tags.tag_id")
-          .where(group_memberships: { user_id: @user.id })
+          .where("tags.id = message_threads_tags.tag_id")
+          .where(tags: { tenant_id: @user.tenant_id })
           .arel.exists
       )
     end

@@ -23,7 +23,7 @@ class MessagesController < ApplicationController
 
   def set_message
     @message = policy_scope(Message).find(params[:id])
-    set_thread_tags_with_deletable_flag
+    set_thread_visible_tags
   end
 
   def permit_reply_params
