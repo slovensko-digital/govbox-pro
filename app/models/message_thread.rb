@@ -24,12 +24,18 @@ class MessageThread < ApplicationRecord
   has_many :tag_users, through: :message_threads_tags
   has_many :merge_identifiers, class_name: 'MessageThreadMergeIdentifier', dependent: :destroy
 
+  validates :title, presence: true
+
   attr_accessor :search_highlight
 
   after_create_commit ->(thread) { EventBus.publish(:message_thread_created, thread) }
   after_update_commit ->(thread) { EventBus.publish(:message_thread_changed, thread) }
 
   delegate :tenant, to: :folder
+
+  def note
+    message_thread_note || build_message_thread_note
+  end
 
   def messages_visible_to_user(user)
     messages.where(messages: { author_id: user.id }).or(messages.where(messages: { author_id: nil }))
