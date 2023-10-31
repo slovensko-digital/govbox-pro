@@ -1,13 +1,13 @@
-<%= tag.turbo_frame id: "action-#{@index}", class:"flex justify-between self-stretch grow" do %>
+<%= tag.turbo_frame id: "action-#{@index}", class: "flex justify-between self-stretch grow" do %>
   <div class="flex justify-stretch gap-2">
     <%= @form.hidden_field :id %>
     <% if @form.object.type.in? ['Automation::AddTagAction', 'Automation::AddMessageThreadTagAction'] %>
-      <%= @form.select :type, @action_type_list, {}, onchange: "this.form.requestSubmit(this.form.querySelector(\"#rerender\"))", class:"mt-2 block rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-400 ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6", disabled: !@enabled %>
-      <%= @form.select :action_object_id, @form.object.tag_list, {}, class:"mt-2 block rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-400 ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6", disabled: !@enabled %>
+      <%= @form.select :type, @action_type_list, {}, onchange: "this.form.requestSubmit(this.form.querySelector(\"#rerender\"))", class: "mt-2 block rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-400 ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6", disabled: !@enabled %>
+      <%= @form.select :action_object_id, @form.object.tag_list, {}, class: "mt-2 block rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-400 ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6", disabled: !@enabled %>
       <%= @form.hidden_field :action_object_type, value: 'Tag' %>
     <% else %>
-      <%= @form.select :type, @action_type_list, {}, onchange: "this.form.requestSubmit(this.form.querySelector(\"#rerender\"))", class:"mt-2 block rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-400 ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6", disabled: !@enabled %>
-      <%= @form.text_field :value, class:"mt-2 block rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-400 ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6", disabled: !@enabled %>
+      <%= @form.select :type, @action_type_list, {}, onchange: "this.form.requestSubmit(this.form.querySelector(\"#rerender\"))", class: "mt-2 block rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-400 ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6", disabled: !@enabled %>
+      <%= @form.text_field :value, class: "mt-2 block rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-400 ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6", disabled: !@enabled %>
     <% end %>
   </div>
   <% if @enabled %>
@@ -27,5 +27,4 @@
       <%= button_tag id: "rerender", type: "submit", formaction: settings_automation_condition_rerender_path(automation_condition_index: @index, new: @new), hidden: true, formmethod: :patch %>
     </div>
   <% end %>
-</div>
 <% end %>

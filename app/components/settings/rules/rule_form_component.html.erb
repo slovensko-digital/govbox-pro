@@ -1,4 +1,4 @@
-<%= tag.turbo_frame(id: 'modal') do %>
+<%= tag.turbo_frame(id: "modal") do %>
   <div class="fixed inset-0 z-50 p-2" role="dialog" aria-modal="true">
     <div class="fixed inset-0 transition-opacity bg-gray-400 bg-opacity-75" aria-hidden="true"></div>
     <div class="relative flex items-center justify-center h-full">
@@ -20,7 +20,7 @@
             <%= render Icons::InfoComponent.new %>
             <p class="flex-grow w-[804px] text-base text-left text-gray-900">Vyplňte názov pravidla a udalosť, pri ktorej sa pravidlo bude spúšťať</p>
           </div>
-          <%= form_with model: [:settings, @automation_rule], class:"flex flex-col self-stretch" do |rule_form| %>
+          <%= form_with model: [:settings, @automation_rule], class: "flex flex-col self-stretch" do |rule_form| %>
             <%= render Settings::Rules::RuleHeaderFormComponent.new(form: rule_form) %>
             <%= rule_form.fields_for :conditions do |condition_form| %>
               <%= render Settings::Rules::HiddenConditionRowComponent.new(form:condition_form) %>
@@ -29,10 +29,10 @@
               <%= render Settings::Rules::HiddenActionRowComponent.new(form:action_form) %>
             <% end %>
             <div class="flex justify-start items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6">
-              <%= link_to settings_automation_rules_path, data: { turbo_frame: "_top" }, class:"flex justify-center items-center flex-grow relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300" do %>
+              <%= link_to settings_automation_rules_path, data: { turbo_frame: "_top" }, class: "flex justify-center items-center flex-grow relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300" do %>
                 <p class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-gray-900"> Zahodiť zmeny </p>
               <% end %>
-              <%= rule_form.button "Pokračovať", formaction: conditions_step_settings_automation_rule_path, class:"flex justify-center items-center flex-grow relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md text-base font-medium text-left text-white bg-blue-600" %>
+              <%= rule_form.button "Pokračovať", formaction: conditions_step_settings_automation_rule_path, class: "flex justify-center items-center flex-grow relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md text-base font-medium text-left text-white bg-blue-600" %>
             </div>
           <% end %>
         </div>

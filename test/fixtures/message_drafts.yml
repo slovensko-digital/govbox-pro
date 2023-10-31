@@ -1,0 +1,41 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+draft_one:
+  uuid: <%= SecureRandom.uuid %>
+  title: MyString
+  sender_name: MyString
+  recipient_name: MyString
+  html_visualization: MyString
+  delivered_at: 2023-05-18 16:18:26
+  thread: three
+  type: MessageDraft
+
+draft_two:
+  uuid: <%= SecureRandom.uuid %>
+  title: MyString
+  sender_name: MyString
+  recipient_name: MyString
+  html_visualization: MyString
+  delivered_at: 2023-05-18 16:18:26
+  thread: one
+  type: MessageDraft
+
+draft_three:
+  uuid: <%= SecureRandom.uuid %>
+  title: MyString
+  sender_name: MyString
+  recipient_name: MyString
+  html_visualization: MyString
+  delivered_at: 2023-05-18 16:19:26
+  thread: two
+  type: MessageDraft
+
+draft_four:
+  uuid: <%= SecureRandom.uuid %>
+  title: MyString
+  sender_name: MyString
+  recipient_name: MyString
+  html_visualization: MyString
+  delivered_at: 2023-05-18 16:20:26
+  thread: two
+  type: MessageDraft

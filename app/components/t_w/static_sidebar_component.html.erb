@@ -1,11 +1,11 @@
 <div class="flex flex-col justify-start items-start w-full pb-4 divide-y bg-white border-r border-gray-200 overflow-x-hidden overflow-y-auto">
-  <%= link_to root_path, class: "flex justify-start items-center h-16 px-4" do %>
+  <%= link_to root_path, class: "flex justify-start items-center h-16 p-4" do %>
     <div class="flex justify-center items-center">
-      <%= image_tag("SD_icon.png", alt: "logo", class:"w-10 h-10") %>
+      <%= image_tag("SD_icon.png", alt: "logo", class: "w-10 h-10") %>
     </div>
     <p class="text-xl font-medium text-[#111928]">GovBox Pro</p>
   <% end %>
-  <div class="flex flex-col justify-start items-start gap-4 px-2 py-4">
+  <div class="flex flex-col justify-start items-start w-full px-2">
     <%= render TW::DynamicSidebarMenuComponent.new(menu: @menu) %>
   </div>
 </div>

@@ -1,29 +1,6 @@
 <%= tag.turbo_frame id: dom_id(@message), class: "flex flex-col justify-stretch items-stretch rounded-md bg-white border border-gray-200" do %>
   <div class="flex flex-col justify-stretch items-stretch">
     <div class="flex flex-col justify-stretch items-stretch rounded-md bg-white border border-gray-200">
-      <div class="flex flex-col justify-stretch items-stretch gap-4 px-6 pt-6 pb-4 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
-        <div class="flex justify-between items-start gap-4">
-          <div class="flex flex-col justify-stretch items-start  gap-2">
-            <div class="flex justify-stretch items-start   relative gap-2">
-              <p class="  w-[100px] text-base text-left text-gray-900">Odosielateľ:</p>
-              <p class="  text-base font-semibold text-left text-gray-900"><%= @message.sender_name || 'Neznámy' %> </p>
-            </div>
-            <div class="flex justify-stretch items-start   relative gap-2">
-              <p class="  w-[100px] text-base text-left text-gray-900"> Adresát: </p>
-              <p class="  text-base font-semibold text-left text-gray-900"><%= @message.recipient_name || 'Neznámy' %></p>
-            </div>
-            <% unless @message.not_yet_submitted? %>
-              <div class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-1.5 px-1.5 py-0.5 rounded-md bg-purple-50 border border-purple-300">
-                <% if @message.being_submitted? %>
-                  <p class="flex-grow-0 flex-shrink-0 text-sm text-left text-purple-600">Správa sa odosiela</p>
-                <% elsif @message.submitted? %>
-                  <p class="flex-grow-0 flex-shrink-0 text-sm text-left text-purple-600">Správa je odoslaná</p>
-                <% end %>
-              </div>
-            <% end %>
-          </div>
-        </div>
-      </div>
 
       <%= render MessageDraftBodyComponent.new(message: @message) %>
 
@@ -34,14 +11,14 @@
           <div class="gap-2 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
             <div id="<%= dom_id(@message, :submission) %>" is="turbo-frame">
               <% if @message.submittable? %>
-                <%= button_to submit_message_draft_path(@message), method: :post, class: "flex justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3.5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" do %>
-                  Odoslať
+                <%= form_with(url: submit_message_draft_path(@message), method: :post, data: { turbo_frame: "_top" }, local: true) do |form| %>
+                  <%= form.submit "Odoslať", class: "flex justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3.5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" %>
                 <% end %>
               <% end %>
             </div>
           </div>
           <div class="gap-2 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
-            <%= button_to message_draft_path(@message), method: :delete, class: "flex justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6 rounded-lg border border-gray-400 px-3.5 py-2.5 hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 rounded-lg", data: { turbo_frame: '_top' }, title: "Zahodiť draft" do %>
+            <%= button_to message_draft_path(@message), method: :delete, class: "flex justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6 rounded-lg border border-gray-400 px-3.5 py-2.5 hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 rounded-lg", data: { turbo_frame: "_top" }, title: "Zahodiť draft" do %>
               <svg style="color: red" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
                 <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" fill="red"></path> <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" fill="red"></path>
               </svg>

@@ -28,8 +28,7 @@ class SidebarMenu
 
   def admin_main_menu
     [
-      Layout::BackToBoxComponent.new(),
-      Layout::SidebarDividerComponent.new(),
+      Layout::BackToBoxComponent.new,
       TW::SidebarMenuDividerComponent.new(name: 'Nastavenia'),
       TW::SidebarMenuItemComponent.new(name: 'Filtre', url: filters_path, icon: Icons::FiltersComponent.new),
       TW::SidebarMenuItemComponent.new(name: 'Pravidlá', url: settings_automation_rules_path, icon: Icons::RulesComponent.new),
@@ -40,7 +39,7 @@ class SidebarMenu
       TW::SidebarMenuItemComponent.new(name: 'Schránky', url: admin_tenant_boxes_path(Current.tenant), icon: Icons::BoxesComponent.new),
       TW::SidebarMenuItemComponent.new(name: 'Skupiny', url: admin_tenant_groups_path(Current.tenant), icon: Icons::GroupsComponent.new),
       TW::SidebarMenuItemComponent.new(name: 'Štítky', url: admin_tenant_tags_path(Current.tenant), icon: Icons::TagsComponent.new),
-      Layout::SidebarDividerComponent.new(),
+      Layout::SidebarDividerComponent.new,
       TW::SidebarMenuDividerComponent.new(name: 'Admin'),
       TW::SidebarMenuItemComponent.new(name: 'Good Job Dashboard', url: good_job_path, icon: Icons::GoodJobComponent.new),
     ].compact

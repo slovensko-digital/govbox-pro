@@ -1,4 +1,4 @@
-<%= tag.turbo_frame(id: 'modal') do %>
+<%= tag.turbo_frame(id: "modal") do %>
   <div class="fixed inset-0 z-50 p-2" role="dialog" aria-modal="true">
     <div class="fixed inset-0 transition-opacity bg-gray-400 bg-opacity-75" aria-hidden="true"></div>
     <div class="relative flex items-center justify-center h-full">
@@ -15,19 +15,19 @@
             <%= render Icons::InfoComponent.new %>
             <p class="flex-grow w-[804px] text-base text-left text-gray-900"> Pravidlo tvorí ľubovoľný počet podmienok, pričom všetky musia byť splnené. </p>
           </div>
-          <%= form_with model: [:settings, @new_rule], class:"flex justify-start items-center self-stretch gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200" do |new_rule_form| %>
+          <%= form_with model: [:settings, @new_rule], class: "flex justify-start items-center self-stretch gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200" do |new_rule_form| %>
             <%= new_rule_form.fields_for :conditions, child_index: @automation_rule.conditions.size do |new_condition_form| %>
-              <%= tag.turbo_frame id: "condition-new", class:"flex justify-between grow" do %>
+              <%= tag.turbo_frame id: "condition-new", class: "flex justify-between grow" do %>
                 <%= render Settings::Rules::ConditionFormComponent.new(form: new_condition_form, index: @automation_rule.conditions.size, new: true) %>
               <% end %>
             <% end %>
           <% end %>
-          <%= form_with model: [:settings, @automation_rule], class:"flex flex-col self-stretch" do |rule_form| %>
-            <%= tag.turbo_frame id: 'conditions', class:"flex flex-col justify-start items-start grow gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200" do %>
+          <%= form_with model: [:settings, @automation_rule], class: "flex flex-col self-stretch" do |rule_form| %>
+            <%= tag.turbo_frame id: 'conditions', class: "flex flex-col justify-start items-start grow gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200" do %>
               <%= rule_form.fields_for :conditions, include_id: false do |condition_form| %>
                 <% if condition_form.object.delete_record %>
                   <%= condition_form.hidden_field :id %>
-                  <%= condition_form.hidden_field :delete_record, value:true %>
+                  <%= condition_form.hidden_field :delete_record, value: true %>
                 <% else %>
                   <%= render Settings::Rules::ConditionsFormRowComponent.new(form: condition_form, index: condition_form.index) %>
                 <% end %>
@@ -35,11 +35,11 @@
             <% end %>
             <%= render Settings::Rules::HiddenRuleFormComponent.new(form: rule_form) %>
             <%= rule_form.fields_for :actions do |action_form| %>
-              <%= render Settings::Rules::HiddenActionRowComponent.new(form:action_form) %>
+              <%= render Settings::Rules::HiddenActionRowComponent.new(form: action_form) %>
             <% end %>
             <div class="flex justify-start items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6">
-              <%= rule_form.button "Späť", formaction: header_step_settings_automation_rule_path, class:"flex justify-center items-center flex-grow relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md border border-gray-300 text-base font-medium text-left text-gray-900 bg-white" %>
-              <%= rule_form.button "Pokračovať", formaction: actions_step_settings_automation_rule_path, class:"flex justify-center items-center flex-grow relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md text-base font-medium text-left text-white bg-blue-600" %>
+              <%= rule_form.button "Späť", formaction: header_step_settings_automation_rule_path, class: "flex justify-center items-center flex-grow relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md border border-gray-300 text-base font-medium text-left text-gray-900 bg-white" %>
+              <%= rule_form.button "Pokračovať", formaction: actions_step_settings_automation_rule_path, class: "flex justify-center items-center flex-grow relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md text-base font-medium text-left text-white bg-blue-600" %>
             </div>
           <% end %>
         </div>

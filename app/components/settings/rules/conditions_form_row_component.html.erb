@@ -1,4 +1,4 @@
- <%= tag.turbo_frame id: "condition-#{@index}", class:"flex justify-start self-stretch grow" do %>
+ <%= tag.turbo_frame id: "condition-#{@index}", class: "flex justify-start self-stretch grow" do %>
   <div class="flex justify-between items-center self-stretch flex-grow flex-shrink-0 relative">
     <div class="flex gap-1">
       <%= @form.hidden_field :id %>
@@ -19,10 +19,10 @@
     </div>
     <% if @editable %>
       <div class="flex">
-        <%= button_tag type: "submit", formaction: settings_automation_condition_path(index: @index), formmethod: :post, data: {turbo_frame: "condition-#{@index}"} do %>
+        <%= button_tag type: "submit", formaction: settings_automation_condition_path(index: @index), formmethod: :post, data: { turbo_frame: "condition-#{@index}" } do %>
           <%= render Common::EditButtonComponent.new %>
         <% end %>
-        <%= button_tag type: "submit", formaction: settings_automation_condition_path(id: @form.object.id, index: @index), formmethod: :delete, data: {turbo_frame: "condition-#{@index}"} do %>
+        <%= button_tag type: "submit", formaction: settings_automation_condition_path(id: @form.object.id, index: @index), formmethod: :delete, data: { turbo_frame: "condition-#{@index}" } do %>
           <%= render Common::DeleteButtonComponent.new %>
         <% end %>
       </div>
