@@ -1,0 +1,18 @@
+<div class="relative" data-modal-disable-backdrop="true" data-controller="modal" data-action="keydown@window->modal#closeWithKeyboard">
+  <div role="button" data-action="click->modal#open">
+    <%= button %>
+  </div>
+  <div role="dialog" aria-modal="true" aria-labelledby="modal-title" data-target="modal.container" data-action="keyup@window->modal#closeWithKeyboard" class="hidden animated fadeIn fixed inset-0 overflow-y-auto flex items-center justify-center" style="z-index: 10000;">
+    <div class="max-w-lg max-h-screen w-full relative" style="z-index: 1000">
+      <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+        <div class="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 w-full sm:max-w-lg sm:p-6 sm:pb-4 flex flex-col">
+          <% if header %>
+            <h3 class="text-base font-semibold leading-6 text-gray-900" id="modal-title"><%= header %></h3>
+          <% end %>
+          <%= modal_content %>
+        </div>
+      </div>
+    </div>
+    <div data-action="click->modal#close" class="animated fadeIn fixed inset-0 overflow-y-auto flex items-center justify-center bg-black opacity-80"></div>
+  </div>
+</div>

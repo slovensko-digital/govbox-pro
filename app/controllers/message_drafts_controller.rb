@@ -3,6 +3,7 @@ class MessageDraftsController < ApplicationController
   before_action :load_original_message, only: :create
   before_action :load_message_draft, except: [:index, :create, :submit_all]
 
+  include ActionView::RecordIdentifier
   include MessagesConcern
 
   def index
@@ -14,18 +15,15 @@ class MessageDraftsController < ApplicationController
 
     @message = MessageDraft.create_message_reply(original_message: @original_message, author: Current.user)
 
-    @flash = flash
-    redirect_to message_draft_path(@message)
+    redirect_to message_thread_path(@message.thread, anchor: dom_id(@message))
   end
 
   def show
     authorize @message
 
     @message_thread = @message.thread
-    set_thread_tags_with_deletable_flag
     @thread_messages = @message_thread.messages_visible_to_user(Current.user).order(delivered_at: :asc)
-
-    @flash = flash
+    set_thread_tags_with_deletable_flag
   end
 
   def update
@@ -43,11 +41,10 @@ class MessageDraftsController < ApplicationController
       Govbox::SubmitMessageDraftJob.perform_later(@message)
       @message.being_submitted!
 
-      redirect_path = @message.original_message.present? ? message_path(@message.original_message) : message_drafts_path
-      redirect_to redirect_path, notice: "Správa bola zaradená na odoslanie."
+      redirect_to message_thread_path(@message.thread), notice: "Správa bola zaradená na odoslanie"
     else
       # TODO: prisposobit chybovu hlasku aj importovanym draftom
-      redirect_to message_draft_path(@message), alert: "Vyplňte predmet a text odpovede."
+      redirect_to message_thread_path(@message.thread), error: "Vyplňte predmet a text odpovede"
     end
   end
 
@@ -71,10 +68,7 @@ class MessageDraftsController < ApplicationController
 
     @message.destroy
 
-    drafts_tag = @message.thread.tags.find_by(name: "Drafts")
-    @message.thread.tags.delete(drafts_tag) unless @message.thread.message_drafts.any?
-
-    redirect_to redirect_path
+    redirect_to redirect_path, notice: "Draft bol zahodený"
   end
 
   private
@@ -90,7 +84,6 @@ class MessageDraftsController < ApplicationController
 
   def load_message_draft
     @message = policy_scope(MessageDraft).find(params[:id])
-    @flash = flash
   end
 
   def message_params

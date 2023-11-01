@@ -12,8 +12,20 @@ two:
   visible: false
   tenant: solver
 
+drafts_solver:
+  name: Drafts
+  external: false
+  visible: true
+  tenant: solver
+
 three:
   name: MyString3
+  external: false
+  visible: true
+  tenant: ssd
+
+drafts_ssd:
+  name: Drafts
   external: false
   visible: true
   tenant: ssd

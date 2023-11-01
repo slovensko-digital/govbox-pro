@@ -29,4 +29,8 @@ class NestedMessageObject < ApplicationRecord
       )
     end
   end
+
+  def xml?
+    mimetype == 'application/xml'
+  end
 end

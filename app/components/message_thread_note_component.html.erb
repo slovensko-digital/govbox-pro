@@ -26,7 +26,7 @@
           data-transition-leave-from="opacity-100 translate-y-0"
           data-transition-leave-to="opacity-0 translate-y-1"
           class="hidden">
-      <%= form_with model:[@message_thread, @message_thread_note], class: "flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 overflow-hidden gap-2 py-1 px-2 rounded-md bg-white" do |form| %>
+      <%= form_with model: [@message_thread, @message_thread_note], class: "flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 overflow-hidden gap-2 py-1 px-2 rounded-md bg-white" do |form| %>
         <%= form.text_area :note, placeholder: 'Zadajte svoje poznámky k vláknu', rows:3, class: "px-3 py-4 placeholder-slate-300 text-slate-900 relative bg-white bg-white rounded-lg text-base border-0 shadow outline-none focus:outline-none focus:ring w-full h-full" %>
         <div class="flex flex-col justify-start items-end self-stretch flex-grow-0 flex-shrink-0 gap-2 px-3">
           <%= form.button class: "flex justify-center items-center h-11 relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md bg-blue-600" do %>

@@ -21,7 +21,19 @@
 class MessageDraft < Message
   belongs_to :import, class_name: 'MessageDraftsImport', foreign_key: :import_id, optional: true
 
-  after_destroy { self.thread.destroy! if self.thread.messages.none? }
+  after_create do
+    drafts_tag = self.thread.box.tenant.tags.find_by(name: "Drafts")
+    self.thread.add_tag(drafts_tag)
+  end
+
+  after_destroy do
+    if self.thread.messages.none?
+      self.thread.destroy!
+    elsif self.thread.message_drafts.none?
+      drafts_tag = self.thread.tags.find_by(name: "Drafts")
+      thread.tags.delete(drafts_tag)
+    end
+  end
 
   GENERAL_AGENDA_POSP_ID = "App.GeneralAgenda"
   GENERAL_AGENDA_POSP_VERSION = "1.9"
@@ -35,7 +47,7 @@ class MessageDraft < Message
   end
 
   def self.create_message_reply(original_message: , author:)
-    message_draft = original_message.thread.message_drafts.create!(
+    original_message.thread.message_drafts.create!(
       uuid: SecureRandom.uuid,
       sender_name: original_message.recipient_name,
       recipient_name: original_message.sender_name,
@@ -53,11 +65,6 @@ class MessageDraft < Message
         "status": "created"
       }
     )
-
-    drafts_tag = message_draft.thread.box.tenant.tags.find_by(name: "Drafts")
-    message_draft.thread.add_tag(drafts_tag)
-
-    message_draft
   end
 
   def update_content(title:, body:)
