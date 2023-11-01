@@ -408,7 +408,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_20_095657) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "upvs_api_connections", force: :cascade do |t|
+  create_table "api_connections", force: :cascade do |t|
     t.bigint "box_id"
     t.string "sub", null: false
     t.uuid "obo"
@@ -416,7 +416,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_20_095657) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "type"
-    t.index ["box_id"], name: "index_upvs_api_connections_on_box_id"
+    t.index ["box_id"], name: "index_api_connections_on_box_id"
   end
 
   create_table "upvs_form_template_related_documents", force: :cascade do |t|
@@ -486,6 +486,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_20_095657) do
   add_foreign_key "tag_users", "users"
   add_foreign_key "tags", "tenants"
   add_foreign_key "tags", "users"
+  add_foreign_key "api_connections", "boxes"
   add_foreign_key "upvs_form_template_related_documents", "upvs_form_templates"
   add_foreign_key "users", "tenants"
 end
