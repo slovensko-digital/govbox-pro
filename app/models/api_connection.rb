@@ -9,5 +9,5 @@
 #  updated_at                                  :datetime         not null
 
 class ApiConnection < ApplicationRecord
-  belongs_to :box
+  has_many :boxes
 end

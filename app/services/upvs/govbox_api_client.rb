@@ -5,6 +5,7 @@ class Upvs::GovboxApiClient
 
   def api(box)
     govbox_api_connection = ApiConnection.find_by(box: box)
-    Upvs::GovboxApi.new(@host, govbox_api_connection)
+    obo = box.settings["obo"] if box.settings
+    Upvs::GovboxApi.new(@host, api_connection: govbox_api_connection, obo: obo)
   end
 end

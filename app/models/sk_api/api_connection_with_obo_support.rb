@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: upvs_api_connections
+# Table name: api_connections
 #
 #  id                                          :integer          not null, primary key
 #  sub                                         :string           not null
