@@ -58,7 +58,7 @@ class TagsChanges
   def initialize(message_thread:, tag_scope:, tags_assignments: { init: {}, new: {} })
     @message_thread = message_thread
     @tag_scope = tag_scope
-    @tags_assignments = tags_assignments
+    @tags_assignments = tags_assignments.to_h
   end
 
   def init_assignments
@@ -77,7 +77,7 @@ class TagsChanges
     @diff.number_of_changes
   end
 
-  def self.init(message_thread:, tag_scope:)
+  def self.build_with_new_assignments(message_thread:, tag_scope:)
     new(
       message_thread: message_thread,
       tag_scope: tag_scope,
@@ -87,7 +87,7 @@ class TagsChanges
     end
   end
 
-  def self.prepare(message_thread:, tag_scope:, tags_assignments:)
+  def self.build_from_assignments(message_thread:, tag_scope:, tags_assignments:)
     new(
       message_thread: message_thread,
       tag_scope: tag_scope,

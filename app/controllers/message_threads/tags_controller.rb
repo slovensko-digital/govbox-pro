@@ -4,7 +4,7 @@ class MessageThreads::TagsController < ApplicationController
   def edit
     authorize MessageThreadsTag
 
-    @tags_changes = TagsChanges.init(
+    @tags_changes = TagsChanges.build_with_new_assignments(
       message_thread: @message_thread,
       tag_scope: tag_scope,
     )
@@ -14,10 +14,10 @@ class MessageThreads::TagsController < ApplicationController
   def prepare
     authorize MessageThreadsTag
 
-    @tags_changes = TagsChanges.prepare(
+    @tags_changes = TagsChanges.build_from_assignments(
       message_thread: @message_thread,
       tag_scope: tag_scope,
-      tags_assignments: tags_assignments.to_h
+      tags_assignments: tags_assignments
     )
     @tags_filter = TagsFilter.new(tag_scope: tag_scope, filter_query: params[:name_search_query].strip)
     @rerender_list = params[:assignments_update].blank?
@@ -30,7 +30,7 @@ class MessageThreads::TagsController < ApplicationController
     @tags_changes = TagsChanges.new(
       message_thread: @message_thread,
       tag_scope: tag_scope,
-      tags_assignments: tags_assignments.to_h
+      tags_assignments: tags_assignments
     )
 
     @tags_changes.add_new_tag(new_tag) if new_tag.save
@@ -49,7 +49,7 @@ class MessageThreads::TagsController < ApplicationController
     tag_changes = TagsChanges.new(
       message_thread: @message_thread,
       tag_scope: tag_scope,
-      tags_assignments: tags_assignments.to_h
+      tags_assignments: tags_assignments
     )
 
     tag_changes.save
