@@ -76,14 +76,6 @@ class MessageThreadsController < ApplicationController
     @next_page_params = search_params.to_h.merge(cursor: @next_cursor).merge(format: :turbo_stream)
   end
 
-  def search_available_tags
-    authorize [MessageThread]
-    @tags = Current.tenant.tags
-                   .where.not(id: @message_thread.tags.ids)
-                   .where(visible: true)
-    @tags = @tags.where('unaccent(name) ILIKE unaccent(?)', "%#{params[:name_search]}%") if params[:name_search]
-  end
-
   private
 
   def set_message_thread
