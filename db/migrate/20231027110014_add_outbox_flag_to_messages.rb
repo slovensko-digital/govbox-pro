@@ -10,7 +10,7 @@ class AddOutboxFlagToMessages < ActiveRecord::Migration[7.0]
       )
 
       next if message.collapsed?
-      message.previous_thread_outbox_messages.update_all(
+      message.previous_thread_outbox_message&.update(
         collapsed: true
       )
     end

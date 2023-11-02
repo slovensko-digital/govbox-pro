@@ -70,7 +70,7 @@ class Message < ApplicationRecord
     metadata["delivery_notification"] && metadata["authorized"] == true
   end
 
-  def previous_thread_outbox_messages
-    thread.messages.outbox.where.not(id: id).where('delivered_at <= ?', delivered_at)
+  def previous_thread_outbox_message
+    thread.messages.outbox.where(uuid: metadata["reference_id"]).take
   end
 end
