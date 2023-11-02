@@ -69,8 +69,4 @@ class Message < ApplicationRecord
   def authorized?
     metadata["delivery_notification"] && metadata["authorized"] == true
   end
-
-  def previous_thread_outbox_message
-    thread.messages.outbox.where(uuid: metadata["reference_id"]).take
-  end
 end

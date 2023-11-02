@@ -10,7 +10,7 @@ class AddOutboxFlagToMessages < ActiveRecord::Migration[7.0]
       )
 
       next if message.collapsed?
-      message.previous_thread_outbox_message&.update(
+      message.thread.messages.outbox.where(uuid: message.metadata["reference_id"]).take&.update(
         collapsed: true
       )
     end

@@ -12,7 +12,7 @@ module Govbox
 
         destroy_associated_message_draft(govbox_message)
         mark_associated_delivery_notification_authorized(govbox_message)
-        collapse_previous_outbox_message(message)
+        collapse_referenced_outbox_message(message)
         create_message_relations(message)
       end
     end
@@ -53,10 +53,10 @@ module Govbox
       ) if main_message
     end
 
-    def collapse_previous_outbox_message(message)
+    def collapse_referenced_outbox_message(message)
       return if message.collapsed?
 
-      message.previous_thread_outbox_message&.update(
+      message.thread.messages.outbox.where(uuid: message.metadata["reference_id"]).take&.update(
         collapsed: true
       )
     end
