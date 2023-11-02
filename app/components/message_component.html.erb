@@ -1,36 +1,32 @@
 <%= tag.turbo_frame id: dom_id(@message), class: "flex flex-col justify-stretch items-stretch rounded-md bg-white border border-gray-200" do %>
-  <div class="flex flex-col justify-stretch items-stretch gap-4 px-6 pt-6 pb-4 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
-    <div class="flex justify-between items-start gap-4">
-      <div class="flex flex-col justify-stretch items-start gap-2">
-        <div class="flex justify-stretch items-start relative gap-2">
-          <span class="w-[100px] text-base text-left text-gray-900">
-            Odosielateľ:
-          </span>
-          <span class="text-base font-semibold text-left text-gray-900">
-            <%= @message.sender_name || 'Neznámy' %>
-          </span>
-        </div>
-        <div class="flex justify-stretch items-start relative gap-2">
-          <span class="w-[100px] text-base text-left text-gray-900">
-            Adresát:
-          </span>
-          <span class="text-base font-semibold text-left text-gray-900">
-            <%= @message.recipient_name || 'Neznámy' %>
-          </span>
-        </div>
-      </div>
-      <div class="flex flex-col justify-strech items-start flex-grow gap-1">
-        <div class="flex justify-strech items-start flex-grow-0 flex-shrink-0 relative gap-2">
-          <% if @message.authorized? %>
-            <div class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-1.5 px-2 py-1 rounded-md bg-blue-50 border border-blue-300">
-              <p class="flex-grow-0 flex-shrink-0 text-sm text-left text-blue-600">Prevzatá doručenka</p>
-            </div>
-          <% end %>
-        </div>
-      </div>
-
-      <%= render MessageOptionsComponent.new(message: @message) %>
+  <% if @message.collapsed %>
+    <div class="px-6 pt-6 pb-4">
+      <span class="text-lg font-normal leading-6 text-gray-900"><%= @message.title %></span>
     </div>
+  <% end %>
+  <div class="flex justify-between items-start gap-4 px-6 pt-6 pb-4 border-b border-gray-200">
+    <div class="flex flex-col justify-stretch items-start gap-2 mb-auto">
+      <div class="flex justify-stretch items-start relative gap-2">
+        <span class="w-[100px] text-base text-left text-gray-900">
+          Odosielateľ:
+        </span>
+        <span class="text-base font-semibold text-left text-gray-900">
+          <%= @message.sender_name || 'Neznámy' %>
+        </span>
+      </div>
+      <div class="flex justify-stretch items-start relative gap-2">
+        <span class="w-[100px] text-base text-left text-gray-900">
+          Adresát:
+        </span>
+        <span class="text-base font-semibold text-left text-gray-900">
+          <%= @message.recipient_name || 'Neznámy' %>
+        </span>
+      </div>
+    </div>
+    <% if @message.authorized? %>
+      <%= render Common::BadgeComponent.new("Prevzatá doručenka") %>
+    <% end %>
+    <%= render MessageOptionsComponent.new(message: @message) %>
   </div>
   <div class="flex flex-col justify-stretch items-start relative gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
     <div class="w-full">

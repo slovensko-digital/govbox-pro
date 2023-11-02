@@ -53,9 +53,7 @@
   </div>
 
   <% if @message.form&.is_signed? %>
-    <div class="flex justify-center items-center gap-1.5 px-2 py-1 rounded-md bg-blue-50 border border-blue-300">
-      <p class="text-sm text-left text-blue-600">Podpísané</p>
-    </div>
+    <%= render Common::BadgeComponent.new("Podpísané") %>
   <% elsif @message.form.present? %>
     <div class="flex justify-center items-center gap-1.5">
       <p class="text-gray-500">Bez podpisu</p>
