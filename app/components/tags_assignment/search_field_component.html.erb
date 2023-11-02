@@ -1,0 +1,9 @@
+<div class="w-full flex items-center rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-blue-500">
+  <div class="p-2">
+    <%= render Icons::SearchComponent.new %>
+  </div>
+  <%= search_field_tag :name_search_query, "", placeholder: "Vyhľadaj alebo vytvor štítok",
+                       data: { action: 'input->debounce#debounce' },
+                       onreset: "this.form.requestSubmit()",
+                       class: "grow border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" %>
+</div>
