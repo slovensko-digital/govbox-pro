@@ -12,11 +12,11 @@ class MessageThreadsTagPolicy < ApplicationPolicy
     def resolve
       return scope.all if @user.site_admin?
 
-      # user can change tags on message_threads that he already has access to
-      threads_accessible_by_user(scope)
+      scope_tags_to_accessible_by_user(scope)
     end
 
-    def threads_accessible_by_user(scope)
+    def scope_tags_to_accessible_by_user(scope)
+      # user can change tags on message_threads that he already has access to
       scope.where("EXISTS (
         SELECT 1 FROM message_threads_tags AS message_threads_tags_2
         INNER JOIN tag_groups ON tag_groups.tag_id = message_threads_tags_2.tag_id

@@ -19,6 +19,8 @@ class MessageThreadsTag < ApplicationRecord
   validates_uniqueness_of :tag_id, scope: :message_thread_id
   validate :thread_and_tag_tenants_matches
 
+  scope :only_visible_tags, ->{ includes(:tag).joins(:tag).where("tags.visible = ?", true).order("tags.name") }
+
   after_commit ->(message_threads_tag) { EventBus.publish(:message_thread_tag_changed, message_threads_tag) }
 
   def thread_and_tag_tenants_matches
