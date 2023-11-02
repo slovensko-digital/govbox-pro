@@ -55,6 +55,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_01_181535) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "type"
+    t.uuid "obo"
   end
 
   create_table "automation_actions", force: :cascade do |t|

@@ -2,14 +2,14 @@
 # The data can then be loaded with the bin/rails db:seed command (or find_or_create_byd alongside the database with db:setup).
 #
 
-tenant = Tenant.find_or_create_by!(name: 'Dummy Tenant')
+tenant = Tenant.find_or_create_bybo!(name: 'Dummy Tenant')
 
 ENV['SITE_ADMIN_EMAILS'].to_s.split(',').each.with_index(1) do |email, i|
   tenant.users.find_or_create_by!(email: email, name: "Site ADMIN User #{i}")
 end
 
-api_connection = ApiConnection.find_or_create_by!(sub: "SPL_Irvin_83300252_KK_24022023", api_token_private_key: File.read(Rails.root + "security/govbox_api_fix.pem"))
-box = tenant.boxes.find_or_create_by!(name: "Dev box", uri: "ico://sk/83300252", short_name: 'DEV', api_connection: api_connection)
+api_connection = Govbox::ApiConnection.find_or_create_by!(sub: "SPL_Irvin_83300252_KK_24022023", api_token_private_key: File.read(Rails.root + "security/govbox_api_fix.pem"))
+tenant.boxes.find_or_create_by!(name: "Dev box 2", uri: "ico://sk/83300252", short_name: 'DEV', api_connection: api_connection)
 
 tenant.tags.find_or_create_by!(name: 'NASES', user_id: tenant.users.first.id)
 

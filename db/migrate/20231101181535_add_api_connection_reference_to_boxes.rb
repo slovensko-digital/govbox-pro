@@ -4,13 +4,11 @@ class AddApiConnectionReferenceToBoxes < ActiveRecord::Migration[7.0]
     add_column :boxes, :settings, :jsonb
 
     Box.find_each do |box|
-      box_api_connection = ApiConnection.find_by(box_id: box.id)
+      box_api_connection = Govbox::ApiConnection.find_by(box_id: box.id)
       box.api_connection = box_api_connection
-      box.settings[:obo] = box_api_connection.obo
       box.save!
     end
 
-    remove_column :api_connections, :box_id
-    remove_column :api_connections, :obo
+    remove_column :api_connections, :box_id, :integer
   end
 end

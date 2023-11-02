@@ -49,4 +49,6 @@ class Box < ApplicationRecord
          pink: 'pink',
          rose: 'rose'
        }
+
+  validates_associated :api_connection, message: ->(_class_obj, obj){ obj[:value].errors.full_messages.join(',') }
 end
