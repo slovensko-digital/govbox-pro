@@ -14,12 +14,16 @@
     </div>
     <div class="flex flex-col justify-start items-start overflow-clip">
       <div class="flex justify-start items-start gap-4 w-full">
-        <p class="truncate text-base font-semibold text-left text-gray-900"><%= MessageObjectHelper.displayable_name(@message_attachment) %></p>
+        <span class="truncate text-base font-semibold text-left text-gray-900">
+          <%= MessageObjectHelper.displayable_name(@message_attachment) %>
+        </span>
         <% if @message_attachment.is_signed? %>
           <%= render Common::BadgeComponent.new("Podpísané") %>
         <% end %>
       </div>
-      <p class="text-sm text-left text-gray-900"><%= @message_attachment.object_type %> </p>
+      <span class="text-sm text-left text-gray-900">
+        <%= @message_attachment.object_type %>
+      </span>
     </div>
   <% end %>
   <div class="flex justify-end items-center gap-4">

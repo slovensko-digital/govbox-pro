@@ -1,13 +1,10 @@
 <div class="flex justify-between items-start gap-4 px-6 py-4 bg-white border-t-0 border-r-0 border-b border-l-0 border-gray-200">
   <div class="flex flex-col grow md:flex-row justify-start relative gap-4">
-    <div class="flex justify-between">
-      <div class="flex my-auto w-fit h-fit">
-        <%= render Common::BoxLabelComponent.new(@message_thread.box) %>
-      </div>
-      <%= render MessageThreadOptionsComponent.new(@message_thread, "block md:hidden") %>
+    <div class="flex w-fit h-fit mb-auto">
+      <%= render Common::BoxLabelComponent.new(@message_thread.box) %>
     </div>
-    <div class="flex flex-wrap gap-4 items-start md:items-center">
-      <span class="flex basis-1/2 grow text-xl font-semibold text-left text-gray-900">
+    <div class="flex flex-col md:flex-row gap-4 items-start">
+        <span  class="text-xl font-semibold text-left text-gray-900">
         <%= @message_thread.title %>
       </span>
       <div class="flex justify-start items-start gap-2">
@@ -21,6 +18,6 @@
         <% end %>
       </div>
     </div>
-    <%= render MessageThreadOptionsComponent.new(@message_thread, "hidden md:block ml-auto") %>
   </div>
+  <%= render MessageThreadOptionsComponent.new(@message_thread) %>
 </div>
