@@ -2,7 +2,7 @@
 # The data can then be loaded with the bin/rails db:seed command (or find_or_create_byd alongside the database with db:setup).
 #
 
-tenant = Tenant.find_or_create_bybo!(name: 'Dummy Tenant')
+tenant = Tenant.find_or_create_by!(name: 'Dummy Tenant')
 
 ENV['SITE_ADMIN_EMAILS'].to_s.split(',').each.with_index(1) do |email, i|
   tenant.users.find_or_create_by!(email: email, name: "Site ADMIN User #{i}")
