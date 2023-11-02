@@ -8,5 +8,5 @@
 #  created_at                                  :datetime         not null
 #  updated_at                                  :datetime         not null
 
-class Govbox::ApiConnectionWithOboSupport < ::Upvs::ApiConnection
+class Govbox::ApiConnectionWithOboSupport < ::ApiConnection
 end

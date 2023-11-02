@@ -8,5 +8,5 @@
 #  created_at                                  :datetime         not null
 #  updated_at                                  :datetime         not null
 
-class SkApi::ApiConnectionWithOboSupport < ::Upvs::ApiConnection
+class SkApi::ApiConnectionWithOboSupport < ::ApiConnection
 end
