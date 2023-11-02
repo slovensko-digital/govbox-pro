@@ -7,7 +7,7 @@ class MessageThreadsController < ApplicationController
 
   def show
     authorize @message_thread
-    set_thread_visible_tags
+    set_visible_tags_for_thread
     @thread_messages = @message_thread.messages_visible_to_user(Current.user).includes(objects: :nested_message_objects, attachments: :nested_message_objects).order(delivered_at: :asc)
   end
 

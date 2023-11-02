@@ -23,7 +23,7 @@ class MessageDraftsController < ApplicationController
 
     @message_thread = @message.thread
     @thread_messages = @message_thread.messages_visible_to_user(Current.user).order(delivered_at: :asc)
-    set_thread_visible_tags
+    set_visible_tags_for_thread
   end
 
   def update

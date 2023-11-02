@@ -1,5 +1,5 @@
 module MessagesConcern
-  def set_thread_visible_tags
+  def set_visible_tags_for_thread
     @thread_tags =
       @message.
         thread.

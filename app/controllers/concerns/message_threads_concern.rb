@@ -1,5 +1,5 @@
 module MessageThreadsConcern
-  def set_thread_visible_tags
+  def set_visible_tags_for_thread
     @thread_tags =
       @message_thread.message_threads_tags.
         includes(:tag).
