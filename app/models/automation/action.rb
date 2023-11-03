@@ -15,9 +15,15 @@ module Automation
     belongs_to :action_object, polymorphic: true, optional: true
     attr_accessor :delete_record
 
+    ACTION_LIST = ['Automation::AddMessageThreadTagAction'].freeze
+
     def tag_list
       automation_rule.tenant.tags.pluck(:name, :id)
     end
+  end
+
+  # deprecated, fully replaced by AddMessageThreadTagAction
+  class AddTagAction < Automation::Action
   end
 
   class AddMessageThreadTagAction < Automation::Action
