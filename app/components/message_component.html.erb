@@ -43,6 +43,7 @@
     <% if @message.form.nested_message_objects.count > 1 %>
       <div class="flex flex-col justify-stretch items-stretch divide-y relative px-4 bg-white border border-gray-200 w-full">
         <% @message.form.nested_message_objects.each do |message_attachment| %>
+          <!-- TODO lepsia podmienka (ma sa zobrazit vsetko okrem formulara) -->
           <% unless message_attachment.xml? %>
             <div class="flex justify-between items-center p-2 overflow-clip">
               <%= link_to message_message_object_nested_message_object_path(@message, @message.form, message_attachment), data: { turbo_frame: "_top" }, class: "flex justify-start items-center gap-4 overflow-clip" do %>
