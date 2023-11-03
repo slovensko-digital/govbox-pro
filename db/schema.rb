@@ -49,6 +49,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_30_103432) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "api_connections", force: :cascade do |t|
+    t.bigint "box_id"
+    t.string "sub", null: false
+    t.uuid "obo"
+    t.string "api_token_private_key", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["box_id"], name: "index_api_connections_on_box_id"
+  end
+
   create_table "automation_actions", force: :cascade do |t|
     t.string "type"
     t.bigint "automation_rule_id", null: false
@@ -400,17 +410,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_30_103432) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "api_connections", force: :cascade do |t|
-    t.bigint "box_id"
-    t.string "sub", null: false
-    t.uuid "obo"
-    t.string "api_token_private_key", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "type"
-    t.index ["box_id"], name: "index_api_connections_on_box_id"
-  end
-
   create_table "upvs_form_template_related_documents", force: :cascade do |t|
     t.bigint "upvs_form_template_id", null: false
     t.string "data", null: false
@@ -476,7 +475,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_30_103432) do
   add_foreign_key "tag_groups", "tags"
   add_foreign_key "tags", "tenants"
   add_foreign_key "tags", "users"
-  add_foreign_key "api_connections", "boxes"
   add_foreign_key "upvs_form_template_related_documents", "upvs_form_templates"
   add_foreign_key "users", "tenants"
 end
