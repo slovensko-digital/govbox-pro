@@ -12,14 +12,17 @@ class MessageThreadsTagPolicy < ApplicationPolicy
     def resolve
       return scope.all if @user.site_admin?
 
-      scope.where(
-        TagGroup
-          .select(1)
-          .joins(:group_memberships)
-          .where("tag_groups.tag_id = message_threads_tags.tag_id")
-          .where(group_memberships: { user_id: @user.id })
-          .arel.exists
-      )
+      scope_tags_to_accessible_by_user(scope)
+    end
+
+    def scope_tags_to_accessible_by_user(scope)
+      # user can change tags on message_threads that he already has access to
+      scope.where("EXISTS (
+        SELECT 1 FROM message_threads_tags AS message_threads_tags_2
+        INNER JOIN tag_groups ON tag_groups.tag_id = message_threads_tags_2.tag_id
+        INNER JOIN group_memberships ON group_memberships.group_id = tag_groups.group_id
+        WHERE group_memberships.user_id = ? AND message_threads_tags.message_thread_id = message_threads_tags_2.message_thread_id
+      )", @user)
     end
   end
 
@@ -48,6 +51,10 @@ class MessageThreadsTagPolicy < ApplicationPolicy
   end
 
   def destroy?
+    true
+  end
+
+  def prepare?
     true
   end
 end

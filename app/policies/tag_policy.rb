@@ -23,4 +23,12 @@ class TagPolicy < ApplicationPolicy
       )
     end
   end
+
+  def create?
+    true
+  end
+
+  def new?
+    true
+  end
 end
