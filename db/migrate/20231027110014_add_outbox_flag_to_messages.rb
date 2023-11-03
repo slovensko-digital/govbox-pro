@@ -10,9 +10,17 @@ class AddOutboxFlagToMessages < ActiveRecord::Migration[7.0]
       )
 
       next if message.collapsed?
-      message.thread.messages.outbox.where(uuid: message.metadata["reference_id"]).take&.update(
-        collapsed: true
-      )
+
+      if message.outbox?
+        referring_messages = message.thread.messages.inbox.where("metadata ->> 'reference_id' = ?", message.uuid).where(collapsed: false)
+        message.update(
+          collapsed: true
+        ) if referring_messages
+      else
+        message.thread.messages.outbox.where(uuid: message.metadata["reference_id"]).take&.update(
+          collapsed: true
+        )
+      end
     end
 
     change_column :messages, :outbox, :boolean, null: false, default: false
