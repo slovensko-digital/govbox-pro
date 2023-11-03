@@ -18,6 +18,7 @@ class Tag < ApplicationRecord
   has_many :messages, through: :messages_tags
   has_many :message_threads_tags
   has_many :message_threads, through: :message_threads_tags
+  has_many :automation_actions, as: :action_object
 
   validates :name, presence: true
   validates :name, uniqueness: { scope: :tenant_id, case_sensitive: false }

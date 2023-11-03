@@ -11,9 +11,11 @@ Rails.application.routes.draw do
     end
     resources :automation_conditions, param: :index do
       post '/', to: 'automation_conditions#edit_form', on: :member
+      patch :rerender
     end
     resources :automation_actions, param: :index do
       post '/', to: 'automation_actions#edit_form', on: :member
+      patch :rerender
     end
     resources :tags
     resource :profile
@@ -37,7 +39,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :boxes, path: 'schranky', only: [:index, :show] do
+  resources :boxes, path: 'schranky', only: %i[index show] do
     post :sync
     get :select, on: :member
     get :select_all, on: :collection
