@@ -56,9 +56,17 @@ module Govbox
     def collapse_referenced_outbox_message(message)
       return if message.collapsed?
 
-      message.thread.messages.outbox.where(uuid: message.metadata["reference_id"]).take&.update(
-        collapsed: true
-      )
+      if message.outbox?
+        # TODO change .where(collapsed: false) to .where(hidden: true)
+        referring_messages = message.thread.messages.inbox.where("metadata ->> 'reference_id' = ?", message.uuid).where(collapsed: false)
+        message.update(
+          collapsed: true
+        ) if referring_messages
+      else
+        message.thread.messages.outbox.where(uuid: message.metadata["reference_id"]).take&.update(
+          collapsed: true
+        )
+      end
     end
   end
 end
