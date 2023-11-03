@@ -1,0 +1,7 @@
+<%= tag.turbo_frame id: "modal" do %>
+  <%=
+    render TagsAssignment::Component.new(
+      message_thread: @message_thread,
+      tags_changes: @tags_changes,
+      tags_filter: @tags_filter) %>
+<% end %>

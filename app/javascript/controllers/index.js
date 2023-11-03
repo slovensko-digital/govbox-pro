@@ -18,3 +18,9 @@ application.register("form", FormController)
 
 import TurboContentController from "./turbo_content_controller"
 application.register("turbo-content", TurboContentController)
+
+import DismissibleAlertController from "./dismissible_alert_controller"
+application.register("dismissible-alert", DismissibleAlertController)
+
+import AutofocusController from "./autofocus_controller"
+application.register("autofocus", AutofocusController)

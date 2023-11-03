@@ -1,6 +1,6 @@
 class MessageThreadHeaderComponent < ViewComponent::Base
-  def initialize(message_thread, thread_tags_with_deletable_flag)
+  def initialize(message_thread, thread_tags)
     @message_thread = message_thread
-    @thread_tags_with_deletable_flag = thread_tags_with_deletable_flag
+    @thread_tags = thread_tags
   end
 end
