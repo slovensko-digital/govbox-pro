@@ -49,6 +49,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_30_103432) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "api_connections", force: :cascade do |t|
+    t.bigint "box_id"
+    t.string "sub", null: false
+    t.uuid "obo"
+    t.string "api_token_private_key", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["box_id"], name: "index_api_connections_on_box_id"
+  end
+
   create_table "automation_actions", force: :cascade do |t|
     t.string "type"
     t.bigint "automation_rule_id", null: false
@@ -186,16 +196,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_30_103432) do
     t.index ["priority", "created_at"], name: "index_good_jobs_jobs_on_priority_created_at_when_unfinished", order: { priority: "DESC NULLS LAST" }, where: "(finished_at IS NULL)"
     t.index ["queue_name", "scheduled_at"], name: "index_good_jobs_on_queue_name_and_scheduled_at", where: "(finished_at IS NULL)"
     t.index ["scheduled_at"], name: "index_good_jobs_on_scheduled_at", where: "(finished_at IS NULL)"
-  end
-
-  create_table "govbox_api_connections", force: :cascade do |t|
-    t.bigint "box_id"
-    t.string "sub", null: false
-    t.uuid "obo"
-    t.string "api_token_private_key", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["box_id"], name: "index_govbox_api_connections_on_box_id"
   end
 
   create_table "govbox_folders", force: :cascade do |t|
