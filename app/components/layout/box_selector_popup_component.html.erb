@@ -19,6 +19,7 @@
           <%= form.search_field :name_search, value: params[:name_search], placeholder: "Vyhľadaj schránku",
                                 oninput: "this.form.requestSubmit()",
                                 onreset: "this.form.requestSubmit()",
+                                autofocus: true,
                                 class: "block w-full flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" %>
         </div>
       <% end %>
