@@ -1,0 +1,19 @@
+<div class="flex flex-col justify-stretch items-stretch">
+  <%= render MessageThreadHeaderComponent.new(@message_thread, @thread_tags_with_deletable_flag) %>
+  <%= render MessageThreadNoteComponent.new(@message_thread.note) %>
+  <div class="flex flex-col justify-start items-start gap-2 p-4">
+    <div class="flex flex-col justify-start items-start w-full gap-6 p-6 rounded-md bg-white border border-gray-200">
+      <div class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative p-2 bg-white">
+        <div class="flex justify-start items-center flex-grow relative gap-6">
+          <%= link_to @message_thread do %>
+            <%= render Icons::LeftArrowComponent.new %>
+          <% end %>
+          <p class="flex-grow-0 flex-shrink-0 w-[743px] text-base text-left text-gray-900">História komunikácie</p>
+        </div>
+      </div>
+      <ul role="list" class="w-full -mb-8">
+        <%= render MessageThreadLogItemComponent.with_collection(@message_thread.messages.order(:delivered_at)) %>
+      </ul>
+    </div>
+  </div>
+</div>

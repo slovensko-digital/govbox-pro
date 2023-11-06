@@ -37,7 +37,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :boxes, path: 'schranky', only: [:index, :show] do
+  resources :boxes, path: 'schranky', only: %i[index show] do
     post :sync
     get :select, on: :member
     get :select_all, on: :collection
@@ -53,6 +53,7 @@ Rails.application.routes.draw do
     end
     get :rename, on: :member
     get :search_available_tags, on: :member
+    get :show_log, on: :member
     resources :messages
     resources :message_thread_notes
   end

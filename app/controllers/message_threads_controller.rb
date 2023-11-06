@@ -1,27 +1,27 @@
 class MessageThreadsController < ApplicationController
-  before_action :set_message_thread, only: %i[show rename update search_available_tags]
+  before_action :set_message_thread, only: %i[show rename update search_available_tags show_log]
+  before_action :set_additional_attributes, only: %i[show show_log]
   before_action :load_threads, only: %i[index scroll]
-  after_action :mark_thread_as_read, only: %i[show]
+  after_action :mark_thread_as_read, only: %i[show show_log]
 
   include MessageThreadsConcern
 
   def show
     authorize @message_thread
-    set_thread_tags_with_deletable_flag
-    @thread_messages = @message_thread.messages_visible_to_user(Current.user).includes(objects: :nested_message_objects, attachments: :nested_message_objects).order(delivered_at: :asc)
   end
 
   def rename
     authorize @message_thread
   end
+
   def update
     authorize @message_thread
 
     path = message_thread_path(@message_thread)
 
-    if @message_thread.update(message_thread_params)
-      redirect_back fallback_location: path, notice: "Názov vlákna bol upravený"
-    end
+    return unless @message_thread.update(message_thread_params)
+
+    redirect_back fallback_location: path, notice: "Názov vlákna bol upravený"
   end
 
   def index
@@ -84,6 +84,10 @@ class MessageThreadsController < ApplicationController
     @tags = @tags.where('unaccent(name) ILIKE unaccent(?)', "%#{params[:name_search]}%") if params[:name_search]
   end
 
+  def show_log
+    authorize @message_thread
+  end
+
   private
 
   def set_message_thread
@@ -111,5 +115,12 @@ class MessageThreadsController < ApplicationController
 
   def search_params
     params.permit(:q, :format, cursor: MessageThreadCollection::CURSOR_PARAMS)
+  end
+
+  def set_additional_attributes
+    set_thread_tags_with_deletable_flag
+    @thread_messages = @message_thread.messages_visible_to_user(Current.user).includes(
+      objects: :nested_message_objects, attachments: :nested_message_objects
+    ).order(delivered_at: :asc)
   end
 end

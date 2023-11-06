@@ -9,7 +9,7 @@
       <% elsif message.collapsed? %>
         <%= render CollapsedMessageComponent.new(message: message) %>
       <% else %>
-        <%= render MessageComponent.new(message: message) %>
+        <%= render MessageComponent.new(message: message, mode: 'thread_view') %>
       <% end %>
     <% end %>
   </div>
