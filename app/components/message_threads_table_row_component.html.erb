@@ -25,7 +25,7 @@
 <!--      <div>-->
         <%#= render Common::TagComponent.new("2 nové správy") %>
 <!--      </div>-->
-      <% if last_section? %>
+      <% if @message_thread.with_whom || @message_thread.last_message_delivered_at %>
         <div class="flex flex-wrap gap-2 text-gray-500 text-xs md:text-base items-center">
           <% if @message_thread.with_whom %>
             <span class="text-left font-normal">
