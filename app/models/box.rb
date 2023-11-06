@@ -56,6 +56,6 @@ class Box < ApplicationRecord
   private
 
   def validate_box_with_api_connection
-    validate_box(self)
+    api_connection.validate_box(self)
   end
 end
