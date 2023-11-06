@@ -47,6 +47,17 @@ Rails.application.routes.draw do
     post :search, on: :collection
   end
 
+  namespace "message_threads" do
+    namespace "bulk" do
+      namespace "tags" do
+        post :edit, to: "edit"
+        post :prepare, to: "prepare"
+        post :create_tag, to: "create_tag"
+        post :update, to: "update"
+      end
+    end
+  end
+
   resources :message_threads do
     collection do
       get :scroll
@@ -65,15 +76,6 @@ Rails.application.routes.draw do
   end
 
   resources :message_threads_tags, only: :destroy
-
-  namespace "message_threads_bulk" do
-    namespace "tags" do
-      post :edit, to: "edit"
-      post :prepare, to: "prepare"
-      post :create_tag, to: "create_tag"
-      post :update, to: "update"
-    end
-  end
 
   resources :messages do
     member do

@@ -1,6 +1,6 @@
 <%= render Common::ModalComponent.new do |modal| %>
   <% modal.with_header do %>
-    Úprava štítkov nad <%= @message_threads.length %> vláknami
+    <%= t("tag_editing_in_message_threads", count: @message_threads.length) %>
   <% end %>
   <% modal.with_modal_content do %>
     <%= form_with url: message_threads_bulk_tags_prepare_path,

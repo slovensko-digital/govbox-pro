@@ -233,3 +233,6 @@ sk:
   "Automation::AddMessageThreadTagAction": "Pridaj štítok na vlákno"
   "Automation::AddTagAction": "Pridaj štítok"
   title: "Názov"
+  tag_editing_in_message_threads:
+    one: "Úprava štítkov v jednom vlákne"
+    other: "Úprava štítkov v %{count} vláknach"

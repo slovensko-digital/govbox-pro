@@ -1,4 +1,4 @@
-class MessageThreadsBulk::TagsController < ApplicationController
+class MessageThreads::Bulk::TagsController < ApplicationController
   before_action :set_message_threads
 
   include TagCreation

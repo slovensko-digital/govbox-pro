@@ -10,7 +10,7 @@
           <% if checkbox.indeterminate? %>
             <%= check_box_tag "tags_assignments[new][#{tag.id}]",
                               checkbox.value, checkbox.checked?,
-                              data: { controller: "tri-state-checkbox", action: "click->tri-state-checkbox#nextValue", "tri-state-checkbox-checked-value": "+", "tri-state-checkbox-indeterminate-value": "=" },
+                              data: { controller: "tri-state-checkbox", action: "click->tri-state-checkbox#nextState", "tri-state-checkbox-checked-value": "+", "tri-state-checkbox-indeterminate-value": "=" },
                               onchange: "this.form.requestSubmit(document.getElementById('assignments_update'));",
                               id: "new_tags_assignments_#{tag.id}",
                               class: "h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer" %>
@@ -23,19 +23,6 @@
         </div>
       </div>
     <% end %>
-    <% if @tags_filter.filter_query.present? %>
-      <div class="flex <%= "border-t border-gray-200 mt-1.5 pt-1.5" if @tags_filter.any_filtered_results? %>">
-        <div class="mr-3 ml-1 flex h-6 items-center">
-          <%= check_box_tag "new_tag", @tags_filter.filter_query, false, class: "h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer", onchange: "this.form.requestSubmit(document.getElementById('create_tag')); this.disabled = true;" %>
-        </div>
-        <div class="min-w-0 flex text-sm leading-6">
-          <%= label_tag "new_tag", class: "select-none text-gray-900 cursor-pointer" do %>
-            <%= @tags_filter.filter_query %>
-            <span class="rounded-full px-2 py-0.5 ml-2 bg-gray-400 text-white">zaškrtnutím vytvoríte nový štítok</span>
-          <% end %>
-          <%= submit_tag "create_tag", id: "create_tag", formaction: message_threads_bulk_tags_create_tag_path, formmethod: :post, class: "hidden" %>
-        </div>
-      </div>
-    <% end %>
+    <%= render TagsAssignment::CreateTagComponent.new(tags_filter: @tags_filter, create_path: message_threads_bulk_tags_create_tag_path) %>
   </div>
 </div>

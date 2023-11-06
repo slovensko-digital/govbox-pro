@@ -12,7 +12,7 @@ export default class extends Controller {
     }
   }
 
-  nextValue(event) {
+  nextState(event) {
     if (event.target.checked === false && event.target.value === this.indeterminateValue) {
       event.target.checked = true
       event.target.value = this.checkedValue
