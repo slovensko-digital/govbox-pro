@@ -16,9 +16,7 @@ class BoxTest < ActiveSupport::TestCase
     box = boxes(:two)
     assert box.valid?
 
-    box.settings = {
-      "obo": SecureRandom.uuid
-    }
+    box.api_connection.update(obo: SecureRandom.uuid)
 
     assert_equal box.valid?, false
   end
@@ -27,9 +25,7 @@ class BoxTest < ActiveSupport::TestCase
     box = boxes(:three)
     assert box.valid?
 
-    box.settings = {
-      "obo": SecureRandom.uuid
-    }
+    box.api_connection.update(obo: SecureRandom.uuid)
 
     assert_equal box.valid?, false
   end

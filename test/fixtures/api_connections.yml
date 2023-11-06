@@ -8,12 +8,10 @@ one:
 
 two:
   sub: MyString
-  obo: <%= SecureRandom.uuid %>
   api_token_private_key: private_key
   type: 'Govbox::ApiConnectionWithOboSupport'
 
 three:
   sub: MyString
-  obo: <%= SecureRandom.uuid %>
   api_token_private_key: private_key
   type: 'SkApi::ApiConnectionWithOboSupport'

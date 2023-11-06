@@ -10,7 +10,15 @@
 #  updated_at                                  :datetime         not null
 
 class Govbox::ApiConnection < ::ApiConnection
-  def validate_box(box)
-    box.errors.add(:obo, :not_allowed) if box.settings && box.settings["obo"].present?
+  def box_obo(box)
+    raise "OBO not allowed!" if invalid_obo?(box)
+
+    obo
+  end
+
+  private
+
+  def invalid_obo?(box)
+    box.settings && box.settings["obo"].present?
   end
 end
