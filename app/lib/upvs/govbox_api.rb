@@ -4,10 +4,10 @@ module Upvs
   class GovboxApi < Api
     attr_reader :sub, :obo, :api_token_private_key, :url, :edesk, :sktalk
 
-    def initialize(url, api_connection:, obo:, handler: Faraday)
-      @sub = api_connection.sub
-      @obo = obo
-      @api_token_private_key = OpenSSL::PKey::RSA.new(api_connection.api_token_private_key)
+    def initialize(url, box:, handler: Faraday)
+      @sub = box.api_connection.sub
+      @obo = (box.settings["obo"] if box.settings) || box.api_connection.obo
+      @api_token_private_key = OpenSSL::PKey::RSA.new(box.api_connection.api_token_private_key)
       @url = url
       @edesk = Edesk.new(self)
       @sktalk = SkTalk.new(self)
