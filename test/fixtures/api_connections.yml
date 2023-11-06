@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  sub: MyString
+  obo: <%= SecureRandom.uuid %>
+  api_token_private_key: private_key
+  type: 'Govbox::ApiConnection'
+
+two:
+  sub: MyString
+  obo: <%= SecureRandom.uuid %>
+  api_token_private_key: private_key
+  type: 'Govbox::ApiConnectionWithOboSupport'
+
+three:
+  sub: MyString
+  obo: <%= SecureRandom.uuid %>
+  api_token_private_key: private_key
+  type: 'SkApi::ApiConnectionWithOboSupport'

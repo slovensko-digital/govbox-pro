@@ -5,15 +5,18 @@ one:
   uri: MyString
   tenant: solver
   short_name: MY1
+  api_connection: one
 
 two:
   name: MyString
   uri: MyString
   tenant: solver
   short_name: MY2
+  api_connection: two
 
 three:
   name: MyString2
   uri: MyString2
   tenant: ssd
   short_name: MY1
+  api_connection: three
