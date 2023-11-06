@@ -6,9 +6,9 @@ class MessageThreads::Bulk::TagsController < ApplicationController
   def edit
     authorize MessageThreadsTag
 
-    @tags_changes = BulkTagsChanges.build_with_new_assignments(
-      message_threads: @message_threads,
+    @tags_changes = TagsChanges.new(
       tag_scope: tag_scope,
+      tags_assignments: TagsChanges::Helpers.build_bulk_assignments(message_threads: @message_threads, tag_scope: tag_scope)
     )
     @tags_filter = TagsFilter.new(tag_scope: tag_scope)
   end
@@ -16,8 +16,7 @@ class MessageThreads::Bulk::TagsController < ApplicationController
   def prepare
     authorize MessageThreadsTag
 
-    @tags_changes = BulkTagsChanges.build_from_assignments(
-      message_threads: @message_threads,
+    @tags_changes = TagsChanges.new(
       tag_scope: tag_scope,
       tags_assignments: tags_assignments,
     )
@@ -29,14 +28,12 @@ class MessageThreads::Bulk::TagsController < ApplicationController
     new_tag = Tag.new(tag_creation_params.merge(name: params[:new_tag].strip))
     authorize(new_tag, "create?")
 
-    @tags_changes = BulkTagsChanges.new(
-      message_threads: @message_threads,
+    @tags_changes = TagsChanges.new(
       tag_scope: tag_scope,
-      tags_assignments: tags_assignments
+      tags_assignments: tags_assignments,
     )
 
     @tags_changes.add_new_tag(new_tag) if new_tag.save
-    @tags_changes.build_diff
 
     @tags_filter = TagsFilter.new(tag_scope: tag_scope, filter_query: "")
     @rerender_list = true
@@ -48,13 +45,12 @@ class MessageThreads::Bulk::TagsController < ApplicationController
   def update
     authorize MessageThreadsTag
 
-    tag_changes = BulkTagsChanges.new(
-      message_threads: @message_threads.select(:folder_id).includes(:folder),
+    tag_changes = TagsChanges.new(
       tag_scope: tag_scope.includes(:tenant),
       tags_assignments: tags_assignments
     )
 
-    tag_changes.save
+    tag_changes.bulk_save(@message_threads.select(:folder_id).includes(:folder))
 
     # status: 303 is needed otherwise PATCH is kept in the following redirect https://apidock.com/rails/ActionController/Redirecting/redirect_to
     redirect_back fallback_location: message_threads_path, notice: "Priradenie štítkov bolo upravené", status: 303

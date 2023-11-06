@@ -6,21 +6,22 @@ class MessageThreads::TagsController < ApplicationController
   def edit
     authorize MessageThreadsTag
 
-    @tags_changes = TagsChanges.build_with_new_assignments(
-      message_thread: @message_thread,
+    @tags_changes = TagsChanges.new(
       tag_scope: tag_scope,
+      tags_assignments: TagsChanges::Helpers.build_assignment(message_thread: @message_thread, tag_scope: tag_scope)
     )
+
     @tags_filter = TagsFilter.new(tag_scope: tag_scope)
   end
 
   def prepare
     authorize MessageThreadsTag
 
-    @tags_changes = TagsChanges.build_from_assignments(
-      message_thread: @message_thread,
+    @tags_changes = TagsChanges.new(
       tag_scope: tag_scope,
       tags_assignments: tags_assignments
     )
+
     @tags_filter = TagsFilter.new(tag_scope: tag_scope, filter_query: params[:name_search_query].strip)
     @rerender_list = params[:assignments_update].blank?
   end
@@ -30,13 +31,10 @@ class MessageThreads::TagsController < ApplicationController
     authorize(new_tag, "create?")
 
     @tags_changes = TagsChanges.new(
-      message_thread: @message_thread,
       tag_scope: tag_scope,
       tags_assignments: tags_assignments
     )
-
     @tags_changes.add_new_tag(new_tag) if new_tag.save
-    @tags_changes.build_diff
 
     @tags_filter = TagsFilter.new(tag_scope: tag_scope, filter_query: "")
     @rerender_list = true
@@ -49,12 +47,11 @@ class MessageThreads::TagsController < ApplicationController
     authorize MessageThreadsTag
 
     tag_changes = TagsChanges.new(
-      message_thread: @message_thread,
       tag_scope: tag_scope,
       tags_assignments: tags_assignments
     )
 
-    tag_changes.save
+    tag_changes.save(@message_thread)
 
     # status: 303 is needed otherwise PATCH is kept in the following redirect https://apidock.com/rails/ActionController/Redirecting/redirect_to
     redirect_to message_thread_path(@message_thread), notice: "Priradenie štítkov bolo upravené", status: 303
@@ -77,6 +74,4 @@ class MessageThreads::TagsController < ApplicationController
   def tags_assignments
     params.require(:tags_assignments).permit(init: {}, new: {})
   end
-
-
 end

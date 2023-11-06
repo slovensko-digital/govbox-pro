@@ -1,6 +1,7 @@
 class TagsChanges
   ADD_SIGN = "+"
   REMOVE_SIGN = "-"
+  INDETERMINATE_SIGN = "="
 
   class Helpers
     def self.to_checkbox_value(value)
@@ -13,6 +14,71 @@ class TagsChanges
       else
         []
       end
+    end
+
+    def self.build_assignment(message_thread:, tag_scope:)
+      assigned_ids = message_thread.tag_ids
+      init_assignments = tag_scope.to_a.map { |tag| [tag.id.to_s, to_checkbox_value(assigned_ids.include?(tag.id))] }.to_h
+
+      {
+        init: init_assignments,
+        new: init_assignments,
+      }
+    end
+
+    def self.build_bulk_assignments(message_threads:, tag_scope:)
+      tag_ids = tag_scope.pluck(:id)
+
+      init_assignments = tag_ids.map { |tag_id| [tag_id.to_s, REMOVE_SIGN] }.to_h
+
+      assigned_thread_by_tag = MessageThreadsTag.where(message_thread: message_threads).pluck(:tag_id, :message_thread_id).group_by(&:first)
+      assigned_thread_by_tag.each do |tag_id, values|
+        init_assignments[tag_id.to_s] = values.length == message_threads.length ? ADD_SIGN : INDETERMINATE_SIGN
+      end
+
+      {
+        init: init_assignments,
+        new: init_assignments,
+      }
+    end
+  end
+
+  class Checkbox
+    def initialize(tag_assignments:, tag_id:)
+      @tag_assignments = tag_assignments
+      @tag_id = tag_id
+    end
+
+    def indeterminate?
+      init_assignment_value == INDETERMINATE_SIGN
+    end
+
+    def checked?
+      if indeterminate?
+        new_assignment_value != REMOVE_SIGN
+      else
+        new_assignment_value == ADD_SIGN
+      end
+    end
+
+    def value
+      if indeterminate?
+        if new_assignment_value == INDETERMINATE_SIGN || new_assignment_value == REMOVE_SIGN
+          INDETERMINATE_SIGN
+        else
+          ADD_SIGN
+        end
+      else
+        ADD_SIGN
+      end
+    end
+
+    def init_assignment_value
+      @tag_assignments[:init][@tag_id]
+    end
+
+    def new_assignment_value
+      @tag_assignments[:new][@tag_id]
     end
   end
 
@@ -53,12 +119,12 @@ class TagsChanges
     end
   end
 
-  attr_reader :diff
+  attr_reader :diff, :tags_assignments
 
-  def initialize(message_thread:, tag_scope:, tags_assignments: { init: {}, new: {} })
-    @message_thread = message_thread
+  def initialize(tag_scope:, tags_assignments: { init: {}, new: {} })
     @tag_scope = tag_scope
     @tags_assignments = tags_assignments.to_h
+    build_diff
   end
 
   def init_assignments
@@ -71,52 +137,28 @@ class TagsChanges
 
   def add_new_tag(tag)
     new_assignments[tag.id.to_s] = ADD_SIGN
+    build_diff
   end
 
   def number_of_changes
     @diff.number_of_changes
   end
 
-  def self.build_with_new_assignments(message_thread:, tag_scope:)
-    new(
-      message_thread: message_thread,
-      tag_scope: tag_scope,
-    ).tap do |instance|
-      instance.build_new_assignments
-      instance.build_diff
-    end
-  end
-
-  def self.build_from_assignments(message_thread:, tag_scope:, tags_assignments:)
-    new(
-      message_thread: message_thread,
-      tag_scope: tag_scope,
-      tags_assignments: tags_assignments
-    ).tap(&:build_diff)
-  end
-
-  def build_new_assignments
-    assigned_ids = @message_thread.tag_ids
-    init_assignments = @tag_scope.to_a.map { |tag| [tag.id.to_s, Helpers.to_checkbox_value(assigned_ids.include?(tag.id))] }.to_h
-
-    @tags_assignments = {
-      init: init_assignments,
-      new: init_assignments,
-    }
-  end
-
   def build_diff
     @diff = Diff.build_from_assignments(@tags_assignments, @tag_scope)
   end
 
-  def save
-    build_diff
-    create_attributes = @diff.to_add.map { |tag| { message_thread: @message_thread, tag: tag } }
+  def save(message_thread)
+    bulk_save([message_thread])
+  end
+
+  def bulk_save(message_threads)
+    threads = message_threads.to_a # to avoid subquery error
+    create_attributes = threads.product(@diff.to_add).map { |thread, tag| { message_thread: thread, tag: tag } }
 
     MessageThreadsTag.transaction do
       MessageThreadsTag.create(create_attributes)
-      MessageThreadsTag.where(message_thread: @message_thread, tag: @diff.to_remove).destroy_all
+      MessageThreadsTag.where(message_thread: threads, tag: @diff.to_remove).destroy_all
     end
   end
-
 end
