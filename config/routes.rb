@@ -11,9 +11,11 @@ Rails.application.routes.draw do
     end
     resources :automation_conditions, param: :index do
       post '/', to: 'automation_conditions#edit_form', on: :member
+      patch :rerender
     end
     resources :automation_actions, param: :index do
       post '/', to: 'automation_actions#edit_form', on: :member
+      patch :rerender
     end
     resources :tags
     resource :profile
@@ -37,7 +39,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :boxes, path: 'schranky', only: [:index, :show] do
+  resources :boxes, path: 'schranky', only: %i[index show] do
     post :sync
     get :select, on: :member
     get :select_all, on: :collection
@@ -52,11 +54,18 @@ Rails.application.routes.draw do
       post :bulk_merge
     end
     get :rename, on: :member
-    get :search_available_tags, on: :member
     resources :messages
     resources :message_thread_notes
+    scope module: 'message_threads' do
+      resource :tags, only: [:edit, :update] do
+        post :prepare, on: :member
+        post :create_tag, on: :member
+      end
+    end
   end
-  resources :message_threads_tags
+
+  resources :message_threads_tags, only: :destroy
+
 
   resources :messages do
     member do

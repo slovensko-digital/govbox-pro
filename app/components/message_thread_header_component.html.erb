@@ -9,10 +9,14 @@
       </div>
     <% end %>
     <div class="flex justify-start items-start   gap-2">
-      <% @thread_tags_with_deletable_flag.each do |thread_tag|%>
-        <%= render Common::RemovableTagComponent.new(thread_tag) %>
+      <% @thread_tags.each do |thread_tag|%>
+        <%= render MessageThreads::TagComponent.new(thread_tag) %>
       <% end %>
-      <%= render Common::TagSelectorComponent.new(@message_thread) %>
+      <%= link_to edit_message_thread_tags_path(@message_thread), data: { turbo_frame: :modal }, class: "rounded-md bg-blue-100 p-2" do %>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 relative" preserveAspectRatio="xMidYMid meet">
+          <path d="M8 4V8M8 8V12M8 8H12M8 8H4" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+      <% end %>
     </div>
   </div>
   <div class="todo flex flex-col justify-start items-end gap-1">
