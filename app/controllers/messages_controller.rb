@@ -7,7 +7,15 @@ class MessagesController < ApplicationController
     authorize @message
 
     @mode = params[:mode]
+    @collapsed = params[:collapsed] == 'true'
     @message.update(read: true)
+  end
+
+  def update
+    authorize @message
+    return unless @message.update(message_update_params)
+
+    redirect_back fallback_location: messages_path(@message)
   end
 
   def authorize_delivery_notification
@@ -29,5 +37,9 @@ class MessagesController < ApplicationController
 
   def permit_reply_params
     params.permit(:reply_title, :reply_text)
+  end
+
+  def message_update_params
+    params.permit(:collapsed)
   end
 end

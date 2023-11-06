@@ -24,8 +24,12 @@
             <% end %>
           </div>
         </div>
-
-        <%= render MessageOptionsComponent.new(message: @message) %>
+        <%= render MessageOptionsComponent.new(message: @message, mode: @mode) %>
+        <% if @message.collapsed && @mode == 'thread_view' %>
+          <%= link_to message_path(@message, collapsed: true) do %>
+            <%= render Icons::CollapseComponent.new %>
+          <% end %>
+        <% end %>
       </div>
     </div>
     <div class="flex flex-col justify-stretch items-start    relative gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
