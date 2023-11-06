@@ -16,7 +16,7 @@ class MessagePolicy < ApplicationPolicy
         MessageThreadsTag
           .select(1)
           .joins(tag_groups: :group_memberships)
-          .where("message_threads_tags.message_thread_id = messages.message_thread_id")
+          .where('message_threads_tags.message_thread_id = messages.message_thread_id')
           .where(group_memberships: { user_id: @user.id })
           .arel.exists
       )
@@ -36,10 +36,14 @@ class MessagePolicy < ApplicationPolicy
   end
 
   def reply?
-    true # TODO can everyone reply?
+    true # TODO: can everyone reply?
   end
 
   def submit_reply?
     reply?
+  end
+
+  def update?
+    true
   end
 end

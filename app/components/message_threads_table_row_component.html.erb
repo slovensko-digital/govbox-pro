@@ -1,43 +1,57 @@
-<li class="flex px-4 py-5 hover:bg-blue-50">
-  <div class="flex items-start gap-1 pr-2 md:gap-4 md:pr-4 items-center">
-    <%= check_box_tag('message_thread_ids[]', @message_thread.id, false, { class: "h-4 w-4 rounded border-gray-300 text-blue-500 focus:ring-0", type: "checkbox", data: { action: "click->form#send" } }) %>
-    <%= render Common::BoxLabelComponent.new(@message_thread.box) %>
+<li class="flex px-4 py-5 hover:bg-blue-50 gap-2">
+  <div class="hidden md:flex">
+    <div class="flex pr-2 md:gap-4 md:pr-4 items-center justify-start mb-auto">
+      <%= check_box_tag('message_thread_ids[]', @message_thread.id, false, { class: "h-4 w-4 rounded border-gray-300 text-blue-500 focus:ring-0 hidden md:block", type: "checkbox", data: { action: "click->form#send" } }) %>
+      <%= render Common::BoxLabelComponent.new(@message_thread.box, "hidden md:block") %>
+    </div>
   </div>
-  <%= link_to @message_thread, class: "flex flex-wrap md:flex-nowrap justify-between items-center grow gap-2" do %>
-    <div class="flex flex-col grow order-2 md:order-1 gap-1">
-      <div class="flex flex-wrap grow items-start gap-y-1 gap-x-3">
-        <p title="<%= @message_thread.title%>" class="text-base text-gray-900 <%="font-semibold" unless @message_thread.all_read %>">
-          <%= @message_thread.title %>
-        </p>
-        <div class="flex flex-wrap items-start gap-1">
-          <% @message_thread.tags.each do |tag| %>
-            <% if tag.visible %>
-              <p class="rounded-md px-1.5 py-0.5 text-sm font-medium ring-1 ring-inset text-gray-600 bg-gray-50 ring-gray-500/10">
-                <%= tag.name %>
-              </p>
+  <%= link_to @message_thread, class: "flex flex-col md:flex-row md:flex-nowrap justify-between grow gap-2" do %>
+    <div class="flex flex-col gap-2">
+      <div class="flex flex-wrap grow gap-x-4 gap-y-1">
+        <div class="inline-block md:flex">
+          <%= render Common::BoxLabelComponent.new(@message_thread.box, "inline-flex md:hidden", "text-xs") %>
+          <span class="text-sm sm:text-base text-gray-900 <%="font-semibold" unless @message_thread.all_read %>">
+            <%= @message_thread.title %>
+          </span>
+        </div>
+        <% if @visible_tags.any? %>
+          <div class="flex flex-wrap items-start gap-1">
+            <% @visible_tags.each do |tag| %>
+              <%= render Common::TagComponent.new(tag.name) %>
             <% end %>
+          </div>
+        <% end %>
+      </div>
+<!--      <div>-->
+        <%#= render Common::TagComponent.new("2 nové správy") %>
+<!--      </div>-->
+      <% if @message_thread.with_whom || @message_thread.last_message_delivered_at %>
+        <div class="flex flex-wrap gap-2 text-gray-500 text-xs md:text-base items-center">
+          <% if @message_thread.with_whom %>
+            <span class="text-left font-normal">
+              <%= @message_thread.with_whom %>
+            </span>
+          <% end %>
+          <% if @message_thread.last_message_delivered_at %>
+            <time class="md:hidden" datetime="<%= @message_thread.last_message_delivered_at%>">
+              <%= helpers.nice_datetime(@message_thread.last_message_delivered_at) %>
+            </time>
           <% end %>
         </div>
-      </div>
-      <% if @message_thread.with_whom %>
-        <p class="text-base text-left text-gray-500 font-normal">
-          <%= @message_thread.with_whom %>
-        </p>
       <% end %>
+
       <% if @message_thread.search_highlight.present? %>
         <p class="text-base text-left text-gray-500">
           <%= raw @message_thread.search_highlight %>
         </p>
       <% end %>
     </div>
-    <div class="flex order-1 md:order-2 gap-x-4 items-center">
-      <div class="flex md:flex-col gap-y-1 gap-x-4 text-right whitespace-nowrap">
+    <div class="hidden md:flex gap-x-4 items-center">
+      <div class="flex flex-col gap-y-1 text-right whitespace-nowrap">
         <time class="text-lg text-gray-900" datetime="<%= @message_thread.last_message_delivered_at%>">
           <%= helpers.nice_datetime(@message_thread.last_message_delivered_at) %>
         </time>
-<!--        <p class="rounded-md px-1.5 py-0.5 h-fit text-sm font-medium ring-1 ring-inset text-gray-600 bg-gray-50 ring-gray-500/10">-->
-<!--          2 nové správy-->
-<!--        </p>-->
+        <%#= render Common::TagComponent.new("2 nové správy") %>
       </div>
       <svg class="h-5 w-5 hidden md:block text-gray-400" fill="none" viewBox="0 0 24 24" aria-hidden="true">
         <path d="M9 5L16 12L9 19" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
