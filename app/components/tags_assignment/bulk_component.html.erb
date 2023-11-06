@@ -12,7 +12,7 @@
 
       <div class="flex flex-col items-start gap-4 mt-4">
         <div class="w-full">
-          <%= tag.turbo_frame id: TagsAssignment::BulkComponent::SEARCH_FIELD_FRAME do %>
+          <%= tag.turbo_frame id: TagsAssignment::Component::SEARCH_FIELD_FRAME do %>
             <%= render TagsAssignment::SearchFieldComponent.new %>
           <% end %>
         </div>
@@ -21,18 +21,19 @@
           <% @tags_changes.init_assignments.each do |tag_id, value| %>
             <%= hidden_field_tag "tags_assignments[init][#{tag_id}]", value %>
           <% end %>
-          <%= tag.turbo_frame id: TagsAssignment::BulkComponent::LIST_FRAME do %>
+          <%= tag.turbo_frame id: TagsAssignment::Component::LIST_FRAME do %>
             <%=
-              render TagsAssignment::BulkListComponent.new(
+              render TagsAssignment::ListComponent.new(
                 tags_filter: @tags_filter,
-                tags_assignments: @tags_changes.tags_assignments) %>
+                tags_assignments: @tags_changes.tags_assignments,
+                create_tag_path: message_threads_bulk_tags_create_tag_path) %>
           <% end %>
         </div>
       </div>
 
-      <%= tag.turbo_frame id: TagsAssignment::BulkComponent::DIFF_FRAME %>
+      <%= tag.turbo_frame id: TagsAssignment::Component::DIFF_FRAME %>
 
-      <%= tag.turbo_frame id: TagsAssignment::BulkComponent::ACTIONS_FRAME do %>
+      <%= tag.turbo_frame id: TagsAssignment::Component::ACTIONS_FRAME do %>
         <%= render Common::ModalActionsComponent.new %>
       <% end %>
     <% end %>

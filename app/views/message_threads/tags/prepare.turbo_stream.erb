@@ -7,9 +7,9 @@
 <% if @rerender_list %>
   <%= turbo_stream.update TagsAssignment::Component::LIST_FRAME do %>
     <%= render TagsAssignment::ListComponent.new(
-      message_thread: @message_thread,
       tags_filter: @tags_filter,
-      new_tags_assignments: @tags_changes.new_assignments) %>
+      tags_assignments: @tags_changes.tags_assignments,
+      create_tag_path: create_tag_message_thread_tags_path(@message_thread)) %>
   <% end %>
 <% end %>
 
