@@ -11,6 +11,6 @@
 
 class Govbox::ApiConnectionWithOboSupport < ::ApiConnection
   def invalid_box?(box)
-    obo && box.settings && box.settings["obo"].present?
+    errors.add(:obo, :not_allowed) if obo && box.settings && box.settings["obo"].present?
   end
 end

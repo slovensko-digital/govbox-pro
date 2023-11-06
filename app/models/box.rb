@@ -56,6 +56,6 @@ class Box < ApplicationRecord
   private
 
   def validate_box_with_api_connection
-    errors.add(:obo, :not_allowed) if api_connection.invalid_box?(self)
+    validate_box(self)
   end
 end
