@@ -1,9 +1,10 @@
 <%= fields_for @automation_rule do |rule_form| %>
   <%= turbo_stream.update 'actions' do %>
-    <%= rule_form.fields_for :actions do |action_form| %>
+    <%= rule_form.fields_for :actions, include_id: false do |action_form| %>
       <% if action_form.index == @index %>
-        <%= render Settings::Rules::ActionFormComponent.new(form: action_form, index: action_form.index) %>
+        <%= render Settings::Rules::ActionFormComponent.new(form: action_form, index: action_form.index, new: false) %>
       <% elsif action_form.object.delete_record %>
+        <%= action_form.hidden_field :id %>
         <%= action_form.hidden_field :delete_record, value:true %>
       <% else %>
         <%= render Settings::Rules::ActionsFormRowComponent.new(form: action_form, index: action_form.index, editable: false) %>
@@ -12,9 +13,9 @@
   <% end %>
 <% end %>
 <%= fields_for @new_rule do |new_rule_form| %>
-  <%= new_rule_form.fields_for :actions, child_index: @automation_rule.actions.size do |new_action_form| %>
+  <%= new_rule_form.fields_for :actions, include_id: false, child_index: @automation_rule.actions.size do |new_action_form| %>
     <%= turbo_stream.update 'action-new' do %>
-      <%= render Settings::Rules::ActionFormComponent.new(form: new_action_form, index: @automation_rule.actions.size, enabled: false) %>
+      <%= render Settings::Rules::ActionFormComponent.new(form: new_action_form, index: @automation_rule.actions.size, enabled: false, new: true) %>
     <% end %>
   <% end %>
 <% end %>

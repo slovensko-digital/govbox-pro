@@ -64,6 +64,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_01_181535) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "value"
+    t.string "action_object_type"
+    t.bigint "action_object_id"
+    t.index ["action_object_type", "action_object_id"], name: "index_automation_actions_on_action_object"
     t.index ["automation_rule_id"], name: "index_automation_actions_on_automation_rule_id"
   end
 
@@ -74,7 +77,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_01_181535) do
     t.bigint "automation_rule_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "condition_object_type"
+    t.bigint "condition_object_id"
     t.index ["automation_rule_id"], name: "index_automation_conditions_on_automation_rule_id"
+    t.index ["condition_object_type", "condition_object_id"], name: "index_automation_conditions_on_condition_object"
   end
 
   create_table "automation_rules", force: :cascade do |t|

@@ -8,7 +8,11 @@ class Settings::AutomationRulePolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      scope.where(tenant_id: @user.tenant_id, user: @user)
+      if @user.admin?
+        scope.where(tenant: Current.tenant)
+      else
+        scope.where(tenant: Current.tenant, user: @user)
+      end
     end
   end
 
@@ -53,6 +57,10 @@ class Settings::AutomationRulePolicy < ApplicationPolicy
   end
 
   def destroy?
+    true
+  end
+
+  def rerender?
     true
   end
 end

@@ -16,22 +16,18 @@ tenant.tags.find_or_create_by!(name: 'NASES', user_id: tenant.users.first.id)
 if tenant.users.first
   rule = tenant.automation_rules.create!(name: 'NASES Tag Sender Rule', user: tenant.users.first, trigger_event: :message_created)
   rule.conditions.find_or_create_by!(attr: :sender_name, type: 'Automation::ContainsCondition', value: 'Národná agentúra pre sieťové')
-  rule.actions.find_or_create_by!(type: 'Automation::AddTagAction', value: 'NASES')
   rule.actions.find_or_create_by!(type: 'Automation::AddMessageThreadTagAction', value: 'NASES')
 
   rule = tenant.automation_rules.create!(name: 'NASES Tag Recipient Rule', user: tenant.users.first, trigger_event: :message_created)
   rule.conditions.find_or_create_by!(attr: :recipient_name, type: 'Automation::ContainsCondition', value: 'Národná agentúra pre sieťové')
-  rule.actions.find_or_create_by!(type: 'Automation::AddTagAction', value: 'NASES')
   rule.actions.find_or_create_by!(type: 'Automation::AddMessageThreadTagAction', value: 'NASES')
 
   rule = tenant.automation_rules.create!(name: 'NASES Tag URI Sender Rule', user: tenant.users.first, trigger_event: :message_created)
   rule.conditions.find_or_create_by!(attr: :sender_uri, type: 'Automation::MetadataValueCondition', value: 'ico://sk/42156424_10037')
-  rule.actions.find_or_create_by!(type: 'Automation::AddTagAction', value: 'NASES')
   rule.actions.find_or_create_by!(type: 'Automation::AddMessageThreadTagAction', value: 'NASES')
 
   rule = tenant.automation_rules.create!(name: 'NASES Tag URI Recipient Rule', user: tenant.users.first, trigger_event: :message_created)
   rule.conditions.find_or_create_by!(attr: :recipient_uri, type: 'Automation::MetadataValueCondition', value: 'ico://sk/42156424_10037')
-  rule.actions.find_or_create_by!(type: 'Automation::AddTagAction', value: 'NASES')
   rule.actions.find_or_create_by!(type: 'Automation::AddMessageThreadTagAction', value: 'NASES')
 end
 
