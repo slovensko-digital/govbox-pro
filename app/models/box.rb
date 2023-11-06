@@ -50,5 +50,11 @@ class Box < ApplicationRecord
          rose: 'rose'
        }
 
-  validates_associated :api_connection, message: ->(_class_obj, obj){ obj[:value].errors.full_messages.join(',') }
+  validate :validate_box_with_api_connection
+
+  private
+
+  def validate_box_with_api_connection
+    errors.add(:obo, :not_allowed) if api_connection.invalid_box?(self)
+  end
 end
