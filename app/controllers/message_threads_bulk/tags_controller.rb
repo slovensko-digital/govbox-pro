@@ -1,13 +1,13 @@
-class MessageThreads::TagsController < ApplicationController
-  before_action :set_message_thread
+class MessageThreadsBulk::TagsController < ApplicationController
+  before_action :set_message_threads
 
   include TagCreation
 
   def edit
     authorize MessageThreadsTag
 
-    @tags_changes = TagsChanges.build_with_new_assignments(
-      message_thread: @message_thread,
+    @tags_changes = BulkTagsChanges.build_with_new_assignments(
+      message_threads: @message_threads,
       tag_scope: tag_scope,
     )
     @tags_filter = TagsFilter.new(tag_scope: tag_scope)
@@ -16,10 +16,10 @@ class MessageThreads::TagsController < ApplicationController
   def prepare
     authorize MessageThreadsTag
 
-    @tags_changes = TagsChanges.build_from_assignments(
-      message_thread: @message_thread,
+    @tags_changes = BulkTagsChanges.build_from_assignments(
+      message_threads: @message_threads,
       tag_scope: tag_scope,
-      tags_assignments: tags_assignments
+      tags_assignments: tags_assignments,
     )
     @tags_filter = TagsFilter.new(tag_scope: tag_scope, filter_query: params[:name_search_query].strip)
     @rerender_list = params[:assignments_update].blank?
@@ -29,8 +29,8 @@ class MessageThreads::TagsController < ApplicationController
     new_tag = Tag.new(tag_creation_params.merge(name: params[:new_tag].strip))
     authorize(new_tag, "create?")
 
-    @tags_changes = TagsChanges.new(
-      message_thread: @message_thread,
+    @tags_changes = BulkTagsChanges.new(
+      message_threads: @message_threads,
       tag_scope: tag_scope,
       tags_assignments: tags_assignments
     )
@@ -48,23 +48,19 @@ class MessageThreads::TagsController < ApplicationController
   def update
     authorize MessageThreadsTag
 
-    tag_changes = TagsChanges.new(
-      message_thread: @message_thread,
-      tag_scope: tag_scope,
+    tag_changes = BulkTagsChanges.new(
+      message_threads: @message_threads.select(:folder_id).includes(:folder),
+      tag_scope: tag_scope.includes(:tenant),
       tags_assignments: tags_assignments
     )
 
     tag_changes.save
 
     # status: 303 is needed otherwise PATCH is kept in the following redirect https://apidock.com/rails/ActionController/Redirecting/redirect_to
-    redirect_to message_thread_path(@message_thread), notice: "Priradenie štítkov bolo upravené", status: 303
+    redirect_back fallback_location: message_threads_path, notice: "Priradenie štítkov bolo upravené", status: 303
   end
 
   private
-
-  def set_message_thread
-    @message_thread = message_thread_policy_scope.find(params[:message_thread_id])
-  end
 
   def tag_scope
     Current.tenant.tags.visible.order(:name)
@@ -74,9 +70,13 @@ class MessageThreads::TagsController < ApplicationController
     policy_scope(MessageThread)
   end
 
+  def set_message_threads
+    ids = params[:message_thread_ids] || []
+
+    @message_threads = message_thread_policy_scope.where(id: ids).select(:id)
+  end
+
   def tags_assignments
     params.require(:tags_assignments).permit(init: {}, new: {})
   end
-
-
 end

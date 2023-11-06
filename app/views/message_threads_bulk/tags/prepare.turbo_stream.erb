@@ -1,0 +1,27 @@
+<% if @reset_search %>
+  <%= turbo_stream.update TagsAssignment::BulkComponent::SEARCH_FIELD_FRAME do %>
+    <%= render TagsAssignment::SearchFieldComponent.new %>
+  <% end %>
+<% end %>
+
+<% if @rerender_list %>
+  <%= turbo_stream.update TagsAssignment::BulkComponent::LIST_FRAME do %>
+    <%= render TagsAssignment::BulkListComponent.new(
+      tags_filter: @tags_filter,
+      tags_assignments: @tags_changes.tags_assignments) %>
+  <% end %>
+<% end %>
+
+<%= turbo_stream.update TagsAssignment::BulkComponent::DIFF_FRAME do %>
+  <%= render TagsAssignment::DiffComponent.new(diff: @tags_changes.diff) %>
+<% end %>
+
+<%= turbo_stream.update TagsAssignment::BulkComponent::ACTIONS_FRAME do %>
+  <%= render Common::ModalActionsComponent.new do |actions| %>
+    <% actions.with_submit_button do %>
+      <% if @tags_changes.number_of_changes > 0 %>
+        <%= submit_tag "Uložiť zmeny (#{@tags_changes.number_of_changes})", formaction: message_threads_bulk_tags_update_path, formmethod: :post, data: { turbo_frame: "_top" }, class: "inline-flex w-full justify-center items-center px-3 py-2 rounded-md bg-blue-600 font-medium text-left text-sm text-white hover:cursor-pointer sm:w-auto" %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>

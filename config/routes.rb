@@ -66,6 +66,14 @@ Rails.application.routes.draw do
 
   resources :message_threads_tags, only: :destroy
 
+  namespace "message_threads_bulk" do
+    namespace "tags" do
+      post :edit, to: "edit"
+      post :prepare, to: "prepare"
+      post :create_tag, to: "create_tag"
+      post :update, to: "update"
+    end
+  end
 
   resources :messages do
     member do

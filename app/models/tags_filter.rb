@@ -7,7 +7,7 @@ class TagsFilter
 
     @filtered_ids = @all_tags
     if filter_query
-      @filtered_ids = @filtered_ids.where('unaccent(name) ILIKE unaccent(?)', "%#{filter_query}%")
+      @filtered_ids = @filtered_ids.where('unaccent(tags.name) ILIKE unaccent(?)', "%#{filter_query}%")
     end
     @filtered_ids = Set.new(@filtered_ids.pluck(:id))
   end
