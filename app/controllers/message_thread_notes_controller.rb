@@ -12,7 +12,7 @@ class MessageThreadNotesController < ApplicationController
   end
 
   def new
-    authorize [MessageThreadNote]
+    authorize MessageThreadNote
     @message_thread_note = @message_thread.build_message_thread_note
   end
 

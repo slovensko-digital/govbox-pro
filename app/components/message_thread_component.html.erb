@@ -1,10 +1,6 @@
 <div class="flex flex-col justify-stretch items-stretch">
   <%= render MessageThreadHeaderComponent.new(@message_thread, @thread_tags_with_deletable_flag) %>
-  <% if @message_thread.message_thread_note %>
-    <%= render MessageThreadNoteShowComponent.new(@message_thread.message_thread_note) %>
-  <% else %>
-    <%= tag.turbo_frame id: 'thread-note' %>
-  <% end %>
+  <%= render MessageThreadNoteComponent.new(@message_thread.message_thread_note) %>
   <div class="flex flex-col justify-stretch items-stretch gap-2 p-4">
     <%= render Common::AlertComponent.new %>
     <% @thread_messages.each do |message| %>

@@ -33,13 +33,24 @@
                     </div>
                   </div>
                 <% end %>
-                <%= link_to @note_link, data: { turbo_frame: 'thread-note' }, class: 'flex justify-start items-start px-4 py-3 rounded-lg hover:bg-gray-50' do %>
-                  <div class="whitespace-nowrap">
-                    <div class="flex justify-center items-center relative gap-3">
-                      <%= render Icons::NoteComponent.new %>
-                      <%= @note_text %>
+                <% if @message_thread.message_thread_note&.note.present? %>
+                  <%= link_to edit_message_thread_message_thread_note_path(@message_thread, @message_thread.message_thread_note), data: { turbo_frame: 'thread-note' }, class: 'flex justify-start items-start px-4 py-3 rounded-lg hover:bg-gray-50' do %>
+                    <div class="whitespace-nowrap">
+                      <div class="flex justify-center items-center relative gap-3">
+                        <%= render Icons::NoteComponent.new %>
+                        Upraviť poznámku
+                      </div>
                     </div>
-                  </div>
+                  <% end %>
+                <% else %>
+                  <%= link_to new_message_thread_message_thread_note_path(@message_thread), data: { turbo_frame: 'thread-note' }, class: 'flex justify-start items-start px-4 py-3 rounded-lg hover:bg-gray-50' do %>
+                    <div class="whitespace-nowrap">
+                      <div class="flex justify-center items-center relative gap-3">
+                        <%= render Icons::NoteComponent.new %>
+                        Pridať poznámku
+                      </div>
+                    </div>
+                  <% end %>
                 <% end %>
               </div>
             </div>
