@@ -23,7 +23,7 @@ class MessageDraftsController < ApplicationController
 
     @message_thread = @message.thread
     @thread_messages = @message_thread.messages_visible_to_user(Current.user).order(delivered_at: :asc)
-    set_thread_tags_with_deletable_flag
+    set_visible_tags_for_thread
   end
 
   def update

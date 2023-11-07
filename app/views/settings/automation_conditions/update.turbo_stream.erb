@@ -1,7 +1,8 @@
 <%= fields_for @automation_rule do |f| %>
   <%= turbo_stream.update 'conditions' do %>
-    <%= f.fields_for :conditions do |fc| %>
+    <%= f.fields_for :conditions, include_id: false do |fc| %>
       <% if fc.object.delete_record %>
+        <%= fc.hidden_field :id %>
         <%= fc.hidden_field :delete_record, value:true %>
       <% else %>
         <%= render Settings::Rules::ConditionsFormRowComponent.new(form: fc, index: fc.index, editable: true) %>
@@ -10,9 +11,9 @@
   <% end %>
 <% end %>
 <%= fields_for @new_rule do |f| %>
-  <%= f.fields_for :conditions, child_index: @automation_rule.conditions.size do |form| %>
+  <%= f.fields_for :conditions, include_id: false, child_index: @automation_rule.conditions.size do |form| %>
     <%= turbo_stream.update 'condition-new' do %>
-      <%= render Settings::Rules::ConditionFormComponent.new(form: form, index: @automation_rule.conditions.size, enabled: true) %>
+      <%= render Settings::Rules::ConditionFormComponent.new(form: form, index: @automation_rule.conditions.size, enabled: true, new: true) %>
     <% end %>
   <% end %>
 <% end %>

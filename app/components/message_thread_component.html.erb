@@ -1,5 +1,5 @@
 <div class="flex flex-col justify-stretch items-stretch">
-  <%= render MessageThreadHeaderComponent.new(@message_thread, @thread_tags_with_deletable_flag) %>
+  <%= render MessageThreadHeaderComponent.new(@message_thread, @thread_tags) %>
   <%= render MessageThreadNoteComponent.new(@message_thread.note) %>
   <div class="flex flex-col justify-stretch items-stretch gap-2 p-4">
     <%= render Common::AlertComponent.new %>

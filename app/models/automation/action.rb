@@ -12,28 +12,31 @@
 module Automation
   class Action < ApplicationRecord
     belongs_to :automation_rule, class_name: 'Automation::Rule'
+    belongs_to :action_object, polymorphic: true, optional: true
     attr_accessor :delete_record
+
+    ACTION_LIST = ['Automation::AddMessageThreadTagAction'].freeze
+
+    def tag_list
+      automation_rule.tenant.tags.pluck(:name, :id)
+    end
   end
 
+  # deprecated, fully replaced by AddMessageThreadTagAction
   class AddTagAction < Automation::Action
-    def run!(thing)
-      tag = thing.tenant.tags.find_by(name: value)
-      thing.tags << tag if tag && !thing.tags.include?(tag)
-    end
-  end
-
-  class DeleteTagAction < Automation::Action
-    def run!(thing)
-      tag = thing.tenant.tags.find_by(name: value)
-      # TODO: nemozme mazat tag, ale jeho vazbu s vecou
-      # thing.tags.delete(tag) if tag
-    end
   end
 
   class AddMessageThreadTagAction < Automation::Action
     def run!(thing)
-      tag = thing.tenant.tags.find_by(name: value)
-      thing.thread.tags << tag if tag && !thing.thread.tags.include?(tag)
+      tag = action_object
+      return if thing.tenant != tag.tenant
+
+      object = if thing.respond_to? :thread
+                 thing.thread
+               else
+                 thing
+               end
+      object.tags << tag if tag && object.tags.exclude?(tag)
     end
   end
 end

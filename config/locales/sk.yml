@@ -225,9 +225,11 @@ sk:
   recipient_name: "Prijímateľ"
   sender_uri: "URI odosielateľa"
   recipient_uri: "URI prijímateľa"
+  box: "Schránka správy"
   message_created: "Nová správa"
-  'Automation::ContainsCondition': 'obsahuje'
-  'Automation::MetadataValueCondition': 'Metadáta obsahujú'
-  'Automation::AddMessageThreadTagAction': 'Pridaj štítok na vlákno'
-  'Automation::AddTagAction': 'Pridaj štítok'
-  title: 'Názov'
+  "Automation::ContainsCondition": "obsahuje"
+  "Automation::MetadataValueCondition": "v metadátach obsahuje"
+  "Automation::BoxCondition": "je"
+  "Automation::AddMessageThreadTagAction": "Pridaj štítok na vlákno"
+  "Automation::AddTagAction": "Pridaj štítok"
+  title: "Názov"

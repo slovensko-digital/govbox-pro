@@ -1,0 +1,14 @@
+one:
+  automation_rule: two
+  type: Automation::AddMessageThreadTagAction
+  action_object: three (Tag)
+
+two:
+  automation_rule: three
+  type: Automation::AddMessageThreadTagAction
+  action_object: four (Tag)
+
+three:
+  automation_rule: four
+  type: Automation::AddMessageThreadTagAction
+  action_object: five (Tag)
