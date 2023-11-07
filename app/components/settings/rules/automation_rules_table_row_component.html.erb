@@ -1,22 +1,26 @@
-<div class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
+<div class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6">
   <div class="flex flex-col justify-start items-start flex-grow relative gap-1">
     <p class="flex-grow-0 flex-shrink-0 text-lg text-left text-gray-900">
       <span class="flex-grow-0 flex-shrink-0 text-lg text-left text-gray-900">Správy, kde</span>
       <% @automation_rule.conditions.each_with_index do |condition, index| %>
-        <span class="flex-grow-0 flex-shrink-0 text-lg font-medium text-left text-gray-900"><%= t condition.attr %></span>
-        <span class="flex-grow-0 flex-shrink-0 text-lg text-left text-gray-900"><%= t condition.type %></span>
-        <% if index < @automation_rule.conditions.size - 1 %>
-          <% @suffix = ' a' %>
+        <% if condition.type == 'Automation::BoxCondition' %>
+          <span class="flex-grow-0 flex-shrink-0 text-lg font-medium text-left text-gray-900"><%= t condition.attr %></span>
+          <span class="flex-grow-0 flex-shrink-0 text-lg text-left text-gray-900"><%= t condition.type %></span>
+          <span class="flex-grow-0 flex-shrink-0 font-medium text-lg text-left text-gray-900"><%= condition.condition_object.name %></span>
         <% else %>
-          <% @suffix = '' %>
+          <span class="flex-grow-0 flex-shrink-0 text-lg font-medium text-left text-gray-900"><%= t condition.attr %></span>
+          <span class="flex-grow-0 flex-shrink-0 text-lg text-left text-gray-900"><%= t condition.type %></span>
+          <span class="flex-grow-0 flex-shrink-0 text-lg font-medium text-left text-gray-900"><%= condition.value %></span>
         <% end %>
-        <span class="flex-grow-0 flex-shrink-0 text-lg font-medium text-left text-gray-900"><%= "'#{condition.value}'#{@suffix}"%></span>
+        <% if index < @automation_rule.conditions.size - 1 %>
+          <span class="flex-grow-0 flex-shrink-0 text-lg font-medium text-left text-gray-900"><%= ' a' %></span>
+        <% end %>
       <% end %>
     </p>
     <p class="flex-grow-0 flex-shrink-0 text-base text-left text-gray-500">
       <% @automation_rule.actions.each_with_index do |action, index| %>
         <span class="flex-grow-0 flex-shrink-0 text-base text-left text-gray-500"><%= t action.type %></span>
-        <span class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-gray-500"><%= action.value %></span>
+        <span class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-gray-500"><%= action.action_object.name %></span>
         <%if index < @automation_rule.actions.length - 1%><%= ', '%><% end %>
       <% end %>
     </p>

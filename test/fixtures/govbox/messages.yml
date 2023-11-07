@@ -8,7 +8,7 @@ one:
   edesk_class: 'TEST'
   folder: one
   body: MyText
-  payload: {"message_id": "<%= SecureRandom.uuid %>", "subject": "MySubject", "sender_name": "MySender", "recipient_name": "MyRecipient", "delivered_at": "<%= DateTime.current.to_s %>", "original_html": "MyHtml", "objects": [{"name": "MyName", "mime_type": "MyMimeType", "signed": true, "class": "MyClass", "content": "MyContent"}]}
+  payload: {"message_id": "<%= SecureRandom.uuid %>", "subject": "MySubject", "sender_name": "MySender", "sender_uri": "MySenderURI", "recipient_name": "MyRecipient", "delivered_at": "<%= DateTime.current.to_s %>", "original_html": "MyHtml", "objects": [{"name": "MyName", "mime_type": "MyMimeType", "signed": true, "class": "MyClass", "content": "MyContent"}]}
 
 two:
   message_id: <%= SecureRandom.uuid %>
