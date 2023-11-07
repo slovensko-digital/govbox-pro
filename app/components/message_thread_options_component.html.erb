@@ -24,7 +24,7 @@
             <div class="flex justify-start items-start">
               <div class="flex flex-col justify-start items-start   relative gap-1">
                 <div class="flex justify-start items-start px-4 py-3 rounded-lg hover:bg-gray-50">
-                  <%= link_to show_history_message_thread_path(@message_thread), data: { turbo_frame: 'message-thread-log' }, class: 'whitespace-nowrap' do %>
+                  <%= link_to history_message_thread_path(@message_thread), data: { turbo_frame: 'message-thread-log' }, class: 'whitespace-nowrap' do %>
                     <div class="flex justify-center items-center relative gap-3">
                       <%= render Icons::BoxesComponent.new %>
                       História komunikácie

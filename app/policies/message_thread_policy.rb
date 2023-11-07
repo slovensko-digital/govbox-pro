@@ -51,7 +51,7 @@ class MessageThreadPolicy < ApplicationPolicy
     true
   end
 
-  def show_history?
+  def history?
     true
   end
 end

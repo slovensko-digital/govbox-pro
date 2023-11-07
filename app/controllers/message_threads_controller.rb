@@ -1,9 +1,9 @@
 class MessageThreadsController < ApplicationController
-  before_action :set_message_thread, only: %i[show rename update search_available_tags show_history]
-  before_action :set_thread_tags, only: %i[show show_history]
-  before_action :set_thread_messages, only: %i[show show_history]
+  before_action :set_message_thread, only: %i[show rename update search_available_tags history]
+  before_action :set_thread_tags, only: %i[show history]
+  before_action :set_thread_messages, only: %i[show history]
   before_action :load_threads, only: %i[index scroll]
-  after_action :mark_thread_as_read, only: %i[show show_history]
+  after_action :mark_thread_as_read, only: %i[show history]
 
   def show
     authorize @message_thread
@@ -75,7 +75,7 @@ class MessageThreadsController < ApplicationController
     @next_page_params = search_params.to_h.merge(cursor: @next_cursor).merge(format: :turbo_stream)
   end
 
-  def show_history
+  def history
     authorize @message_thread
   end
 
