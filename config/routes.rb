@@ -54,11 +54,11 @@ Rails.application.routes.draw do
       post :bulk_merge
     end
     get :rename, on: :member
-    get :show_log, on: :member
+    get :show_history, on: :member
     resources :messages
     resources :message_thread_notes
     scope module: 'message_threads' do
-      resource :tags, only: %i[edit update] do
+      resource :tags, only: [:edit, :update] do
         post :prepare, on: :member
         post :create_tag, on: :member
       end
