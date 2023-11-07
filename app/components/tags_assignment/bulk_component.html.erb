@@ -3,7 +3,7 @@
     <%= t("tag_editing_in_message_threads", count: @message_threads.length) %>
   <% end %>
   <% modal.with_modal_content do %>
-    <%= form_with url: message_threads_bulk_tags_prepare_path,
+    <%= form_with url: prepare_message_threads_bulk_tags_path,
                   data: { controller: 'debounce', debounce_target: 'form' } do |form| %>
 
       <% @message_threads.each do |thread| %>
@@ -26,7 +26,7 @@
               render TagsAssignment::ListComponent.new(
                 tags_filter: @tags_filter,
                 tags_assignments: @tags_changes.tags_assignments,
-                create_tag_path: message_threads_bulk_tags_create_tag_path) %>
+                create_tag_path: create_tag_message_threads_bulk_tags_path) %>
           <% end %>
         </div>
       </div>

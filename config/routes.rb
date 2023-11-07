@@ -49,11 +49,12 @@ Rails.application.routes.draw do
 
   namespace "message_threads" do
     namespace "bulk" do
-      namespace "tags" do
-        post :edit, to: "edit"
-        post :prepare, to: "prepare"
-        post :create_tag, to: "create_tag"
-        post :update, to: "update"
+      resource :tags, only: [:update] do
+        collection do
+          post :edit
+          post :prepare
+          post :create_tag
+        end
       end
     end
   end
