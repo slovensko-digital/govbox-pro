@@ -29,4 +29,12 @@ class TagPolicy < ApplicationPolicy
       scope.where(tenant: Current.tenant)
     end
   end
+
+  def create?
+    true
+  end
+
+  def new?
+    true
+  end
 end

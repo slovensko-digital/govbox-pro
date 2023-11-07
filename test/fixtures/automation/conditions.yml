@@ -1,0 +1,28 @@
+one:
+  automation_rule: one
+  type: Automation::ContainsCondition
+  attr: title
+  value: hocico
+
+two:
+  automation_rule: one
+  attr: box
+  type: Automation::BoxCondition
+  condition_object: three
+
+three:
+  automation_rule: two
+  attr: sender_name
+  type: Automation::ContainsCondition
+  value: MySender
+
+four:
+  automation_rule: three
+  attr: sender_uri
+  type: Automation::MetadataValueCondition
+  value: MySenderURI
+
+five:
+  automation_rule: four
+  type: Automation::BoxCondition
+  condition_object: one (Box)

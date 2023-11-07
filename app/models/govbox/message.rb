@@ -81,6 +81,7 @@ class Govbox::Message < ApplicationRecord
       html_visualization: raw_message["original_html"],
       replyable: govbox_message.replyable?,
       collapsed: govbox_message.collapsed?,
+      outbox: govbox_message.folder.outbox?,
       metadata: {
         "correlation_id": govbox_message.payload["correlation_id"],
         "reference_id": govbox_message.payload["reference_id"],

@@ -18,18 +18,23 @@ class Settings::AutomationActionsController < ApplicationController
     @id = params[:id]
   end
 
+  def rerender
+    @index = params[:automation_action_index].to_i
+    @new = (params[:new] == 'true')
+    authorize @automation_rule, policy_class: Settings::AutomationRulePolicy
+  end
+
   def set_automation_rule
-    @automation_rule = automation_rule_params[:id].blank? ? Automation::Rule.new : Automation::Rule.find(automation_rule_params[:id]) 
-    @automation_rule.assign_attributes(automation_rule_params)
+    @automation_rule = Current.tenant.automation_rules.new(automation_rule_params)
     @index = params[:index].to_i
-    @new_rule = Automation::Rule.new(actions: [Automation::Action.new])
+    @new_rule = Current.tenant.automation_rules.new(actions: [Automation::Action.new])
   end
 
   def automation_rule_params
     params.require(:automation_rule).permit(
       :id, :name, :trigger_event,
-      conditions_attributes: %i[id attr type value delete_record],
-      actions_attributes: %i[id type value delete_record]
+      conditions_attributes: %i[id attr type value condition_object_type condition_object_id delete_record],
+      actions_attributes: %i[id type value action_object_type action_object_id delete_record]
     )
   end
 end

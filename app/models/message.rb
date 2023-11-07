@@ -13,9 +13,11 @@
 #  read                                        :boolean          not null, default: false
 #  replyable                                   :boolean          not null, default: true
 #  collapsed                                   :boolean          not null, default: false
+#  outbox                                      :boolean          not null, default: false
 #  delivered_at                                :datetime         not null
 #  import_id                                   :integer
 #  author_id                                   :integer
+#  type                                        :string
 #  created_at                                  :datetime         not null
 #  updated_at                                  :datetime         not null
 
@@ -33,6 +35,9 @@ class Message < ApplicationRecord
   has_many :message_threads_tags, primary_key: :message_thread_id, foreign_key: :message_thread_id
 
   delegate :tenant, to: :thread
+
+  scope :outbox, -> { where(outbox: true) }
+  scope :inbox, -> { where.not(outbox: true).where(type: nil).or(self.where.not(type: "MessageDraft")) }
 
   after_create_commit ->(message) { EventBus.publish(:message_created, message) }
   after_update_commit ->(message) { EventBus.publish(:message_changed, message) }

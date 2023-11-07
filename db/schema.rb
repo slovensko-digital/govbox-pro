@@ -10,7 +10,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_20_095657) do
+
+ActiveRecord::Schema[7.0].define(version: 2023_10_30_103432) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -49,12 +50,25 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_20_095657) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "api_connections", force: :cascade do |t|
+    t.bigint "box_id"
+    t.string "sub", null: false
+    t.uuid "obo"
+    t.string "api_token_private_key", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["box_id"], name: "index_api_connections_on_box_id"
+  end
+
   create_table "automation_actions", force: :cascade do |t|
     t.string "type"
     t.bigint "automation_rule_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "value"
+    t.string "action_object_type"
+    t.bigint "action_object_id"
+    t.index ["action_object_type", "action_object_id"], name: "index_automation_actions_on_action_object"
     t.index ["automation_rule_id"], name: "index_automation_actions_on_automation_rule_id"
   end
 
@@ -65,7 +79,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_20_095657) do
     t.bigint "automation_rule_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "condition_object_type"
+    t.bigint "condition_object_id"
     t.index ["automation_rule_id"], name: "index_automation_conditions_on_automation_rule_id"
+    t.index ["condition_object_type", "condition_object_id"], name: "index_automation_conditions_on_condition_object"
   end
 
   create_table "automation_rules", force: :cascade do |t|
@@ -186,16 +203,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_20_095657) do
     t.index ["priority", "created_at"], name: "index_good_jobs_jobs_on_priority_created_at_when_unfinished", order: { priority: "DESC NULLS LAST" }, where: "(finished_at IS NULL)"
     t.index ["queue_name", "scheduled_at"], name: "index_good_jobs_on_queue_name_and_scheduled_at", where: "(finished_at IS NULL)"
     t.index ["scheduled_at"], name: "index_good_jobs_on_scheduled_at", where: "(finished_at IS NULL)"
-  end
-
-  create_table "govbox_api_connections", force: :cascade do |t|
-    t.bigint "box_id"
-    t.string "sub", null: false
-    t.uuid "obo"
-    t.string "api_token_private_key", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["box_id"], name: "index_govbox_api_connections_on_box_id"
   end
 
   create_table "govbox_folders", force: :cascade do |t|
@@ -342,6 +349,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_20_095657) do
     t.bigint "import_id"
     t.bigint "author_id"
     t.boolean "collapsed", default: false, null: false
+    t.boolean "outbox", default: false, null: false
     t.index ["author_id"], name: "index_messages_on_author_id"
     t.index ["import_id"], name: "index_messages_on_import_id"
     t.index ["message_thread_id"], name: "index_messages_on_message_thread_id"
@@ -388,15 +396,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_20_095657) do
     t.datetime "updated_at", null: false
     t.index ["group_id"], name: "index_tag_groups_on_group_id"
     t.index ["tag_id"], name: "index_tag_groups_on_tag_id"
-  end
-
-  create_table "tag_users", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.bigint "tag_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["tag_id"], name: "index_tag_users_on_tag_id"
-    t.index ["user_id"], name: "index_tag_users_on_user_id"
   end
 
   create_table "tags", force: :cascade do |t|
@@ -481,8 +480,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_20_095657) do
   add_foreign_key "searchable_message_threads", "message_threads", on_delete: :cascade
   add_foreign_key "tag_groups", "groups"
   add_foreign_key "tag_groups", "tags"
-  add_foreign_key "tag_users", "tags"
-  add_foreign_key "tag_users", "users"
   add_foreign_key "tags", "tenants"
   add_foreign_key "tags", "users"
   add_foreign_key "upvs_form_template_related_documents", "upvs_form_templates"
