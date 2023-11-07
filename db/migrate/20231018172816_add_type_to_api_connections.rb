@@ -3,7 +3,7 @@ class AddTypeToApiConnections < ActiveRecord::Migration[7.0]
     add_column :api_connections, :type, :string
 
     ApiConnection.update_all(
-      type: 'Govbox::ApiConnectionWithOboSupport'
+      type: 'Govbox::ApiConnection'
     )
   end
 end

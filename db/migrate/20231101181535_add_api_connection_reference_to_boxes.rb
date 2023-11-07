@@ -3,8 +3,10 @@ class AddApiConnectionReferenceToBoxes < ActiveRecord::Migration[7.0]
     add_reference :boxes, :api_connection, foreign_key: true
     add_column :boxes, :settings, :jsonb
 
+    ApiConnection.update_all(type: 'Govbox::ApiConnection')
+
     Box.find_each do |box|
-      box_api_connection = Govbox::ApiConnection.find_by(box_id: box.id)
+      box_api_connection = ApiConnection.find_by(box_id: box.id)
       box.api_connection = box_api_connection
       box.save!
     end
