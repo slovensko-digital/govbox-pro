@@ -1,7 +1,7 @@
 class TagsChanges
   ADD_SIGN = "+"
   REMOVE_SIGN = "-"
-  INDETERMINATE_SIGN = "="
+  KEEP_AS_IS_SIGN = "="
 
   class Helpers
     def self.to_checkbox_value(value)
@@ -33,7 +33,7 @@ class TagsChanges
 
       assigned_thread_by_tag = MessageThreadsTag.where(message_thread: message_threads).pluck(:tag_id, :message_thread_id).group_by(&:first)
       assigned_thread_by_tag.each do |tag_id, values|
-        init_assignments[tag_id.to_s] = values.length == message_threads.length ? ADD_SIGN : INDETERMINATE_SIGN
+        init_assignments[tag_id.to_s] = values.length == message_threads.length ? ADD_SIGN : KEEP_AS_IS_SIGN
       end
 
       {
@@ -50,7 +50,7 @@ class TagsChanges
     end
 
     def indeterminate?
-      init_assignment_value == INDETERMINATE_SIGN
+      init_assignment_value == KEEP_AS_IS_SIGN
     end
 
     def checked?
@@ -63,8 +63,8 @@ class TagsChanges
 
     def value
       if indeterminate?
-        if new_assignment_value == INDETERMINATE_SIGN || new_assignment_value == REMOVE_SIGN
-          INDETERMINATE_SIGN
+        if new_assignment_value == KEEP_AS_IS_SIGN || new_assignment_value == REMOVE_SIGN
+          KEEP_AS_IS_SIGN
         else
           ADD_SIGN
         end
