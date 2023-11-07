@@ -9,7 +9,7 @@
     <%= render TagsAssignment::ListComponent.new(
       tags_filter: @tags_filter,
       tags_assignments: @tags_changes.tags_assignments,
-      create_tag_path: create_tag_message_thread_tags_path(@message_thread)) %>
+      create_tag_path: create_tag_message_threads_bulk_tags_path) %>
   <% end %>
 <% end %>
 
@@ -21,7 +21,7 @@
   <%= render Common::ModalActionsComponent.new do |actions| %>
     <% actions.with_submit_button do %>
       <% if @tags_changes.number_of_changes > 0 %>
-        <%= submit_tag "Uložiť zmeny (#{@tags_changes.number_of_changes})", formaction: message_thread_tags_path(@message_thread), formmethod: :patch, data: { turbo_frame: "_top" }, class: "inline-flex w-full justify-center items-center px-3 py-2 rounded-md bg-blue-600 font-medium text-left text-sm text-white hover:cursor-pointer sm:w-auto" %>
+        <%= submit_tag "Uložiť zmeny (#{@tags_changes.number_of_changes})", formaction: message_threads_bulk_tags_path, formmethod: :patch, data: { turbo_frame: "_top" }, class: "inline-flex w-full justify-center items-center px-3 py-2 rounded-md bg-blue-600 font-medium text-left text-sm text-white hover:cursor-pointer sm:w-auto" %>
       <% end %>
     <% end %>
   <% end %>

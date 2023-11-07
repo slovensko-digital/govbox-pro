@@ -47,6 +47,18 @@ Rails.application.routes.draw do
     post :search, on: :collection
   end
 
+  namespace "message_threads" do
+    namespace "bulk" do
+      resource :tags, only: [:update] do
+        collection do
+          post :edit
+          post :prepare
+          post :create_tag
+        end
+      end
+    end
+  end
+
   resources :message_threads do
     collection do
       get :scroll

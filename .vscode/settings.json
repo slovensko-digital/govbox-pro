@@ -18,11 +18,5 @@
       "database": "govbox_pro_test",
       "username": "govbox_pro"
     }
-  ],
-  "[erb]": {
-    "editor.defaultFormatter": "Jota0222.multi-formatter"
-  },
-  "[ruby]": {
-    "editor.defaultFormatter": "Shopify.ruby-lsp"
-  }
+  ]
 }

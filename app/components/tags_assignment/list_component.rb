@@ -1,9 +1,9 @@
 module TagsAssignment
   class ListComponent < ViewComponent::Base
-    def initialize(message_thread:, tags_filter:, new_tags_assignments:)
-      @message_thread = message_thread
+    def initialize(tags_filter:, tags_assignments:, create_tag_path:)
       @tags_filter = tags_filter
-      @new_tags_assignments = new_tags_assignments
+      @tags_assignments = tags_assignments
+      @create_tag_path = create_tag_path
     end
   end
 end
