@@ -5,7 +5,18 @@
       <div class="flex <%= "hidden" if @tags_filter.filtered_ids.exclude?(tag.id) %>">
         <div class="mr-3 ml-1 flex h-6 items-center">
           <%= hidden_field_tag "tags_assignments[new][#{tag.id}]", TagsChanges::REMOVE_SIGN, id: nil %>
-          <%= check_box_tag "tags_assignments[new][#{tag.id}]", TagsChanges::ADD_SIGN, @new_tags_assignments[tag.id.to_s] == TagsChanges::ADD_SIGN, id: "new_tags_assignments_#{tag.id}", class: "h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer", onchange: "this.form.requestSubmit(document.getElementById('assignments_update'));" %>
+
+          <% checkbox = TagsChanges::Checkbox.new(tag_assignments: @tags_assignments, tag_id: tag.id.to_s) %>
+          <% if checkbox.indeterminate? %>
+            <%= check_box_tag "tags_assignments[new][#{tag.id}]",
+                              checkbox.value, checkbox.checked?,
+                              data: { controller: "tri-state-checkbox", action: "click->tri-state-checkbox#nextState", "tri-state-checkbox-checked-value": TagsChanges::ADD_SIGN, "tri-state-checkbox-indeterminate-value": TagsChanges::KEEP_SIGN },
+                              onchange: "this.form.requestSubmit(document.getElementById('assignments_update'));",
+                              id: "new_tags_assignments_#{tag.id}",
+                              class: "h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer" %>
+          <% else %>
+            <%= check_box_tag "tags_assignments[new][#{tag.id}]", checkbox.value, checkbox.checked?, id: "new_tags_assignments_#{tag.id}", class: "h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer", onchange: "this.form.requestSubmit(document.getElementById('assignments_update'));" %>
+          <% end %>
         </div>
         <div class="min-w-0 flex text-sm leading-6">
           <%= label_tag "new_tags_assignments_#{tag.id}", tag.name, class: "select-none text-gray-900 cursor-pointer" %>
@@ -19,9 +30,10 @@
         </div>
         <div class="min-w-0 flex text-sm leading-6">
           <%= label_tag "new_tag", class: "select-none text-gray-900 cursor-pointer" do %>
-            <%= @tags_filter.filter_query %> <span class="rounded-full px-2 py-0.5 ml-2 bg-gray-400 text-white">zaškrtnutím vytvoríte nový štítok</span>
+            <%= @tags_filter.filter_query %>
+            <span class="rounded-full px-2 py-0.5 ml-2 bg-gray-400 text-white">zaškrtnutím vytvoríte nový štítok</span>
           <% end %>
-          <%= submit_tag "create_tag", id: "create_tag", formaction: create_tag_message_thread_tags_path(@message_thread), formmethod: :post, class: "hidden" %>
+          <%= submit_tag "create_tag", id: "create_tag", formaction: @create_tag_path, formmethod: :post, class: "hidden" %>
         </div>
       </div>
     <% end %>

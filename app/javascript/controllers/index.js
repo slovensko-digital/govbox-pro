@@ -24,3 +24,6 @@ application.register("dismissible-alert", DismissibleAlertController)
 
 import AutofocusController from "./autofocus_controller"
 application.register("autofocus", AutofocusController)
+
+import TriStateCheckboxController from "./tri_state_checkbox_controller"
+application.register("tri-state-checkbox", TriStateCheckboxController)
