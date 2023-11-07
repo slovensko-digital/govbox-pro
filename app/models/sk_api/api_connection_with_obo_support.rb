@@ -13,7 +13,7 @@ class SkApi::ApiConnectionWithOboSupport < ::ApiConnection
   def box_obo(box)
     raise "OBO not allowed!" if invalid_obo?(box)
 
-    (box.settings["obo"] if box.settings) || obo
+    box.settings["obo"] if box.settings
   end
 
   def validate_box(box)
