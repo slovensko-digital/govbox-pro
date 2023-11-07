@@ -1,10 +1,9 @@
 class MessageThreadsController < ApplicationController
-  before_action :set_message_thread, only: %i[show rename update search_available_tags show_log]
-  before_action :set_additional_attributes, only: %i[show show_log]
+  before_action :set_message_thread, only: %i[show rename update search_available_tags history]
+  before_action :set_thread_tags, only: %i[show history]
+  before_action :set_thread_messages, only: %i[show history]
   before_action :load_threads, only: %i[index scroll]
-  after_action :mark_thread_as_read, only: %i[show show_log]
-
-  include MessageThreadsConcern
+  after_action :mark_thread_as_read, only: %i[show history]
 
   def show
     authorize @message_thread
@@ -21,7 +20,7 @@ class MessageThreadsController < ApplicationController
 
     return unless @message_thread.update(message_thread_params)
 
-    redirect_back fallback_location: path, notice: "Názov vlákna bol upravený"
+    redirect_back fallback_location: path, notice: 'Názov vlákna bol upravený'
   end
 
   def index
@@ -46,7 +45,7 @@ class MessageThreadsController < ApplicationController
     if message_thread
       redirect_to message_thread_path(message_thread), notice: 'Vlákna boli úspešne spojené'
     else
-      flash[:alert] = "Označte zaškrtávacími políčkami minimálne 2 vlákna, ktoré chcete spojiť"
+      flash[:alert] = 'Označte zaškrtávacími políčkami minimálne 2 vlákna, ktoré chcete spojiť'
       redirect_back fallback_location: message_threads_path
     end
   end
@@ -76,15 +75,7 @@ class MessageThreadsController < ApplicationController
     @next_page_params = search_params.to_h.merge(cursor: @next_cursor).merge(format: :turbo_stream)
   end
 
-  def search_available_tags
-    authorize [MessageThread]
-    @tags = Current.tenant.tags
-                   .where.not(id: @message_thread.tags.ids)
-                   .where(visible: true)
-    @tags = @tags.where('unaccent(name) ILIKE unaccent(?)', "%#{params[:name_search]}%") if params[:name_search]
-  end
-
-  def show_log
+  def history
     authorize @message_thread
   end
 
@@ -117,10 +108,11 @@ class MessageThreadsController < ApplicationController
     params.permit(:q, :format, cursor: MessageThreadCollection::CURSOR_PARAMS)
   end
 
-  def set_additional_attributes
-    set_thread_tags_with_deletable_flag
-    @thread_messages = @message_thread.messages_visible_to_user(Current.user).includes(
-      objects: :nested_message_objects, attachments: :nested_message_objects
-    ).order(delivered_at: :asc)
+  def set_thread_tags
+    @thread_tags = @message_thread.message_threads_tags.only_visible_tags
+  end
+
+  def set_thread_messages
+    @thread_messages = @message_thread.messages_visible_to_user(Current.user).includes(objects: :nested_message_objects, attachments: :nested_message_objects).order(delivered_at: :asc)
   end
 end

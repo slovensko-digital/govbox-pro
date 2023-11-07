@@ -41,14 +41,14 @@
                       <%= button_to message_path(@message), params: { collapsed: false }, method: :patch, class: 'whitespace-nowrap' do %>
                         <div class="flex justify-center items-center relative gap-3">
                           <%= render Icons::UncollapseComponent.new(:black) %>
-                          Ponechať správu rozbalenú
+                          Vždy zobrazovať
                         </div>
                       <% end %>
                     <% else %>
                       <%= button_to message_path(@message), params: { collapsed: true }, method: :patch, class: 'whitespace-nowrap' do %>
                         <div class="flex justify-center items-center relative gap-3">
                           <%= render Icons::CollapseComponent.new(:black) %>
-                          Zbaliť a nerozbaľovať
+                          Zbaliť a už nerozbaľovať
                         </div>
                       <% end %>
                     <% end %>

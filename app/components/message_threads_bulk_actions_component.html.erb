@@ -1,17 +1,19 @@
 <%= tag.turbo_frame id: "bulk_actions" do %>
   <div class="flex justify-stretch items-center gap-4 p-4 border-t-0 border-r-0 border-b border-l-0 border-gray-200" style="min-height: 5rem;">
-    <div class="todo flex justify-start items-start pr-[100px]">
-      <div class="w-4 h-4 relative">
-        <div class="w-4 h-4 absolute left-[-1px] top-[-1px] rounded bg-gray-50 border border-gray-400"></div>
-      </div>
-    </div>
-    <p class="grow text-xl font-semibold text-left text-gray-900">Správy v schránke</p>
+    <%= check_box_tag('', nil, false, { class: "todo hidden md:block h-4 w-4 rounded border-gray-300 text-blue-500 focus:ring-0", type: "checkbox", data: { action: "" } }) %>
+    <span class="grow sm:text-xl text-base font-semibold text-left text-gray-900">Správy v schránke</span>
     <% if @ids.present? %>
       <%= form_with url: bulk_merge_message_threads_path, data: { turbo_frame: "_top" } do %>
         <% @ids.each do |id| %>
-         <%= hidden_field_tag('message_thread_ids[]', id) %>
+         <%= hidden_field_tag("message_thread_ids[]", id) %>
         <% end %>
-        <%= submit_tag 'Spojiť vlákna', name: 'merge', title: (@ids.length < 2 ? "Označte aspoň dve vlákna" : "Spojiť označené vlákna do jedného"), disabled: @ids.length < 2, data: { turbo_confirm: 'Naozaj chcete spojiť označené vlákna do jedného?' }, class: "flex justify-center items-center gap-2.5 px-3.5 py-2.5 rounded-md #{@ids.length < 2 ? "bg-gray-300" : "bg-blue-600"} text-base font-medium text-left text-white hover:cursor-pointer" %>
+
+        <div class="flex gap-4">
+          <%= submit_tag "Zmeniť štítky", name: "change_tags", formaction: edit_message_threads_bulk_tags_path, formmethod: :post, data: { turbo_frame: "modal" }, class: "flex justify-center items-center gap-2.5 px-3.5 py-2.5 rounded-md bg-blue-600 text-base font-medium text-left text-white hover:cursor-pointer" %>
+
+          <%= submit_tag "Spojiť vlákna", name: "merge", title: (@ids.length < 2 ? "Označte aspoň dve vlákna" : "Spojiť označené vlákna do jedného"), disabled: @ids.length < 2, data: { turbo_confirm: 'Naozaj chcete spojiť označené vlákna do jedného?' }, class: "flex justify-center items-center gap-2.5 px-3.5 py-2.5 rounded-md #{@ids.length < 2 ? "bg-gray-300" : "bg-blue-600"} text-base font-medium text-left text-white hover:cursor-pointer" %>
+        </div>
+
       <% end %>
     <% end %>
   </div>

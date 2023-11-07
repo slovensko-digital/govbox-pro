@@ -7,16 +7,19 @@
 #  name                                        :string           not null
 #  uri                                         :string
 #  syncable                                    :boolean          not null, default: true
+#  settings                                    :json
 #  created_at                                  :datetime         not null
 #  updated_at                                  :datetime         not null
 
 class Box < ApplicationRecord
   belongs_to :tenant
+  belongs_to :api_connection
 
   has_many :folders, dependent: :destroy
   has_many :message_threads, through: :folders, extend: MessageThreadsExtensions, dependent: :destroy
   has_many :messages, through: :message_threads
   has_many :message_drafts_imports, dependent: :destroy
+  has_many :automation_conditions, as: :condition_object
 
   before_destroy ->(box) { EventBus.publish(:box_destroyed, box.id) }
 
@@ -47,4 +50,12 @@ class Box < ApplicationRecord
          pink: 'pink',
          rose: 'rose'
        }
+
+  validate :validate_box_with_api_connection
+
+  private
+
+  def validate_box_with_api_connection
+    api_connection.validate_box(self)
+  end
 end

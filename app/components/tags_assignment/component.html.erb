@@ -1,0 +1,36 @@
+<%= render Common::ModalComponent.new do |modal| %>
+  <% modal.with_header do %>
+    Úprava štítkov
+  <% end %>
+  <% modal.with_modal_content do %>
+    <%= form_with url: prepare_message_thread_tags_path(@message_thread),
+                  data: { controller: 'debounce', debounce_target: 'form' } do |form| %>
+      <div class="flex flex-col items-start gap-4 mt-4">
+        <div class="w-full">
+          <%= tag.turbo_frame id: TagsAssignment::Component::SEARCH_FIELD_FRAME do %>
+            <%= render TagsAssignment::SearchFieldComponent.new %>
+          <% end %>
+        </div>
+
+        <div class="w-full mb-4">
+          <% @tags_changes.init_assignments.each do |tag_id, value| %>
+            <%= hidden_field_tag "tags_assignments[init][#{tag_id}]", value %>
+          <% end %>
+          <%= tag.turbo_frame id: TagsAssignment::Component::LIST_FRAME do %>
+            <%=
+              render TagsAssignment::ListComponent.new(
+                tags_filter: @tags_filter,
+                tags_assignments: @tags_changes.tags_assignments,
+                create_tag_path: create_tag_message_thread_tags_path(@message_thread)) %>
+          <% end %>
+        </div>
+      </div>
+
+      <%= tag.turbo_frame id: TagsAssignment::Component::DIFF_FRAME %>
+
+      <%= tag.turbo_frame id: TagsAssignment::Component::ACTIONS_FRAME do %>
+        <%= render Common::ModalActionsComponent.new %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>
