@@ -1,9 +1,10 @@
 <%# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! %>
 <%# If color values are changed, adjust the color list below !!!!!!!!! %>
 <%# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! %>
-<div class="flex justify-center items-center relative overflow-hidden gap-1.5 px-2 py-1 rounded-md bg-<%= @box.color %>-100 border border-<%= @box.color %>-400">
-  <p class="flex-grow-0 flex-shrink-0 text-sm text-left text-<%= @box.color %>-600"><%= @box.short_name || @box.name[0] %></p>
+<div class="flex justify-center items-center relative overflow-hidden gap-1.5 px-2 py-1 rounded-md bg-<%= @box.color %>-100 border border-<%= @box.color %>-400 <%= @classes %>">
+  <p class="flex-grow-0 flex-shrink-0 <%= @font_size_class %> text-left text-<%= @box.color %>-600"><%= @box.short_name || @box.name[0] %></p>
 </div>
+
 <%#  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! %>
 <%#  Necessary to generate proper CSS for dynamically generated colors %>
 <%#  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! %>

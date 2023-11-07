@@ -9,20 +9,20 @@
 #  created_at                                  :datetime         not null
 #  updated_at                                  :datetime         not null
 
-class ApiConnection < ApplicationRecord
-  has_many :boxes
-
+class SkApi::ApiConnectionWithOboSupport < ::ApiConnection
   def box_obo(box)
-    raise NotImplementedError
+    raise "OBO not allowed!" if invalid_obo?(box)
+
+    box.settings["obo"] if box.settings
   end
 
   def validate_box(box)
-    raise NotImplementedError
+    box.errors.add(:obo, :not_allowed) if invalid_obo?(box)
   end
 
   private
 
   def invalid_obo?(box)
-    raise NotImplementedError
+    obo.present?
   end
 end
