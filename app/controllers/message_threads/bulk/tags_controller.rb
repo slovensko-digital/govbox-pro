@@ -1,78 +1,83 @@
-class MessageThreads::Bulk::TagsController < ApplicationController
-  before_action :set_message_threads
+module MessageThreads
+  module Bulk
+    class TagsController < ::ApplicationController
+      before_action :set_message_threads
 
-  include TagCreation
+      include TagCreation
 
-  def edit
-    authorize MessageThreadsTag
+      def edit
+        authorize MessageThreadsTag
 
-    @tags_changes = TagsChanges.new(
-      tag_scope: tag_scope,
-      tags_assignments: TagsChanges::Helpers.build_bulk_assignments(message_threads: @message_threads, tag_scope: tag_scope)
-    )
-    @tags_filter = TagsFilter.new(tag_scope: tag_scope)
-  end
+        @tags_changes = TagsChanges.new(
+          tag_scope: tag_scope,
+          tags_assignments: TagsChanges::Helpers.build_bulk_assignments(message_threads: @message_threads, tag_scope: tag_scope)
+        )
+        @tags_filter = TagsFilter.new(tag_scope: tag_scope)
+      end
 
-  def prepare
-    authorize MessageThreadsTag
+      def prepare
+        authorize MessageThreadsTag
 
-    @tags_changes = TagsChanges.new(
-      tag_scope: tag_scope,
-      tags_assignments: tags_assignments,
-    )
-    @tags_filter = TagsFilter.new(tag_scope: tag_scope, filter_query: params[:name_search_query].strip)
-    @rerender_list = params[:assignments_update].blank?
-  end
+        @tags_changes = TagsChanges.new(
+          tag_scope: tag_scope,
+          tags_assignments: tags_assignments,
+          )
+        @tags_filter = TagsFilter.new(tag_scope: tag_scope, filter_query: params[:name_search_query].strip)
+        @rerender_list = params[:assignments_update].blank?
+      end
 
-  def create_tag
-    new_tag = Tag.new(tag_creation_params.merge(name: params[:new_tag].strip))
-    authorize(new_tag, "create?")
+      def create_tag
+        new_tag = Tag.new(tag_creation_params.merge(name: params[:new_tag].strip))
+        authorize(new_tag, "create?")
 
-    @tags_changes = TagsChanges.new(
-      tag_scope: tag_scope,
-      tags_assignments: tags_assignments,
-    )
+        @tags_changes = TagsChanges.new(
+          tag_scope: tag_scope,
+          tags_assignments: tags_assignments,
+          )
 
-    @tags_changes.add_new_tag(new_tag) if new_tag.save
+        @tags_changes.add_new_tag(new_tag) if new_tag.save
 
-    @tags_filter = TagsFilter.new(tag_scope: tag_scope, filter_query: "")
-    @rerender_list = true
-    @reset_search = true
+        @tags_filter = TagsFilter.new(tag_scope: tag_scope, filter_query: "")
+        @rerender_list = true
+        @reset_search = true
 
-    render :prepare
-  end
+        render :prepare
+      end
 
-  def update
-    authorize MessageThreadsTag
+      def update
+        authorize MessageThreadsTag
 
-    tag_changes = TagsChanges.new(
-      tag_scope: tag_scope.includes(:tenant),
-      tags_assignments: tags_assignments
-    )
+        tag_changes = TagsChanges.new(
+          tag_scope: tag_scope.includes(:tenant),
+          tags_assignments: tags_assignments
+        )
 
-    tag_changes.bulk_save(@message_threads.select(:folder_id).includes(:folder))
+        tag_changes.bulk_save(@message_threads.select(:folder_id).includes(:folder))
 
-    # status: 303 is needed otherwise PATCH is kept in the following redirect https://apidock.com/rails/ActionController/Redirecting/redirect_to
-    redirect_back fallback_location: message_threads_path, notice: "Priradenie štítkov bolo upravené", status: 303
-  end
+        # status: 303 is needed otherwise PATCH is kept in the following redirect https://apidock.com/rails/ActionController/Redirecting/redirect_to
+        redirect_back fallback_location: message_threads_path, notice: "Priradenie štítkov bolo upravené", status: 303
+      end
 
-  private
+      private
 
-  def tag_scope
-    Current.tenant.tags.visible.order(:name)
-  end
+      def tag_scope
+        Current.tenant.tags.visible.order(:name)
+      end
 
-  def message_thread_policy_scope
-    policy_scope(MessageThread)
-  end
+      def message_thread_policy_scope
+        policy_scope(MessageThread)
+      end
 
-  def set_message_threads
-    ids = params[:message_thread_ids] || []
+      def set_message_threads
+        ids = params[:message_thread_ids] || []
 
-    @message_threads = message_thread_policy_scope.where(id: ids).select(:id)
-  end
+        @message_threads = message_thread_policy_scope.where(id: ids).select(:id)
+      end
 
-  def tags_assignments
-    params.require(:tags_assignments).permit(init: {}, new: {})
+      def tags_assignments
+        params.require(:tags_assignments).permit(init: {}, new: {})
+      end
+    end
+
   end
 end
