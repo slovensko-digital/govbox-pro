@@ -16,6 +16,10 @@ class Govbox::ApiConnection < ::ApiConnection
     obo
   end
 
+  def validate_box(box)
+    box.errors.add(:obo, :not_allowed) if invalid_obo?(box)
+  end
+
   private
 
   def invalid_obo?(box)

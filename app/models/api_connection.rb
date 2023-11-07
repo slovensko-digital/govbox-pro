@@ -13,18 +13,16 @@ class ApiConnection < ApplicationRecord
   has_many :boxes
 
   def box_obo(box)
-    raise "OBO not allowed!" if invalid_obo?(box)
-
-    (box.settings["obo"] if box.settings) || obo
+    raise NotImplementedError
   end
 
   def validate_box(box)
-    box.errors.add(:obo, :not_allowed) if invalid_obo?(box)
+    raise NotImplementedError
   end
 
   private
 
   def invalid_obo?(box)
-    obo.present?
+    raise NotImplementedError
   end
 end

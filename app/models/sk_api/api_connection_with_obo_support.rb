@@ -10,4 +10,19 @@
 #  updated_at                                  :datetime         not null
 
 class SkApi::ApiConnectionWithOboSupport < ::ApiConnection
+  def box_obo(box)
+    raise "OBO not allowed!" if invalid_obo?(box)
+
+    (box.settings["obo"] if box.settings) || obo
+  end
+
+  def validate_box(box)
+    box.errors.add(:obo, :not_allowed) if invalid_obo?(box)
+  end
+
+  private
+
+  def invalid_obo?(box)
+    obo.present?
+  end
 end
