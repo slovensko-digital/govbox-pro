@@ -1,4 +1,4 @@
-class MessageThreadNoteComponent < ViewComponent::Base
+class MessageThreadNoteShowComponent < ViewComponent::Base
   def initialize(message_thread_note)
     @message_thread_note = message_thread_note
     @message_thread = @message_thread_note.message_thread
