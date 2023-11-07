@@ -1,39 +1,11 @@
-<div data-controller="dropdown" data-dropdown-open-value=<%= @message_thread_note.note.present? %>>
-  <div id="dropdown-button" class="flex flex-col justify-start items-between flex-grow-0 flex-shrink-0 relative overflow-hidden p-2 rounded-md bg-white border border-gray-200">
-    <div role="button" tabindex="0" data-dropdown-target="button" data-action="click->dropdown#toggle" class="flex justify-between">
-      <button type="button" class="m-1.5 flex justify-between grow items-center gap-2 p-1.5" id="thread-note-menu-button" aria-expanded="false" aria-haspopup="true">
-        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" class="flex-grow-0 flex-shrink-0 w-8 h-8 relative" preserveAspectRatio="xMidYMid meet">
-          <path d="M14.6654 6.66666H7.9987C7.29145 6.66666 6.61318 6.94761 6.11308 7.44771C5.61298 7.9478 5.33203 8.62608 5.33203 9.33333V24C5.33203 24.7072 5.61298 25.3855 6.11308 25.8856C6.61318 26.3857 7.29145 26.6667 7.9987 26.6667H22.6654C23.3726 26.6667 24.0509 26.3857 24.551 25.8856C25.0511 25.3855 25.332 24.7072 25.332 24V17.3333M23.4467 4.78133C23.6927 4.52663 23.9869 4.32348 24.3123 4.18372C24.6376 4.04396 24.9875 3.9704 25.3416 3.96732C25.6957 3.96425 26.0469 4.03172 26.3746 4.1658C26.7023 4.29988 27 4.49789 27.2504 4.74827C27.5008 4.99865 27.6988 5.29639 27.8329 5.62412C27.967 5.95184 28.0344 6.30298 28.0314 6.65706C28.0283 7.01114 27.9547 7.36106 27.815 7.6864C27.6752 8.01175 27.4721 8.306 27.2174 8.55199L15.7694 20H11.9987V16.2293L23.4467 4.78133Z" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-        </svg>
-        <div class="flex justify-start items-start flex-grow-0 flex-shrink-0 relative gap-2">
-          <p class="flex-grow-0 flex-shrink-0 text-base font-bold text-left text-gray-900">Poznámky</p>
+<%= tag.turbo_frame id: 'thread-note' do %>
+  <% if @message_thread_note %>
+    <div class="flex items-start space-x-4 p-6 bg-white">
+      <div class="min-w-0 flex-1">
+        <div class="overflow-hidden">
+          <%= tag.p simple_format @message_thread_note.note, class: 'block w-full resize-none bg-transparent text-gray-700 sm:text-sm sm:leading-6' %>
         </div>
-        <div class="flex justify-start items-start grow relative gap-2">
-          <% if @message_thread_note.updated_at %>
-            <p class="self-stretch flex-grow align-middle text-base text-right text-gray-900"><%= l @message_thread_note.updated_at, format: :long %></p>
-          <% end %>
-        </div>
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="flex-grow-0 flex-shrink-0 w-6 h-6 relative" preserveAspectRatio="xMidYMid meet">
-          <path d="M19 9L12 16L5 9" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-        </svg>
-      </button>
+      </div>
     </div>
-    <div data-dropdown-target="menu"
-          data-transition-enter="transition ease-out duration-200"
-          data-transition-enter-from="opacity-0 translate-y-1"
-          data-transition-enter-to="opacity-100 translate-y-0"
-          data-transition-leave="transition ease-in duration-150"
-          data-transition-leave-from="opacity-100 translate-y-0"
-          data-transition-leave-to="opacity-0 translate-y-1"
-          class="hidden">
-      <%= form_with model: [@message_thread, @message_thread_note], class: "flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 overflow-hidden gap-2 py-1 px-2 rounded-md bg-white" do |form| %>
-        <%= form.text_area :note, placeholder: 'Zadajte svoje poznámky k vláknu', rows:3, class: "px-3 py-4 placeholder-slate-300 text-slate-900 relative bg-white bg-white rounded-lg text-base border-0 shadow outline-none focus:outline-none focus:ring w-full h-full" %>
-        <div class="flex flex-col justify-start items-end self-stretch flex-grow-0 flex-shrink-0 gap-2 px-3">
-          <%= form.button class: "flex justify-center items-center h-11 relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md bg-blue-600" do %>
-            <div class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-white">Uložiť</div>
-          <% end %>
-        </div>
-      <% end %>
-    </div>
-  </div>
-</div>
+  <% end %>
+<% end %>

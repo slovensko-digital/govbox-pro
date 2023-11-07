@@ -22,15 +22,34 @@
               class="hidden z-50 absolute right-0">
           <div class="flex flex-col justify-start items-start gap-px py-0.5 rounded-lg bg-white border border-gray-300 mt-1" style="box-shadow: 1px 1px 4px 0 rgba(0,0,0,0.1);">
             <div class="flex justify-start items-start">
-              <div class="flex flex-col justify-start items-start   relative gap-1">
-                <div class="flex justify-start items-start px-4 py-3 rounded-lg hover:bg-gray-50">
-                  <%= link_to history_message_thread_path(@message_thread), data: { turbo_frame: 'message-thread-log' }, class: 'whitespace-nowrap' do %>
+              <div class="flex flex-col justify-start items-stretch   relative gap-1">
+                <%= link_to history_message_thread_path(@message_thread), class: 'flex justify-start items-start px-4 py-3 rounded-lg hover:bg-gray-50' do %>
+                  <div class="whitespace-nowrap">
                     <div class="flex justify-center items-center relative gap-3">
                       <%= render Icons::BoxesComponent.new %>
                       História komunikácie
                     </div>
+                  </div>
+                <% end %>
+                <% if @message_thread.message_thread_note&.note.present? %>
+                  <%= link_to edit_message_thread_message_thread_note_path(@message_thread, @message_thread.message_thread_note), data: { turbo_frame: 'thread-note' }, class: 'flex justify-start items-start px-4 py-3 rounded-lg hover:bg-gray-50' do %>
+                    <div class="whitespace-nowrap">
+                      <div class="flex justify-center items-center relative gap-3">
+                        <%= render Icons::NoteComponent.new %>
+                        Upraviť poznámku
+                      </div>
+                    </div>
                   <% end %>
-                </div>
+                <% else %>
+                  <%= link_to new_message_thread_message_thread_note_path(@message_thread), data: { turbo_frame: 'thread-note' }, class: 'flex justify-start items-start px-4 py-3 rounded-lg hover:bg-gray-50' do %>
+                    <div class="whitespace-nowrap">
+                      <div class="flex justify-center items-center relative gap-3">
+                        <%= render Icons::NoteComponent.new %>
+                        Pridať poznámku
+                      </div>
+                    </div>
+                  <% end %>
+                <% end %>
               </div>
             </div>
           </div>
