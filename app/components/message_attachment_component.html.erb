@@ -22,8 +22,8 @@
         <% end %>
       </div>
       <span class="text-sm text-left text-gray-600">
-          <%= "#{number_to_human_size(@message_attachment.content.size)}" %>
-        </span>
+        <%= "#{number_to_human_size(@message_attachment.content.size)}" %>
+      </span>
       <% if @message_attachment.is_signed? %>
         <%= render Common::BadgeComponent.new("Podpísané", "md:hidden") %>
       <% end %>
