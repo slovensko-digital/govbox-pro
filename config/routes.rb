@@ -66,6 +66,7 @@ Rails.application.routes.draw do
       post :bulk_merge
     end
     get :rename, on: :member
+    get :history, on: :member
     resources :messages
     resources :message_thread_notes
     scope module: 'message_threads' do
