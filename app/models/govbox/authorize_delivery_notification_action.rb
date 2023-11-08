@@ -1,4 +1,4 @@
-class Govbox::BulkAuthorizedDelivery
+class Govbox::AuthorizeDeliveryNotificationAction
   def self.run(message_threads)
     message_for_delivery = message_threads.map(&:messages).flatten
 
