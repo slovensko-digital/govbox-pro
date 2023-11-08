@@ -1,5 +1,5 @@
-<div class="flex flex-col justify-stretch items-stretch gap-4 p-4">
-  <div class="flex flex-col justify-stretch items-stretch rounded-md bg-white border border-gray-200" data-controller="form">
+<div class="flex flex-col justify-stretch items-stretch gap-4 lg:p-4">
+  <div class="flex flex-col justify-stretch items-stretch lg:rounded-md bg-white border border-gray-200" data-controller="form">
     <%= render MessageThreadsBulkActionsComponent.new(ids: []) %>
     <%= form_with url: bulk_actions_message_threads_path, data: { "form-target": "form" } do %>
       <ul role="list" id="message_threads" class="divide-y divide-gray-100">
