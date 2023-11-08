@@ -25,7 +25,7 @@
           </div>
         </div>
         <%= render MessageOptionsComponent.new(message: @message, mode: @mode) %>
-        <% if @message.collapsed && @mode == 'thread_view' %>
+        <% if @message.collapsed && @mode == :thread_view %>
           <%= link_to message_path(@message, collapsed: true) do %>
             <%= render Icons::CollapseComponent.new %>
           <% end %>
@@ -94,7 +94,7 @@
       </div>
     <% end %>
 
-    <% if @mode == 'thread_view' %>
+    <% if @mode == :thread_view %>
       <% if @message.can_be_authorized? %>
         <%= form_with(url: authorize_delivery_notification_message_path(@message), method: :post, local: true, style: 'width: 100%;') do |form| %>
           <div class="flex justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
