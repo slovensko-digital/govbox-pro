@@ -44,7 +44,7 @@ class MessageDraftsController < ApplicationController
       redirect_to message_thread_path(@message.thread), notice: "Správa bola zaradená na odoslanie"
     else
       # TODO: prisposobit chybovu hlasku aj importovanym draftom
-      redirect_to message_thread_path(@message.thread), error: "Vyplňte predmet a text odpovede"
+      redirect_to message_thread_path(@message.thread), alert: "Vyplňte text správy"
     end
   end
 

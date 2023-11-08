@@ -108,7 +108,7 @@ class MessageDraft < Message
   end
 
   def submittable?
-    form.present? && objects.to_be_signed.all? { |o| o.is_signed? } && !invalid? && not_yet_submitted?
+    form.content.present? && objects.to_be_signed.all? { |o| o.is_signed? } && !invalid? && not_yet_submitted?
   end
 
   def not_yet_submitted?
