@@ -7,7 +7,9 @@
           <div class="relative flex space-x-3">
             <div>
               <span class="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center ring-8 ring-white">
-                <% if @message.collapsed %>
+                <% if @message.type == 'MessageDraft' %>
+                  <%= render Icons::DraftComponent.new %>
+                <% elsif @message.collapsed %>
                   <%= render Icons::CollapsedMessageComponent.new %>
                 <% else %>
                   <%= render Icons::RelevantMessageComponent.new %>
