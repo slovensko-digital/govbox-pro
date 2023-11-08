@@ -1,8 +1,8 @@
-<%= tag.turbo_frame id: dom_id(@message), class: "flex flex-col justify-stretch items-stretch rounded-md bg-white border border-gray-200" do %>
+<%= tag.turbo_frame id: dom_id(@message), class: "draft flex flex-col justify-stretch items-stretch rounded-md bg-white border border-gray-200" do %>
   <div class="flex flex-col justify-stretch items-stretch">
     <div class="flex flex-col justify-stretch items-stretch rounded-md bg-white border border-gray-200">
 
-      <%= render MessageDraftBodyComponent.new(message: @message) %>
+      <%= render MessageDraftBodyComponent.new(message: @message, is_last: @is_last) %>
 
       <%= render MessageDraftAttachmentsListComponent.new(message: @message) %>
 

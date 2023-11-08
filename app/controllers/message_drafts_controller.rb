@@ -14,8 +14,6 @@ class MessageDraftsController < ApplicationController
     authorize @original_message
 
     @message = MessageDraft.create_message_reply(original_message: @original_message, author: Current.user)
-
-    redirect_to message_thread_path(@message.thread, anchor: dom_id(@message))
   end
 
   def show
@@ -32,6 +30,8 @@ class MessageDraftsController < ApplicationController
     permitted_params = message_params
 
     @message.update_content(title: permitted_params["message_title"], body: permitted_params["message_text"])
+
+    head :ok, content_type: "text/html"
   end
 
   def submit

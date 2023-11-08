@@ -44,7 +44,7 @@ class MessageObject < ApplicationRecord
   end
 
   def content
-    message_object_datum.blob
+    message_object_datum&.blob
   end
 
   def form?
