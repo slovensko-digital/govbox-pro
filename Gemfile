@@ -65,6 +65,8 @@ group :development do
   gem 'erb_lint'
   gem 'ruby-lsp-rails'
   gem 'rdbg'
+  gem 'rubocop'
+  gem 'rubocop-rails'
 end
 
 group :test do

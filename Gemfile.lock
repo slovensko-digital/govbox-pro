@@ -89,7 +89,7 @@ GEM
     brakeman (6.0.1)
     builder (3.2.4)
     byebug (11.1.3)
-    capybara (3.39.1)
+    capybara (3.39.2)
       addressable
       matrix
       mini_mime (>= 0.1.3)
@@ -327,7 +327,7 @@ GEM
       nokogiri
     rexml (3.2.5)
     rollbar (3.4.0)
-    rubocop (1.51.0)
+    rubocop (1.52.0)
       json (~> 2.3)
       parallel (~> 1.10)
       parser (>= 3.2.0.0)
@@ -339,6 +339,10 @@ GEM
       unicode-display_width (>= 2.4.0, < 3.0)
     rubocop-ast (1.28.1)
       parser (>= 3.2.1.0)
+    rubocop-rails (2.22.1)
+      activesupport (>= 4.2.0)
+      rack (>= 1.1)
+      rubocop (>= 1.33.0, < 2.0)
     ruby-lsp (0.11.1)
       language_server-protocol (~> 3.17.0)
       sorbet-runtime (>= 0.5.5685)
@@ -351,7 +355,7 @@ GEM
     ruby-rc4 (0.1.5)
     ruby2_keywords (0.0.5)
     rubyzip (2.3.2)
-    selenium-webdriver (4.9.1)
+    selenium-webdriver (4.10.0)
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
@@ -409,16 +413,16 @@ GEM
       activesupport (>= 5.2.0, < 8.0)
       concurrent-ruby (~> 1.0)
       method_source (~> 1.0)
-    web-console (4.2.0)
+    web-console (4.2.1)
       actionview (>= 6.0.0)
       activemodel (>= 6.0.0)
       bindex (>= 0.4.0)
       railties (>= 6.0.0)
-    webdrivers (5.2.0)
+    webdrivers (5.3.1)
       nokogiri (~> 1.6)
       rubyzip (>= 1.3.0)
-      selenium-webdriver (~> 4.0)
-    webmock (3.18.1)
+      selenium-webdriver (~> 4.0, < 4.11)
+    webmock (3.19.1)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
@@ -472,6 +476,8 @@ DEPENDENCIES
   rdbg
   rest-client
   rollbar
+  rubocop
+  rubocop-rails
   ruby-lsp-rails
   rubyzip
   selenium-webdriver
