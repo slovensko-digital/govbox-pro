@@ -50,8 +50,13 @@
                     </div>
                   <% end %>
                 <% end %>
-                <%= link_to rename_message_thread_path(@message_thread), method: :get, data: { turbo_frame: "modal" }, class: "flex gap-4" do %>
-                  Premenovať
+                <%= link_to rename_message_thread_path(@message_thread), method: :get, data: { turbo_frame: "modal" }, class: "flex justify-start items-start px-4 py-3 rounded-lg hover:bg-gray-50" do %>
+                  <div class="whitespace-nowrap">
+                    <div class="flex justify-center items-center relative gap-3">
+                      <%= render Icons::PencilComponent.new %>
+                      Premenovať
+                    </div>
+                  </div>
                 <% end %>
               </div>
             </div>
