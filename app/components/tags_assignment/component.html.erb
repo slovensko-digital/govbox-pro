@@ -19,9 +19,9 @@
           <%= tag.turbo_frame id: TagsAssignment::Component::LIST_FRAME do %>
             <%=
               render TagsAssignment::ListComponent.new(
-                message_thread: @message_thread,
                 tags_filter: @tags_filter,
-                new_tags_assignments: @tags_changes.init_assignments) %>
+                tags_assignments: @tags_changes.tags_assignments,
+                create_tag_path: create_tag_message_thread_tags_path(@message_thread)) %>
           <% end %>
         </div>
       </div>

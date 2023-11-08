@@ -47,6 +47,18 @@ Rails.application.routes.draw do
     post :search, on: :collection
   end
 
+  namespace "message_threads" do
+    namespace "bulk" do
+      resource :tags, only: [:update] do
+        collection do
+          post :edit
+          post :prepare
+          post :create_tag
+        end
+      end
+    end
+  end
+
   resources :message_threads do
     collection do
       get :scroll
@@ -54,6 +66,7 @@ Rails.application.routes.draw do
       post :bulk_merge
     end
     get :rename, on: :member
+    get :history, on: :member
     resources :messages
     resources :message_thread_notes
     scope module: 'message_threads' do
@@ -65,7 +78,6 @@ Rails.application.routes.draw do
   end
 
   resources :message_threads_tags, only: :destroy
-
 
   resources :messages do
     member do

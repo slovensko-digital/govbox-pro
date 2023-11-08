@@ -51,11 +51,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_01_181535) do
 
   create_table "api_connections", force: :cascade do |t|
     t.string "sub", null: false
+    t.uuid "obo"
     t.string "api_token_private_key", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "type"
-    t.uuid "obo"
   end
 
   create_table "automation_actions", force: :cascade do |t|

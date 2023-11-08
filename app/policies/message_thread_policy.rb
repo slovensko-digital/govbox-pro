@@ -15,7 +15,7 @@ class MessageThreadPolicy < ApplicationPolicy
       scope.where(
         MessageThreadsTag
           .select(1)
-          .joins(:tag_groups => :group_memberships)
+          .joins(tag_groups: :group_memberships)
           .where("message_threads_tags.message_thread_id = message_threads.id")
           .where(group_memberships: { user_id: @user.id })
           .arel.exists
@@ -48,6 +48,10 @@ class MessageThreadPolicy < ApplicationPolicy
   end
 
   def rename?
+    true
+  end
+
+  def history?
     true
   end
 end
