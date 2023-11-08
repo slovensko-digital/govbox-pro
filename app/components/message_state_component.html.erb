@@ -1,0 +1,12 @@
+<% if @message.form&.is_signed? || @message.form.present? || @message.authorized?  %>
+  <div class="w-fit flex flex-col gap-1 <%= @classes %>">
+    <% if @message.form&.is_signed? %>
+      <%= render Common::BadgeComponent.new("Podpísané") %>
+    <% elsif @message.form.present? %>
+      <span class="text-gray-500">Bez podpisu</span>
+    <% end %>
+    <% if @message.authorized? %>
+      <%= render Common::BadgeComponent.new("Prevzatá doručenka") %>
+    <% end %>
+  </div>
+<% end %>

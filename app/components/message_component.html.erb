@@ -1,32 +1,17 @@
 <%= tag.turbo_frame id: dom_id(@message), class: "flex flex-col justify-stretch items-stretch rounded-md bg-white border border-gray-200" do %>
-  <% if @message.collapsed %>
-    <div class="px-6 pt-6 pb-4">
-      <span class="text-lg font-normal leading-6 text-gray-900"><%= @message.title %></span>
-    </div>
-  <% end %>
   <div class="flex justify-between items-start gap-4 px-6 pt-6 pb-4 border-b border-gray-200">
-    <div class="flex flex-col justify-stretch items-start gap-2 mb-auto">
-      <div class="flex justify-stretch items-start relative gap-2">
-        <span class="w-[100px] text-base text-left text-gray-900">
-          Odosielateľ:
-        </span>
-        <span class="text-base font-semibold text-left text-gray-900">
-          <%= @message.sender_name || 'Neznámy' %>
-        </span>
-      </div>
-      <div class="flex justify-stretch items-start relative gap-2">
-        <span class="w-[100px] text-base text-left text-gray-900">
-          Adresát:
-        </span>
-        <span class="text-base font-semibold text-left text-gray-900">
-          <%= @message.recipient_name || 'Neznámy' %>
-        </span>
-      </div>
+    <div class="flex flex-col gap-2">
+      <dl class="flex flex-col gap-2 text-gray-90 text-sm leading-6">
+        <%= render MessageHeaderSectionComponent.new("Predmet:", @message.title) %>
+        <%= render MessageHeaderSectionComponent.new("Odosielateľ:", @message.sender_name || "Neznámy") %>
+        <%= render MessageHeaderSectionComponent.new("Adresát:", @message.recipient_name || "Neznámy") %>
+      </dl>
+      <%= render MessageStateComponent.new(message: @message, classes: "md:hidden") %>
     </div>
-    <% if @message.authorized? %>
-      <%= render Common::BadgeComponent.new("Prevzatá doručenka") %>
-    <% end %>
-    <%= render MessageOptionsComponent.new(message: @message) %>
+    <div class="flex flex-col items-end gap-2">
+      <%= render MessageOptionsComponent.new(message: @message) %>
+      <%= render MessageStateComponent.new(message: @message, classes: "hidden md:flex") %>
+    </div>
   </div>
   <div class="flex flex-col justify-stretch items-start relative gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
     <div class="w-full">
@@ -72,17 +57,15 @@
   </div>
 
   <% if @message.attachments.any? %>
-    <div class="flex justify-start items-center gap-4 px-6 py-4 bg-white border-t-0 border-r-0 border-b border-l-0 border-gray-200">
-      <div class="flex justify-start items-start  relative gap-2">
+    <div class="flex justify-start items-center gap-2 px-6 py-4 bg-white border-t-0 border-r-0 border-b border-l-0 border-gray-200">
+      <div>
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="  w-6 h-6 relative" preserveAspectRatio="xMidYMid meet">
           <path d="M15.1715 6.99998L8.58553 13.586C8.39451 13.7705 8.24215 13.9912 8.13733 14.2352C8.03251 14.4792 7.97734 14.7416 7.97503 15.0072C7.97272 15.2727 8.02333 15.5361 8.12389 15.7819C8.22445 16.0277 8.37296 16.251 8.56074 16.4388C8.74853 16.6266 8.97183 16.7751 9.21762 16.8756C9.46342 16.9762 9.72678 17.0268 9.99233 17.0245C10.2579 17.0222 10.5203 16.967 10.7643 16.8622C11.0083 16.7574 11.229 16.605 11.4135 16.414L17.8275 9.82798C18.5562 9.07357 18.9593 8.06316 18.9502 7.01438C18.9411 5.96559 18.5204 4.96234 17.7788 4.22071C17.0372 3.47907 16.0339 3.0584 14.9851 3.04928C13.9363 3.04017 12.9259 3.44335 12.1715 4.17198L5.75653 10.757C4.63122 11.8823 3.99902 13.4085 3.99902 15C3.99902 16.5914 4.63122 18.1177 5.75653 19.243C6.88184 20.3683 8.4081 21.0005 9.99953 21.0005C11.591 21.0005 13.1172 20.3683 14.2425 19.243L20.4995 13" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
         </svg>
-        <p class="flex-grow-0 flex-shrink-0 w-[743px] text-base text-left text-gray-900">
-          <span class="flex-grow-0 flex-shrink-0 w-[743px] text-base text-left text-gray-900">Správa obsahuje
-            <span class="flex-grow-0 flex-shrink-0 w-[743px] text-base font-semibold text-left text-gray-900"><%= t('message_object', count: @message.attachments.count, locale: :sk) %></span>
-          </span>
-        </p>
       </div>
+      <p class="grow text-base text-left text-gray-900">
+        Správa obsahuje <span class="font-semibold"><%= t('message_object', count: @message.attachments.count, locale: :sk) %></span>
+      </p>
     </div>
 
     <div class="flex flex-col justify-stretch items-stretch divide-y relative px-4 bg-white border-t-0 border-r-0 border-b border-l-0 border-gray-200">
@@ -91,15 +74,11 @@
   <% end %>
 
   <% if @message.can_be_authorized? %>
-    <%= form_with(url: authorize_delivery_notification_message_path(@message), method: :post, local: true, style:'width: 100%;') do |form| %>
-      <div class="flex justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
-        <div class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md bg-blue-600">
-          <%= form.submit "Prevziať správu", data: { turbo_frame: "_top", turbo_confirm: 'Naozaj chcete prevziať správu?' }, class: "flex-grow-0 flex-shrink-0 bg-blue-600 text-base font-medium text-left text-white" %>
-        </div>
-      </div>
+    <%= form_with(url: authorize_delivery_notification_message_path(@message), method: :post, local: true, class: 'flex p-6 border-b border-gray-200') do |form| %>
+      <%= form.submit "Prevziať správu", data: { turbo_frame: "_top", turbo_confirm: 'Naozaj chcete prevziať správu?' }, class: "flex-grow-0 flex-shrink-0 px-3.5 py-2.5 rounded-md bg-blue-600 text-base font-medium text-left text-white" %>
     <% end %>
   <% elsif @message.replyable? %>
-    <div class="flex justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
+    <div class="flex p-6 border-b border-gray-200">
       <%= button_to message_drafts_path, method: :post, params: { original_message_id: @message.id }, data: { turbo: 'false' }, class: "text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3.5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" do %>
         Odpovedať
       <% end %>

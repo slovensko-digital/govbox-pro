@@ -13,21 +13,24 @@
       <% end %>
     </div>
     <div class="flex flex-col justify-start items-start overflow-clip">
-      <div class="flex justify-start items-start gap-4 w-full">
+      <div class="flex justify-start items-center gap-4 w-full">
         <span class="truncate text-base font-semibold text-left text-gray-900">
           <%= MessageObjectHelper.displayable_name(@message_attachment) %>
         </span>
         <% if @message_attachment.is_signed? %>
-          <%= render Common::BadgeComponent.new("Podpísané") %>
+          <%= render Common::BadgeComponent.new("Podpísané", "hidden md:flex") %>
         <% end %>
       </div>
       <span class="text-sm text-left text-gray-900">
         <%= @message_attachment.object_type %>
       </span>
+      <% if @message_attachment.is_signed? %>
+        <%= render Common::BadgeComponent.new("Podpísané", "md:hidden") %>
+      <% end %>
     </div>
   <% end %>
   <div class="flex justify-end items-center gap-4">
-    <% if @message_attachment.signable? %>
+    <%# if @message_attachment.signable? %>
       <%= content_tag(:div,
         {
           "data-controller": "autogram",
@@ -41,7 +44,7 @@
           Podpísať
         </button>
       <% end %>
-    <% end %>
+    <%# end %>
     <%= link_to download_message_message_object_path(@message_attachment.message, @message_attachment), data: { turbo_frame: "_top" } do %>
       <div class="flex justify-end items-center gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="  w-5 h-5 " preserveAspectRatio="xMidYMid meet">
