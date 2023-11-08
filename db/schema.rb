@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_30_103432) do
+ActiveRecord::Schema[7.0].define(version: 2023_11_01_181535) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -50,13 +50,12 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_30_103432) do
   end
 
   create_table "api_connections", force: :cascade do |t|
-    t.bigint "box_id"
     t.string "sub", null: false
     t.uuid "obo"
     t.string "api_token_private_key", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["box_id"], name: "index_api_connections_on_box_id"
+    t.string "type"
   end
 
   create_table "automation_actions", force: :cascade do |t|
@@ -104,6 +103,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_30_103432) do
     t.boolean "syncable", default: true, null: false
     t.string "short_name"
     t.enum "color", enum_type: "color"
+    t.bigint "api_connection_id"
+    t.jsonb "settings"
+    t.index ["api_connection_id"], name: "index_boxes_on_api_connection_id"
     t.index ["tenant_id", "short_name"], name: "index_boxes_on_tenant_id_and_short_name", unique: true
     t.index ["tenant_id"], name: "index_boxes_on_tenant_id"
   end
@@ -450,6 +452,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_30_103432) do
   add_foreign_key "automation_conditions", "automation_rules"
   add_foreign_key "automation_rules", "tenants"
   add_foreign_key "automation_rules", "users"
+  add_foreign_key "boxes", "api_connections"
   add_foreign_key "boxes", "tenants"
   add_foreign_key "filters", "tenants", on_delete: :cascade
   add_foreign_key "filters", "users", column: "author_id", on_delete: :cascade

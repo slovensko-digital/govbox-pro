@@ -129,6 +129,7 @@ sk:
       invalid: nie je platná hodnota
       less_than: musí byť menšie ako %{count}
       less_than_or_equal_to: musí byť menšie alebo rovné %{count}
+      not_allowed: nie je povolené
       not_a_number: nie je číslo
       not_an_integer: musí byť celé číslo
       odd: musí byť nepárne číslo
@@ -233,3 +234,6 @@ sk:
   "Automation::AddMessageThreadTagAction": "Pridaj štítok na vlákno"
   "Automation::AddTagAction": "Pridaj štítok"
   title: "Názov"
+  tag_editing_in_message_threads:
+    one: "Úprava štítkov v jednom vlákne"
+    other: "Úprava štítkov v %{count} vláknach"

@@ -1,14 +1,23 @@
 class MessageThreadNotesController < ApplicationController
-  before_action :set_message_thread, only: %i[update create]
-  before_action :set_message_thread_note, only: %i[update]
+  before_action :set_message_thread, only: %i[update create new edit]
+  before_action :set_message_thread_note, only: %i[update edit]
 
   def update
     authorize @message_thread_note
     if @message_thread_note.update(message_thread_note_params)
-      redirect_back_or_to message_threads_path(@message_thread), notice: 'Note was successfully updated'
+      redirect_back_or_to message_threads_path(@message_thread)
     else
       render :edit, status: :unprocessable_entity
     end
+  end
+
+  def new
+    authorize MessageThreadNote
+    @message_thread_note = @message_thread.build_message_thread_note
+  end
+
+  def edit
+    authorize @message_thread_note
   end
 
   def create
@@ -16,7 +25,7 @@ class MessageThreadNotesController < ApplicationController
     authorize @message_thread_note
 
     if @message_thread_note.save
-      redirect_back_or_to message_threads_path(@message_thread), notice: 'Note was successfully created'
+      redirect_back_or_to message_threads_path(@message_thread)
     else
       render :new, status: :unprocessable_entity
     end
