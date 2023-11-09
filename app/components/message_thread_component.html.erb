@@ -12,6 +12,8 @@
         <%= render MessageComponent.new(message: message, mode: :thread_view) %>
       <% end %>
     <% end %>
-    <div id="new_message_placeholder" is="turbo-frame"></div>
+    <div id="new_drafts">
+      <div id="new_message_placeholder" is="turbo-frame"></div>
+    </div>
   </div>
 </div>
