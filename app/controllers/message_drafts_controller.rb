@@ -21,7 +21,7 @@ class MessageDraftsController < ApplicationController
 
     @message_thread = @message.thread
     @thread_messages = @message_thread.messages_visible_to_user(Current.user).order(delivered_at: :asc)
-    @thread_last_message_draft_id = @message_thread.messages_visible_to_user(Current.user).where(type: 'MessageDraft').includes(objects: :nested_message_objects, attachments: :nested_message_objects).order(delivered_at: :asc).last.id
+    @thread_last_message_draft_id = @message_thread.messages_visible_to_user(Current.user).where(type: 'MessageDraft').includes(objects: :nested_message_objects, attachments: :nested_message_objects).order(delivered_at: :asc)&.last&.id
     set_visible_tags_for_thread
   end
 
