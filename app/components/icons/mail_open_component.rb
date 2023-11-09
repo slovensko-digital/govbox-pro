@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Icons::TagsComponent < ViewComponent::Base
+class Icons::MailOpenComponent < ViewComponent::Base
   def initialize(css_classes: nil)
     @css_classes = css_classes
   end

@@ -1,6 +1,6 @@
 <%= tag.turbo_frame id: "bulk_actions" do %>
-  <div class="flex justify-stretch items-center gap-4 p-4 border-t-0 border-r-0 border-b border-l-0 border-gray-200" style="min-height: 5rem;">
-    <%= check_box_tag('', nil, false, { class: "todo hidden md:block h-4 w-4 rounded border-gray-300 text-blue-500 focus:ring-0", type: "checkbox", data: { action: "" } }) %>
+  <div class="flex justify-stretch items-center gap-4 px-4 lg:py-4 border-t-0 border-r-0 border-b border-l-0 border-gray-200 min-h-[3rem] sm:min-h-[5rem]">
+    <%= check_box_tag('', nil, false, { class: "todo hidden sm:block h-4 w-4 rounded border-gray-300 text-blue-500 focus:ring-0", type: "checkbox", data: { action: "" } }) %>
     <span class="grow sm:text-xl text-base font-semibold text-left text-gray-900">Správy v schránke</span>
     <% if @ids.present? %>
       <%= form_with url: bulk_merge_message_threads_path, data: { turbo_frame: "_top" } do %>
@@ -8,12 +8,47 @@
          <%= hidden_field_tag("message_thread_ids[]", id) %>
         <% end %>
 
-        <div class="flex gap-4">
-          <%= submit_tag "Zmeniť štítky", name: "change_tags", formaction: edit_message_threads_bulk_tags_path, formmethod: :post, data: { turbo_frame: "modal" }, class: "flex justify-center items-center gap-2.5 px-3.5 py-2.5 rounded-md bg-blue-600 text-base font-medium text-left text-white hover:cursor-pointer" %>
+        <div data-controller="dropdown" class="relative hidden sm:inline-block text-left">
+          <div>
+            <button type="button" data-action="dropdown#toggle click@window->dropdown#hide" class="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-2 py-1 sm:px-3 sm:py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" id="menu-button" aria-expanded="true" aria-haspopup="true">
+              Hromadné akcie
+              <svg class="-mr-1 h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd"/>
+              </svg>
+            </button>
+          </div>
 
-          <%= submit_tag "Spojiť vlákna", name: "merge", title: (@ids.length < 2 ? "Označte aspoň dve vlákna" : "Spojiť označené vlákna do jedného"), disabled: @ids.length < 2, data: { turbo_confirm: 'Naozaj chcete spojiť označené vlákna do jedného?' }, class: "flex justify-center items-center gap-2.5 px-3.5 py-2.5 rounded-md #{@ids.length < 2 ? "bg-gray-300" : "bg-blue-600"} text-base font-medium text-left text-white hover:cursor-pointer" %>
+          <div data-dropdown-target="menu" class="absolute hidden right-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+            <div class="py-1" role="none">
+              <%= button_tag "change_tags", type: "submit", id: "menu-item-0",
+                             formaction: edit_message_threads_bulk_tags_path,
+                             formmethod: :post, data: { turbo_frame: "modal" },
+                             class: "w-full text-gray-700 group flex items-center px-4 py-2 text-sm hover:bg-gray-100 hover:text-gray-900", role: "menuitem" do %>
+                <%= render Icons::TagsComponent.new(css_classes: "mr-2 sm:mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500") %>
+                Upraviť štítky
+              <% end %>
+            </div>
+            <div class="py-1" role="none">
+              <%= button_tag "merge", type: "submit", id: "menu-item-1",
+                             title: (@ids.length < 2 ? "Označte aspoň dve vlákna" : "Spojiť označené vlákna do jedného"),
+                             disabled: @ids.length < 2, data: { turbo_confirm: "Naozaj chcete spojiť označené vlákna do jedného?" },
+                             class: "w-full group flex items-center px-4 py-2 text-sm #{@ids.length < 2 ? "text-gray-300" : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"}",
+                             role: "menuitem" do %>
+                <%= render Icons::MergeThreadComponent.new(css_classes: "mr-2 sm:mr-3 h-5 w-5 #{@ids.length < 2 ? "text-gray-300" : "text-gray-400 group-hover:text-gray-500" }") %>
+                Spojiť vlákna
+              <% end %>
+            </div>
+            <div class="py-1" role="none">
+              <%= button_tag "authorize_delivery", type: "submit", id: "menu-item-0",
+                             formaction: message_threads_bulk_authorize_deliveries_path,
+                             formmethod: :patch, data: { turbo_confirm: "Naozaj chcete prevziať správy v označených vláknach?" },
+                             class: "w-full text-gray-700 group flex items-center px-4 py-2 text-sm hover:bg-gray-100 hover:text-gray-900", role: "menuitem" do %>
+                <%= render Icons::MailOpenComponent.new(css_classes: "mr-2 sm:mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500") %>
+                Prevziať
+              <% end %>
+            </div>
+          </div>
         </div>
-
       <% end %>
     <% end %>
   </div>

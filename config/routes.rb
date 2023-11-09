@@ -56,6 +56,8 @@ Rails.application.routes.draw do
           post :create_tag
         end
       end
+
+      resource :authorize_deliveries, only: [:update]
     end
   end
 

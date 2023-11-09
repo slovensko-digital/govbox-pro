@@ -1,19 +1,19 @@
 <!-- Slightly modified https://tailwindui.com/components/application-ui/lists/stacked-lists#component-f0f183415de745e81fa742d6e1df9e04 -->
 <!-- In card with links -->
 <%= tag.turbo_frame id: dom_id(@message), class: "overflow-hidden bg-white shadow-sm rounded-md border border-gray-200" do %>
-  <%= link_to message_path(@message, mode: "thread_view"), class: "relative flex justify-stretch gap-x-6 px-4 py-5 hover:bg-gray-50 sm:px-6" do %>
-    <div class="flex grow min-w-0 gap-x-4">
-      <div class="min-w-0 flex-auto">
-        <p class="text-sm font-normal leading-6 text-gray-900">
-          <span class="absolute inset-x-0 -top-px bottom-0"></span>
-          <%= @message.title %>
-        </p>
-      </div>
+  <%= link_to message_path(@message, mode: :thread_view), class: "flex flex-col md:flex-row justify-stretch gap-x-6 px-4 py-5 hover:bg-gray-50 sm:px-6" do %>
+    <div class="flex grow min-w-0 gap-x-4 justify-between text-sm font-normal leading-6 text-gray-900">
+      <span>
+        <%= @message.title %>
+      </span>
+      <time class="shrink-0 md:hidden" datetime="<%= @message.delivered_at %>">
+        <%= helpers.nice_datetime(@message.delivered_at) %>
+      </time>
+      <time class="shrink-0 hidden md:block" datetime="<%= @message.delivered_at %>">
+        <%= helpers.nice_datetime_with_time(@message.delivered_at) %>
+      </time>
     </div>
-    <div class="flex shrink-0 items-center gap-x-4">
-      <div class="hidden sm:flex sm:flex-col sm:items-end">
-        <p class="text-sm leading-6 text-gray-900"><%= helpers.nice_datetime_with_time @message.delivered_at %></p>
-      </div>
+    <div class="flex shrink-0 items-center gap-x-4 justify-end">
       <%= render Icons::UncollapseComponent.new %>
     </div>
   <% end %>
