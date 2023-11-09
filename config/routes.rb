@@ -125,6 +125,9 @@ Rails.application.routes.draw do
   get 'auth/google_oauth2/callback', to: 'sessions#create'
   get 'auth/google_oauth2/failure', to: 'sessions#failure'
 
+  get "/service-worker.js" => "service_worker#service_worker"
+  get "/manifest.json" => "service_worker#manifest"
+
   root 'message_threads#index'
 
   class GoodJobAdmin
