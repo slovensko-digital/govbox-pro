@@ -41,7 +41,9 @@
       <% end %>
 
       <% if @message_thread.search_highlight.present? %>
-        <p class="text-base text-left text-gray-500">
+        <p class="text-xs sm:text-sm text-left text-gray-500">
+<%#  Necessary to generate proper CSS for search_highlight %>
+<%#  class="bg-yellow-200 text-gray-950" %>
           <%= raw @message_thread.search_highlight %>
         </p>
       <% end %>
