@@ -7,7 +7,7 @@
           <%= @message_thread.title %>
         </span>
       </div>
-      <div class="flex flex-wrap justify-start items-start gap-2">
+      <div class="flex flex-wrap justify-start items-center gap-2">
         <% @thread_tags.each do |thread_tag|%>
           <%= render MessageThreads::TagComponent.new(thread_tag) %>
         <% end %>

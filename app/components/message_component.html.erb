@@ -11,11 +11,6 @@
     <div class="flex flex-col items-end gap-2">
       <%= render MessageOptionsComponent.new(message: @message, mode: @mode) %>
       <%= render MessageStateComponent.new(message: @message, classes: "hidden md:flex") %>
-      <% if @message.collapsed && @mode == 'thread_view' %>
-        <%= link_to message_path(@message, collapsed: true) do %>
-          <%= render Icons::CollapseComponent.new %>
-        <% end %>
-      <% end %>
     </div>
   </div>
   <div class="flex flex-col justify-stretch items-start relative gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
@@ -73,7 +68,7 @@
       </p>
     </div>
 
-    <div class="flex flex-col justify-stretch items-stretch divide-y relative px-4 bg-white border-t-0 border-r-0 border-b border-l-0 border-gray-200">
+    <div class="flex flex-col justify-stretch items-stretch divide-y px-4 bg-white border-t-0 border-r-0 border-b border-l-0 border-gray-200">
       <%= render MessageAttachmentComponent.with_collection(@message.attachments) %>
     </div>
   <% end %>
