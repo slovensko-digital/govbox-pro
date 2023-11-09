@@ -3,8 +3,8 @@ import { post, patch } from '@rails/request.js'
 
 export default class extends Controller {
   connect() {
-    const messagesElement = document.getElementById("messages")
-    messagesElement.addEventListener("DOMNodeInserted", this.showLastMessageDraft);
+    const newDraftsElement = document.getElementById("new_drafts")
+    newDraftsElement.addEventListener("DOMNodeInserted", this.showLastMessageDraft);
   }
 
   async update() {
