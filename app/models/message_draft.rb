@@ -67,6 +67,7 @@ class MessageDraft < Message
       }
     )
 
+    # TODO clean the domain (no UPVS stuff)
     message_draft.objects.create!(
       name: "form.xml",
       mimetype: "application/x-eform-xml",

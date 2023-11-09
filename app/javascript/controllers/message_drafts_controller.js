@@ -7,20 +7,6 @@ export default class extends Controller {
     messagesElement.addEventListener("DOMNodeInserted", this.showLastMessageDraft);
   }
 
-  async create() {
-    const authenticityToken = this.data.get("authenticityToken");
-    const messageDraftPath = this.data.get("messageDraftPath");
-    const originalMessageId = this.data.get("originalMessageId");
-
-    await post(messageDraftPath, {
-      body: JSON.stringify({
-        authenticity_token: authenticityToken,
-        original_message_id: originalMessageId
-      }),
-      responseKind: "turbo-stream"
-    })
-  }
-
   async update() {
     const authenticityToken = this.data.get("authenticityToken");
     const messageDraftPath = this.data.get("messageDraftPath");
@@ -43,18 +29,14 @@ export default class extends Controller {
 
   showLastMessageDraft() {
     const messageDraftsTexts = document.querySelectorAll('textarea[id^="text_message_draft_"]');
-
-    for(var i = 0; i < messageDraftsTexts.length; i++){
-      if (i !== messageDraftsTexts.length - 1) {
-        messageDraftsTexts[i].setAttribute('autofocus', false);
-      }
-      else {
-        messageDraftsTexts[i].focus();
-      }
+    const length = messageDraftsTexts.length;
+    if (messageDraftsTexts.length > 1) {
+      messageDraftsTexts[length - 2].setAttribute('autofocus', false);
     }
+    messageDraftsTexts[length - 1].focus();
 
     const drafts = document.querySelectorAll(".draft");
-    const lastDraft = drafts[drafts.length-1];
+    const lastDraft = drafts[drafts.length - 1];
     lastDraft.scrollIntoView();
   }
 }

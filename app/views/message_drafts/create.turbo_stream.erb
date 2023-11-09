@@ -1,5 +1,4 @@
-<%= turbo_stream.replace "new_message_placeholder" do %>
+<%= turbo_stream.before "new_message_placeholder" do %>
   <%= render MessageDraftComponent.new(message: @message, is_last: true) %>
-  <div id="new_message_placeholder" is="turbo-frame"></div>
 <% end %>
 

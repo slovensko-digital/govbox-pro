@@ -30,8 +30,6 @@ class MessageDraftsController < ApplicationController
     permitted_params = message_params
 
     @message.update_content(title: permitted_params["message_title"], body: permitted_params["message_text"])
-
-    head :ok, content_type: "text/html"
   end
 
   def submit
