@@ -1,7 +1,7 @@
 <div class="flex flex-col justify-stretch items-end relative gap-1">
   <div class="flex flex-col justify-stretch items-end   gap-1 pb-1">
     <div data-controller="dropdown" data-action="click->dropdown#toggle click@window->dropdown#hide">
-      <div id="dropdown-button" class="relative inline-block">
+      <div id="thread-options-dropdown-button" class="relative inline-block">
         <div role="button" tabindex="0" data-dropdown-target="button" class="inline-block select-none">
           <div class="flex justify-center items-center relative gap-2.5 px-3.5 py-2.5 rounded-md bg-white">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="  w-5 h-5 relative" preserveAspectRatio="xMidYMid meet">
@@ -22,7 +22,7 @@
               class="hidden z-50 absolute right-0">
           <div class="flex flex-col justify-start items-start gap-px py-0.5 rounded-lg bg-white border border-gray-300 mt-1" style="box-shadow: 1px 1px 4px 0 rgba(0,0,0,0.1);">
             <div class="flex justify-start items-start">
-              <div class="flex flex-col justify-start items-stretch   relative gap-1">
+              <div class="flex flex-col justify-start items-stretch relative gap-1">
                 <%= link_to history_message_thread_path(@message_thread), class: 'flex justify-start items-start px-4 py-3 rounded-lg hover:bg-gray-50' do %>
                   <div class="whitespace-nowrap">
                     <div class="flex justify-center items-center relative gap-3">
@@ -49,6 +49,14 @@
                       </div>
                     </div>
                   <% end %>
+                <% end %>
+                <%= link_to rename_message_thread_path(@message_thread), method: :get, data: { turbo_frame: "modal" }, class: "flex justify-start items-start px-4 py-3 rounded-lg hover:bg-gray-50" do %>
+                  <div class="whitespace-nowrap">
+                    <div class="flex justify-center items-center relative gap-3">
+                      <%= render Icons::PencilComponent.new %>
+                      Premenovať
+                    </div>
+                  </div>
                 <% end %>
               </div>
             </div>
