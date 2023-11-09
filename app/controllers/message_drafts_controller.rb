@@ -14,8 +14,6 @@ class MessageDraftsController < ApplicationController
     authorize @original_message
 
     @message = MessageDraft.create_message_reply(original_message: @original_message, author: Current.user)
-
-    redirect_to message_thread_path(@message.thread, anchor: dom_id(@message))
   end
 
   def show
@@ -44,7 +42,7 @@ class MessageDraftsController < ApplicationController
       redirect_to message_thread_path(@message.thread), notice: "Správa bola zaradená na odoslanie"
     else
       # TODO: prisposobit chybovu hlasku aj importovanym draftom
-      redirect_to message_thread_path(@message.thread), error: "Vyplňte predmet a text odpovede"
+      redirect_to message_thread_path(@message.thread), alert: "Vyplňte text správy"
     end
   end
 
