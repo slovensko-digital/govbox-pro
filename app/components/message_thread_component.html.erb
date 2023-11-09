@@ -1,16 +1,17 @@
-<div class="flex flex-col justify-stretch items-stretch overflow-x-hidden">
+<div id="messages" class="flex flex-col justify-stretch items-stretch overflow-x-hidden">
   <%= render MessageThreadHeaderComponent.new(@message_thread, @thread_tags) %>
   <%= render MessageThreadNoteComponent.new(@message_thread.message_thread_note) %>
   <div class="flex flex-col justify-stretch items-stretch gap-2 pt-4 sm:p-4">
     <%= render Common::AlertComponent.new %>
     <% @thread_messages.each do |message| %>
       <% if message.type == 'MessageDraft' %>
-        <%= render MessageDraftComponent.new(message: message) %>
+        <%= render MessageDraftComponent.new(message: message, is_last: message.id == @thread_messages.last.id) %>
       <% elsif message.collapsed? %>
         <%= render CollapsedMessageComponent.new(message: message) %>
       <% else %>
         <%= render MessageComponent.new(message: message, mode: :thread_view) %>
       <% end %>
     <% end %>
+    <div id="new_message_placeholder" is="turbo-frame"></div>
   </div>
 </div>

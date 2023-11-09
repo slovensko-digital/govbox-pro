@@ -28,6 +28,8 @@ class MessageObjectsController < ApplicationController
   def signing_data
     authorize @message_object
 
+    head :no_content and return unless @message_object.content.present?
+
     if @message_object.mimetype == "application/x-eform-xml"
       # TODO: this should be handled by autogram
       upvs_form_template = Upvs::FormTemplate.find_by(identifier: @message_object.message.metadata["posp_id"], version: @message_object.message.metadata["posp_version"])

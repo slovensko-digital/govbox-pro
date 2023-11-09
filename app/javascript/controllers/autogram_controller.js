@@ -9,8 +9,16 @@ export default class extends Controller {
         .then(function (response) {
           // TODO handle login if expired session
 
-          return response.json();
+          if (response.status === 204) {
+            alert("Vyplňte text správy");
+          }
+          else {
+            return response.json();
+          }
         }).then(async function (messageObjectData) {
+          if (!messageObjectData) {
+            return;
+          }
           let payloadMimeType = `${messageObjectData.mime_type};base64`;
           let signatureLevel = "XAdES_BASELINE_B";
           let signatureContainer = "ASiC_E";
@@ -75,10 +83,10 @@ export default class extends Controller {
             resolve();
           }).catch(function (err) {
             if (["Failed to fetch", "NetworkError when attempting to fetch resource.", "Load failed"].includes(err.message)) {
-              alert("Spustite aplikáciu autogram.")
+              alert("Spustite aplikáciu autogram")
             }
             else {
-              alert("Podpisovanie neprebehlo úspešne.");
+              alert("Podpisovanie neprebehlo úspešne");
             }
           });
         })
@@ -102,7 +110,7 @@ export default class extends Controller {
       }).then(function () {
         resolve();
       }).catch(function () {
-        alert("Podpisovanie neprebehlo úspešne.")
+        alert("Podpisovanie neprebehlo úspešne")
       });
     });
   }
@@ -131,10 +139,10 @@ export default class extends Controller {
       }
     }).catch(function (err) {
       if (err.message === "Failed to fetch") {
-        alert("Spustite aplikáciu autogram.")
+        alert("Spustite aplikáciu autogram")
       }
       else {
-        alert("Podpisovanie neprebehlo úspešne.")
+        alert("Podpisovanie neprebehlo úspešne")
       }
     });
   }

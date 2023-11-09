@@ -2,9 +2,21 @@
   <div class="flex justify-between items-start gap-4 px-6 pt-6 pb-4 border-b border-gray-200">
     <div class="flex flex-col gap-2">
       <dl class="flex flex-col gap-2 text-gray-90 text-sm leading-6">
-        <%= render MessageHeaderSectionComponent.new("Predmet:", @message.title) %>
-        <%= render MessageHeaderSectionComponent.new("Odosielateľ:", @message.sender_name || "Neznámy") %>
-        <%= render MessageHeaderSectionComponent.new("Adresát:", @message.recipient_name || "Neznámy") %>
+        <div class="flex">
+          <dt class="w-[100px] shrink-0 hidden sm:block">
+            Predmet:
+          </dt>
+          <dd>
+            <div class="hidden sm:block font-semibold">
+              <%= @message.title %>
+            </div>
+            <div class="sm:hidden font-bold">
+              <%= @message.title %>
+            </div>
+          </dd>
+        </div>
+        <%= render MessageHeaderSectionComponent.new(small_screen_label: "Od:", label: "Odosielateľ:", value: @message.sender_name || "Neznámy") %>
+        <%= render MessageHeaderSectionComponent.new(small_screen_label: "Komu:",  label: "Adresát:", value: @message.recipient_name || "Neznámy") %>
       </dl>
       <%= render MessageStateComponent.new(message: @message, classes: "md:hidden") %>
     </div>
@@ -26,7 +38,7 @@
           )" %>
     </div>
 
-    <% if @message.form.nested_message_objects.count > 1 %>
+    <% if @message.form && @message.form.nested_message_objects.count > 1 %>
       <div class="flex flex-col justify-stretch items-stretch divide-y relative px-4 bg-white border border-gray-200 w-full">
         <% @message.form.nested_message_objects.each do |message_attachment| %>
           <!-- TODO lepsia podmienka (ma sa zobrazit vsetko okrem formulara) -->
@@ -79,11 +91,12 @@
         <%= form.submit "Prevziať správu", data: { turbo_frame: "_top", turbo_confirm: 'Naozaj chcete prevziať správu?' }, class: "flex-grow-0 flex-shrink-0 px-3.5 py-2.5 rounded-md bg-blue-600 text-base font-medium text-left text-white" %>
       <% end %>
     <% elsif @message.replyable? %>
-      <div class="flex p-6 border-b border-gray-200">
-        <%= button_to message_drafts_path, method: :post, params: { original_message_id: @message.id }, data: { turbo: 'false' }, class: "text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3.5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" do %>
-          Odpovedať
+      <%= content_tag(:div, { "data-controller": "messageDrafts" }) do %>
+        <%= form_with(url: message_drafts_path, method: :post, params: {original_message_id: @message.id}, local: true, class: 'flex justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200') do |form| %>
+          <%= form.hidden_field :original_message_id, value: @message.id %>
+          <%= form.submit "Odpovedať", data: { turbo_frame: "_top" }, class: "text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3.5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" %>
         <% end %>
-      </div>
+      <% end %>
     <% end %>
   <% end %>
 <% end %>

@@ -47,10 +47,11 @@ class MessageDraft < Message
   end
 
   def self.create_message_reply(original_message: , author:)
-    original_message.thread.message_drafts.create!(
+    message_draft = original_message.thread.message_drafts.create!(
       uuid: SecureRandom.uuid,
       sender_name: original_message.recipient_name,
       recipient_name: original_message.sender_name,
+      title: "Odpoveď: #{original_message.title}",
       read: true,
       delivered_at: Time.now,
       author: author,
@@ -65,6 +66,16 @@ class MessageDraft < Message
         "status": "created"
       }
     )
+
+    # TODO clean the domain (no UPVS stuff)
+    message_draft.objects.create!(
+      name: "form.xml",
+      mimetype: "application/x-eform-xml",
+      object_type: "FORM",
+      is_signed: false
+    )
+
+    message_draft
   end
 
   def update_content(title:, body:)
@@ -75,19 +86,11 @@ class MessageDraft < Message
     return unless title.present? && body.present?
 
     # TODO clean the domain (no UPVS stuff)
-    if form
+    if form.message_object_datum
       form.message_object_datum.update(
         blob: Upvs::FormBuilder.build_general_agenda_xml(subject: title, body: body)
       )
     else
-      form = MessageObject.create(
-        message_id: id,
-        name: "form.xml",
-        mimetype: "application/x-eform-xml",
-        object_type: "FORM",
-        is_signed: false
-      )
-
       form.message_object_datum = MessageObjectDatum.create(
         message_object: form,
         blob: Upvs::FormBuilder.build_general_agenda_xml(subject: title, body: body)
@@ -106,7 +109,7 @@ class MessageDraft < Message
   end
 
   def submittable?
-    form.present? && objects.to_be_signed.all? { |o| o.is_signed? } && !invalid? && not_yet_submitted?
+    form.content.present? && objects.to_be_signed.all? { |o| o.is_signed? } && !invalid? && not_yet_submitted?
   end
 
   def not_yet_submitted?

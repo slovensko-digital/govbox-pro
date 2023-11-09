@@ -1,6 +1,11 @@
 <div class="flex">
-  <dt class="w-[100px] shrink-0 hidden sm:block">
-    <%= @label %>
+  <dt class="sm:w-[100px] shrink-0">
+    <div class="sm:hidden pr-1">
+      <%= @small_screen_label %>
+    </div>
+    <div class="hidden sm:block">
+      <%= @label %>
+    </div>
   </dt>
   <dd class="font-medium">
     <%= @value %>

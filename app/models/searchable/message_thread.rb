@@ -8,8 +8,8 @@ class Searchable::MessageThread < ApplicationRecord
                   using: {
                     tsearch: {
                       highlight: {
-                        StartSel: '<mark>',
-                        StopSel: '</mark>',
+                        StartSel: '<span class="bg-yellow-200 text-gray-950">', # if you change classed aad them to view in comment
+                        StopSel: '</span>',
                         MaxWords: 15,
                         MinWords: 0,
                         ShortWord: 1,
