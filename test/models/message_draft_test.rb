@@ -6,7 +6,7 @@ class MessageDraftTest < ActiveSupport::TestCase
     message_draft._run_create_callbacks
 
     message_thread = message_draft.thread
-    drafts_tag = message_thread.tags.find_by(name: "Drafts")
+    drafts_tag = message_thread.tags.find_by(system_name: "Drafts")
 
     message_draft.destroy
 
@@ -29,7 +29,7 @@ class MessageDraftTest < ActiveSupport::TestCase
     message_draft._run_create_callbacks
 
     message_thread = message_draft.thread
-    drafts_tag = message_thread.tags.find_by(name: "Drafts")
+    drafts_tag = message_thread.tags.find_by(system_name: "Drafts")
 
     message_draft.destroy
 
