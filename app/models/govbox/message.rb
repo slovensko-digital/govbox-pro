@@ -55,7 +55,7 @@ class Govbox::Message < ApplicationRecord
 
       message.save!
 
-      self.create_message_tag(message, govbox_message)
+      self.add_tags(message, govbox_message)
       
       message
     end
@@ -118,15 +118,25 @@ class Govbox::Message < ApplicationRecord
     end
   end
 
-  def self.create_message_tag(message, govbox_message)
-    tag = Tag.find_or_create_by!(
-      name: "slovensko.sk:#{govbox_message.folder.full_name}",
+  def self.add_tags(message, govbox_message)
+    upvs_tag = Tag.find_or_create_by!(
+      system_name: "slovensko.sk:#{govbox_message.folder.full_name}",
       tenant: govbox_message.box.tenant,
       external: true,
-      visible: !govbox_message.folder.system?
-    )
+    ) do |tag|
+      tag.name = "slovensko.sk:#{govbox_message.folder.full_name}"
+      tag.visible = !govbox_message.folder.system?
+    end
+    message.tags << upvs_tag
+    message.thread.tags << upvs_tag unless message.thread.tags.include?(upvs_tag)
 
-    message.tags << tag
-    message.thread.tags << tag unless message.thread.tags.include?(tag)
+    if message.can_be_authorized?
+      delivery_notification_tag = Tag.find_by!(
+        system_name: "DeliveryNotifications",
+        tenant: govbox_message.box.tenant,
+      )
+      message.tags << delivery_notification_tag
+      message.thread.tags << delivery_notification_tag unless message.thread.tags.include?(delivery_notification_tag)
+    end
   end
 end

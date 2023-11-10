@@ -11,6 +11,7 @@ module Govbox
         message = Govbox::Message.create_message_with_thread!(govbox_message)
 
         destroy_associated_message_draft(govbox_message)
+        mark_delivery_notification_authorized(govbox_message)
         mark_associated_delivery_notification_authorized(govbox_message)
         collapse_referenced_outbox_message(message)
         create_message_relations(message)
@@ -22,6 +23,19 @@ module Govbox
       message_draft&.destroy
     end
 
+    def mark_delivery_notification_authorized(govbox_message)
+      return unless govbox_message.payload["delivery_notification"]
+
+      authorized_govbox_message = Govbox::Message.where(message_id: govbox_message.payload['delivery_notification']['consignment']['message_id'])
+                                                            .joins(folder: :box).where(folders: { boxes: { id: govbox_message.box.id } }).take
+
+      if authorized_govbox_message
+        delivery_notification_message = ::Message.where(uuid: govbox_message.message_id)
+                                                 .joins(thread: :folder).where(folders: { box_id: govbox_message.box.id }).take
+        mark_delivery_notificiation_message_authorized(delivery_notification_message) if delivery_notification_message
+      end
+    end
+
     def mark_associated_delivery_notification_authorized(govbox_message)
       delivery_notification_govbox_message = Govbox::Message.where("payload -> 'delivery_notification' -> 'consignment' ->> 'message_id' = ?", govbox_message.message_id)
                                                             .joins(folder: :box).where(folders: { boxes: { id: govbox_message.box.id } }).take
@@ -29,9 +43,7 @@ module Govbox
       if delivery_notification_govbox_message
         delivery_notification_message = ::Message.where(uuid: delivery_notification_govbox_message.message_id)
                                                  .joins(thread: :folder).where(folders: { box_id: govbox_message.box.id }).take
-        delivery_notification_message.collapsed = true
-        delivery_notification_message.metadata["authorized"] = true
-        delivery_notification_message.save!
+        mark_delivery_notificiation_message_authorized(delivery_notification_message) if delivery_notification_message
       end
     end
 
@@ -64,6 +76,23 @@ module Govbox
         message.thread.messages.outbox.where(uuid: message.metadata["reference_id"]).take&.update(
           collapsed: true
         )
+      end
+    end
+
+    private
+
+    def mark_delivery_notificiation_message_authorized(delivery_notification_message)
+      delivery_notification_message.collapsed = true
+      delivery_notification_message.metadata['authorized'] = true
+      delivery_notification_message.save!
+
+      delivery_notification_tag = Tag.find_by!(
+        system_name: 'DeliveryNotifications',
+        tenant: delivery_notification_message.thread.box.tenant,
+        )
+      delivery_notification_message.tags.delete(delivery_notification_tag) if delivery_notification_message.tags.include?(delivery_notification_tag)
+      unless delivery_notification_message.thread.messages.any?(&:can_be_authorized?)
+        delivery_notification_message.thread.tags.delete(delivery_notification_tag)
       end
     end
   end

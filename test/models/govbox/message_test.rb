@@ -42,7 +42,7 @@ class Govbox::MessageTest < ActiveSupport::TestCase
   test "should not create new tag if already exists" do
     govbox_message = govbox_messages(:one)
 
-    tag = Tag.create!(name: "slovensko.sk:#{govbox_message.folder.name}", tenant: govbox_message.folder.box.tenant, visible: false, external: true)
+    tag = Tag.create!(system_name: "slovensko.sk:#{govbox_message.folder.name}", name: "slovensko.sk:#{govbox_message.folder.name}", tenant: govbox_message.folder.box.tenant, visible: false, external: true)
 
     Govbox::Message.create_message_with_thread!(govbox_message)
 
@@ -58,7 +58,7 @@ class Govbox::MessageTest < ActiveSupport::TestCase
     govbox_message1 = govbox_messages(:one)
     govbox_message2 = govbox_messages(:three)
 
-    tag = Tag.create!(name: "slovensko.sk:#{govbox_message1.folder.name}", tenant: govbox_message1.folder.box.tenant, visible: false, external: true)
+    tag = Tag.create!(system_name: "slovensko.sk:#{govbox_message1.folder.name}", name: "slovensko.sk:#{govbox_message1.folder.name}", tenant: govbox_message1.folder.box.tenant, visible: false, external: true)
 
     Govbox::Message.create_message_with_thread!(govbox_message1)
     message1 = Message.last

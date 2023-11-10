@@ -2,42 +2,49 @@
 
 one:
   name: MyString
+  system_name: MyString
   external: false
   visible: true
   tenant: solver
 
 two:
   name: MyString2
+  system_name: MyString2
   external: false
   visible: false
   tenant: solver
 
 drafts_solver:
   name: Drafts
+  system_name: Drafts
   external: false
   visible: true
   tenant: solver
 
 three:
   name: Tag3
+  system_name: Tag3
   external: false
   visible: true
   tenant: solver
 
 four:
   name: Tag4
+  system_name: Tag4
   external: false
   visible: true
   tenant: solver
 
 five:
   name: Tag5
+  system_name: Tag5
   external: false
   visible: true
   tenant: solver
 
 drafts_ssd:
   name: Drafts
+  system_name: Drafts
   external: false
   visible: true
   tenant: ssd
