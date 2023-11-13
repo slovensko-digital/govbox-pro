@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_01_181535) do
+ActiveRecord::Schema[7.0].define(version: 2023_11_13_144023) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -434,7 +434,45 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_01_181535) do
     t.string "version", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "message_type", null: false
+    t.text "template"
     t.index ["identifier", "version"], name: "index_form_templates_on_identifier_and_version", unique: true
+  end
+
+  create_table "upvs_service_with_form_allow_rules", force: :cascade do |t|
+    t.integer "instance_id", null: false
+    t.string "external_code"
+    t.string "meta_is_code"
+    t.string "name"
+    t.string "type"
+    t.string "institution_uri", null: false
+    t.string "institution_name"
+    t.datetime "valid_from"
+    t.datetime "valid_to"
+    t.string "url"
+    t.string "info_url"
+    t.string "schema_url"
+    t.datetime "changed_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "upvs_service_with_forms", force: :cascade do |t|
+    t.integer "instance_id", null: false
+    t.string "external_code"
+    t.string "meta_is_code"
+    t.string "name"
+    t.string "type"
+    t.string "institution_uri", null: false
+    t.string "institution_name"
+    t.datetime "valid_from"
+    t.datetime "valid_to"
+    t.string "url"
+    t.string "info_url"
+    t.string "schema_url"
+    t.datetime "changed_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "users", force: :cascade do |t|

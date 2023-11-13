@@ -31,10 +31,32 @@ if tenant.users.first
   rule.actions.find_or_create_by!(type: 'Automation::AddMessageThreadTagAction', value: 'NASES')
 end
 
-ga_form_template = Upvs::FormTemplate.find_or_create_by!(
+Upvs::ServiceWithForm.find_or_create_by!(
+  instance_id: 1,
+  institution_uri: 'ico://sk/83136952',
+  schema_url: 'http://schemas.gov.sk/form/App.GeneralAgenda/1.9'
+)
+Upvs::ServiceWithFormAllowRule.find_or_create_by!(
+  instance_id: 1,
+  institution_uri: 'ico://sk/83136952',
+  schema_url: 'http://schemas.gov.sk/form/App.GeneralAgenda/1.9'
+)
+Upvs::ServiceWithFormAllowRule.find_or_create_by!(
+  instance_id: 2,
+  institution_uri: 'ico://sk/83136952',
+  schema_url: 'http://schemas.gov.sk/form/00166073.RESS_Exekucne_konanie_Navrh_na_vykonanie_exekucie.sk/1.24'
+)
+
+ga_form = Upvs::FormTemplate.find_or_create_by!(
   identifier: "App.GeneralAgenda",
   version: "1.9",
-  )
+  message_type: "App.GeneralAgenda",
+  template:
+    '<GeneralAgenda xmlns="http://schemas.gov.sk/form/App.GeneralAgenda/1.9">
+  <subject>{{subject}}</subject>
+  <text>{{text}}</text>
+</GeneralAgenda>'
+)
 
 ga_related_documents = [
   {
@@ -147,17 +169,18 @@ ga_related_documents = [
 
 ga_related_documents.each do |related_document|
   Upvs::FormTemplateRelatedDocument.find_or_create_by!(
-    upvs_form_template: ga_form_template,
+    form: ga_form,
     data: related_document[:data],
     language: related_document[:language],
     document_type: related_document[:document_type]
   )
 end
 
-exe_form_template = Upvs::FormTemplate.find_or_create_by!(
+exe_form = Upvs::FormTemplate.find_or_create_by!(
   identifier: "00166073.RESS_Exekucne_konanie_Navrh_na_vykonanie_exekucie.sk",
   version: "1.24",
-  )
+  message_type: "00166073.RESS_Exekucne_konanie_Navrh_na_vykonanie_exekucie.sk"
+)
 
 exe_related_documents = [
   {
@@ -1598,7 +1621,7 @@ exe_related_documents = [
 
 exe_related_documents.each do |related_document|
   Upvs::FormTemplateRelatedDocument.find_or_create_by!(
-    upvs_form_template: exe_form_template,
+    form: exe_form,
     data: related_document[:data],
     language: related_document[:language],
     document_type: related_document[:document_type]
