@@ -55,3 +55,7 @@ EventBus.subscribe :message_thread_tag_changed,
 EventBus.subscribe :tag_renamed, ->(tag) { Searchable::ReindexMessageThreadsWithTagIdJob.perform_later(tag.id) }
 EventBus.subscribe :tag_destroyed, ->(tag) { Searchable::ReindexMessageThreadsWithTagIdJob.perform_later(tag.id) }
 EventBus.subscribe :box_destroyed, ->(box_id) { Govbox::DestroyBoxDataJob.perform_later(box_id) }
+
+EventBus.subscribe :message_thread_note_created, ->(note) { AuditLog::MessageThreadNoteCreated.create_audit_record(note) }
+EventBus.subscribe :message_thread_note_changed, ->(note) { AuditLog::MessageThreadNoteChanged.create_audit_record(note) }
+EventBus.subscribe :message_thread_tag_changed, ->(message_thread_tag) { AuditLog::MessageThreadTagChanged.create_audit_record(message_thread_tag) }

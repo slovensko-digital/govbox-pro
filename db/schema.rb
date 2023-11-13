@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_01_181535) do
+ActiveRecord::Schema[7.0].define(version: 2023_11_13_113616) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -56,6 +56,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_01_181535) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "type"
+  end
+
+  create_table "audit_logs", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "automation_actions", force: :cascade do |t|
@@ -129,6 +134,29 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_01_181535) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["box_id"], name: "index_folders_on_box_id"
+  end
+
+  create_table "go_audit_logs", force: :cascade do |t|
+    t.string "type"
+    t.bigint "tenant_id", null: false
+    t.datetime "event_timestamp", precision: nil, null: false
+    t.string "user_name"
+    t.bigint "user_id"
+    t.string "primary_object_type"
+    t.bigint "primary_object_id"
+    t.string "secondary_object_type"
+    t.bigint "secondary_object_id"
+    t.string "description"
+    t.string "original_value_string"
+    t.string "new_value_string"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["primary_object_type", "primary_object_id"], name: "index_go_audit_logs_on_primary_object"
+    t.index ["secondary_object_type", "secondary_object_id"], name: "index_go_audit_logs_on_secondary_object"
+    t.index ["tenant_id", "primary_object_type", "primary_object_id", "event_timestamp"], name: "index_go_audit_logs_tenant_primary_timestamp"
+    t.index ["tenant_id", "user_id", "event_timestamp"], name: "index_go_audit_logs_tenant_user_timestamp"
+    t.index ["tenant_id"], name: "index_go_audit_logs_on_tenant_id"
+    t.index ["user_id"], name: "index_go_audit_logs_on_user_id"
   end
 
   create_table "good_job_batches", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
