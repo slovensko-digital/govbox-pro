@@ -5,9 +5,9 @@ class Govbox::ProcessUnauthorizedDeliveryNotificationJob < ApplicationJob
     
     return if message.metadata["authorized"]
 
-    if Time.parse(govbox_message.delivery_notification['delivery_period_end_at']) > Time.now
-      Govbox::ProcessUnauthorizedDeliveryNotificationJob.set(wait_until: Time.parse(govbox_message.delivery_notification['delivery_period_end_at']))
-                                                      .perform_later(govbox_message)
+    end_of_delivery_period = Time.parse(govbox_message.delivery_notification['delivery_period_end_at'])
+    if end_of_delivery_period > Time.now
+      Govbox::ProcessUnauthorizedDeliveryNotificationJob.set(wait_until: end_of_delivery_period).perform_later(govbox_message)
       return
     end
 
