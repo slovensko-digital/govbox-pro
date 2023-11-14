@@ -16,6 +16,10 @@ class ApiConnection < ApplicationRecord
     raise NotImplementedError
   end
 
+  def destroy_with_box?
+    raise NotImplementedError
+  end
+
   def validate_box(box)
     raise NotImplementedError
   end
