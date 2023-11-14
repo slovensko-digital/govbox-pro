@@ -47,14 +47,14 @@ Upvs::ServiceWithFormAllowRule.find_or_create_by!(
   schema_url: 'http://schemas.gov.sk/form/00166073.RESS_Exekucne_konanie_Navrh_na_vykonanie_exekucie.sk/1.24'
 )
 
-ga_form = Upvs::FormTemplate.find_or_create_by!(
+ga_form = Upvs::Form.find_or_create_by!(
   identifier: "App.GeneralAgenda",
   version: "1.9",
   message_type: "App.GeneralAgenda",
   template:
     '<GeneralAgenda xmlns="http://schemas.gov.sk/form/App.GeneralAgenda/1.9">
-  <subject>{{subject}}</subject>
-  <text>{{text}}</text>
+  <subject>{{text_field:subject}}</subject>
+  <text>{{text_area:text}}</text>
 </GeneralAgenda>'
 )
 
@@ -168,15 +168,15 @@ ga_related_documents = [
 ]
 
 ga_related_documents.each do |related_document|
-  Upvs::FormTemplateRelatedDocument.find_or_create_by!(
-    form: ga_form,
+  Upvs::FormRelatedDocument.find_or_create_by!(
+    form_template: ga_form,
     data: related_document[:data],
     language: related_document[:language],
     document_type: related_document[:document_type]
   )
 end
 
-exe_form = Upvs::FormTemplate.find_or_create_by!(
+exe_form = Upvs::Form.find_or_create_by!(
   identifier: "00166073.RESS_Exekucne_konanie_Navrh_na_vykonanie_exekucie.sk",
   version: "1.24",
   message_type: "00166073.RESS_Exekucne_konanie_Navrh_na_vykonanie_exekucie.sk"
@@ -1620,8 +1620,8 @@ exe_related_documents = [
 ]
 
 exe_related_documents.each do |related_document|
-  Upvs::FormTemplateRelatedDocument.find_or_create_by!(
-    form: exe_form,
+  Upvs::FormRelatedDocument.find_or_create_by!(
+    form_template: exe_form,
     data: related_document[:data],
     language: related_document[:language],
     document_type: related_document[:document_type]

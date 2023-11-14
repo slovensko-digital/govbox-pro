@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_13_144023) do
+ActiveRecord::Schema[7.0].define(version: 2023_11_14_221109) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -418,25 +418,35 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_13_144023) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "upvs_form_template_related_documents", force: :cascade do |t|
-    t.bigint "upvs_form_template_id", null: false
+  create_table "upvs_form_related_documents", force: :cascade do |t|
+    t.bigint "upvs_form_id", null: false
     t.string "data", null: false
     t.string "language", null: false
     t.string "document_type", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["upvs_form_template_id", "language", "document_type"], name: "index_related_documents_on_template_id_and_language_and_type", unique: true
-    t.index ["upvs_form_template_id"], name: "index_upvs_form_template_related_documents_on_form_template_id"
+    t.index ["upvs_form_id", "language", "document_type"], name: "index_related_documents_on_form_id_and_language_and_type", unique: true
+    t.index ["upvs_form_id"], name: "index_upvs_form_related_documents_on_form_id"
   end
 
   create_table "upvs_form_templates", force: :cascade do |t|
+    t.bigint "upvs_form_id", null: false
+    t.bigint "tenant_id"
+    t.string "name", null: false
+    t.text "template", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tenant_id"], name: "index_upvs_form_templates_on_tenant_id"
+    t.index ["upvs_form_id"], name: "index_upvs_form_templates_on_upvs_form_id"
+  end
+
+  create_table "upvs_forms", force: :cascade do |t|
     t.string "identifier", null: false
     t.string "version", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "message_type", null: false
-    t.text "template"
-    t.index ["identifier", "version"], name: "index_form_templates_on_identifier_and_version", unique: true
+    t.index ["identifier", "version", "message_type"], name: "index_forms_on_identifier_version_message_type", unique: true
   end
 
   create_table "upvs_service_with_form_allow_rules", force: :cascade do |t|
@@ -522,6 +532,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_13_144023) do
   add_foreign_key "tag_groups", "tags"
   add_foreign_key "tags", "tenants"
   add_foreign_key "tags", "users"
-  add_foreign_key "upvs_form_template_related_documents", "upvs_form_templates"
+  add_foreign_key "upvs_form_related_documents", "upvs_forms"
+  add_foreign_key "upvs_form_templates", "tenants"
+  add_foreign_key "upvs_form_templates", "upvs_forms"
   add_foreign_key "users", "tenants"
 end

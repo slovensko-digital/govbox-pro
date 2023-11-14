@@ -58,16 +58,20 @@ class Drafts::LoadContentJob < ApplicationJob
   end
   
   def save_form_visualisation(message_draft)
-    upvs_form_template = Upvs::FormTemplate.find_by(
+    upvs_form = Upvs::Form.find_by(
       identifier: message_draft.metadata["posp_id"],
       version: message_draft.metadata["posp_version"],
       message_type: message_draft.metadata["message_type"],
     )
-    upvs_form_template_xslt_html = upvs_form_template&.xslt_html
+    upvs_form_template_xslt_html = upvs_form&.xslt_html
+
+    upvs_form_template = upvs_form.templates.where(tenant: message_draft.thread.folder.tenant)&.take
+    message_draft.metadata["form_template_id"] = upvs_form_template&.id
+    message_draft.save!
 
     return unless upvs_form_template_xslt_html
 
-    xslt_template = Nokogiri::XSLT(upvs_form_template_xslt_html)
+    xslt_template = Nokogiri::XSLT(upvs_form_xslt_html)
 
     if message_draft.form.is_signed?
       # TODO add unsigned_content method which calls UPVS OdpodpisanieDat endpoint and uncomment

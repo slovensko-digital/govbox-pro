@@ -10,6 +10,6 @@
 #  created_at                                  :datetime         not null
 #  updated_at                                  :datetime         not null
 
-class Upvs::FormTemplateRelatedDocument < ApplicationRecord
-  belongs_to :form, class_name: 'Upvs::Form', foreign_key: 'upvs_form'
+class Upvs::FormRelatedDocument < ApplicationRecord
+  belongs_to :form, class_name: 'Upvs::Form', foreign_key: 'upvs_form_id'
 end

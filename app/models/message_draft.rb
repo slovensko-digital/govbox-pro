@@ -47,6 +47,12 @@ class MessageDraft < Message
   end
 
   def self.create_message_reply(original_message: , author:)
+    reply_form_template = Upvs::Form.find_by!(
+      identifier: GENERAL_AGENDA_POSP_ID,
+      version: GENERAL_AGENDA_POSP_VERSION,
+      message_type: GENERAL_AGENDA_MESSAGE_TYPE
+    )
+
     message_draft = original_message.thread.message_drafts.create!(
       uuid: SecureRandom.uuid,
       sender_name: original_message.recipient_name,
@@ -57,12 +63,10 @@ class MessageDraft < Message
       author: author,
       metadata: {
         "recipient_uri": original_message.metadata["sender_uri"],
-        "posp_id": GENERAL_AGENDA_POSP_ID,
-        "posp_version": GENERAL_AGENDA_POSP_VERSION,
-        "message_type": GENERAL_AGENDA_MESSAGE_TYPE,
         "correlation_id": original_message.metadata["correlation_id"],
         "reference_id": original_message.uuid,
         "original_message_id": original_message.id,
+        "form_template_id": reply_form_template.id,
         "status": "created"
       }
     )
