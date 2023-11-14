@@ -23,7 +23,7 @@ class Govbox::Message < ApplicationRecord
   EGOV_NOTIFICATION_CLASS = 'EGOV_NOTIFICATION'
   COLLAPSED_BY_DEFAULT_MESSAGE_CLASSES = ['ED_DELIVERY_REPORT', 'POSTING_CONFIRMATION', 'POSTING_INFORMATION']
 
-  DELIVERY_NOTIFICATION_TAG = 'DeliveryNotification'
+  DELIVERY_NOTIFICATION_TAG = 'DeliveryNotifications'
 
   def replyable?
     folder.inbox? && [EGOV_DOCUMENT_CLASS, EGOV_NOTIFICATION_CLASS].include?(payload["class"])

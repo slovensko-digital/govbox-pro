@@ -87,9 +87,9 @@ module Govbox
       delivery_notification_message.save!
 
       delivery_notification_tag = Tag.find_by!(
-        system_name: 'DeliveryNotifications',
+        system_name: Govbox::Message::DELIVERY_NOTIFICATION_TAG,
         tenant: delivery_notification_message.thread.box.tenant,
-        )
+      )
       delivery_notification_message.tags.delete(delivery_notification_tag) if delivery_notification_message.tags.include?(delivery_notification_tag)
       unless delivery_notification_message.thread.messages.any?(&:can_be_authorized?)
         delivery_notification_message.thread.tags.delete(delivery_notification_tag)
