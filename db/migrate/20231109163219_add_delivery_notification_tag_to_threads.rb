@@ -5,7 +5,7 @@ class AddDeliveryNotificationTagToThreads < ActiveRecord::Migration[7.0]
 
       if to_be_authorized_messages.any?
         delivery_notification_tag = Tag.find_or_create_by!(
-          system_name: "DeliveryNotifications",
+          system_name: "delivery_notification",
           tenant: message_thread.box.tenant,
         ) do |tag|
           tag.name = "Na prevzatie"

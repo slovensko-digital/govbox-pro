@@ -3,7 +3,7 @@ class CreateDeliveryNotificationTags < ActiveRecord::Migration[7.0]
     Tenant.find_each do |tenant|
       tenant.tags.create!(
         name: 'Na prevzatie',
-        system_name: 'DeliveryNotifications',
+        system_name: 'delivery_notification',
         external: false,
         visible: true
       )
