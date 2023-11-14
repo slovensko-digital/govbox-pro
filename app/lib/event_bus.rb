@@ -54,4 +54,4 @@ EventBus.subscribe :message_thread_tag_changed,
                    ->(message_thread_tag) { Searchable::ReindexMessageThreadJob.perform_later(message_thread_tag.message_thread_id) }
 EventBus.subscribe :tag_renamed, ->(tag) { Searchable::ReindexMessageThreadsWithTagIdJob.perform_later(tag.id) }
 EventBus.subscribe :tag_destroyed, ->(tag) { Searchable::ReindexMessageThreadsWithTagIdJob.perform_later(tag.id) }
-EventBus.subscribe :box_destroyed, ->(box_id, api_connection_id) { Govbox::DestroyBoxDataJob.perform_later(box_id, api_connection_id) }
+EventBus.subscribe :box_destroyed, ->(box_id) { Govbox::DestroyBoxDataJob.perform_later(box_id) }
