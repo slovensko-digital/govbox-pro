@@ -16,7 +16,7 @@ two:
 
 drafts_solver:
   name: Drafts
-  system_name: Drafts
+  system_name: draft
   external: false
   visible: true
   tenant: solver
@@ -44,7 +44,7 @@ five:
 
 drafts_ssd:
   name: Drafts
-  system_name: Drafts
+  system_name: draft
   external: false
   visible: true
   tenant: ssd
