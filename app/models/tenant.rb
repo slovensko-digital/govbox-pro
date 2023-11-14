@@ -28,7 +28,7 @@ class Tenant < ApplicationRecord
   def create_default_objects
     groups.create!(name: 'all', group_type: 'ALL')
     groups.create!(name: 'admins', group_type: 'ADMIN')
-    tags.create!(name: 'Drafty', system_name: DRAFT_SYSTEM_NAME, external: false, visible: true)
+    tags.create!(name: 'Drafty', system_name: Tag::DRAFT_SYSTEM_NAME, external: false, visible: true)
     tags.create!(name: 'Na prevzatie', system_name: 'DeliveryNotifications', external: false, visible: true)
   end
 end
