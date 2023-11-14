@@ -33,6 +33,9 @@ module Govbox
         delivery_notification_message = ::Message.where(uuid: govbox_message.message_id)
                                                  .joins(thread: :folder).where(folders: { box_id: govbox_message.box.id }).take
         mark_delivery_notificiation_message_authorized(delivery_notification_message) if delivery_notification_message
+      elsif govbox_message.payload['delivery_notification']['consignment']['type'] == 'Doc.GeneralAgendaReport'
+        Govbox::ProcessUnauthorizedDeliveryNotificationJob.set(wait: Time.parse(govbox_message.payload['delivery_notification']['delivery_period_end_at']) - Time.now)
+                                                          .perform_later(govbox_message)
       end
     end
 
