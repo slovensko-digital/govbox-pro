@@ -5,7 +5,7 @@ one:
   name: MyString
 
 two:
-  box: two
+  box: box_with_govbox_api_connection_with_obo_support
   name: MyString
 
 three:
@@ -13,5 +13,5 @@ three:
   name: MyString
 
 four:
-  box: three
+  box: box_with_sk_api_api_connection_with_obo_support
   name: MyString2
