@@ -5,13 +5,15 @@
     <%= render Common::AlertComponent.new %>
     <% @thread_messages.each do |message| %>
       <% if message.type == 'MessageDraft' %>
-        <%= render MessageDraftComponent.new(message: message, is_last: message.id == @thread_messages.last.id) %>
+        <%= render MessageDraftComponent.new(message: message, is_last: message.id == @thread_last_message_draft_id) %>
       <% elsif message.collapsed? %>
         <%= render CollapsedMessageComponent.new(message: message) %>
       <% else %>
         <%= render MessageComponent.new(message: message, mode: :thread_view) %>
       <% end %>
     <% end %>
-    <div id="new_message_placeholder" is="turbo-frame"></div>
+    <div id="new_drafts">
+      <div id="new_message_placeholder" is="turbo-frame"></div>
+    </div>
   </div>
 </div>

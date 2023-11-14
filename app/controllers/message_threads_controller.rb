@@ -114,5 +114,6 @@ class MessageThreadsController < ApplicationController
 
   def set_thread_messages
     @thread_messages = @message_thread.messages_visible_to_user(Current.user).includes(objects: :nested_message_objects, attachments: :nested_message_objects).order(delivered_at: :asc)
+    @thread_last_message_draft_id = @message_thread.messages_visible_to_user(Current.user).where(type: 'MessageDraft').includes(objects: :nested_message_objects, attachments: :nested_message_objects).order(delivered_at: :asc)&.last&.id
   end
 end

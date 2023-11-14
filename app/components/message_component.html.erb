@@ -3,9 +3,21 @@
     <div class="flex justify-between items-start gap-4 px-6 pt-6 pb-4 border-b border-gray-200">
       <div class="flex flex-col gap-2">
         <dl class="flex flex-col gap-2 text-gray-90 text-sm leading-6">
-          <%= render MessageHeaderSectionComponent.new("Predmet:", @message.title) %>
-          <%= render MessageHeaderSectionComponent.new("Odosielateľ:", @message.sender_name || "Neznámy") %>
-          <%= render MessageHeaderSectionComponent.new("Adresát:", @message.recipient_name || "Neznámy") %>
+          <div class="flex">
+            <dt class="w-[100px] shrink-0 hidden sm:block">
+              Predmet:
+            </dt>
+            <dd>
+              <div class="hidden sm:block font-semibold">
+                <%= @message.title %>
+              </div>
+              <div class="sm:hidden font-bold">
+                <%= @message.title %>
+              </div>
+            </dd>
+          </div>
+          <%= render MessageHeaderSectionComponent.new(small_screen_label: "Od:", label: "Odosielateľ:", value: @message.sender_name || "Neznámy") %>
+          <%= render MessageHeaderSectionComponent.new(small_screen_label: "Komu:", label: "Adresát:", value: @message.recipient_name || "Neznámy") %>
         </dl>
         <%= render MessageStateComponent.new(message: @message, classes: "md:hidden") %>
       </div>

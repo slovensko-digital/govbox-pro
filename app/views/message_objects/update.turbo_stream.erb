@@ -3,5 +3,5 @@
 <% end %>
 
 <%= turbo_stream.replace dom_id(@message, :body) do %>
-  <%= render MessageDraftBodyComponent.new(message: @message) %>
+  <%= render MessageDraftBodyComponent.new(message: @message, is_last: @is_last) %>
 <% end %>

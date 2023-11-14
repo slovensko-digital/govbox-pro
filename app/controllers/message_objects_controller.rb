@@ -13,6 +13,8 @@ class MessageObjectsController < ApplicationController
   def update
     authorize @message_object
     update_message_object(@message_object)
+    last_thread_message_draft = @message.thread.messages_visible_to_user(Current.user).where(type: 'MessageDraft').includes(objects: :nested_message_objects, attachments: :nested_message_objects).order(delivered_at: :asc)&.last
+    @is_last = @message == last_thread_message_draft
   end
 
   def show
