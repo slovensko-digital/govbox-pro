@@ -23,8 +23,6 @@ class Tenant < ApplicationRecord
 
   validates_presence_of :name
 
-  DRAFT_SYSTEM_NAME = 'Drafts'
-
   private
 
   def create_default_objects
