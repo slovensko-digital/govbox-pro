@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_01_181535) do
+ActiveRecord::Schema[7.0].define(version: 2023_11_14_132619) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -297,10 +297,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_01_181535) do
     t.uuid "uuid", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "tenant_id", null: false
+    t.bigint "box_id", null: false
+    t.index ["box_id"], name: "index_message_thread_merge_identifiers_on_box_id"
     t.index ["message_thread_id"], name: "index_message_thread_merge_identifiers_on_message_thread_id"
-    t.index ["tenant_id"], name: "index_message_thread_merge_identifiers_on_tenant_id"
-    t.index ["uuid", "tenant_id"], name: "index_message_thread_merge_identifiers_on_uuid_and_tenant_id", unique: true
+    t.index ["uuid", "box_id"], name: "index_message_thread_merge_identifiers_on_uuid_and_box_id", unique: true
   end
 
   create_table "message_thread_notes", force: :cascade do |t|
@@ -468,7 +468,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_01_181535) do
   add_foreign_key "message_relations", "messages"
   add_foreign_key "message_relations", "messages", column: "related_message_id"
   add_foreign_key "message_thread_merge_identifiers", "message_threads"
-  add_foreign_key "message_thread_merge_identifiers", "tenants"
   add_foreign_key "message_thread_notes", "message_threads"
   add_foreign_key "message_threads", "folders"
   add_foreign_key "message_threads_tags", "message_threads"

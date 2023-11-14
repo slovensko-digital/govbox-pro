@@ -3,14 +3,14 @@
 one:
   message_thread: one
   uuid: <%= SecureRandom.uuid %>
-  tenant: solver
+  box: one
 
 two:
   message_thread: one
   uuid: <%= SecureRandom.uuid %>
-  tenant: solver
+  box: one
 
 three:
   message_thread: two
   uuid: <%= SecureRandom.uuid %>
-  tenant: solver
+  box: one
