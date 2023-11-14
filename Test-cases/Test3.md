@@ -1,3 +1,11 @@
-# AHOJ
-- jak sa mas
-- dobre
+# Chcem označiť vlákno pre všetkých akýmkoľvek iným stítkom:
+- Prihlas sa do govboxu pod ľubovolným uživateľom
+  - Uživateľ je prihlásený
+- Zobrazí sa ti úvodna stránke so všetkými vláknami
+  - Vlákna sa zobrazujú
+- Otvor ľubovolnú správu a priraď mu akýkoľvek štítok
+  - Vlákno označené štitkom 
+- V ľavom side bare klikni na štítok „Účtovníctvo“
+  - Zobrazia sa vlákno so štítkom "Účtovníctvo"
+- Otvor správu a skontroluj či sa zobrazuje štítok "Účtovníctvo" v hlavičke
+  - Štítok sa v hlavičke nachádza
