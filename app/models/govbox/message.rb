@@ -23,6 +23,8 @@ class Govbox::Message < ApplicationRecord
   EGOV_NOTIFICATION_CLASS = 'EGOV_NOTIFICATION'
   COLLAPSED_BY_DEFAULT_MESSAGE_CLASSES = ['ED_DELIVERY_REPORT', 'POSTING_CONFIRMATION', 'POSTING_INFORMATION']
 
+  DELIVERY_NOTIFICATION_TAG = 'DeliveryNotification'
+
   def replyable?
     folder.inbox? && [EGOV_DOCUMENT_CLASS, EGOV_NOTIFICATION_CLASS].include?(payload["class"])
   end
@@ -131,10 +133,7 @@ class Govbox::Message < ApplicationRecord
     message.thread.tags << upvs_tag unless message.thread.tags.include?(upvs_tag)
 
     if message.can_be_authorized?
-      delivery_notification_tag = Tag.find_by!(
-        system_name: "DeliveryNotifications",
-        tenant: govbox_message.box.tenant,
-      )
+      delivery_notification_tag = govbox_message.box.tenant.tags.find_by!(system_name: DELIVERY_NOTIFICATION_TAG)
       message.tags << delivery_notification_tag
       message.thread.tags << delivery_notification_tag unless message.thread.tags.include?(delivery_notification_tag)
     end

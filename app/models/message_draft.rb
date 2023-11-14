@@ -22,7 +22,7 @@ class MessageDraft < Message
   belongs_to :import, class_name: 'MessageDraftsImport', foreign_key: :import_id, optional: true
 
   after_create do
-    drafts_tag = self.thread.box.tenant.tags.find_by(system_name: "Drafts")
+    drafts_tag = self.thread.box.tenant.tags.find_by(system_name: Tag::DRAFT_SYSTEM_NAME)
     self.thread.add_tag(drafts_tag)
   end
 
@@ -30,7 +30,7 @@ class MessageDraft < Message
     if self.thread.messages.none?
       self.thread.destroy!
     elsif self.thread.message_drafts.none?
-      drafts_tag = self.thread.tags.find_by(system_name: "Drafts")
+      drafts_tag = self.thread.tags.find_by(system_name: Tag::DRAFT_SYSTEM_NAME)
       thread.tags.delete(drafts_tag)
     end
   end
