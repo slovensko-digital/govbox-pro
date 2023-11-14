@@ -25,14 +25,6 @@ class Govbox::Message < ApplicationRecord
 
   DELIVERY_NOTIFICATION_TAG = 'delivery_notification'
 
-  def replyable?
-    folder.inbox? && [EGOV_DOCUMENT_CLASS, EGOV_NOTIFICATION_CLASS].include?(payload["class"])
-  end
-
-  def collapsed?
-    payload["class"].in?(COLLAPSED_BY_DEFAULT_MESSAGE_CLASSES)
-  end
-
   def self.create_message_with_thread!(govbox_message)
     message = MessageThread.with_advisory_lock!(govbox_message.correlation_id, transaction: true, timeout_seconds: 10) do
       folder = Folder.find_or_create_by!(
@@ -67,6 +59,18 @@ class Govbox::Message < ApplicationRecord
     message
   end
 
+  def replyable?
+    folder.inbox? && [EGOV_DOCUMENT_CLASS, EGOV_NOTIFICATION_CLASS].include?(payload["class"])
+  end
+
+  def collapsed?
+    payload["class"].in?(COLLAPSED_BY_DEFAULT_MESSAGE_CLASSES)
+  end
+
+  def delivery_notification
+    payload["delivery_notification"]
+  end
+
   private
 
   def self.create_message(govbox_message)
@@ -89,7 +93,7 @@ class Govbox::Message < ApplicationRecord
         "reference_id": govbox_message.payload["reference_id"],
         "sender_uri": govbox_message.payload["sender_uri"],
         "edesk_class": govbox_message.payload["class"],
-        "delivery_notification": govbox_message.payload["delivery_notification"]
+        "delivery_notification": govbox_message.delivery_notification
       }
     )
   end

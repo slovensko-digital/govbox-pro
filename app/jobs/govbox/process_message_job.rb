@@ -24,18 +24,18 @@ module Govbox
     end
 
     def mark_delivery_notification_authorized(govbox_message)
-      return unless govbox_message.payload["delivery_notification"]
+      return unless govbox_message.delivery_notification
 
-      authorized_govbox_message = Govbox::Message.where(message_id: govbox_message.payload['delivery_notification']['consignment']['message_id'])
+      authorized_govbox_message = Govbox::Message.where(message_id: govbox_message.delivery_notification['consignment']['message_id'])
                                                             .joins(folder: :box).where(folders: { boxes: { id: govbox_message.box.id } }).take
 
       if authorized_govbox_message
         delivery_notification_message = ::Message.where(uuid: govbox_message.message_id)
                                                  .joins(thread: :folder).where(folders: { box_id: govbox_message.box.id }).take
         mark_delivery_notificiation_message_authorized(delivery_notification_message) if delivery_notification_message
-      elsif govbox_message.payload['delivery_notification']['consignment']['type'] == 'Doc.GeneralAgendaReport'
-        Govbox::ProcessUnauthorizedDeliveryNotificationJob.set(wait_until: Time.parse(govbox_message.payload['delivery_notification']['delivery_period_end_at']))
-                                                          .perform_later(govbox_message)
+      elsif govbox_message.delivery_notification['consignment']['type'] == 'Doc.GeneralAgendaReport'
+        Govbox::ProcessUnauthorizedDeliveryNotificationJob.set(wait_until: Time.parse(govbox_message.delivery_notification['delivery_period_end_at']))
+                                                          .perform_later(govbox_message) if Time.parse(govbox_message.delivery_notification['delivery_period_end_at']) > Time.now
       end
     end
 
