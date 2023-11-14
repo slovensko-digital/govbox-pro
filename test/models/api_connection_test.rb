@@ -2,7 +2,7 @@ require "test_helper"
 
 class ApiConnectionTest < ActiveSupport::TestCase
   test "Govbox::ApiConnection.box_obo raises error if invalid box" do
-    box = boxes(:box_with_govbox_api_connection)
+    box = boxes(:google_box_with_govbox_api_connection)
 
     box.settings = {
       "obo": SecureRandom.uuid
@@ -12,7 +12,7 @@ class ApiConnectionTest < ActiveSupport::TestCase
   end
 
   test "Govbox::ApiConnectionWithOboSupport.box_obo raises error if invalid box" do
-    box = boxes(:box_with_govbox_api_connection_with_obo_support)
+    box = boxes(:google_box_with_govbox_api_connection_with_obo_support)
 
     box.api_connection.update(obo: SecureRandom.uuid)
 
@@ -20,7 +20,7 @@ class ApiConnectionTest < ActiveSupport::TestCase
   end
 
   test "SkApi::ApiConnectionWithOboSupport.box_obo raises error if invalid box" do
-    box = boxes(:box_with_sk_api_api_connection_with_obo_support)
+    box = boxes(:google_box_with_sk_api_api_connection_with_obo_support)
 
     box.api_connection.update(obo: SecureRandom.uuid)
 

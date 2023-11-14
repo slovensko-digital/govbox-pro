@@ -4,18 +4,6 @@ ssd_main_one:
   box: ssd_main
   name: MyString
 
-two:
-  box: box_with_govbox_api_connection_with_obo_support
-  name: MyString
-
-three:
-  box: one
-  name: MyString
-
-four:
-  box: box_with_sk_api_api_connection_with_obo_support
-  name: MyString2
-
 ssd_main_two:
   box: ssd_main
   name: MyString

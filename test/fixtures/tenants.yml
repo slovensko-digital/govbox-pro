@@ -5,3 +5,6 @@ ssd:
 
 solver:
   name: Solver
+
+google:
+  name: Google

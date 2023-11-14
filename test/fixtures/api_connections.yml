@@ -7,7 +7,7 @@ govbox_api_api_connection1:
   type: 'Govbox::ApiConnection'
 
 govbox_api_api_connection2:
-  sub: sub1
+  sub: sub2
   obo: <%= SecureRandom.uuid %>
   api_token_private_key: private_key
   type: 'Govbox::ApiConnection'
