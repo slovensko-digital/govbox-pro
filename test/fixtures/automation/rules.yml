@@ -2,24 +2,24 @@
 
 one:
   user: basic
-  tenant: solver
+  tenant: ssd
   name: MyString
   trigger_event: MyString
 
 two:
   user: basic
-  tenant: solver
+  tenant: ssd
   name: SenderNameContainsMySenderAddTagThree
   trigger_event: message_created
 
 three:
   user: basic
-  tenant: solver
+  tenant: ssd
   name: SenderUriContainsMySenderURIAddTagFour
   trigger_event: message_created
 
 four:
   user: basic
-  tenant: solver
+  tenant: ssd
   name: BoxConditionAddMessageThreadTagTagFive
   trigger_event: message_thread_created

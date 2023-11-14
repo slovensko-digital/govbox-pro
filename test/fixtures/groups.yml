@@ -3,9 +3,14 @@
 all:
   name: all
   group_type: ALL
-  tenant: solver
+  tenant: ssd
 
 admins:
   name: admins
   group_type: ADMIN
-  tenant: solver
+  tenant: ssd
+
+basic_user:
+  name: "Basic user"
+  group_type: USER
+  tenant: ssd

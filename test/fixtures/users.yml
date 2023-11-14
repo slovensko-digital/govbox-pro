@@ -3,9 +3,14 @@
 basic:
   name: Basic user
   email: basic_user@email.com
-  tenant: solver
+  tenant: ssd
 
 admin:
   name: Admin user
   email: admin_user@email.com
+  tenant: ssd
+
+solver_other:
+  name: Other user
+  email: other_user@email.com
   tenant: solver

@@ -1,16 +1,16 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  message_thread: one
+ssd_main_one_one:
+  message_thread: ssd_main_one_general
   uuid: <%= SecureRandom.uuid %>
-  tenant: solver
+  tenant: ssd
 
-two:
-  message_thread: one
+ssd_main_one_two:
+  message_thread: ssd_main_one_general
   uuid: <%= SecureRandom.uuid %>
-  tenant: solver
+  tenant: ssd
 
-three:
-  message_thread: two
+ssd_main_two_one:
+  message_thread: ssd_main_one_issue
   uuid: <%= SecureRandom.uuid %>
-  tenant: solver
+  tenant: ssd
