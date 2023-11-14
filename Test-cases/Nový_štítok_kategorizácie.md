@@ -1,0 +1,21 @@
+# Chcem vytvoriť nový stítok na kategorizáciu vlákien pre moje účely:
+- Prihlas sa do govboxu pod bežným uživateľom
+  - Uživateľ je prihlásený
+- Zobrazí sa ti úvodna stránke so všetkými vláknami
+  - Vlákna sa zobrazujú
+- Otvor akúkoľvek poštu
+  - Pošta otvorená
+- V hlavíčke posty klikni na modré +
+  - Zobrazí sa okno na priradenie štítku k pošte
+- Pomocou hornej kolonky vyhľadaj alebo vytvor štítok
+  - Zobrazia návrhy k názvu štítku 
+- Ak daný názov neexistuje je nutné ho vytvoriť
+  - OK
+- Novovytvorený štítok označ v checkboxe
+  - Označený štítok sa zobrazí v zozname
+- Klikni na ulož zmeny
+  - Štítok vytvorený a priradený k pošte
+- V lavom side bare skontroluj že sa novovytvorený štítok zobrazuje
+  - Štítok sa v side bare objavuje
+- Klikni na konkretný štítok a skontroluj či sa tam objavuje pošta už s priradeným štítkom
+  - Pošta sa zobrazuje
