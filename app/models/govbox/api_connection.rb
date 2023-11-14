@@ -12,8 +12,11 @@
 class Govbox::ApiConnection < ::ApiConnection
   def box_obo(box)
     raise "OBO not allowed!" if invalid_obo?(box)
-
     obo
+  end
+
+  def destroy_with_box?
+    boxes.empty?
   end
 
   def validate_box(box)
