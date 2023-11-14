@@ -1,0 +1,13 @@
+# Chcem vytvoriť stítok na kategorizáciu vlákien pre potreby organizačného útvaru – celej organizácie:
+- Prihlás sa do GovBoxu Pro pod admin uživateľom
+  - Uživatel je prihlásený
+- Zobrazí sa ti úvodná stranka so všetkými prijatými emailami
+  - Emaily sa zobrazujú
+- V ľavom side bare klikni na nastavenia
+  - zobrazí sa stránka s filtrami
+- Klikni na štítky
+  - zobrazí sa stránka so štítkami
+- Klikni na modrú ikonku "Vložit štítok" a zadaj názov štitku
+  - Zobrazí sa nove okno pre zadanie noveho názvu štitku
+- Klikni na uložiť zmeny
+  - Novovytvorený štítok sa zobrazuje v zozname vytvorených štítkov
