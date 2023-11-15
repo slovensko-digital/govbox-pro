@@ -51,6 +51,24 @@ ssd_main_one_issue_two:
   thread: ssd_main_one_issue
   metadata: {}
 
+ssd_main_one_collapsed_one:
+  uuid: <%= SecureRandom.uuid %>
+  title: Outbox message
+  html_visualization: MyString
+  delivered_at: 2023-05-18 16:20:26
+  thread: ssd_main_one_with_application
+  metadata:
+    collapsed: true
+
+ssd_main_one_collapsed_two:
+  uuid: <%= SecureRandom.uuid %>
+  title: Outbox message
+  html_visualization: MyString
+  delivered_at: 2023-05-18 16:20:26
+  thread: ssd_main_one_with_application
+  metadata:
+    collapsed: true
+
 solver_main_one_delivery_notification_authorized_delivery_notification:
   uuid: bbff2617-3430-44c6-b827-519059ff1e90
   title: Authorized Delivery notification
