@@ -40,22 +40,22 @@ four:
   body: MyText
   payload: {"message_id": "<%= SecureRandom.uuid %>", "subject": "Všeobecná Agenda", "sender_name": "MySender", "recipient_name": "MyRecipient", "delivered_at": "<%= DateTime.current.to_s %>", "original_html": "MyHtml", "general_agenda": {"subject": "Rozhodnutie ...", "text": "Popis ..."}, "objects": [{"name": "MyName", "mime_type": "MyMimeType", "signed": true, "class": "MyClass", "content": "MyContent"}]}
 
-authorized_delivery_notification:
+solver_authorized_delivery_notification:
   message_id: bbff2617-3430-44c6-b827-519059ff1e90
   correlation_id: <%= SecureRandom.uuid %>
   edesk_message_id: 5
   delivered_at: <%= DateTime.current %>
   edesk_class: 'TEST'
-  folder: one
+  folder: solver_one
   body: MyText
   payload: { "message_id": "<%= SecureRandom.uuid %>", "subject": "MySubject 3", "sender_name": "MySender 3", "recipient_name": "MyRecipient 3", "delivered_at": "<%= DateTime.current.to_s %>", "original_html": "MyHtml 3", "objects": [{"name": "MyName", "mime_type": "MyMimeType", "signed": true, "class": "MyClass", "content": "MyContent"}], "delivery_notification":{"authorize_url":"https://fix.govbox.slovensko.digital/api/edesk/messages/4905491921/authorize","received_at":"2023-06-19T06:41:35.520Z","delivery_period_end_at":"2023-07-04T21:59:59.000Z","delivery_period":15,"consignment":{"message_id":"a7800b40-44b1-4012-ae78-774de6457cc4","subject":"Všeobecná agenda - rozhodnutie do vlastných rúk s fikciou doručenia","type":"Doc.GeneralAgendaFiction","note":"Pri doručovaní správy sa uplatňuje fikcia doručenia. Po uplynutí dátumu doručenia a neprevzatí správy sa doručovaná správa považuje za doručenú.","attachments":[{"name":"Vseobecna_agenda_-_Vseobecna_agenda_-_rozhodnutie_do_vlastnych_ruk_s_fikciou_dorucenia.xml"},{"name":"general_agenda.xml.asice"},{"name":"general_agenda_timestamp.xml.asice"},{"name":"SD_logo.png"},{"name":"SD_pozdrav.1.pdf"},{"name":"SD_pozdrav.pdf"},{"name":"SD_pozdrav_timestamp.1.pdf"}]}}}
 
-delivery_notification:
+solver_delivery_notification:
   message_id: cdd45d69-f917-4fca-b296-0b3759a0936a
   correlation_id: <%= SecureRandom.uuid %>
   edesk_message_id: 5
   delivered_at: <%= DateTime.current %>
   edesk_class: 'TEST'
-  folder: one
+  folder: solver_one
   body: MyText
   payload: { "message_id": "<%= SecureRandom.uuid %>", "subject": "MySubject 3", "sender_name": "MySender 3", "recipient_name": "MyRecipient 3", "delivered_at": "<%= DateTime.current.to_s %>", "original_html": "MyHtml 3", "objects": [{"name": "MyName", "mime_type": "MyMimeType", "signed": true, "class": "MyClass", "content": "MyContent"}], "delivery_notification":{"authorize_url":"https://fix.govbox.slovensko.digital/api/edesk/messages/4905491921/authorize","received_at":"2023-06-19T06:41:35.520Z","delivery_period_end_at":"2023-07-04T21:59:59.000Z","delivery_period":15,"consignment":{"message_id":"a7800b40-44b1-4012-ae78-774de6457cc4","subject":"Všeobecná agenda - rozhodnutie do vlastných rúk s fikciou doručenia","type":"Doc.GeneralAgendaFiction","note":"Pri doručovaní správy sa uplatňuje fikcia doručenia. Po uplynutí dátumu doručenia a neprevzatí správy sa doručovaná správa považuje za doručenú.","attachments":[{"name":"Vseobecna_agenda_-_Vseobecna_agenda_-_rozhodnutie_do_vlastnych_ruk_s_fikciou_dorucenia.xml"},{"name":"general_agenda.xml.asice"},{"name":"general_agenda_timestamp.xml.asice"},{"name":"SD_logo.png"},{"name":"SD_pozdrav.1.pdf"},{"name":"SD_pozdrav.pdf"},{"name":"SD_pozdrav_timestamp.1.pdf"}]}}}

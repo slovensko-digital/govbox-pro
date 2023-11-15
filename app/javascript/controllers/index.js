@@ -27,6 +27,3 @@ application.register("autofocus", AutofocusController)
 
 import TriStateCheckboxController from "./tri_state_checkbox_controller"
 application.register("tri-state-checkbox", TriStateCheckboxController)
-
-import UnhideController from "./unhide_controller"
-application.register("unhide", UnhideController)

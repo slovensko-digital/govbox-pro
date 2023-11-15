@@ -1,10 +1,9 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-ssd:
-  name: SSD
+one:
+  user: basic
+  group: basic_user
 
-solver:
-  name: Solver
-
-google:
-  name: Google
+two:
+  user: basic
+  group: all

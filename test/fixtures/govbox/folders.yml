@@ -2,25 +2,31 @@
 
 one:
   edesk_folder_id: 123456
-  box: one
+  box: ssd_main
   name: Inbox
   system: true
 
 two:
   edesk_folder_id: 7890123
   parent_folder: one
-  box: one
+  box: ssd_main
   name: MyName
   system: false
 
 bin:
   edesk_folder_id: 135790
-  box: one
+  box: ssd_main
   name: Bin
   system: true
 
 drafts:
   edesk_folder_id: 24580
-  box: one
+  box: ssd_main
   name: Drafts
+  system: true
+
+solver_one:
+  edesk_folder_id: 123459
+  box: solver_main
+  name: Inbox
   system: true

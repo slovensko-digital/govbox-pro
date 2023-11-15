@@ -1,13 +1,13 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  message: one
-  tag: two
+one_external_hidden:
+  message: ssd_main_one_general_one
+  tag: ssd_external
 
-two:
-  message: two
-  tag: two
+two_external_hidden:
+  message: ssd_main_one_general_two
+  tag: ssd_external
 
-delivery_notification_solver:
-  message: delivery_notification
-  tag: delivery_notification_solver
+solver_delivery_notification:
+  message: solver_main_one_delivery_notification_delivery_notification
+  tag: solver_delivery_notification

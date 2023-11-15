@@ -1,29 +1,36 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  folder: one
-  title: MyString
-  original_title: MyString
-  delivered_at: 2023-05-18 16:06:56
-  last_message_delivered_at: 2023-05-18 16:06:56
+ssd_main_one_general:
+  folder: ssd_main_one
+  title: General agenda SSD
+  original_title: Original title
+  delivered_at: 2023-05-18 16:05:00
+  last_message_delivered_at: 2023-05-18 16:06:00
 
-two:
-  folder: one
-  title: MyString
+ssd_main_one_issue:
+  folder: ssd_main_one
+  title: Issue
   original_title: MyString
-  delivered_at: 2023-05-18 16:19:26
-  last_message_delivered_at: 2023-05-18 16:20:26
+  delivered_at: 2023-05-18 17:10:11
+  last_message_delivered_at: 2023-05-18 17:11:11
 
-three:
-  folder: two
-  title: MyString
+ssd_main_one_delivery:
+  folder: ssd_main_one
+  title: Delivery
   original_title: MyString
-  delivered_at: 2023-05-18 16:19:26
-  last_message_delivered_at: 2023-05-18 16:20:26
+  delivered_at: 2023-05-18 18:15:22
+  last_message_delivered_at: 2023-05-18 18:16:22
 
-four:
-  folder: four
-  title: MyString
+solver_main_one_general_agenda:
+  folder: solver_main_one
+  title: General agenda Solver
   original_title: MyString
-  delivered_at: 2023-05-18 16:19:26
-  last_message_delivered_at: 2023-05-18 16:20:26
+  delivered_at: 2023-05-18 19:20:33
+  last_message_delivered_at: 2023-05-18 19:21:33
+
+solver_main_one_delivery_notification:
+  folder: solver_main_one
+  title: Delivery notification Solver
+  original_title: MyString
+  delivered_at: 2023-05-18 19:20:33
+  last_message_delivered_at: 2023-05-18 19:21:33

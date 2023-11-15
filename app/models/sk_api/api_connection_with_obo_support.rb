@@ -16,6 +16,10 @@ class SkApi::ApiConnectionWithOboSupport < ::ApiConnection
     box.settings["obo"] if box.settings
   end
 
+  def destroy_with_box?
+    false
+  end
+
   def validate_box(box)
     box.errors.add(:obo, :not_allowed) if invalid_obo?(box)
   end

@@ -21,7 +21,10 @@ class Box < ApplicationRecord
   has_many :message_drafts_imports, dependent: :destroy
   has_many :automation_conditions, as: :condition_object
 
-  before_destroy ->(box) { EventBus.publish(:box_destroyed, box.id) }
+  after_destroy do |box|
+    api_connection.destroy if api_connection.destroy_with_box?
+    EventBus.publish(:box_destroyed, box.id)
+  end
 
   before_create { self.color = Box.colors.keys[name.hash % Box.colors.size] if color.blank? }
 

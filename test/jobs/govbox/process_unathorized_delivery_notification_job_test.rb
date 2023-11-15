@@ -2,8 +2,8 @@ require "test_helper"
 
 class Govbox::ProcessMessageJobTest < ActiveJob::TestCase
   test "does not change anything if message already authorized" do
-    authorized_message = messages(:authorized_delivery_notification)
-    authorized_govbox_message = govbox_messages(:authorized_delivery_notification)
+    authorized_message = messages(:solver_main_one_delivery_notification_authorized_delivery_notification)
+    authorized_govbox_message = govbox_messages(:solver_authorized_delivery_notification)
 
     Govbox::ProcessUnauthorizedDeliveryNotificationJob.new.perform(authorized_govbox_message)
 
@@ -12,8 +12,8 @@ class Govbox::ProcessMessageJobTest < ActiveJob::TestCase
   end
 
   test "does not change messages and schedules again if delivery period not expired" do
-    message = messages(:delivery_notification)
-    govbox_message = govbox_messages(:delivery_notification)
+    message = messages(:solver_main_one_delivery_notification_delivery_notification)
+    govbox_message = govbox_messages(:solver_delivery_notification)
 
     travel_to Time.new(2023, 07, 01, 01, 04, 44) do
       Govbox::ProcessUnauthorizedDeliveryNotificationJob.new.perform(govbox_message)
@@ -25,8 +25,8 @@ class Govbox::ProcessMessageJobTest < ActiveJob::TestCase
   end
 
   test "updates message and removes delivery_notification tags if delivery period expired" do
-    message = messages(:delivery_notification)
-    govbox_message = govbox_messages(:delivery_notification)
+    message = messages(:solver_main_one_delivery_notification_delivery_notification)
+    govbox_message = govbox_messages(:solver_delivery_notification)
 
     delivery_notification_tag = Tag.find_by!(
       system_name: Govbox::Message::DELIVERY_NOTIFICATION_TAG,
