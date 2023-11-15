@@ -21,7 +21,7 @@ class Box
           delivered_at: delivered_at,
           last_message_delivered_at: delivered_at
         )
-        thread.merge_identifiers.build(uuid: merge_uuid, tenant: folder.tenant)
+        thread.merge_identifiers.build(uuid: merge_uuid, box: folder.box)
       end
 
       thread.save!

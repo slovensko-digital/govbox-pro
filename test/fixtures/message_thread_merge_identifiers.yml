@@ -3,14 +3,14 @@
 ssd_main_one_one:
   message_thread: ssd_main_one_general
   uuid: <%= SecureRandom.uuid %>
-  tenant: ssd
+  box: ssd_main
 
 ssd_main_one_two:
   message_thread: ssd_main_one_general
   uuid: <%= SecureRandom.uuid %>
-  tenant: ssd
+  box: ssd_main
 
 ssd_main_two_one:
   message_thread: ssd_main_one_issue
   uuid: <%= SecureRandom.uuid %>
-  tenant: ssd
+  box: ssd_main
