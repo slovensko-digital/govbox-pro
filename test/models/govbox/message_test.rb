@@ -30,7 +30,7 @@ class Govbox::MessageTest < ActiveSupport::TestCase
   end
 
   test "should include general agenda subject in message title" do
-    govbox_message = govbox_messages(:four)
+    govbox_message = govbox_messages(:ssd_general_agenda)
 
     Govbox::Message.create_message_with_thread!(govbox_message)
 

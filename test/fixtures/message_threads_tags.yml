@@ -16,6 +16,6 @@ two_hidden:
   message_thread: ssd_main_one_issue
   tag: ssd_hidden
 
-delivery_notification:
+solver_delivery_notification:
   message_thread: solver_main_one_delivery_notification
   tag: solver_delivery_notification
