@@ -1,13 +1,13 @@
-<div class="flex justify-between gap-4 px-4 md:px-6 py-4 bg-white border-t-0 border-r-0 border-b border-l-0 border-gray-200">
+<div class="flex justify-between gap-4 px-4 md:px-6 py-4 bg-white border-t-0 border-r-0 border-b border-l-0 border-gray-200" data-test="header">
   <div class="flex flex-col grow md:flex-row justify-start relative gap-4">
     <div class="flex flex-col md:flex-row md:flex-wrap gap-2 md:items-center">
       <div class="flex gap-2">
         <%= render Common::BoxLabelComponent.new(@message_thread.box, "h-fit w-fit max-w-fit") %>
-        <span class="text-xl font-semibold text-left text-gray-900">
+        <span class="text-xl font-semibold text-left text-gray-900" data-test="title">
           <%= @message_thread.title %>
         </span>
       </div>
-      <div class="flex flex-wrap justify-start items-center gap-2">
+      <div class="flex flex-wrap justify-start items-center gap-2" data-test="tags">
         <% @thread_tags.each do |thread_tag|%>
           <%= render MessageThreads::TagComponent.new(thread_tag) %>
         <% end %>

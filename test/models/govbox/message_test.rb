@@ -86,5 +86,5 @@ class Govbox::MessageTest < ActiveSupport::TestCase
 
     assert_not_equal message.title, message_thread.title
     assert_equal message.metadata["delivery_notification"]["consignment"]["subject"], message_thread.title
-    end
+  end
 end
