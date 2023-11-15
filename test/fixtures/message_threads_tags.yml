@@ -7,3 +7,7 @@ one:
 two:
   message_thread: two
   tag: two
+
+delivery_notification:
+  message_thread: two
+  tag: delivery_notification_solver

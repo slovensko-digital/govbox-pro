@@ -7,6 +7,7 @@ draft_one:
   recipient_name: MyString
   html_visualization: MyString
   delivered_at: 2023-05-18 16:18:26
+  metadata: { }
   thread: three
   type: MessageDraft
 
@@ -17,6 +18,7 @@ draft_two:
   recipient_name: MyString
   html_visualization: MyString
   delivered_at: 2023-05-18 16:18:26
+  metadata: { }
   thread: one
   type: MessageDraft
 
@@ -27,6 +29,7 @@ draft_three:
   recipient_name: MyString
   html_visualization: MyString
   delivered_at: 2023-05-18 16:19:26
+  metadata: { }
   thread: two
   type: MessageDraft
 
@@ -37,5 +40,6 @@ draft_four:
   recipient_name: MyString
   html_visualization: MyString
   delivered_at: 2023-05-18 16:20:26
+  metadata: { }
   thread: two
   type: MessageDraft

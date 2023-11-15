@@ -7,6 +7,7 @@ one:
   recipient_name: MyString
   html_visualization: MyString
   delivered_at: 2023-05-18 16:18:26
+  metadata: { }
   thread: one
 
 two:
@@ -16,6 +17,7 @@ two:
   recipient_name: MyString
   html_visualization: MyString
   delivered_at: 2023-05-18 16:18:26
+  metadata: { }
   thread: one
 
 three:
@@ -25,6 +27,7 @@ three:
   recipient_name: MyString
   html_visualization: MyString
   delivered_at: 2023-05-18 16:19:26
+  metadata: { }
   thread: two
 
 four:
@@ -34,4 +37,25 @@ four:
   recipient_name: MyString
   html_visualization: MyString
   delivered_at: 2023-05-18 16:20:26
+  metadata: { }
+  thread: two
+
+authorized_delivery_notification:
+  uuid: bbff2617-3430-44c6-b827-519059ff1e90
+  title: Delivery Notification
+  sender_name: MyString
+  recipient_name: MyString
+  html_visualization: MyString
+  delivered_at: <%= DateTime.current %>
+  metadata: { "authorized":true, "delivery_notification":{"authorize_url":"https://fix.govbox.slovensko.digital/api/edesk/messages/4905491921/authorize","received_at":"2023-06-19T06:41:35.520Z","delivery_period_end_at":"2023-07-04T21:59:59.000Z","delivery_period":15,"consignment":{"message_id":"a7800b40-44b1-4012-ae78-774de6457cc4","subject":"Všeobecná agenda - rozhodnutie do vlastných rúk s fikciou doručenia","type":"Doc.GeneralAgendaFiction","note":"Pri doručovaní správy sa uplatňuje fikcia doručenia. Po uplynutí dátumu doručenia a neprevzatí správy sa doručovaná správa považuje za doručenú.","attachments":[{"name":"Vseobecna_agenda_-_Vseobecna_agenda_-_rozhodnutie_do_vlastnych_ruk_s_fikciou_dorucenia.xml"},{"name":"general_agenda.xml.asice"},{"name":"general_agenda_timestamp.xml.asice"},{"name":"SD_logo.png"},{"name":"SD_pozdrav.1.pdf"},{"name":"SD_pozdrav.pdf"},{"name":"SD_pozdrav_timestamp.1.pdf"}]}}}
+  thread: two
+
+delivery_notification:
+  uuid: cdd45d69-f917-4fca-b296-0b3759a0936a
+  title: Delivery Notification
+  sender_name: MyString
+  recipient_name: MyString
+  html_visualization: MyString
+  delivered_at: <%= DateTime.current %>
+  metadata: { "delivery_notification":{"authorize_url":"https://fix.govbox.slovensko.digital/api/edesk/messages/4905491921/authorize","received_at":"2023-06-19T06:41:35.520Z","delivery_period_end_at":"2023-07-04T21:59:59.000Z","delivery_period":15,"consignment":{"message_id":"a7800b40-44b1-4012-ae78-774de6457cc4","subject":"Všeobecná agenda - rozhodnutie do vlastných rúk s fikciou doručenia","type":"Doc.GeneralAgendaFiction","note":"Pri doručovaní správy sa uplatňuje fikcia doručenia. Po uplynutí dátumu doručenia a neprevzatí správy sa doručovaná správa považuje za doručenú.","attachments":[{"name":"Vseobecna_agenda_-_Vseobecna_agenda_-_rozhodnutie_do_vlastnych_ruk_s_fikciou_dorucenia.xml"},{"name":"general_agenda.xml.asice"},{"name":"general_agenda_timestamp.xml.asice"},{"name":"SD_logo.png"},{"name":"SD_pozdrav.1.pdf"},{"name":"SD_pozdrav.pdf"},{"name":"SD_pozdrav_timestamp.1.pdf"}]}}}
   thread: two

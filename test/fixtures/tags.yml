@@ -48,3 +48,17 @@ drafts_ssd:
   external: false
   visible: true
   tenant: ssd
+
+delivery_notification_solver:
+  name: Na prevzatie
+  system_name: delivery_notification
+  external: false
+  visible: true
+  tenant: solver
+
+delivery_notification_ssd:
+  name: Na prevzatie
+  system_name: delivery_notification
+  external: false
+  visible: true
+  tenant: ssd
