@@ -1,13 +1,23 @@
 # Vyhľadávanie e-mailov podľa tagov:
 - Prihlás sa do GovBoxu Pro s platnými prihlas. údajmi.
   - Uživateľ je prihlásený
-- Vytvor\nájdi niekoľko e-mailov a prirad im rôzne tagy podľa konkrétnych kategórií alebo vlastností.
-  - Tagy k jednotlivým emailom sú vytvorené nájdené
-- Vráť sa na úvodnú stránku a zadaj do vyhľadávacieho poľa tag, ktorý sa zhoduje s e-mailmi, ktoré chceš nájsť.
+- Vytvor\nájdi niekoľko vlákien a prirad/odober im rôzne tagy podľa konkrétnych kategórií alebo vlastností.
+  - Tagy k jednotlivým správam sú vytvorené/nájdené
+- Vráť sa na úvodnú stránku a zadaj do vyhľadávacieho poľa tag, ktorý sa zhoduje s vláknami, ktoré chceš nájsť.
   - OK
 - Kliknite na tlačidlo "Vyhľadať" pre spustenie vyhľadávania.
-  - Emaily s konkretnými tagmi sú nájdené
+  - Vlákna s konkretnými tagmi sú nájdené
 - Skontrolujte výsledky vyhľadávania 
-  - Zobrazujú sa iba maily s vyhladavaným tagom
+  - Zobrazujú sa iba vlákna s vyhladavaným tagom
 - Skontroluj či sa zhoduje počet vyhľadaných mailov
   - Počet sa zhoduje
+- Skontroluj či sa počet správ zvýšil/znížil po označení noveho vlákna tagom
+  - počet správ sa zmenil
+- nájdi niekoľko vlákien a odober im rôzne tagy podľa konkrétnych kategórií alebo vlastností.
+  - Tagy k jednotlivým správam sú odobraté
+-  Vráť sa na úvodnú stránku a zadaj do vyhľadávacieho poľa tag, ktorý si odobral
+  - OK
+- Kliknite na tlačidlo "Vyhľadať" pre spustenie vyhľadávania.
+ - správa s odobratým vláknom sa už nezobrazuje
+- Skontroluj či sa počet správ znížil po označení noveho vlákna tagom
+  - počet správ sa zmenil
