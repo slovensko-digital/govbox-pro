@@ -24,3 +24,9 @@ drafts:
   box: ssd_main
   name: Drafts
   system: true
+
+solver_one:
+  edesk_folder_id: 123459
+  box: solver_main
+  name: Inbox
+  system: true

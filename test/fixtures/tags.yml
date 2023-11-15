@@ -32,6 +32,14 @@ ssd_external_visible:
 
 ssd_drafts:
   name: Drafts
+  system_name: draft
+  external: false
+  visible: true
+  tenant: ssd
+
+ssd_delivery_notification:
+  name: DeliveryNotifications
+  system_name: delivery_notification
   external: false
   visible: true
   tenant: ssd
@@ -62,6 +70,14 @@ solver_special:
 
 solver_drafts:
   name: Drafts
+  system_name: draft
+  external: false
+  visible: true
+  tenant: solver
+
+solver_delivery_notification:
+  name: DeliveryNotifications
+  system_name: delivery_notification
   external: false
   visible: true
   tenant: solver

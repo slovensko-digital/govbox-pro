@@ -27,3 +27,10 @@ solver_main_one_general_agenda:
   original_title: MyString
   delivered_at: 2023-05-18 19:20:33
   last_message_delivered_at: 2023-05-18 19:21:33
+
+solver_main_one_delivery_notification:
+  folder: solver_main_one
+  title: Delivery notification Solver
+  original_title: MyString
+  delivered_at: 2023-05-18 19:20:33
+  last_message_delivered_at: 2023-05-18 19:21:33
