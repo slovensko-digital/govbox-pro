@@ -3,3 +3,9 @@
   - Uživateľ je prihlásený
 - Zobrazí sa ti úvodna stránke so všetkými vláknami
   - Vlákna sa zobrazujú
+- Otvor ľubovolné vlákno a priraď mu štítok ktorý si si vytvoril napr.Podpísané
+  - Vlákno je označené štitkom 
+- V ľavom side bare klikni na štítok „Podpisané“
+  - Zobrazia sa vlákno so štítkom "Podpisané"
+- Otvor vlákno a skontroluj či sa zobrazuje štítok "Podpisané" v hlavičke
+  - Štítok sa v hlavičke nachádza
