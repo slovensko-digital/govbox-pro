@@ -1,43 +1,67 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  name: MyString
+ssd_finance:
+  name: Finance
   external: false
   visible: true
-  tenant: solver
+  tenant: ssd
 
-two:
-  name: MyString2
+ssd_legal:
+  name: Legal
+  external: false
+  visible: true
+  tenant: ssd
+
+ssd_hidden:
+  name: Hidden
   external: false
   visible: false
-  tenant: solver
+  tenant: ssd
 
-drafts_solver:
-  name: Drafts
-  external: false
+ssd_external:
+  name: External
+  external: true
+  visible: false
+  tenant: ssd
+
+ssd_external_visible:
+  name: ExtVisible
+  external: true
   visible: true
-  tenant: solver
+  tenant: ssd
 
-three:
-  name: Tag3
-  external: false
-  visible: true
-  tenant: solver
-
-four:
-  name: Tag4
-  external: false
-  visible: true
-  tenant: solver
-
-five:
-  name: Tag5
-  external: false
-  visible: true
-  tenant: solver
-
-drafts_ssd:
+ssd_drafts:
   name: Drafts
   external: false
   visible: true
   tenant: ssd
+
+ssd_construction:
+  name: Construction
+  external: false
+  visible: true
+  tenant: ssd
+
+ssd_office:
+  name: Office
+  external: false
+  visible: true
+  tenant: ssd
+
+ssd_print:
+  name: Print
+  external: false
+  visible: true
+  tenant: ssd
+
+solver_special:
+  name: Special
+  external: false
+  visible: true
+  tenant: solver
+
+solver_drafts:
+  name: Drafts
+  external: false
+  visible: true
+  tenant: solver

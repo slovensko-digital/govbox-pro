@@ -89,7 +89,7 @@
     <% if @mode == :thread_view %>
       <% if @message.can_be_authorized? %>
         <%= form_with(url: authorize_delivery_notification_message_path(@message), method: :post, local: true, class: 'flex p-6 border-b border-gray-200') do |form| %>
-          <%= form.submit "Prevziať správu", data: { turbo_frame: "_top", turbo_confirm: 'Naozaj chcete prevziať správu?' }, class: "flex-grow-0 flex-shrink-0 px-3.5 py-2.5 rounded-md bg-blue-600 text-base font-medium text-left text-white" %>
+          <%= form.submit "Prevziať správu", data: { turbo_frame: "_top", turbo_confirm: "Naozaj chcete prevziať správu?" }, class: "flex-grow-0 flex-shrink-0 px-3.5 py-2.5 rounded-md bg-blue-600 text-base font-medium text-left text-white" %>
         <% end %>
       <% elsif @message.replyable? %>
         <%= content_tag(:div, { "data-controller": "messageDrafts" }) do %>

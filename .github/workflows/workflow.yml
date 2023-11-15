@@ -43,6 +43,7 @@ jobs:
 
       - run: bundle exec rails db:setup --trace
       - run: bundle exec rails test
+      - run: bundle exec rails test:system
 
   gitlab-push:
     name: Push to GitLab

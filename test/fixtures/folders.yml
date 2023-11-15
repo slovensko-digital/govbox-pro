@@ -1,17 +1,17 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  box: one
+ssd_main_one:
+  box: ssd_main
   name: MyString
 
-two:
-  box: box_with_govbox_api_connection_with_obo_support
+ssd_main_two:
+  box: ssd_main
   name: MyString
 
-three:
-  box: one
+ssd_other_one:
+  box: ssd_other
   name: MyString
 
-four:
-  box: box_with_sk_api_api_connection_with_obo_support
+solver_main_one:
+  box: solver_main
   name: MyString2

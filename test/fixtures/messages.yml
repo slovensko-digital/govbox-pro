@@ -1,37 +1,52 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
+ssd_main_one_general_one:
   uuid: <%= SecureRandom.uuid %>
-  title: MyString
-  sender_name: MyString
-  recipient_name: MyString
-  html_visualization: MyString
-  delivered_at: 2023-05-18 16:18:26
-  thread: one
+  title: The First Message
+  sender_name: Social Department
+  html_visualization: Visualization 1
+  delivered_at: 2023-05-18 16:16:26
+  thread: ssd_main_one_general
+  read: true
+  replyable: false
+  metadata:
+    delivery_notification:
+      authorized: true
+      delivery_period_end_at: <%= DateTime.current - 1.day %>
 
-two:
+ssd_main_one_general_two:
   uuid: <%= SecureRandom.uuid %>
-  title: MyString
-  sender_name: MyString
-  recipient_name: MyString
-  html_visualization: MyString
-  delivered_at: 2023-05-18 16:18:26
-  thread: one
+  title: The Second Message
+  html_visualization: Visualization 2
+  delivered_at: 2023-05-18 16:17:26
+  thread: ssd_main_one_general
+  metadata:
+    delivery_notification:
+      authorized: false
+      delivery_period_end_at: <%= DateTime.current + 1.day %>
 
-three:
+ssd_main_one_general_three:
   uuid: <%= SecureRandom.uuid %>
-  title: MyString
-  sender_name: MyString
-  recipient_name: MyString
+  title: The Collapsed Message
+  html_visualization: Visualization 3
+  delivered_at: 2023-05-18 16:18:26
+  thread: ssd_main_one_general
+  metadata: {}
+  collapsed: true
+
+ssd_main_one_issue_one:
+  uuid: <%= SecureRandom.uuid %>
+  title: MyString3
+  recipient_name: SD Services
   html_visualization: MyString
   delivered_at: 2023-05-18 16:19:26
-  thread: two
+  thread: ssd_main_one_issue
+  metadata: {}
 
-four:
+ssd_main_one_issue_two:
   uuid: <%= SecureRandom.uuid %>
-  title: MyString
-  sender_name: MyString
-  recipient_name: MyString
+  title: MyString4
   html_visualization: MyString
   delivered_at: 2023-05-18 16:20:26
-  thread: two
+  thread: ssd_main_one_issue
+  metadata: {}
