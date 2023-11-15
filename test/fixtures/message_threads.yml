@@ -21,6 +21,13 @@ ssd_main_one_delivery:
   delivered_at: 2023-05-18 18:15:22
   last_message_delivered_at: 2023-05-18 18:16:22
 
+ssd_main_one_with_application:
+  folder: ssd_main_one
+  title: With outbox application
+  original_title: MyString
+  delivered_at: 2023-05-18 18:15:22
+  last_message_delivered_at: 2023-05-18 18:16:22
+
 solver_main_one_general_agenda:
   folder: solver_main_one
   title: General agenda Solver
