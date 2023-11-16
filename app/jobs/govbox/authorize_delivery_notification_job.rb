@@ -3,6 +3,8 @@ class Govbox::AuthorizeDeliveryNotificationJob < ApplicationJob
     delegate :uuid, to: SecureRandom
   end
 
+  retry_on StandardError, wait: 2.minutes, attempts: 5
+
   def perform(message, upvs_client: UpvsEnvironment.upvs_client, schedule_sync: true)
     edesk_api = upvs_client.api(message.thread.folder.box).edesk
 
