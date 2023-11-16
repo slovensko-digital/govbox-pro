@@ -10,8 +10,8 @@ ssd_main_one_general_one:
   read: true
   replyable: false
   metadata:
+    authorized: true
     delivery_notification:
-      authorized: true
       delivery_period_end_at: <%= DateTime.current - 1.day %>
 
 ssd_main_one_general_two:
@@ -21,8 +21,8 @@ ssd_main_one_general_two:
   delivered_at: 2023-05-18 16:17:26
   thread: ssd_main_one_general
   metadata:
+    authorized: false
     delivery_notification:
-      authorized: false
       delivery_period_end_at: <%= DateTime.current + 1.day %>
 
 ssd_main_one_general_three:
@@ -50,3 +50,54 @@ ssd_main_one_issue_two:
   delivered_at: 2023-05-18 16:20:26
   thread: ssd_main_one_issue
   metadata: {}
+
+ssd_main_one_collapsed_one:
+  uuid: <%= SecureRandom.uuid %>
+  title: Outbox message
+  html_visualization: MyString
+  delivered_at: 2023-05-18 16:20:26
+  thread: ssd_main_one_with_application
+  metadata:
+    collapsed: true
+
+ssd_main_one_collapsed_two:
+  uuid: <%= SecureRandom.uuid %>
+  title: Outbox message
+  html_visualization: MyString
+  delivered_at: 2023-05-18 16:20:26
+  thread: ssd_main_one_with_application
+  metadata:
+    collapsed: true
+
+solver_main_one_delivery_notification_authorized_delivery_notification:
+  uuid: bbff2617-3430-44c6-b827-519059ff1e90
+  title: Authorized Delivery notification
+  sender_name: MyString
+  recipient_name: MyString
+  html_visualization: MyString
+  delivered_at: <%= DateTime.current %>
+  metadata:
+    authorized: true
+    delivery_notification:
+      delivery_period_end_at: 2023-07-04T21:59:59.000Z,
+      delivery_period: 15
+      consignment:
+        message_id: a7800b40-44b1-4012-ae78-774de6457cc4
+        type: Doc.GeneralAgendaFiction
+  thread: solver_main_one_delivery_notification
+
+solver_main_one_delivery_notification_delivery_notification:
+  uuid: cdd45d69-f917-4fca-b296-0b3759a0936a
+  title: Delivery notification
+  sender_name: MyString
+  recipient_name: MyString
+  html_visualization: MyString
+  delivered_at: <%= DateTime.current %>
+  metadata:
+    delivery_notification:
+      delivery_period_end_at: 2023-07-04T21:59:59.000Z,
+      delivery_period: 15
+      consignment:
+        message_id: x7800b40-44b1-4012-ae78-774de6457cc2
+        type: Doc.GeneralAgendaFiction
+  thread: solver_main_one_delivery_notification

@@ -1,21 +1,21 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 ssd_main:
-  name: MyString
+  name: SSD main
   uri: MyString
   tenant: ssd
   short_name: MY1
   api_connection: govbox_api_api_connection1
 
 ssd_other:
-  name: MyString
+  name: SSD other
   uri: MyString
   tenant: ssd
   short_name: MY2
   api_connection: govbox_api_api_connection1
 
 solver_main:
-  name: MyString2
+  name: Solver main
   uri: MyString2
   tenant: solver
   short_name: MY1

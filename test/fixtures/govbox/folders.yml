@@ -1,26 +1,38 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
+ssd_one:
   edesk_folder_id: 123456
   box: ssd_main
   name: Inbox
   system: true
 
-two:
+ssd_two:
   edesk_folder_id: 7890123
   parent_folder: one
   box: ssd_main
   name: MyName
   system: false
 
-bin:
+ssd_bin:
   edesk_folder_id: 135790
   box: ssd_main
   name: Bin
   system: true
 
-drafts:
+ssd_drafts:
   edesk_folder_id: 24580
   box: ssd_main
   name: Drafts
+  system: true
+
+ssd_sent:
+  edesk_folder_id: 24589
+  box: ssd_main
+  name: SentItems
+  system: true
+
+solver_one:
+  edesk_folder_id: 123459
+  box: solver_main
+  name: Inbox
   system: true

@@ -7,3 +7,7 @@ one_external_hidden:
 two_external_hidden:
   message: ssd_main_one_general_two
   tag: ssd_external
+
+solver_delivery_notification:
+  message: solver_main_one_delivery_notification_delivery_notification
+  tag: solver_delivery_notification

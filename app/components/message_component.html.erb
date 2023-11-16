@@ -26,18 +26,21 @@
         <%= render MessageStateComponent.new(message: @message, classes: "hidden md:flex") %>
       </div>
     </div>
-    <div class="flex flex-col justify-stretch items-start relative gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
-      <div class="w-full">
-        <%= tag.iframe class: "relative border-none overflow-hidden h-full w-full", srcdoc: @message.html_visualization, onload: "(
-            function(iframe) {
-              iframe.contentWindow.document.body.style['height'] = 'unset';
-              iframe.contentWindow.document.body.style['min-height'] = 'unset';
+    <% if @message.visualizable_body? %>
+      <div class="flex flex-col justify-stretch items-start relative gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
+      <% if @message.html_visualization %>
+          <div class="w-full">
+            <%= tag.iframe class: "relative border-none overflow-hidden h-full w-full", srcdoc: @message.html_visualization, onload: "(
+                function(iframe) {
+                  iframe.contentWindow.document.body.style['height'] = 'unset';
+                  iframe.contentWindow.document.body.style['min-height'] = 'unset';
 
-              iframe.parentElement.style.height = iframe.contentWindow.document.body.scrollHeight + 20 + 'px';
-            }
-            (this)
-          )" %>
-      </div>
+                  iframe.parentElement.style.height = iframe.contentWindow.document.body.scrollHeight + 20 + 'px';
+                }
+                (this)
+              )" %>
+          </div>
+        <% end %>
 
       <% if @message.form && @message.form.nested_message_objects.present? %>
         <div class="flex flex-col justify-stretch items-stretch divide-y relative px-4 bg-white border border-gray-200 w-full">
@@ -65,6 +68,7 @@
         </div>
       <% end %>
     </div>
+    <% end %>
 
     <% if @message.attachments.present? %>
       <div class="flex justify-start items-center gap-2 px-6 py-4 bg-white border-t-0 border-r-0 border-b border-l-0 border-gray-200">
