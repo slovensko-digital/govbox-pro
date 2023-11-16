@@ -68,6 +68,10 @@ class Message < ApplicationRecord
     true
   end
 
+  def visualizable_body?
+    html_visualization.present? || (form && form.nested_message_objects.count > 1)
+  end
+
   def can_be_authorized?
     metadata["delivery_notification"] && !metadata["authorized"] && Time.parse(metadata["delivery_notification"]["delivery_period_end_at"]) > Time.now
   end
