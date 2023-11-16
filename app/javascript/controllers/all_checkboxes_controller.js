@@ -7,5 +7,6 @@ export default class extends Controller {
     form.querySelectorAll("input").forEach((input) => {
       input.checked = event.target.checked;
     });
+    form.requestSubmit();
   }
 }
