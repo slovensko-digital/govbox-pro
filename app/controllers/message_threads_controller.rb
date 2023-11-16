@@ -5,6 +5,8 @@ class MessageThreadsController < ApplicationController
   before_action :load_threads, only: %i[index scroll]
   after_action :mark_thread_as_read, only: %i[show history]
 
+  include MessageThreadsConcern
+
   def show
     authorize @message_thread
   end
@@ -110,10 +112,5 @@ class MessageThreadsController < ApplicationController
 
   def set_thread_tags
     @thread_tags = @message_thread.message_threads_tags.only_visible_tags
-  end
-
-  def set_thread_messages
-    @thread_messages = @message_thread.messages_visible_to_user(Current.user).includes(objects: :nested_message_objects, attachments: :nested_message_objects).order(delivered_at: :asc)
-    @thread_last_message_draft_id = @message_thread.messages_visible_to_user(Current.user).where(type: 'MessageDraft').includes(objects: :nested_message_objects, attachments: :nested_message_objects).order(delivered_at: :asc)&.last&.id
   end
 end

@@ -5,6 +5,7 @@
     <%= render Common::AlertComponent.new %>
     <% @thread_messages.each do |message| %>
       <% if message.type == 'MessageDraft' %>
+        <%# TODO find a better way for handling focus than `message.id == @thread_last_message_draft_id` %>
         <%= render MessageDraftComponent.new(message: message, is_last: message.id == @thread_last_message_draft_id) %>
       <% elsif message.collapsed? %>
         <%= render CollapsedMessageComponent.new(message: message) %>
