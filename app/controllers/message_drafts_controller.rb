@@ -57,7 +57,7 @@ class MessageDraftsController < ApplicationController
       message_draft.being_submitted!
     end
 
-    boxes_to_sync = @messages.map(&:thread).map(&:folder).map(&:box).uniq
+    boxes_to_sync = Current.tenant.boxes.joins(folders: { message_threads: :messages }).where(messages: { id: @messages.map(&:id) } ).uniq
     jobs_batch.enqueue(on_finish: Govbox::ScheduleDelayedSyncBoxJob, boxes: boxes_to_sync)
   end
 
