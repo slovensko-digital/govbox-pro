@@ -50,9 +50,6 @@
                     <div class="flex justify-start items-start gap-4 w-full">
                       <span class="truncate text-base font-semibold text-left text-gray-900"><%= MessageObjectHelper.displayable_name(message_attachment) %></span>
                     </div>
-                    <span class="text-sm text-left text-gray-600">
-                      <%= number_to_human_size(message_attachment.content.size).to_s %>
-                    </span>
                   </div>
                 <% end %>
                 <div class="flex justify-end items-center gap-4">
