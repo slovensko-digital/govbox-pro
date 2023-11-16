@@ -64,6 +64,10 @@ class Message < ApplicationRecord
     objects.select { |o| o.form? }&.first
   end
 
+  def collapsible?
+    true
+  end
+
   def can_be_authorized?
     metadata["delivery_notification"] && !metadata["authorized"] && Time.parse(metadata["delivery_notification"]["delivery_period_end_at"]) > Time.now
   end
