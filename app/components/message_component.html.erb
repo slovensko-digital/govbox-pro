@@ -39,7 +39,7 @@
           )" %>
       </div>
 
-      <% if @message.form && @message.form.nested_message_objects.count > 1 %>
+      <% if @message.form && @message.form.nested_message_objects.present? %>
         <div class="flex flex-col justify-stretch items-stretch divide-y relative px-4 bg-white border border-gray-200 w-full">
           <% @message.form.nested_message_objects.each do |message_attachment| %>
             <!-- TODO lepsia podmienka (ma sa zobrazit vsetko okrem formulara) -->
@@ -66,7 +66,7 @@
       <% end %>
     </div>
 
-    <% if @message.attachments.any? %>
+    <% if @message.attachments.present? %>
       <div class="flex justify-start items-center gap-2 px-6 py-4 bg-white border-t-0 border-r-0 border-b border-l-0 border-gray-200">
         <div>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="  w-6 h-6 relative" preserveAspectRatio="xMidYMid meet">
@@ -74,7 +74,7 @@
           </svg>
         </div>
         <p class="grow text-base text-left text-gray-900">
-          Správa obsahuje <span class="font-semibold"><%= t('message_object', count: @message.attachments.count, locale: :sk) %></span>
+          Správa obsahuje <span class="font-semibold"><%= t('message_object', count: @message.attachments.length, locale: :sk) %></span>
         </p>
       </div>
 
