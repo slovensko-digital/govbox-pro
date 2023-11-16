@@ -3,7 +3,7 @@ class Govbox::AuthorizeDeliveryNotificationJob < ApplicationJob
     delegate :uuid, to: SecureRandom
   end
 
-  def perform(message, upvs_client: UpvsEnvironment.upvs_client)
+  def perform(message, upvs_client: UpvsEnvironment.upvs_client, schedule_sync: true)
     edesk_api = upvs_client.api(message.thread.folder.box).edesk
 
     success = edesk_api.authorize_delivery_notification(message.metadata["delivery_notification"]["authorize_url"])
@@ -18,7 +18,7 @@ class Govbox::AuthorizeDeliveryNotificationJob < ApplicationJob
     message.metadata["authorized"] = true
     message.save!
 
-    Govbox::SyncBoxJob.set(wait: 2.minutes).perform_later(message.thread.folder.box)
+    Govbox::SyncBoxJob.set(wait: 3.minutes).perform_later(message.thread.folder.box) if schedule_sync
   end
 
   delegate :uuid, to: self
