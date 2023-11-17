@@ -223,10 +223,10 @@ sk:
     one: "1 prílohu"
     few: "%{count} prílohy"
     other: "%{count} príloh"
-  selected:
-    one: "%{count} označená"
-    few: "%{count} označené"
-    other: "%{count} označených"
+  selected_message:
+    one: "%{count} označená správa"
+    few: "%{count} označené správy"
+    other: "%{count} označených správ"
   no_message_object_name: "Súbor bez názvu"
   sender_name: "Odosielateľ"
   recipient_name: "Prijímateľ"
