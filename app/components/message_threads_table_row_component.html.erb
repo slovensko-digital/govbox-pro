@@ -14,7 +14,7 @@
             <%= @message_thread.title %>
           </span>
         </div>
-        <% if @visible_tags.any? %>
+        <% if @visible_tags.present? %>
           <div class="flex flex-wrap items-start gap-1" data-test="tags">
             <% @visible_tags.each do |tag| %>
               <%= render Common::TagComponent.new(tag.name) %>

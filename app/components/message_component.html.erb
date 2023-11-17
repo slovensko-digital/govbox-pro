@@ -26,20 +26,23 @@
         <%= render MessageStateComponent.new(message: @message, classes: "hidden md:flex") %>
       </div>
     </div>
-    <div class="flex flex-col justify-stretch items-start relative gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
-      <div class="w-full">
-        <%= tag.iframe class: "relative border-none overflow-hidden h-full w-full", srcdoc: @message.html_visualization, onload: "(
-            function(iframe) {
-              iframe.contentWindow.document.body.style['height'] = 'unset';
-              iframe.contentWindow.document.body.style['min-height'] = 'unset';
+    <% if @message.visualizable_body? %>
+      <div class="flex flex-col justify-stretch items-start relative gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
+      <% if @message.html_visualization %>
+          <div class="w-full">
+            <%= tag.iframe class: "relative border-none overflow-hidden h-full w-full", srcdoc: @message.html_visualization, onload: "(
+                function(iframe) {
+                  iframe.contentWindow.document.body.style['height'] = 'unset';
+                  iframe.contentWindow.document.body.style['min-height'] = 'unset';
 
-              iframe.parentElement.style.height = iframe.contentWindow.document.body.scrollHeight + 20 + 'px';
-            }
-            (this)
-          )" %>
-      </div>
+                  iframe.parentElement.style.height = iframe.contentWindow.document.body.scrollHeight + 20 + 'px';
+                }
+                (this)
+              )" %>
+          </div>
+        <% end %>
 
-      <% if @message.form && @message.form.nested_message_objects.count > 1 %>
+      <% if @message.form && @message.form.nested_message_objects.present? %>
         <div class="flex flex-col justify-stretch items-stretch divide-y relative px-4 bg-white border border-gray-200 w-full">
           <% @message.form.nested_message_objects.each do |message_attachment| %>
             <!-- TODO lepsia podmienka (ma sa zobrazit vsetko okrem formulara) -->
@@ -50,9 +53,6 @@
                     <div class="flex justify-start items-start gap-4 w-full">
                       <span class="truncate text-base font-semibold text-left text-gray-900"><%= MessageObjectHelper.displayable_name(message_attachment) %></span>
                     </div>
-                    <span class="text-sm text-left text-gray-600">
-                      <%= number_to_human_size(message_attachment.content.size).to_s %>
-                    </span>
                   </div>
                 <% end %>
                 <div class="flex justify-end items-center gap-4">
@@ -68,8 +68,9 @@
         </div>
       <% end %>
     </div>
+    <% end %>
 
-    <% if @message.attachments.any? %>
+    <% if @message.attachments.present? %>
       <div class="flex justify-start items-center gap-2 px-6 py-4 bg-white border-t-0 border-r-0 border-b border-l-0 border-gray-200">
         <div>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="  w-6 h-6 relative" preserveAspectRatio="xMidYMid meet">
@@ -77,7 +78,7 @@
           </svg>
         </div>
         <p class="grow text-base text-left text-gray-900">
-          Správa obsahuje <span class="font-semibold"><%= t('message_object', count: @message.attachments.count, locale: :sk) %></span>
+          Správa obsahuje <span class="font-semibold"><%= t('message_object', count: @message.attachments.length, locale: :sk) %></span>
         </p>
       </div>
 

@@ -100,6 +100,10 @@ class MessageDraft < Message
     self.reload
   end
 
+  def collapsible?
+    false
+  end
+
   def editable?
     metadata["posp_id"] == GENERAL_AGENDA_POSP_ID && !form&.is_signed? && not_yet_submitted?
   end
