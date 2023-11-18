@@ -19,21 +19,21 @@ class MessageThreadTest < ActiveSupport::TestCase
     box = boxes(:ssd_main)
 
     thread = box.message_threads.find_or_create_by_merge_uuid!(
-      merge_uuid: message_threads(:ssd_main_one_general).merge_identifiers.second.uuid,
+      merge_uuid: message_threads(:ssd_main_general).merge_identifiers.second.uuid,
       box: box,
       title: "Title",
       delivered_at: Time.current
     )
 
-    assert_equal message_threads(:ssd_main_one_general), thread
+    assert_equal message_threads(:ssd_main_general), thread
   end
 
   test "should update attributes when creating thread in wrong chronological order" do
     box = boxes(:ssd_main)
-    older_delivered_at = message_threads(:ssd_main_one_general).delivered_at - 1.day
+    older_delivered_at = message_threads(:ssd_main_general).delivered_at - 1.day
 
     thread = box.message_threads.find_or_create_by_merge_uuid!(
-      merge_uuid: message_threads(:ssd_main_one_general).merge_identifiers.second.uuid,
+      merge_uuid: message_threads(:ssd_main_general).merge_identifiers.second.uuid,
       box: box,
       title: "New Title",
       delivered_at: older_delivered_at
@@ -46,10 +46,10 @@ class MessageThreadTest < ActiveSupport::TestCase
 
   test "should update last_message_delivered_at attribute when new message in message thread" do
     box = boxes(:ssd_main)
-    new_delivered_at = message_threads(:ssd_main_one_general).delivered_at + 1.day
+    new_delivered_at = message_threads(:ssd_main_general).delivered_at + 1.day
 
     thread = box.message_threads.find_or_create_by_merge_uuid!(
-      merge_uuid: message_threads(:ssd_main_one_general).merge_identifiers.second.uuid,
+      merge_uuid: message_threads(:ssd_main_general).merge_identifiers.second.uuid,
       box: box,
       title: "New Title",
       delivered_at: new_delivered_at
@@ -60,11 +60,11 @@ class MessageThreadTest < ActiveSupport::TestCase
 
   test "should not update last_message_delivered_at attribute when creating thread in wrong chronological order" do
     box = boxes(:ssd_main)
-    older_delivered_at = message_threads(:ssd_main_one_general).delivered_at - 1.day
-    last_message_delivered_at = message_threads(:ssd_main_one_general).last_message_delivered_at
+    older_delivered_at = message_threads(:ssd_main_general).delivered_at - 1.day
+    last_message_delivered_at = message_threads(:ssd_main_general).last_message_delivered_at
 
     thread = box.message_threads.find_or_create_by_merge_uuid!(
-      merge_uuid: message_threads(:ssd_main_one_general).merge_identifiers.second.uuid,
+      merge_uuid: message_threads(:ssd_main_general).merge_identifiers.second.uuid,
       box: box,
       title: "New Title",
       delivered_at: older_delivered_at
@@ -75,7 +75,7 @@ class MessageThreadTest < ActiveSupport::TestCase
 
   test "should merge threads with correct last_message_delivered_at" do
     threads = boxes(:ssd_main).message_threads
-    target_last_message_delivered_at = message_threads(:ssd_main_one_delivery).last_message_delivered_at
+    target_last_message_delivered_at = message_threads(:ssd_main_delivery).last_message_delivered_at
 
     threads.merge_threads
 
@@ -84,7 +84,7 @@ class MessageThreadTest < ActiveSupport::TestCase
 
   test "should merge threads with correct delivered_at" do
     threads = boxes(:ssd_main).message_threads
-    target_delivered_at = message_threads(:ssd_main_one_general).delivered_at
+    target_delivered_at = message_threads(:ssd_main_general).delivered_at
 
     threads.merge_threads
 
@@ -100,21 +100,21 @@ class MessageThreadTest < ActiveSupport::TestCase
   end
 
   test "should contain all messages in target thread after merge threads" do
-    threads = MessageThread.where(id: [message_threads(:ssd_main_one_issue).id, message_threads(:ssd_main_one_general).id])
+    threads = MessageThread.where(id: [message_threads(:ssd_main_issue).id, message_threads(:ssd_main_general).id])
 
     threads.merge_threads
 
     new_main_thread_messages = threads.reload[0].messages
 
-    assert_includes new_main_thread_messages, messages(:ssd_main_one_general_one)
-    assert_includes new_main_thread_messages, messages(:ssd_main_one_general_two)
-    assert_includes new_main_thread_messages, messages(:ssd_main_one_issue_one)
-    assert_includes new_main_thread_messages, messages(:ssd_main_one_issue_two)
+    assert_includes new_main_thread_messages, messages(:ssd_main_general_one)
+    assert_includes new_main_thread_messages, messages(:ssd_main_general_two)
+    assert_includes new_main_thread_messages, messages(:ssd_main_issue_one)
+    assert_includes new_main_thread_messages, messages(:ssd_main_issue_two)
   end
 
   test "should not create tag thread relation across tenants" do
     tag = tags(:ssd_finance)
-    thread = message_threads(:solver_main_one_general_agenda)
+    thread = message_threads(:solver_main_general_agenda)
 
     thread.message_threads_tags.new(tag_id: tag.id)
 
@@ -122,7 +122,7 @@ class MessageThreadTest < ActiveSupport::TestCase
   end
 
   test 'should contain notes from all merged threads after merge' do
-    threads = MessageThread.where(id: [message_threads(:ssd_main_one_issue).id, message_threads(:ssd_main_one_general).id])
+    threads = MessageThread.where(id: [message_threads(:ssd_main_issue).id, message_threads(:ssd_main_general).id])
 
     notes = threads.map(&:message_thread_note).map(&:note)
 
@@ -143,7 +143,7 @@ class MessageThreadTest < ActiveSupport::TestCase
       called = true
     })
 
-    thread = message_threads(:ssd_main_one_general)
+    thread = message_threads(:ssd_main_general)
     thread.tags << tags(:ssd_print)
 
     # remove callback
