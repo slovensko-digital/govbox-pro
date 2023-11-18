@@ -15,6 +15,8 @@ class Box < ApplicationRecord
   belongs_to :tenant
   belongs_to :api_connection
 
+  attr_accessor :unread_messages_count
+
   has_many :message_threads, extend: MessageThreadsExtensions, dependent: :destroy
   has_many :messages, through: :message_threads
   has_many :message_drafts_imports, dependent: :destroy

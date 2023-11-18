@@ -31,23 +31,27 @@ class BoxesController < ApplicationController
 
   def search
     authorize(Box)
-    @boxes = policy_scope(Box)
-             .where(tenant_id: Current.tenant.id)
+
+    @boxes = Current.tenant.boxes.order(:name)
              .where('unaccent(name) ILIKE unaccent(?) OR unaccent(short_name) ILIKE unaccent(?)', "%#{params[:name_search]}%", "%#{params[:name_search]}%")
-             .order(:name)
+    fill_boxes_with_unread_message_counts
   end
 
   def get_selector
     authorize(Box)
-    @boxes = Current.tenant.boxes
-    @all_unread_messages_count = Pundit.policy_scope(Current.user, Message).joins(thread: :box).where(
-      box: { tenant_id: Current.tenant.id }, read: false
-    ).count
+
+    @boxes = Current.tenant.boxes.order(:name)
+    fill_boxes_with_unread_message_counts
   end
 
   private
 
   def load_box
     @box = policy_scope(Box).find(params[:id] || params[:box_id])
+  end
+
+  def fill_boxes_with_unread_message_counts
+    unread_messages_per_box = policy_scope(Message).joins(:thread).where(read: false).group("message_threads.box_id").count
+    @boxes.map { |box| box.unread_messages_count = unread_messages_per_box[box.id] || 0 }
   end
 end
