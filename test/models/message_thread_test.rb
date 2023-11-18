@@ -7,7 +7,7 @@ class MessageThreadTest < ActiveSupport::TestCase
 
     thread = box.message_threads.find_or_create_by_merge_uuid!(
       merge_uuid: SecureRandom.uuid,
-      folder: folders(:ssd_main_one),
+      box: box,
       title: "Title",
       delivered_at: Time.current
     )
@@ -20,7 +20,7 @@ class MessageThreadTest < ActiveSupport::TestCase
 
     thread = box.message_threads.find_or_create_by_merge_uuid!(
       merge_uuid: message_threads(:ssd_main_one_general).merge_identifiers.second.uuid,
-      folder: folders(:ssd_main_one),
+      box: box,
       title: "Title",
       delivered_at: Time.current
     )
@@ -34,7 +34,7 @@ class MessageThreadTest < ActiveSupport::TestCase
 
     thread = box.message_threads.find_or_create_by_merge_uuid!(
       merge_uuid: message_threads(:ssd_main_one_general).merge_identifiers.second.uuid,
-      folder: folders(:ssd_main_two),
+      box: box,
       title: "New Title",
       delivered_at: older_delivered_at
     )
@@ -42,7 +42,6 @@ class MessageThreadTest < ActiveSupport::TestCase
     assert_equal "New Title", thread.title
     assert_equal "New Title", thread.original_title
     assert_equal older_delivered_at, thread.delivered_at
-    assert_equal folders(:ssd_main_two), thread.folder # yes, we WANT to update folder here
   end
 
   test "should update last_message_delivered_at attribute when new message in message thread" do
@@ -51,7 +50,7 @@ class MessageThreadTest < ActiveSupport::TestCase
 
     thread = box.message_threads.find_or_create_by_merge_uuid!(
       merge_uuid: message_threads(:ssd_main_one_general).merge_identifiers.second.uuid,
-      folder: folders(:ssd_main_two),
+      box: box,
       title: "New Title",
       delivered_at: new_delivered_at
     )
@@ -66,7 +65,7 @@ class MessageThreadTest < ActiveSupport::TestCase
 
     thread = box.message_threads.find_or_create_by_merge_uuid!(
       merge_uuid: message_threads(:ssd_main_one_general).merge_identifiers.second.uuid,
-      folder: folders(:ssd_main_one),
+      box: box,
       title: "New Title",
       delivered_at: older_delivered_at
     )
@@ -75,7 +74,7 @@ class MessageThreadTest < ActiveSupport::TestCase
   end
 
   test "should merge threads with correct last_message_delivered_at" do
-    threads = folders(:ssd_main_one).message_threads
+    threads = boxes(:ssd_main).message_threads
     target_last_message_delivered_at = message_threads(:ssd_main_one_delivery).last_message_delivered_at
 
     threads.merge_threads
@@ -84,7 +83,7 @@ class MessageThreadTest < ActiveSupport::TestCase
   end
 
   test "should merge threads with correct delivered_at" do
-    threads = folders(:ssd_main_one).message_threads
+    threads = boxes(:ssd_main).message_threads
     target_delivered_at = message_threads(:ssd_main_one_general).delivered_at
 
     threads.merge_threads
@@ -93,7 +92,7 @@ class MessageThreadTest < ActiveSupport::TestCase
   end
 
   test "should delete older thread during merge threads" do
-    threads = folders(:ssd_main_one).message_threads
+    threads = boxes(:ssd_main).message_threads
 
     threads.merge_threads
 
