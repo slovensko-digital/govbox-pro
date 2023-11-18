@@ -1,13 +1,13 @@
-<%= button_to get_selector_boxes_path, method: :get, data: { turbo_frame: "modal" }, disabled: @disabled, class: "flex items-center gap-2" do %>
+<%= button_to get_selector_boxes_path, method: :get, data: { turbo_frame: "modal" }, disabled: @disabled, class: "flex items-center gap-2 text-gray-500 hover:text-gray-900" do %>
   <div class="flex justify-start items-center relative gap-3 py-1.5 rounded-md bg-white">
     <% if Current.box %>
       <div class="hidden lg:flex">
-        <%= render Icons::BoxesComponent.new %>
+        <%= render Icons::RectangleStackComponent.new %>
       </div>
       <%= render Common::BoxLabelComponent.new(Current.box) %>
       <p class="hidden lg:flex text-base text-left text-gray-900"><%= Current.box.name %></p>
     <% else %>
-      <%= render Icons::BoxesComponent.new %>
+      <%= render Icons::RectangleStackComponent.new %>
       <p class="hidden lg:flex text-base text-left text-gray-900">Všetky schránky</p>
     <% end %>
   </div>
