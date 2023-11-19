@@ -6,7 +6,7 @@
     <% @filters.each do |filter| %>
       <% url = message_threads_path(q: filter.query) %>
       <%= link_to url, class: "text-gray-700 hover:text-indigo-600 hover:bg-gray-50 group w-72 flex gap-x-3 rounded-md p-2 px-4 text-sm leading-6 font-semibold data-[active=true]:bg-gray-50 data-[active=true]:text-indigo-600", data: { active: current_page?(url) } do %>
-        <%= render Icons::FiltersComponent.new() %>
+        <%= render Icons::BookmarkComponent.new %>
         <p class="truncate text-base font-medium"><%= filter.name %></p>
       <% end %>
     <% end %>
