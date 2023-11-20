@@ -6,7 +6,12 @@ class Searchable::ReindexMessageThreadJob < ApplicationJob
   good_job_control_concurrency_with(
     # Maximum number of unfinished jobs to allow with the concurrency key
     # Can be an Integer or Lambda/Proc that is invoked in the context of the job
-    total_limit: 1,
+    total_limit: 2,
+
+    # Maximum number of jobs with the concurrency key to be
+    # concurrently performed (excludes enqueued jobs)
+    # Can be an Integer or Lambda/Proc that is invoked in the context of the job
+    perform_limit: 1,
 
     key: -> { "Searchable::ReindexMessageThreadJob-#{arguments.first}" }
   )
