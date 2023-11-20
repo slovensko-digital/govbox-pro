@@ -21,31 +21,14 @@ export default class extends Controller {
     var target_state;
 
     form.querySelectorAll("input#message_thread_ids_").forEach((input) => {
-      if (input.checked) {
-        if (target_state) {
-          if (target_state == "false") {
-            target_state = "indeterminate";
-          }
-        } else {
-          target_state = "true";
-        }
-      } else {
-        if (target_state) {
-          if (target_state == "true") {
-            target_state = "indeterminate";
-          }
-        } else {
-          target_state = "false";
-        }
-      }
+      if (input.checked && !target_state) target_state = "true";
+      if (input.checked && target_state == "false") target_state = "indeterminate";
+      if (!input.checked && !target_state) target_state = "false";
+      if (!input.checked && target_state == "true") target_state = "false";
     });
 
-    if (target_state == "false") {
-      checkbox_all.checked = false;
-    } else if (target_state == "true") {
-      checkbox_all.checked = true;
-    } else {
-      checkbox_all.indeterminate = true;
-    }
+    if (target_state == "false") checkbox_all.checked = false;
+    else if (target_state == "true") checkbox_all.checked = true;
+    else checkbox_all.indeterminate = true;
   }
 }
