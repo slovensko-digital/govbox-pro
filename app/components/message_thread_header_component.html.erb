@@ -1,6 +1,6 @@
 <div class="flex justify-between gap-4 px-4 md:px-6 py-4 bg-white border-t-0 border-r-0 border-b border-l-0 border-gray-200" data-test="header">
   <div class="flex flex-col grow md:flex-row justify-start relative gap-4">
-    <div class="flex flex-col md:flex-row md:flex-wrap gap-2 md:items-center">
+    <div class="flex flex-col flex-wrap gap-2 md:gap-4">
       <div class="flex gap-2">
         <%= render Common::BoxLabelComponent.new(@message_thread.box, "h-fit w-fit max-w-fit") %>
         <span class="text-xl font-semibold text-left text-gray-900" data-test="title">
@@ -11,10 +11,8 @@
         <% @thread_tags.each do |thread_tag|%>
           <%= render MessageThreads::TagComponent.new(thread_tag) %>
         <% end %>
-        <%= link_to edit_message_thread_tags_path(@message_thread), data: { turbo_frame: :modal }, class: "rounded-md bg-blue-100 p-2" do %>
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 relative" preserveAspectRatio="xMidYMid meet">
-            <path d="M8 4V8M8 8V12M8 8H12M8 8H4" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-          </svg>
+        <%= link_to edit_message_thread_tags_path(@message_thread), data: { turbo_frame: "modal" }, title: "Upraviť štítky", class: "rounded-md bg-blue-100 p-1.5 hover:bg-blue-200" do %>
+          <%= render Icons::TagComponent.new(css_classes: "h-4 w-4 text-blue-600", stroke_width: 2) %>
         <% end %>
       </div>
     </div>

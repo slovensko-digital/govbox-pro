@@ -40,7 +40,7 @@ class BoxesController < ApplicationController
   def get_selector
     authorize(Box)
     @boxes = Current.tenant.boxes
-    @all_unread_messages_count = Pundit.policy_scope(Current.user, Message).joins(thread: { folder: :box }).where(
+    @all_unread_messages_count = Pundit.policy_scope(Current.user, Message).joins(thread: :box).where(
       box: { tenant_id: Current.tenant.id }, read: false
     ).count
   end

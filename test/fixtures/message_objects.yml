@@ -1,13 +1,13 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  message: ssd_main_one_general_one
+  message: ssd_main_general_one
   name: MyString
   mimetype: MyString
   object_type: Attachment
 
 two:
-  message: ssd_main_one_general_two
+  message: ssd_main_general_two
   name: MyString
   mimetype: MyString
   object_type: Form

@@ -55,9 +55,7 @@
         </time>
         <%#= render Common::TagComponent.new("2 nové správy") %>
       </div>
-      <svg class="h-5 w-5 hidden md:block text-gray-400" fill="none" viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M9 5L16 12L9 19" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-      </svg>
+      <%= render Icons::ChevronRightComponent.new(css_classes: "w-5 h-5 hidden md:block text-gray-400") %>
     </div>
   <% end %>
 </li>
