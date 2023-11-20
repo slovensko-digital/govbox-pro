@@ -24,7 +24,7 @@
                              formaction: edit_message_threads_bulk_tags_path,
                              formmethod: :post, data: { turbo_frame: "modal" },
                              class: "w-full text-gray-700 group flex items-center px-4 py-2 text-sm hover:bg-gray-100 hover:text-gray-900", role: "menuitem" do %>
-                <%= render Icons::TagsComponent.new(css_classes: "mr-2 sm:mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500") %>
+                <%= render Icons::TagComponent.new(css_classes: "mr-2 sm:mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500") %>
                 Upraviť štítky
               <% end %>
             </div>
@@ -34,7 +34,7 @@
                              disabled: @ids.length < 2, data: { turbo_confirm: "Naozaj chcete spojiť označené vlákna do jedného?" },
                              class: "w-full group flex items-center px-4 py-2 text-sm #{@ids.length < 2 ? "text-gray-300" : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"}",
                              role: "menuitem" do %>
-                <%= render Icons::MergeThreadComponent.new(css_classes: "mr-2 sm:mr-3 h-5 w-5 #{@ids.length < 2 ? "text-gray-300" : "text-gray-400 group-hover:text-gray-500" }") %>
+                <%= render Icons::ChatBubbleLeftRightComponent.new(css_classes: "mr-2 sm:mr-3 h-5 w-5 #{@ids.length < 2 ? "text-gray-300" : "text-gray-400 group-hover:text-gray-500" }") %>
                 Spojiť vlákna
               <% end %>
             </div>
@@ -43,7 +43,7 @@
                              formaction: message_threads_bulk_authorize_deliveries_path,
                              formmethod: :patch, data: { turbo_confirm: "Naozaj chcete prevziať správy v označených vláknach?" },
                              class: "w-full text-gray-700 group flex items-center px-4 py-2 text-sm hover:bg-gray-100 hover:text-gray-900", role: "menuitem" do %>
-                <%= render Icons::MailOpenComponent.new(css_classes: "mr-2 sm:mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500") %>
+                <%= render Icons::EnvelopeOpenComponent.new(css_classes: "mr-2 sm:mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500") %>
                 Prevziať
               <% end %>
             </div>
