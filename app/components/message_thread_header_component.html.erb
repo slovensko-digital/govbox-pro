@@ -3,8 +3,9 @@
     <div class="flex flex-col flex-wrap gap-2 md:gap-4">
       <div class="flex gap-2">
         <%= render Common::BoxLabelComponent.new(@message_thread.box, "h-fit w-fit max-w-fit") %>
-        <span class="text-xl font-semibold text-left text-gray-900" data-test="title">
-          <%= @message_thread.title %>
+        <span class="text-xl font-semibold text-left text-gray-900" data-test="title" data-controller="text-wrap">
+          <%#= @message_thread.title %>
+          Potvrdenie o odoslaní elektronického podania_dlhy_nazov_Informácia_(eID_Zapis_Ext_Modifikacia_Kontaktnych_Udajov_Bez_Zep_WS_1_0202304260033825
         </span>
       </div>
       <div class="flex flex-wrap justify-start items-center gap-2" data-test="tags">

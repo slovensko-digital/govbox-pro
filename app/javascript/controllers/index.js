@@ -27,3 +27,6 @@ application.register("autofocus", AutofocusController)
 
 import TriStateCheckboxController from "./tri_state_checkbox_controller"
 application.register("tri-state-checkbox", TriStateCheckboxController)
+
+import TextWrapController from "./text_wrap_controller"
+application.register("text-wrap", TextWrapController)
