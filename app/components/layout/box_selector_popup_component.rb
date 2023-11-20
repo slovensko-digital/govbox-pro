@@ -1,5 +1,5 @@
 class Layout::BoxSelectorPopupComponent < ViewComponent::Base
-  FILTER_IF_NUMBER_OF_BOXES_ABOVE = 5
+  SHOW_SEARCH_BOX_COUNT_THRESHOLD = 5
 
   def initialize(boxes_with_unread_message_counts)
     @boxes_with_unread_message_counts = boxes_with_unread_message_counts
