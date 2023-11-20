@@ -24,7 +24,7 @@ class MessageThreadsTag < ApplicationRecord
   after_commit ->(message_threads_tag) { EventBus.publish(:message_thread_tag_changed, message_threads_tag) }
 
   def thread_and_tag_tenants_matches
-    unless message_thread.folder.box.tenant == tag.tenant && tag.tenant
+    unless message_thread.box.tenant == tag.tenant && tag.tenant
       errors.add :name, 'Unpermitted combination of tag and message thread'
     end
   end

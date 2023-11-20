@@ -1,7 +1,9 @@
 class Govbox::ProcessUnauthorizedDeliveryNotificationJob < ApplicationJob
   def perform(govbox_message)
     message = ::Message.where(uuid: govbox_message.message_id)
-                       .joins(thread: :folder).where(folders: { box_id: govbox_message.box.id }).take
+                       .joins(:thread)
+                       .where(thread: { box_id: govbox_message.box.id })
+                       .take
     
     return if message.metadata["authorized"]
 

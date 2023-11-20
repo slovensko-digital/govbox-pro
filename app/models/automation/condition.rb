@@ -70,7 +70,7 @@ module Automation
                else
                  thing
                end
-      object.folder.box == condition_object
+      object.box == condition_object
     end
 
     def cleanup_record

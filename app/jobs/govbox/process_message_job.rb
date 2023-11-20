@@ -19,7 +19,7 @@ module Govbox
     end
 
     def destroy_associated_message_draft(govbox_message)
-      message_draft = MessageDraft.where(uuid: govbox_message.message_id).joins(thread: :folder).where(folders: { box_id: govbox_message.box.id }).take
+      message_draft = MessageDraft.where(uuid: govbox_message.message_id).joins(:thread).where(thread: { box_id: govbox_message.box.id }).take
       message_draft&.destroy
     end
 
@@ -31,7 +31,7 @@ module Govbox
 
       if authorized_govbox_message
         delivery_notification_message = ::Message.where(uuid: govbox_message.message_id)
-                                                 .joins(thread: :folder).where(folders: { box_id: govbox_message.box.id }).take
+                                                 .joins(:thread).where(thread: { box_id: govbox_message.box.id }).take
         mark_delivery_notificiation_message_authorized(delivery_notification_message) if delivery_notification_message
       elsif govbox_message.delivery_notification['consignment']['type'] == 'Doc.GeneralAgendaReport'
         Govbox::ProcessUnauthorizedDeliveryNotificationJob.set(wait_until: Time.parse(govbox_message.delivery_notification['delivery_period_end_at']))
@@ -45,14 +45,14 @@ module Govbox
 
       if delivery_notification_govbox_message
         delivery_notification_message = ::Message.where(uuid: delivery_notification_govbox_message.message_id)
-                                                 .joins(thread: :folder).where(folders: { box_id: govbox_message.box.id }).take
+                                                 .joins(:thread).where(thread: { box_id: govbox_message.box.id }).take
         mark_delivery_notificiation_message_authorized(delivery_notification_message) if delivery_notification_message
       end
     end
 
     def create_message_relations(message)
-      related_messages = ::Message.where("metadata ->> 'reference_id' = ?", message.uuid).joins(thread: { folder: :box })
-                                .where(thread: { folders: { boxes: { id: message.thread.folder.box.id } } })
+      related_messages = ::Message.where("metadata ->> 'reference_id' = ?", message.uuid).joins(:thread)
+                                .where(thread: { box_id: message.thread.box_id })
 
       related_messages.each do |related_message|
         message.message_relations.find_or_create_by!(
@@ -60,8 +60,8 @@ module Govbox
         )
       end
 
-      main_message = ::Message.where(uuid: message.metadata['reference_id']).joins(thread: { folder: :box })
-                                .where(thread: { folders: { boxes: { id: message.thread.folder.box.id } } }).take
+      main_message = ::Message.where(uuid: message.metadata['reference_id']).joins(:thread)
+                                .where(thread: { box_id: message.thread.box_id }).take
 
       main_message.message_relations.find_or_create_by!(
         related_message: message
