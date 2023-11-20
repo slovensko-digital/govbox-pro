@@ -32,16 +32,16 @@ class BoxesController < ApplicationController
   def search
     authorize(Box)
 
-    @boxes = Current.tenant.boxes.order(:name)
+    boxes = Current.tenant.boxes.order(:name)
              .where('unaccent(name) ILIKE unaccent(?) OR unaccent(short_name) ILIKE unaccent(?)', "%#{params[:name_search]}%", "%#{params[:name_search]}%")
-    fill_boxes_with_unread_message_counts
+    set_boxes_with_unread_message_counts(boxes)
   end
 
   def get_selector
     authorize(Box)
 
-    @boxes = Current.tenant.boxes.order(:name)
-    fill_boxes_with_unread_message_counts
+    boxes = Current.tenant.boxes.order(:name)
+    set_boxes_with_unread_message_counts(boxes)
   end
 
   private
@@ -50,8 +50,9 @@ class BoxesController < ApplicationController
     @box = policy_scope(Box).find(params[:id] || params[:box_id])
   end
 
-  def fill_boxes_with_unread_message_counts
-    unread_messages_per_box = policy_scope(Message).joins(:thread).where(read: false).group("message_threads.box_id").count
-    @boxes.map { |box| box.unread_messages_count = unread_messages_per_box[box.id] || 0 }
+  def set_boxes_with_unread_message_counts(boxes)
+    unread_messages_per_box = policy_scope(Message).joins(:thread).where(read: false, message_threads: { box_id: boxes.to_a }).group("message_threads.box_id").count
+
+    @boxes_with_unread_message_counts = boxes.map { |box| [box, unread_messages_per_box[box.id] || 0] }.to_h
   end
 end

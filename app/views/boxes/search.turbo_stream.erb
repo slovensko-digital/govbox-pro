@@ -1,3 +1,5 @@
 <%= turbo_stream.update 'box-list' do %>
-  <%= render Layout::BoxListComponent.with_collection(@boxes) %>
+  <% @boxes_with_unread_message_counts.each do |box, unread_message_count| %>
+    <%= render Layout::BoxListComponent.new(box: box, unread_message_count: unread_message_count) %>
+  <% end %>
 <% end %>

@@ -1,6 +1,8 @@
 class Layout::BoxSelectorPopupComponent < ViewComponent::Base
-  def initialize(boxes)
-    @boxes = boxes
-    @all_unread_messages_count = boxes.to_a.sum(&:unread_messages_count)
+  FILTER_IF_NUMBER_OF_BOXES_ABOVE = 5
+
+  def initialize(boxes_with_unread_message_counts)
+    @boxes_with_unread_message_counts = boxes_with_unread_message_counts
+    @all_unread_messages_count = boxes_with_unread_message_counts.values.sum
   end
 end
