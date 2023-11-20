@@ -1,1 +1,3 @@
-<%= render Admin::Tags::TagsListComponent.new(@tags) %>
+<%= render Admin::Tags::TagsListComponent.new(
+  external_tags: @external_tags,
+  internal_tags: @internal_tags) %>

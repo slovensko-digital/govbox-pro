@@ -1,9 +1,6 @@
 class Layout::BoxListComponent < ViewComponent::Base
-  with_collection_parameter :box
-
-  def initialize(box:)
+  def initialize(box:, unread_message_count:)
     @box = box
-    # TODO pass data as param
-    @unread_messages = Pundit.policy_scope(Current.user, Message).joins(thread: :box).where(box: { id: @box.id}, read: false).count
+    @unread_message_count = unread_message_count
   end
 end

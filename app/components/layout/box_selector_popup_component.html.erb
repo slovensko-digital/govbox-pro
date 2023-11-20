@@ -10,7 +10,7 @@
     <% end %>
     <hr>
     <div class="flex flex-col gap-2 mb-4">
-      <% if @boxes.length > 1 %>
+      <% if @boxes_with_unread_message_counts.length > SHOW_SEARCH_BOX_COUNT_THRESHOLD %>
         <%= form_with url: search_boxes_path, class: "flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 mt-4" do |form| %>
           <div class="flex w-full items-center rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600">
             <div class="p-2">
@@ -26,7 +26,9 @@
         <% end %>
       <% end %>
       <%= tag.turbo_frame id: "box-list", class: "flex-col self-stretch mt-2" do %>
-        <%= render Layout::BoxListComponent.with_collection(@boxes) %>
+        <% @boxes_with_unread_message_counts.each do |box, unread_message_count| %>
+          <%= render Layout::BoxListComponent.new(box: box, unread_message_count: unread_message_count) %>
+        <% end %>
       <% end %>
     </div>
 
