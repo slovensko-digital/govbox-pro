@@ -24,7 +24,7 @@ export default class extends Controller {
       if (input.checked && !target_state) target_state = "true";
       if (input.checked && target_state == "false") target_state = "indeterminate";
       if (!input.checked && !target_state) target_state = "false";
-      if (!input.checked && target_state == "true") target_state = "false";
+      if (!input.checked && target_state == "true") target_state = "indeterminate";
     });
 
     if (target_state == "false") checkbox_all.checked = false;
