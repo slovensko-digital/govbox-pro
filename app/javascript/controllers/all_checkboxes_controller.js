@@ -1,34 +1,34 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  connect() {
+  static targets = ["form", "checkbox", "refresh"];
+  checkboxTargetConnected() {
+    this.update();
+  }
+
+  refreshTargetConnected() {
     this.update();
   }
 
   toggle(event) {
-    const form = document.getElementById("thread_checkboxes_form");
-
-    form.querySelectorAll("input").forEach((input) => {
+    this.formTarget.querySelectorAll("input").forEach((input) => {
       input.checked = event.target.checked;
     });
-    form.requestSubmit();
+    this.formTarget.requestSubmit();
   }
 
   update() {
-    const form = document.getElementById("thread_checkboxes_form");
-    const checkbox_all = document.getElementById("checkbox-all");
-
     var target_state;
 
-    form.querySelectorAll("input#message_thread_ids_").forEach((input) => {
+    this.formTarget.querySelectorAll('input[type="checkbox"]').forEach((input) => {
       if (input.checked && !target_state) target_state = "true";
-      if (input.checked && target_state == "false") target_state = "indeterminate";
-      if (!input.checked && !target_state) target_state = "false";
-      if (!input.checked && target_state == "true") target_state = "indeterminate";
+      else if (input.checked && target_state == "false") target_state = "indeterminate";
+      else if (!input.checked && !target_state) target_state = "false";
+      else if (!input.checked && target_state == "true") target_state = "indeterminate";
     });
 
-    if (target_state == "false") checkbox_all.checked = false;
-    else if (target_state == "true") checkbox_all.checked = true;
-    else checkbox_all.indeterminate = true;
+    if (target_state == "false") this.checkboxTarget.checked = false;
+    else if (target_state == "true") this.checkboxTarget.checked = true;
+    else this.checkboxTarget.indeterminate = true;
   }
 }
