@@ -1,6 +1,6 @@
 <%= tag.turbo_frame id: "bulk_actions" do %>
   <div class="flex justify-stretch items-center gap-4 px-4 lg:py-4 border-t-0 border-r-0 border-b border-l-0 border-gray-200 min-h-[3rem] sm:min-h-[5rem]">
-    <%= check_box_tag("", nil, false, { class: "hidden sm:block h-4 w-4 rounded border-gray-300 text-blue-500 focus:ring-0", type: "checkbox", id: "checkbox-all", data: { action: "all-checkboxes#toggle", "all-checkboxes-target": "checkbox" } } )%>
+    <%= check_box_tag("", nil, false, { class: "hidden sm:block h-4 w-4 rounded border-gray-300 text-blue-500 focus:ring-0", type: "checkbox", id: "checkbox-all", data: { action: "all-checkboxes#toggle", "all-checkboxes-target": "checkbox" } }) %>
     <span class="grow sm:text-xl text-base font-semibold text-left text-gray-900"><%= @ids.present? ? t(:selected_message, count: @ids.count) : "Správy v schránke" %></span>
     <% if @ids.present? %>
       <%= form_with url: bulk_merge_message_threads_path, data: { turbo_frame: "_top" } do %>
@@ -10,11 +10,9 @@
 
         <div data-controller="dropdown" class="relative hidden sm:inline-block text-left">
           <div>
-            <button type="button" data-action="dropdown#toggle click@window->dropdown#hide" class="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-2 py-1 sm:px-3 sm:py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" id="menu-button" aria-expanded="true" aria-haspopup="true">
+            <button type="button" data-action="dropdown#toggle click@window->dropdown#hide" class="inline-flex w-full justify-center items-center gap-x-1.5 rounded-md bg-white px-2 py-1 sm:px-3 sm:py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" id="menu-button" aria-expanded="true" aria-haspopup="true">
               Hromadné akcie
-              <svg class="-mr-1 h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-              </svg>
+              <%= render Icons::UncollapseComponent.new %>
             </button>
           </div>
 
