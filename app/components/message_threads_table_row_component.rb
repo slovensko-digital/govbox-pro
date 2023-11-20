@@ -3,6 +3,7 @@ class MessageThreadsTableRowComponent < ViewComponent::Base
 
   def initialize(message_thread:, message_thread_iteration:)
     @message_thread = message_thread
+    @message_thread_iteration = message_thread_iteration
     @visible_tags = message_thread.tags.select(&:visible).sort_by(&:name)
   end
 end
