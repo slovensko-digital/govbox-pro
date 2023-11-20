@@ -3,10 +3,7 @@
 <%= tag.turbo_frame id: dom_id(@message), class: "overflow-hidden bg-white shadow-sm rounded-md border border-gray-200" do %>
   <%= link_to message_path(@message, mode: :thread_view), class: "flex justify-stretch gap-x-2 md:gap-x-4 px-4 py-5 hover:bg-gray-50 sm:px-6" do %>
     <div class="flex grow min-w-0 gap-x-4 justify-between text-sm font-normal leading-6 text-gray-900">
-      <span class="truncate md:hidden">
-        <%= @message.title %>
-      </span>
-      <span class="hidden md:block">
+      <span>
         <%= @message.title %>
       </span>
       <time class="shrink-0 md:hidden" datetime="<%= @message.delivered_at %>">
