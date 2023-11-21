@@ -16,7 +16,6 @@ class Tenant < ApplicationRecord
 
   has_many :boxes, dependent: :destroy
   has_many :automation_rules, class_name: 'Automation::Rule', dependent: :destroy
-  has_many :folders, through: :boxes
   has_many :tags, dependent: :destroy
   has_many :filters
   after_create :create_default_objects

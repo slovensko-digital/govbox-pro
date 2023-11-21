@@ -1,12 +1,12 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-ssd_main_one_general_one:
+ssd_main_general_one:
   uuid: <%= SecureRandom.uuid %>
   title: The First Message
   sender_name: Social Department
   html_visualization: Visualization 1
   delivered_at: 2023-05-18 16:16:26
-  thread: ssd_main_one_general
+  thread: ssd_main_general
   read: true
   replyable: false
   metadata:
@@ -14,62 +14,62 @@ ssd_main_one_general_one:
     delivery_notification:
       delivery_period_end_at: <%= DateTime.current - 1.day %>
 
-ssd_main_one_general_two:
+ssd_main_general_two:
   uuid: <%= SecureRandom.uuid %>
   title: The Second Message
   html_visualization: Visualization 2
   delivered_at: 2023-05-18 16:17:26
-  thread: ssd_main_one_general
+  thread: ssd_main_general
   metadata:
     authorized: false
     delivery_notification:
       delivery_period_end_at: <%= DateTime.current + 1.day %>
 
-ssd_main_one_general_three:
+ssd_main_general_three:
   uuid: <%= SecureRandom.uuid %>
   title: The Collapsed Message
   html_visualization: Visualization 3
   delivered_at: 2023-05-18 16:18:26
-  thread: ssd_main_one_general
+  thread: ssd_main_general
   metadata: {}
   collapsed: true
 
-ssd_main_one_issue_one:
+ssd_main_issue_one:
   uuid: <%= SecureRandom.uuid %>
   title: MyString3
   recipient_name: SD Services
   html_visualization: MyString
   delivered_at: 2023-05-18 16:19:26
-  thread: ssd_main_one_issue
+  thread: ssd_main_issue
   metadata: {}
 
-ssd_main_one_issue_two:
+ssd_main_issue_two:
   uuid: <%= SecureRandom.uuid %>
   title: MyString4
   html_visualization: MyString
   delivered_at: 2023-05-18 16:20:26
-  thread: ssd_main_one_issue
+  thread: ssd_main_issue
   metadata: {}
 
-ssd_main_one_collapsed_one:
+ssd_main_collapsed_one:
   uuid: <%= SecureRandom.uuid %>
   title: Outbox message
   html_visualization: MyString
   delivered_at: 2023-05-18 16:20:26
-  thread: ssd_main_one_with_application
+  thread: ssd_main_with_application
   metadata:
     collapsed: true
 
-ssd_main_one_collapsed_two:
+ssd_main_collapsed_two:
   uuid: <%= SecureRandom.uuid %>
   title: Outbox message
   html_visualization: MyString
   delivered_at: 2023-05-18 16:20:26
-  thread: ssd_main_one_with_application
+  thread: ssd_main_with_application
   metadata:
     collapsed: true
 
-solver_main_one_delivery_notification_authorized_delivery_notification:
+solver_main_delivery_notification_one:
   uuid: bbff2617-3430-44c6-b827-519059ff1e90
   title: Authorized Delivery notification
   sender_name: MyString
@@ -84,9 +84,9 @@ solver_main_one_delivery_notification_authorized_delivery_notification:
       consignment:
         message_id: a7800b40-44b1-4012-ae78-774de6457cc4
         type: Doc.GeneralAgendaFiction
-  thread: solver_main_one_delivery_notification
+  thread: solver_main_delivery_notification
 
-solver_main_one_delivery_notification_delivery_notification:
+solver_main_delivery_notification_two:
   uuid: cdd45d69-f917-4fca-b296-0b3759a0936a
   title: Delivery notification
   sender_name: MyString
@@ -100,4 +100,4 @@ solver_main_one_delivery_notification_delivery_notification:
       consignment:
         message_id: x7800b40-44b1-4012-ae78-774de6457cc2
         type: Doc.GeneralAgendaFiction
-  thread: solver_main_one_delivery_notification
+  thread: solver_main_delivery_notification

@@ -13,8 +13,8 @@ class Searchable::Indexer
     record.tag_names = Searchable::IndexHelpers.searchable_string(message_thread.tags.map(&:name).join(' ').gsub(/[:\/]/, " "))
     record.content = message_thread.messages.map { |message| message_to_searchable_string(message) }.join(' ')
     record.last_message_delivered_at = message_thread.last_message_delivered_at
-    record.tenant_id = message_thread.folder.box.tenant_id
-    record.box_id = message_thread.folder.box_id
+    record.tenant_id = message_thread.box.tenant_id
+    record.box_id = message_thread.box_id
 
     record.save!
   end

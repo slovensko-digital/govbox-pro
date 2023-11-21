@@ -1,7 +1,7 @@
-<li class="flex px-4 py-5 hover:bg-blue-50 gap-2" data-test="<%= dom_id(@message_thread) %>">
+<li class="flex px-4 py-5 hover:bg-blue-50 gap-2" data-test="<%= dom_id(@message_thread) %>" <% if @message_thread_iteration.last? %> data-all-checkboxes-target="refresh" <% end %>>
   <div class="hidden sm:flex">
     <div class="flex pr-2 md:gap-4 md:pr-4 items-center justify-start mb-auto">
-      <%= check_box_tag('message_thread_ids[]', @message_thread.id, false, { class: "h-4 w-4 rounded border-gray-300 text-blue-500 focus:ring-0 hidden sm:block", type: "checkbox", data: { action: "click->form#send" } }) %>
+      <%= check_box_tag("message_thread_ids[]", @message_thread.id, false, { class: "h-4 w-4 rounded border-gray-300 text-blue-500 focus:ring-0 hidden sm:block", type: "checkbox", data: { action: "form#send" } }) %>
       <%= render Common::BoxLabelComponent.new(@message_thread.box, "hidden md:block") %>
     </div>
   </div>
@@ -10,7 +10,7 @@
       <div class="flex flex-wrap grow gap-x-4 gap-y-1">
         <div class="inline-block md:flex">
           <%= render Common::BoxLabelComponent.new(@message_thread.box, "inline-flex md:hidden", "text-xs") %>
-          <span class="text-sm sm:text-base text-gray-900 <%="font-semibold" unless @message_thread.all_read %> [word-break:break-word]">
+          <span class="text-sm sm:text-base text-gray-900 <%= "font-semibold" unless @message_thread.all_read %> [word-break:break-word]">
             <%= @message_thread.title %>
           </span>
         </div>
@@ -22,9 +22,9 @@
           </div>
         <% end %>
       </div>
-<!--      <div>-->
-        <%#= render Common::TagComponent.new("2 nové správy") %>
-<!--      </div>-->
+      <!--      <div>-->
+      <%#= render Common::TagComponent.new("2 nové správy") %>
+      <!--      </div>-->
       <% if @message_thread.with_whom || @message_thread.last_message_delivered_at %>
         <div class="flex flex-wrap gap-2 text-gray-500 text-xs md:text-base items-center">
           <% if @message_thread.with_whom %>
@@ -33,7 +33,7 @@
             </span>
           <% end %>
           <% if @message_thread.last_message_delivered_at %>
-            <time class="md:hidden" datetime="<%= @message_thread.last_message_delivered_at%>">
+            <time class="md:hidden" datetime="<%= @message_thread.last_message_delivered_at %>">
               <%= helpers.nice_datetime(@message_thread.last_message_delivered_at) %>
             </time>
           <% end %>
@@ -42,15 +42,15 @@
 
       <% if @message_thread.search_highlight.present? %>
         <p class="text-xs sm:text-sm text-left text-gray-500">
-<%#  Necessary to generate proper CSS for search_highlight %>
-<%#  class="bg-yellow-200 text-gray-950" %>
+          <%#  Necessary to generate proper CSS for search_highlight %>
+          <%#  class="bg-yellow-200 text-gray-950" %>
           <%= raw @message_thread.search_highlight %>
         </p>
       <% end %>
     </div>
     <div class="hidden md:flex gap-x-4 items-center">
       <div class="flex flex-col gap-y-1 text-right whitespace-nowrap">
-        <time class="text-lg text-gray-900" datetime="<%= @message_thread.last_message_delivered_at%>">
+        <time class="text-lg text-gray-900" datetime="<%= @message_thread.last_message_delivered_at %>">
           <%= helpers.nice_datetime(@message_thread.last_message_delivered_at) %>
         </time>
         <%#= render Common::TagComponent.new("2 nové správy") %>

@@ -58,7 +58,7 @@ class MessageDraftsController < ApplicationController
       message_draft.being_submitted!
     end
 
-    jobs_batch.enqueue(on_finish: Govbox::FinishMessageDraftsSubmitJob, box: @messages.first.thread.folder.box)
+    jobs_batch.enqueue(on_finish: Govbox::FinishMessageDraftsSubmitJob, box: @messages.first.thread.box)
   end
 
   def destroy

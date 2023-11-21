@@ -1,21 +1,21 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-ssd_main_one_one:
-  message_thread: ssd_main_one_general
+ssd_main_general_one:
+  message_thread: ssd_main_general
   uuid: <%= SecureRandom.uuid %>
   box: ssd_main
 
-ssd_main_one_two:
-  message_thread: ssd_main_one_general
+ssd_main_general_two:
+  message_thread: ssd_main_general
   uuid: <%= SecureRandom.uuid %>
   box: ssd_main
 
-ssd_main_one_:
-  message_thread: ssd_main_one_with_application
+ssd_main_with_application_one:
+  message_thread: ssd_main_with_application
   uuid: 025439b7-02ab-4108-b40f-e10f65c0e124
   box: ssd_main
 
-ssd_main_two_one:
-  message_thread: ssd_main_one_issue
+ssd_main_issue_one:
+  message_thread: ssd_main_issue
   uuid: <%= SecureRandom.uuid %>
   box: ssd_main

@@ -11,8 +11,8 @@
 #  updated_at                                  :datetime         not null
 
 class MessageThread < ApplicationRecord
-  belongs_to :folder
-  has_one :box, through: :folder
+  belongs_to :folder, optional: true # do not use, will be removed
+  belongs_to :box
   has_one :message_thread_note, dependent: :destroy
   has_many :messages, dependent: :destroy do
     def find_or_create_by_uuid!(uuid:)
@@ -31,7 +31,7 @@ class MessageThread < ApplicationRecord
   after_create_commit ->(thread) { EventBus.publish(:message_thread_created, thread) }
   after_update_commit ->(thread) { EventBus.publish(:message_thread_changed, thread) }
 
-  delegate :tenant, to: :folder
+  delegate :tenant, to: :box
 
   def note
     message_thread_note || build_message_thread_note
@@ -46,7 +46,7 @@ class MessageThread < ApplicationRecord
   end
 
   def automation_rules_for_event(event)
-    folder.tenant.automation_rules.where(trigger_event: event)
+    tenant.automation_rules.where(trigger_event: event)
   end
 
   def mark_all_messages_read
