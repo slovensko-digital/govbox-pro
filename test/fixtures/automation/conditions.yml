@@ -8,7 +8,7 @@ two:
   automation_rule: one
   attr: box
   type: Automation::BoxCondition
-  condition_object: three
+  condition_object: solver_main (Box)
 
 three:
   automation_rule: two
@@ -25,4 +25,4 @@ four:
 five:
   automation_rule: four
   type: Automation::BoxCondition
-  condition_object: one (Box)
+  condition_object: ssd_main (Box)

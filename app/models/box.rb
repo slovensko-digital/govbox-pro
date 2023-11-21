@@ -15,8 +15,7 @@ class Box < ApplicationRecord
   belongs_to :tenant
   belongs_to :api_connection
 
-  has_many :folders, dependent: :destroy
-  has_many :message_threads, through: :folders, extend: MessageThreadsExtensions, dependent: :destroy
+  has_many :message_threads, extend: MessageThreadsExtensions, dependent: :destroy
   has_many :messages, through: :message_threads
   has_many :message_drafts_imports, dependent: :destroy
   has_many :automation_conditions, as: :condition_object

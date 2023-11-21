@@ -53,6 +53,7 @@ class MessageObject < ApplicationRecord
 
   def signable?
     # TODO vymazat druhu podmienku po povoleni viacnasobneho podpisovania
+    # TODO refactor to not loading message
     message.is_a?(MessageDraft) && !is_signed
   end
 
@@ -61,6 +62,7 @@ class MessageObject < ApplicationRecord
   end
 
   def destroyable?
+    # TODO avoid loading message association if we have
     message.is_a?(MessageDraft) && message.not_yet_submitted? && !form?
   end
 
