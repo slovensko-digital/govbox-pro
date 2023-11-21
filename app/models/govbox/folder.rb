@@ -2,15 +2,15 @@
 #
 # Table name: govbox_folders
 #
-#  id                                          :integer          not null, primary key
-#  edesk_folder_id                             :integer          not null
-#  parent_folder_id                            :integer
-#  box_id                                      :integer          not null
-#  name                                        :string           not null
-#  system                                      :boolean          not null
-#  created_at                                  :datetime         not null
-#  updated_at                                  :datetime         not null
-
+#  id               :bigint           not null, primary key
+#  name             :string           not null
+#  system           :boolean          not null
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#  box_id           :bigint           not null
+#  edesk_folder_id  :integer          not null
+#  parent_folder_id :bigint
+#
 class Govbox::Folder < ApplicationRecord
   belongs_to :box
   belongs_to :parent_folder, class_name: 'Govbox::Folder', dependent: :destroy, optional: true

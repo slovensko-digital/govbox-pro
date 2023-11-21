@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: filters
+#
+#  id         :bigint           not null, primary key
+#  name       :string           not null
+#  position   :integer          not null
+#  query      :string           not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  author_id  :bigint           not null
+#  tenant_id  :bigint           not null
+#
 class Filter < ApplicationRecord
   belongs_to :author, class_name: 'User'
   belongs_to :tenant

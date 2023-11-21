@@ -2,22 +2,25 @@
 #
 # Table name: messages
 #
-#  id                                          :integer          not null, primary key
-#  uuid                                        :uuid             not null
-#  title                                       :string           not null
-#  message_thread_id                           :integer          not null
-#  sender_name                                 :string
-#  recipient_name                              :string
-#  html_visualization                          :text
-#  metadata                                    :json
-#  read                                        :boolean          not null, default: false
-#  replyable                                   :boolean          not null, default: true
-#  delivered_at                                :datetime         not null
-#  import_id                                   :integer
-#  author_id                                   :integer
-#  created_at                                  :datetime         not null
-#  updated_at                                  :datetime         not null
-
+#  id                 :bigint           not null, primary key
+#  collapsed          :boolean          default(FALSE), not null
+#  delivered_at       :datetime         not null
+#  html_visualization :text
+#  metadata           :json
+#  outbox             :boolean          default(FALSE), not null
+#  read               :boolean          default(FALSE), not null
+#  recipient_name     :string
+#  replyable          :boolean          default(TRUE), not null
+#  sender_name        :string
+#  title              :string
+#  type               :string
+#  uuid               :uuid             not null
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
+#  author_id          :bigint
+#  import_id          :bigint
+#  message_thread_id  :bigint           not null
+#
 class MessageDraft < Message
   belongs_to :import, class_name: 'MessageDraftsImport', foreign_key: :import_id, optional: true
 

@@ -2,18 +2,18 @@
 #
 # Table name: govbox_messages
 #
-#  id                                          :integer          not null, primary key
-#  edesk_message_id                            :integer          not null
-#  folder_id                                   :integer          not null
-#  message_id                                  :uuid             not null
-#  correlation_id                              :uuid             not null
-#  delivered_at                                :datetime         not null
-#  edesk_class                                 :string           not null
-#  body                                        :text             not null
-#  payload                                     :json             not null
-#  created_at                                  :datetime         not null
-#  updated_at                                  :datetime         not null
-
+#  id               :bigint           not null, primary key
+#  body             :text             not null
+#  delivered_at     :datetime         not null
+#  edesk_class      :string           not null
+#  payload          :json             not null
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#  correlation_id   :uuid             not null
+#  edesk_message_id :bigint           not null
+#  folder_id        :bigint           not null
+#  message_id       :uuid             not null
+#
 class Govbox::Message < ApplicationRecord
   belongs_to :folder, class_name: 'Govbox::Folder'
 
