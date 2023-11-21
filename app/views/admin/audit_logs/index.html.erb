@@ -1,0 +1,5 @@
+<%= render Admin::AuditLogs::AuditLogTableComponent.new(user: @user, message_thread: @thread, audit_logs: @audit_logs) do |component| %>
+  <% component.with_next_page_area do %>
+    <%= render Turbo::NextPageAreaComponent.new(id: @next_cursor, url: @url) %>
+  <% end %>
+<% end %>

@@ -45,6 +45,12 @@
               <%= render Icons::RectangleStackComponent.new(css_classes: "mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500") %>
               História komunikácie
             <% end %>
+            <% if Current.user.admin? %>
+              <%= link_to message_thread_audit_logs_path(@message_thread), id: "menu-item-4", class: "text-gray-700 group flex items-center px-4 py-2 text-sm hover:bg-gray-100 hover:text-gray-900", role: "menuitem", tabindex: "-1" do %>
+                <%= render Icons::EyeComponent.new(css_classes: "mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500") %>
+                Auditné záznamy
+              <% end %>
+            <% end %>
           </div>
         </div>
       </div>

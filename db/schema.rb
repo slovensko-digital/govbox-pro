@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_18_103512) do
+ActiveRecord::Schema[7.0].define(version: 2023_11_21_070600) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -59,8 +59,24 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_18_103512) do
   end
 
   create_table "audit_logs", force: :cascade do |t|
+    t.string "type", null: false
+    t.bigint "tenant_id"
+    t.datetime "happened_at", precision: nil, null: false
+    t.string "user_name"
+    t.bigint "user_id"
+    t.string "previous_value"
+    t.string "new_value"
+    t.jsonb "changeset"
+    t.bigint "thread_id"
+    t.integer "thread_id_archived"
+    t.string "thread_name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["tenant_id", "thread_id", "happened_at"], name: "index_audit_logs_on_tenant_id_and_thread_id_and_happened_at"
+    t.index ["tenant_id", "user_id", "happened_at"], name: "index_audit_logs_on_tenant_id_and_user_id_and_happened_at"
+    t.index ["tenant_id"], name: "index_audit_logs_on_tenant_id"
+    t.index ["thread_id"], name: "index_audit_logs_on_thread_id"
+    t.index ["user_id"], name: "index_audit_logs_on_user_id"
   end
 
   create_table "automation_actions", force: :cascade do |t|
@@ -134,29 +150,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_18_103512) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["box_id"], name: "index_folders_on_box_id"
-  end
-
-  create_table "go_audit_logs", force: :cascade do |t|
-    t.string "type"
-    t.bigint "tenant_id", null: false
-    t.datetime "event_timestamp", precision: nil, null: false
-    t.string "user_name"
-    t.bigint "user_id"
-    t.string "primary_object_type"
-    t.bigint "primary_object_id"
-    t.string "secondary_object_type"
-    t.bigint "secondary_object_id"
-    t.string "description"
-    t.string "original_value_string"
-    t.string "new_value_string"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["primary_object_type", "primary_object_id"], name: "index_go_audit_logs_on_primary_object"
-    t.index ["secondary_object_type", "secondary_object_id"], name: "index_go_audit_logs_on_secondary_object"
-    t.index ["tenant_id", "primary_object_type", "primary_object_id", "event_timestamp"], name: "index_go_audit_logs_tenant_primary_timestamp"
-    t.index ["tenant_id", "user_id", "event_timestamp"], name: "index_go_audit_logs_tenant_user_timestamp"
-    t.index ["tenant_id"], name: "index_go_audit_logs_on_tenant_id"
-    t.index ["user_id"], name: "index_go_audit_logs_on_user_id"
   end
 
   create_table "good_job_batches", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -327,6 +320,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_18_103512) do
     t.datetime "updated_at", null: false
     t.bigint "box_id", null: false
     t.index ["box_id"], name: "index_message_thread_merge_identifiers_on_box_id"
+    t.bigint "box_id", null: false
+    t.index ["box_id"], name: "index_message_thread_merge_identifiers_on_box_id"
     t.index ["message_thread_id"], name: "index_message_thread_merge_identifiers_on_message_thread_id"
     t.index ["uuid", "box_id"], name: "index_message_thread_merge_identifiers_on_uuid_and_box_id", unique: true
   end
@@ -341,12 +336,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_18_103512) do
 
   create_table "message_threads", force: :cascade do |t|
     t.bigint "folder_id"
+    t.bigint "folder_id"
     t.string "title", null: false
     t.string "original_title", null: false
     t.datetime "delivered_at", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "last_message_delivered_at", precision: nil, null: false
+    t.bigint "box_id", null: false
     t.bigint "box_id", null: false
     t.index ["folder_id"], name: "index_message_threads_on_folder_id"
   end
@@ -437,6 +434,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_18_103512) do
     t.bigint "user_id"
     t.boolean "external", default: false
     t.string "system_name"
+    t.string "system_name"
     t.index "tenant_id, lower((name)::text)", name: "index_tags_on_tenant_id_and_lowercase_name", unique: true
     t.index ["tenant_id"], name: "index_tags_on_tenant_id"
     t.index ["user_id"], name: "index_tags_on_user_id"
@@ -478,6 +476,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_18_103512) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "audit_logs", "message_threads", column: "thread_id", on_delete: :nullify
+  add_foreign_key "audit_logs", "tenants", on_delete: :nullify
+  add_foreign_key "audit_logs", "users", on_delete: :nullify
   add_foreign_key "automation_actions", "automation_rules"
   add_foreign_key "automation_conditions", "automation_rules"
   add_foreign_key "automation_rules", "tenants"
@@ -499,6 +500,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_18_103512) do
   add_foreign_key "message_relations", "messages", column: "related_message_id"
   add_foreign_key "message_thread_merge_identifiers", "message_threads"
   add_foreign_key "message_thread_notes", "message_threads"
+  add_foreign_key "message_threads", "boxes"
   add_foreign_key "message_threads", "boxes"
   add_foreign_key "message_threads", "folders"
   add_foreign_key "message_threads_tags", "message_threads"

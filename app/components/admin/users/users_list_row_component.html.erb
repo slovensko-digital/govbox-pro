@@ -10,7 +10,10 @@
       <%= @user.email %>
     </div>
   </div>
-  <div class="justify-start items-start gap-2 flex">
+  <div class="justify-start items-center gap-2 flex">
+    <%= link_to admin_tenant_user_audit_logs_path(Current.tenant, @user) do %>
+      <%= render Common::ShowButtonComponent.new %>
+    <% end %>
     <%= link_to edit_admin_tenant_user_path(@user.tenant, @user) do %>
       <%= render Common::EditButtonComponent.new %>
     <% end %>

@@ -1,0 +1,10 @@
+<%= turbo_stream.append "audit_logs" do %>
+  <%= render Admin::AuditLogs::AuditLogTableRowComponent.with_collection(@audit_logs) %>
+<% end %>
+<% if @audit_logs.any? %>
+  <%= turbo_stream.append "next_page_area" do %>
+    <%= render Turbo::NextPageComponent.new(id: @next_cursor, url: @url) %>
+  <% end %>
+<% else %>
+  <%= turbo_stream.replace "next_page_area" %>
+<% end %>

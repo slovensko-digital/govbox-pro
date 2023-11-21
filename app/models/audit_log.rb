@@ -1,54 +1,63 @@
+require "csv"
+
 class AuditLog < ApplicationRecord
-  self.table_name = :go_audit_logs
   belongs_to :tenant
   belongs_to :user
-  belongs_to :primary_object, polymorphic: true, optional: true
-  belongs_to :secondary_object, polymorphic: true, optional: true
+  belongs_to :thread, class_name: "MessageThread"
 
   class MessageThreadNoteCreated < AuditLog
     def self.create_audit_record(object)
-      @description = "User created note on thread"
-      @new_value_string = object.note
-      @primary_object = object.message_thread
-      @secondary_object = object
-      create_record
+      create_record(
+        object: object,
+        new_value: object.note,
+        thread: object.message_thread
+      )
     end
   end
 
   class MessageThreadNoteChanged < AuditLog
     def self.create_audit_record(object)
-      @description = "User changed note on thread"
-      @original_value_string = object.note_previously_was
-      @new_value_string = object.note
-      @primary_object = object.message_thread
-      @secondary_object = object
-      create_record
+      create_record(
+        object: object,
+        previous_value: object.note_previously_was,
+        new_value: object.note,
+        thread: object.message_thread
+      )
     end
   end
 
   # TODO: Pre tagy sa asi budeme musiet subscribnut na nove eventy, kedze tu nevieme, ci to je destroy/create (dokonca teoreticky update)
   class MessageThreadTagChanged < AuditLog
     def self.create_audit_record(object)
-      @description = "Tag was changed on thread"
-      @original_value_string = object.tag.name_previously_was
-      @primary_object = object.message_thread
-      @secondary_object = object
-      create_record
+      create_record(
+        object: object,
+        previous_value: object.tag.name_previously_was,
+        new_value: object.tag.name,
+        thread: object.message_thread
+      )
     end
   end
 
-  def self.create_record
+  def self.create_record(object:, **args)
     create(
       tenant: Current.tenant,
       user: Current.user,
       # TODO: SYSTEM alebo nil alebo nieco ine?
       user_name: Current.user&.name || 'SYSTEM',
-      event_timestamp: Time.current,
-      primary_object: @primary_object,
-      secondary_object: @secondary_object,
-      description: @description,
-      original_value_string: @original_value_string,
-      new_value_string: @new_value_string
+      happened_at: Time.current,
+      changeset: object.previous_changes,
+      thread_id_archived: args[:thread]&.id,
+      thread_name: args[:thread]&.title,
+      **args
     )
+  end
+
+  def self.to_csv
+    CSV.generate do |csv|
+      csv << column_names
+      all.find_each do |audit_record|
+        csv << audit_record.attributes.values_at(*column_names)
+      end
+    end
   end
 end

@@ -18,4 +18,8 @@ module ApplicationHelper
       l(datetime, format: '%e. %b %Y %H:%M')
     end
   end
+
+  def full_datetime(datetime)
+    l(datetime, format: '%Y-%m-%e %H:%M:%S')
+  end
 end
