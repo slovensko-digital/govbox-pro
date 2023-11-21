@@ -50,11 +50,12 @@ class MessageDraft < Message
   end
 
   def self.create_message_reply(original_message: , author:)
-    reply_form_template = Upvs::Form.find_by!(
+    reply_form = Upvs::Form.find_by!(
       identifier: GENERAL_AGENDA_POSP_ID,
       version: GENERAL_AGENDA_POSP_VERSION,
       message_type: GENERAL_AGENDA_MESSAGE_TYPE
     )
+    reply_form_template = reply_form.templates.where(tenant: original_message.thread.tenant).or(reply_form.templates.where(tenant: nil))&.take
 
     message_draft = original_message.thread.message_drafts.create!(
       uuid: SecureRandom.uuid,

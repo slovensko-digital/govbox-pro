@@ -52,7 +52,6 @@ ga_form = Upvs::Form.find_or_create_by!(
 
 ga_form.templates.find_or_create_by!(
   name: "Všeobecná agenda",
-  tenant: tenant,
   template:
     '<GeneralAgenda xmlns="http://schemas.gov.sk/form/App.GeneralAgenda/1.9">
   <subject>{{text_field:subject}}</subject>

@@ -34,7 +34,7 @@ class MessageObjectsController < ApplicationController
 
     if @message_object.mimetype == "application/x-eform-xml"
       # TODO: this should be handled by autogram
-      upvs_form_template = Upvs::Form.find_by(
+      upvs_form = Upvs::Form.find_by(
         identifier: @message_object.message.metadata["posp_id"],
         version: @message_object.message.metadata["posp_version"],
         message_type: @message_object.message.metadata["message_type"]
@@ -42,8 +42,8 @@ class MessageObjectsController < ApplicationController
 
       @message_object_identifier = Upvs::FormBuilder.parse_xml_identifier(@message_object.content)
       @message_object_container_xmlns = "http://data.gov.sk/def/container/xmldatacontainer+xml/1.1"
-      @message_object_schema = upvs_form_template&.xsd_schema
-      @message_object_transformation = upvs_form_template&.xslt_html
+      @message_object_schema = upvs_form&.xsd_schema
+      @message_object_transformation = upvs_form&.xslt_html
     end
   end
 

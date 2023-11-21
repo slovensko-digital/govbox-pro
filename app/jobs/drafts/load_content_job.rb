@@ -63,13 +63,13 @@ class Drafts::LoadContentJob < ApplicationJob
       version: message_draft.metadata["posp_version"],
       message_type: message_draft.metadata["message_type"],
     )
-    upvs_form_template_xslt_html = upvs_form&.xslt_html
+    upvs_form_xslt_html = upvs_form&.xslt_html
 
-    upvs_form_template = upvs_form.templates.where(tenant: message_draft.thread.folder.tenant)&.take
+    upvs_form_template = upvs_form.templates.where(tenant: message_draft.thread.tenant)&.take
     message_draft.metadata["form_template_id"] = upvs_form_template&.id
     message_draft.save!
 
-    return unless upvs_form_template_xslt_html
+    return unless upvs_form_xslt_html
 
     xslt_template = Nokogiri::XSLT(upvs_form_xslt_html)
 

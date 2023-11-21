@@ -11,6 +11,6 @@
 #  upvs_form_id :bigint           not null
 #
 class Upvs::FormTemplate < ApplicationRecord
-  belongs_to :tenant, class_name: 'Tenant'
+  belongs_to :tenant, class_name: 'Tenant', optional: true
   belongs_to :form, class_name: 'Upvs::Form', foreign_key: 'upvs_form_id'
 end
