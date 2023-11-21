@@ -34,14 +34,30 @@
             function(iframe) {
               iframe.contentWindow.document.body.style['height'] = 'unset';
               iframe.contentWindow.document.body.style['min-height'] = 'unset';
+              iframe.contentWindow.document.body.style['transform-origin'] = '0 0';
 
               iframe.parentElement.style.height = iframe.contentWindow.document.body.scrollHeight + 20 + 'px';
+
+              /*
 
               iframe.contentWindow.document.addEventListener('click', () => {
                 setTimeout(() => {
                   iframe.parentElement.style.height = iframe.contentWindow.document.body.scrollHeight + 20 + 'px';
                 }, 100)
               })
+
+              */
+
+              const ro = new ResizeObserver(([parent]) => {
+                  const iframeWidth = iframe.contentWindow.document.body.clientWidth;
+                  const parentWidth = parent.contentRect.width - 24;
+
+                  iframe.contentWindow.document.body.style.transform = `scale(${parentWidth/iframeWidth})`;
+              });
+
+              // ro.observe(iframe);
+              ro.observe(iframe.parentNode);
+
             }
             (this)
           )" %>
