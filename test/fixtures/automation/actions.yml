@@ -1,14 +1,14 @@
 one:
   automation_rule: two
   type: Automation::AddMessageThreadTagAction
-  action_object: three (Tag)
+  action_object: ssd_construction (Tag)
 
 two:
   automation_rule: three
   type: Automation::AddMessageThreadTagAction
-  action_object: four (Tag)
+  action_object: ssd_office (Tag)
 
 three:
   automation_rule: four
   type: Automation::AddMessageThreadTagAction
-  action_object: five (Tag)
+  action_object: ssd_print (Tag)

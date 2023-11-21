@@ -87,6 +87,6 @@ class Searchable::MessageThread < ApplicationRecord
   end
 
   def self.reindex_all
-    ::MessageThread.includes(:tags, :messages, :message_thread_note, folder: :box).find_each { |mt| ::Searchable::Indexer.index_message_thread(mt) }
+    ::MessageThread.includes(:tags, :messages, :message_thread_note, :box).find_each { |mt| ::Searchable::Indexer.index_message_thread(mt) }
   end
 end

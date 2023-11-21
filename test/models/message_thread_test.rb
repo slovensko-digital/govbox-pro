@@ -3,11 +3,11 @@ require "test_helper"
 class MessageThreadTest < ActiveSupport::TestCase
   # find_or_create_by_merge_uuid!
   test "should create a new message thread if no merge_uuid match exists" do
-    box = boxes(:one)
+    box = boxes(:ssd_main)
 
     thread = box.message_threads.find_or_create_by_merge_uuid!(
       merge_uuid: SecureRandom.uuid,
-      folder: folders(:one),
+      box: box,
       title: "Title",
       delivered_at: Time.current
     )
@@ -16,25 +16,25 @@ class MessageThreadTest < ActiveSupport::TestCase
   end
 
   test "should return existing thread if merge_uuid match exists" do
-    box = boxes(:one)
+    box = boxes(:ssd_main)
 
     thread = box.message_threads.find_or_create_by_merge_uuid!(
-      merge_uuid: message_threads(:one).merge_identifiers.second.uuid,
-      folder: folders(:one),
+      merge_uuid: message_threads(:ssd_main_general).merge_identifiers.second.uuid,
+      box: box,
       title: "Title",
       delivered_at: Time.current
     )
 
-    assert_equal message_threads(:one), thread
+    assert_equal message_threads(:ssd_main_general), thread
   end
 
   test "should update attributes when creating thread in wrong chronological order" do
-    box = boxes(:one)
-    older_delivered_at = message_threads(:one).delivered_at - 1.day
+    box = boxes(:ssd_main)
+    older_delivered_at = message_threads(:ssd_main_general).delivered_at - 1.day
 
     thread = box.message_threads.find_or_create_by_merge_uuid!(
-      merge_uuid: message_threads(:one).merge_identifiers.second.uuid,
-      folder: folders(:three),
+      merge_uuid: message_threads(:ssd_main_general).merge_identifiers.second.uuid,
+      box: box,
       title: "New Title",
       delivered_at: older_delivered_at
     )
@@ -42,16 +42,15 @@ class MessageThreadTest < ActiveSupport::TestCase
     assert_equal "New Title", thread.title
     assert_equal "New Title", thread.original_title
     assert_equal older_delivered_at, thread.delivered_at
-    assert_equal folders(:three), thread.folder # yes, we WANT to update folder here
   end
 
   test "should update last_message_delivered_at attribute when new message in message thread" do
-    box = boxes(:one)
-    new_delivered_at = message_threads(:one).delivered_at + 1.day
+    box = boxes(:ssd_main)
+    new_delivered_at = message_threads(:ssd_main_general).delivered_at + 1.day
 
     thread = box.message_threads.find_or_create_by_merge_uuid!(
-      merge_uuid: message_threads(:one).merge_identifiers.second.uuid,
-      folder: folders(:three),
+      merge_uuid: message_threads(:ssd_main_general).merge_identifiers.second.uuid,
+      box: box,
       title: "New Title",
       delivered_at: new_delivered_at
     )
@@ -60,13 +59,13 @@ class MessageThreadTest < ActiveSupport::TestCase
   end
 
   test "should not update last_message_delivered_at attribute when creating thread in wrong chronological order" do
-    box = boxes(:one)
-    older_delivered_at = message_threads(:one).delivered_at - 1.day
-    last_message_delivered_at = message_threads(:one).last_message_delivered_at
+    box = boxes(:ssd_main)
+    older_delivered_at = message_threads(:ssd_main_general).delivered_at - 1.day
+    last_message_delivered_at = message_threads(:ssd_main_general).last_message_delivered_at
 
     thread = box.message_threads.find_or_create_by_merge_uuid!(
-      merge_uuid: message_threads(:one).merge_identifiers.second.uuid,
-      folder: folders(:three),
+      merge_uuid: message_threads(:ssd_main_general).merge_identifiers.second.uuid,
+      box: box,
       title: "New Title",
       delivered_at: older_delivered_at
     )
@@ -75,58 +74,67 @@ class MessageThreadTest < ActiveSupport::TestCase
   end
 
   test "should merge threads with correct last_message_delivered_at" do
-    threads = MessageThread.all
-    target_last_message_delivered_at = message_threads(:two).last_message_delivered_at
+    threads = boxes(:ssd_main).message_threads
+    target_last_message_delivered_at = message_threads(:ssd_main_delivery).last_message_delivered_at
 
     threads.merge_threads
 
-    assert_equal target_last_message_delivered_at, message_threads(:two).last_message_delivered_at
+    assert_equal threads.reload[0].last_message_delivered_at, target_last_message_delivered_at
   end
 
   test "should merge threads with correct delivered_at" do
-    threads = MessageThread.all
-    target_delivered_at = message_threads(:one).last_message_delivered_at
+    threads = boxes(:ssd_main).message_threads
+    target_delivered_at = message_threads(:ssd_main_general).delivered_at
 
     threads.merge_threads
 
-    assert_equal target_delivered_at, message_threads(:one).delivered_at
+    assert_equal threads.reload[0].delivered_at, target_delivered_at
   end
 
   test "should delete older thread during merge threads" do
-    threads = MessageThread.all
+    threads = boxes(:ssd_main).message_threads
 
     threads.merge_threads
 
-    assert_raises(ActiveRecord::RecordNotFound) { message_threads(:one) }
+    assert_equal MessageThread.where(id: threads.map(&:id)).count, 1
   end
 
   test "should contain all messages in target thread after merge threads" do
-    threads = MessageThread.where(id: [message_threads(:two).id, message_threads(:one).id])
+    threads = MessageThread.where(id: [message_threads(:ssd_main_issue).id, message_threads(:ssd_main_general).id])
 
     threads.merge_threads
 
-    assert_includes message_threads(:two).messages, messages(:one)
-    assert_includes message_threads(:two).messages, messages(:two)
-    assert_includes message_threads(:two).messages, messages(:three)
-    assert_includes message_threads(:two).messages, messages(:four)
+    new_main_thread_messages = threads.reload[0].messages
+
+    assert_includes new_main_thread_messages, messages(:ssd_main_general_one)
+    assert_includes new_main_thread_messages, messages(:ssd_main_general_two)
+    assert_includes new_main_thread_messages, messages(:ssd_main_issue_one)
+    assert_includes new_main_thread_messages, messages(:ssd_main_issue_two)
   end
 
   test "should not create tag thread relation across tenants" do
-    tag = tags(:one)
-    thread = message_threads(:four)
+    tag = tags(:ssd_finance)
+    thread = message_threads(:solver_main_general_agenda)
 
     thread.message_threads_tags.new(tag_id: tag.id)
 
     assert_raises(ActiveRecord::RecordInvalid) { thread.save! }
   end
 
-  test 'should contain notes from both merged threads after merge' do
-    threads = MessageThread.where(id: [message_threads(:two).id, message_threads(:one).id])
+  test 'should contain notes from all merged threads after merge' do
+    threads = MessageThread.where(id: [message_threads(:ssd_main_issue).id, message_threads(:ssd_main_general).id])
+
+    notes = threads.map(&:message_thread_note).map(&:note)
+
+    assert_equal notes.length, 2
 
     threads.merge_threads
 
-    assert_match 'Note1', message_threads(:two).message_thread_note.note
-    assert_match 'Note2', message_threads(:two).message_thread_note.note
+    merged_note = threads.reload[0].message_thread_note.note
+
+    notes.each do |note|
+      assert_match note, merged_note
+    end
   end
 
   test "triggers callback event when new tags is assigned" do
@@ -135,8 +143,8 @@ class MessageThreadTest < ActiveSupport::TestCase
       called = true
     })
 
-    thread = message_threads(:one)
-    thread.tags << tags(:one)
+    thread = message_threads(:ssd_main_general)
+    thread.tags << tags(:ssd_print)
 
     # remove callback
     EventBus.class_variable_get(:@@subscribers_map)[:message_thread_tag_changed].pop

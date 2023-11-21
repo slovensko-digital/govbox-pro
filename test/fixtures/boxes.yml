@@ -1,22 +1,43 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  name: MyString
+ssd_main:
+  name: SSD main
   uri: MyString
-  tenant: solver
-  short_name: MY1
-  api_connection: one
-
-two:
-  name: MyString
-  uri: MyString
-  tenant: solver
-  short_name: MY2
-  api_connection: two
-
-three:
-  name: MyString2
-  uri: MyString2
   tenant: ssd
   short_name: MY1
+  api_connection: govbox_api_api_connection1
+
+ssd_other:
+  name: SSD other
+  uri: MyString
+  tenant: ssd
+  short_name: MY2
+  api_connection: govbox_api_api_connection1
+
+solver_main:
+  name: Solver main
+  uri: MyString2
+  tenant: solver
+  short_name: MY1
   api_connection: three
+
+google_box_with_govbox_api_connection:
+  name: Box with GovBox API connection
+  uri: MyString
+  tenant: google
+  short_name: box2
+  api_connection: govbox_api_api_connection2
+
+google_box_with_govbox_api_connection_with_obo_support:
+  name: Box with GovBox API connection with OBO support
+  uri: MyString
+  tenant: google
+  short_name: box3
+  api_connection: govbox_api_api_connection_with_obo_support
+
+google_box_with_sk_api_api_connection_with_obo_support:
+  name: Box with SkAPi API connection with OBO support
+  uri: MyString2
+  tenant: google
+  short_name: box4
+  api_connection: sk_api_api_connection_with_obo_support

@@ -15,13 +15,15 @@ class Box < ApplicationRecord
   belongs_to :tenant
   belongs_to :api_connection
 
-  has_many :folders, dependent: :destroy
-  has_many :message_threads, through: :folders, extend: MessageThreadsExtensions, dependent: :destroy
+  has_many :message_threads, extend: MessageThreadsExtensions, dependent: :destroy
   has_many :messages, through: :message_threads
   has_many :message_drafts_imports, dependent: :destroy
   has_many :automation_conditions, as: :condition_object
 
-  before_destroy ->(box) { EventBus.publish(:box_destroyed, box.id) }
+  after_destroy do |box|
+    api_connection.destroy if api_connection.destroy_with_box?
+    EventBus.publish(:box_destroyed, box.id)
+  end
 
   before_create { self.color = Box.colors.keys[name.hash % Box.colors.size] if color.blank? }
 

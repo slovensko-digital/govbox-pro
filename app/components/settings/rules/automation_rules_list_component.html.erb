@@ -2,7 +2,7 @@
   <div class="flex flex-col justify-start items-start flex-grow gap-4 p-4">
     <div class="flex flex-col justify-start items-start self-stretch flex-grow-0 flex-shrink-0 overflow-hidden rounded-md bg-white border border-gray-200">
       <div class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
-        <p class="flex-grow w-[1074px] text-xl font-semibold text-left text-gray-900">Automatické pravidlá</p>
+        <p class="flex-grow text-xl font-semibold text-left text-gray-900">Automatické pravidlá</p>
         <%= link_to new_settings_automation_rule_path, class: "flex items-center justify-center gap-2.5 rounded-md bg-blue-600 px-3.5 py-2.5" do %>
           <p class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-white">Vytvoriť pravidlo</p>
         <% end %>
@@ -16,7 +16,7 @@
     <div class="self-stretch bg-white rounded-md border border-gray-200 flex-col justify-start items-start flex">
       <div class="self-stretch p-6 border-b border-gray-200 justify-start items-center gap-4 inline-flex">
         <div class="w-8 h-8 relative">
-          <%= render Icons::InfoComponent.new %>
+          <%= render Icons::InfoComponent.big_gray %>
         </div>
         <div class="grow shrink basis-0 flex-col justify-start items-start gap-1 inline-flex">
           <div class="text-center text-gray-900 text-lg font-medium leading-loose">Pridať štítky</div>

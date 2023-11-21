@@ -29,6 +29,8 @@ class Tag < ApplicationRecord
   after_update_commit ->(tag) { EventBus.publish(:tag_renamed, tag) if previous_changes.key?("name") }
   after_destroy ->(tag) { EventBus.publish(:tag_destroyed, tag) }
 
+  DRAFT_SYSTEM_NAME = 'draft'
+
   def mark_readable_by_groups(groups)
     self.groups += groups
   end

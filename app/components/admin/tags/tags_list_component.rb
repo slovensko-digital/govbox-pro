@@ -1,6 +1,6 @@
 class Admin::Tags::TagsListComponent < ViewComponent::Base
-  def initialize(tags)
-    @external_tags = tags.where(external: true).order(:name)
-    @internal_tags = tags.where(external: false).order(:name)
+  def initialize(external_tags:, internal_tags:)
+    @external_tags = external_tags
+    @internal_tags = internal_tags
   end
 end

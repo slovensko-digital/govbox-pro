@@ -19,10 +19,10 @@ class SidebarMenu
 
   def default_main_menu
     [
-      TW::SidebarMenuItemComponent.new(name: 'Všetky správy', url: message_threads_path, icon: Icons::SchrankaComponent.new),
+      TW::SidebarMenuItemComponent.new(name: 'Všetky správy', url: message_threads_path, icon: Icons::EnvelopeComponent.new),
       Layout::FilterListComponent.new(filters: @parameters[:filters]),
       Layout::TagListComponent.new(tags: @parameters[:tags]),
-      TW::SidebarMenuItemComponent.new(name: 'Nastavenia', url: filters_path, icon: Icons::SettingsComponent.new)
+      TW::SidebarMenuItemComponent.new(name: 'Nastavenia', url: filters_path, icon: Icons::CogSixToothComponent.new)
     ]
   end
 
@@ -30,18 +30,18 @@ class SidebarMenu
     [
       Layout::BackToBoxComponent.new,
       TW::SidebarMenuDividerComponent.new(name: 'Nastavenia'),
-      TW::SidebarMenuItemComponent.new(name: 'Filtre', url: filters_path, icon: Icons::FiltersComponent.new),
-      TW::SidebarMenuItemComponent.new(name: 'Pravidlá', url: settings_automation_rules_path, icon: Icons::RulesComponent.new),
+      TW::SidebarMenuItemComponent.new(name: 'Filtre', url: filters_path, icon: Icons::BookmarkComponent.new),
+      TW::SidebarMenuItemComponent.new(name: 'Pravidlá', url: settings_automation_rules_path, icon: Icons::FunnelComponent.new),
       TW::SidebarMenuDividerComponent.new(name: 'Administrácia'),
-      Current.user.site_admin? ? TW::SidebarMenuItemComponent.new(name: 'Tenanti', url: admin_tenants_path, icon: Icons::GroupsComponent.new) : nil,
+      Current.user.site_admin? ? TW::SidebarMenuItemComponent.new(name: 'Tenanti', url: admin_tenants_path, icon: Icons::RectangleGroupComponent.new) : nil,
       TW::SidebarMenuItemComponent.new(name: 'Používatelia', url: admin_tenant_users_path(Current.tenant), icon: Icons::UsersComponent.new),
-      TW::SidebarMenuItemComponent.new(name: 'Prístup', url: admin_tenant_tag_groups_path(Current.tenant), icon: Icons::ClosedLockComponent.new),
-      TW::SidebarMenuItemComponent.new(name: 'Schránky', url: admin_tenant_boxes_path(Current.tenant), icon: Icons::BoxesComponent.new),
-      TW::SidebarMenuItemComponent.new(name: 'Skupiny', url: admin_tenant_groups_path(Current.tenant), icon: Icons::GroupsComponent.new),
-      TW::SidebarMenuItemComponent.new(name: 'Štítky', url: admin_tenant_tags_path(Current.tenant), icon: Icons::TagsComponent.new),
+      TW::SidebarMenuItemComponent.new(name: 'Prístup', url: admin_tenant_tag_groups_path(Current.tenant), icon: Icons::LockClosedComponent.new),
+      TW::SidebarMenuItemComponent.new(name: 'Schránky', url: admin_tenant_boxes_path(Current.tenant), icon: Icons::RectangleStackComponent.new),
+      TW::SidebarMenuItemComponent.new(name: 'Skupiny', url: admin_tenant_groups_path(Current.tenant), icon: Icons::UserGroupsComponent.new),
+      TW::SidebarMenuItemComponent.new(name: 'Štítky', url: admin_tenant_tags_path(Current.tenant), icon: Icons::TagComponent.new),
       Layout::SidebarDividerComponent.new,
       TW::SidebarMenuDividerComponent.new(name: 'Admin'),
-      TW::SidebarMenuItemComponent.new(name: 'Good Job Dashboard', url: good_job_path, icon: Icons::GoodJobComponent.new),
+      TW::SidebarMenuItemComponent.new(name: 'Good Job Dashboard', url: good_job_path, icon: Icons::CogSixToothComponent.new),
     ].compact
   end
 end

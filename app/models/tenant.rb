@@ -16,7 +16,6 @@ class Tenant < ApplicationRecord
 
   has_many :boxes, dependent: :destroy
   has_many :automation_rules, class_name: 'Automation::Rule', dependent: :destroy
-  has_many :folders, through: :boxes
   has_many :tags, dependent: :destroy
   has_many :filters
   after_create :create_default_objects
@@ -28,6 +27,7 @@ class Tenant < ApplicationRecord
   def create_default_objects
     groups.create!(name: 'all', group_type: 'ALL')
     groups.create!(name: 'admins', group_type: 'ADMIN')
-    tags.create!(name: 'Drafts', external: false, visible: true)
+    tags.create!(name: 'Drafty', system_name: Tag::DRAFT_SYSTEM_NAME, external: false, visible: true)
+    tags.create!(name: 'Na prevzatie', system_name: 'delivery_notification', external: false, visible: true)
   end
 end

@@ -23,21 +23,10 @@ class Govbox::Message < ApplicationRecord
   EGOV_NOTIFICATION_CLASS = 'EGOV_NOTIFICATION'
   COLLAPSED_BY_DEFAULT_MESSAGE_CLASSES = ['ED_DELIVERY_REPORT', 'POSTING_CONFIRMATION', 'POSTING_INFORMATION']
 
-  def replyable?
-    folder.inbox? && [EGOV_DOCUMENT_CLASS, EGOV_NOTIFICATION_CLASS].include?(payload["class"])
-  end
-
-  def collapsed?
-    payload["class"].in?(COLLAPSED_BY_DEFAULT_MESSAGE_CLASSES)
-  end
+  DELIVERY_NOTIFICATION_TAG = 'delivery_notification'
 
   def self.create_message_with_thread!(govbox_message)
     message = MessageThread.with_advisory_lock!(govbox_message.correlation_id, transaction: true, timeout_seconds: 10) do
-      folder = Folder.find_or_create_by!(
-        name: "Inbox",
-        box: govbox_message.box
-      ) # TODO create folder for threads
-
       message = self.create_message(govbox_message)
 
       thread_title = if message.metadata["delivery_notification"].present?
@@ -47,7 +36,7 @@ class Govbox::Message < ApplicationRecord
       end
 
       message.thread = govbox_message.box.message_threads.find_or_create_by_merge_uuid!(
-        folder: folder,
+        box: govbox_message.box,
         merge_uuid: govbox_message.correlation_id,
         title: thread_title,
         delivered_at: govbox_message.delivered_at
@@ -55,7 +44,7 @@ class Govbox::Message < ApplicationRecord
 
       message.save!
 
-      self.create_message_tag(message, govbox_message)
+      self.add_tags(message, govbox_message)
       
       message
     end
@@ -63,6 +52,18 @@ class Govbox::Message < ApplicationRecord
     self.create_message_objects(message, govbox_message.payload)
 
     message
+  end
+
+  def replyable?
+    folder.inbox? && [EGOV_DOCUMENT_CLASS, EGOV_NOTIFICATION_CLASS].include?(payload["class"])
+  end
+
+  def collapsed?
+    payload["class"].in?(COLLAPSED_BY_DEFAULT_MESSAGE_CLASSES)
+  end
+
+  def delivery_notification
+    payload["delivery_notification"]
   end
 
   private
@@ -87,7 +88,7 @@ class Govbox::Message < ApplicationRecord
         "reference_id": govbox_message.payload["reference_id"],
         "sender_uri": govbox_message.payload["sender_uri"],
         "edesk_class": govbox_message.payload["class"],
-        "delivery_notification": govbox_message.payload["delivery_notification"]
+        "delivery_notification": govbox_message.delivery_notification
       }
     )
   end
@@ -118,15 +119,22 @@ class Govbox::Message < ApplicationRecord
     end
   end
 
-  def self.create_message_tag(message, govbox_message)
-    tag = Tag.find_or_create_by!(
-      name: "slovensko.sk:#{govbox_message.folder.full_name}",
+  def self.add_tags(message, govbox_message)
+    upvs_tag = Tag.find_or_create_by!(
+      system_name: "slovensko.sk:#{govbox_message.folder.full_name}",
       tenant: govbox_message.box.tenant,
       external: true,
-      visible: !govbox_message.folder.system?
-    )
+    ) do |tag|
+      tag.name = "slovensko.sk:#{govbox_message.folder.full_name}"
+      tag.visible = !govbox_message.folder.system?
+    end
+    message.tags << upvs_tag
+    message.thread.tags << upvs_tag unless message.thread.tags.include?(upvs_tag)
 
-    message.tags << tag
-    message.thread.tags << tag unless message.thread.tags.include?(tag)
+    if message.can_be_authorized?
+      delivery_notification_tag = govbox_message.box.tenant.tags.find_by!(system_name: DELIVERY_NOTIFICATION_TAG)
+      message.tags << delivery_notification_tag
+      message.thread.tags << delivery_notification_tag unless message.thread.tags.include?(delivery_notification_tag)
+    end
   end
 end

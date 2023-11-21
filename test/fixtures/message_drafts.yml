@@ -1,41 +1,28 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-draft_one:
+ssd_main_general_draft_one:
   uuid: <%= SecureRandom.uuid %>
-  title: MyString
-  sender_name: MyString
-  recipient_name: MyString
+  title: Title is not shown
+  html_visualization: Reply to something
+  delivered_at: 2023-05-18 16:18:26
+  thread: ssd_main_general
+  type: MessageDraft
+  metadata: {}
+
+ssd_main_general_draft_two:
+  uuid: <%= SecureRandom.uuid %>
+  title: MyStringDraft2
   html_visualization: MyString
   delivered_at: 2023-05-18 16:18:26
-  thread: three
+  thread: ssd_main_general
   type: MessageDraft
+  metadata: {}
 
-draft_two:
+ssd_main_delivery_draft:
   uuid: <%= SecureRandom.uuid %>
-  title: MyString
-  sender_name: MyString
-  recipient_name: MyString
-  html_visualization: MyString
-  delivered_at: 2023-05-18 16:18:26
-  thread: one
-  type: MessageDraft
-
-draft_three:
-  uuid: <%= SecureRandom.uuid %>
-  title: MyString
-  sender_name: MyString
-  recipient_name: MyString
+  title: MyStringDraft3
   html_visualization: MyString
   delivered_at: 2023-05-18 16:19:26
-  thread: two
+  thread: ssd_main_delivery
   type: MessageDraft
-
-draft_four:
-  uuid: <%= SecureRandom.uuid %>
-  title: MyString
-  sender_name: MyString
-  recipient_name: MyString
-  html_visualization: MyString
-  delivered_at: 2023-05-18 16:20:26
-  thread: two
-  type: MessageDraft
+  metadata: {}
