@@ -231,7 +231,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_18_103512) do
     t.bigint "folder_id", null: false
     t.json "payload", null: false
     t.index "((((payload -> 'delivery_notification'::text) -> 'consignment'::text) ->> 'message_id'::text))", name: "index_govbox_messages_on_delivery_notification_id", using: :hash
-    t.index ["edesk_message_id", "folder_id"], name: "index_govbox_messages_on_edesk_message_id_and_folder_id", unique: true
     t.index ["folder_id"], name: "index_govbox_messages_on_folder_id"
   end
 
@@ -453,37 +452,19 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_18_103512) do
   end
 
   create_table "upvs_service_with_form_allow_rules", force: :cascade do |t|
-    t.integer "instance_id", null: false
-    t.string "external_code"
-    t.string "meta_is_code"
     t.string "name"
-    t.string "type"
     t.string "institution_uri", null: false
     t.string "institution_name"
-    t.datetime "valid_from"
-    t.datetime "valid_to"
-    t.string "url"
-    t.string "info_url"
     t.string "schema_url"
-    t.datetime "changed_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "upvs_service_with_forms", force: :cascade do |t|
-    t.integer "instance_id", null: false
-    t.string "external_code"
-    t.string "meta_is_code"
     t.string "name"
-    t.string "type"
     t.string "institution_uri", null: false
     t.string "institution_name"
-    t.datetime "valid_from"
-    t.datetime "valid_to"
-    t.string "url"
-    t.string "info_url"
     t.string "schema_url"
-    t.datetime "changed_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

@@ -32,17 +32,14 @@ if tenant.users.first
 end
 
 Upvs::ServiceWithForm.find_or_create_by!(
-  instance_id: 1,
   institution_uri: 'ico://sk/83136952',
   schema_url: 'http://schemas.gov.sk/form/App.GeneralAgenda/1.9'
 )
 Upvs::ServiceWithFormAllowRule.find_or_create_by!(
-  instance_id: 1,
   institution_uri: 'ico://sk/83136952',
   schema_url: 'http://schemas.gov.sk/form/App.GeneralAgenda/1.9'
 )
 Upvs::ServiceWithFormAllowRule.find_or_create_by!(
-  instance_id: 2,
   institution_uri: 'ico://sk/83136952',
   schema_url: 'http://schemas.gov.sk/form/00166073.RESS_Exekucne_konanie_Navrh_na_vykonanie_exekucie.sk/1.24'
 )
@@ -51,6 +48,11 @@ ga_form = Upvs::Form.find_or_create_by!(
   identifier: "App.GeneralAgenda",
   version: "1.9",
   message_type: "App.GeneralAgenda",
+)
+
+ga_form.templates.find_or_create_by!(
+  name: "Všeobecná agenda",
+  tenant: tenant,
   template:
     '<GeneralAgenda xmlns="http://schemas.gov.sk/form/App.GeneralAgenda/1.9">
   <subject>{{text_field:subject}}</subject>
@@ -169,7 +171,7 @@ ga_related_documents = [
 
 ga_related_documents.each do |related_document|
   Upvs::FormRelatedDocument.find_or_create_by!(
-    form_template: ga_form,
+    form: ga_form,
     data: related_document[:data],
     language: related_document[:language],
     document_type: related_document[:document_type]
@@ -1621,7 +1623,7 @@ exe_related_documents = [
 
 exe_related_documents.each do |related_document|
   Upvs::FormRelatedDocument.find_or_create_by!(
-    form_template: exe_form,
+    form: exe_form,
     data: related_document[:data],
     language: related_document[:language],
     document_type: related_document[:document_type]
