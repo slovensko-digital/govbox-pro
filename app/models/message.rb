@@ -48,13 +48,13 @@ class Message < ApplicationRecord
   end
 
   # TODO move to task/job in order to keep the domain clean
-  def self.authorize_delivery_notification(message, schedule_sync: true)
+  def self.authorize_delivery_notification(message)
     can_be_authorized = message.can_be_authorized?
     if can_be_authorized
       message.metadata["authorized"] = "in_progress"
       message.save!
 
-      Govbox::AuthorizeDeliveryNotificationJob.perform_later(message, schedule_sync: schedule_sync)
+      Govbox::AuthorizeDeliveryNotificationJob.perform_later(message)
     end
 
     can_be_authorized
