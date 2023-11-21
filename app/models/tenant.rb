@@ -2,11 +2,11 @@
 #
 # Table name: tenants
 #
-#  id                                          :integer          not null, primary key
-#  name                                        :string           not null
-#  created_at                                  :datetime         not null
-#  updated_at                                  :datetime         not null
-
+#  id         :bigint           not null, primary key
+#  name       :string           not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
 class Tenant < ApplicationRecord
   has_many :users, dependent: :destroy
   has_many :groups, dependent: :destroy
@@ -16,7 +16,6 @@ class Tenant < ApplicationRecord
 
   has_many :boxes, dependent: :destroy
   has_many :automation_rules, class_name: 'Automation::Rule', dependent: :destroy
-  has_many :folders, through: :boxes
   has_many :tags, dependent: :destroy
   has_many :filters
   after_create :create_default_objects

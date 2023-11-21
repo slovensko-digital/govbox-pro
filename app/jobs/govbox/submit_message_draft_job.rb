@@ -21,14 +21,14 @@ class Govbox::SubmitMessageDraftJob < ApplicationJob
       objects: build_objects(message_draft)
     }.compact
 
-    sktalk_api = upvs_client.api(message_draft.thread.folder.box).sktalk
+    sktalk_api = upvs_client.api(message_draft.thread.box).sktalk
     success, response_status, response_body = sktalk_api.receive_and_save_to_outbox(message_draft_data)
 
     if success
       message_draft.metadata["status"] = "submitted"
       message_draft.save!
 
-      Govbox::SyncBoxJob.set(wait: 3.minutes).perform_later(message_draft.thread.folder.box) if schedule_sync
+      Govbox::SyncBoxJob.set(wait: 3.minutes).perform_later(message_draft.thread.box) if schedule_sync
     else
       handle_submit_fail(message_draft, response_status, response_body.dig("message"))
     end

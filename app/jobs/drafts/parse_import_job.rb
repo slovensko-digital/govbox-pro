@@ -75,14 +75,8 @@ class Drafts::ParseImportJob < ApplicationJob
       headers: true
     }
     
-    folder = Folder.find_or_create_by!(
-      box: import.box,
-      name: "Drafts"
-    )
-    
     CSV.parse(File.read(csv_path), **csv_options) do |row|
-      message_thread = folder.message_threads.create(
-        folder: folder,
+      message_thread = import.box.message_threads.create(
         title: row['message_subject'],
         original_title: row['message_subject'],
         delivered_at: Time.now,

@@ -12,7 +12,7 @@
             <%= render Common::CloseButtonComponent.new(link_to: settings_automation_rules_path) %>
           </div>
           <div class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-4 p-6 bg-white border-t-0 border-r-0 border-b border-l-0 border-gray-200">
-            <%= render Icons::InfoComponent.new %>
+            <%= render Icons::InfoComponent.big_gray %>
             <p class="flex-grow w-[804px] text-base text-left text-gray-900"> Pravidlo tvorí ľubovoľný počet podmienok, pričom všetky musia byť splnené. </p>
           </div>
           <%= form_with model: [:settings, @new_rule], class: "flex justify-start items-center self-stretch gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200" do |new_rule_form| %>

@@ -2,14 +2,16 @@
 #
 # Table name: automation_conditions
 #
-#  id                                          :integer          not null, primary key
-#  attr                                        :string
-#  type                                        :string
-#  value                                       :string
-#  automation_rule_id                          :integer
-#  created_at                                  :datetime         not null
-#  updated_at                                  :datetime         not null
-
+#  id                    :bigint           not null, primary key
+#  attr                  :string
+#  condition_object_type :string
+#  type                  :string
+#  value                 :string
+#  created_at            :datetime         not null
+#  updated_at            :datetime         not null
+#  automation_rule_id    :bigint           not null
+#  condition_object_id   :bigint
+#
 module Automation
   class Condition < ApplicationRecord
     belongs_to :automation_rule, class_name: 'Automation::Rule'
@@ -70,7 +72,7 @@ module Automation
                else
                  thing
                end
-      object.folder.box == condition_object
+      object.box == condition_object
     end
 
     def cleanup_record

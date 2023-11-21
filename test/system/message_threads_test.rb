@@ -18,8 +18,8 @@ class MessageThreadsTest < ApplicationSystemTestCase
   test "threads listing" do
     visit message_threads_path
 
-    thread_general = message_threads(:ssd_main_one_general)
-    thread_issue = message_threads(:ssd_main_one_issue)
+    thread_general = message_threads(:ssd_main_general)
+    thread_issue = message_threads(:ssd_main_issue)
 
     within("[data-test='message_thread_#{thread_general.id}']") do
       assert_text "General"
@@ -71,8 +71,8 @@ class MessageThreadsTest < ApplicationSystemTestCase
     fill_in "search", with: "Social Department"
     find("#search").send_keys('keyword', :enter)
 
-    thread_general = message_threads(:ssd_main_one_general)
-    thread_issue = message_threads(:ssd_main_one_issue)
+    thread_general = message_threads(:ssd_main_general)
+    thread_issue = message_threads(:ssd_main_issue)
 
     within("[data-test='message_thread_#{thread_general.id}']") do
       assert_text "General"
@@ -91,8 +91,8 @@ class MessageThreadsTest < ApplicationSystemTestCase
       end
     end
 
-    thread_general = message_threads(:ssd_main_one_general)
-    thread_issue = message_threads(:ssd_main_one_issue)
+    thread_general = message_threads(:ssd_main_general)
+    thread_issue = message_threads(:ssd_main_issue)
 
     within("[data-test='message_thread_#{thread_general.id}']") do
       assert_text "General"
@@ -105,12 +105,12 @@ class MessageThreadsTest < ApplicationSystemTestCase
   test "thread detail" do
     visit message_threads_path
 
-    thread_general = message_threads(:ssd_main_one_general)
-    message_one = messages(:ssd_main_one_general_one)
-    message_two = messages(:ssd_main_one_general_two)
-    message_three = messages(:ssd_main_one_general_three)
+    thread_general = message_threads(:ssd_main_general)
+    message_one = messages(:ssd_main_general_one)
+    message_two = messages(:ssd_main_general_two)
+    message_three = messages(:ssd_main_general_three)
 
-    draft_one = message_drafts(:ssd_main_one_general_draft_one)
+    draft_one = message_drafts(:ssd_main_general_draft_one)
 
     within("[data-test='message_thread_#{thread_general.id}']") do
       click_link

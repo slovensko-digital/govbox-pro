@@ -2,18 +2,18 @@
 #
 # Table name: govbox_messages
 #
-#  id                                          :integer          not null, primary key
-#  edesk_message_id                            :integer          not null
-#  folder_id                                   :integer          not null
-#  message_id                                  :uuid             not null
-#  correlation_id                              :uuid             not null
-#  delivered_at                                :datetime         not null
-#  edesk_class                                 :string           not null
-#  body                                        :text             not null
-#  payload                                     :json             not null
-#  created_at                                  :datetime         not null
-#  updated_at                                  :datetime         not null
-
+#  id               :bigint           not null, primary key
+#  body             :text             not null
+#  delivered_at     :datetime         not null
+#  edesk_class      :string           not null
+#  payload          :json             not null
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#  correlation_id   :uuid             not null
+#  edesk_message_id :bigint           not null
+#  folder_id        :bigint           not null
+#  message_id       :uuid             not null
+#
 class Govbox::Message < ApplicationRecord
   belongs_to :folder, class_name: 'Govbox::Folder'
 
@@ -27,11 +27,6 @@ class Govbox::Message < ApplicationRecord
 
   def self.create_message_with_thread!(govbox_message)
     message = MessageThread.with_advisory_lock!(govbox_message.correlation_id, transaction: true, timeout_seconds: 10) do
-      folder = Folder.find_or_create_by!(
-        name: "Inbox",
-        box: govbox_message.box
-      ) # TODO create folder for threads
-
       message = self.create_message(govbox_message)
 
       thread_title = if message.metadata["delivery_notification"].present?
@@ -41,7 +36,7 @@ class Govbox::Message < ApplicationRecord
       end
 
       message.thread = govbox_message.box.message_threads.find_or_create_by_merge_uuid!(
-        folder: folder,
+        box: govbox_message.box,
         merge_uuid: govbox_message.correlation_id,
         title: thread_title,
         delivered_at: govbox_message.delivered_at

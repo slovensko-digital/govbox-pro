@@ -5,6 +5,7 @@ class MessageDraftsController < ApplicationController
 
   include ActionView::RecordIdentifier
   include MessagesConcern
+  include MessageThreadsConcern
 
   def index
     @messages = @messages.order(created_at: :desc)
@@ -20,8 +21,8 @@ class MessageDraftsController < ApplicationController
     authorize @message
 
     @message_thread = @message.thread
-    @thread_messages = @message_thread.messages_visible_to_user(Current.user).order(delivered_at: :asc)
-    @thread_last_message_draft_id = @message_thread.messages_visible_to_user(Current.user).where(type: 'MessageDraft').includes(objects: :nested_message_objects, attachments: :nested_message_objects).order(delivered_at: :asc)&.last&.id
+
+    set_thread_messages
     set_visible_tags_for_thread
   end
 
@@ -57,7 +58,7 @@ class MessageDraftsController < ApplicationController
       message_draft.being_submitted!
     end
 
-    boxes_to_sync = Current.tenant.boxes.joins(folders: { message_threads: :messages }).where(messages: { id: @messages.map(&:id) } ).uniq
+    boxes_to_sync = Current.tenant.boxes.joins(message_threads: :messages).where(messages: { id: @messages.map(&:id) } ).uniq
     jobs_batch.enqueue(on_finish: Govbox::ScheduleDelayedSyncBoxJob, boxes: boxes_to_sync)
   end
 

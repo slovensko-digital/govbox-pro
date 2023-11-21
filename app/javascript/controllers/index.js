@@ -4,26 +4,29 @@
 
 import { application } from "./application"
 
-import AutogramController from "./autogram_controller"
-application.register("autogram", AutogramController)
-
-import MessageDraftsController from "./message_drafts_controller"
-application.register("messageDrafts", MessageDraftsController)
-
-import DebounceController from "./debounce_controller"
-application.register("debounce", DebounceController)
-
-import FormController from "./form_controller"
-application.register("form", FormController)
-
-import TurboContentController from "./turbo_content_controller"
-application.register("turbo-content", TurboContentController)
-
-import DismissibleAlertController from "./dismissible_alert_controller"
-application.register("dismissible-alert", DismissibleAlertController)
+import AllCheckboxesController from "./all_checkboxes_controller"
+application.register("all-checkboxes", AllCheckboxesController)
 
 import AutofocusController from "./autofocus_controller"
 application.register("autofocus", AutofocusController)
 
+import AutogramController from "./autogram_controller"
+application.register("autogram", AutogramController)
+
+import DebounceController from "./debounce_controller"
+application.register("debounce", DebounceController)
+
+import DismissibleAlertController from "./dismissible_alert_controller"
+application.register("dismissible-alert", DismissibleAlertController)
+
+import FormController from "./form_controller"
+application.register("form", FormController)
+
+import MessageDraftsController from "./message_drafts_controller"
+application.register("message-drafts", MessageDraftsController)
+
 import TriStateCheckboxController from "./tri_state_checkbox_controller"
 application.register("tri-state-checkbox", TriStateCheckboxController)
+
+import TurboContentController from "./turbo_content_controller"
+application.register("turbo-content", TurboContentController)

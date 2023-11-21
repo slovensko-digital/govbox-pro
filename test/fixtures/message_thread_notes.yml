@@ -1,7 +1,7 @@
 one:
-  message_thread: ssd_main_one_general
+  message_thread: ssd_main_general
   note: "Insider Note1"
 
 two:
-  message_thread: ssd_main_one_issue
+  message_thread: ssd_main_issue
   note: "Note2"

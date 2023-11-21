@@ -2,63 +2,63 @@ sk:
   activerecord:
     attributes:
       message_thread:
-        title: 'Názov'
+        title: "Názov"
     errors:
       messages:
-        record_invalid: 'Validácia neúspešná: %{errors}'
+        record_invalid: "Validácia neúspešná: %{errors}"
   date:
     abbr_day_names:
-    - Ne
-    - Po
-    - Ut
-    - St
-    - Št
-    - Pi
-    - So
+      - Ne
+      - Po
+      - Ut
+      - St
+      - Št
+      - Pi
+      - So
     abbr_month_names:
-    - 
-    - Jan
-    - Feb
-    - Mar
-    - Apr
-    - Máj
-    - Jún
-    - Júl
-    - Aug
-    - Sep
-    - Okt
-    - Nov
-    - Dec
+      -
+      - Jan
+      - Feb
+      - Mar
+      - Apr
+      - Máj
+      - Jún
+      - Júl
+      - Aug
+      - Sep
+      - Okt
+      - Nov
+      - Dec
     day_names:
-    - Nedeľa
-    - Pondelok
-    - Utorok
-    - Streda
-    - Štvrtok
-    - Piatok
-    - Sobota
+      - Nedeľa
+      - Pondelok
+      - Utorok
+      - Streda
+      - Štvrtok
+      - Piatok
+      - Sobota
     formats:
       default: "%d.%m.%Y"
       long: "%d. %B %Y"
       short: "%d %b"
     month_names:
-    - 
-    - Január
-    - Február
-    - Marec
-    - Apríl
-    - Máj
-    - Jún
-    - Júl
-    - August
-    - September
-    - Október
-    - November
-    - December
+      -
+      - Január
+      - Február
+      - Marec
+      - Apríl
+      - Máj
+      - Jún
+      - Júl
+      - August
+      - September
+      - Október
+      - November
+      - December
     order:
-    - :day
-    - :month
-    - :year
+      - :day
+      - :month
+      - :year
   datetime:
     distance_in_words:
       about_x_hours:
@@ -139,12 +139,14 @@ sk:
       too_short: je príliš krátky/a (min. %{count} znakov)
       wrong_length: nemá správnu dĺžku (očakáva sa %{count} znakov)
     template:
-      body: 'Nasledujúce polia obsahujú chybne vyplnené údaje:'
+      body: "Nasledujúce polia obsahujú chybne vyplnené údaje:"
       header:
         one: Pri ukladaní objektu %{model} došlo k chybám a nebolo ho možné uložiť
-        few: Pri ukladaní objektu %{model} došlo k %{count} chybám a nebolo ho možné
+        few:
+          Pri ukladaní objektu %{model} došlo k %{count} chybám a nebolo ho možné
           uložiť
-        other: Pri ukladaní objektu %{model} došlo k %{count} chybám a nebolo ho možné
+        other:
+          Pri ukladaní objektu %{model} došlo k %{count} chybám a nebolo ho možné
           uložiť
   helpers:
     select:
@@ -178,9 +180,9 @@ sk:
           quadrillion: Biliarda
           thousand: Tisíc
           trillion: Bilión
-          unit: ''
+          unit: ""
       format:
-        delimiter: ''
+        delimiter: ""
         precision: 1
         significant: false
         strip_insignificant_zeros: false
@@ -200,7 +202,7 @@ sk:
         delimiter: " "
     precision:
       format:
-        delimiter: ''
+        delimiter: ""
   support:
     array:
       last_word_connector: " a "
@@ -218,9 +220,13 @@ sk:
     few: "%{count} používatelia"
     other: "%{count} používateľov"
   message_object:
-    one: '1 prílohu'
+    one: "1 prílohu"
     few: "%{count} prílohy"
     other: "%{count} príloh"
+  selected_message:
+    one: "%{count} označená správa"
+    few: "%{count} označené správy"
+    other: "%{count} označených správ"
   no_message_object_name: "Súbor bez názvu"
   sender_name: "Odosielateľ"
   recipient_name: "Prijímateľ"

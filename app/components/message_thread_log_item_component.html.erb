@@ -8,11 +8,11 @@
             <div>
               <span class="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center ring-8 ring-white">
                 <% if @message.type == 'MessageDraft' %>
-                  <%= render Icons::DraftComponent.new %>
+                  <%= render Icons::PencilSquareComponent.new(css_classes: "w-5 h-5 text-gray-600") %>
                 <% elsif @message.collapsed %>
-                  <%= render Icons::CollapsedMessageComponent.new %>
+                  <%= render Icons::CogEightToothComponent.new(css_classes: "w-5 h-5 text-gray-600") %>
                 <% else %>
-                  <%= render Icons::RelevantMessageComponent.new %>
+                  <%= render Icons::EnvelopeComponent.new(css_classes: "w-5 h-5 text-gray-600") %>
                 <% end %>
               </span>
             </div>
