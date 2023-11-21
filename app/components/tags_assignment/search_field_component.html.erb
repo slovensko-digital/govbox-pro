@@ -1,6 +1,6 @@
 <div class="w-full flex items-center rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-blue-500">
   <div class="p-2">
-    <%= render Icons::SearchComponent.new %>
+    <%= render Icons::MagnifyingGlassComponent.gray(size: "5") %>
   </div>
   <%= search_field_tag :name_search_query, "", placeholder: "Vyhľadaj alebo vytvor štítok",
                        data: { action: "input->debounce#debounce" },

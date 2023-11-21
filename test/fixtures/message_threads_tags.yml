@@ -1,9 +1,21 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  message_thread: one
-  tag: two
+ssd_main_general_finance:
+  message_thread: ssd_main_general
+  tag: ssd_finance
 
-two:
-  message_thread: two
-  tag: two
+ssd_main_general_legal:
+  message_thread: ssd_main_general
+  tag: ssd_legal
+
+ssd_main_issue_finance:
+  message_thread: ssd_main_issue
+  tag: ssd_finance
+
+ssd_main_issue_hidden:
+  message_thread: ssd_main_issue
+  tag: ssd_hidden
+
+solver_main_delivery_notification_delivery_notification:
+  message_thread: solver_main_delivery_notification
+  tag: solver_delivery_notification

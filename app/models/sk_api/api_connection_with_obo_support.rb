@@ -2,18 +2,23 @@
 #
 # Table name: api_connections
 #
-#  id                                          :integer          not null, primary key
-#  sub                                         :string           not null
-#  obo                                         :uuid
-#  api_token_private_key                       :string           not null
-#  created_at                                  :datetime         not null
-#  updated_at                                  :datetime         not null
-
+#  id                    :bigint           not null, primary key
+#  api_token_private_key :string           not null
+#  obo                   :uuid
+#  sub                   :string           not null
+#  type                  :string
+#  created_at            :datetime         not null
+#  updated_at            :datetime         not null
+#
 class SkApi::ApiConnectionWithOboSupport < ::ApiConnection
   def box_obo(box)
     raise "OBO not allowed!" if invalid_obo?(box)
 
     box.settings["obo"] if box.settings
+  end
+
+  def destroy_with_box?
+    false
   end
 
   def validate_box(box)

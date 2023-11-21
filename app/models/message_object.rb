@@ -2,16 +2,17 @@
 #
 # Table name: message_objects
 #
-#  id                                          :integer          not null, primary key
-#  name                                        :string
-#  mimetype                                    :string
-#  is_signed                                   :boolean
-#  to_be_signed                                :boolean          not null, default: false
-#  object_type                                 :string           not null
-#  message_id                                  :integer          not null
-#  created_at                                  :datetime         not null
-#  updated_at                                  :datetime         not null
-
+#  id           :bigint           not null, primary key
+#  is_signed    :boolean
+#  mimetype     :string
+#  name         :string
+#  object_type  :string           not null
+#  to_be_signed :boolean          default(FALSE), not null
+#  visualizable :boolean
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#  message_id   :bigint           not null
+#
 class MessageObject < ApplicationRecord
   belongs_to :message
   has_one :message_object_datum, dependent: :destroy
@@ -53,6 +54,7 @@ class MessageObject < ApplicationRecord
 
   def signable?
     # TODO vymazat druhu podmienku po povoleni viacnasobneho podpisovania
+    # TODO refactor to not loading message
     message.is_a?(MessageDraft) && !is_signed
   end
 
@@ -61,6 +63,7 @@ class MessageObject < ApplicationRecord
   end
 
   def destroyable?
+    # TODO avoid loading message association if we have
     message.is_a?(MessageDraft) && message.not_yet_submitted? && !form?
   end
 

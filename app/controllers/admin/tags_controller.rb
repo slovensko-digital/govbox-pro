@@ -3,7 +3,10 @@ class Admin::TagsController < ApplicationController
 
   def index
     authorize [:admin, Tag]
-    @tags = policy_scope([:admin, Tag])
+    tags = policy_scope([:admin, Tag]).order(:name)
+
+    @external_tags = tags.where(external: true)
+    @internal_tags = tags.where(external: false)
   end
 
   def show

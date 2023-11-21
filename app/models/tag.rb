@@ -2,13 +2,16 @@
 #
 # Table name: tags
 #
-#  id                                          :integer          not null, primary key
-#  tenant_id                                   :integer
-#  name                                        :string
-#  visible                                     :boolean          not null
-#  created_at                                  :datetime         not null
-#  updated_at                                  :datetime         not null
-
+#  id          :bigint           not null, primary key
+#  external    :boolean          default(FALSE)
+#  name        :string           not null
+#  system_name :string
+#  visible     :boolean          default(TRUE), not null
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#  tenant_id   :bigint           not null
+#  user_id     :bigint
+#
 class Tag < ApplicationRecord
   belongs_to :tenant
   belongs_to :owner, class_name: 'User', optional: true, foreign_key: :user_id
@@ -28,6 +31,8 @@ class Tag < ApplicationRecord
   after_create_commit ->(tag) { tag.mark_readable_by_groups(tag.tenant.admin_groups) }
   after_update_commit ->(tag) { EventBus.publish(:tag_renamed, tag) if previous_changes.key?("name") }
   after_destroy ->(tag) { EventBus.publish(:tag_destroyed, tag) }
+
+  DRAFT_SYSTEM_NAME = 'draft'
 
   def mark_readable_by_groups(groups)
     self.groups += groups
