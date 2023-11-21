@@ -60,6 +60,10 @@ class Message < ApplicationRecord
     can_be_authorized
   end
 
+  def draft?
+    false
+  end
+
   def form
     objects.select { |o| o.form? }&.first
   end

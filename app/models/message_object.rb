@@ -17,9 +17,9 @@ class MessageObject < ApplicationRecord
   has_one :message_object_datum, dependent: :destroy
   has_many :nested_message_objects
 
-  scope :unsigned, -> { where('is_signed = false') }
-  scope :to_be_signed, -> { where('to_be_signed = true') }
-  scope :should_be_signed, -> { where('to_be_signed = true AND is_signed = false') }
+  scope :unsigned, -> { where(is_signed: false) }
+  scope :to_be_signed, -> { where(to_be_signed: true) }
+  scope :should_be_signed, -> { where(to_be_signed: true, is_signed: false) }
 
   validates :name, presence: true, on: :validate_data
   validate :allowed_mime_type?, on: :validate_data
@@ -51,10 +51,13 @@ class MessageObject < ApplicationRecord
     object_type == "FORM"
   end
 
-  def signable?
+  def not_form?
+    !form?
+  end
+
+  def not_signed?
     # TODO vymazat druhu podmienku po povoleni viacnasobneho podpisovania
-    # TODO refactor to not loading message
-    message.is_a?(MessageDraft) && !is_signed
+    !is_signed
   end
 
   def asice?

@@ -1,13 +1,13 @@
 <div id="<%= dom_id(@message, :attachments) %>" is="turbo-frame" class="border-b-0 w-full">
-  <% if @message.not_yet_submitted? || @message.attachments.present? %>
+  <% if @message.not_yet_submitted? || @attachments.present? %>
     <div class="justify-stretch items-center self-stretch flex-grow-0 flex-shrink-0 gap-3 px-6 py-4 border-b">
       <div class="flex justify-between items-center gap-4 overflow-clip">
         <div class="flex justify-start items-center gap-4 overflow-clip">
           <div class="flex justify-stretch items-center gap-4">
             <%= render Icons::PaperClipComponent.new(css_classes: "w-6 h-6 text-gray-400") %>
             <p class="flex-grow-0 flex-shrink-0 text-base text-left text-gray-900">
-              <% if @message.attachments.present? %>
-                Správa obsahuje <b><%= t('message_object', :count => @message.attachments.length, :locale => :sk) %></b>
+              <% if @attachments.present? %>
+                Správa obsahuje <b><%= t("message_object", count: @attachments.length, locale: :sk) %></b>
               <% elsif @message.not_yet_submitted? %>
                 <b>Pridať prílohu</b>
               <% end %>
@@ -34,9 +34,9 @@
         </div>
 
         <div class="flex justify-end items-center gap-4">
-          <% if @message.attachments.unsigned.present? %>
+          <% if @unsigned_attachments.present? %>
             <%
-              files_to_be_signed = @message.objects.unsigned.map do |message_object|
+              files_to_be_signed = @unsigned_attachments.map do |message_object|
                 { path: message_message_object_path(message_object.message_id, message_object.id) }
              end
             %>
@@ -56,10 +56,9 @@
       </div>
     </div>
 
-    <% if @message.attachments.present? %>
+    <% if @attachments.present? %>
       <div class="flex flex-col justify-stretch items-stretch divide-y relative px-4 bg-white border-t-0 border-r-0 border-b border-l-0 border-gray-200">
-        <%# TODO do not order attachments in a way that triggers call to DB for data we already have loaded %>
-        <%= render MessageAttachmentComponent.with_collection(@message.attachments.order(updated_at: :desc)) %>
+        <%= render MessageAttachmentComponent.with_collection(@attachments, message: @message) %>
       </div>
     <% end %>
   <% end %>

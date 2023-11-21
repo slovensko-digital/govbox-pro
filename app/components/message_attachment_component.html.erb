@@ -23,14 +23,13 @@
     </div>
   <% end %>
   <div class="hidden md:flex justify-end items-center gap-4">
-    <%# TODO do not trigger DB query %>
-    <% if @message_attachment.signable? %>
+    <% if signable_attachment? %>
       <%= content_tag(:div,
         {
           "data-controller": "autogram",
           "data-autogram-object-id": @message_attachment.id,
-          "data-autogram-message-id": @message_attachment.message_id,
-          "data-autogram-object-path": message_message_object_path(@message_attachment.message_id, @message_attachment.id),
+          "data-autogram-message-id": @message.id,
+          "data-autogram-object-path": message_message_object_path(@message, @message_attachment),
           "data-autogram-authenticity-token": form_authenticity_token,
         }
       ) do %>
@@ -39,20 +38,23 @@
         </button>
       <% end %>
     <% end %>
-    <%= link_to download_message_message_object_path(@message_attachment.message_id, @message_attachment), data: { turbo_frame: "_top" }, class: "flex justify-end items-center gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300 hover:bg-gray-100", "aria-label": "Stiahnúť" do %>
+    <%= link_to download_message_message_object_path(@message, @message_attachment), data: { turbo_frame: "_top" }, class: "flex justify-end items-center gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300 hover:bg-gray-100", "aria-label": "Stiahnúť" do %>
       <%= render Icons::ArrowDownTrayComponent.new(css_classes: "w-5 h-5") %>
     <% end %>
-    <%# TODO do not trigger DB query %>
-    <% if @message_attachment.destroyable? %>
-      <%= button_to message_message_object_path(@message_attachment.message_id, @message_attachment), method: :delete, class: "flex justify-end items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300 hover:bg-gray-100", "aria-label": "Zmazať" do %>
+    <% if destroyable_attachment? %>
+      <%= button_to message_message_object_path(@message, @message_attachment), method: :delete, class: "flex justify-end items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300 hover:bg-gray-100", "aria-label": "Zmazať" do %>
         <%= render Icons::TrashComponent.new(css_classes: "w-5 h-5 text-red-600") %>
       <% end %>
     <% end %>
   </div>
-  <%= render MessageAttachmentMenuComponent.new(@message_attachment) %>
+  <%= render MessageAttachmentMenuComponent.new(message: @message, message_attachment: @message_attachment) %>
 </div>
 <% if @message_attachment.nested_message_objects.present? %>
   <div class="flex-col pl-12 divide-y">
-    <%= render NestedMessageAttachmentComponent.with_collection(@message_attachment.nested_message_objects) %>
+    <%=
+      render NestedMessageAttachmentComponent.with_collection(
+        @message_attachment.nested_message_objects,
+        message_attachment: @message_attachment,
+        message: @message) %>
   </div>
 <% end %>

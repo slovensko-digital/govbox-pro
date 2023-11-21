@@ -4,7 +4,7 @@
   <%= render MessageComponent.new(message: @message, mode: @mode) do |component| %>
     <% @message.objects.each do |message_object| %>
       <% component.with_attachment do %>
-        <%= render MessageAttachmentComponent.new(message_attachment: message_object) %>
+        <%= render MessageAttachmentComponent.new(message: @message, message_attachment: message_object) %>
       <% end %>
     <% end %>
   <% end %>

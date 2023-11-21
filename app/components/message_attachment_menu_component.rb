@@ -1,5 +1,8 @@
 class MessageAttachmentMenuComponent < ViewComponent::Base
-  def initialize(message_attachment)
+  include Attachments
+
+  def initialize(message:,message_attachment:)
+    @message = message
     @message_attachment = message_attachment
   end
 end

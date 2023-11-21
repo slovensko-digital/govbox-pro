@@ -100,6 +100,10 @@ class MessageDraft < Message
     self.reload
   end
 
+  def draft?
+    true
+  end
+
   def collapsible?
     false
   end
