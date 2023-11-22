@@ -16,6 +16,7 @@ class MessageThreadsTagsTest < ApplicationSystemTestCase
       within("[data-test='tags']") do
         assert_text "Finance"
         assert_text "Legal"
+        assert_text "Other"
       end
     end
 

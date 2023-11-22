@@ -31,6 +31,7 @@ class MessageThreadsTest < ApplicationSystemTestCase
       within("[data-test='tags']") do
         assert_text "Finance"
         assert_text "Legal"
+        assert_text "Other"
       end
     end
 
@@ -38,13 +39,13 @@ class MessageThreadsTest < ApplicationSystemTestCase
       assert_text "Issue"
       assert_text "SD Services"
 
-      within("div[data-test='tags']") do
+      within("[data-test='tags']") do
         assert_text "Finance"
       end
     end
 
     within("[data-test='sidebar']") do
-      within("div[data-test='filters']") do
+      within("[data-test='filters']") do
         assert_text "With General text"
         assert_text "With Legal text"
 
