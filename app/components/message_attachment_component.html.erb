@@ -47,7 +47,7 @@
       <% end %>
     <% end %>
   </div>
-  <%= render MessageAttachmentMenuComponent.new(message_attachment: @message_attachment) %>
+  <%= render MessageAttachmentMenuComponent.new(@message_attachment) %>
 </div>
 <% if @message_attachment.nested_message_objects.present? %>
   <div class="flex-col pl-12 divide-y">
