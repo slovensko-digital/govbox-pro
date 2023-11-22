@@ -231,6 +231,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_18_103512) do
     t.bigint "folder_id", null: false
     t.json "payload", null: false
     t.index "((((payload -> 'delivery_notification'::text) -> 'consignment'::text) ->> 'message_id'::text))", name: "index_govbox_messages_on_delivery_notification_id", using: :hash
+    t.index ["edesk_message_id", "folder_id"], name: "index_govbox_messages_on_edesk_message_id_and_folder_id", unique: true
     t.index ["folder_id"], name: "index_govbox_messages_on_folder_id"
   end
 

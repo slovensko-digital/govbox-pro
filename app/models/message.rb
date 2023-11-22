@@ -47,17 +47,14 @@ class Message < ApplicationRecord
     tenant.automation_rules.where(trigger_event: event)
   end
 
-  # TODO move to task/job in order to keep the domain clean
-  def self.authorize_delivery_notification(message)
-    can_be_authorized = message.can_be_authorized?
-    if can_be_authorized
-      message.metadata["authorized"] = "in_progress"
-      message.save!
+  def add_cascading_tag(tag)
+    messages_tags.find_or_create_by!(tag: tag)
+    thread.message_threads_tags.find_or_create_by!(tag: tag)
+  end
 
-      Govbox::AuthorizeDeliveryNotificationJob.perform_later(message)
-    end
-
-    can_be_authorized
+  def remove_cascading_tag(tag)
+    messages_tags.find_by(tag: tag)&.destroy
+    thread.message_threads_tags.find_by(tag: tag)&.destroy unless thread.messages.any? {|m| m.tags.include?(tag) }
   end
 
   def form

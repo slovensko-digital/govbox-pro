@@ -1,9 +1,15 @@
 class Govbox::AuthorizeDeliveryNotificationAction
-  def self.run(message_threads)
-    message_for_delivery = message_threads.map(&:messages).flatten
+  def self.run(message)
+    can_be_authorized = message.can_be_authorized?
 
-    results = message_for_delivery.map { |message| ::Message.authorize_delivery_notification(message) }
+    if can_be_authorized
+      message.metadata["authorized"] = "in_progress"
+      message.save!
 
-    results.select { |value| value }.present?
+      Govbox::Message.remove_delivery_notification_tag(message)
+      Govbox::AuthorizeDeliveryNotificationJob.perform_later(message)
+    end
+
+    can_be_authorized
   end
 end
