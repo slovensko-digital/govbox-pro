@@ -17,7 +17,7 @@
           <%= render Common::BadgeComponent.new("Podpísané", "hidden md:flex") %>
         <% end %>
       </div>
-      <% if @message_attachment.signable? %>
+      <% if @message_attachment.is_signed? %>
         <%= render Common::BadgeComponent.new("Podpísané", "md:hidden") %>
       <% end %>
     </div>
