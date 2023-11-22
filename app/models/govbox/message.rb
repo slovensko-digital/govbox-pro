@@ -136,11 +136,11 @@ class Govbox::Message < ApplicationRecord
     end
   end
 
-  def self.delete_delivery_notification_tag(message)
+  def self.remove_delivery_notification_tag(message)
     delivery_notification_tag = Tag.find_by!(
       system_name: DELIVERY_NOTIFICATION_TAG,
       tenant: message.thread.box.tenant,
     )
-    message.delete_cascading_tag(delivery_notification_tag)
+    message.remove_cascading_tag(delivery_notification_tag)
   end
 end

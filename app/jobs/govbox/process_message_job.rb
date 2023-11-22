@@ -89,7 +89,7 @@ module Govbox
       delivery_notification_message.metadata['authorized'] = true
       delivery_notification_message.save!
 
-      Govbox::Message.delete_delivery_notification_tag(delivery_notification_message)
+      Govbox::Message.remove_delivery_notification_tag(delivery_notification_message)
     end
   end
 end

@@ -14,8 +14,6 @@ class Govbox::AuthorizeDeliveryNotificationJob < ApplicationJob
     message.metadata["authorized"] = true
     message.save!
 
-    Govbox::Message.delete_delivery_notification_tag(message)
-
     Govbox::SyncBoxJob.set(wait: 3.minutes).perform_later(message.thread.box)
   end
 end

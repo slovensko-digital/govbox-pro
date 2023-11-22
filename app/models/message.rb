@@ -54,6 +54,7 @@ class Message < ApplicationRecord
       message.metadata["authorized"] = "in_progress"
       message.save!
 
+      Govbox::Message.remove_delivery_notification_tag(message)
       Govbox::AuthorizeDeliveryNotificationJob.perform_later(message)
     end
 
@@ -65,7 +66,7 @@ class Message < ApplicationRecord
     thread.message_threads_tags.find_or_create_by!(tag: tag)
   end
 
-  def delete_cascading_tag(tag)
+  def remove_cascading_tag(tag)
     messages_tags.find_by(tag: tag)&.destroy
     thread.message_threads_tags.find_by(tag: tag)&.destroy unless thread.messages.any? {|m| m.tags.include?(tag) }
   end
