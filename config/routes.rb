@@ -32,16 +32,13 @@ Rails.application.routes.draw do
         resources :group_memberships do
         end
       end
-      resources :users do
-        resources :audit_logs do
-          collection do
-            get :scroll
-          end
-        end
-      end
+      resources :users
       resources :boxes
       resources :tags
       resources :tag_groups
+    end
+    resources :audit_logs, only: :index do
+      get :scroll, on: :collection
     end
   end
 
@@ -81,11 +78,6 @@ Rails.application.routes.draw do
       resource :tags, only: [:edit, :update] do
         post :prepare, on: :member
         post :create_tag, on: :member
-      end
-    end
-    resources :audit_logs, module: 'admin' do
-      collection do
-        get :scroll
       end
     end
   end

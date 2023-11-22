@@ -12,12 +12,12 @@
           <p class="mt-2 text-sm text-gray-700">Detailnejšie informácie v CSV exporte</p>
         </div>
         <% if @user %>
-          <%= link_to admin_tenant_user_audit_logs_path(@user.tenant, @user, format: 'csv'), class: "mt-4 sm:ml-16 sm:mt-0 sm:flex-none" do %>
-            <button type="button" class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Export CSV</button>
+          <%= link_to admin_audit_logs_path(user: @user, format: 'csv'), class: "mt-4 sm:ml-16 sm:mt-0 sm:flex-none" do %>
+            <p class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Export CSV</p>
           <% end %>
         <% elsif @message_thread %>
-          <%= link_to message_thread_audit_logs_path(@message_thread, format: 'csv'), class: "mt-4 sm:ml-16 sm:mt-0 sm:flex-none" do %>
-            <button type="button" class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Export CSV</button>
+          <%= link_to admin_audit_logs_path(thread: @message_thread, format: 'csv'), class: "mt-4 sm:ml-16 sm:mt-0 sm:flex-none" do %>
+            <p class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Export CSV</p>
           <% end %>
         <% end %>
       </div>
@@ -27,10 +27,9 @@
             <table class="min-w-full divide-y divide-gray-300">
               <thead>
                 <tr>
-                  <th scope="col" class="whitespace-nowrap py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">Typ záznamu</th>
                   <th scope="col" class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Čas udalosti</th>
+                  <th scope="col" class="whitespace-nowrap py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">Akcia</th>
                   <th scope="col" class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Názov vlákna</th>
-                  <th scope="col" class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Id vlákna</th>
                   <th scope="col" class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Hodnota pred</th>
                   <th scope="col" class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Hodnota po</th>
                 </tr>

@@ -28,22 +28,22 @@ class Admin::AuditLogsController < ApplicationController
   end
 
   def set_audit_subject
-    if params[:user_id]
-      @user = policy_scope([:admin, User]).find(params[:user_id])
+    if params[:user]
+      @user = policy_scope([:admin, User]).find(params[:user])
       @audit_logs = @audit_logs.where(user: @user)
     end
-    return unless params[:message_thread_id]
+    return unless params[:thread]
 
-    @thread = policy_scope(MessageThread).find(params[:message_thread_id])
+    @thread = policy_scope(MessageThread).find(params[:thread])
     @audit_logs = @audit_logs.where(thread: @thread)
   end
 
   def set_next
     @next_cursor = { happened_at: to_millis(@audit_logs.last.happened_at), id: @audit_logs.last.id }
     if @user
-      @url = scroll_admin_tenant_user_audit_logs_path(Current.tenant, Current.user, cursor: @next_cursor, format: :turbo_stream)
+      @url = scroll_admin_audit_logs_path(user: Current.user, cursor: @next_cursor, format: :turbo_stream)
     elsif @thread
-      @url = scroll_message_thread_audit_logs_path(@thread, cursor: @next_cursor, format: :turbo_stream)
+      @url = scroll_admin_audit_logs_path(thread: @thread, cursor: @next_cursor, format: :turbo_stream)
     end
   end
 

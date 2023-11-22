@@ -28,25 +28,23 @@ EventBus.reset!
 # wiring
 EventBus.subscribe_job :message_thread_created, Automation::MessageThreadCreatedJob
 EventBus.subscribe_job :message_created, Automation::MessageCreatedJob
-EventBus.subscribe :message_created, ->(message) {
+EventBus.subscribe :message_created, lambda { |message|
   Searchable::ReindexMessageThreadJob.perform_later(message.message_thread_id)
 }
-EventBus.subscribe :message_destroyed, ->(message) {
+EventBus.subscribe :message_destroyed, lambda { |message|
   Searchable::ReindexMessageThreadJob.perform_later(message.message_thread_id)
 }
-EventBus.subscribe :message_changed, ->(message) {
-  if Searchable::Indexer.message_searchable_fields_changed?(message)
-    Searchable::ReindexMessageThreadJob.perform_later(message.message_thread_id)
-  end
+EventBus.subscribe :message_changed, lambda { |message|
+  Searchable::ReindexMessageThreadJob.perform_later(message.message_thread_id) if Searchable::Indexer.message_searchable_fields_changed?(message)
 }
-EventBus.subscribe :message_thread_changed, ->(message_thread) {
+EventBus.subscribe :message_thread_changed, lambda { |message_thread|
   Searchable::ReindexMessageThreadJob.perform_later(message_thread.id)
 }
 
-EventBus.subscribe :message_thread_note_created, ->(note) {
+EventBus.subscribe :message_thread_note_created, lambda { |note|
   Searchable::ReindexMessageThreadJob.perform_later(note.message_thread_id)
 }
-EventBus.subscribe :message_thread_note_changed, ->(note) {
+EventBus.subscribe :message_thread_note_changed, lambda { |note|
   Searchable::ReindexMessageThreadJob.perform_later(note.message_thread_id)
 }
 
@@ -58,4 +56,4 @@ EventBus.subscribe :box_destroyed, ->(box_id) { Govbox::DestroyBoxDataJob.perfor
 
 EventBus.subscribe :message_thread_note_created, ->(note) { AuditLog::MessageThreadNoteCreated.create_audit_record(note) }
 EventBus.subscribe :message_thread_note_changed, ->(note) { AuditLog::MessageThreadNoteChanged.create_audit_record(note) }
-EventBus.subscribe :message_thread_tag_changed, ->(message_thread_tag) { AuditLog::MessageThreadTagChanged.create_audit_record(message_thread_tag) }
+EventBus.subscribe :message_thread_tag_changed, ->(thread_tag) { AuditLog::MessageThreadTagChanged.create_audit_record(thread_tag) }
