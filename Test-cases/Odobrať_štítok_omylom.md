@@ -8,6 +8,6 @@
 - V hlavičke pošty klikni na "+" při konkretnom štítku
   - Zobrazí sa pop up okno s textom: "Naozaj chcete odstrániť štítok "vybavené" z tohto vlákna?"
 - Klikni na možnosť ANO
-  - Štítok z hlavičky epošty zmizne
+  - Štítok z hlavičky pošty zmizne
 - V ľavom side boxe pod konkretným názvom štitku skontroluj že sa pošta ktorej si odobral tento štitok už nezobrazuje
   - Pošta sa nezobrazuje
