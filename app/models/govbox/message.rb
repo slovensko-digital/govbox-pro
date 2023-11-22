@@ -143,7 +143,7 @@ class Govbox::Message < ApplicationRecord
 
   def self.delete_tag(message, tag)
     message.messages_tags.find_by(tag: tag)&.destroy
-    message.thread.message_threads_tags.find_by(tag: tag)&.destroy
+    message.thread.message_threads_tags.find_by(tag: tag)&.destroy unless message.thread.messages.any? {|m| m.tags.include?(tag) }
   end
 
   def self.delete_delivery_notification_tag(message)
