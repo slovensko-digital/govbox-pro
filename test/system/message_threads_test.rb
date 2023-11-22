@@ -2,17 +2,9 @@ require "application_system_test_case"
 
 class MessageThreadsTest < ApplicationSystemTestCase
   setup do
-    # TODO find a better way without warning
-    @old_per_page = MessageThreadCollection::PER_PAGE
-    MessageThreadCollection.const_set("PER_PAGE", 1) # change per page to test infinite scrolling
-
     Searchable::MessageThread.reindex_all
 
-    mock_auth_and_sign_in_as(users(:basic))
-  end
-
-  teardown do
-    MessageThreadCollection.const_set("PER_PAGE", @old_per_page)
+    sign_in_as(:basic)
   end
 
   test "threads listing" do

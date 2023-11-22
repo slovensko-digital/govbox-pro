@@ -11,4 +11,6 @@ class ActiveSupport::TestCase
   fixtures :all
 
   # Add more helper methods to be used by all tests here...
+
+  MessageThreadCollection.const_set("PER_PAGE", 1) # change per page to test infinite scrolling
 end
