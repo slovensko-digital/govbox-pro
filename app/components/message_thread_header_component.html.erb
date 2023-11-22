@@ -3,7 +3,7 @@
     <div class="flex flex-col flex-wrap gap-2 md:gap-4">
       <div class="flex gap-2">
         <%= render Common::BoxLabelComponent.new(@message_thread.box, "h-fit w-fit max-w-fit") %>
-        <span class="text-xl font-semibold text-left text-gray-900" data-test="title">
+        <span class="text-xl [word-break:break-word] font-semibold text-left text-gray-900" data-test="title" data-controller="text-wrap">
           <%= @message_thread.title %>
         </span>
       </div>
