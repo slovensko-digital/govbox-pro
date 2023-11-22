@@ -13,7 +13,7 @@ class MessageThreadsTagsTest < ApplicationSystemTestCase
     visit message_thread_path(@thread_general)
 
     within("#messages") do
-      within("[data-test='tags']") do
+      within_tags do
         assert_text "Finance"
         assert_text "Legal"
         assert_text "Other"
@@ -65,7 +65,7 @@ class MessageThreadsTagsTest < ApplicationSystemTestCase
     assert_text "Priradenie štítkov bolo upravené"
 
     within("#messages") do
-      within("[data-test='tags']") do
+      within_tags do
         assert_text "Finance"
         assert_text "Print"
         assert_text "Construction"

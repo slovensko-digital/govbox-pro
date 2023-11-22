@@ -15,16 +15,16 @@ class MessageThreadsBulkTagsTest < ApplicationSystemTestCase
     thread_issue = message_threads(:ssd_main_issue)
     thread_general = message_threads(:ssd_main_general)
 
-    within("[data-test='message_thread_#{thread_general.id}']") do
-      within("[data-test='tags']") do
+    within_thread_in_listing(thread_general) do
+      within_tags do
         assert_text "Finance"
         assert_text "Legal"
         assert_text "Other"
       end
     end
 
-    within("[data-test='message_thread_#{thread_issue.id}']") do
-      within("[data-test='tags']") do
+    within_thread_in_listing(thread_issue) do
+      within_tags do
         assert_text "Finance"
       end
     end
@@ -41,7 +41,7 @@ class MessageThreadsBulkTagsTest < ApplicationSystemTestCase
 
     assert_text "Úprava štítkov v 2 vláknach"
 
-    fully_check_indeterminate_checkbox("Legal")
+    check_indeterminate_checkbox("Legal")
 
     within("#tags-assignment-diff") do
       assert_text "Pridajú sa"
@@ -111,8 +111,8 @@ class MessageThreadsBulkTagsTest < ApplicationSystemTestCase
 
     assert_text "Priradenie štítkov bolo upravené"
 
-    within("[data-test='message_thread_#{thread_issue.id}']") do
-      within("[data-test='tags']") do
+    within_thread_in_listing(thread_issue) do
+      within_tags do
         assert_text "Finance"
         assert_text "Print"
         assert_text "Struction"
@@ -123,8 +123,8 @@ class MessageThreadsBulkTagsTest < ApplicationSystemTestCase
       end
     end
 
-    within("[data-test='message_thread_#{thread_general.id}']") do
-      within("[data-test='tags']") do
+    within_thread_in_listing(thread_general) do
+      within_tags do
         assert_text "Finance"
         assert_text "Print"
         assert_text "Struction"
@@ -138,8 +138,8 @@ class MessageThreadsBulkTagsTest < ApplicationSystemTestCase
 
   private
 
-  def fully_check_indeterminate_checkbox(finder)
-    checkbox = find(:checkbox, "Legal")
+  def check_indeterminate_checkbox(finder)
+    checkbox = find(:checkbox, finder)
 
     assert_equal ["=", true],
                  [checkbox.value, checkbox.checked?],
