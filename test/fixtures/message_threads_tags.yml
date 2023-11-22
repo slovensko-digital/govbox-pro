@@ -8,6 +8,10 @@ ssd_main_general_legal:
   message_thread: ssd_main_general
   tag: ssd_legal
 
+ssd_main_general_external:
+  message_thread: ssd_main_general
+  tag: ssd_external
+
 ssd_main_issue_finance:
   message_thread: ssd_main_issue
   tag: ssd_finance
