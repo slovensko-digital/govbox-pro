@@ -4,10 +4,21 @@ class MessageThreadsTest < ApplicationSystemTestCase
   setup do
     Searchable::MessageThread.reindex_all
 
+    silence_warnings do
+      @old_value = MessageThreadCollection.const_get("PER_PAGE")
+      MessageThreadCollection.const_set("PER_PAGE", 1)
+    end
+
     sign_in_as(:basic)
   end
 
-  test "threads listing" do
+  teardown do
+    silence_warnings do
+      MessageThreadCollection.const_set("PER_PAGE", @old_value)
+    end
+  end
+
+  test "a user can see threads he has access to" do
     visit message_threads_path
 
     thread_general = message_threads(:ssd_main_general)
@@ -57,7 +68,7 @@ class MessageThreadsTest < ApplicationSystemTestCase
     end
   end
 
-  test "fulltext search" do
+  test "a user can use fulltext search to filter threads" do
     visit message_threads_path
 
     fill_in "search", with: "Social Department"
@@ -74,7 +85,7 @@ class MessageThreadsTest < ApplicationSystemTestCase
     refute_selector("[data-test='message_thread_#{thread_issue.id}']")
   end
 
-  test "filter by tag from sidebar" do
+  test "a user can filter by tag from sidebar" do
     visit message_threads_path
 
     within("[data-test='sidebar']") do
@@ -94,7 +105,7 @@ class MessageThreadsTest < ApplicationSystemTestCase
     refute_selector("[data-test='message_thread_#{thread_issue.id}']")
   end
 
-  test "thread detail" do
+  test "a user can go to a thread detail of the thread he has access to" do
     visit message_threads_path
 
     thread_general = message_threads(:ssd_main_general)

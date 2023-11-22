@@ -9,7 +9,7 @@ class MessageThreadsTagsTest < ApplicationSystemTestCase
     sign_in_as(:basic)
   end
 
-  test "changing tags" do
+  test "a user can change tags" do
     visit message_thread_path(@thread_general)
 
     within("#messages") do
