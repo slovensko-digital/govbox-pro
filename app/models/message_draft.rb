@@ -30,9 +30,9 @@ class MessageDraft < Message
   end
 
   after_destroy do
-    if self.thread.messages.none?
+    if self.thread.messages.reload.none?
       self.thread.destroy!
-    elsif self.thread.message_drafts.none?
+    elsif self.thread.message_drafts.reload.none?
       drafts_tag = self.thread.tags.find_by(system_name: Tag::DRAFT_SYSTEM_NAME)
       thread.tags.delete(drafts_tag)
     end
