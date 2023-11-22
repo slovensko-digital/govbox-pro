@@ -2,14 +2,14 @@
 #
 # Table name: automation_rules
 #
-#  id                                          :integer          not null, primary key
-#  name                                        :string
-#  trigger_event                               :string
-#  tenant_id                                   :integer          not null
-#  user_id                                     :integer          not null
-#  created_at                                  :datetime         not null
-#  updated_at                                  :datetime         not null
-
+#  id            :bigint           not null, primary key
+#  name          :string           not null
+#  trigger_event :string           not null
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  tenant_id     :bigint           not null
+#  user_id       :bigint           not null
+#
 module Automation
   class Rule < ApplicationRecord
     belongs_to :tenant

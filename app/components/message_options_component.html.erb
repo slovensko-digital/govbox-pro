@@ -1,51 +1,23 @@
 <% if @message.form.present? %>
-      <div class="w-fit" data-controller="dropdown" data-action="click->dropdown#toggle click@window->dropdown#hide">
-        <div id="dropdown-button" class="relative inline-block">
-          <div role="button" tabindex="0" data-dropdown-target="button" class="inline-block select-none">
-            <%= render Icons::EllipsisVerticalComponent.new(css_classes: "w-6 h-6", stroke_width: 2) %>
-          </div>
-          <div data-dropdown-target="menu"
-               data-transition-enter="transition ease-out duration-100"
-               data-transition-enter-from="transform opacity-0 scale-9"
-               data-transition-enter-to="transform opacity-100 scale-100"
-               data-transition-leave="transition ease-in duration-75"
-               data-transition-leave-from="transform opacity-100 scale-100"
-               data-transition-leave-to="transform opacity-0 scale-95"
-               class="hidden absolute right-0 z-10">
-            <div class="flex flex-col justify-start items-stretch gap-px py-0.5 rounded-lg bg-white border border-gray-300 mt-1" style="box-shadow: 1px 1px 4px 0 rgba(0,0,0,0.1);">
-              <div class="flex flex-col justify-start items-stretch relative gap-1">
-                <div class="flex justify-stretch items-start px-4 py-3 rounded-lg hover:bg-gray-50">
-                  <%= link_to download_message_message_object_path(@message, @message.form), data: { turbo_frame: '_top' }, class: 'whitespace-nowrap' do %>
-                    <div class="flex justify-center items-center relative gap-3">
-                      <%= render Icons::ArrowDownTrayComponent.new(css_classes: "w-5 h-5") %>
-                      Stiahnuť správu
-                    </div>
-                  <% end %>
-                </div>
-              </div>
-              <% if @mode == :thread_view && @message.collapsible? %>
-                <div class="flex flex-col justify-start items-stretch relative gap-1">
-                  <div class="flex justify-stretch items-start px-4 py-3 rounded-lg hover:bg-gray-50">
-                    <% if @message.collapsed %>
-                      <%= button_to message_path(@message), params: { collapsed: false }, method: :patch, class: 'whitespace-nowrap' do %>
-                        <div class="flex justify-center items-center relative gap-3">
-                          <%= render Icons::ChevronDownComponent.new(css_classes: "w-5 h-5") %>
-                          Vždy zobrazovať
-                        </div>
-                      <% end %>
-                    <% else %>
-                      <%= button_to message_path(@message), params: { collapsed: true }, method: :patch, class: 'whitespace-nowrap' do %>
-                        <div class="flex justify-center items-center relative gap-3">
-                          <%= render Icons::ChevronUpComponent.new(css_classes: "w-5 h-5") %>
-                          Zbaliť a už nerozbaľovať
-                        </div>
-                      <% end %>
-                    <% end %>
-                  </div>
-                </div>
-              <% end %>
-            </div>
-          </div>
-        </div>
-      </div>
+  <%= render Common::OptionsComponent.new(id: "message-options") do |options| %>
+    <% options.with_menu_content do %>
+      <%= link_to download_message_message_object_path(@message, @message.form), data: { turbo_frame: '_top' }, class: 'whitespace-nowrap flex gap-3', role: 'menu-item', tabindex: -1 do %>
+        <%= render Icons::ArrowDownTrayComponent.new(css_classes: "w-5 h-5") %>
+        Stiahnuť správu
+      <% end %>
+      <% if @mode == :thread_view && @message.collapsible? %>
+        <% if @message.collapsed %>
+          <%= button_to message_path(@message), params: { collapsed: false }, method: :patch, class: 'whitespace-nowrap flex gap-3', role: 'menu-item', tabindex: -1 do %>
+              <%= render Icons::ChevronDownComponent.new(css_classes: "w-5 h-5") %>
+              Vždy zobrazovať
+          <% end %>
+        <% else %>
+          <%= button_to message_path(@message), params: { collapsed: true }, method: :patch, class: 'whitespace-nowrap flex gap-3', role: 'menu-item', tabindex: -1 do %>
+            <%= render Icons::ChevronUpComponent.new(css_classes: "w-5 h-5") %>
+            Zbaliť a už nerozbaľovať
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
   <% end %>
+<% end %>

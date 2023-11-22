@@ -2,13 +2,15 @@
 #
 # Table name: automation_actions
 #
-#  id                                          :integer          not null, primary key
-#  type                                        :string
-#  params                                      :jsonb
-#  automation_rule_id                          :integer
-#  created_at                                  :datetime         not null
-#  updated_at                                  :datetime         not null
-
+#  id                 :bigint           not null, primary key
+#  action_object_type :string
+#  type               :string
+#  value              :string
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
+#  action_object_id   :bigint
+#  automation_rule_id :bigint           not null
+#
 module Automation
   class Action < ApplicationRecord
     belongs_to :automation_rule, class_name: 'Automation::Rule'

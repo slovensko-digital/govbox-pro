@@ -2,11 +2,12 @@
 #
 # Table name: tag_groups
 #
-#  tag_id                                      :integer          not null
-#  group_id                                    :integer          not null
-#  created_at                                  :datetime         not null
-#  updated_at                                  :datetime         not null
-
+#  id         :bigint           not null, primary key
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  group_id   :bigint           not null
+#  tag_id     :bigint           not null
+#
 class TagGroup < ApplicationRecord
   belongs_to :group
   belongs_to :tag

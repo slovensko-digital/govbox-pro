@@ -1,6 +1,6 @@
 module AuthHelper
-  def mock_auth_and_sign_in_as(user)
-    mock_omni_auth_with_user(user)
+  def sign_in_as(user_fixture_name)
+    mock_omni_auth_with_user(user_fixture_name)
 
     visit auth_path
 
@@ -9,8 +9,10 @@ module AuthHelper
     assert_text "Správy v schránke"
   end
 
-  def mock_omni_auth_with_user(user)
+  def mock_omni_auth_with_user(user_fixture_name)
     OmniAuth.config.test_mode = true
+
+    user = users(user_fixture_name)
 
     OmniAuth.config.mock_auth[:google_oauth2] =
       OmniAuth::AuthHash.new(

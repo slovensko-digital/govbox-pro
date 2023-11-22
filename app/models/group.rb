@@ -2,13 +2,13 @@
 #
 # Table name: groups
 #
-#  id                                          :integer          not null, primary key
-#  name                                        :string           not null
-#  group_type                                  :string           not null
-#  tenant_id                                   :integer          not null
-#  created_at                                  :datetime         not null
-#  updated_at                                  :datetime         not null
-
+#  id         :bigint           not null, primary key
+#  group_type :enum             not null
+#  name       :string           not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  tenant_id  :bigint           not null
+#
 class Group < ApplicationRecord
   belongs_to :tenant
   has_many :group_memberships, dependent: :destroy
