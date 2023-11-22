@@ -44,7 +44,7 @@ class MessageThread < ApplicationRecord
   end
 
   def add_tag(tag)
-    tags << tag unless tags.include?(tag)
+    message_threads_tags.find_or_create_by!(tag: tag)
   end
 
   def automation_rules_for_event(event)

@@ -44,7 +44,7 @@ class Govbox::Message < ApplicationRecord
 
       message.save!
 
-      self.add_tags(message, govbox_message)
+      self.add_upvs_related_tags(message, govbox_message)
       
       message
     end
@@ -119,7 +119,7 @@ class Govbox::Message < ApplicationRecord
     end
   end
 
-  def self.add_tags(message, govbox_message)
+  def self.add_upvs_related_tags(message, govbox_message)
     upvs_tag = Tag.find_or_create_by!(
       system_name: "slovensko.sk:#{govbox_message.folder.full_name}",
       tenant: govbox_message.box.tenant,
@@ -128,14 +128,22 @@ class Govbox::Message < ApplicationRecord
       tag.name = "slovensko.sk:#{govbox_message.folder.full_name}"
       tag.visible = !govbox_message.folder.system?
     end
-    message.tags << upvs_tag
-    message.thread.tags << upvs_tag unless message.thread.tags.include?(upvs_tag)
+    self.add_tag(message, upvs_tag)
 
     if message.can_be_authorized?
       delivery_notification_tag = govbox_message.box.tenant.tags.find_by!(system_name: DELIVERY_NOTIFICATION_TAG)
-      message.tags << delivery_notification_tag
-      message.thread.tags << delivery_notification_tag unless message.thread.tags.include?(delivery_notification_tag)
+      self.add_tag(message, delivery_notification_tag)
     end
+  end
+
+  def self.add_tag(message, tag)
+    message.messages_tags.find_or_create_by!(tag: tag)
+    message.thread.message_threads_tags.find_or_create_by!(tag: tag)
+  end
+
+  def self.delete_tag(message, tag)
+    message.messages_tags.find_by(tag: tag)&.destroy
+    message.thread.message_threads_tags.find_by(tag: tag)&.destroy
   end
 
   def self.delete_delivery_notification_tag(message)
@@ -143,10 +151,6 @@ class Govbox::Message < ApplicationRecord
       system_name: DELIVERY_NOTIFICATION_TAG,
       tenant: message.thread.box.tenant,
     )
-    message.tags.delete(delivery_notification_tag) if message.tags.include?(delivery_notification_tag)
-
-    unless message.thread.messages.any?(&:can_be_authorized?)
-      message.thread.message_threads_tags.find_by(tag: delivery_notification_tag).destroy if message.thread.tags.include?(delivery_notification_tag)
-    end
+    delete_tag(message, delivery_notification_tag)
   end
 end
