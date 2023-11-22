@@ -37,6 +37,12 @@ ssd_drafts:
   visible: true
   tenant: ssd
 
+ssd_other:
+  name: Other
+  external: false
+  visible: true
+  tenant: ssd
+
 ssd_delivery_notification:
   name: DeliveryNotifications
   system_name: delivery_notification
