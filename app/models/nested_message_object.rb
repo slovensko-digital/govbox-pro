@@ -11,7 +11,7 @@
 #  message_object_id :bigint           not null
 #
 class NestedMessageObject < ApplicationRecord
-  belongs_to :message_object
+  belongs_to :message_object, inverse_of: :nested_message_objects
 
   validates :name, presence: true, on: :validate_data
   validate :allowed_mime_type?, on: :validate_data

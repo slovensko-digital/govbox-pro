@@ -14,9 +14,9 @@
 #  message_id   :bigint           not null
 #
 class MessageObject < ApplicationRecord
-  belongs_to :message
+  belongs_to :message, inverse_of: :objects
   has_one :message_object_datum, dependent: :destroy
-  has_many :nested_message_objects
+  has_many :nested_message_objects, inverse_of: :message_object
 
   scope :unsigned, -> { where(is_signed: false) }
   scope :to_be_signed, -> { where(to_be_signed: true) }
