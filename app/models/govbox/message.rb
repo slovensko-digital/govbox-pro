@@ -137,4 +137,16 @@ class Govbox::Message < ApplicationRecord
       message.thread.tags << delivery_notification_tag unless message.thread.tags.include?(delivery_notification_tag)
     end
   end
+
+  def self.delete_delivery_notification_tag(message)
+    delivery_notification_tag = Tag.find_by!(
+      system_name: DELIVERY_NOTIFICATION_TAG,
+      tenant: message.thread.box.tenant,
+    )
+    message.tags.delete(delivery_notification_tag) if message.tags.include?(delivery_notification_tag)
+
+    unless message.thread.messages.any?(&:can_be_authorized?)
+      message.thread.message_threads_tags.find_by(tag: delivery_notification_tag).destroy if message.thread.tags.include?(delivery_notification_tag)
+    end
+  end
 end
