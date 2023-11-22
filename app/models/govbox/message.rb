@@ -130,10 +130,15 @@ class Govbox::Message < ApplicationRecord
     end
     message.add_cascading_tag(upvs_tag)
 
-    if message.can_be_authorized?
-      delivery_notification_tag = govbox_message.box.tenant.tags.find_by!(system_name: DELIVERY_NOTIFICATION_TAG)
-      message.add_cascading_tag(delivery_notification_tag)
-    end
+    self.add_delivery_notification_tag(message) if message.can_be_authorized?
+  end
+
+  def self.add_delivery_notification_tag(message)
+    delivery_notification_tag = Tag.find_by!(
+      system_name: DELIVERY_NOTIFICATION_TAG,
+      tenant: message.thread.box.tenant,
+    )
+    message.add_cascading_tag(delivery_notification_tag)
   end
 
   def self.remove_delivery_notification_tag(message)

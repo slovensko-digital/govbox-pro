@@ -1,7 +1,7 @@
 require "test_helper"
 
 class MessageTest < ActiveSupport::TestCase
-  test "add_tag method should add tag to message and message thread" do
+  test "add_cascade_tag method should add tag to message and message thread" do
     message = messages(:ssd_main_general_one)
     tag = tags(:ssd_finance)
 
@@ -11,7 +11,7 @@ class MessageTest < ActiveSupport::TestCase
     assert message.thread.tags.include?(tag)
   end
 
-  test "remove_tag method should delete tag from message and also message thread if no more messages with the tag" do
+  test "remove_cascade_tag method should delete tag from message and also message thread if no more messages with the tag" do
     message = messages(:solver_main_delivery_notification_one)
     tag = tags(:solver_delivery_notification)
 
@@ -21,7 +21,7 @@ class MessageTest < ActiveSupport::TestCase
     assert_equal message.thread.tags.include?(tag), false
   end
 
-  test "remove_tag method should delete tag from message and keep it on message thread if more messages with the tag" do
+  test "remove_cascade_tag method should delete tag from message and keep it on message thread if more messages with the tag" do
     message = messages(:ssd_main_general_one)
     tag = tags(:ssd_external)
 

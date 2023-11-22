@@ -8,6 +8,8 @@ class Govbox::AuthorizeDeliveryNotificationJob < ApplicationJob
       message.metadata["authorized"] = nil
       message.save!
 
+      Govbox::Message.add_delivery_notification_tag(message)
+
       raise StandardError, "Delivery notification authorization failed!"
     end
 
