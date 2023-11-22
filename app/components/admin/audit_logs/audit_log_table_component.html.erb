@@ -11,15 +11,13 @@
           <% end %>
           <p class="mt-2 text-sm text-gray-700">Detailnejšie informácie v CSV exporte</p>
         </div>
-        <% if @user %>
-          <%= link_to admin_audit_logs_path(user: @user, format: 'csv'), class: "mt-4 sm:ml-16 sm:mt-0 sm:flex-none" do %>
-            <p class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Export CSV</p>
+        <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+          <% if @user %>
+            <%= link_to 'Export CSV', admin_audit_logs_path(user: @user, format: 'csv'), class: "block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" %>
+          <% elsif @message_thread %>
+            <%= link_to 'Export CSV', admin_audit_logs_path(thread: @message_thread, format: 'csv'), class: "block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" %>
           <% end %>
-        <% elsif @message_thread %>
-          <%= link_to admin_audit_logs_path(thread: @message_thread, format: 'csv'), class: "mt-4 sm:ml-16 sm:mt-0 sm:flex-none" do %>
-            <p class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Export CSV</p>
-          <% end %>
-        <% end %>
+        </div>
       </div>
       <div class="mt-8 flow-root">
         <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
