@@ -1,6 +1,6 @@
 require "application_system_test_case"
 
-class MessageThreadsTest < ApplicationSystemTestCase
+class MessageThreadsTagsTest < ApplicationSystemTestCase
   setup do
     Searchable::MessageThread.reindex_all
 
