@@ -60,6 +60,17 @@ class Message < ApplicationRecord
     can_be_authorized
   end
 
+  def add_cascading_tag(tag)
+    messages_tags.find_or_create_by!(tag: tag)
+    thread.message_threads_tags.find_or_create_by!(tag: tag)
+  end
+
+  def delete_cascading_tag(tag)
+    messages_tags.find_by(tag: tag)&.destroy
+    thread.message_threads_tags.find_by(tag: tag)&.destroy unless thread.messages.any? {|m| m.tags.include?(tag) }
+  end
+
+
   def form
     objects.select { |o| o.form? }&.first
   end

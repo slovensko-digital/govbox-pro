@@ -128,22 +128,12 @@ class Govbox::Message < ApplicationRecord
       tag.name = "slovensko.sk:#{govbox_message.folder.full_name}"
       tag.visible = !govbox_message.folder.system?
     end
-    self.add_tag(message, upvs_tag)
+    message.add_cascading_tag(upvs_tag)
 
     if message.can_be_authorized?
       delivery_notification_tag = govbox_message.box.tenant.tags.find_by!(system_name: DELIVERY_NOTIFICATION_TAG)
-      self.add_tag(message, delivery_notification_tag)
+      message.add_cascading_tag(delivery_notification_tag)
     end
-  end
-
-  def self.add_tag(message, tag)
-    message.messages_tags.find_or_create_by!(tag: tag)
-    message.thread.message_threads_tags.find_or_create_by!(tag: tag)
-  end
-
-  def self.delete_tag(message, tag)
-    message.messages_tags.find_by(tag: tag)&.destroy
-    message.thread.message_threads_tags.find_by(tag: tag)&.destroy unless message.thread.messages.any? {|m| m.tags.include?(tag) }
   end
 
   def self.delete_delivery_notification_tag(message)
@@ -151,6 +141,6 @@ class Govbox::Message < ApplicationRecord
       system_name: DELIVERY_NOTIFICATION_TAG,
       tenant: message.thread.box.tenant,
     )
-    delete_tag(message, delivery_notification_tag)
+    message.delete_cascading_tag(delivery_notification_tag)
   end
 end

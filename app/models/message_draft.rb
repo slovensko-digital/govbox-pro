@@ -26,7 +26,7 @@ class MessageDraft < Message
 
   after_create do
     drafts_tag = self.thread.box.tenant.tags.find_by(system_name: Tag::DRAFT_SYSTEM_NAME)
-    self.thread.add_tag(drafts_tag)
+    self.add_cascading_tag(drafts_tag)
   end
 
   after_destroy do
