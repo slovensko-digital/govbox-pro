@@ -27,7 +27,7 @@
                 }
               ) do %>
                 <%= label_tag :attachments_, "Pridať prílohy", class: "hidden" %>
-                <%= file_field_tag 'attachments[]', "data-action": "change->messageDrafts#uploadAttachments", class: "text-gray-900 bg-white focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm font-semibold px-5 py-2.5 dark:border-gray-600", multiple: true %>
+                <%= file_field_tag "attachments[]", "data-action": "change->messageDrafts#uploadAttachments", class: "text-gray-900 bg-white focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm font-semibold px-5 py-2.5 dark:border-gray-600", multiple: true %>
               <% end %>
             <% end %>
           <% end %>
