@@ -52,13 +52,9 @@ class MessageObject < ApplicationRecord
     object_type == "FORM"
   end
 
-  def not_form?
-    !form?
-  end
-
-  def not_signed?
+  def signable?
     # TODO vymazat druhu podmienku po povoleni viacnasobneho podpisovania
-    !is_signed
+    message.draft? && !is_signed
   end
 
   def asice?
@@ -67,6 +63,14 @@ class MessageObject < ApplicationRecord
 
   def destroyable?
     # TODO avoid loading message association if we have
+    message.draft? && message.not_yet_submitted? && !form?
+  end
+
+  def asice?
+    mimetype == 'application/vnd.etsi.asic-e+zip'
+  end
+
+  def destroyable?
     message.is_a?(MessageDraft) && message.not_yet_submitted? && !form?
   end
 

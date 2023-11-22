@@ -59,7 +59,7 @@
     <% end %>
 
     <div class="gap-2 p-2 border-t-0 border-r-0 border-b-0 border-l-0 border-gray-200">
-      <% if @message.draft? && @message.not_yet_submitted? && @message.form&.not_signed? %>
+      <% if @message.not_yet_submitted? && @message.form&.signable? %>
         <%= content_tag(:div,
          {
            "data-controller": "autogram",
