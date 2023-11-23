@@ -29,7 +29,7 @@
     <% if @message.visualizable_body? %>
       <div class="flex flex-col justify-stretch items-start relative gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
       <% if @message.html_visualization %>
-          <div class="w-full transition-all">
+          <div class="w-full h-0 transition-all">
             <%= tag.iframe class: "relative border-none overflow-hidden h-full w-full", scrolling: "no", srcdoc: @message.html_visualization, onload: "(
             function(iframe) {
               iframe.contentWindow.document.body.style['height'] = 'unset';
