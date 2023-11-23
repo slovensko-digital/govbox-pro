@@ -1,5 +1,5 @@
 <%= turbo_stream.append "audit_logs" do %>
-  <%= render Admin::AuditLogs::AuditLogTableRowComponent.with_collection(@audit_logs) %>
+  <%= render Admin::AuditLogs::AuditLogTableRowComponent.with_collection(@audit_logs, view: @view) %>
 <% end %>
 <% if @audit_logs.any? %>
   <%= turbo_stream.append "next_page_area" do %>

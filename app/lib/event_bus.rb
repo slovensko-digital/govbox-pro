@@ -28,23 +28,25 @@ EventBus.reset!
 # wiring
 EventBus.subscribe_job :message_thread_created, Automation::MessageThreadCreatedJob
 EventBus.subscribe_job :message_created, Automation::MessageCreatedJob
-EventBus.subscribe :message_created, lambda { |message|
+EventBus.subscribe :message_created, ->(message) {
   Searchable::ReindexMessageThreadJob.perform_later(message.message_thread_id)
 }
-EventBus.subscribe :message_destroyed, lambda { |message|
+EventBus.subscribe :message_destroyed, ->(message) {
   Searchable::ReindexMessageThreadJob.perform_later(message.message_thread_id)
 }
-EventBus.subscribe :message_changed, lambda { |message|
-  Searchable::ReindexMessageThreadJob.perform_later(message.message_thread_id) if Searchable::Indexer.message_searchable_fields_changed?(message)
+EventBus.subscribe :message_changed, ->(message) {
+  if Searchable::Indexer.message_searchable_fields_changed?(message)
+    Searchable::ReindexMessageThreadJob.perform_later(message.message_thread_id)
+  end
 }
-EventBus.subscribe :message_thread_changed, lambda { |message_thread|
+EventBus.subscribe :message_thread_changed, ->(message_thread) {
   Searchable::ReindexMessageThreadJob.perform_later(message_thread.id)
 }
 
-EventBus.subscribe :message_thread_note_created, lambda { |note|
+EventBus.subscribe :message_thread_note_created, ->(note) {
   Searchable::ReindexMessageThreadJob.perform_later(note.message_thread_id)
 }
-EventBus.subscribe :message_thread_note_changed, lambda { |note|
+EventBus.subscribe :message_thread_note_changed, ->(note) {
   Searchable::ReindexMessageThreadJob.perform_later(note.message_thread_id)
 }
 

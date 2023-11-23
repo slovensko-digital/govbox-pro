@@ -4,8 +4,8 @@ class CreateAuditLog < ActiveRecord::Migration[7.0]
       t.string :type, null: false
       t.references :tenant, foreign_key: { on_delete: :nullify }
       t.timestamp :happened_at, null: false
-      t.string :user_name
-      t.references :user, foreign_key: { on_delete: :nullify }
+      t.string :actor_name
+      t.references :actor, foreign_key: { to_table: :users, on_delete: :nullify }
       t.string :previous_value # contains highlighted change - previous value
       t.string :new_value # contains highlighted change - new value
       t.jsonb :changeset  # contains all relevant changes including highlighted changes
@@ -15,7 +15,7 @@ class CreateAuditLog < ActiveRecord::Migration[7.0]
       t.timestamps
     end
 
-    add_index :audit_logs, [:tenant_id, :user_id, :happened_at]
+    add_index :audit_logs, [:tenant_id, :actor_id, :happened_at]
     add_index :audit_logs, [:tenant_id, :thread_id, :happened_at]
   end
 end

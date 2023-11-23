@@ -4,16 +4,16 @@
       <div class="sm:flex sm:items-center">
         <div class="sm:flex-auto">
           <h1 class="text-base font-semibold leading-6 text-gray-900">Audit log</h1>
-          <% if @user %>
-            <p class="mt-2 text-sm text-gray-700">Auditné záznamy pre používateľa <%= @user.name %>.</p>
+          <% if @actor %>
+            <p class="mt-2 text-sm text-gray-700">Auditné záznamy pre používateľa <%= @actor.name %>.</p>
           <% elsif @message_thread %>
             <p class="mt-2 text-sm text-gray-700">Auditné záznamy pre vlákno <%= @message_thread.id %>.</p>
           <% end %>
           <p class="mt-2 text-sm text-gray-700">Detailnejšie informácie v CSV exporte</p>
         </div>
         <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-          <% if @user %>
-            <%= link_to 'Export CSV', admin_audit_logs_path(user: @user, format: 'csv'), class: "block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" %>
+          <% if @actor %>
+            <%= link_to 'Export CSV', admin_audit_logs_path(actor: @actor, format: 'csv'), class: "block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" %>
           <% elsif @message_thread %>
             <%= link_to 'Export CSV', admin_audit_logs_path(thread: @message_thread, format: 'csv'), class: "block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" %>
           <% end %>
@@ -26,6 +26,9 @@
               <thead>
                 <tr>
                   <th scope="col" class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Čas udalosti</th>
+                  <% if @view == :thread %>
+                    <th scope="col" class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Meno používateľa</th>
+                  <% end %>
                   <th scope="col" class="whitespace-nowrap py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">Akcia</th>
                   <th scope="col" class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Názov vlákna</th>
                   <th scope="col" class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Hodnota pred</th>
@@ -33,7 +36,7 @@
                 </tr>
               </thead>
               <tbody id="audit_logs" class="divide-y divide-gray-200 bg-white">
-                <%= render Admin::AuditLogs::AuditLogTableRowComponent.with_collection(@audit_logs) %>
+                <%= render Admin::AuditLogs::AuditLogTableRowComponent.with_collection(@audit_logs, view: @view) %>
               </tbody>
             </table>
             <%= next_page_area %>

@@ -2,38 +2,38 @@ require "csv"
 
 class AuditLog < ApplicationRecord
   belongs_to :tenant
-  belongs_to :user
+  belongs_to :actor, class_name: "User"
   belongs_to :thread, class_name: "MessageThread"
 
   class MessageThreadNoteCreated < AuditLog
-    def self.create_audit_record(object)
+    def self.create_audit_record(note)
       create_record(
-        object: object,
-        new_value: object.note,
-        thread: object.message_thread
+        object: note,
+        new_value: note.note,
+        thread: note.message_thread
       )
     end
   end
 
   class MessageThreadNoteChanged < AuditLog
-    def self.create_audit_record(object)
+    def self.create_audit_record(note)
       create_record(
-        object: object,
-        previous_value: object.note_previously_was,
-        new_value: object.note,
-        thread: object.message_thread
+        object: note,
+        previous_value: note.note_previously_was,
+        new_value: note.note,
+        thread: note.message_thread
       )
     end
   end
 
   # TODO: Pre tagy sa asi budeme musiet subscribnut na nove eventy, kedze tu nevieme, ci to je destroy/create (dokonca teoreticky update)
   class MessageThreadTagChanged < AuditLog
-    def self.create_audit_record(object)
+    def self.create_audit_record(thread_tag)
       create_record(
-        object: object,
-        previous_value: object.tag.name_previously_was,
-        new_value: object.tag.name,
-        thread: object.message_thread
+        object: thread_tag,
+        previous_value: thread_tag.tag.name_previously_was,
+        new_value: thread_tag.tag.name,
+        thread: thread_tag.message_thread
       )
     end
   end
@@ -41,9 +41,9 @@ class AuditLog < ApplicationRecord
   def self.create_record(object:, **args)
     create(
       tenant: Current.tenant,
-      user: Current.user,
+      actor: Current.user,
       # TODO: SYSTEM alebo nil alebo nieco ine?
-      user_name: Current.user&.name || 'SYSTEM',
+      actor_name: Current.user&.name || 'SYSTEM',
       happened_at: Time.current,
       changeset: object.previous_changes,
       thread_id_archived: args[:thread]&.id,
