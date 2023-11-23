@@ -1,10 +1,27 @@
 import { Controller } from "@hotwired/stimulus"
-import { post, patch } from '@rails/request.js'
+import { get, patch } from '@rails/request.js'
 
 export default class extends Controller {
   connect() {
     const newDraftsElement = document.getElementById("new_drafts")
     newDraftsElement.addEventListener("DOMNodeInserted", this.showLastMessageDraft);
+  }
+
+  async changed() {
+    console.log("Here!");
+    debugger;
+  }
+
+  async loadRecipientsServices() {
+    debugger;
+
+    const recipientServicesPath = this.data.get("recipientServicesPath");
+    const recipientUri = document.getElementById("recipient").value;
+    await get(recipientServicesPath, {
+      query: {
+        institution_uri: recipientUri
+      }
+    });
   }
 
   async update() {

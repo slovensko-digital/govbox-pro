@@ -116,6 +116,10 @@ Rails.application.routes.draw do
     get :upload_new, path: 'novy', on: :collection
   end
 
+  namespace :upvs do
+    get :allowed_recipient_services
+  end
+
   resources :sessions do
     get :login, on: :collection
     delete :destroy, on: :collection

@@ -12,4 +12,7 @@
 #
 
 class Upvs::ServiceWithFormAllowRule < ApplicationRecord
+  def self.all_institutions
+    (::Upvs::ServiceWithForm.all + ::Upvs::ServiceWithFormAllowRule.all).pluck(:institution_uri, :institution_name).uniq.map { |uri, name| { uri: uri, name: name }}
+  end
 end

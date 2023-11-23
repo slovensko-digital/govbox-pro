@@ -33,14 +33,32 @@ end
 
 Upvs::ServiceWithForm.find_or_create_by!(
   institution_uri: 'ico://sk/83136952',
+  institution_name: 'Test OVM 83136952',
+  name: "Všeobecná agenda",
   schema_url: 'http://schemas.gov.sk/form/App.GeneralAgenda/1.9'
 )
-Upvs::ServiceWithFormAllowRule.find_or_create_by!(
-  institution_uri: 'ico://sk/83136952',
+Upvs::ServiceWithForm.find_or_create_by!(
+  institution_uri: 'ico://sk/83369721',
+  institution_name: 'Test OVM 83369721',
+  name: "Všeobecná agenda",
   schema_url: 'http://schemas.gov.sk/form/App.GeneralAgenda/1.9'
 )
+Upvs::ServiceWithForm.find_or_create_by!(
+  institution_uri: 'ico://sk/83369722',
+  institution_name: 'Test OVM 83369722',
+  name: "Všeobecná agenda",
+  schema_url: 'http://schemas.gov.sk/form/App.GeneralAgenda/1.9'
+)
+Upvs::ServiceWithForm.find_or_create_by!(
+  institution_uri: 'ico://sk/83369723',
+  institution_name: 'Test OVM 83369723',
+  name: "Žiadosť o zápis autentifikačného certifikátu do registra autentifikačných certifikátov",
+  schema_url: 'http://schemas.gov.sk/form/42156424.IAM_Zapis_autentifikacneho_certifikatu_s_vytvorenim_TU.sk/1.5'
+)
 Upvs::ServiceWithFormAllowRule.find_or_create_by!(
-  institution_uri: 'ico://sk/83136952',
+  institution_uri: 'ico://sk/83369724',
+  institution_name: 'Test OVM 83369724',
+  name: "Exekučné konanie - Návhr na vykonanie exekúcie",
   schema_url: 'http://schemas.gov.sk/form/00166073.RESS_Exekucne_konanie_Navrh_na_vykonanie_exekucie.sk/1.24'
 )
 
