@@ -34,12 +34,11 @@ class Admin::AuditLogsController < ApplicationController
       @actor = policy_scope([:admin, User]).find(params[:actor])
       @audit_logs = @audit_logs.where(actor: @actor)
       @view = :actor
+    elsif params[:message_thread]
+      @message_thread = policy_scope(MessageThread).find(params[:message_thread])
+      @audit_logs = @audit_logs.where(message_thread: @message_thread)
+      @view = :thread
     end
-    return unless params[:message_thread]
-
-    @message_thread = policy_scope(MessageThread).find(params[:message_thread])
-    @audit_logs = @audit_logs.where(message_thread: @message_thread)
-    @view = :thread
   end
 
   def set_next
