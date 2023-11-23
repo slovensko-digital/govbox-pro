@@ -30,9 +30,10 @@ class MessageDraft < Message
   end
 
   after_destroy do
-    if self.thread.messages.none?
+    # TODO has to use `reload` because of `inverse_of` messages are in memory and deleting already deleted record fails
+    if self.thread.messages.reload.none?
       self.thread.destroy!
-    elsif self.thread.message_drafts.none?
+    elsif self.thread.message_drafts.reload.none?
       drafts_tag = self.thread.tags.find_by(system_name: Tag::DRAFT_SYSTEM_NAME)
       thread.tags.delete(drafts_tag)
     end
@@ -101,6 +102,10 @@ class MessageDraft < Message
     end
 
     self.reload
+  end
+
+  def draft?
+    true
   end
 
   def collapsible?
