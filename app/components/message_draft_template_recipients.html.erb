@@ -1,0 +1,6 @@
+<% if @recipients_list.is_a?(Array) %>
+  <label for="recipient" class="block mb-2 text-base font-medium text-gray-900">Príjemca</label>
+  <%= select_tag(:recipient, options_for_select(@recipients_list), prompt: "Zvoľte príjemcu") %>
+<% else %>
+  <input id="recipient" data-action="change->messageDrafts#recipientSelected"/>
+<% end %>

@@ -1,0 +1,9 @@
+diff a/app/components/message_threads_bulk_actions_component.html.erb b/app/components/message_threads_bulk_actions_component.html.erb	(rejected hunks)
+@@ -2,6 +2,7 @@
+   <div class="flex justify-stretch items-center gap-4 px-4 lg:py-4 border-t-0 border-r-0 border-b border-l-0 border-gray-200 min-h-[3rem] sm:min-h-[5rem]">
+     <%= check_box_tag("", nil, false, { class: "hidden sm:block h-4 w-4 rounded border-gray-300 text-blue-500 focus:ring-0", type: "checkbox", id: "checkbox-all", data: { action: "all-checkboxes#toggle", "all-checkboxes-target": "checkbox" } }) %>
+     <span class="grow sm:text-xl text-base font-semibold text-left text-gray-900"><%= @ids.present? ? t(:selected_message, count: @ids.count) : "Správy v schránke" %></span>
++
+     <% if @ids.present? %>
+       <%= form_with url: bulk_merge_message_threads_path, data: { turbo_frame: "_top" } do %>
+         <% @ids.each do |id| %>

@@ -31,10 +31,23 @@ if tenant.users.first
   rule.actions.find_or_create_by!(type: 'Automation::AddMessageThreadTagAction', value: 'NASES')
 end
 
+Upvs::MessageDraftTemplate.find_or_create_by!(
+  name: 'Všeobecná agenda',
+  content: '<GeneralAgenda xmlns="http://schemas.gov.sk/form/App.GeneralAgenda/1.9">
+  <subject>{{text_field:subject}}</subject>
+  <text>{{text_area:text}}</text>
+</GeneralAgenda>',
+  metadata: {
+    posp_id: 'App.GeneralAgenda',
+    posp_version: '1.9',
+    message_type: 'App.GeneralAgenda'
+  }
+)
+
 ga_form_template = Upvs::FormTemplate.find_or_create_by!(
   identifier: "App.GeneralAgenda",
   version: "1.9",
-  )
+)
 
 ga_related_documents = [
   {

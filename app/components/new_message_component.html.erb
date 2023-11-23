@@ -1,0 +1,13 @@
+<h2>Nová správa</h2>
+
+<%= form_with(url: message_drafts_path, method: :post, local: true) do %>
+  <%= content_tag(:div, { "data-controller": "messageDrafts" }) do %>
+    <label for="message_draft_template" class="block mb-2 text-base font-medium text-gray-900">Typ správy</label>
+    <%= select_tag(:message_draft_template, options_for_select(@templates_list), prompt: "Zvoľte typ správy", "data-action": "change->messageDrafts#loadTemplateRecipients") %>
+  <% end %>
+
+  <div id="recipients_list" is="turbo-frame">
+  </div>
+
+  <%= submit_tag "Vytvoriť správu" %>
+<% end %>

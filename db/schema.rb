@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_23_085142) do
+ActiveRecord::Schema[7.0].define(version: 2023_11_23_110454) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -253,6 +253,17 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_23_085142) do
     t.index ["tenant_id"], name: "index_groups_on_tenant_id"
   end
 
+  create_table "message_draft_templates", force: :cascade do |t|
+    t.bigint "tenant_id"
+    t.string "name", null: false
+    t.text "content", null: false
+    t.string "type"
+    t.jsonb "metadata"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tenant_id"], name: "index_message_draft_templates_on_tenant_id"
+  end
+
   create_table "message_drafts_imports", force: :cascade do |t|
     t.string "name", null: false
     t.integer "status", default: 0
@@ -465,6 +476,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_23_085142) do
   add_foreign_key "group_memberships", "groups"
   add_foreign_key "group_memberships", "users"
   add_foreign_key "groups", "tenants"
+  add_foreign_key "message_draft_templates", "tenants"
   add_foreign_key "message_drafts_imports", "boxes"
   add_foreign_key "message_object_data", "message_objects"
   add_foreign_key "message_objects", "messages"

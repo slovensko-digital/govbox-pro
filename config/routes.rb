@@ -112,6 +112,10 @@ Rails.application.routes.draw do
 
   resource :settings
 
+  resources :message_draft_templates, only: :recipients_list do
+    get :recipients_list
+  end
+
   resources :message_drafts_imports, only: :create do
     get :upload_new, path: 'novy', on: :collection
   end
