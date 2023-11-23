@@ -2,19 +2,21 @@
 #
 # Table name: message_threads
 #
-#  id                                          :integer          not null, primary key
-#  title                                       :string           not null
-#  original_title                              :string           not null
-#  delivered_at                                :datetime         not null
-#  last_message_delivered_at                   :datetime         not null
-#  created_at                                  :datetime         not null
-#  updated_at                                  :datetime         not null
-
+#  id                        :bigint           not null, primary key
+#  delivered_at              :datetime         not null
+#  last_message_delivered_at :datetime         not null
+#  original_title            :string           not null
+#  title                     :string           not null
+#  created_at                :datetime         not null
+#  updated_at                :datetime         not null
+#  box_id                    :bigint           not null
+#  folder_id                 :bigint
+#
 class MessageThread < ApplicationRecord
   belongs_to :folder, optional: true # do not use, will be removed
   belongs_to :box
   has_one :message_thread_note, dependent: :destroy
-  has_many :messages, dependent: :destroy do
+  has_many :messages, dependent: :destroy, inverse_of: :thread do
     def find_or_create_by_uuid!(uuid:)
     end
   end
@@ -39,10 +41,6 @@ class MessageThread < ApplicationRecord
 
   def messages_visible_to_user(user)
     messages.where(messages: { author_id: user.id }).or(messages.where(messages: { author_id: nil }))
-  end
-
-  def add_tag(tag)
-    tags << tag unless tags.include?(tag)
   end
 
   def automation_rules_for_event(event)

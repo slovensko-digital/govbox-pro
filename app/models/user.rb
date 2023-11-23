@@ -2,13 +2,13 @@
 #
 # Table name: users
 #
-#  id                                          :integer          not null, primary key
-#  email                                       :string           not null
-#  name                                        :string           not null
-#  tenant_id                                   :integer
-#  created_at                                  :datetime         not null
-#  updated_at                                  :datetime         not null
-
+#  id         :bigint           not null, primary key
+#  email      :string           not null
+#  name       :string           not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  tenant_id  :bigint
+#
 class User < ApplicationRecord
   belongs_to :tenant
   has_many :group_memberships, dependent: :destroy

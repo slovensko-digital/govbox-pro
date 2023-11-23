@@ -2,35 +2,35 @@
 #
 # Table name: messages
 #
-#  id                                          :integer          not null, primary key
-#  uuid                                        :uuid             not null
-#  title                                       :string           not null
-#  message_thread_id                           :integer          not null
-#  sender_name                                 :string
-#  recipient_name                              :string
-#  html_visualization                          :text
-#  metadata                                    :json
-#  read                                        :boolean          not null, default: false
-#  replyable                                   :boolean          not null, default: true
-#  collapsed                                   :boolean          not null, default: false
-#  outbox                                      :boolean          not null, default: false
-#  delivered_at                                :datetime         not null
-#  import_id                                   :integer
-#  author_id                                   :integer
-#  type                                        :string
-#  created_at                                  :datetime         not null
-#  updated_at                                  :datetime         not null
-
+#  id                 :bigint           not null, primary key
+#  collapsed          :boolean          default(FALSE), not null
+#  delivered_at       :datetime         not null
+#  html_visualization :text
+#  metadata           :json
+#  outbox             :boolean          default(FALSE), not null
+#  read               :boolean          default(FALSE), not null
+#  recipient_name     :string
+#  replyable          :boolean          default(TRUE), not null
+#  sender_name        :string
+#  title              :string
+#  type               :string
+#  uuid               :uuid             not null
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
+#  author_id          :bigint
+#  import_id          :bigint
+#  message_thread_id  :bigint           not null
+#
 class Message < ApplicationRecord
-  belongs_to :thread, class_name: 'MessageThread', foreign_key: :message_thread_id
+  belongs_to :thread, class_name: 'MessageThread', foreign_key: :message_thread_id, inverse_of: :messages
   belongs_to :author, class_name: 'User', foreign_key: :author_id, optional: true
   has_many :message_relations, dependent: :destroy
   has_many :message_relations_as_related_message, class_name: 'MessageRelation', foreign_key: :related_message_id, dependent: :destroy
   has_many :related_messages, through: :message_relations
   has_many :messages_tags, dependent: :destroy
   has_many :tags, through: :messages_tags
-  has_many :objects, class_name: 'MessageObject', dependent: :destroy
-  has_many :attachments, -> { where(object_type: "ATTACHMENT") }, class_name: 'MessageObject'
+  has_many :objects, class_name: 'MessageObject', dependent: :destroy, inverse_of: :message
+  has_many :attachments, -> { where(object_type: "ATTACHMENT") }, class_name: 'MessageObject', inverse_of: :message
   # used for joins only
   has_many :message_threads_tags, primary_key: :message_thread_id, foreign_key: :message_thread_id
 
@@ -47,17 +47,18 @@ class Message < ApplicationRecord
     tenant.automation_rules.where(trigger_event: event)
   end
 
-  # TODO move to task/job in order to keep the domain clean
-  def self.authorize_delivery_notification(message)
-    can_be_authorized = message.can_be_authorized?
-    if can_be_authorized
-      message.metadata["authorized"] = "in_progress"
-      message.save!
+  def add_cascading_tag(tag)
+    messages_tags.find_or_create_by!(tag: tag)
+    thread.message_threads_tags.find_or_create_by!(tag: tag)
+  end
 
-      Govbox::AuthorizeDeliveryNotificationJob.perform_later(message)
-    end
+  def remove_cascading_tag(tag)
+    messages_tags.find_by(tag: tag)&.destroy
+    thread.message_threads_tags.find_by(tag: tag)&.destroy unless thread.messages.any? {|m| m.tags.include?(tag) }
+  end
 
-    can_be_authorized
+  def draft?
+    false
   end
 
   def form

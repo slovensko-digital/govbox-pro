@@ -2,24 +2,25 @@
 #
 # Table name: message_objects
 #
-#  id                                          :integer          not null, primary key
-#  name                                        :string
-#  mimetype                                    :string
-#  is_signed                                   :boolean
-#  to_be_signed                                :boolean          not null, default: false
-#  object_type                                 :string           not null
-#  message_id                                  :integer          not null
-#  created_at                                  :datetime         not null
-#  updated_at                                  :datetime         not null
-
+#  id           :bigint           not null, primary key
+#  is_signed    :boolean
+#  mimetype     :string
+#  name         :string
+#  object_type  :string           not null
+#  to_be_signed :boolean          default(FALSE), not null
+#  visualizable :boolean
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#  message_id   :bigint           not null
+#
 class MessageObject < ApplicationRecord
-  belongs_to :message
+  belongs_to :message, inverse_of: :objects
   has_one :message_object_datum, dependent: :destroy
-  has_many :nested_message_objects
+  has_many :nested_message_objects, inverse_of: :message_object
 
-  scope :unsigned, -> { where('is_signed = false') }
-  scope :to_be_signed, -> { where('to_be_signed = true') }
-  scope :should_be_signed, -> { where('to_be_signed = true AND is_signed = false') }
+  scope :unsigned, -> { where(is_signed: false) }
+  scope :to_be_signed, -> { where(to_be_signed: true) }
+  scope :should_be_signed, -> { where(to_be_signed: true, is_signed: false) }
 
   validates :name, presence: true, on: :validate_data
   validate :allowed_mime_type?, on: :validate_data
@@ -53,8 +54,7 @@ class MessageObject < ApplicationRecord
 
   def signable?
     # TODO vymazat druhu podmienku po povoleni viacnasobneho podpisovania
-    # TODO refactor to not loading message
-    message.is_a?(MessageDraft) && !is_signed
+    message.draft? && !is_signed
   end
 
   def asice?
@@ -63,7 +63,15 @@ class MessageObject < ApplicationRecord
 
   def destroyable?
     # TODO avoid loading message association if we have
-    message.is_a?(MessageDraft) && message.not_yet_submitted? && !form?
+    message.draft? && message.not_yet_submitted? && !form?
+  end
+
+  def asice?
+    mimetype == 'application/vnd.etsi.asic-e+zip'
+  end
+
+  def destroyable?
+    message.draft? && message.not_yet_submitted? && !form?
   end
 
   private

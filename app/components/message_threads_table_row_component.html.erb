@@ -1,7 +1,7 @@
 <li class="flex px-4 py-5 hover:bg-blue-50 gap-2" data-test="<%= dom_id(@message_thread) %>" <% if @message_thread_iteration.last? %> data-all-checkboxes-target="refresh" <% end %>>
   <div class="hidden sm:flex">
     <div class="flex pr-2 md:gap-4 md:pr-4 items-center justify-start mb-auto">
-      <%= check_box_tag("message_thread_ids[]", @message_thread.id, false, { class: "h-4 w-4 rounded border-gray-300 text-blue-500 focus:ring-0 hidden sm:block", type: "checkbox", data: { action: "form#send" } }) %>
+      <%= check_box_tag("message_thread_ids[]", @message_thread.id, false, { id: "message_thread_#{@message_thread.id}", class: "h-4 w-4 rounded border-gray-300 text-blue-500 focus:ring-0 hidden sm:block", type: "checkbox", data: { action: "form#send" } }) %>
       <%= render Common::BoxLabelComponent.new(@message_thread.box, "hidden md:block") %>
     </div>
   </div>
@@ -10,7 +10,7 @@
       <div class="flex flex-wrap grow gap-x-4 gap-y-1">
         <div class="inline-block md:flex">
           <%= render Common::BoxLabelComponent.new(@message_thread.box, "inline-flex md:hidden", "text-xs") %>
-          <span class="text-sm sm:text-base text-gray-900 <%= "font-semibold" unless @message_thread.all_read %>">
+          <span class="text-sm sm:text-base text-gray-900 <%= "font-semibold" unless @message_thread.all_read %> [word-break:break-word]">
             <%= @message_thread.title %>
           </span>
         </div>

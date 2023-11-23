@@ -8,11 +8,11 @@ class SessionsTest < ApplicationSystemTestCase
 
     assert_text "Prihláste sa"
 
-    mock_auth_and_sign_in_as(users(:basic))
+    sign_in_as(:basic)
   end
 
   test "logout" do
-    mock_auth_and_sign_in_as(users(:basic))
+    sign_in_as(:basic)
 
     sign_out
   end

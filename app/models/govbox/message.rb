@@ -2,18 +2,18 @@
 #
 # Table name: govbox_messages
 #
-#  id                                          :integer          not null, primary key
-#  edesk_message_id                            :integer          not null
-#  folder_id                                   :integer          not null
-#  message_id                                  :uuid             not null
-#  correlation_id                              :uuid             not null
-#  delivered_at                                :datetime         not null
-#  edesk_class                                 :string           not null
-#  body                                        :text             not null
-#  payload                                     :json             not null
-#  created_at                                  :datetime         not null
-#  updated_at                                  :datetime         not null
-
+#  id               :bigint           not null, primary key
+#  body             :text             not null
+#  delivered_at     :datetime         not null
+#  edesk_class      :string           not null
+#  payload          :json             not null
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#  correlation_id   :uuid             not null
+#  edesk_message_id :bigint           not null
+#  folder_id        :bigint           not null
+#  message_id       :uuid             not null
+#
 class Govbox::Message < ApplicationRecord
   belongs_to :folder, class_name: 'Govbox::Folder'
 
@@ -44,7 +44,7 @@ class Govbox::Message < ApplicationRecord
 
       message.save!
 
-      self.add_tags(message, govbox_message)
+      self.add_upvs_related_tags(message, govbox_message)
       
       message
     end
@@ -119,7 +119,7 @@ class Govbox::Message < ApplicationRecord
     end
   end
 
-  def self.add_tags(message, govbox_message)
+  def self.add_upvs_related_tags(message, govbox_message)
     upvs_tag = Tag.find_or_create_by!(
       system_name: "slovensko.sk:#{govbox_message.folder.full_name}",
       tenant: govbox_message.box.tenant,
@@ -128,13 +128,24 @@ class Govbox::Message < ApplicationRecord
       tag.name = "slovensko.sk:#{govbox_message.folder.full_name}"
       tag.visible = !govbox_message.folder.system?
     end
-    message.tags << upvs_tag
-    message.thread.tags << upvs_tag unless message.thread.tags.include?(upvs_tag)
+    message.add_cascading_tag(upvs_tag)
 
-    if message.can_be_authorized?
-      delivery_notification_tag = govbox_message.box.tenant.tags.find_by!(system_name: DELIVERY_NOTIFICATION_TAG)
-      message.tags << delivery_notification_tag
-      message.thread.tags << delivery_notification_tag unless message.thread.tags.include?(delivery_notification_tag)
-    end
+    self.add_delivery_notification_tag(message) if message.can_be_authorized?
+  end
+
+  def self.add_delivery_notification_tag(message)
+    delivery_notification_tag = Tag.find_by!(
+      system_name: DELIVERY_NOTIFICATION_TAG,
+      tenant: message.thread.box.tenant,
+    )
+    message.add_cascading_tag(delivery_notification_tag)
+  end
+
+  def self.remove_delivery_notification_tag(message)
+    delivery_notification_tag = Tag.find_by!(
+      system_name: DELIVERY_NOTIFICATION_TAG,
+      tenant: message.thread.box.tenant,
+    )
+    message.remove_cascading_tag(delivery_notification_tag)
   end
 end

@@ -2,16 +2,16 @@
 #
 # Table name: nested_message_objects
 #
-#  id                                          :integer          not null, primary key
-#  name                                        :string
-#  mimetype                                    :string
-#  content                                     :binary           not null
-#  message_object_id                           :integer          not null
-#  created_at                                  :datetime         not null
-#  updated_at                                  :datetime         not null
-
+#  id                :bigint           not null, primary key
+#  content           :binary           not null
+#  mimetype          :string
+#  name              :string
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#  message_object_id :bigint           not null
+#
 class NestedMessageObject < ApplicationRecord
-  belongs_to :message_object
+  belongs_to :message_object, inverse_of: :nested_message_objects
 
   validates :name, presence: true, on: :validate_data
   validate :allowed_mime_type?, on: :validate_data

@@ -2,10 +2,10 @@
   <div class="text-sm w-full mx-2 mb-4">
     <p class="mb-2 italic">Po uložení sa vykonajú nasledovné zmeny:</p>
     <% if @diff.to_add.present? %>
-      <p class="mb-2">Pridajú sa: <%= format_tags(@diff.to_add) %></p>
+      <p class="mb-2" data-test="to_be_added">Pridajú sa: <%= format_tags(@diff.to_add) %></p>
     <% end %>
     <% if @diff.to_remove.present? %>
-      <p class="mb-2">Odoberú sa: <%= format_tags(@diff.to_remove) %></p>
+      <p class="mb-2" data-test="to_be_removed">Odoberú sa: <%= format_tags(@diff.to_remove) %></p>
     <% end %>
   </div>
 <% end %>

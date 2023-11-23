@@ -2,11 +2,11 @@
 #
 # Table name: tenants
 #
-#  id                                          :integer          not null, primary key
-#  name                                        :string           not null
-#  created_at                                  :datetime         not null
-#  updated_at                                  :datetime         not null
-
+#  id         :bigint           not null, primary key
+#  name       :string           not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
 class Tenant < ApplicationRecord
   has_many :users, dependent: :destroy
   has_many :groups, dependent: :destroy
