@@ -24,27 +24,28 @@ class MessageThreadsTest < ApplicationSystemTestCase
     thread_general = message_threads(:ssd_main_general)
     thread_issue = message_threads(:ssd_main_issue)
 
-    within("[data-test='message_thread_#{thread_general.id}']") do
+    within_thread_in_listing(thread_general) do
       assert_text "General"
       assert_text "Social Department"
 
-      within("[data-test='tags']") do
+      within_tags do
         assert_text "Finance"
         assert_text "Legal"
+        assert_text "Other"
       end
     end
 
-    within("[data-test='message_thread_#{thread_issue.id}']") do
+    within_thread_in_listing(thread_issue) do
       assert_text "Issue"
       assert_text "SD Services"
 
-      within("div[data-test='tags']") do
+      within_tags do
         assert_text "Finance"
       end
     end
 
-    within("[data-test='sidebar']") do
-      within("div[data-test='filters']") do
+    within_sidebar do
+      within_filters do
         assert_text "With General text"
         assert_text "With Legal text"
 
@@ -52,7 +53,7 @@ class MessageThreadsTest < ApplicationSystemTestCase
         refute_text "Urgent"
       end
 
-      within("[data-test='tags']") do
+      within_tags do
         assert_text "Finance"
         assert_text "Legal"
         assert_text "ExtVisible"
@@ -77,19 +78,19 @@ class MessageThreadsTest < ApplicationSystemTestCase
     thread_general = message_threads(:ssd_main_general)
     thread_issue = message_threads(:ssd_main_issue)
 
-    within("[data-test='message_thread_#{thread_general.id}']") do
+    within_thread_in_listing(thread_general) do
       assert_text "General"
       assert_text "Social Department"
     end
 
-    refute_selector("[data-test='message_thread_#{thread_issue.id}']")
+    refute_selector(thread_in_listing_selector(thread_issue))
   end
 
   test "a user can filter by tag from sidebar" do
     visit message_threads_path
 
-    within("[data-test='sidebar']") do
-      within("[data-test='tags']") do
+    within_sidebar do
+      within_tags do
         click_link "Legal"
       end
     end
@@ -97,12 +98,12 @@ class MessageThreadsTest < ApplicationSystemTestCase
     thread_general = message_threads(:ssd_main_general)
     thread_issue = message_threads(:ssd_main_issue)
 
-    within("[data-test='message_thread_#{thread_general.id}']") do
+    within_thread_in_listing(thread_general) do
       assert_text "General"
       assert_text "Social Department"
     end
 
-    refute_selector("[data-test='message_thread_#{thread_issue.id}']")
+    refute_selector(thread_in_listing_selector(thread_issue))
   end
 
   test "a user can go to a thread detail of the thread he has access to" do
@@ -115,7 +116,7 @@ class MessageThreadsTest < ApplicationSystemTestCase
 
     draft_one = message_drafts(:ssd_main_general_draft_one)
 
-    within("[data-test='message_thread_#{thread_general.id}']") do
+    within_thread_in_listing(thread_general) do
       click_link
     end
 
@@ -125,7 +126,7 @@ class MessageThreadsTest < ApplicationSystemTestCase
           assert_text "General agenda SSD"
         end
 
-        within("[data-test='tags']") do
+        within_tags do
           assert_text "Finance"
           assert_text "Legal"
         end

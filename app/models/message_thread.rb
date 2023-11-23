@@ -43,10 +43,6 @@ class MessageThread < ApplicationRecord
     messages.where(messages: { author_id: user.id }).or(messages.where(messages: { author_id: nil }))
   end
 
-  def add_tag(tag)
-    tags << tag unless tags.include?(tag)
-  end
-
   def automation_rules_for_event(event)
     tenant.automation_rules.where(trigger_event: event)
   end
