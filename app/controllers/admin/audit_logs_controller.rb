@@ -8,8 +8,8 @@ class Admin::AuditLogsController < ApplicationController
     respond_to do |format|
       format.html
       format.csv do
-        send_data @audit_logs.to_csv, filename: "audit-logs-actor-#{@actor.id}-Time.zone.now.to_fs(:db).csv" if @actor
-        send_data @audit_logs.to_csv, filename: "audit-logs-thread-#{@thread.id}-Time.zone.now.to_fs(:db).csv" if @thread
+        send_data @audit_logs.to_csv, filename: "audit-logs-actor-#{@actor.id}-at-#{Time.zone.now.to_fs(:db)}.csv" if @actor
+        send_data @audit_logs.to_csv, filename: "audit-logs-thread-#{@message_thread.id}-at-#{Time.zone.now.to_fs(:db)}.csv" if @message_thread
       end
     end
   end
@@ -35,19 +35,19 @@ class Admin::AuditLogsController < ApplicationController
       @audit_logs = @audit_logs.where(actor: @actor)
       @view = :actor
     end
-    return unless params[:thread]
+    return unless params[:message_thread]
 
-    @thread = policy_scope(MessageThread).find(params[:thread])
-    @audit_logs = @audit_logs.where(thread: @thread)
+    @message_thread = policy_scope(MessageThread).find(params[:message_thread])
+    @audit_logs = @audit_logs.where(message_thread: @message_thread)
     @view = :thread
   end
 
   def set_next
     @next_cursor = { happened_at: to_millis(@audit_logs.last.happened_at), id: @audit_logs.last.id }
     if @view == :actor
-      @url = scroll_admin_audit_logs_path(actor: Current.user, cursor: @next_cursor, format: :turbo_stream)
+      @url = scroll_admin_audit_logs_path(actor: @actor, cursor: @next_cursor, format: :turbo_stream)
     elsif @view == :thread
-      @url = scroll_admin_audit_logs_path(thread: @thread, cursor: @next_cursor, format: :turbo_stream)
+      @url = scroll_admin_audit_logs_path(message_thread: @message_thread, cursor: @next_cursor, format: :turbo_stream)
     end
   end
 

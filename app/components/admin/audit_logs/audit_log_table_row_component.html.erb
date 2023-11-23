@@ -1,13 +1,17 @@
 <tr>
   <td class="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-gray-500 sm:pl-0"><%= @audit_log_item.happened_at.to_fs(:db) %></td>
   <% if @view == :thread %>
-    <td class="px-2 py-2 text-sm text-gray-500"><%= @audit_log_item.actor_name %></td>
+    <% if @audit_log_item.actor %>
+      <td class="px-2 py-2 text-sm text-gray-500"><%= link_to @audit_log_item.actor_name, admin_audit_logs_path(actor: @audit_log_item.actor) %></td>
+    <% else %>
+      <td class="px-2 py-2 text-sm text-gray-500"><%= @audit_log_item.actor_name %></td>
+    <% end %>
   <% end %>
   <td class="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-gray-500 sm:pl-0"><%= @audit_log_item.type %></td>
-  <% if @audit_log_item.thread %>
-    <td class="px-2 py-2 text-sm text-gray-500 hover:underline"><%= link_to @audit_log_item.thread_name, @audit_log_item.thread %></td>
+  <% if @audit_log_item.message_thread %>
+    <td class="px-2 py-2 text-sm text-gray-500 hover:underline"><%= link_to @audit_log_item.thread_title, admin_audit_logs_path(message_thread: @audit_log_item.message_thread) %></td>
   <% else %>
-    <td class="px-2 py-2 text-sm text-gray-500"><%= @audit_log_item.thread_name %></td>
+    <td class="px-2 py-2 text-sm text-gray-500"><%= @audit_log_item.thread_title %></td>
   <% end %>
   <td class="px-2 py-2 text-sm text-gray-900"><%= @audit_log_item.previous_value %></td>
   <td class="px-2 py-2 text-sm text-gray-500"><%= @audit_log_item.new_value %></td>

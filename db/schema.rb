@@ -67,16 +67,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_21_070600) do
     t.string "previous_value"
     t.string "new_value"
     t.jsonb "changeset"
-    t.bigint "thread_id"
+    t.bigint "message_thread_id"
     t.integer "thread_id_archived"
-    t.string "thread_name"
+    t.string "thread_title"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["actor_id"], name: "index_audit_logs_on_actor_id"
+    t.index ["message_thread_id"], name: "index_audit_logs_on_message_thread_id"
     t.index ["tenant_id", "actor_id", "happened_at"], name: "index_audit_logs_on_tenant_id_and_actor_id_and_happened_at"
-    t.index ["tenant_id", "thread_id", "happened_at"], name: "index_audit_logs_on_tenant_id_and_thread_id_and_happened_at"
+    t.index ["tenant_id", "message_thread_id", "happened_at"], name: "index_audit_logs_on_tenant_id_thread_id_happened_at"
     t.index ["tenant_id"], name: "index_audit_logs_on_tenant_id"
-    t.index ["thread_id"], name: "index_audit_logs_on_thread_id"
   end
 
   create_table "automation_actions", force: :cascade do |t|
@@ -471,7 +471,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_21_070600) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "audit_logs", "message_threads", column: "thread_id", on_delete: :nullify
+  add_foreign_key "audit_logs", "message_threads", on_delete: :nullify
   add_foreign_key "audit_logs", "tenants", on_delete: :nullify
   add_foreign_key "audit_logs", "users", column: "actor_id", on_delete: :nullify
   add_foreign_key "automation_actions", "automation_rules"

@@ -3,14 +3,14 @@ require "csv"
 class AuditLog < ApplicationRecord
   belongs_to :tenant
   belongs_to :actor, class_name: "User"
-  belongs_to :thread, class_name: "MessageThread"
+  belongs_to :message_thread
 
   class MessageThreadNoteCreated < AuditLog
     def self.create_audit_record(note)
       create_record(
         object: note,
         new_value: note.note,
-        thread: note.message_thread
+        message_thread: note.message_thread
       )
     end
   end
@@ -21,7 +21,7 @@ class AuditLog < ApplicationRecord
         object: note,
         previous_value: note.note_previously_was,
         new_value: note.note,
-        thread: note.message_thread
+        message_thread: note.message_thread
       )
     end
   end
@@ -33,7 +33,7 @@ class AuditLog < ApplicationRecord
         object: thread_tag,
         previous_value: thread_tag.tag.name_previously_was,
         new_value: thread_tag.tag.name,
-        thread: thread_tag.message_thread
+        message_thread: thread_tag.message_thread
       )
     end
   end
@@ -46,8 +46,8 @@ class AuditLog < ApplicationRecord
       actor_name: Current.user&.name || 'SYSTEM',
       happened_at: Time.current,
       changeset: object.previous_changes,
-      thread_id_archived: args[:thread]&.id,
-      thread_name: args[:thread]&.title,
+      thread_id_archived: args[:message_thread]&.id,
+      thread_title: args[:message_thread]&.title,
       **args
     )
   end
