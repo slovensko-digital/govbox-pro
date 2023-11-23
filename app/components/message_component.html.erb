@@ -29,18 +29,40 @@
     <% if @message.visualizable_body? %>
       <div class="flex flex-col justify-stretch items-start relative gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
       <% if @message.html_visualization %>
-          <div class="w-full">
-            <%= tag.iframe class: "relative border-none overflow-hidden h-full w-full", srcdoc: @message.html_visualization, onload: "(
-                function(iframe) {
-                  iframe.contentWindow.document.body.style['height'] = 'unset';
-                  iframe.contentWindow.document.body.style['min-height'] = 'unset';
+          <div class="w-full h-[150px] transition-all">
+            <%= tag.iframe class: "relative border-none overflow-hidden h-full w-full", scrolling: "no", srcdoc: @message.html_visualization, onload: "(
+            function(iframe) {
+              iframe.contentWindow.document.body.style['height'] = 'unset';
+              iframe.contentWindow.document.body.style['min-height'] = 'unset';
+              iframe.contentWindow.document.body.style['transform-origin'] = '0 0';
 
-                  iframe.parentElement.style.height = iframe.contentWindow.document.body.scrollHeight + 20 + 'px';
-                }
-                (this)
-              )" %>
+              const getParentHeight = (height) => `${height + 20}px`;
+
+              iframe.parentElement.style.height = getParentHeight(iframe.contentWindow.document.body.scrollHeight);
+
+              const parentRo = new ResizeObserver(([parent]) => {
+                  const { clientWidth: iframeWidth, clientHeight: iframeHeight } = iframe.contentWindow.document.body;
+                  const parentWidth = parent.contentRect.width - 24;
+                  const scale = parentWidth / iframeWidth;
+
+                  iframe.contentWindow.document.body.style.transform = `scale(${scale})`;
+                  iframe.parentElement.style.height = getParentHeight(iframeHeight * scale);
+              });
+
+              parentRo.observe(iframe.parentNode);
+
+              const iframeRo = new ResizeObserver(() => {
+                  const height = iframe.contentWindow.document.body.clientHeight;
+
+                  iframe.parentElement.style.height = `${height}px`;
+              });
+
+              iframeRo.observe(iframe.contentWindow.document.body);
+            }
+            (this)
+          )" %>
           </div>
-        <% end %>
+      <% end %>
 
       <% if @message.form && @message.form.nested_message_objects.present? %>
         <div class="flex flex-col justify-stretch items-stretch divide-y relative px-4 bg-white border border-gray-200 w-full">
