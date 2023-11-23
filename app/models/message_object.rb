@@ -71,7 +71,7 @@ class MessageObject < ApplicationRecord
   end
 
   def destroyable?
-    message.is_a?(MessageDraft) && message.not_yet_submitted? && !form?
+    message.draft? && message.not_yet_submitted? && !form?
   end
 
   private
