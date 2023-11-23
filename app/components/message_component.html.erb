@@ -41,12 +41,14 @@
               iframe.parentElement.style.height = getParentHeight(iframe.contentWindow.document.body.scrollHeight);
 
               const parentRo = new ResizeObserver(([parent]) => {
-                  const { clientWidth: iframeWidth, clientHeight: iframeHeight } = iframe.contentWindow.document.body;
+                  const { scrollWidth: iframeWidth, clientHeight: iframeHeight } = iframe.contentWindow.document.body;
                   const parentWidth = parent.contentRect.width - 24;
                   const scale = parentWidth / iframeWidth;
 
-                  iframe.contentWindow.document.body.style.transform = `scale(${scale})`;
-                  iframe.parentElement.style.height = getParentHeight(iframeHeight * scale);
+                  if (scale <= 1) {
+                    iframe.contentWindow.document.body.style.transform = `scale(${scale})`;
+                    iframe.parentElement.style.height = getParentHeight(iframeHeight * scale);
+                  }
               });
 
               parentRo.observe(iframe.parentNode);
