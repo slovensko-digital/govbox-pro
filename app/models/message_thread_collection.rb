@@ -6,7 +6,7 @@ class MessageThreadCollection
   DIRECTION = :desc
 
   def self.init_cursor(cursor_params)
-    cursor_params = cursor_params || {}
+    cursor_params ||= {}
 
     {
       DELIVERED_AT => cursor_params[DELIVERED_AT] ? millis_to_time(cursor_params[DELIVERED_AT]) : Time.now,
@@ -21,7 +21,7 @@ class MessageThreadCollection
     cursor
   end
 
-  def self.all(scope: nil, search_permissions:, query: nil, cursor:)
+  def self.all(search_permissions:, cursor:, scope: nil, query: nil)
     parsed_query = Searchable::MessageThreadQuery.parse(query.to_s)
     filter = Searchable::MessageThreadQuery.labels_to_ids(
       parsed_query,
@@ -33,12 +33,12 @@ class MessageThreadCollection
       search_permissions: search_permissions,
       cursor: cursor,
       direction: DIRECTION,
-      per_page: PER_PAGE
+      per_page: PER_PAGE + 1  # we want additional record to know if we need next page
     ).fetch_values(:ids, :next_cursor, :highlights)
 
-    message_thread_scope = (scope || MessageThread).
-      where(id: ids).
-      order(Pagination.order_clause(searchable_cursor_to_cursor(cursor), DIRECTION))
+    message_thread_scope = (scope || MessageThread)
+                           .where(id: ids)
+                           .order(Pagination.order_clause(searchable_cursor_to_cursor(cursor), DIRECTION))
 
     records = message_thread_scope.select(
       'message_threads.*',
@@ -54,7 +54,7 @@ class MessageThreadCollection
 
     {
       records: records,
-      next_cursor: next_cursor,
+      next_cursor: next_cursor
     }
   end
 

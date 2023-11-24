@@ -1,11 +1,10 @@
 <%= turbo_stream.append "message_threads" do %>
   <%= render MessageThreadsTableRowComponent.with_collection(@message_threads) %>
 <% end %>
-<% if @message_threads.any? %>
+<% if @next_page_exists %>
   <%= turbo_stream.append "next_page_area" do %>
     <%= render Turbo::NextPageComponent.new(id: @next_cursor, url: scroll_message_threads_url(@next_page_params)) %>
   <% end %>
 <% else %>
-  <%= turbo_stream.replace "next_page_area" do %>
-  <% end %>
+  <%= turbo_stream.replace "next_page_area" %>
 <% end %>

@@ -73,6 +73,11 @@ class MessageThreadsController < ApplicationController
       )
 
     @message_threads, @next_cursor = result.fetch_values(:records, :next_cursor)
+
+    @next_page_exists = (@message_threads.size == MessageThreadCollection::PER_PAGE + 1)
+    return unless @next_page_exists
+
+    @message_threads.limit(MessageThreadCollection::PER_PAGE)
     @next_cursor = MessageThreadCollection.serialize_cursor(@next_cursor)
     @next_page_params = search_params.to_h.merge(cursor: @next_cursor).merge(format: :turbo_stream)
   end
