@@ -1,0 +1,9 @@
+<%= render Admin::AuditLogs::AuditLogTableComponent.new(actor: @actor, message_thread: @message_thread, audit_logs: @audit_logs, view: @view) do |component| %>
+  <% component.with_next_page_area do %>
+    <% if @audit_logs.any? %>
+      <%= render Turbo::NextPageAreaComponent.new(id: @next_cursor, url: @url) %>
+    <% else %>
+      <%= render Common::NoResultsFoundComponent.new("Nenašli sa žiadne auditné záznamy", "") %>
+    <% end %>
+  <% end %>
+<% end %>
