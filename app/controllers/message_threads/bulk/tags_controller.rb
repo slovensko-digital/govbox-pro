@@ -52,7 +52,7 @@ module MessageThreads
           tags_assignments: tags_assignments
         )
 
-        tag_changes.bulk_save(@message_threads.select(:box_id).includes(box: :tenant))
+        tag_changes.bulk_save(@message_threads.includes(box: :tenant))
 
         # status: 303 is needed otherwise PATCH is kept in the following redirect https://apidock.com/rails/ActionController/Redirecting/redirect_to
         redirect_back fallback_location: message_threads_path, notice: "Priradenie štítkov bolo upravené", status: 303
@@ -71,7 +71,7 @@ module MessageThreads
       def set_message_threads
         ids = params[:message_thread_ids] || []
 
-        @message_threads = message_thread_policy_scope.where(id: ids).select(:id)
+        @message_threads = message_thread_policy_scope.where(id: ids)
       end
 
       def tags_assignments
