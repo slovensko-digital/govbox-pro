@@ -6,6 +6,7 @@ class CreateMessageDraftTemplates < ActiveRecord::Migration[7.0]
       t.text :content, null: false
       t.string :type
       t.jsonb :metadata
+      t.boolean :system, null:false, default: false
 
       t.timestamps
     end

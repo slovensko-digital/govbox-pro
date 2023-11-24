@@ -1,6 +1,7 @@
 class MessageDraftsController < ApplicationController
   before_action :load_message_drafts, only: %i[index submit_all]
   before_action :load_original_message, only: :create
+  before_action :load_message_draft_template, only: :create
   before_action :load_message_draft, except: [:index, :create, :submit_all]
 
   include ActionView::RecordIdentifier
@@ -12,9 +13,11 @@ class MessageDraftsController < ApplicationController
   end
 
   def create
-    authorize @original_message
+    @message = MessageDraft.new
+    authorize @message
 
-    @message = MessageDraft.create_message_reply(original_message: @original_message, author: Current.user)
+    @message_draft_template.create_message(@message, author: Current.user, box: Current.box, recipient_uri: new_message_params[:recipient])
+    redirect_to message_thread_path(@message.thread)
   end
 
   def show
@@ -80,7 +83,11 @@ class MessageDraftsController < ApplicationController
   end
 
   def load_original_message
-    @original_message = policy_scope(Message).find(params[:original_message_id])
+    @original_message = policy_scope(Message).find(params[:original_message_id]) if params[:original_message_id]
+  end
+
+  def load_message_draft_template
+    @message_draft_template = policy_scope(MessageDraftTemplate).find(new_message_params[:message_draft_template])
   end
 
   def load_message_draft
@@ -89,5 +96,9 @@ class MessageDraftsController < ApplicationController
 
   def message_params
     params.permit(:message_title, :message_text)
+  end
+
+  def new_message_params
+    params.permit(:message_draft_template, :recipient)
   end
 end

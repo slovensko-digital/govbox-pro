@@ -259,6 +259,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_23_110454) do
     t.text "content", null: false
     t.string "type"
     t.jsonb "metadata"
+    t.boolean "system", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["tenant_id"], name: "index_message_draft_templates_on_tenant_id"

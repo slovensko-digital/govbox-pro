@@ -18,6 +18,15 @@ class MessagesController < ApplicationController
     @message.update(read: true)
   end
 
+  def reply
+    authorize @message
+
+    @message_reply = MessageDraft.new
+    authorize @message_reply
+
+    MessageDraftTemplate.reply_template.create_message_reply(@message_reply, original_message: @message, author: Current.user)
+  end
+
   def update
     authorize @message
     return unless @message.update(message_update_params)

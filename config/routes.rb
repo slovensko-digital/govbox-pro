@@ -83,6 +83,7 @@ Rails.application.routes.draw do
 
   resources :messages do
     member do
+      post 'reply'
       post 'authorize_delivery_notification'
     end
 

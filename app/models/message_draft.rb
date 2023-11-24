@@ -38,47 +38,11 @@ class MessageDraft < Message
     end
   end
 
-  GENERAL_AGENDA_POSP_ID = "App.GeneralAgenda"
-  GENERAL_AGENDA_POSP_VERSION = "1.9"
-  GENERAL_AGENDA_MESSAGE_TYPE = "App.GeneralAgenda"
-
   with_options on: :validate_data do |message_draft|
     message_draft.validates :uuid, format: { with: Utils::UUID_PATTERN }, allow_blank: false
     message_draft.validate :validate_metadata
     message_draft.validate :validate_form
     message_draft.validate :validate_objects
-  end
-
-  def self.create_message_reply(original_message: , author:)
-    message_draft = original_message.thread.message_drafts.create!(
-      uuid: SecureRandom.uuid,
-      sender_name: original_message.recipient_name,
-      recipient_name: original_message.sender_name,
-      title: "Odpoveď: #{original_message.title}",
-      read: true,
-      delivered_at: Time.now,
-      author: author,
-      metadata: {
-        "recipient_uri": original_message.metadata["sender_uri"],
-        "posp_id": GENERAL_AGENDA_POSP_ID,
-        "posp_version": GENERAL_AGENDA_POSP_VERSION,
-        "message_type": GENERAL_AGENDA_MESSAGE_TYPE,
-        "correlation_id": original_message.metadata["correlation_id"],
-        "reference_id": original_message.uuid,
-        "original_message_id": original_message.id,
-        "status": "created"
-      }
-    )
-
-    # TODO clean the domain (no UPVS stuff)
-    message_draft.objects.create!(
-      name: "form.xml",
-      mimetype: "application/x-eform-xml",
-      object_type: "FORM",
-      is_signed: false
-    )
-
-    message_draft
   end
 
   def update_content(title:, body:)
@@ -108,11 +72,15 @@ class MessageDraft < Message
   end
 
   def editable?
-    metadata["posp_id"] == GENERAL_AGENDA_POSP_ID && !form&.is_signed? && not_yet_submitted?
+    from_template? && !form&.is_signed? && not_yet_submitted?
   end
 
   def custom_visualization?
-    metadata["posp_id"] == GENERAL_AGENDA_POSP_ID
+    from_template?
+  end
+
+  def from_template?
+    metadata["template_id"].present?
   end
 
   def submittable?
