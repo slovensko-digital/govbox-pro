@@ -14,18 +14,8 @@ export default class extends Controller {
   }
 
   async update() {
-    const authenticityToken = this.data.get("authenticityToken");
-    const messageDraftPath = this.data.get("messageDraftPath");
-    const messageDraftTitleId = this.data.get("titleId");
-    const messageDraftTextId = this.data.get("textId");
-
-    await patch(messageDraftPath, {
-      body: JSON.stringify({
-        authenticity_token: authenticityToken,
-        message_title: document.getElementById(messageDraftTitleId).value,
-        message_text: document.getElementById(messageDraftTextId).value
-      })
-    })
+    const messageDraftBodyFormId = this.data.get("messageDraftBodyFormId");
+    document.getElementById(messageDraftBodyFormId).requestSubmit();
   }
 
   uploadAttachments() {
@@ -34,7 +24,7 @@ export default class extends Controller {
   }
 
   showLastMessageDraft() {
-    const messageDraftsTexts = document.querySelectorAll('textarea[id^="text_message_draft_"]');
+    const messageDraftsTexts = document.querySelectorAll('textarea[name^="message_draft[Text]"]');
     const length = messageDraftsTexts.length;
     if (messageDraftsTexts.length > 1) {
       messageDraftsTexts[length - 2].setAttribute('autofocus', false);

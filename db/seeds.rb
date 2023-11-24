@@ -47,8 +47,8 @@ Upvs::MessageDraftTemplate.find_or_create_by!(
 Upvs::MessageDraftTemplate.find_or_create_by!(
   name: 'Message reply',
   content: '<GeneralAgenda xmlns="http://schemas.gov.sk/form/App.GeneralAgenda/1.9">
-  <subject>{{text_field:subject}}</subject>
-  <text>{{text_area:text}}</text>
+  <subject>{{text_field:Predmet}}</subject>
+  <text>{{text_area:Text}}</text>
 </GeneralAgenda>',
   metadata: {
     posp_id: 'App.GeneralAgenda',

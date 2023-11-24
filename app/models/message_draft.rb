@@ -45,24 +45,11 @@ class MessageDraft < Message
     message_draft.validate :validate_objects
   end
 
-  def update_content(title:, body:)
-    self.title = title
-    metadata["message_body"] = body
-    save!
+  def update_content(parameters)
+    metadata["data"] = parameters.to_h
+    self.save!
 
-    return unless title.present? && body.present?
-
-    # TODO clean the domain (no UPVS stuff)
-    if form.message_object_datum
-      form.message_object_datum.update(
-        blob: Upvs::FormBuilder.build_general_agenda_xml(subject: title, body: body)
-      )
-    else
-      form.message_object_datum = MessageObjectDatum.create(
-        message_object: form,
-        blob: Upvs::FormBuilder.build_general_agenda_xml(subject: title, body: body)
-      )
-    end
+    template.build_message_from_template(self)
 
     self.reload
   end
@@ -72,15 +59,11 @@ class MessageDraft < Message
   end
 
   def editable?
-    from_template? && !form&.is_signed? && not_yet_submitted?
+    custom_visualization? && !form&.is_signed? && not_yet_submitted?
   end
 
   def custom_visualization?
-    from_template?
-  end
-
-  def from_template?
-    metadata["template_id"].present?
+    template.present?
   end
 
   def submittable?
@@ -110,6 +93,10 @@ class MessageDraft < Message
 
   def original_message
     Message.find(metadata["original_message_id"]) if metadata["original_message_id"]
+  end
+
+  def template
+    MessageDraftTemplate.find(metadata["template_id"]) if metadata["template_id"]
   end
 
   private

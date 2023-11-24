@@ -30,6 +30,10 @@ class MessageDraftTemplate < ApplicationRecord
     raise NotImplementedError
   end
 
+  def build_message_from_template(message)
+    raise NotImplementedError
+  end
+
   def self.reply_template
     # TODO co ak ich bude viac, v roznych domenach? (napr. UPVS aj core)
     MessageDraftTemplate.find_by!(

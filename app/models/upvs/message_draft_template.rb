@@ -18,7 +18,7 @@ class Upvs::MessageDraftTemplate < ::MessageDraftTemplate
   GENERAL_AGENDA_MESSAGE_TYPE = "App.GeneralAgenda"
 
   def recipients
-    # TODO load from DB
+    # TODO nacitat z DB allow listu
     [
       ['Test OVM 83136952', 'ico://sk/83136952'],
       ['Test OVM 83369721', 'ico://sk/83369721'],
@@ -72,6 +72,9 @@ class Upvs::MessageDraftTemplate < ::MessageDraftTemplate
       author: author
     )
     message.metadata = {
+      data: {
+        Predmet: "Odpoveď: #{original_message.title}"
+      },
       template_id: self.id,
       recipient_uri: original_message.metadata["sender_uri"],
       correlation_id: original_message.metadata["correlation_id"],
@@ -88,5 +91,25 @@ class Upvs::MessageDraftTemplate < ::MessageDraftTemplate
       object_type: "FORM",
       is_signed: false
     )
+  end
+
+  def build_message_from_template(message)
+    template_items = MessageDraftTemplateParser.parse_template_placeholders(self)
+    filled_content = self.content
+
+    template_items.each do |template_item|
+      filled_content.gsub!(template_item[:placeholder], message.metadata['data'][template_item[:name]])
+    end
+
+    if message.form.message_object_datum
+      message.form.message_object_datum.update(
+        blob: filled_content
+      )
+    else
+      message.form.message_object_datum = MessageObjectDatum.create(
+        message_object: message.form,
+        blob: filled_content
+      )
+    end
   end
 end

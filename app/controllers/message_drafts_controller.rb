@@ -16,7 +16,7 @@ class MessageDraftsController < ApplicationController
     @message = MessageDraft.new
     authorize @message
 
-    @message_draft_template.create_message(@message, author: Current.user, box: Current.box, recipient_uri: new_message_params[:recipient])
+    @message_draft_template.create_message(@message, author: Current.user, box: Current.box, recipient_uri: new_message_draft_params[:recipient])
     redirect_to message_thread_path(@message.thread)
   end
 
@@ -32,9 +32,7 @@ class MessageDraftsController < ApplicationController
   def update
     authorize @message
 
-    permitted_params = message_params
-
-    @message.update_content(title: permitted_params["message_title"], body: permitted_params["message_text"])
+    @message.update_content(message_draft_params)
   end
 
   def submit
@@ -87,18 +85,19 @@ class MessageDraftsController < ApplicationController
   end
 
   def load_message_draft_template
-    @message_draft_template = policy_scope(MessageDraftTemplate).find(new_message_params[:message_draft_template])
+    @message_draft_template = policy_scope(MessageDraftTemplate).find(new_message_draft_params[:message_draft_template])
   end
 
   def load_message_draft
     @message = policy_scope(MessageDraft).find(params[:id])
   end
 
-  def message_params
-    params.permit(:message_title, :message_text)
+  def message_draft_params
+    attributes = MessageDraftTemplateParser.parse_template_placeholders(@message.template).map{|item| item[:name]}
+    params[:message_draft].permit(attributes)
   end
 
-  def new_message_params
+  def new_message_draft_params
     params.permit(:message_draft_template, :recipient)
   end
 end
