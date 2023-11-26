@@ -73,7 +73,7 @@ class MessageThreadsTest < ApplicationSystemTestCase
     visit message_threads_path
 
     fill_in "search", with: "Social Department"
-    find("#search").send_keys('keyword', :enter)
+    find("#search").send_keys(:enter)
 
     thread_general = message_threads(:ssd_main_general)
     thread_issue = message_threads(:ssd_main_issue)
