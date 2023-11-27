@@ -12,3 +12,5 @@ Style/WordArray:
   Enabled: false
 Style/Lambda:
   Enabled: false
+Style/StringLiteralsInInterpolation:
+  EnforcedStyle: double_quotes

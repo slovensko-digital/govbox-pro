@@ -14,4 +14,5 @@ class TagGroup < ApplicationRecord
 
   # used for joins only
   has_many :group_memberships, primary_key: :group_id, foreign_key: :group_id
+  include Auditable
 end

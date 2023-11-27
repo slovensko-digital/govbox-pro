@@ -23,6 +23,7 @@ class User < ApplicationRecord
 
   before_destroy :delete_user_group, prepend: true
   after_create :handle_default_groups
+  include Auditable
 
   def site_admin?
     ENV['SITE_ADMIN_EMAILS'].to_s.split(',').include?(email)

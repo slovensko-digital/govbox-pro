@@ -16,6 +16,8 @@ class Group < ApplicationRecord
   has_many :tag_groups, dependent: :destroy
   has_many :tags, through: :tag_groups
 
+  include Auditable
+
   validates_presence_of :name
   validates_uniqueness_of :name, scope: :tenant_id
   validates :group_type, inclusion: { in: ['ALL', 'USER', 'ADMIN', 'CUSTOM'], allow_blank: false }

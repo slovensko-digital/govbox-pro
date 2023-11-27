@@ -28,9 +28,9 @@ class Tag < ApplicationRecord
 
   scope :visible, -> { where(visible: true) }
 
+  include Auditable
   after_create_commit ->(tag) { tag.mark_readable_by_groups(tag.tenant.admin_groups) }
   after_update_commit ->(tag) { EventBus.publish(:tag_renamed, tag) if previous_changes.key?("name") }
-  after_destroy ->(tag) { EventBus.publish(:tag_destroyed, tag) }
 
   DRAFT_SYSTEM_NAME = 'draft'
 
