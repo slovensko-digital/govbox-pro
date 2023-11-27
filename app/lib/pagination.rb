@@ -4,9 +4,19 @@ module Pagination
            .where(where_clause(cursor, direction), *cursor.compact.values)
            .order(order_clause(cursor, direction))
            .limit(items_per_page + 1) # +1 needed to find out if we need next page
-    next_cursor = cursor.map { |key, _value| [key, rows.second_to_last[key.to_s.split('.')[-1]]] }.to_h if rows.count > items_per_page
-    rows.limit(items_per_page)
+    if rows.count > items_per_page
+      next_cursor = row_to_cursor(rows.second_to_last, cursor)
+      rows.limit(items_per_page)
+    end
     [rows, next_cursor]
+  end
+
+  def self.row_to_cursor(row, cursor)
+    cursor.map { |key, _value| [key, row[extract_attr_name(key)]] }.to_h
+  end
+
+  def self.extract_attr_name(table_dot_attr_path)
+    table_dot_attr_path.to_s.split('.')[-1]
   end
 
   def self.order_clause(cursor, direction)
