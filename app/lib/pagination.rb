@@ -4,11 +4,8 @@ module Pagination
            .where(where_clause(cursor, direction), *cursor.compact.values)
            .order(order_clause(cursor, direction))
            .limit(items_per_page + 1) # +1 needed to find out if we need next page
-    if rows.count > items_per_page
-      next_cursor = row_to_cursor(rows.second_to_last, cursor)
-      rows.limit(items_per_page)
-    end
-    [rows, next_cursor]
+    next_cursor = row_to_cursor(rows.second_to_last, cursor) if rows.length > items_per_page
+    [rows.take(items_per_page), next_cursor]
   end
 
   def self.row_to_cursor(row, cursor)
@@ -16,7 +13,7 @@ module Pagination
   end
 
   def self.extract_attr_name(table_dot_attr_path)
-    table_dot_attr_path.to_s.split('.')[-1]
+    table_dot_attr_path.to_s.split('.').last
   end
 
   def self.order_clause(cursor, direction)
