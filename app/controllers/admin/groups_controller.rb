@@ -3,13 +3,13 @@ class Admin::GroupsController < ApplicationController
 
   def index
     authorize([:admin, Group])
-    @custom_groups = policy_scope([:admin, Group]).where(tenant_id: Current.tenant.id).where.not(group_type: %w[ALL USER])
-    @system_groups = policy_scope([:admin, Group]).where(tenant_id: Current.tenant.id, group_type: %w[ALL USER])
+
+    @modifiable_groups = group_policy_scope.where(tenant_id: Current.tenant.id).modifiable
+    @fixed_groups = group_policy_scope.where(tenant_id: Current.tenant.id).fixed
   end
 
   def show
     authorize([:admin, @group])
-    @other_tags = other_tags
   end
 
   def new
@@ -77,7 +77,7 @@ class Admin::GroupsController < ApplicationController
   private
 
   def non_members_search_clause
-    policy_scope([:admin, User])
+    user_policy_scope
       .where(tenant: Current.tenant.id)
       .where.not(id: User.joins(:group_memberships).where(group_memberships: { group_id: @group.id }))
       .where('unaccent(name) ILIKE unaccent(?)', "%#{params[:name_search]}%")
@@ -85,7 +85,7 @@ class Admin::GroupsController < ApplicationController
   end
 
   def non_tags_search_clause
-    policy_scope([:admin, Tag])
+    tag_policy_scope
       .where(tenant: Current.tenant.id)
       .where.not(id: Tag.joins(:tag_groups).where(tag_groups: { group_id: @group.id }))
       .where('unaccent(name) ILIKE unaccent(?)', "%#{params[:name_search]}%")
@@ -93,10 +93,22 @@ class Admin::GroupsController < ApplicationController
   end
 
   def set_group
-    @group = policy_scope([:admin, Group]).find(params[:id])
+    @group = group_policy_scope.find(params[:id])
   end
 
   def group_params
     params.require(:group).permit(:name, :group_type)
+  end
+
+  def group_policy_scope
+    policy_scope([:admin, Group])
+  end
+
+  def user_policy_scope
+    policy_scope([:admin, User])
+  end
+
+  def tag_policy_scope
+    policy_scope([:admin, Tag])
   end
 end

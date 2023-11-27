@@ -35,6 +35,8 @@ class Admin::GroupPolicy < ApplicationPolicy
   end
 
   def update?
+    return false if @group.fixed?
+
     @user.site_admin? || @user.admin?
   end
 
@@ -47,7 +49,7 @@ class Admin::GroupPolicy < ApplicationPolicy
   end
 
   def show_members?
-    update?
+    @user.site_admin? || @user.admin?
   end
 
   def edit_permissions?
@@ -55,6 +57,8 @@ class Admin::GroupPolicy < ApplicationPolicy
   end
 
   def destroy?
+    return false if @group.system?
+
     @user.site_admin? || @user.admin?
   end
 

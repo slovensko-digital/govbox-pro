@@ -5,14 +5,10 @@
     </div>
     <div class="flex-col justify-start items-start shrink-0 w-48 gap-1 inline-flex">
       <div class="text-center text-gray-900 text-lg font-medium leading-loose">
-        <% if @group.is_modifiable? %>
-          <%= render Admin::Groups::GroupRenameComponent.new(@group) if @group.is_modifiable? %>
-        <% else %>
-          <%= @group.name %>
-        <% end %>
+        <%= @group.name %>
       </div>
       <div class="text-center text-gray-500 text-base font-normal leading-normal">
-        <%= t :user, count: @group.users.count %>
+        <%= t("user", count: @group.users.count) %>
       </div>
     </div>
     <div class="flex justify-start items-start overflow-hidden gap-2 px-4">

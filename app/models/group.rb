@@ -16,11 +16,32 @@ class Group < ApplicationRecord
   has_many :tag_groups, dependent: :destroy
   has_many :tags, through: :tag_groups
 
+  ALL_TYPE = 'ALL'
+  USER_TYPE = 'USER'
+  ADMIN_TYPE = 'ADMIN'
+  CUSTOM_TYPE = 'CUSTOM'
+  SIGNING_TYPE = 'SIGNING'
+
+  scope :fixed, -> { where(group_type: %w[ALL USER]) }
+  scope :modifiable, -> { where.not(group_type: %w[ALL USER]) }
+
   validates_presence_of :name
   validates_uniqueness_of :name, scope: :tenant_id
-  validates :group_type, inclusion: { in: ['ALL', 'USER', 'ADMIN', 'CUSTOM'], allow_blank: false }
+  validates :group_type, inclusion: { in: [ALL_TYPE, USER_TYPE, ADMIN_TYPE, CUSTOM_TYPE, SIGNING_TYPE], allow_blank: false }
 
-  def is_modifiable?
-    !group_type.in? %w[ALL USER]
+  def modifiable?
+    !group_type.in? [ALL_TYPE, USER_TYPE]
+  end
+
+  def fixed?
+    !modifiable?
+  end
+
+  def system?
+    group_type != CUSTOM_TYPE
+  end
+
+  def destroyable?
+    !system?
   end
 end
