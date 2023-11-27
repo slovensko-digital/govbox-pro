@@ -81,6 +81,7 @@ class MessageThreadsTest < ApplicationSystemTestCase
     within_thread_in_listing(thread_general) do
       assert_text "General"
       assert_text "Social Department"
+      refute_text "Issue"
     end
 
     refute_selector(thread_in_listing_selector(thread_issue))
