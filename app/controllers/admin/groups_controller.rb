@@ -4,39 +4,38 @@ class Admin::GroupsController < ApplicationController
   def index
     authorize([:admin, Group])
 
-    @modifiable_groups = group_policy_scope.where(tenant_id: Current.tenant.id).modifiable
-    @fixed_groups = group_policy_scope.where(tenant_id: Current.tenant.id).fixed
+    @editable_groups = group_policy_scope.where(tenant_id: Current.tenant.id).editable
+    @fixed_groups = group_policy_scope.where(tenant_id: Current.tenant.id).where.not(id: @editable_groups.pluck(:id))
   end
 
   def show
-    authorize([:admin, @group])
+    authorize([:admin, @group], policy_class: Admin::GroupPolicy)
   end
 
   def new
-    @group = Current.tenant.groups.new
-    authorize([:admin, @group])
+    @group = Current.tenant.custom_groups.new
+    authorize([:admin, @group], policy_class: Admin::GroupPolicy)
   end
 
   def edit
-    authorize([:admin, @group])
+    authorize([:admin, @group], policy_class: Admin::GroupPolicy)
   end
 
   def edit_members
-    authorize([:admin, @group])
+    authorize([:admin, @group], policy_class: Admin::GroupPolicy)
   end
 
   def show_members
-    authorize([:admin, @group])
+    authorize([:admin, @group], policy_class: Admin::GroupPolicy)
   end
 
   def edit_permissions
-    authorize([:admin, @group])
+    authorize([:admin, @group], policy_class: Admin::GroupPolicy)
   end
 
   def create
-    @group = Current.tenant.groups.new(group_params)
-    @group.group_type = 'CUSTOM'
-    authorize([:admin, @group])
+    @group = Current.tenant.custom_groups.new(group_params)
+    authorize([:admin, @group], policy_class: Admin::GroupPolicy)
 
     if @group.save
       redirect_to edit_members_admin_tenant_group_url(Current.tenant, @group, step: :new), notice: 'Group was successfully created'
@@ -46,7 +45,7 @@ class Admin::GroupsController < ApplicationController
   end
 
   def update
-    authorize([:admin, @group])
+    authorize([:admin, @group], policy_class: Admin::GroupPolicy)
     if @group.update(group_params)
       redirect_to admin_tenant_groups_url(Current.tenant), notice: 'Group was successfully updated'
     else
@@ -55,20 +54,20 @@ class Admin::GroupsController < ApplicationController
   end
 
   def destroy
-    authorize([:admin, @group])
+    authorize([:admin, @group], policy_class: Admin::GroupPolicy)
     @group.destroy
     redirect_to admin_tenant_groups_url(Current.tenant), notice: 'Group was successfully destroyed'
   end
 
   def search_non_members
-    authorize([:admin, @group])
+    authorize([:admin, @group], policy_class: Admin::GroupPolicy)
     return if params[:name_search].blank?
 
     @users = non_members_search_clause
   end
 
   def search_non_tags
-    authorize([:admin, @group])
+    authorize([:admin, @group], policy_class: Admin::GroupPolicy)
     return if params[:name_search].blank?
 
     @tags = non_tags_search_clause
@@ -97,7 +96,7 @@ class Admin::GroupsController < ApplicationController
   end
 
   def group_params
-    params.require(:group).permit(:name, :group_type)
+    params.require(:group_custom).permit(:name)
   end
 
   def group_policy_scope

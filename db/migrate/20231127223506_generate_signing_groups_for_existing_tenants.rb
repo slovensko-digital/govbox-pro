@@ -1,11 +1,11 @@
 class GenerateSigningGroupsForExistingTenants < ActiveRecord::Migration[7.0]
   def up
     Tenant.find_each do |tenant|
-      tenant.groups.create!(name: 'Podpisovatelia', group_type: Group::SIGNING_TYPE)
+      tenant.create_signer_group!(name: 'Podpisovatelia')
     end
   end
 
   def down
-    Group.where(group_type: Group::SIGNING_TYPE).destroy_all
+    GroupSigner.destroy_all
   end
 end

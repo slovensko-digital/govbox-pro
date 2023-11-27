@@ -7,7 +7,7 @@
       <% end %>
     </div>
     <div class="self-stretch flex-col justify-start items-start flex">
-      <% @modifiable_groups.each do |group| %>
+      <% @editable_groups.each do |group| %>
         <%= render Admin::Groups::GroupsListRowComponent.new(group) %>
       <% end %>
     </div>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_23_152912) do
+ActiveRecord::Schema[7.0].define(version: 2023_11_27_223506) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -19,7 +19,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_23_152912) do
   # Custom types defined in this database.
   # Note that some types may not work with other database engines. Be careful if changing database.
   create_enum "color", ["slate", "gray", "zinc", "neutral", "stone", "red", "orange", "amber", "yellow", "lime", "green", "emerald", "teal", "cyan", "sky", "blue", "indigo", "violet", "purple", "fuchsia", "pink", "rose"]
-  create_enum "group_type", ["ALL", "USER", "CUSTOM", "ADMIN", "SIGNING"]
+  create_enum "group_type", ["ALL", "USER", "CUSTOM", "ADMIN"]
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -268,9 +268,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_23_152912) do
   create_table "groups", force: :cascade do |t|
     t.string "name", null: false
     t.bigint "tenant_id", null: false
-    t.enum "group_type", null: false, enum_type: "group_type"
+    t.enum "group_type", enum_type: "group_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "type", null: false
     t.index ["tenant_id"], name: "index_groups_on_tenant_id"
   end
 
