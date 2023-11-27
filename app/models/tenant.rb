@@ -13,7 +13,7 @@ class Tenant < ApplicationRecord
 
   has_one :all_group, -> { where(group_type: Group::ALL_TYPE) }, class_name: 'Group'
   has_one :signing_group, -> { where(group_type: Group::SIGNING_TYPE) }, class_name: 'Group'
-  has_many :admin_groups, -> { where(group_type: ADMIN_TYPE) }, class_name: 'Group'
+  has_many :admin_groups, -> { where(group_type: Group::ADMIN_TYPE) }, class_name: 'Group'
 
   has_many :boxes, dependent: :destroy
   has_many :automation_rules, class_name: 'Automation::Rule', dependent: :destroy
