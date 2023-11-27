@@ -59,3 +59,5 @@ EventBus.subscribe :box_destroyed, ->(box_id) { Govbox::DestroyBoxDataJob.perfor
 EventBus.subscribe :message_thread_note_created, ->(note) { AuditLog::MessageThreadNoteCreated.create_audit_record(note) }
 EventBus.subscribe :message_thread_note_changed, ->(note) { AuditLog::MessageThreadNoteChanged.create_audit_record(note) }
 EventBus.subscribe :message_thread_tag_changed, ->(thread_tag) { AuditLog::MessageThreadTagChanged.create_audit_record(thread_tag) }
+EventBus.subscribe :user_logged_in, ->(user) { AuditLog::UserLoggedIn.create_audit_record(user) }
+EventBus.subscribe :user_logged_out, ->(user) { AuditLog::UserLoggedOut.create_audit_record(user) }

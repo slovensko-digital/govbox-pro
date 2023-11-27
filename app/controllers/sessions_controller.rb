@@ -10,9 +10,11 @@ class SessionsController < ApplicationController
 
   def create
     create_session
+    EventBus.publish(:user_logged_in, Current.user)
   end
 
   def destroy
+    EventBus.publish(:user_logged_out, User.find_by(id: session[:user_id]))
     clean_session
 
     redirect_to root_path
