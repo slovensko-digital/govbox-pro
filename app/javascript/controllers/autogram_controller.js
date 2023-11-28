@@ -61,6 +61,7 @@ export default class extends Controller {
                 content: messageObjectData.content
               },
               parameters: {
+                container: signatureContainer,
                 level: signatureLevel,
                 autoLoadEform: true
               },
