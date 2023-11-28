@@ -18,7 +18,7 @@ module PagePartsHelper
   end
 
   def thread_in_listing_selector(thread)
-    "[data-test='message_thread_#{thread.id}']"
+    "[data-test=\"message_thread_#{thread.id}\"]"
   end
 
   def within_tags

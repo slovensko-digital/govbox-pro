@@ -16,7 +16,7 @@ class MessageThread < ApplicationRecord
   belongs_to :folder, optional: true # do not use, will be removed
   belongs_to :box
   has_one :message_thread_note, dependent: :destroy
-  has_many :messages, dependent: :destroy do
+  has_many :messages, dependent: :destroy, inverse_of: :thread do
     def find_or_create_by_uuid!(uuid:)
     end
   end

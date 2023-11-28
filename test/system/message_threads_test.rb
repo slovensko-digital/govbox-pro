@@ -73,7 +73,7 @@ class MessageThreadsTest < ApplicationSystemTestCase
     visit message_threads_path
 
     fill_in "search", with: "Social Department"
-    find("#search").send_keys('keyword', :enter)
+    find("#search").send_keys(:enter)
 
     thread_general = message_threads(:ssd_main_general)
     thread_issue = message_threads(:ssd_main_issue)
@@ -81,6 +81,7 @@ class MessageThreadsTest < ApplicationSystemTestCase
     within_thread_in_listing(thread_general) do
       assert_text "General"
       assert_text "Social Department"
+      refute_text "Issue"
     end
 
     refute_selector(thread_in_listing_selector(thread_issue))

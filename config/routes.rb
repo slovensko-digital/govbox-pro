@@ -37,6 +37,9 @@ Rails.application.routes.draw do
       resources :tags
       resources :tag_groups
     end
+    resources :audit_logs, only: :index do
+      get :scroll, on: :collection
+    end
   end
 
   resources :boxes, path: 'schranky', only: %i[index show] do

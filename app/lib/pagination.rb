@@ -1,16 +1,20 @@
 module Pagination
   def self.paginate(collection:, cursor:, direction: 'desc', items_per_page: 10)
-    rows =
-      collection
-        .where(where_clause(cursor, direction), *cursor.compact.values)
-        .order(order_clause(cursor, direction))
-        .limit(items_per_page)
-    last_row = rows&.last
-    next_cursor = cursor.map { |key, _value| [key, last_row[key.to_s.split('.')[-1]]] }.to_h if last_row
-    [rows, next_cursor]
+    rows = collection
+           .where(where_clause(cursor, direction), *cursor.compact.values)
+           .order(order_clause(cursor, direction))
+           .limit(items_per_page + 1) # +1 needed to find out if we need next page
+    next_cursor = row_to_cursor(rows.second_to_last, cursor) if rows.length > items_per_page
+    [rows.take(items_per_page), next_cursor]
   end
 
-  private
+  def self.row_to_cursor(row, cursor)
+    cursor.map { |key, _value| [key, row[extract_attr_name(key)]] }.to_h
+  end
+
+  def self.extract_attr_name(table_dot_attr_path)
+    table_dot_attr_path.to_s.split('.').last
+  end
 
   def self.order_clause(cursor, direction)
     cursor.keys.map { |key| "#{key} #{direction}" }.join(',')

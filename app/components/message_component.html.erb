@@ -29,7 +29,7 @@
     <% if @message.visualizable_body? %>
       <div class="flex flex-col justify-stretch items-start relative gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
       <% if @message.html_visualization %>
-          <div class="w-full h-[150px] transition-all">
+          <div class="w-full invisible h-[150px] transition-all">
             <%= tag.iframe class: "relative border-none overflow-hidden h-full w-full", scrolling: "no", srcdoc: @message.html_visualization, onload: "(
             function(iframe) {
               iframe.contentWindow.document.body.style['height'] = 'unset';
@@ -41,20 +41,29 @@
               iframe.parentElement.style.height = getParentHeight(iframe.contentWindow.document.body.scrollHeight);
 
               const parentRo = new ResizeObserver(([parent]) => {
-                  const { clientWidth: iframeWidth, clientHeight: iframeHeight } = iframe.contentWindow.document.body;
+                  const { scrollWidth: iframeWidth, clientHeight: iframeHeight } = iframe.contentWindow.document.body;
                   const parentWidth = parent.contentRect.width - 24;
                   const scale = parentWidth / iframeWidth;
 
-                  iframe.contentWindow.document.body.style.transform = `scale(${scale})`;
-                  iframe.parentElement.style.height = getParentHeight(iframeHeight * scale);
+                  if (scale <= 1) {
+                    iframe.contentWindow.document.body.style.transform = `scale(${scale})`;
+                    iframe.parentElement.style.height = getParentHeight(iframeHeight * scale);
+                  }
               });
 
               parentRo.observe(iframe.parentNode);
+
+              let hasInvisibleClass = true;
 
               const iframeRo = new ResizeObserver(() => {
                   const height = iframe.contentWindow.document.body.clientHeight;
 
                   iframe.parentElement.style.height = `${height}px`;
+
+                  if (hasInvisibleClass) {
+                    iframe.parentElement.classList.remove('invisible');
+                    hasInvisibleClass = false;
+                  }
               });
 
               iframeRo.observe(iframe.contentWindow.document.body);
@@ -111,7 +120,7 @@
           <%= form.submit "Prevziať správu", data: { turbo_frame: "_top", turbo_confirm: "Naozaj chcete prevziať správu?" }, class: "flex-grow-0 flex-shrink-0 px-3.5 py-2.5 rounded-md bg-blue-600 text-base font-medium text-left text-white" %>
         <% end %>
       <% elsif @message.replyable? %>
-        <%= content_tag(:div, { "data-controller": "messageDrafts" }) do %>
+        <%= content_tag(:div, { "data-controller": "message-drafts" }) do %>
           <%= form_with(url: reply_message_path(@message), method: :post, local: true, class: 'flex justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200') do |form| %>
             <%= form.hidden_field :original_message_id, value: @message.id %>
             <%= form.submit "Odpovedať", data: { turbo_frame: "_top" }, class: "text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3.5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" %>

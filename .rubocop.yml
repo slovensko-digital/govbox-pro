@@ -10,3 +10,5 @@ Style/SymbolArray:
   Enabled: false
 Style/WordArray:
   Enabled: false
+Style/Lambda:
+  Enabled: false
