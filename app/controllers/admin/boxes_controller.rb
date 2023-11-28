@@ -3,7 +3,7 @@ class Admin::BoxesController < ApplicationController
 
   def index
     authorize Box
-    @boxes = policy_scope([:admin, Box])
+    @boxes = policy_scope([:admin, Box]).order(:name)
   end
 
   def show

@@ -3,7 +3,7 @@ class Admin::TenantsController < ApplicationController
 
   def index
     authorize([:admin, Tenant])
-    @tenants = policy_scope([:admin, Tenant])
+    @tenants = policy_scope([:admin, Tenant]).order(:name)
   end
 
   def show
