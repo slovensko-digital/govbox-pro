@@ -62,11 +62,7 @@ export default class extends Controller {
               },
               parameters: {
                 level: signatureLevel,
-                container: signatureContainer,
-                identifier: messageObjectData.identifier,
-                schema: messageObjectData.schema,
-                containerXmlns: messageObjectData.container_xmlns,
-                transformation: messageObjectData.transformation
+                autoLoadEform: true
               },
               payloadMimeType: payloadMimeType
             })
