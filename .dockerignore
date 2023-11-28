@@ -11,8 +11,6 @@
 .ruby-lsp
 .vscode/
 chart/
-Gemfile
-Gemfile.lock
 Procfile
 Procfile.debug
 Procfile.dev
