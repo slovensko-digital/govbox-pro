@@ -47,7 +47,7 @@ class Upvs::MessageDraftTemplate < ::MessageDraftTemplate
     message.thread = box.message_threads.find_or_create_by_merge_uuid!(
       box: box,
       merge_uuid: message.metadata['correlation_id'],
-      title: "Draft - #{Date.today}",
+      title: self.name,
       delivered_at: message.delivered_at
     )
 
