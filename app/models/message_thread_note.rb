@@ -9,6 +9,7 @@
 #  message_thread_id :bigint           not null
 #
 class MessageThreadNote < ApplicationRecord
+  include AuditableEvents
+
   belongs_to :message_thread
-  include Auditable
 end

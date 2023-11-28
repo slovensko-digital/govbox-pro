@@ -13,6 +13,8 @@
 #  user_id     :bigint
 #
 class Tag < ApplicationRecord
+  include AuditableEvents
+
   belongs_to :tenant
   belongs_to :owner, class_name: 'User', optional: true, foreign_key: :user_id
   has_many :tag_groups, dependent: :destroy
@@ -28,7 +30,6 @@ class Tag < ApplicationRecord
 
   scope :visible, -> { where(visible: true) }
 
-  include Auditable
   after_create_commit ->(tag) { tag.mark_readable_by_groups(tag.tenant.admin_groups) }
   after_update_commit ->(tag) { EventBus.publish(:tag_renamed, tag) if previous_changes.key?("name") }
 

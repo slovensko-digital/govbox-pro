@@ -10,13 +10,13 @@
 #  tenant_id  :bigint           not null
 #
 class Group < ApplicationRecord
+  include AuditableEvents
+
   belongs_to :tenant
   has_many :group_memberships, dependent: :destroy
   has_many :users, through: :group_memberships
   has_many :tag_groups, dependent: :destroy
   has_many :tags, through: :tag_groups
-
-  include Auditable
 
   validates_presence_of :name
   validates_uniqueness_of :name, scope: :tenant_id

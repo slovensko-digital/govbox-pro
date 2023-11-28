@@ -1,10 +1,12 @@
-module Auditable
+module AuditableEvents
   extend ActiveSupport::Concern
+
   included do
     after_destroy :audit_destroy
     after_create :audit_create
     after_update :audit_update
   end
+
   def audit_destroy
     EventBus.publish(event_name(:destroyed), self)
   end

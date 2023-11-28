@@ -10,6 +10,8 @@
 #  tenant_id  :bigint
 #
 class User < ApplicationRecord
+  include AuditableEvents
+
   belongs_to :tenant
   has_many :group_memberships, dependent: :destroy
   has_many :groups, through: :group_memberships
@@ -23,7 +25,6 @@ class User < ApplicationRecord
 
   before_destroy :delete_user_group, prepend: true
   after_create :handle_default_groups
-  include Auditable
 
   def site_admin?
     ENV['SITE_ADMIN_EMAILS'].to_s.split(',').include?(email)

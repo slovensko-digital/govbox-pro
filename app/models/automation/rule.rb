@@ -12,6 +12,8 @@
 #
 module Automation
   class Rule < ApplicationRecord
+    include AuditableEvents
+
     belongs_to :tenant
     belongs_to :user
     has_many :conditions,
@@ -24,7 +26,6 @@ module Automation
              dependent: :destroy,
              foreign_key: :automation_rule_id,
              inverse_of: :automation_rule
-    include Auditable
 
     accepts_nested_attributes_for :conditions, :actions, allow_destroy: true
 
