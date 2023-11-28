@@ -96,6 +96,44 @@ Upvs::MessageTemplate.find_or_create_by!(
   system: false
 )
 
+
+Upvs::MessageTemplate.find_or_create_by!(
+  name: 'Žiadosť o zápis autentifikačného certifikátu do registra autentifikačných certifikátov',
+  content: '<AuthentificationCertificateWithTechnicalAccountRegistration
+	xmlns="http://schemas.gov.sk/form/42156424.IAM_Zapis_autentifikacneho_certifikatu_s_vytvorenim_TU.sk/1.5"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<CertificateOwner>
+		<IdentityType>PO</IdentityType>
+		<OwnerPoOvm>
+			<ICO>{{IČO::text_field}}</ICO>
+			<Suffix xsi:nil="true" />
+		</OwnerPoOvm>
+	</CertificateOwner>
+	<ContactPerson>
+		<ContactName>{{Kontaktná osoba::text_field}}</ContactName>
+		<Email>{{Email::text_field}}</Email>
+		<Phone>{{Telefón::text_field}}</Phone>
+	</ContactPerson>
+	<IntegrationContract>
+		<ProjectID>{{Názov prostriedku::text_field}}</ProjectID>
+	</IntegrationContract>
+	<TechnicalAccount>
+		<EDeckAccessType>1</EDeckAccessType>
+		<ValidFrom>{{Dátum začiatku platnosti::date_field}}</ValidFrom>
+		<ValidTo xsi:nil="true" />
+	</TechnicalAccount>
+	<AuthentificationCertificateData>
+		<Thumbprint>{{Digitálny odtlačok::text_field}}</Thumbprint>
+	</AuthentificationCertificateData>
+</AuthentificationCertificateWithTechnicalAccountRegistration>',
+  metadata: {
+    posp_id: '42156424.IAM_Zapis_autentifikacneho_certifikatu_s_vytvorenim_TU.sk',
+    posp_version: '1.5',
+    message_type: '42156424.IAM_Zapis_autentifikacneho_certifikatu_s_vytvorenim_TU.sk'
+  },
+  system: false
+)
+
 ga_form_template = Upvs::FormTemplate.find_or_create_by!(
   identifier: "App.GeneralAgenda",
   version: "1.9",
