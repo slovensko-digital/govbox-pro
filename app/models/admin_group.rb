@@ -10,5 +10,8 @@
 #  updated_at :datetime         not null
 #  tenant_id  :bigint           not null
 #
-class GroupUser < Group
+class AdminGroup < Group
+  def name
+    I18n.t("group.names.admin")
+  end
 end

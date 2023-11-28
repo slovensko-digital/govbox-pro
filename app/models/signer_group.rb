@@ -10,5 +10,8 @@
 #  updated_at :datetime         not null
 #  tenant_id  :bigint           not null
 #
-class GroupCustom < Group
+class SignerGroup < Group
+  def name
+    I18n.t("group.names.signer")
+  end
 end

@@ -17,20 +17,26 @@ class Group < ApplicationRecord
   has_many :tag_groups, dependent: :destroy
   has_many :tags, through: :tag_groups
 
-  scope :editable, -> { where.not(type: %w[GroupAll GroupUser]) }
+  EDITABLE_GROUP_TYPES = %w[AdminGroup SignerGroup CustomGroup]
+
+  scope :editable, -> { where(type: EDITABLE_GROUP_TYPES) }
 
   validates_presence_of :name
   validates_uniqueness_of :name, scope: :tenant_id
 
   def editable?
-    type.in? %w[GroupAdmin GroupCustom GroupSigner]
+    type.in? EDITABLE_GROUP_TYPES
   end
 
   def system?
-    type != GroupCustom.to_s
+    type != CustomGroup.to_s
   end
 
   def destroyable?
+    !system?
+  end
+
+  def renamable?
     !system?
   end
 end

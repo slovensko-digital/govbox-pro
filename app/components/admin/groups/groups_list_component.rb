@@ -1,6 +1,6 @@
 class Admin::Groups::GroupsListComponent < ViewComponent::Base
-  def initialize(editable_groups:, fixed_groups:)
+  def initialize(editable_groups:, non_editable_groups:)
     @editable_groups = editable_groups
-    @fixed_groups = fixed_groups
+    @non_editable_groups = non_editable_groups
   end
 end

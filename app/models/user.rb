@@ -30,11 +30,11 @@ class User < ApplicationRecord
   end
 
   def admin?
-    groups.exists?(type: 'GroupAdmin')
+    groups.exists?(type: "AdminGroup")
   end
 
   def user_group
-    groups.where(type: 'GroupUser').first
+    groups.where(type: "UserGroup").first
   end
 
   private
@@ -44,7 +44,7 @@ class User < ApplicationRecord
   end
 
   def handle_default_groups
-    groups.create!(name: name, type: 'GroupUser', tenant_id: tenant_id)
+    groups.create!(name: name, type: "UserGroup", tenant_id: tenant_id)
     group_memberships.create!(group: tenant.all_group)
   end
 end

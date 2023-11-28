@@ -10,5 +10,5 @@
 #  updated_at :datetime         not null
 #  tenant_id  :bigint           not null
 #
-class GroupSigner < Group
+class UserGroup < Group
 end

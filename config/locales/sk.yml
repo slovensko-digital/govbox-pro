@@ -239,6 +239,11 @@ sk:
   "Automation::BoxCondition": "je"
   "Automation::AddMessageThreadTagAction": "Pridaj štítok na vlákno"
   "Automation::AddTagAction": "Pridaj štítok"
+  group:
+    names:
+      all: "Všetci"
+      admin: "Administrátori"
+      signer: "Podpisovatelia"
   title: "Názov"
   tag_editing_in_message_threads:
     one: "Úprava štítkov v jednom vlákne"

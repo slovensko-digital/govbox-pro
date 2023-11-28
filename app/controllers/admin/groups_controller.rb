@@ -5,7 +5,7 @@ class Admin::GroupsController < ApplicationController
     authorize([:admin, Group])
 
     @editable_groups = group_policy_scope.where(tenant_id: Current.tenant.id).editable
-    @fixed_groups = group_policy_scope.where(tenant_id: Current.tenant.id).where.not(id: @editable_groups.pluck(:id))
+    @non_editable_groups = group_policy_scope.where(tenant_id: Current.tenant.id).where.not(id: @editable_groups.pluck(:id))
   end
 
   def show
@@ -96,7 +96,7 @@ class Admin::GroupsController < ApplicationController
   end
 
   def group_params
-    params.require(:group_custom).permit(:name)
+    params.require(:custom_group).permit(:name)
   end
 
   def group_policy_scope
