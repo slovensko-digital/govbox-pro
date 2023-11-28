@@ -1,0 +1,2 @@
+# Prihlásenie ALL
+- default skupina zakladana automaticky pre kazdeho tenanta. Obsahuje vsetkych pouzivatelov (novi su sem automaticky pridavani) Uzitocna pre pripadne pridelovanie prava vsetkym pouzivatelom
