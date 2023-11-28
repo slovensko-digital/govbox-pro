@@ -39,19 +39,16 @@ persistence:
 workers:
   worker:
     replicaCount: "1"
-    command: ["bundle", "exec", "good_job", "start", "--probe-port", "7001"]
+    command: ["bundle", "exec", "good_job", "start"]
     startupProbe:
-      httpGet:
-        path: "/status/started"
-        port: "7001"
+      probeType: "httpGet"
+      path: "/status/started"
     livenessProbe:
-      httpGet:
-        path: "/status/connected"
-        port: "7001"
+      probeType: "httpGet"
+      path: "/status/connected"
     readinessProbe:
-      httpGet:
-        path: "/status/started"
-        port: "7001"
+      probeType: "httpGet"
+      path: "/status/started"
     resources:
       requests:
         memory: 1Gi
