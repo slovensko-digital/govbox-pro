@@ -34,8 +34,8 @@ end
 Upvs::MessageTemplate.find_or_create_by!(
   name: 'Všeobecná agenda',
   content: '<GeneralAgenda xmlns="http://schemas.gov.sk/form/App.GeneralAgenda/1.9">
-  <subject>{{Predmet:text_field}}</subject>
-  <text>{{Text:text_area}}</text>
+  <subject>{{Predmet::text_field}}</subject>
+  <text>{{Text::text_area}}</text>
 </GeneralAgenda>',
   metadata: {
     posp_id: 'App.GeneralAgenda',
@@ -47,8 +47,8 @@ Upvs::MessageTemplate.find_or_create_by!(
 Upvs::MessageTemplate.find_or_create_by!(
   name: 'Message reply',
   content: '<GeneralAgenda xmlns="http://schemas.gov.sk/form/App.GeneralAgenda/1.9">
-  <subject>{{Predmet:text_field}}</subject>
-  <text>{{Text:text_area}}</text>
+  <subject>{{Predmet::text_field}}</subject>
+  <text>{{Text::text_area}}</text>
 </GeneralAgenda>',
   metadata: {
     posp_id: 'App.GeneralAgenda',
@@ -66,25 +66,25 @@ Upvs::MessageTemplate.find_or_create_by!(
 	<CertificateOwner>
 		<IdentityType>PO</IdentityType>
 		<OwnerPoOvm>
-			<ICO>{{IČO:text_field}}</ICO>
+			<ICO>{{IČO::text_field}}</ICO>
 			<Suffix xsi:nil="true" />
 		</OwnerPoOvm>
 	</CertificateOwner>
 	<ContactPerson>
-		<ContactName>{{Kontaktná osoba:text_field}}</ContactName>
-		<Email>{{Email:text_field}}</Email>
-		<Phone>{{Telefón:text_field}}</Phone>
+		<ContactName>{{Kontaktná osoba:Ján Suchal:text_field}}</ContactName>
+		<Email>{{Email:jan.suchal@test.sk:text_field}}</Email>
+		<Phone>{{Telefón:+4190000000:text_field}}</Phone>
 	</ContactPerson>
 	<IntegrationContract>
-		<ProjectID>{{Názov prostriedku:text_field}}</ProjectID>
+		<ProjectID>{{Názov prostriedku:IRVIN:text_field}}</ProjectID>
 	</IntegrationContract>
 	<TechnicalAccount>
 		<EDeckAccessType>1</EDeckAccessType>
-		<ValidFrom>{{Dátum platnosti:date_select}}</ValidFrom>
+		<ValidFrom>{{Dátum začiatku platnosti::date_field}}</ValidFrom>
 		<ValidTo xsi:nil="true" />
 	</TechnicalAccount>
 	<AuthentificationCertificateData>
-		<Thumbprint>{{Digitálny odtlačok:text_field}}</Thumbprint>
+		<Thumbprint>{{Digitálny odtlačok::text_field}}</Thumbprint>
 	</AuthentificationCertificateData>
 </AuthentificationCertificateWithTechnicalAccountRegistration>',
   metadata: {
@@ -92,6 +92,7 @@ Upvs::MessageTemplate.find_or_create_by!(
     posp_version: '1.5',
     message_type: '42156424.IAM_Zapis_autentifikacneho_certifikatu_s_vytvorenim_TU.sk'
   },
+  tenant: tenant,
   system: false
 )
 

@@ -1,16 +1,9 @@
 class MessageTemplateBuilder < ActionView::Helpers::FormBuilder
   def template_field(template_item, data: ,editable:, is_last: false)
-    case template_item[:type]
-    when 'text_field'
-      text_field(template_item[:name], value: data&.dig(template_item[:name]), editable: editable)
-    when 'text_area'
-      text_area(template_item[:name], value: data&.dig(template_item[:name]), editable: editable, is_last: is_last)
-    when 'date_select'
-      date_field(template_item[:name], value: data&.dig(template_item[:name]), editable: editable, is_last: is_last)
-    end
+    send(template_item[:type], template_item[:name], value: data&.dig(template_item[:name]) || template_item[:default_value], editable: editable, is_last: is_last)
   end
 
-  def text_field(name, value: , editable:)
+  def text_field(name, value: , editable:, **args)
     super(name, {
       placeholder: name,
       value: value,
@@ -32,7 +25,7 @@ class MessageTemplateBuilder < ActionView::Helpers::FormBuilder
     })
   end
 
-  def date_field(name, value: , editable:, is_last:)
+  def date_field(name, value: , editable:, **args)
     label(:label, name) +
     super(name, {
       placeholder: Date.today,
