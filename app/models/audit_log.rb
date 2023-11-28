@@ -1,3 +1,22 @@
+# == Schema Information
+#
+# Table name: audit_logs
+#
+#  id                 :bigint           not null, primary key
+#  actor_name         :string
+#  changeset          :jsonb
+#  happened_at        :datetime         not null
+#  new_value          :string
+#  previous_value     :string
+#  thread_id_archived :integer
+#  thread_title       :string
+#  type               :string           not null
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
+#  actor_id           :bigint
+#  message_thread_id  :bigint
+#  tenant_id          :bigint
+#
 require "csv"
 
 class AuditLog < ApplicationRecord

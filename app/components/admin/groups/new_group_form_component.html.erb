@@ -10,7 +10,7 @@
           </div>
           <%= render Common::CloseButtonComponent.new(link_to: admin_tenant_groups_path(Current.tenant)) %>
         </div>
-        <%= form_with model: [:admin, Current.tenant, @group] do |form| %>
+        <%= form_with model: [:admin, Current.tenant, @group], url: admin_tenant_groups_path(Current.tenant, @group) do |form| %>
           <div class="flex flex-col justify-start items-start self-stretch flex-grow-0 flex-shrink-0 w-400">
             <div class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
               <div class="flex flex-col justify-start items-start self-stretch flex-grow overflow-hidden gap-2 rounded-md">
