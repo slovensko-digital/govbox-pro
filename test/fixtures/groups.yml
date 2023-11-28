@@ -2,20 +2,20 @@
 
 all:
   name: all
-  type: GroupAll
+  type: AllGroup
   tenant: ssd
 
 admins:
   name: admins
-  type: GroupAdmin
+  type: AdminGroup
   tenant: ssd
 
 basic_user:
   name: "Basic user"
-  type: GroupUser
+  type: UserGroup
   tenant: ssd
 
 solver_admin:
   name: admins
-  type: GroupAdmin
+  type: AdminGroup
   tenant: solver
