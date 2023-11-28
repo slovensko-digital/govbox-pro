@@ -29,7 +29,7 @@ class Group < ApplicationRecord
   end
 
   def system?
-    type != CustomGroup.to_s
+    !is_a?(CustomGroup)
   end
 
   def destroyable?
