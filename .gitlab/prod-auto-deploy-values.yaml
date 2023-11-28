@@ -40,19 +40,18 @@ workers:
   worker:
     replicaCount: "1"
     command: ["bundle", "exec", "good_job", "start", "--probe-port", "7001"]
-    terminationGracePeriodSeconds: 60
     startupProbe:
       httpGet:
         path: "/status/started"
-        port: 7001
+        port: "7001"
     livenessProbe:
       httpGet:
         path: "/status/connected"
-        port: 7001
+        port: "7001"
     readinessProbe:
       httpGet:
         path: "/status/started"
-        port: 7001
+        port: "7001"
     resources:
       requests:
         memory: 1Gi
