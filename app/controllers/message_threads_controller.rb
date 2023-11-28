@@ -22,6 +22,7 @@ class MessageThreadsController < ApplicationController
 
     return unless @message_thread.update(message_thread_params)
 
+    EventBus.publish(:message_thread_renamed, @message_thread)
     redirect_back fallback_location: path, notice: 'Názov vlákna bol upravený'
   end
 

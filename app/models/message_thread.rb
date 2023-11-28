@@ -55,6 +55,7 @@ class MessageThread < ApplicationRecord
   end
 
   def self.merge_threads
+    EventBus.publish(:message_threads_merged, all)
     transaction do
       target_thread = first
       all.each do |thread|

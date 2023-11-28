@@ -59,6 +59,13 @@ EventBus.subscribe :box_destroyed, ->(box_id) { Govbox::DestroyBoxDataJob.perfor
 EventBus.subscribe :message_thread_note_created, ->(note) { AuditLog::MessageThreadNoteCreated.create_audit_record(note) }
 EventBus.subscribe :message_thread_note_updated, ->(note) { AuditLog::MessageThreadNoteUpdated.create_audit_record(note) }
 EventBus.subscribe :message_thread_tag_updated, ->(thread_tag) { AuditLog::MessageThreadTagUpdated.create_audit_record(thread_tag) }
+EventBus.subscribe :message_delivery_authorized, ->(message) { AuditLog::MessageDeliveryAuthorized.create_audit_record(message) }
+EventBus.subscribe :message_draft_submitted, ->(message) { AuditLog::MessageDraftSubmitted.create_audit_record(message) }
+EventBus.subscribe :message_draft_destroyed, ->(message) { AuditLog::MessageDraftDestroyed.create_audit_record(message) }
+EventBus.subscribe :message_thread_renamed, ->(message_thread) { AuditLog::MessageThreadRenamed.create_audit_record(message_thread) }
+EventBus.subscribe :message_threads_merged, ->(message_threads_collection) { AuditLog::MessageThreadsMerged.create_audit_record(message_threads_collection) }
+EventBus.subscribe :message_object_updated, ->(message_object) { AuditLog::MessageObjectUpdated.create_audit_record(message_object) }
+
 EventBus.subscribe :user_logged_in, ->(user) { AuditLog::UserLoggedIn.create_audit_record(user) }
 EventBus.subscribe :user_logged_out, ->(user) { AuditLog::UserLoggedOut.create_audit_record(user) }
 EventBus.subscribe :user_created, ->(user) { AuditLog::UserCreated.create_audit_record(user) }

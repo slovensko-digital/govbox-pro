@@ -30,6 +30,7 @@ class MessageDraft < Message
   end
 
   after_destroy do
+    EventBus.publish(:message_draft_destroyed, self)
     # TODO has to use `reload` because of `inverse_of` messages are in memory and deleting already deleted record fails
     if self.thread.messages.reload.none?
       self.thread.destroy!
