@@ -23,8 +23,7 @@ readinessProbe:
     - "true"
 resources:
   requests:
-    cpu: 10m
-    memory: 400Mi
+    memory: 700Mi
   limits:
     memory: 1Gi
 persistence:
@@ -37,3 +36,25 @@ persistence:
       accessMode: ReadWriteMany
       size: 10Gi
       storageClass: nfs-client
+workers:
+  worker:
+    replicaCount: "1"
+    command: ["bundle", "exec", "good_job", "start", "--probe-port", "7001"]
+    terminationGracePeriodSeconds: 60
+    startupProbe:
+      httpGet:
+        path: "/status/started"
+        port: 7001
+    livenessProbe:
+      httpGet:
+        path: "/status/connected"
+        port: 7001
+    readinessProbe:
+      httpGet:
+        path: "/status/started"
+        port: 7001
+    resources:
+      requests:
+        memory: 1Gi
+      limits:
+        memory: 1Gi
