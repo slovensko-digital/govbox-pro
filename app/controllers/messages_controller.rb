@@ -4,7 +4,7 @@ class MessagesController < ApplicationController
   include MessagesConcern
 
   def new
-    @templates_list = MessageDraftTemplate.tenant_templates_list(Current.tenant)
+    @templates_list = MessageTemplate.tenant_templates_list(Current.tenant)
     @message = Message.new
 
     authorize @message
@@ -24,7 +24,7 @@ class MessagesController < ApplicationController
     @message_reply = MessageDraft.new
     authorize @message_reply
 
-    MessageDraftTemplate.reply_template.create_message_reply(@message_reply, original_message: @message, author: Current.user)
+    MessageTemplate.reply_template.create_message_reply(@message_reply, original_message: @message, author: Current.user)
   end
 
   def update

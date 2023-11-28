@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-class MessageDraftTemplatePolicy < ApplicationPolicy
-  attr_reader :user, :message_draft_template
+class MessageTemplatePolicy < ApplicationPolicy
+  attr_reader :user, :message_template
 
-  def initialize(user, message_draft_template)
+  def initialize(user, message_template)
     @user = user
-    @message_draft_template = message_draft_template
+    @message_template = message_template
   end
 
   class Scope < Scope

@@ -101,7 +101,7 @@ class MessageDraft < Message
   end
 
   def template
-    MessageDraftTemplate.find(metadata["template_id"]) if metadata["template_id"]
+    MessageTemplate.find(metadata["template_id"]) if metadata["template_id"]
   end
 
   private

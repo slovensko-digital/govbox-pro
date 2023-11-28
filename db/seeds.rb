@@ -31,7 +31,7 @@ if tenant.users.first
   rule.actions.find_or_create_by!(type: 'Automation::AddMessageThreadTagAction', value: 'NASES')
 end
 
-Upvs::MessageDraftTemplate.find_or_create_by!(
+Upvs::MessageTemplate.find_or_create_by!(
   name: 'Všeobecná agenda',
   content: '<GeneralAgenda xmlns="http://schemas.gov.sk/form/App.GeneralAgenda/1.9">
   <subject>{{Predmet:text_field}}</subject>
@@ -44,7 +44,7 @@ Upvs::MessageDraftTemplate.find_or_create_by!(
   }
 )
 
-Upvs::MessageDraftTemplate.find_or_create_by!(
+Upvs::MessageTemplate.find_or_create_by!(
   name: 'Message reply',
   content: '<GeneralAgenda xmlns="http://schemas.gov.sk/form/App.GeneralAgenda/1.9">
   <subject>{{Predmet:text_field}}</subject>
@@ -58,7 +58,7 @@ Upvs::MessageDraftTemplate.find_or_create_by!(
   system: true
 )
 
-Upvs::MessageDraftTemplate.find_or_create_by!(
+Upvs::MessageTemplate.find_or_create_by!(
   name: 'Žiadosť o zápis autentifikačného certifikátu do registra autentifikačných certifikátov',
   content: '<AuthentificationCertificateWithTechnicalAccountRegistration
 	xmlns="http://schemas.gov.sk/form/42156424.IAM_Zapis_autentifikacneho_certifikatu_s_vytvorenim_TU.sk/1.5"

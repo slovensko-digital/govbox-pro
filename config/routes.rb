@@ -116,7 +116,7 @@ Rails.application.routes.draw do
 
   resource :settings
 
-  resources :message_draft_templates, only: :recipients_list do
+  resources :message_templates, only: :recipients_list do
     get :recipients_list
   end
 

@@ -1,4 +1,4 @@
-class MessageDraftTemplateBuilder < ActionView::Helpers::FormBuilder
+class MessageTemplateBuilder < ActionView::Helpers::FormBuilder
   def template_field(template_item, data: ,editable:, is_last: false)
     case template_item[:type]
     when 'text_field'

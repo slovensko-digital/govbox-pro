@@ -1,4 +1,4 @@
-module MessageDraftTemplateParser
+module MessageTemplateParser
   PLACEHOLDER_PATTERN = /({{([a-zA-Z\u00C0-\u017F\s]+):(\w*)}})/
 
   def self.parse_template_placeholders(template)

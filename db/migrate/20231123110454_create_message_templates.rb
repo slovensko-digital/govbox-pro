@@ -1,6 +1,6 @@
-class CreateMessageDraftTemplates < ActiveRecord::Migration[7.0]
+class CreateMessageTemplates < ActiveRecord::Migration[7.0]
   def change
-    create_table :message_draft_templates do |t|
+    create_table :message_templates do |t|
       t.references :tenant, foreign_key: true
       t.string :name, null: false
       t.text :content, null: false

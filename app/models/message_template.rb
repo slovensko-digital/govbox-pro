@@ -1,22 +1,22 @@
 # == Schema Information
 #
-# Table name: message_draft_templates
+# Table name: message_templates
 #
 #  id         :bigint           not null, primary key
 #  content    :text             not null
 #  metadata   :jsonb
 #  name       :string           not null
-#  system     :boolean
+#  system     :boolean          default(FALSE), not null
 #  type       :string
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #  tenant_id  :bigint
 #
-class MessageDraftTemplate < ApplicationRecord
+class MessageTemplate < ApplicationRecord
   belongs_to :tenant, optional: true
 
   scope :global, -> { where(tenant_id: nil) }
-  scope :not_system, -> { where(system: false) }
+  scope :system, -> { where(system: true) }
 
   def recipients
     '*'
@@ -36,13 +36,13 @@ class MessageDraftTemplate < ApplicationRecord
 
   def self.reply_template
     # TODO co ak ich bude viac, v roznych domenach? (napr. UPVS aj core)
-    MessageDraftTemplate.find_by!(
+    MessageTemplate.find_by!(
       system: true,
       name: 'Message reply'
     )
   end
 
   def self.tenant_templates_list(tenant)
-    MessageDraftTemplate.not_system.where(tenant_id: tenant.id).or(MessageDraftTemplate.global.not_system).pluck(:name, :id)
+    MessageTemplate.where(system: false).where(tenant_id: tenant.id).or(MessageTemplate.global.where(system: false)).pluck(:name, :id)
   end
 end

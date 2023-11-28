@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: message_draft_templates
+# Table name: message_templates
 #
 #  id         :bigint           not null, primary key
 #  content    :text             not null
@@ -12,7 +12,7 @@
 #  updated_at :datetime         not null
 #  tenant_id  :bigint
 #
-class Upvs::MessageDraftTemplate < ::MessageDraftTemplate
+class Upvs::MessageTemplate < ::MessageTemplate
   GENERAL_AGENDA_POSP_ID = "App.GeneralAgenda"
   GENERAL_AGENDA_POSP_VERSION = "1.9"
   GENERAL_AGENDA_MESSAGE_TYPE = "App.GeneralAgenda"
@@ -94,7 +94,7 @@ class Upvs::MessageDraftTemplate < ::MessageDraftTemplate
   end
 
   def build_message_from_template(message)
-    template_items = MessageDraftTemplateParser.parse_template_placeholders(self)
+    template_items = MessageTemplateParser.parse_template_placeholders(self)
     filled_content = self.content
 
     template_items.each do |template_item|

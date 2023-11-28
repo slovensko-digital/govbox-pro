@@ -8,8 +8,8 @@ export default class extends Controller {
   }
 
   async loadTemplateRecipients() {
-    const messageDraftTemplateId = document.getElementById("message_draft_template").value;
-    const templateRecipientsPath = `/message_draft_templates/${messageDraftTemplateId}/recipients_list`;
+    const messageTemplateId = document.getElementById("message_template").value;
+    const templateRecipientsPath = `/message_templates/${messageTemplateId}/recipients_list`;
     await get(templateRecipientsPath, { responseKind: "turbo-stream" })
   }
 

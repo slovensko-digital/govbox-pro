@@ -6,8 +6,8 @@
     <div class="self-stretch p-6 flex-col justify-start items-start flex">
       <%= form_with(url: message_drafts_path, method: :post, local: true) do %>
         <%= content_tag(:div, { "data-controller": "message-drafts", class: "w-full" }) do %>
-          <label for="message_draft_template" class="block mb-2 text-base font-medium text-gray-900">Typ správy</label>
-          <%= select_tag(:message_draft_template, options_for_select(@templates_list), prompt: "Zvoľte typ správy", "data-action": "change->message-drafts#loadTemplateRecipients", class: "mb-4 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5") %>
+          <label for="message_template" class="block mb-2 text-base font-medium text-gray-900">Typ správy</label>
+          <%= select_tag(:message_template, options_for_select(@templates_list), prompt: "Zvoľte typ správy", "data-action": "change->message-drafts#loadTemplateRecipients", class: "mb-4 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5") %>
         <% end %>
 
         <div id="recipients_list" is="turbo-frame"></div>

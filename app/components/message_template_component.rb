@@ -1,4 +1,4 @@
-class MessageDraftTemplateComponent < ViewComponent::Base
+class MessageTemplateComponent < ViewComponent::Base
 
   def initialize(message:, is_last:)
     @message = message
