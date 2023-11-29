@@ -1,6 +1,6 @@
 class Admin::Groups::GroupsListComponent < ViewComponent::Base
-  def initialize(custom_groups:, system_groups:)
-    @custom_groups = custom_groups
-    @system_groups = system_groups
+  def initialize(editable_groups:, non_editable_groups:)
+    @editable_groups = editable_groups.to_a.sort_by(&:name)
+    @non_editable_groups = non_editable_groups.to_a.sort_by(&:name)
   end
 end

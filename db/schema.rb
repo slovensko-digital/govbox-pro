@@ -268,9 +268,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_28_170602) do
   create_table "groups", force: :cascade do |t|
     t.string "name", null: false
     t.bigint "tenant_id", null: false
-    t.enum "group_type", null: false, enum_type: "group_type"
+    t.enum "group_type", enum_type: "group_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "type", null: false
     t.index ["tenant_id"], name: "index_groups_on_tenant_id"
   end
 

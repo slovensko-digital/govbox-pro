@@ -30,6 +30,7 @@ class MessageDraft < Message
   end
 
   after_destroy do
+    EventBus.publish(:message_draft_destroyed, self)
     # TODO has to use `reload` because of `inverse_of` messages are in memory and deleting already deleted record fails
     if self.thread.messages.reload.none?
       self.thread.destroy!
@@ -90,8 +91,15 @@ class MessageDraft < Message
   def being_submitted!
     metadata["status"] = "being_submitted"
     save!
+    EventBus.publish(:message_draft_being_submitted, self)
   end
-  
+
+  def submitted!
+    metadata["status"] = "submitted"
+    save!
+    EventBus.publish(:message_draft_submitted, self)
+  end
+   
   def invalid?
     metadata["status"] == "invalid"
   end

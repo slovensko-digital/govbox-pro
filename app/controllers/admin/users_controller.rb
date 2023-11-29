@@ -3,7 +3,7 @@ class Admin::UsersController < ApplicationController
 
   def index
     authorize([:admin, User])
-    @users = policy_scope([:admin, User]).where(tenant_id: Current.tenant.id)
+    @users = policy_scope([:admin, User]).where(tenant_id: Current.tenant.id).order(:name)
   end
 
   def new

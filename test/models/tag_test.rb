@@ -5,6 +5,6 @@ class TagTest < ActiveSupport::TestCase
     tenant = tenants(:ssd)
     tag = Tag.create(name: 'New tag', tenant: tenant)
 
-    assert tenant.admin_groups == tag.groups
+    assert tag.groups == [tenant.admin_group]
   end
 end

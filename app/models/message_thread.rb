@@ -47,6 +47,11 @@ class MessageThread < ApplicationRecord
     tenant.automation_rules.where(trigger_event: event)
   end
 
+  def rename(params)
+    update(params)
+    EventBus.publish(:message_thread_renamed, self)
+  end
+
   def mark_all_messages_read
     messages.where(read: false).each do |message|
       message.read = true
@@ -55,6 +60,7 @@ class MessageThread < ApplicationRecord
   end
 
   def self.merge_threads
+    EventBus.publish(:message_threads_merged, all)
     transaction do
       target_thread = first
       all.each do |thread|

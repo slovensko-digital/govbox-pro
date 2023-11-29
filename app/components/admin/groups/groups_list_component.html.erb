@@ -2,26 +2,26 @@
   <div class="self-stretch bg-white rounded-md border border-gray-200 flex-col justify-start items-start flex">
     <div class="self-stretch p-6 border-b border-gray-200 justify-start items-center gap-4 inline-flex">
       <div class="grow shrink basis-0 text-gray-900 text-xl font-semibold leading-[35px]">Skupiny</div>
-      <%= link_to new_admin_tenant_group_path, class: "px-3.5 py-2.5 bg-blue-600 rounded-md justify-center items-center gap-2.5 flex" do %>
+      <%= link_to new_admin_tenant_group_path, data: { turbo_frame: "modal" }, class: "px-3.5 py-2.5 bg-blue-600 rounded-md justify-center items-center gap-2.5 flex" do %>
         <p class="text-white text-base font-medium leading-normal">Vytvoriť skupinu</p>
       <% end %>
     </div>
     <div class="self-stretch flex-col justify-start items-start flex">
-      <% @custom_groups.each do |custom_group| %>
-        <%= render Admin::Groups::GroupsListRowComponent.new(custom_group) %>
+      <% @editable_groups.each do |group| %>
+        <%= render Admin::Groups::GroupsListRowComponent.new(group) %>
       <% end %>
     </div>
   </div>
   <div class="self-stretch bg-white rounded-md border border-gray-200 flex-col justify-start items-start flex">
     <div class="self-stretch p-6 border-b border-gray-200 justify-start items-center gap-4 inline-flex">
       <div class="flex-col">
-        <div class="grow shrink basis-0 text-gray-900 text-xl font-semibold leading-[35px]">Systémové skupiny</div>
-        <div class="grow shrink basis-0 text-gray-900 text-m leading-[35px]">Zakladané automaticky, nie je možné upravovať</div>
+        <div class="grow shrink basis-0 text-gray-900 text-xl font-semibold leading-[35px]">Uzamknuté skupiny</div>
+        <div class="grow shrink basis-0 text-gray-900 text-m leading-[35px]">Nie je možné upravovať</div>
       </div>
     </div>
     <div class="self-stretch flex-col justify-start items-start flex">
-      <% @system_groups.each do |system_group| %>
-        <%= render Admin::Groups::GroupsListRowComponent.new(system_group) %>
+      <% @non_editable_groups.each do |group| %>
+        <%= render Admin::Groups::GroupsListRowComponent.new(group) %>
       <% end %>
     </div>
   </div>
