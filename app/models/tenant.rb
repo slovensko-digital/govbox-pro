@@ -30,7 +30,7 @@ class Tenant < ApplicationRecord
   def feature_enabled?(feature)
     raise "Unknown feature #{feature}" unless feature.in? AVAILABLE_FEATURE_FLAGS
 
-    feature_flags[feature.to_s] == true
+    feature_flags && feature_flags[feature.to_s] == true
   end
 
   def enable_feature(feature)
