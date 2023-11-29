@@ -16,7 +16,6 @@ class MessageTemplate < ApplicationRecord
   belongs_to :tenant, optional: true
 
   scope :global, -> { where(tenant_id: nil) }
-  scope :system, -> { where(system: true) }
 
   REPLY_TEMPLATE_NAME = 'message_reply'
 
