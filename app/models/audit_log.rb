@@ -200,6 +200,7 @@ class AuditLog < ApplicationRecord
     end
   end
 
+  # TODO move to non-core domain
   class MessageDeliveryAuthorized < AuditLog
     def self.create_audit_record(message)
       create_record(object: message, message_thread: message.thread)
