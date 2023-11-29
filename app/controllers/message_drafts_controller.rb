@@ -41,7 +41,7 @@ class MessageDraftsController < ApplicationController
       Govbox::SubmitMessageDraftJob.perform_later(@message)
       @message.being_submitted!
 
-      EventBus.publish(:message_draft_submitted, @message)
+      EventBus.publish(:message_draft_submit_initiated, @message)
 
       redirect_to message_thread_path(@message.thread), notice: "Správa bola zaradená na odoslanie"
     else

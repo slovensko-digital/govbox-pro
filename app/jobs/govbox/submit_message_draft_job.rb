@@ -27,9 +27,11 @@ class Govbox::SubmitMessageDraftJob < ApplicationJob
     if success
       message_draft.metadata["status"] = "submitted"
       message_draft.save!
+      EventBus.publish(:message_draft_submit_succeeded, message_draft)
 
       Govbox::SyncBoxJob.set(wait: 3.minutes).perform_later(message_draft.thread.box) if schedule_sync
     else
+      EventBus.publish(:message_draft_submit_failed, message_draft, response_body.dig("message"))
       handle_submit_fail(message_draft, response_status, response_body.dig("message"))
     end
   end

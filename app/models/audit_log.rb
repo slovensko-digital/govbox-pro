@@ -200,16 +200,27 @@ class AuditLog < ApplicationRecord
     end
   end
 
-  # TODO: Tu zrejme referencujeme dorucenku. To je ale OK, nie?
   class MessageDeliveryAuthorized < AuditLog
     def self.create_audit_record(message)
       create_record(object: message, message_thread: message.thread)
     end
   end
 
-  class MessageDraftSubmitted < AuditLog
+  class MessageDraftSubmitInitiated < AuditLog
     def self.create_audit_record(message)
       create_record(object: message, message_thread: message.thread)
+    end
+  end
+
+  class MessageDraftSubmitSucceeded < AuditLog
+    def self.create_audit_record(message)
+      create_record(object: message, message_thread: message.thread)
+    end
+  end
+
+  class MessageDraftSubmitFailed < AuditLog
+    def self.create_audit_record(message, error_message)
+      create_record(object: message, message_thread: message.thread, new_value: error_message)
     end
   end
 
