@@ -9,12 +9,12 @@
 #  visible     :boolean          default(TRUE), not null
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
+#  owner_id    :bigint
 #  tenant_id   :bigint           not null
-#  user_id     :bigint
 #
 class Tag < ApplicationRecord
   belongs_to :tenant
-  belongs_to :owner, class_name: 'User', optional: true, foreign_key: :user_id
+  belongs_to :owner, class_name: 'User', optional: true
   has_many :tag_groups, dependent: :destroy
   has_many :groups, through: :tag_groups
   has_many :messages_tags

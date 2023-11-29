@@ -25,7 +25,7 @@ class Admin::TagsController < ApplicationController
 
   def create
     @tag = Current.tenant.tags.new(tag_params)
-    @tag.user_id = Current.user.id
+    @tag.owner = Current.user
     authorize([:admin, @tag])
 
     if @tag.save
