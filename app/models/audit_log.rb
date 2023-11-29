@@ -247,16 +247,6 @@ class AuditLog < ApplicationRecord
 
   class MessageObjectUpdated < AuditLog
     def self.create_audit_record(message_object)
-      if message_object.is_signed && message_object.is_signed_previously_was == false
-        AuditLog::MessageObjectSigned(message_object)
-        return
-      end
-      create_record(object: message_object, message_thread: message_object.message.message_thread)
-    end
-  end
-
-  class MessageObjectSigned < AuditLog
-    def self.create_audit_record(message_object)
       create_record(object: message_object, message_thread: message_object.message.message_thread)
     end
   end
