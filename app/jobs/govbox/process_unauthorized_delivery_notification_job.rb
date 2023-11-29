@@ -15,8 +15,7 @@ class Govbox::ProcessUnauthorizedDeliveryNotificationJob < ApplicationJob
 
     message.update(collapsed: true)
 
-    delivery_notification_tag = Tag.find_by!(
-      system_name: Govbox::Message::DELIVERY_NOTIFICATION_TAG,
+    delivery_notification_tag = DeliveryNotificationTag.find_by!(
       tenant: message.thread.box.tenant,
     )
 

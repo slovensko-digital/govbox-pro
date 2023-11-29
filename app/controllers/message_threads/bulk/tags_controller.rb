@@ -27,8 +27,8 @@ module MessageThreads
       end
 
       def create_tag
-        new_tag = Tag.new(tag_creation_params.merge(name: params[:new_tag].strip))
-        authorize(new_tag, "create?")
+        new_tag = SimpleTag.new(simple_tag_creation_params.merge(name: params[:new_tag].strip))
+        authorize(new_tag, "create?", policy_class: TagPolicy)
 
         @tags_changes = TagsChanges.new(
           tag_scope: tag_scope,
@@ -61,7 +61,7 @@ module MessageThreads
       private
 
       def tag_scope
-        Current.tenant.tags.visible.order(:name)
+        Tag.simple_or_external.where(tenant: Current.tenant).visible.order(:name)
       end
 
       def message_thread_policy_scope

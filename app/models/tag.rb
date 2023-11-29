@@ -6,6 +6,7 @@
 #  external    :boolean          default(FALSE)
 #  name        :string           not null
 #  system_name :string
+#  type        :string           not null
 #  visible     :boolean          default(TRUE), not null
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
@@ -28,14 +29,23 @@ class Tag < ApplicationRecord
   validates :name, presence: true
   validates :name, uniqueness: { scope: :tenant_id, case_sensitive: false }
 
+  scope :external, -> { where(type: ExternalTag.to_s) }
+  scope :simple, -> { where(type: SimpleTag.to_s) }
+  scope :simple_or_external, -> { where(type: [SimpleTag, ExternalTag].map(&:to_s)) }
   scope :visible, -> { where(visible: true) }
 
   after_create_commit ->(tag) { tag.mark_readable_by_groups([tag.tenant.admin_group]) }
   after_update_commit ->(tag) { EventBus.publish(:tag_renamed, tag) if previous_changes.key?("name") }
 
-  DRAFT_SYSTEM_NAME = 'draft'
-
   def mark_readable_by_groups(groups)
     self.groups += groups
+  end
+
+  def simple?
+    is_a?(SimpleTag)
+  end
+
+  def system?
+    is_a?(DraftTag) || is_a?(DeliveryNotificationTag)
   end
 end

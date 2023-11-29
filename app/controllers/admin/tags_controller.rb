@@ -1,12 +1,14 @@
 class Admin::TagsController < ApplicationController
   before_action :set_tag, only: %i[show edit update destroy visibility_toggle]
 
+  include TagCreation
+
   def index
     authorize [:admin, Tag]
-    tags = policy_scope([:admin, Tag]).order(:name)
+    tags = policy_scope([:admin, Tag]).includes(:tenant).order(:name)
 
-    @external_tags = tags.where(external: true)
-    @internal_tags = tags.where(external: false)
+    @external_tags = tags.external
+    @simple_tags = tags.simple
   end
 
   def show
@@ -15,39 +17,40 @@ class Admin::TagsController < ApplicationController
   end
 
   def new
-    @tag = Current.tenant.tags.new
-    authorize([:admin, @tag])
+    @tag = SimpleTag.new
+    authorize(@tag, policy_class: Admin::TagPolicy)
   end
 
   def edit
-    authorize([:admin, @tag])
+    authorize(@tag, policy_class: Admin::TagPolicy)
   end
 
   def create
-    @tag = Current.tenant.tags.new(tag_params)
-    @tag.owner = Current.user
-    authorize([:admin, @tag])
+    @tag = SimpleTag.new(simple_tag_params.merge(simple_tag_creation_params))
+    authorize(@tag, policy_class: Admin::TagPolicy)
 
     if @tag.save
-      redirect_to admin_tenant_tags_path(Current.tenant), notice: 'Tag was successfully created'
+      redirect_to admin_tenant_tags_path(Current.tenant), notice: "Štítok bol úspešne vytvorený"
     else
       render :new, status: :unprocessable_entity
     end
   end
 
   def update
-    authorize([:admin, @tag])
-    if @tag.update(tag_params)
-      redirect_to admin_tenant_tags_path(Current.tenant), notice: 'Tag was successfully updated'
+    authorize(@tag, policy_class: Admin::TagPolicy)
+    params = @tag.simple? ? simple_tag_params : external_tag_params
+
+    if @tag.update(params)
+      redirect_to admin_tenant_tags_path(Current.tenant), notice: "Štítok bol úspešne upravený"
     else
       render :edit, status: :unprocessable_entity
     end
   end
 
   def destroy
-    authorize([:admin, @tag])
+    authorize(@tag, policy_class: Admin::TagPolicy)
     @tag.destroy
-    redirect_to admin_tenant_tags_path(Current.tenant), notice: 'Tag was successfully created'
+    redirect_to admin_tenant_tags_path(Current.tenant), notice: "Štítok bol úspešne odstránený"
   end
 
   private
@@ -56,11 +59,11 @@ class Admin::TagsController < ApplicationController
     @tag = Tag.find(params[:id])
   end
 
-  def tag_params
-    params.require(:tag).permit(:name, :visible, :user_id, :tenant_id)
+  def simple_tag_params
+    params.require(:simple_tag).permit(:name, :visible)
   end
 
-  def tag_params_visibility
-    params.permit(:visible)
+  def external_tag_params
+    params.require(:external_tag).permit(:visible)
   end
 end

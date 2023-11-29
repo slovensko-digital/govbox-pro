@@ -37,4 +37,11 @@ class TagPolicy < ApplicationPolicy
   def new?
     true
   end
+
+  def destroy?
+    return false if @tag.system?
+    return true if @tag.owner == @user
+
+    @user.admin? || @user.site_admin?
+  end
 end

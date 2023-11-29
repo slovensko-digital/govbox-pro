@@ -16,6 +16,9 @@ class Tenant < ApplicationRecord
   has_one :admin_group
   has_many :custom_groups
 
+  has_one :delivery_notification_tag
+  has_one :draft_tag
+
   has_many :boxes, dependent: :destroy
   has_many :automation_rules, class_name: "Automation::Rule", dependent: :destroy
   has_many :tags, dependent: :destroy
@@ -30,7 +33,7 @@ class Tenant < ApplicationRecord
     create_all_group!(name: "all")
     create_admin_group!(name: "admins")
     create_signer_group!(name: "signers")
-    tags.create!(name: 'Drafty', system_name: Tag::DRAFT_SYSTEM_NAME, external: false, visible: true)
-    tags.create!(name: 'Na prevzatie', system_name: 'delivery_notification', external: false, visible: true)
+    create_draft_tag!(name: "drafts", visible: true)
+    create_delivery_notification_tag!(name: "delivery notification", visible: true)
   end
 end

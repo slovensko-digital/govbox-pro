@@ -28,8 +28,7 @@ class Govbox::ProcessMessageJobTest < ActiveJob::TestCase
     message = messages(:solver_main_delivery_notification_two)
     govbox_message = govbox_messages(:solver_delivery_notification)
 
-    delivery_notification_tag = Tag.find_by!(
-      system_name: Govbox::Message::DELIVERY_NOTIFICATION_TAG,
+    delivery_notification_tag = DeliveryNotificationTag.find_by!(
       tenant: message.thread.box.tenant,
     )
 

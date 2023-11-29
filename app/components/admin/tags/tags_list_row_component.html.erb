@@ -1,14 +1,14 @@
 <div class="self-stretch p-6 border-b border-gray-200 justify-start items-center gap-4 inline-flex">
   <div class="grow shrink basis-0 flex-col justify-start items-start gap-1 inline-flex">
     <div class="text-center text-gray-900 text-lg font-medium leading-loose">
-      <%= render Common::InlineRenameComponent.new(name: @tag.name, model: [:admin, @tag.tenant, @tag]) %>
+      <%= render Common::InlineRenameComponent.new(name: @tag.name, model: @tag, url: admin_tenant_tag_path(@tag.tenant, @tag)) %>
     </div>
   </div>
   <div class="justify-start items-start gap-2 flex">
-    <%= link_to edit_admin_tenant_tag_path(@tag.tenant, @tag) do %>
+    <%= link_to edit_admin_tenant_tag_path(@tag.tenant, @tag), data: { turbo_frame: "modal" } do %>
       <%= render Common::EditButtonComponent.new %>
     <% end %>
-    <%= button_to admin_tenant_tag_path(@tag.tenant, @tag), method: :delete do %>
+    <%= button_to admin_tenant_tag_path(@tag.tenant, @tag), method: :delete, data: { turbo_confirm: "Naozaj chcete zmazať štítok '#{@tag.name}'?" } do %>
       <%= render Common::DeleteButtonComponent.new %>
     <% end %>
   </div>
