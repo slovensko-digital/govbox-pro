@@ -36,7 +36,7 @@ class MessageDraft < Message
       self.thread.destroy!
     elsif self.thread.message_drafts.reload.none?
       drafts_tag = self.thread.tags.find_by(system_name: Tag::DRAFT_SYSTEM_NAME)
-      thread.tags.delete(drafts_tag)
+      self.remove_cascading_tag(drafts_tag)
     end
   end
 
