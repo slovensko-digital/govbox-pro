@@ -40,9 +40,6 @@ class MessageDraftsController < ApplicationController
     if @message.submittable?
       Govbox::SubmitMessageDraftJob.perform_later(@message)
       @message.being_submitted!
-
-      EventBus.publish(:message_draft_submit_initiated, @message)
-
       redirect_to message_thread_path(@message.thread), notice: "Správa bola zaradená na odoslanie"
     else
       # TODO: prisposobit chybovu hlasku aj importovanym draftom

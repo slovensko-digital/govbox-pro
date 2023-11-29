@@ -206,21 +206,15 @@ class AuditLog < ApplicationRecord
     end
   end
 
-  class MessageDraftSubmitInitiated < AuditLog
+  class MessageDraftBeingSubmitted < AuditLog
     def self.create_audit_record(message)
       create_record(object: message, message_thread: message.thread)
     end
   end
 
-  class MessageDraftSubmitSucceeded < AuditLog
+  class MessageDraftSubmitted < AuditLog
     def self.create_audit_record(message)
       create_record(object: message, message_thread: message.thread)
-    end
-  end
-
-  class MessageDraftSubmitFailed < AuditLog
-    def self.create_audit_record(message, error_message)
-      create_record(object: message, message_thread: message.thread, new_value: error_message)
     end
   end
 

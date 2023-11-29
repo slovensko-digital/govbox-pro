@@ -140,8 +140,15 @@ class MessageDraft < Message
   def being_submitted!
     metadata["status"] = "being_submitted"
     save!
+    EventBus.publish(:message_draft_being_submitted, self)
   end
-  
+
+  def submitted!
+    metadata["status"] = "submitted"
+    save!
+    EventBus.publish(:message_draft_submitted, self)
+  end
+   
   def invalid?
     metadata["status"] == "invalid"
   end

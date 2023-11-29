@@ -60,9 +60,8 @@ EventBus.subscribe :message_thread_note_created, ->(note) { AuditLog::MessageThr
 EventBus.subscribe :message_thread_note_updated, ->(note) { AuditLog::MessageThreadNoteUpdated.create_audit_record(note) }
 EventBus.subscribe :message_thread_tag_updated, ->(thread_tag) { AuditLog::MessageThreadTagUpdated.create_audit_record(thread_tag) }
 EventBus.subscribe :message_delivery_authorized, ->(message) { AuditLog::MessageDeliveryAuthorized.create_audit_record(message) }
-EventBus.subscribe :message_draft_submit_initiated, ->(message) { AuditLog::MessageDraftSubmitInitiated.create_audit_record(message) }
-EventBus.subscribe :message_draft_submit_succeeded, ->(message) { AuditLog::MessageDraftSubmitSucceeded.create_audit_record(message) }
-EventBus.subscribe :message_draft_submit_failed, ->(message, error_message) { AuditLog::MessageDraftSubmitFailed.create_audit_record(message, error_message) }
+EventBus.subscribe :message_draft_being_submitted, ->(message) { AuditLog::MessageDraftBeingSubmitted.create_audit_record(message) }
+EventBus.subscribe :message_draft_submitted, ->(message) { AuditLog::MessageDraftSubmitted.create_audit_record(message) }
 EventBus.subscribe :message_draft_destroyed, ->(message) { AuditLog::MessageDraftDestroyed.create_audit_record(message) }
 EventBus.subscribe :message_thread_renamed, ->(message_thread) { AuditLog::MessageThreadRenamed.create_audit_record(message_thread) }
 EventBus.subscribe :message_threads_merged, ->(message_threads_collection) { AuditLog::MessageThreadsMerged.create_audit_record(message_threads_collection) }
