@@ -14,4 +14,7 @@
 #  tenant_id   :bigint           not null
 #
 class SimpleTag < Tag
+  def simple?
+    true
+  end
 end

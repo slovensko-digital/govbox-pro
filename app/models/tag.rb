@@ -42,7 +42,7 @@ class Tag < ApplicationRecord
   end
 
   def simple?
-    is_a?(SimpleTag)
+    false
   end
 
   def system?
