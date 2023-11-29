@@ -72,7 +72,7 @@ Upvs::MessageTemplate.find_or_create_by!(
 	</CertificateOwner>
 	<ContactPerson>
 		<ContactName>{{Kontaktná osoba:Ján Suchal:text_field}}</ContactName>
-		<Email>{{Email:jan.suchal@test.sk:text_field}}</Email>
+		<Email>{{Email:jan.suchal@test.sk:email_field}}</Email>
 		<Phone>{{Telefón:+4190000000:text_field}}</Phone>
 	</ContactPerson>
 	<IntegrationContract>
