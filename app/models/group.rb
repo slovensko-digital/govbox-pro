@@ -11,6 +11,8 @@
 #  tenant_id  :bigint           not null
 #
 class Group < ApplicationRecord
+  include AuditableEvents
+
   belongs_to :tenant
   has_many :group_memberships, dependent: :destroy
   has_many :users, through: :group_memberships

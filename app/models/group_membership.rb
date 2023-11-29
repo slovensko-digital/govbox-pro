@@ -9,6 +9,8 @@
 #  user_id    :bigint           not null
 #
 class GroupMembership < ApplicationRecord
+  include AuditableEvents
+
   belongs_to :group
   belongs_to :user
 end

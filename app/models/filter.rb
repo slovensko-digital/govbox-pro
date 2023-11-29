@@ -12,6 +12,8 @@
 #  tenant_id  :bigint           not null
 #
 class Filter < ApplicationRecord
+  include AuditableEvents
+
   belongs_to :author, class_name: 'User'
   belongs_to :tenant
 

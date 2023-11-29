@@ -12,6 +12,8 @@
 #
 module Automation
   class Rule < ApplicationRecord
+    include AuditableEvents
+
     belongs_to :tenant
     belongs_to :user
     has_many :conditions,

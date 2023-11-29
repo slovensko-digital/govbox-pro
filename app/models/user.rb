@@ -10,6 +10,8 @@
 #  tenant_id  :bigint
 #
 class User < ApplicationRecord
+  include AuditableEvents
+
   belongs_to :tenant
 
   has_many :group_memberships, dependent: :destroy
