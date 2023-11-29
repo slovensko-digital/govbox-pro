@@ -441,7 +441,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_29_143117) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.jsonb "feature_flags"
+    t.string "feature_flags", default: [], array: true
   end
 
   create_table "upvs_form_template_related_documents", force: :cascade do |t|

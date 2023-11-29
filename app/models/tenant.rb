@@ -3,7 +3,7 @@
 # Table name: tenants
 #
 #  id            :bigint           not null, primary key
-#  feature_flags :jsonb
+#  feature_flags :string           default([]), is an Array
 #  name          :string           not null
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
@@ -30,21 +30,23 @@ class Tenant < ApplicationRecord
   def feature_enabled?(feature)
     raise "Unknown feature #{feature}" unless feature.in? AVAILABLE_FEATURE_FLAGS
 
-    feature_flags && feature_flags[feature.to_s] == true
+    feature.to_s.in? feature_flags
   end
 
   def enable_feature(feature)
     raise "Unknown feature #{feature}" unless feature.in? AVAILABLE_FEATURE_FLAGS
+    raise "Feature already enabled" if feature.to_s.in? feature_flags
 
-    current_flags = feature_flags
-    update(feature_flags: current_flags.merge({ feature => true }))
+    feature_flags << feature unless feature.to_s.in? feature_flags
+    save!
   end
 
   def disable_feature(feature)
     raise "Unknown feature #{feature}" unless feature.in? AVAILABLE_FEATURE_FLAGS
+    raise "Feature not enabled" unless feature.to_s.in? feature_flags
 
-    current_flags = feature_flags
-    update(feature_flags: current_flags.merge({ feature => false }))
+    feature_flags.delete_if { |f| f == feature.to_s }
+    save!
   end
 
   private
