@@ -23,7 +23,7 @@
       <%= render Icons::RectangleStackComponent.new(css_classes: "h-5 w-5") %>
       História komunikácie
     <% end %>
-    <% if Current.user.admin? %>
+    <% if Current.tenant.feature_enabled?(:audit_log) && Current.user.admin? %>
       <%= link_to admin_audit_logs_path(message_thread: @message_thread), class: "flex gap-3", role: "menuitem", tabindex: "-1" do %>
         <%= render Icons::EyeComponent.new(css_classes: "h-5 w-5") %>
         Auditné záznamy
