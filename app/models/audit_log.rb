@@ -200,6 +200,57 @@ class AuditLog < ApplicationRecord
     end
   end
 
+  # TODO move to non-core domain
+  class MessageDeliveryAuthorized < AuditLog
+    def self.create_audit_record(message)
+      create_record(object: message, message_thread: message.thread)
+    end
+  end
+
+  class MessageDraftBeingSubmitted < AuditLog
+    def self.create_audit_record(message)
+      create_record(object: message, message_thread: message.thread)
+    end
+  end
+
+  class MessageDraftSubmitted < AuditLog
+    def self.create_audit_record(message)
+      create_record(object: message, message_thread: message.thread)
+    end
+  end
+
+  class MessageDraftDestroyed < AuditLog
+    def self.create_audit_record(message)
+      create_record(object: message, message_thread: message.thread)
+    end
+  end
+
+  class MessageThreadRenamed < AuditLog
+    def self.create_audit_record(message_thread)
+      create_record(
+        object: message_thread,
+        message_thread: message_thread,
+        previous_value: message_thread.title_previously_was,
+        new_value: message_thread.title
+      )
+    end
+  end
+
+  class MessageThreadsMerged < AuditLog
+    def self.create_audit_record(message_threads_collection)
+      create_record(
+        message_thread: message_threads_collection.first,
+        object: message_threads_collection
+      )
+    end
+  end
+
+  class MessageObjectUpdated < AuditLog
+    def self.create_audit_record(message_object)
+      create_record(object: message_object, message_thread: message_object.message.message_thread)
+    end
+  end
+
   def self.create_record(object:, **args)
     create(
       tenant: Current.tenant,
@@ -207,11 +258,19 @@ class AuditLog < ApplicationRecord
       # TODO: SYSTEM alebo nil alebo nieco ine?
       actor_name: Current.user&.name || 'SYSTEM',
       happened_at: Time.current,
-      changeset: object.previous_changes,
+      changeset: changeset(object),
       thread_id_archived: args[:message_thread]&.id,
       thread_title: args[:message_thread]&.title,
       **args
     )
+  end
+
+  def self.changeset(object)
+    if object.respond_to?(:previous_changes) && object.previous_changes.any?
+      object.previous_changes
+    else
+      object.to_json
+    end
   end
 
   def self.to_csv
