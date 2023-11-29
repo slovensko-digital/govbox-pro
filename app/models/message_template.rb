@@ -18,6 +18,8 @@ class MessageTemplate < ApplicationRecord
   scope :global, -> { where(tenant_id: nil) }
   scope :system, -> { where(system: true) }
 
+  REPLY_TEMPLATE_NAME = 'message_reply'
+
   def recipients
     '*'
   end
@@ -38,7 +40,7 @@ class MessageTemplate < ApplicationRecord
     # TODO co ak ich bude viac, v roznych domenach? (napr. UPVS aj core)
     MessageTemplate.find_by!(
       system: true,
-      name: 'Message reply'
+      name: REPLY_TEMPLATE_NAME
     )
   end
 
