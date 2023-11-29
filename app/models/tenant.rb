@@ -2,10 +2,11 @@
 #
 # Table name: tenants
 #
-#  id         :bigint           not null, primary key
-#  name       :string           not null
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
+#  id            :bigint           not null, primary key
+#  feature_flags :jsonb
+#  name          :string           not null
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
 #
 class Tenant < ApplicationRecord
   has_many :users, dependent: :destroy
@@ -23,6 +24,28 @@ class Tenant < ApplicationRecord
   after_create :create_default_objects
 
   validates_presence_of :name
+
+  AVAILABLE_FEATURE_FLAGS = [:audit_log]
+
+  def feature_enabled?(feature)
+    raise "Unknown feature #{feature}" unless feature.in? AVAILABLE_FEATURE_FLAGS
+
+    feature_flags[feature.to_s] == true
+  end
+
+  def enable_feature(feature)
+    raise "Unknown feature #{feature}" unless feature.in? AVAILABLE_FEATURE_FLAGS
+
+    current_flags = feature_flags
+    update(feature_flags: current_flags.merge({ feature => true }))
+  end
+
+  def disable_feature(feature)
+    raise "Unknown feature #{feature}" unless feature.in? AVAILABLE_FEATURE_FLAGS
+
+    current_flags = feature_flags
+    update(feature_flags: current_flags.merge({ feature => false }))
+  end
 
   private
 
