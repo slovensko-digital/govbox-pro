@@ -1,0 +1,16 @@
+.env
+.env.test
+.erb-lint.yml
+.git/
+.gitattributes
+.github/
+.gitignore
+.gitlab-ci.yml
+.gitlab/
+.rubocop.yml
+.ruby-lsp
+.vscode/
+chart/
+Procfile
+Procfile.debug
+Procfile.dev

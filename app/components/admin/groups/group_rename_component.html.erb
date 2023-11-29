@@ -14,7 +14,7 @@
     </button>
   </div>
   <div data-dropdown-target="menu" class="transform transition hidden opacity-0 scale-95">
-    <%= form_with model: [:admin, @group.tenant, @group], method: :patch, class: "flex justify-stretch items-center absolute -top-10 gap-2" do |form| %>
+    <%= form_with model: [:admin, @group.tenant, @group], url: admin_tenant_group_path(@group.tenant, @group), method: :patch, class: "flex justify-stretch items-center absolute -top-10 gap-2" do |form| %>
       <%= form.text_field :name, class: "flex text-base text-left text-gray-400 grow rounded-md bg-white border border-gray-400" %>
       <%= button_tag type: 'submit' do %>
         <div class="flex justify-center items-center gap-2.5 px-2.5 py-1.5 rounded-md bg-blue-600">

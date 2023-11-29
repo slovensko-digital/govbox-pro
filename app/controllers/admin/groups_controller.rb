@@ -3,40 +3,39 @@ class Admin::GroupsController < ApplicationController
 
   def index
     authorize([:admin, Group])
-    @custom_groups = policy_scope([:admin, Group]).where(tenant_id: Current.tenant.id).where.not(group_type: %w[ALL USER])
-    @system_groups = policy_scope([:admin, Group]).where(tenant_id: Current.tenant.id, group_type: %w[ALL USER])
+
+    @editable_groups = group_policy_scope.where(tenant_id: Current.tenant.id).editable
+    @non_editable_groups = group_policy_scope.where(tenant_id: Current.tenant.id).where.not(id: @editable_groups.pluck(:id))
   end
 
   def show
-    authorize([:admin, @group])
-    @other_tags = other_tags
+    authorize([:admin, @group], policy_class: Admin::GroupPolicy)
   end
 
   def new
-    @group = Current.tenant.groups.new
-    authorize([:admin, @group])
+    @group = Current.tenant.custom_groups.new
+    authorize([:admin, @group], policy_class: Admin::GroupPolicy)
   end
 
   def edit
-    authorize([:admin, @group])
+    authorize([:admin, @group], policy_class: Admin::GroupPolicy)
   end
 
   def edit_members
-    authorize([:admin, @group])
+    authorize([:admin, @group], policy_class: Admin::GroupPolicy)
   end
 
   def show_members
-    authorize([:admin, @group])
+    authorize([:admin, @group], policy_class: Admin::GroupPolicy)
   end
 
   def edit_permissions
-    authorize([:admin, @group])
+    authorize([:admin, @group], policy_class: Admin::GroupPolicy)
   end
 
   def create
-    @group = Current.tenant.groups.new(group_params)
-    @group.group_type = 'CUSTOM'
-    authorize([:admin, @group])
+    @group = Current.tenant.custom_groups.new(group_params)
+    authorize([:admin, @group], policy_class: Admin::GroupPolicy)
 
     if @group.save
       redirect_to edit_members_admin_tenant_group_url(Current.tenant, @group, step: :new), notice: 'Group was successfully created'
@@ -46,7 +45,7 @@ class Admin::GroupsController < ApplicationController
   end
 
   def update
-    authorize([:admin, @group])
+    authorize([:admin, @group], policy_class: Admin::GroupPolicy)
     if @group.update(group_params)
       redirect_to admin_tenant_groups_url(Current.tenant), notice: 'Group was successfully updated'
     else
@@ -55,20 +54,20 @@ class Admin::GroupsController < ApplicationController
   end
 
   def destroy
-    authorize([:admin, @group])
+    authorize([:admin, @group], policy_class: Admin::GroupPolicy)
     @group.destroy
     redirect_to admin_tenant_groups_url(Current.tenant), notice: 'Group was successfully destroyed'
   end
 
   def search_non_members
-    authorize([:admin, @group])
+    authorize([:admin, @group], policy_class: Admin::GroupPolicy)
     return if params[:name_search].blank?
 
     @users = non_members_search_clause
   end
 
   def search_non_tags
-    authorize([:admin, @group])
+    authorize([:admin, @group], policy_class: Admin::GroupPolicy)
     return if params[:name_search].blank?
 
     @tags = non_tags_search_clause
@@ -77,7 +76,7 @@ class Admin::GroupsController < ApplicationController
   private
 
   def non_members_search_clause
-    policy_scope([:admin, User])
+    user_policy_scope
       .where(tenant: Current.tenant.id)
       .where.not(id: User.joins(:group_memberships).where(group_memberships: { group_id: @group.id }))
       .where('unaccent(name) ILIKE unaccent(?)', "%#{params[:name_search]}%")
@@ -85,7 +84,7 @@ class Admin::GroupsController < ApplicationController
   end
 
   def non_tags_search_clause
-    policy_scope([:admin, Tag])
+    tag_policy_scope
       .where(tenant: Current.tenant.id)
       .where.not(id: Tag.joins(:tag_groups).where(tag_groups: { group_id: @group.id }))
       .where('unaccent(name) ILIKE unaccent(?)', "%#{params[:name_search]}%")
@@ -93,10 +92,22 @@ class Admin::GroupsController < ApplicationController
   end
 
   def set_group
-    @group = policy_scope([:admin, Group]).find(params[:id])
+    @group = group_policy_scope.find(params[:id])
   end
 
   def group_params
-    params.require(:group).permit(:name, :group_type)
+    params.require(:custom_group).permit(:name)
+  end
+
+  def group_policy_scope
+    policy_scope([:admin, Group])
+  end
+
+  def user_policy_scope
+    policy_scope([:admin, User])
+  end
+
+  def tag_policy_scope
+    policy_scope([:admin, Tag])
   end
 end

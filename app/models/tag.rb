@@ -30,7 +30,7 @@ class Tag < ApplicationRecord
 
   scope :visible, -> { where(visible: true) }
 
-  after_create_commit ->(tag) { tag.mark_readable_by_groups(tag.tenant.admin_groups) }
+  after_create_commit ->(tag) { tag.mark_readable_by_groups([tag.tenant.admin_group]) }
   after_update_commit ->(tag) { EventBus.publish(:tag_renamed, tag) if previous_changes.key?("name") }
 
   DRAFT_SYSTEM_NAME = 'draft'

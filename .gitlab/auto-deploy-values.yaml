@@ -23,10 +23,9 @@ readinessProbe:
     - "true"
 resources:
   requests:
-    cpu: 10m
-    memory: 400Mi
+    memory: 600Mi
   limits:
-    memory: 1Gi
+    memory: 600Mi
 persistence:
   enabled: true
   volumes:
@@ -37,3 +36,21 @@ persistence:
       accessMode: ReadWriteMany
       size: 10Gi
       storageClass: nfs-client
+workers:
+  worker:
+    replicaCount: "1"
+    command: ["bundle", "exec", "good_job", "start"]
+    startupProbe:
+      probeType: "httpGet"
+      path: "/status/started"
+    livenessProbe:
+      probeType: "httpGet"
+      path: "/status/connected"
+    readinessProbe:
+      probeType: "httpGet"
+      path: "/status/started"
+    resources:
+      requests:
+        memory: 1Gi
+      limits:
+        memory: 1Gi
