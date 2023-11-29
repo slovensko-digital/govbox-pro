@@ -13,6 +13,8 @@
 #  user_id     :bigint
 #
 class Tag < ApplicationRecord
+  include AuditableEvents
+
   belongs_to :tenant
   belongs_to :owner, class_name: 'User', optional: true, foreign_key: :user_id
   has_many :tag_groups, dependent: :destroy
@@ -30,7 +32,6 @@ class Tag < ApplicationRecord
 
   after_create_commit ->(tag) { tag.mark_readable_by_groups([tag.tenant.admin_group]) }
   after_update_commit ->(tag) { EventBus.publish(:tag_renamed, tag) if previous_changes.key?("name") }
-  after_destroy ->(tag) { EventBus.publish(:tag_destroyed, tag) }
 
   DRAFT_SYSTEM_NAME = 'draft'
 
