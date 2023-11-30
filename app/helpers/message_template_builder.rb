@@ -18,7 +18,7 @@ class MessageTemplateBuilder < ActionView::Helpers::FormBuilder
     )
   end
 
-  # TODO replace errors[:metadata] with specific fields, errors["metadata.data#{name}"] does not work
+  # TODO replace errors[:metadata] with specific fields, errors["metadata.data.#{name}"] does not work
 
   def text_field(name, value:, errors:, editable:, required:, **args)
     @template.content_tag(:div, class: 'mb-3') do
