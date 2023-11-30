@@ -38,9 +38,9 @@ class Upvs::MessageTemplate < ::MessageTemplate
       author: author
     )
 
-    data = MessageTemplateParser.parse_template_placeholders(self).map do |item|
-      { item[:name] => item[:default_value] }
-    end.reduce(Hash.new, :merge)
+    data = MessageTemplateParser.parse_template_placeholders(self).each_with_object({}) do |item, out|
+      out[item[:name]] = item[:default_value]
+    end
 
     message.metadata = {
       template_id: self.id,
@@ -60,7 +60,7 @@ class Upvs::MessageTemplate < ::MessageTemplate
       delivered_at: message.delivered_at
     )
 
-    message.save
+    message.save!
 
     message.objects.create!(
       name: "form.xml",
@@ -95,7 +95,7 @@ class Upvs::MessageTemplate < ::MessageTemplate
       message_type: self.metadata['message_type']
     }
     message.thread = original_message.thread
-    message.save
+    message.save!
 
     message.objects.create!(
       name: "form.xml",

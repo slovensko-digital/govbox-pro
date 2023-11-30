@@ -43,7 +43,8 @@ class MessageTemplate < ApplicationRecord
     # TODO co ak ich bude viac, v roznych domenach? (napr. UPVS aj core)
     MessageTemplate.find_by!(
       system: true,
-      name: REPLY_TEMPLATE_NAME
+      name: REPLY_TEMPLATE_NAME,
+      tenant: nil
     )
   end
 
@@ -53,10 +54,8 @@ class MessageTemplate < ApplicationRecord
   end
 
   def message_data_validation_errors(message)
-    message.errors.select{|error| error.attribute == :metadata}.map do |error|
-      {
-        error.options[:attribute] => [error.options[:attribute], error.message].join(" ")
-      }
-    end.reduce(Hash.new, :merge)
+    message.errors.select{|error| error.attribute == :metadata}.each_with_object({}) do |error, out|
+      out[error.options[:attribute]] = [error.options[:attribute], error.message].join(" ")
+    end
   end
 end
