@@ -10,14 +10,6 @@ class MessageThreadPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      if @user.admin?
-        return scope.where(
-          MessageThread
-            .joins(:box)
-            .where(box: { tenant_id: Current.tenant.id })
-            .arel.exists
-        )
-      end
       scope.where(
         MessageThreadsTag
           .select(1)

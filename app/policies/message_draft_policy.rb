@@ -10,14 +10,6 @@ class MessageDraftPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      if @user.admin?
-        return scope.where(
-          MessageDraft
-            .joins(thread: :box)
-            .where(box: { tenant_id: Current.tenant.id })
-            .arel.exists
-        )
-      end
       # TODO: this does not work for imported drafts (no tags present)
       scope.where(author_id: @user.id).where(
         MessageThreadsTag

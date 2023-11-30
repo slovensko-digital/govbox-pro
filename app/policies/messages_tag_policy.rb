@@ -10,16 +10,6 @@ class MessagesTagPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      if @user.admin?
-        return scope.where(
-          MessagesTag
-            .joins({ message: { thread: :box } }, :tag)
-            .where(box: { tenant_id: Current.tenant.id })
-            .where(tag: { tenant_id: Current.tenant.id })
-            .arel.exists
-        )
-      end
-
       scope.joins(:message, :tag).where(message: Pundit.policy_scope(user, Message), tag: Pundit.policy_scope(user, Tag))
     end
   end
