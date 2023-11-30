@@ -45,13 +45,32 @@ class AuditLog < ApplicationRecord
     end
   end
 
-  # TODO: Pre tagy sa asi budeme musiet subscribnut na nove eventy, kedze tu nevieme, ci to je destroy/create (dokonca teoreticky update)
+  class MessageThreadTagCreated < AuditLog
+    def self.create_audit_record(thread_tag)
+      create_record(
+        object: thread_tag,
+        new_value: thread_tag.tag.name,
+        message_thread: thread_tag.message_thread
+      )
+    end
+  end
+
   class MessageThreadTagUpdated < AuditLog
     def self.create_audit_record(thread_tag)
       create_record(
         object: thread_tag,
         previous_value: thread_tag.tag.name_previously_was,
         new_value: thread_tag.tag.name,
+        message_thread: thread_tag.message_thread
+      )
+    end
+  end
+
+  class MessageThreadTagDestroyed < AuditLog
+    def self.create_audit_record(thread_tag)
+      create_record(
+        object: thread_tag,
+        previous_value: thread_tag.tag.name,
         message_thread: thread_tag.message_thread
       )
     end
@@ -200,7 +219,7 @@ class AuditLog < ApplicationRecord
     end
   end
 
-  # TODO move to non-core domain
+  # TODO: move to non-core domain
   class MessageDeliveryAuthorized < AuditLog
     def self.create_audit_record(message)
       create_record(object: message, message_thread: message.thread)
