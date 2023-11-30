@@ -6,6 +6,12 @@ sk:
     errors:
       messages:
         record_invalid: "Validácia neúspešná: %{errors}"
+      models:
+        tag:
+          attributes:
+            base:
+              restrict_dependent_destroy:
+                has_many: "Štítok je použitý v automatizačných pravidlách, nie je ho možné vymazať. Upravte najskôr pravidlá"
   date:
     abbr_day_names:
       - Ne
