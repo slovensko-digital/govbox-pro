@@ -15,10 +15,10 @@ class Admin::AuditLogPolicy < ApplicationPolicy
   end
 
   def index?
-    @user.site_admin? || @user.admin?
+    Current.tenant.feature_enabled?(:audit_log) && (@user.site_admin? || @user.admin?)
   end
 
   def scroll?
-    index?
+    Current.tenant.feature_enabled?(:audit_log) && index?
   end
 end
