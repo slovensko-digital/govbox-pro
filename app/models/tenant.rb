@@ -37,7 +37,7 @@ class Tenant < ApplicationRecord
     raise "Unknown feature #{feature}" unless feature.in? AVAILABLE_FEATURE_FLAGS
     raise "Feature already enabled" if feature.to_s.in? feature_flags
 
-    feature_flags << feature unless feature.to_s.in? feature_flags
+    feature_flags << feature
     save!
   end
 
