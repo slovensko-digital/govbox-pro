@@ -16,7 +16,7 @@ class User < ApplicationRecord
 
   has_many :group_memberships, dependent: :destroy
   has_many :groups, through: :group_memberships
-  has_many :own_tags, class_name: 'Tag', foreign_key: 'user_id', inverse_of: :owner, dependent: :nullify
+  has_many :own_tags, class_name: 'Tag', inverse_of: :owner, dependent: :nullify
   has_many :message_drafts, foreign_key: :author_id
   has_many :automation_rules, class_name: 'Automation::Rule'
   has_many :filters, foreign_key: :author_id
@@ -24,7 +24,7 @@ class User < ApplicationRecord
   validates_presence_of :name, :email
   validates_uniqueness_of :name, :email, scope: :tenant_id, case_sensitive: false
 
-  before_destroy :delete_user_group, prepend: true
+  before_destroy :before_destroy, prepend: true
   after_create :handle_default_groups
 
   def site_admin?
@@ -41,7 +41,11 @@ class User < ApplicationRecord
 
   private
 
-  def delete_user_group
+  def before_destroy
+    if self == Current.user
+      errors.add :name, "Administrátor nemôže zmazať svojho používateľa"
+      throw :abort
+    end
     user_group.destroy
   end
 
