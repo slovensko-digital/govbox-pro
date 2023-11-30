@@ -9,9 +9,9 @@ class Govbox::SubmitMessageDraftJob < ApplicationJob
 
   def perform(message_draft, schedule_sync: true, upvs_client: UpvsEnvironment.upvs_client)
     message_draft_data = {
-      posp_id: message_draft.metadata["posp_id"],
-      posp_version: message_draft.metadata["posp_version"],
-      message_type: message_draft.metadata["message_type"],
+      posp_id: message_draft.all_metadata["posp_id"],
+      posp_version: message_draft.all_metadata["posp_version"],
+      message_type: message_draft.all_metadata["message_type"],
       message_id: message_draft.uuid,
       correlation_id: message_draft.metadata["correlation_id"],
       recipient_uri: message_draft.metadata["recipient_uri"],

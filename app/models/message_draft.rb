@@ -117,6 +117,10 @@ class MessageDraft < Message
     template&.message_data_validation_errors(self)
   end
 
+  def all_metadata
+    metadata.merge(template&.metadata)
+  end
+
   private
 
   def validate_with_message_template

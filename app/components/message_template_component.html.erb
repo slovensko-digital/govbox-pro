@@ -9,7 +9,7 @@
     "class": "mb-3 pt-0 w-full"
   }
 ) do %>
-  <%= form_with url: message_draft_path(@message.id), method: 'patch', id: message_draft_body_form_id, builder: MessageTemplateBuilder do |form| %>
+  <%= form_for :message_draft, url: message_draft_path(@message.id), method: 'patch', id: message_draft_body_form_id, builder: MessageTemplateBuilder do |form| %>
     <% MessageTemplateParser.parse_template_placeholders(@message.template).each do |placeholder| %>
       <%= form.template_field(
             placeholder,

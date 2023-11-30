@@ -13,18 +13,16 @@ class MessageTemplateBuilder < ActionView::Helpers::FormBuilder
       value: data&.dig(template_item[:name]).presence || template_item[:default_value],
       errors: errors,
       editable: editable,
-      required: template_item[:required].present?,
       is_last: is_last
     )
   end
 
-  def text_field(name, value:, errors:, editable:, required:, **args)
+  def text_field(name, value:, errors:, editable:, **args)
     @template.content_tag(:div, class: 'mb-3') do
       super(name, {
         placeholder: name,
         value: value,
         disabled: !editable,
-        required: required,
         'data-action': 'change->message-drafts#update',
         class: "#{errors[name].present? ? ERROR_CLASSES : DEFAULT_CLASSES} px-3 py-4 placeholder-slate-300 text-slate-900 relative rounded-lg shadow outline-none focus:outline-none w-full"
       }) +
@@ -36,13 +34,12 @@ class MessageTemplateBuilder < ActionView::Helpers::FormBuilder
     end
   end
 
-  def email_field(name, value:, errors:, editable:, required:, **args)
+  def email_field(name, value:, errors:, editable:, **args)
     @template.content_tag(:div, class: 'mb-3') do
       super(name, {
         placeholder: name,
         value: value,
         disabled: !editable,
-        required: required,
         'data-action': 'change->message-drafts#update',
         class: "#{errors[name].present? ? ERROR_CLASSES : DEFAULT_CLASSES} px-3 py-4 placeholder-slate-300 text-slate-900 relative bg-white rounded-lg text-base border-0 shadow outline-none focus:outline-none focus:ring w-full"
       }) +
@@ -54,13 +51,12 @@ class MessageTemplateBuilder < ActionView::Helpers::FormBuilder
     end
   end
 
-  def text_area(name, value:, errors:, editable:, required:, is_last:)
+  def text_area(name, value:, errors:, editable:, is_last:)
     @template.content_tag(:div, class: 'mb-3') do
       super(name, {
         placeholder: name,
         value: value,
         disabled: !editable,
-        required: required,
         autofocus: is_last,
         'data-action': 'change->message-drafts#update',
         rows: 10,
@@ -74,14 +70,13 @@ class MessageTemplateBuilder < ActionView::Helpers::FormBuilder
     end
   end
 
-  def date_field(name, value:, errors:, editable:, required:, **args)
+  def date_field(name, value:, errors:, editable:, **args)
     @template.content_tag(:div, class: 'mb-3') do
       label(:label, name) +
       super(name, {
         placeholder: Date.today,
         value: value,
         disabled: !editable,
-        required: required,
         'data-action': 'change->message-drafts#update',
         rows: 10,
         class: "#{errors[name].present? ? ERROR_CLASSES : DEFAULT_CLASSES} px-3 py-4 placeholder-slate-300 text-slate-900 relative bg-white rounded-lg text-base border-0 shadow outline-none focus:outline-none focus:ring w-full"

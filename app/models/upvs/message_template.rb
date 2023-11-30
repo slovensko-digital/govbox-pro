@@ -47,10 +47,7 @@ class Upvs::MessageTemplate < ::MessageTemplate
       data: data,
       recipient_uri: recipient_uri,
       correlation_id: SecureRandom.uuid,
-      status: 'created',
-      posp_id: self.metadata['posp_id'],
-      posp_version: self.metadata['posp_version'],
-      message_type: self.metadata['message_type']
+      status: 'created'
     }
 
     message.thread = box.message_threads.find_or_create_by_merge_uuid!(
@@ -89,10 +86,7 @@ class Upvs::MessageTemplate < ::MessageTemplate
       correlation_id: original_message.metadata["correlation_id"],
       reference_id: original_message.uuid,
       original_message_id: original_message.id,
-      status: 'created',
-      posp_id: self.metadata['posp_id'],
-      posp_version: self.metadata['posp_version'],
-      message_type: self.metadata['message_type']
+      status: 'created'
     }
     message.thread = original_message.thread
     message.save!
