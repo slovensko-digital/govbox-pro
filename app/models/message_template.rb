@@ -49,8 +49,7 @@ class MessageTemplate < ApplicationRecord
   end
 
   def self.tenant_templates_list(tenant)
-    template_ids = MessageTemplate.where("system = FALSE AND (tenant_id = #{tenant.id} OR tenant_id IS NULL)").select('distinct on (metadata) *').map(&:id)
-    MessageTemplate.where(id: template_ids).pluck(:name, :id)
+    MessageTemplate.where(system: false).where("tenant_id = ? OR tenant_id IS NULL", tenant.id).pluck(:name, :id)
   end
 
   def message_data_validation_errors(message)
