@@ -10,12 +10,12 @@ class Admin::AuditLogPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      @user.site_admin? ? scope.all : scope.where(tenant: @user.tenant)
+      scope.where(tenant: @user.tenant)
     end
   end
 
   def index?
-    Current.tenant.feature_enabled?(:audit_log) && (@user.site_admin? || @user.admin?)
+    Current.tenant.feature_enabled?(:audit_log) && @user.admin?
   end
 
   def scroll?

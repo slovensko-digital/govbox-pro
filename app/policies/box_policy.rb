@@ -10,20 +10,20 @@ class BoxPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      @user.site_admin? ? scope.all : scope.where(tenant: @user.tenant)
+      scope.where(tenant: @user.tenant)
     end
   end
 
   def index?
-    @user.site_admin? || @user.admin?
+    @user.admin?
   end
 
   def show?
-    @user.site_admin? || @user.admin?
+    @user.admin?
   end
 
   def sync?
-    @user.site_admin? || @user.admin?
+    @user.admin?
   end
 
   def select?
@@ -41,5 +41,4 @@ class BoxPolicy < ApplicationPolicy
   def get_selector?
     true
   end
-
 end

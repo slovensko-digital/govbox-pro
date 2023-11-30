@@ -10,8 +10,15 @@ class MessageThreadsTagPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      return scope.all if @user.site_admin?
-
+      if @user.admin?
+        return scope.where(
+          MessageThreadsTag
+            .joins({ message_thread: :box }, :tag)
+            .where(box: { tenant_id: Current.tenant.id })
+            .where(tag: { tenant_id: Current.tenant.id })
+            .arel.exists
+        )
+      end
       scope_tags_to_accessible_by_user(scope)
     end
 
@@ -58,4 +65,3 @@ class MessageThreadsTagPolicy < ApplicationPolicy
     true
   end
 end
-

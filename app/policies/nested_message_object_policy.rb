@@ -10,8 +10,14 @@ class NestedMessageObjectPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      return scope.all if @user.site_admin?
-
+      if @user.admin?
+        return scope.where(
+          NestedMessageObject
+            .joins(message_object: { message: { thread: :box } })
+            .where(box: { tenant_id: Current.tenant.id })
+            .arel.exists
+        )
+      end
       scope.joins(:message_object).where(
         Message
           .select(1)

@@ -10,7 +10,6 @@ class TagPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      return scope.where(tenant: Current.tenant) if @user.site_admin?
       return scope.where(tenant: @user.tenant) if @user.admin?
 
       scope.where(
