@@ -18,8 +18,6 @@ class MessageTemplateBuilder < ActionView::Helpers::FormBuilder
     )
   end
 
-  # TODO replace errors[:metadata] with specific fields, errors["metadata.data.#{name}"] does not work
-
   def text_field(name, value:, errors:, editable:, required:, **args)
     @template.content_tag(:div, class: 'mb-3') do
       super(name, {
@@ -28,11 +26,11 @@ class MessageTemplateBuilder < ActionView::Helpers::FormBuilder
         disabled: !editable,
         required: required,
         'data-action': 'change->message-drafts#update',
-        class: "#{errors[:metadata].present? ? ERROR_CLASSES : DEFAULT_CLASSES} px-3 py-4 placeholder-slate-300 text-slate-900 relative rounded-lg shadow outline-none focus:outline-none w-full"
+        class: "#{errors[name].present? ? ERROR_CLASSES : DEFAULT_CLASSES} px-3 py-4 placeholder-slate-300 text-slate-900 relative rounded-lg shadow outline-none focus:outline-none w-full"
       }) +
       (
         @template.content_tag(:p, nil, class: 'mt-2 text-sm text-red-600 dark:text-red-500') do
-          @template.content_tag(:span, errors.full_messages_for(:metadata).join(''), class: 'font-medium')
+          @template.content_tag(:span, errors[name], class: 'font-medium')
         end if errors.present?
       )
     end
@@ -46,11 +44,11 @@ class MessageTemplateBuilder < ActionView::Helpers::FormBuilder
         disabled: !editable,
         required: required,
         'data-action': 'change->message-drafts#update',
-        class: "#{errors[:metadata].present? ? ERROR_CLASSES : DEFAULT_CLASSES} px-3 py-4 placeholder-slate-300 text-slate-900 relative bg-white rounded-lg text-base border-0 shadow outline-none focus:outline-none focus:ring w-full"
+        class: "#{errors[name].present? ? ERROR_CLASSES : DEFAULT_CLASSES} px-3 py-4 placeholder-slate-300 text-slate-900 relative bg-white rounded-lg text-base border-0 shadow outline-none focus:outline-none focus:ring w-full"
       }) +
       (
         @template.content_tag(:p, nil, class: 'mt-2 text-sm text-red-600 dark:text-red-500') do
-          @template.content_tag(:span, errors.full_messages_for(:metadata).join(''), class: 'font-medium')
+          @template.content_tag(:span, errors[name], class: 'font-medium')
         end if errors.present?
       )
     end
@@ -66,11 +64,11 @@ class MessageTemplateBuilder < ActionView::Helpers::FormBuilder
         autofocus: is_last,
         'data-action': 'change->message-drafts#update',
         rows: 10,
-        class: "#{errors[:metadata].present? ? ERROR_CLASSES : DEFAULT_CLASSES} px-3 py-4 placeholder-slate-300 text-slate-900 relative bg-white rounded-lg text-base border-0 shadow outline-none focus:outline-none focus:ring w-full h-full"
+        class: "#{errors[name].present? ? ERROR_CLASSES : DEFAULT_CLASSES} px-3 py-4 placeholder-slate-300 text-slate-900 relative bg-white rounded-lg text-base border-0 shadow outline-none focus:outline-none focus:ring w-full h-full"
       }) +
       (
         @template.content_tag(:p, nil, class: 'mt-2 text-sm text-red-600 dark:text-red-500') do
-          @template.content_tag(:span, errors.full_messages_for(:metadata).join(''), class: 'font-medium')
+          @template.content_tag(:span, errors[name], class: 'font-medium')
         end if errors.present?
       )
     end
@@ -86,11 +84,11 @@ class MessageTemplateBuilder < ActionView::Helpers::FormBuilder
         required: required,
         'data-action': 'change->message-drafts#update',
         rows: 10,
-        class: "#{errors[:metadata].present? ? ERROR_CLASSES : DEFAULT_CLASSES} px-3 py-4 placeholder-slate-300 text-slate-900 relative bg-white rounded-lg text-base border-0 shadow outline-none focus:outline-none focus:ring w-full"
-      })+
+        class: "#{errors[name].present? ? ERROR_CLASSES : DEFAULT_CLASSES} px-3 py-4 placeholder-slate-300 text-slate-900 relative bg-white rounded-lg text-base border-0 shadow outline-none focus:outline-none focus:ring w-full"
+      }) +
       (
         @template.content_tag(:p, nil, class: 'mt-2 text-sm text-red-600 dark:text-red-500') do
-          @template.content_tag(:span, errors.full_messages_for(:metadata).join(''), class: 'font-medium')
+          @template.content_tag(:span, errors[name], class: 'font-medium')
         end if errors.present?
       )
     end

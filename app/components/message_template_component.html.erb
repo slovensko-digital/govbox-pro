@@ -14,7 +14,7 @@
       <%= form.template_field(
             placeholder,
             data: @message.metadata.dig('data'),
-            errors: @message.errors,
+            errors: @message.template_validation_errors,
             editable: @message.editable?,
             is_last: @is_last
           )

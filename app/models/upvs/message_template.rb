@@ -38,7 +38,9 @@ class Upvs::MessageTemplate < ::MessageTemplate
       author: author
     )
 
-    data = MessageTemplateParser.parse_template_placeholders(self).map{ |item| { item[:name] => item[:default_value] } }.reduce(Hash.new, :merge)
+    data = MessageTemplateParser.parse_template_placeholders(self).map do |item|
+      { item[:name] => item[:default_value] }
+    end.reduce(Hash.new, :merge)
 
     message.metadata = {
       template_id: self.id,
@@ -128,7 +130,7 @@ class Upvs::MessageTemplate < ::MessageTemplate
     required_template_items = template_items.select{ |item| item[:required] }.pluck(:name)
 
     required_template_items.each do |template_item|
-      message.errors.add("metadata.data.#{template_item}", :blank) unless message.metadata["data"][template_item].present?
+      message.errors.add(:metadata, :blank, attribute: template_item) unless message.metadata["data"][template_item].present?
     end
   end
 end

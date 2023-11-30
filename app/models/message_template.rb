@@ -51,4 +51,12 @@ class MessageTemplate < ApplicationRecord
     template_ids = MessageTemplate.where("system = FALSE AND (tenant_id = #{tenant.id} OR tenant_id IS NULL)").select('distinct on (metadata) *').map(&:id)
     MessageTemplate.where(id: template_ids).pluck(:name, :id)
   end
+
+  def message_data_validation_errors(message)
+    message.errors.select{|error| error.attribute == :metadata}.map do |error|
+      {
+        error.options[:attribute] => [error.options[:attribute], error.message].join(" ")
+      }
+    end.reduce(Hash.new, :merge)
+  end
 end

@@ -113,6 +113,10 @@ class MessageDraft < Message
     MessageTemplate.find(metadata["template_id"]) if metadata["template_id"]
   end
 
+  def template_validation_errors
+    template&.message_data_validation_errors(self)
+  end
+
   private
 
   def validate_with_message_template
