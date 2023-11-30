@@ -43,7 +43,7 @@ class User < ApplicationRecord
 
   def before_destroy
     if self == Current.user
-      errors.add :name, "Administrátor nemôže zmazať svojho používateľa"
+      errors.add :name, "Administrátor nemôže zmazať sám seba"
       throw :abort
     end
     user_group.destroy
