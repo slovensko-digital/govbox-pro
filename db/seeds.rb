@@ -66,25 +66,25 @@ Upvs::MessageTemplate.find_or_create_by!(
 	<CertificateOwner>
 		<IdentityType>PO</IdentityType>
 		<OwnerPoOvm>
-			<ICO>{{IČO::text_field}}</ICO>
+			<ICO>{{IČO::*text_field}}</ICO>
 			<Suffix xsi:nil="true" />
 		</OwnerPoOvm>
 	</CertificateOwner>
 	<ContactPerson>
-		<ContactName>{{Kontaktná osoba:Ján Suchal:text_field}}</ContactName>
-		<Email>{{Email:jan.suchal@test.sk:email_field}}</Email>
-		<Phone>{{Telefón:+4190000000:text_field}}</Phone>
+		<ContactName>{{Kontaktná osoba:Ján Suchal:*text_field}}</ContactName>
+		<Email>{{Email:jan.suchal@test.sk:*email_field}}</Email>
+		<Phone>{{Telefón:+4190000000:*text_field}}</Phone>
 	</ContactPerson>
 	<IntegrationContract>
 		<ProjectID>{{Názov prostriedku:IRVIN:text_field}}</ProjectID>
 	</IntegrationContract>
 	<TechnicalAccount>
 		<EDeckAccessType>1</EDeckAccessType>
-		<ValidFrom>{{Dátum začiatku platnosti::date_field}}</ValidFrom>
+		<ValidFrom>{{Dátum začiatku platnosti::*date_field}}</ValidFrom>
 		<ValidTo xsi:nil="true" />
 	</TechnicalAccount>
 	<AuthentificationCertificateData>
-		<Thumbprint>{{Digitálny odtlačok::text_field}}</Thumbprint>
+		<Thumbprint>{{Digitálny odtlačok::*text_field}}</Thumbprint>
 	</AuthentificationCertificateData>
 </AuthentificationCertificateWithTechnicalAccountRegistration>',
   metadata: {
@@ -96,7 +96,6 @@ Upvs::MessageTemplate.find_or_create_by!(
   system: false
 )
 
-
 Upvs::MessageTemplate.find_or_create_by!(
   name: 'Žiadosť o zápis autentifikačného certifikátu do registra autentifikačných certifikátov',
   content: '<AuthentificationCertificateWithTechnicalAccountRegistration
@@ -105,25 +104,25 @@ Upvs::MessageTemplate.find_or_create_by!(
 	<CertificateOwner>
 		<IdentityType>PO</IdentityType>
 		<OwnerPoOvm>
-			<ICO>{{IČO::text_field}}</ICO>
+			<ICO>{{IČO::*text_field}}</ICO>
 			<Suffix xsi:nil="true" />
 		</OwnerPoOvm>
 	</CertificateOwner>
 	<ContactPerson>
-		<ContactName>{{Kontaktná osoba::text_field}}</ContactName>
-		<Email>{{Email::text_field}}</Email>
-		<Phone>{{Telefón::text_field}}</Phone>
+		<ContactName>{{Kontaktná osoba::*text_field}}</ContactName>
+		<Email>{{Email::*email_field}}</Email>
+		<Phone>{{Telefón::*text_field}}</Phone>
 	</ContactPerson>
 	<IntegrationContract>
 		<ProjectID>{{Názov prostriedku::text_field}}</ProjectID>
 	</IntegrationContract>
 	<TechnicalAccount>
 		<EDeckAccessType>1</EDeckAccessType>
-		<ValidFrom>{{Dátum začiatku platnosti::date_field}}</ValidFrom>
+		<ValidFrom>{{Dátum začiatku platnosti::*date_field}}</ValidFrom>
 		<ValidTo xsi:nil="true" />
 	</TechnicalAccount>
 	<AuthentificationCertificateData>
-		<Thumbprint>{{Digitálny odtlačok::text_field}}</Thumbprint>
+		<Thumbprint>{{Digitálny odtlačok::*text_field}}</Thumbprint>
 	</AuthentificationCertificateData>
 </AuthentificationCertificateWithTechnicalAccountRegistration>',
   metadata: {

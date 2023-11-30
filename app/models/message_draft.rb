@@ -45,6 +45,7 @@ class MessageDraft < Message
     message_draft.validate :validate_metadata
     message_draft.validate :validate_form
     message_draft.validate :validate_objects
+    message_draft.validate :validate_with_message_template
   end
 
   def update_content(parameters)
@@ -101,7 +102,7 @@ class MessageDraft < Message
   end
    
   def invalid?
-    metadata["status"] == "invalid"
+    metadata["status"] == "invalid" || valid?(:validate_data)
   end
 
   def original_message
@@ -113,6 +114,10 @@ class MessageDraft < Message
   end
 
   private
+
+  def validate_with_message_template
+    template&.validate_message(self)
+  end
 
   def validate_metadata
     errors.add(:metadata, "No recipient URI") unless metadata["recipient_uri"].present?

@@ -38,6 +38,8 @@ class MessageDraftsController < ApplicationController
   def submit
     authorize @message
 
+    render :update_body and return unless @message.valid?(:validate_data)
+
     if @message.submittable?
       Govbox::SubmitMessageDraftJob.perform_later(@message)
       @message.being_submitted!

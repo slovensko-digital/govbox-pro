@@ -35,6 +35,10 @@ class MessageTemplate < ApplicationRecord
     raise NotImplementedError
   end
 
+  def validate_message(message)
+    raise NotImplementedError
+  end
+
   def self.reply_template
     # TODO co ak ich bude viac, v roznych domenach? (napr. UPVS aj core)
     MessageTemplate.find_by!(

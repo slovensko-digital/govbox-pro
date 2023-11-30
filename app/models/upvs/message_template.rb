@@ -37,11 +37,18 @@ class Upvs::MessageTemplate < ::MessageTemplate
       replyable: false,
       author: author
     )
+
+    data = MessageTemplateParser.parse_template_placeholders(self).map{ |item| { item[:name] => item[:default_value] } }.reduce(Hash.new, :merge)
+
     message.metadata = {
       template_id: self.id,
+      data: data,
       recipient_uri: recipient_uri,
       correlation_id: SecureRandom.uuid,
-      status: 'created'
+      status: 'created',
+      posp_id: self.metadata['posp_id'],
+      posp_version: self.metadata['posp_version'],
+      message_type: self.metadata['message_type']
     }
 
     message.thread = box.message_threads.find_or_create_by_merge_uuid!(
@@ -72,15 +79,18 @@ class Upvs::MessageTemplate < ::MessageTemplate
       author: author
     )
     message.metadata = {
+      template_id: self.id,
       data: {
         Predmet: "Odpoveď: #{original_message.title}"
       },
-      template_id: self.id,
       recipient_uri: original_message.metadata["sender_uri"],
       correlation_id: original_message.metadata["correlation_id"],
       reference_id: original_message.uuid,
       original_message_id: original_message.id,
-      status: 'created'
+      status: 'created',
+      posp_id: self.metadata['posp_id'],
+      posp_version: self.metadata['posp_version'],
+      message_type: self.metadata['message_type']
     }
     message.thread = original_message.thread
     message.save
@@ -110,6 +120,15 @@ class Upvs::MessageTemplate < ::MessageTemplate
         message_object: message.form,
         blob: filled_content
       )
+    end
+  end
+
+  def validate_message(message)
+    template_items = MessageTemplateParser.parse_template_placeholders(self)
+    required_template_items = template_items.select{ |item| item[:required] }.pluck(:name)
+
+    required_template_items.each do |template_item|
+      message.errors.add("metadata.data.#{template_item}", :blank) unless message.metadata["data"][template_item].present?
     end
   end
 end
