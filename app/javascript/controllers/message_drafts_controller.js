@@ -1,5 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
-import { get, patch } from '@rails/request.js'
+import { get } from '@rails/request.js'
 
 export default class extends Controller {
   connect() {
@@ -24,6 +24,7 @@ export default class extends Controller {
   }
 
   showLastMessageDraft() {
+    // TODO get rid of message_draft[Text] constant
     const messageDraftsTexts = document.querySelectorAll('textarea[name^="message_draft[Text]"]');
     const length = messageDraftsTexts.length;
     if (messageDraftsTexts.length > 1) {
