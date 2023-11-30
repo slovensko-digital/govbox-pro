@@ -46,8 +46,12 @@ class Admin::TagsController < ApplicationController
 
   def destroy
     authorize([:admin, @tag])
-    @tag.destroy
-    redirect_to admin_tenant_tags_path(Current.tenant), notice: 'Tag was successfully created'
+    if @tag.destroy
+      redirect_to admin_tenant_tags_path(Current.tenant), notice: 'Tag was successfully destroyed'
+    else
+      flash[:alert] = @tag.errors.full_messages[0]
+      redirect_to admin_tenant_tags_path(Current.tenant)
+    end
   end
 
   private
