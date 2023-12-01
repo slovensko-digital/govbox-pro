@@ -10,7 +10,6 @@ class TagPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      return scope.where(tenant: Current.tenant) if @user.site_admin?
       return scope.where(tenant: @user.tenant) if @user.admin?
 
       scope.where(
@@ -39,7 +38,6 @@ class TagPolicy < ApplicationPolicy
   end
 
   def destroy?
-    @tag.destroyable? &&
-      (@tag.owner == @user || @user.admin? || @user.site_admin?)
+    @tag.destroyable? && (@tag.owner == @user || @user.admin?)
   end
 end

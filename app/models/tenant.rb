@@ -22,12 +22,17 @@ class Tenant < ApplicationRecord
   has_many :boxes, dependent: :destroy
   has_many :automation_rules, class_name: "Automation::Rule", dependent: :destroy
   has_many :tags, dependent: :destroy
+  has_many :simple_tags
   has_many :filters
   after_create :create_default_objects
 
   validates_presence_of :name
 
   AVAILABLE_FEATURE_FLAGS = [:audit_log]
+
+  def draft_tag!
+    draft_tag || raise(ActiveRecord::RecordNotFound.new("`DraftTag` not found in tenant: #{self.id}"))
+  end
 
   def feature_enabled?(feature)
     raise "Unknown feature #{feature}" unless feature.in? AVAILABLE_FEATURE_FLAGS

@@ -25,11 +25,7 @@ class MessageDraft < Message
   belongs_to :import, class_name: 'MessageDraftsImport', foreign_key: :import_id, optional: true
 
   after_create do
-    drafts_tag = DraftTag.find_by!(
-      tenant: self.thread.box.tenant
-    )
-
-    self.add_cascading_tag(drafts_tag)
+    self.add_cascading_tag(self.thread.box.tenant.draft_tag!)
   end
 
   after_destroy do

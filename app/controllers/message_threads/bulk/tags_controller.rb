@@ -61,7 +61,7 @@ module MessageThreads
       private
 
       def tag_scope
-        SimpleTag.where(tenant: Current.tenant).visible.order(:name)
+        Current.tenant.simple_tags.visible.order(:name)
       end
 
       def message_thread_policy_scope
