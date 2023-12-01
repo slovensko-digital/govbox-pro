@@ -4,7 +4,7 @@
   </div>
   <% @tags.each do |tag| %>
     <% url = message_threads_path(q: "label:(#{tag.name})") %>
-    <%= link_to url, class: "text-gray-700 hover:text-indigo-600 hover:bg-gray-50 group w-72 flex gap-x-3 rounded-md p-2 px-4 text-sm leading-6 font-semibold data-[active=true]:bg-gray-50 data-[active=true]:text-indigo-600", data: { active: current_page?(url) } do %>
+    <%= link_to url, "data-action": "click->slideover#hide", class: "text-gray-700 hover:text-indigo-600 hover:bg-gray-50 group w-72 flex gap-x-3 rounded-md p-2 px-4 text-sm leading-6 font-semibold data-[active=true]:bg-gray-50 data-[active=true]:text-indigo-600", data: { active: current_page?(url) } do %>
       <%= render Icons::TagComponent.new %>
       <p class="truncate text-base font-medium"><%= tag.name %></p>
     <% end %>
