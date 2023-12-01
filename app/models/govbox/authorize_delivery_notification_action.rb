@@ -9,7 +9,7 @@ class Govbox::AuthorizeDeliveryNotificationAction
       Govbox::Message.remove_delivery_notification_tag(message)
       Govbox::AuthorizeDeliveryNotificationJob.perform_later(message)
 
-      EventBus.publish(:message_delivery_authorized, @message)
+      EventBus.publish(:message_delivery_authorized, message)
     end
 
     can_be_authorized
