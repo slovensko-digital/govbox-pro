@@ -1,6 +1,5 @@
 class Admin::Tags::TagFormComponent < ViewComponent::Base
-  def initialize(tag:, action:)
+  def initialize(tag:)
     @tag = tag
-    @actio = action
   end
 end
