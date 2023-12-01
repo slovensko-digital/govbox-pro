@@ -47,8 +47,11 @@ class Admin::TagsController < ApplicationController
 
   def destroy
     authorize(@tag, policy_class: Admin::TagPolicy)
-    @tag.destroy
-    redirect_to admin_tenant_tags_path(Current.tenant), notice: "Štítok bol úspešne odstránený"
+    if @tag.destroy
+      redirect_to admin_tenant_tags_path(Current.tenant), notice: "Štítok bol úspešne odstránený"
+    else
+      redirect_to admin_tenant_tags_path(Current.tenant), alert: @tag.errors.full_messages[0]
+    end
   end
 
   private

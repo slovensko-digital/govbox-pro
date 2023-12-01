@@ -11,8 +11,10 @@
     </div>
   </div>
   <div class="justify-start items-center gap-2 flex">
-    <%= link_to admin_audit_logs_path(actor: @user), title: "Auditné záznamy používateľa" do %>
-      <%= render Common::ShowButtonComponent.new %>
+    <% if Current.tenant.feature_enabled?(:audit_log) %>
+      <%= link_to admin_audit_logs_path(actor: @user), title: "Auditné záznamy používateľa" do %>
+        <%= render Common::ShowButtonComponent.new %>
+      <% end %>
     <% end %>
     <%= link_to edit_admin_tenant_user_path(@user.tenant, @user) do %>
       <%= render Common::EditButtonComponent.new %>

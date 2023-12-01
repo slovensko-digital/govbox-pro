@@ -19,11 +19,11 @@ class Tag < ApplicationRecord
   belongs_to :owner, class_name: 'User', optional: true
   has_many :tag_groups, dependent: :destroy
   has_many :groups, through: :tag_groups
-  has_many :messages_tags
+  has_many :messages_tags, dependent: :destroy
   has_many :messages, through: :messages_tags
-  has_many :message_threads_tags
+  has_many :message_threads_tags, dependent: :destroy
   has_many :message_threads, through: :message_threads_tags
-  has_many :automation_actions, as: :action_object
+  has_many :automation_actions, class_name: "Automation::Action", as: :action_object, dependent: :restrict_with_error
 
   validates :name, presence: true
   validates :name, uniqueness: { scope: :tenant_id, case_sensitive: false }

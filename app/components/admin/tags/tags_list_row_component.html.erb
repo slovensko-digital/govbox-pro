@@ -14,7 +14,7 @@
     <%= link_to edit_admin_tenant_tag_path(@tag.tenant, @tag), data: { turbo_frame: "modal" } do %>
       <%= render Common::EditButtonComponent.new %>
     <% end %>
-    <%= button_to admin_tenant_tag_path(@tag.tenant, @tag), method: :delete, data: { turbo_confirm: "Naozaj chcete zmazať štítok '#{@tag.name}'?" } do %>
+    <%= button_to admin_tenant_tag_path(@tag.tenant, @tag), method: :delete, data: { turbo_confirm: "Naozaj chcete zmazať štítok '#{@tag.name}'? Štítok bude zmazaný aj zo všetkých vlákien!" } do %>
       <%= render Common::DeleteButtonComponent.new %>
     <% end %>
   </div>
