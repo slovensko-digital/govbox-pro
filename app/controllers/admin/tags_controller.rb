@@ -1,5 +1,5 @@
 class Admin::TagsController < ApplicationController
-  before_action :set_tag, only: %i[show edit update destroy visibility_toggle]
+  before_action :set_tag, only: %i[show edit update destroy]
 
   include TagCreation
 
@@ -7,7 +7,6 @@ class Admin::TagsController < ApplicationController
     authorize [:admin, Tag]
     tags = policy_scope([:admin, Tag]).includes(:tenant).order(:name)
 
-    @external_tags = tags.external
     @simple_tags = tags.simple
   end
 
@@ -38,9 +37,8 @@ class Admin::TagsController < ApplicationController
 
   def update
     authorize(@tag, policy_class: Admin::TagPolicy)
-    params = @tag.simple? ? simple_tag_params : external_tag_params
 
-    if @tag.update(params)
+    if @tag.update(simple_tag_params)
       redirect_to admin_tenant_tags_path(Current.tenant), notice: "Štítok bol úspešne upravený"
     else
       render :edit, status: :unprocessable_entity
@@ -56,14 +54,10 @@ class Admin::TagsController < ApplicationController
   private
 
   def set_tag
-    @tag = Tag.find(params[:id])
+    @tag = SimpleTag.find(params[:id])
   end
 
   def simple_tag_params
     params.require(:simple_tag).permit(:name, :visible)
-  end
-
-  def external_tag_params
-    params.require(:external_tag).permit(:visible)
   end
 end

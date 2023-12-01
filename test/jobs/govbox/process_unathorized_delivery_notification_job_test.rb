@@ -28,8 +28,8 @@ class Govbox::ProcessMessageJobTest < ActiveJob::TestCase
     message = messages(:solver_main_delivery_notification_two)
     govbox_message = govbox_messages(:solver_delivery_notification)
 
-    delivery_notification_tag = DeliveryNotificationTag.find_by!(
-      tenant: message.thread.box.tenant,
+    delivery_notification_tag = Upvs::DeliveryNotificationTag.find_or_create_for_tenant!(
+      message.thread.box.tenant
     )
 
     Govbox::ProcessUnauthorizedDeliveryNotificationJob.new.perform(govbox_message)

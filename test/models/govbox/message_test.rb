@@ -22,8 +22,8 @@ class Govbox::MessageTest < ActiveSupport::TestCase
     assert_equal message.objects.first.message_object_datum.blob, "MyContent"
 
     assert_equal message.tags.count, 1
-    assert message.tags.first.is_a?(ExternalTag)
     assert_equal message.tags.first.name, "slovensko.sk:#{govbox_message.folder.name}"
+    assert_equal message.tags.first.external_name, "slovensko.sk:#{govbox_message.folder.name}"
     assert_equal message.tags.first.visible, false
     assert_equal message.thread.tags.count, 1
     assert_equal message.tags.first, message.thread.tags.first
@@ -42,7 +42,7 @@ class Govbox::MessageTest < ActiveSupport::TestCase
   test "should not create new tag if already exists" do
     govbox_message = govbox_messages(:one)
 
-    tag = ExternalTag.create!(system_name: "slovensko.sk:#{govbox_message.folder.name}", name: "slovensko.sk:#{govbox_message.folder.name}", tenant: govbox_message.folder.box.tenant, visible: false)
+    tag = SimpleTag.create!(external_name: "slovensko.sk:#{govbox_message.folder.name}", name: "slovensko.sk:#{govbox_message.folder.name}", tenant: govbox_message.folder.box.tenant, visible: false)
 
     Govbox::Message.create_message_with_thread!(govbox_message)
 
@@ -58,7 +58,7 @@ class Govbox::MessageTest < ActiveSupport::TestCase
     govbox_message1 = govbox_messages(:one)
     govbox_message2 = govbox_messages(:three)
 
-    tag = ExternalTag.create!(system_name: "slovensko.sk:#{govbox_message1.folder.name}", name: "slovensko.sk:#{govbox_message1.folder.name}", tenant: govbox_message1.folder.box.tenant, visible: false)
+    tag = SimpleTag.create!(external_name: "slovensko.sk:#{govbox_message1.folder.name}", name: "slovensko.sk:#{govbox_message1.folder.name}", tenant: govbox_message1.folder.box.tenant, visible: false)
 
     Govbox::Message.create_message_with_thread!(govbox_message1)
     message1 = Message.last

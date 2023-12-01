@@ -2,16 +2,15 @@
 #
 # Table name: tags
 #
-#  id          :bigint           not null, primary key
-#  external    :boolean          default(FALSE)
-#  name        :string           not null
-#  system_name :string
-#  type        :string           not null
-#  visible     :boolean          default(TRUE), not null
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
-#  owner_id    :bigint
-#  tenant_id   :bigint           not null
+#  id            :bigint           not null, primary key
+#  external_name :string
+#  name          :string           not null
+#  type          :string           not null
+#  visible       :boolean          default(TRUE), not null
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  owner_id      :bigint
+#  tenant_id     :bigint           not null
 #
 class Tag < ApplicationRecord
   include AuditableEvents
@@ -29,9 +28,7 @@ class Tag < ApplicationRecord
   validates :name, presence: true
   validates :name, uniqueness: { scope: :tenant_id, case_sensitive: false }
 
-  scope :external, -> { where(type: ExternalTag.to_s) }
   scope :simple, -> { where(type: SimpleTag.to_s) }
-  scope :simple_or_external, -> { where(type: [SimpleTag, ExternalTag].map(&:to_s)) }
   scope :visible, -> { where(visible: true) }
 
   after_create_commit ->(tag) { tag.mark_readable_by_groups([tag.tenant.admin_group]) }
@@ -41,11 +38,7 @@ class Tag < ApplicationRecord
     self.groups += groups
   end
 
-  def simple?
+  def destroyable?
     false
-  end
-
-  def system?
-    is_a?(DraftTag) || is_a?(DeliveryNotificationTag)
   end
 end

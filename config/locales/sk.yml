@@ -244,10 +244,6 @@ sk:
       all: "Všetci"
       admin: "Administrátori"
       signer: "Podpisovatelia"
-  tag:
-    names:
-      draft: "Rozpísané"
-      delivery_notification: "Na prevzatie"
   title: "Názov"
   tag_editing_in_message_threads:
     one: "Úprava štítkov v jednom vlákne"

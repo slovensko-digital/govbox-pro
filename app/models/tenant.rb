@@ -16,7 +16,6 @@ class Tenant < ApplicationRecord
   has_one :admin_group
   has_many :custom_groups
 
-  has_one :delivery_notification_tag
   has_one :draft_tag
 
   has_many :boxes, dependent: :destroy
@@ -33,7 +32,6 @@ class Tenant < ApplicationRecord
     create_all_group!(name: "all")
     create_admin_group!(name: "admins")
     create_signer_group!(name: "signers")
-    create_draft_tag!(name: "drafts", visible: true)
-    create_delivery_notification_tag!(name: "delivery notification", visible: true)
+    create_draft_tag!(name: "Rozpracované", visible: true)
   end
 end

@@ -120,8 +120,8 @@ class Govbox::Message < ApplicationRecord
   end
 
   def self.add_upvs_related_tags(message, govbox_message)
-    upvs_tag = ExternalTag.find_or_create_by!(
-      system_name: "slovensko.sk:#{govbox_message.folder.full_name}",
+    upvs_tag = SimpleTag.find_or_create_by!(
+      external_name: "slovensko.sk:#{govbox_message.folder.full_name}",
       tenant: govbox_message.box.tenant
     ) do |tag|
       tag.name = "slovensko.sk:#{govbox_message.folder.full_name}"
@@ -133,16 +133,14 @@ class Govbox::Message < ApplicationRecord
   end
 
   def self.add_delivery_notification_tag(message)
-    delivery_notification_tag = DeliveryNotificationTag.find_by!(
-      tenant: message.thread.box.tenant
-    )
-    message.add_cascading_tag(delivery_notification_tag)
+    message.add_cascading_tag(delivery_notification_tag(message))
   end
 
   def self.remove_delivery_notification_tag(message)
-    delivery_notification_tag = DeliveryNotificationTag.find_by!(
-      tenant: message.thread.box.tenant
-    )
-    message.remove_cascading_tag(delivery_notification_tag)
+    message.remove_cascading_tag(delivery_notification_tag(message))
+  end
+
+  def self.delivery_notification_tag(message)
+    Upvs::DeliveryNotificationTag.find_or_create_for_tenant!(message.thread.box.tenant)
   end
 end
