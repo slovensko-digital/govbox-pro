@@ -128,12 +128,14 @@ class MessageDraft < Message
   end
 
   def validate_metadata
-    errors.add(:metadata, "No recipient URI") unless metadata["recipient_uri"].present?
-    errors.add(:metadata, "No posp ID") unless metadata["posp_id"].present?
-    errors.add(:metadata, "No posp version") unless metadata["posp_version"].present?
-    errors.add(:metadata, "No message type") unless metadata["message_type"].present?
-    errors.add(:metadata, "No correlation ID") unless metadata["correlation_id"].present?
-    errors.add(:metadata, "Correlation ID must be UUID") unless metadata["correlation_id"]&.match?(Utils::UUID_PATTERN)
+    all_message_metadata = all_metadata
+
+    errors.add(:metadata, "No recipient URI") unless all_message_metadata["recipient_uri"].present?
+    errors.add(:metadata, "No posp ID") unless all_message_metadata["posp_id"].present?
+    errors.add(:metadata, "No posp version") unless all_message_metadata["posp_version"].present?
+    errors.add(:metadata, "No message type") unless all_message_metadata["message_type"].present?
+    errors.add(:metadata, "No correlation ID") unless all_message_metadata["correlation_id"].present?
+    errors.add(:metadata, "Correlation ID must be UUID") unless all_message_metadata["correlation_id"]&.match?(Utils::UUID_PATTERN)
   end
 
   def validate_form
