@@ -19,7 +19,7 @@ class Admin::GroupMembershipPolicy < ApplicationPolicy
   end
 
   def create?
-    return false if !@user.site_admin? && !@user.admin?
+    return false unless @user.site_admin? || @user.admin?
     return false unless @group_membership.group.tenant == Current.tenant
     return false unless @group_membership.user.tenant == Current.tenant
 
@@ -27,6 +27,9 @@ class Admin::GroupMembershipPolicy < ApplicationPolicy
   end
 
   def destroy?
-    (@user.site_admin? || @user.admin?) && !(@group_membership.user == @user && @group_membership.group.type == 'AdminGroup')
+    return false unless @user.site_admin? || @user.admin?
+    return true unless @group_membership.user == @user && @group_membership.group.type == 'AdminGroup'
+
+    false
   end
 end

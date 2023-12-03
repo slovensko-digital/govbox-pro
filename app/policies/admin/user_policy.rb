@@ -3,31 +3,31 @@
 class Admin::UserPolicy < ApplicationPolicy
   attr_reader :user
 
-  def initialize(user_logged_in, user_to_authorize)
-    @user = user_logged_in
+  def initialize(actor, user_to_authorize)
+    @actor = actor
     @user_to_authorize = user_to_authorize
   end
 
   class Scope < Scope
     def resolve
-      if @user.site_admin?
+      if @actor.site_admin?
         scope.all
       else
-        scope.where(tenant_id: @user.tenant_id)
+        scope.where(tenant_id: @actor.tenant_id)
       end
     end
   end
 
   def index?
-    @user.site_admin? || @user.admin?
+    @actor.site_admin? || @actor.admin?
   end
 
   def show?
-    @user.site_admin? || @user.admin?
+    @actor.site_admin? || @actor.admin?
   end
 
   def create?
-    @user.site_admin? || @user.admin?
+    @actor.site_admin? || @actor.admin?
   end
 
   def new?
@@ -35,7 +35,7 @@ class Admin::UserPolicy < ApplicationPolicy
   end
 
   def update?
-    @user.site_admin? || @user.admin?
+    @actor.site_admin? || @actor.admin?
   end
 
   def edit?
@@ -43,6 +43,9 @@ class Admin::UserPolicy < ApplicationPolicy
   end
 
   def destroy?
-    (@user.site_admin? || @user.admin?) && @user_to_authorize != @user
+    return false unless @actor.site_admin? || @actor.admin?
+    return true unless @user_to_authorize != @actor
+
+    false
   end
 end
