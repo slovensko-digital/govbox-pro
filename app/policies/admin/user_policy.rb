@@ -5,6 +5,7 @@ class Admin::UserPolicy < ApplicationPolicy
 
   def initialize(user_logged_in, user_to_authorize)
     @user = user_logged_in
+    @user_to_authorize = user_to_authorize
   end
 
   class Scope < Scope
@@ -42,7 +43,6 @@ class Admin::UserPolicy < ApplicationPolicy
   end
 
   def destroy?
-    @user.site_admin? || @user.admin?
+    (@user.site_admin? || @user.admin?) && @user_to_authorize != @user
   end
-
 end

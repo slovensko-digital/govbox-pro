@@ -13,17 +13,9 @@ class Admin::GroupMembershipPolicy < ApplicationPolicy
       if @user.site_admin?
         scope.all
       else
-        scope.includes(:user, :group).where(user: {tenant_id: Current.tenant.id}, group: {tenant_id: Current.tenant.id})
+        scope.includes(:user, :group).where(user: { tenant_id: Current.tenant.id }, group: { tenant_id: Current.tenant.id })
       end
     end
-  end
-
-  def index
-    @user.site_admin? || @user.admin?
-  end
-
-  def show?
-    @user.site_admin? || @user.admin?
   end
 
   def create?
@@ -34,20 +26,7 @@ class Admin::GroupMembershipPolicy < ApplicationPolicy
     true
   end
 
-  def new?
-    create?
-  end
-
-  def update?
-    @user.site_admin? || @user.admin?
-  end
-
-  def edit?
-    update?
-  end
-
   def destroy?
-    @user.site_admin? || @user.admin?
+    (@user.site_admin? || @user.admin?) && !(@group_membership.user == @user && @group_membership.group.type == 'AdminGroup')
   end
 end
-
