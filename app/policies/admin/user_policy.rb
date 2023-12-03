@@ -44,8 +44,8 @@ class Admin::UserPolicy < ApplicationPolicy
 
   def destroy?
     return false unless @actor.site_admin? || @actor.admin?
-    return true unless @user_to_authorize != @actor
+    return false if @user_to_authorize == @actor
 
-    false
+    true
   end
 end
