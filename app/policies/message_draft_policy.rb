@@ -51,4 +51,8 @@ class MessageDraftPolicy < ApplicationPolicy
   def destroy?
     create?
   end
+
+  def enable_edit?
+    create?
+  end
 end

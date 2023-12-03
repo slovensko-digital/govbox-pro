@@ -71,6 +71,10 @@ class MessageDraftsController < ApplicationController
     redirect_to redirect_path, notice: "Draft bol zahodený"
   end
 
+  def enable_edit
+    authorize @message
+  end
+
   private
 
   def load_message_drafts

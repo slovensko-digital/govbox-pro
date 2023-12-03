@@ -254,3 +254,7 @@ sk:
   tag_editing_in_message_threads:
     one: "Úprava štítkov v jednom vlákne"
     other: "Úprava štítkov v %{count} vláknach"
+  message_draft:
+    form_signed: "Draft už bol podpísaný. Podpísaný draft nie je možné ďalej upravovať. V prípade potreby pripravte novú správu a odošlite ju."
+    form_submitted: "Správa už bola odoslaná. Odoslanú správu nie je možné ďalej upravovať. V prípade potreby pripravte novú správu a odošlite ju."
+    read_only_agenda: "Správu nie je možné ďalej upravovať. V prípade potreby pripravte novú správu a odošlite ju."

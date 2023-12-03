@@ -117,6 +117,12 @@ class MessageDraft < Message
     metadata["posp_id"] == GENERAL_AGENDA_POSP_ID && !form&.is_signed? && not_yet_submitted?
   end
 
+  def reason_for_readonly
+    return :read_only_agenda unless metadata["posp_id"] == GENERAL_AGENDA_POSP_ID
+    return :form_submitted if submitted? || being_submitted?
+    return :form_signed if form.is_signed?
+  end
+
   def custom_visualization?
     metadata["posp_id"] == GENERAL_AGENDA_POSP_ID
   end
