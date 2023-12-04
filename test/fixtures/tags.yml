@@ -68,6 +68,18 @@ ssd_print:
   visible: true
   tenant: ssd
 
+ssd_signature_requested:
+  name: Na podpis
+  type: SignatureRequestedTag
+  visible: true
+  tenant: ssd
+
+ssd_signed:
+  name: Podpisane
+  type: SignedTag
+  visible: true
+  tenant: ssd
+
 solver_special:
   name: Special
   type: SimpleTag
