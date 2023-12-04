@@ -10,6 +10,10 @@ class MessageThreadsTagPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
+      scope_tags_to_accessible_by_user(scope)
+    end
+
+    def scope_tags_to_accessible_by_user(scope)
       # user can change tags on message_threads that he already has access to
       scope.where("EXISTS (
         SELECT 1 FROM message_threads_tags AS message_threads_tags_2
