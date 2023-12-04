@@ -36,4 +36,13 @@ class Govbox::ProcessMessageJobTest < ActiveJob::TestCase
 
     assert outbox_message.reload.collapsed?
   end
+
+  test "successfully processes a delivery notification" do
+    inbox_govbox_message = govbox_messages(:solver_delivery_notification)
+    Govbox::ProcessMessageJob.new.perform(inbox_govbox_message)
+
+    message = Message.find_by_uuid(inbox_govbox_message.payload["message_id"])
+
+    assert message
+  end
 end
