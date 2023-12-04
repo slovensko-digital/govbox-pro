@@ -16,5 +16,16 @@ application.register('tabs', Tabs)
 application.register('popover', Popover)
 application.register('toggle', Toggle)
 application.register('slideover', Slideover)
+document.addEventListener('turbo:before-cache', function(event) {
+    event.target.querySelectorAll("[data-turbo-temporary-hide]").forEach((elm) => {
+        elm.style = 'display: none';
+    })
+});
+
+if (window.history.state && window.history.state.turbo) {
+    window.addEventListener("popstate", function () {
+        location.reload(true);
+    });
+}
 
 export { application }
