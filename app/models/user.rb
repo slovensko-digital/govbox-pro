@@ -24,7 +24,7 @@ class User < ApplicationRecord
   validates_presence_of :name, :email
   validates_uniqueness_of :name, :email, scope: :tenant_id, case_sensitive: false
 
-  before_destroy :before_destroy, prepend: true
+  before_destroy :delete_user_group, prepend: true
   after_create :handle_default_groups
 
   def site_admin?
@@ -41,11 +41,7 @@ class User < ApplicationRecord
 
   private
 
-  def before_destroy
-    if self == Current.user
-      errors.add :name, "Administrátor nemôže zmazať sám seba"
-      throw :abort
-    end
+  def delete_user_group
     user_group.destroy
   end
 
