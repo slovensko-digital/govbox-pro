@@ -21,24 +21,20 @@ class Admin::UserPolicy < ApplicationPolicy
     end
 
     def resolve
-      if @actor.site_admin?
-        scope.all
-      else
-        scope.where(tenant_id: @actor.tenant_id)
-      end
+      scope.where(tenant: @actor.tenant)
     end
   end
 
   def index?
-    @actor.site_admin? || @actor.admin?
+    @actor.admin?
   end
 
   def show?
-    @actor.site_admin? || @actor.admin?
+    @actor.admin?
   end
 
   def create?
-    @actor.site_admin? || @actor.admin?
+    @actor.admin?
   end
 
   def new?
@@ -46,7 +42,7 @@ class Admin::UserPolicy < ApplicationPolicy
   end
 
   def update?
-    @actor.site_admin? || @actor.admin?
+    @actor.admin?
   end
 
   def edit?
@@ -54,7 +50,7 @@ class Admin::UserPolicy < ApplicationPolicy
   end
 
   def destroy?
-    return false unless @actor.site_admin? || @actor.admin?
+    return false unless @actor.admin?
     return false if @user_to_authorize == @actor
 
     true

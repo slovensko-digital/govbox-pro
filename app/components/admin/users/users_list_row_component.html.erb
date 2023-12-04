@@ -20,7 +20,7 @@
       <%= render Common::EditButtonComponent.new %>
     <% end %>
     <% if Pundit.policy(Current.user, [:admin, @user]).destroy? %>
-      <%= button_to admin_tenant_user_path(@user.tenant, [:admin, @user]), method: :delete do %>
+      <%= button_to admin_tenant_user_path(@user.tenant, @user), method: :delete do %>
         <%= render Common::DeleteButtonComponent.new %>
       <% end %>
     <% end %>

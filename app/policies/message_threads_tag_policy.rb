@@ -10,8 +10,6 @@ class MessageThreadsTagPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      return scope.all if @user.site_admin?
-
       scope_tags_to_accessible_by_user(scope)
     end
 
@@ -58,4 +56,3 @@ class MessageThreadsTagPolicy < ApplicationPolicy
     true
   end
 end
-
