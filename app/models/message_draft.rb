@@ -162,6 +162,12 @@ class MessageDraft < Message
     Message.find(metadata["original_message_id"]) if metadata["original_message_id"]
   end
 
+  def remove_form_signature
+    return false unless form
+
+    form.remove_signature
+  end
+
   private
 
   def validate_metadata

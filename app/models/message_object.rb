@@ -68,12 +68,18 @@ class MessageObject < ApplicationRecord
     message.draft? && message.not_yet_submitted? && !form?
   end
 
-  def asice?
-    mimetype == 'application/vnd.etsi.asic-e+zip'
-  end
+  def remove_signature
+    return false unless form?
+    return false unless is_signed
 
-  def destroyable?
-    message.draft? && message.not_yet_submitted? && !form?
+    unsigned_object = nested_message_objects&.first
+    return false unless unsigned_object
+
+    transaction do
+      update(name: unsigned_object.name, mimetype: unsigned_object.mimetype, is_signed: false)
+      message_object_datum.update(blob: unsigned_object.content)
+      unsigned_object.destroy
+    end
   end
 
   private

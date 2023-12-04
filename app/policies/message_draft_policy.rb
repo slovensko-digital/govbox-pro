@@ -52,6 +52,10 @@ class MessageDraftPolicy < ApplicationPolicy
     create?
   end
 
+  def locked?
+    enable_edit?
+  end
+
   def enable_edit?
     create?
   end

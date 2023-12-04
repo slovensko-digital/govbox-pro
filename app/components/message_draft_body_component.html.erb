@@ -28,8 +28,7 @@
   <div class="flex flex-col justify-stretch items-start relative gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
     <% if @message.custom_visualization? %>
       <% message_title_id = dom_id(@message, :title)
-      message_text_id = dom_id(@message, :text)
-      %>
+         message_text_id = dom_id(@message, :text) %>
       <%= content_tag(:div,
                       {
                         "data-controller": "message-drafts",
@@ -43,7 +42,7 @@
           <%= text_field_tag message_title_id, @message.title, placeholder: "Predmet", "data-action": "change->message-drafts#update", class: "mb-3 px-3 py-4 placeholder-slate-300 text-slate-900 relative bg-white bg-white rounded-lg text-base border-0 shadow outline-none focus:outline-none focus:ring w-full" %>
           <%= text_area_tag message_text_id, @message.metadata["message_body"], autofocus: @is_last, placeholder: "Text", "data-action": "change->message-drafts#update", rows: 10, class: "px-3 py-4 placeholder-slate-300 text-slate-900 relative bg-white bg-white rounded-lg text-base border-0 shadow outline-none focus:outline-none focus:ring w-full h-full" %>
         <% else %>
-          <%= link_to enable_edit_message_draft_path(@message), data: { turbo_frame: "modal" } do %>
+          <%= link_to locked_message_draft_path(@message), data: { turbo_frame: "modal" } do %>
             <%= text_field_tag message_title_id, @message.title, placeholder: "Predmet", readonly: true, class: "mb-3 px-3 py-4 placeholder-slate-300 text-slate-900 relative bg-white bg-white rounded-lg text-base border-0 shadow outline-none focus:outline-none focus:ring w-full" %>
             <%= text_area_tag message_text_id, @message.metadata["message_body"], autofocus: @is_last, readonly: true, placeholder: "Text", rows: 10, class: "px-3 py-4 placeholder-slate-300 text-slate-900 relative bg-white bg-white rounded-lg text-base border-0 shadow outline-none focus:outline-none focus:ring w-full h-full" %>
           <% end %>

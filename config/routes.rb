@@ -105,6 +105,7 @@ Rails.application.routes.draw do
 
   resources :message_drafts do
     member do
+      get 'locked'
       get 'enable_edit'
       post 'submit'
     end
