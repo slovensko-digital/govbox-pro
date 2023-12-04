@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_12_01_113708) do
+ActiveRecord::Schema[7.0].define(version: 2023_12_04_143711) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -261,7 +261,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_01_113708) do
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["group_id"], name: "index_group_memberships_on_group_id"
+    t.index ["group_id", "user_id"], name: "index_group_memberships_on_group_id_and_user_id", unique: true
     t.index ["user_id"], name: "index_group_memberships_on_user_id"
   end
 
@@ -432,8 +432,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_01_113708) do
     t.bigint "owner_id"
     t.string "external_name"
     t.string "type", null: false
+    t.integer "user_id"
     t.index "tenant_id, lower((name)::text)", name: "index_tags_on_tenant_id_and_lowercase_name", unique: true
     t.index ["owner_id"], name: "index_tags_on_owner_id"
+    t.index ["tenant_id", "type", "user_id"], name: "signers_tags", unique: true, where: "(((type)::text = ANY ((ARRAY['SignatureRequestedToTag'::character varying, 'SignedByTag'::character varying])::text[])) AND (user_id IS NOT NULL))"
+    t.index ["tenant_id", "type"], name: "signings_tags", unique: true, where: "((type)::text = ANY ((ARRAY['SignatureRequestedTag'::character varying, 'SignedTag'::character varying])::text[]))"
     t.index ["tenant_id"], name: "index_tags_on_tenant_id"
   end
 
@@ -513,6 +516,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_01_113708) do
   add_foreign_key "tag_groups", "tags"
   add_foreign_key "tags", "tenants"
   add_foreign_key "tags", "users", column: "owner_id"
+  add_foreign_key "tags", "users", name: "tags_to_users"
   add_foreign_key "upvs_form_template_related_documents", "upvs_form_templates"
   add_foreign_key "users", "tenants"
 end

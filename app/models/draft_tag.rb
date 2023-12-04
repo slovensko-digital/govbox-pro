@@ -11,6 +11,7 @@
 #  updated_at    :datetime         not null
 #  owner_id      :bigint
 #  tenant_id     :bigint           not null
+#  user_id       :integer
 #
 class DraftTag < Tag
 end

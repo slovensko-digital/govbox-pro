@@ -18,10 +18,14 @@ class Tenant < ApplicationRecord
   has_many :custom_groups
 
   has_one :draft_tag
+  has_one :signature_requested_tag
+  has_one :signed_tag
 
   has_many :boxes, dependent: :destroy
   has_many :automation_rules, class_name: "Automation::Rule", dependent: :destroy
   has_many :tags, dependent: :destroy
+  has_many :signature_requested_to_tags
+  has_many :signed_by_tags
   has_many :simple_tags
   has_many :filters
   after_create :create_default_objects
@@ -63,5 +67,7 @@ class Tenant < ApplicationRecord
     create_admin_group!(name: "admins")
     create_signer_group!(name: "signers")
     create_draft_tag!(name: "Rozpracované", visible: true)
+    create_signature_requested_tag!(name: "Na podpis", visible: true)
+    create_signed_tag!(name: "Podpísané", visible: true)
   end
 end

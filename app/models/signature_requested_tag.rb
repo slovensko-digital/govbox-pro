@@ -13,14 +13,5 @@
 #  tenant_id     :bigint           not null
 #  user_id       :integer
 #
-class Upvs::DeliveryNotificationTag < ::Tag
-  def self.find_or_create_for_tenant!(tenant)
-    find_or_create_by!(
-      type: self.to_s,
-      tenant_id: tenant
-    ) do |tag|
-      tag.name = "Na prevzatie"
-      tag.visible = true
-    end
-  end
+class SignatureRequestedTag < Tag
 end
