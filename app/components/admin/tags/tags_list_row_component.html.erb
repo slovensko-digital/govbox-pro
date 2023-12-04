@@ -8,7 +8,7 @@
     <%= link_to edit_admin_tenant_tag_path(@tag.tenant, @tag) do %>
       <%= render Common::EditButtonComponent.new %>
     <% end %>
-    <%= button_to admin_tenant_tag_path(@tag.tenant, @tag), method: :delete do %>
+    <%= button_to admin_tenant_tag_path(@tag.tenant, @tag), data: { turbo_confirm: "Naozaj zmazať štítok? Štítok bude zmazaný aj zo všetkých vlákien!" }, method: :delete do %>
       <%= render Common::DeleteButtonComponent.new %>
     <% end %>
   </div>

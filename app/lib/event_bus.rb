@@ -58,7 +58,9 @@ EventBus.subscribe :box_destroyed, ->(box_id) { Govbox::DestroyBoxDataJob.perfor
 
 EventBus.subscribe :message_thread_note_created, ->(note) { AuditLog::MessageThreadNoteCreated.create_audit_record(note) }
 EventBus.subscribe :message_thread_note_updated, ->(note) { AuditLog::MessageThreadNoteUpdated.create_audit_record(note) }
-EventBus.subscribe :message_thread_tag_updated, ->(thread_tag) { AuditLog::MessageThreadTagUpdated.create_audit_record(thread_tag) }
+EventBus.subscribe :message_threads_tag_created, ->(thread_tag) { AuditLog::MessageThreadTagCreated.create_audit_record(thread_tag) }
+EventBus.subscribe :message_threads_tag_updated, ->(thread_tag) { AuditLog::MessageThreadTagUpdated.create_audit_record(thread_tag) }
+EventBus.subscribe :message_threads_tag_destroyed, ->(thread_tag) { AuditLog::MessageThreadTagDestroyed.create_audit_record(thread_tag) }
 EventBus.subscribe :message_delivery_authorized, ->(message) { AuditLog::MessageDeliveryAuthorized.create_audit_record(message) }
 EventBus.subscribe :message_draft_being_submitted, ->(message) { AuditLog::MessageDraftBeingSubmitted.create_audit_record(message) }
 EventBus.subscribe :message_draft_submitted, ->(message) { AuditLog::MessageDraftSubmitted.create_audit_record(message) }
