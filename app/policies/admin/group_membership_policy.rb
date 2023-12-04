@@ -14,14 +14,6 @@ class Admin::GroupMembershipPolicy < ApplicationPolicy
     end
   end
 
-  def index
-    @user.admin?
-  end
-
-  def show?
-    @user.admin?
-  end
-
   def create?
     return false unless @user.admin?
     return false unless @group_membership.group.tenant == Current.tenant
@@ -30,19 +22,10 @@ class Admin::GroupMembershipPolicy < ApplicationPolicy
     true
   end
 
-  def new?
-    create?
-  end
-
-  def update?
-    @user.admin?
-  end
-
-  def edit?
-    update?
-  end
-
   def destroy?
-    @user.admin?
+    return false unless @user.admin?
+    return true unless @group_membership.user == @user && @group_membership.group.type == 'AdminGroup'
+
+    false
   end
 end

@@ -36,4 +36,8 @@ class TagPolicy < ApplicationPolicy
   def new?
     true
   end
+
+  def destroy?
+    @tag.destroyable? && (@tag.owner == @user || @user.admin?)
+  end
 end
