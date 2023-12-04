@@ -1,14 +1,25 @@
 # frozen_string_literal: true
 
 class Admin::UserPolicy < ApplicationPolicy
-  attr_reader :user
-
   def initialize(actor, user_to_authorize)
     @actor = actor
     @user_to_authorize = user_to_authorize
   end
 
+  def user
+    @actor
+  end
+
   class Scope < Scope
+    def initialize(actor, scope)
+      @actor = actor
+      @scope = scope
+    end
+
+    def user
+      @actor
+    end
+
     def resolve
       if @actor.site_admin?
         scope.all
