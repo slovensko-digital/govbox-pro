@@ -73,10 +73,12 @@ class MessageDraftsController < ApplicationController
 
   def enable_edit
     authorize @message
-    if @message.remove_form_signature
-      redirect_to message_thread_path(@message.thread), notice: "Podpisy boli úspešne odstránené, správu je možné upravovať"
-    else
-      redirect_to message_thread_path(@message.thread), alert: "Nastala neočakávaná chyba, nepodarilo sa odstrániť podpisy"
+    @message.transaction do
+      if @message.remove_form_signature
+        redirect_to message_thread_path(@message.thread), notice: "Podpisy boli úspešne odstránené, správu je možné upravovať"
+      else
+        redirect_to message_thread_path(@message.thread), alert: "Nastala neočakávaná chyba, nepodarilo sa odstrániť podpisy"
+      end
     end
   end
 

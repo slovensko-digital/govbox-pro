@@ -75,11 +75,9 @@ class MessageObject < ApplicationRecord
     unsigned_object = nested_message_objects&.first
     return false unless unsigned_object
 
-    transaction do
-      update(name: unsigned_object.name, mimetype: unsigned_object.mimetype, is_signed: false)
-      message_object_datum.update(blob: unsigned_object.content)
-      unsigned_object.destroy
-    end
+    update(name: unsigned_object.name, mimetype: unsigned_object.mimetype, is_signed: false)
+    message_object_datum.update(blob: unsigned_object.content)
+    unsigned_object.destroy
   end
 
   private
