@@ -13,7 +13,7 @@
       <span class="text-xl text-left text-gray-900"><%= @name %></span>
     </button>
   </div>
-  <div data-dropdown-target="menu" class="transform transition hidden scale-95">
+  <div data-dropdown-target="menu" data-turbo-temporary-hide class="transform transition hidden scale-95">
     <%= form_with model: @model, url: @url, method: @method, class: "flex justify-stretch items-center absolute -top-10 gap-2" do |form| %>
       <%= form.text_field @field, class: "flex text-base text-left text-gray-400 grow rounded-md bg-white border border-gray-400" %>
       <%= button_tag type: 'submit' do %>
