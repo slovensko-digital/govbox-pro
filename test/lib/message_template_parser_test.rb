@@ -9,13 +9,15 @@ class MessageTemplateParserTest < ActiveSupport::TestCase
 
     assert_equal template_items.count, 2
 
-    assert_equal template_items.first[:placeholder], "{{Predmet::text_field}}"
+    assert_equal template_items.first[:placeholder], "{{ Predmet:text_field }}"
     assert_equal template_items.first[:name], "Predmet"
+    assert_equal template_items.first[:required], false
     assert_equal template_items.first[:default_value], nil
     assert_equal template_items.first[:type], "text_field"
 
-    assert_equal template_items.second[:placeholder], "{{Text::text_area}}"
+    assert_equal template_items.second[:placeholder], "{{ Text:text_area }}"
     assert_equal template_items.second[:name], "Text"
+    assert_equal template_items.second[:required], false
     assert_equal template_items.second[:default_value], nil
     assert_equal template_items.second[:type], "text_area"
   end
@@ -26,40 +28,47 @@ class MessageTemplateParserTest < ActiveSupport::TestCase
 
     assert_equal template_items.count, 7
 
-    assert_equal template_items.first[:placeholder], "{{IČO::text_field}}"
-    assert_equal template_items.first[:name], "IČO"
+    assert_equal template_items.first[:placeholder], '{{ IČO*:text_field }}'
+    assert_equal template_items.first[:name], 'IČO'
+    assert_equal template_items.first[:required], true
     assert_equal template_items.first[:default_value], nil
-    assert_equal template_items.first[:type], "text_field"
+    assert_equal template_items.first[:type], 'text_field'
 
-    assert_equal template_items.second[:placeholder], "{{Kontaktná osoba:Ján Suchal:text_field}}"
-    assert_equal template_items.second[:name], "Kontaktná osoba"
-    assert_equal template_items.second[:default_value], "Ján Suchal"
-    assert_equal template_items.second[:type], "text_field"
+    assert_equal template_items.second[:placeholder], '{{ Kontaktná osoba*:text_field:"Ján Suchal" }}'
+    assert_equal template_items.second[:name], 'Kontaktná osoba'
+    assert_equal template_items.second[:required], true
+    assert_equal template_items.second[:default_value], 'Ján Suchal'
+    assert_equal template_items.second[:type], 'text_field'
 
-    assert_equal template_items.third[:placeholder], "{{Email:jan.suchal@test.sk:text_field}}"
-    assert_equal template_items.third[:name], "Email"
-    assert_equal template_items.third[:default_value], "jan.suchal@test.sk"
-    assert_equal template_items.third[:type], "text_field"
+    assert_equal template_items.third[:placeholder], '{{ Email*:text_field:"jan.suchal@test.sk" }}'
+    assert_equal template_items.third[:name], 'Email'
+    assert_equal template_items.third[:required], true
+    assert_equal template_items.third[:default_value], 'jan.suchal@test.sk'
+    assert_equal template_items.third[:type], 'text_field'
 
-    assert_equal template_items.fourth[:placeholder], "{{Telefón:+4190000000:text_field}}"
-    assert_equal template_items.fourth[:name], "Telefón"
-    assert_equal template_items.fourth[:default_value], "+4190000000"
-    assert_equal template_items.fourth[:type], "text_field"
+    assert_equal template_items.fourth[:placeholder], '{{ Telefón*:text_field:"+4190000000" }}'
+    assert_equal template_items.fourth[:name], 'Telefón'
+    assert_equal template_items.fourth[:required], true
+    assert_equal template_items.fourth[:default_value], '+4190000000'
+    assert_equal template_items.fourth[:type], 'text_field'
 
-    assert_equal template_items.fifth[:placeholder], "{{Názov prostriedku:IRVIN:text_field}}"
-    assert_equal template_items.fifth[:name], "Názov prostriedku"
-    assert_equal template_items.fifth[:default_value], "IRVIN"
-    assert_equal template_items.fifth[:type], "text_field"
+    assert_equal template_items.fifth[:placeholder], '{{ Názov prostriedku:text_field:"IRVIN" }}'
+    assert_equal template_items.fifth[:name], 'Názov prostriedku'
+    assert_equal template_items.fifth[:required], false
+    assert_equal template_items.fifth[:default_value], 'IRVIN'
+    assert_equal template_items.fifth[:type], 'text_field'
 
-    assert_equal template_items[5][:placeholder], "{{Dátum začiatku platnosti::date_field}}"
-    assert_equal template_items[5][:name], "Dátum začiatku platnosti"
+    assert_equal template_items[5][:placeholder], '{{ Dátum začiatku platnosti*:date_field }}'
+    assert_equal template_items[5][:name], 'Dátum začiatku platnosti'
+    assert_equal template_items[5][:required], true
     assert_equal template_items[5][:default_value], nil
-    assert_equal template_items[5][:type], "date_field"
+    assert_equal template_items[5][:type], 'date_field'
 
-    assert_equal template_items[6][:placeholder], "{{Digitálny odtlačok::text_field}}"
-    assert_equal template_items[6][:name], "Digitálny odtlačok"
+    assert_equal template_items[6][:placeholder], '{{ Digitálny odtlačok*:text_field }}'
+    assert_equal template_items[6][:name], 'Digitálny odtlačok'
+    assert_equal template_items[6][:required], true
     assert_equal template_items[6][:default_value], nil
-    assert_equal template_items[6][:type], "text_field"
+    assert_equal template_items[6][:type], 'text_field'
 
   end
 end

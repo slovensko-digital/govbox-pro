@@ -1,5 +1,5 @@
 module MessageTemplateParser
-  PLACEHOLDER_PATTERN=/({{ ?([\p{L} +]+)(\*?):([\p{L}_]+)(?:\:"([\p{L} +]+)")? }})/
+  PLACEHOLDER_PATTERN=/({{ ?([\p{L} +]+)(\*?):([\p{L}_]+)(?:\:"([\p{L}.@\-+_\d\s]+)")? }})/
 
   def self.parse_template_placeholders(template)
     template_content = template.content
