@@ -102,7 +102,7 @@ class MessageDraft < Message
   end
    
   def invalid?
-    metadata["status"] == "invalid" || valid?(:validate_data)
+    metadata["status"] == "invalid" || !valid?(:validate_data)
   end
 
   def original_message

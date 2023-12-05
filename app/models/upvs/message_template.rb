@@ -35,6 +35,7 @@ class Upvs::MessageTemplate < ::MessageTemplate
       # sender_name: TODO - odkial ziskame?,
       # recipient_name: TODO - bolo by najpraktickejsie si asi posielat vo formulari spolu s URI,
       replyable: false,
+      title: self.name,
       author: author
     )
 
@@ -68,6 +69,8 @@ class Upvs::MessageTemplate < ::MessageTemplate
   end
 
   def create_message_reply(message, original_message:, author:)
+    message_title = "Odpoveď: #{original_message.title}"
+
     message.update(
       uuid: SecureRandom.uuid,
       delivered_at: Time.current,
@@ -75,12 +78,13 @@ class Upvs::MessageTemplate < ::MessageTemplate
       sender_name: original_message.recipient_name,
       recipient_name: original_message.sender_name,
       replyable: false,
+      title: message_title,
       author: author
     )
     message.metadata = {
       template_id: self.id,
       data: {
-        Predmet: "Odpoveď: #{original_message.title}"
+        Predmet: message_title
       },
       recipient_uri: original_message.metadata["sender_uri"],
       correlation_id: original_message.metadata["correlation_id"],
