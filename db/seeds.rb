@@ -58,7 +58,7 @@ Upvs::ServiceWithForm.find_or_create_by!(
 Upvs::ServiceWithFormAllowRule.find_or_create_by!(
   institution_uri: 'ico://sk/83369724',
   institution_name: 'Test OVM 83369724',
-  name: "Exekučné konanie - Návhr na vykonanie exekúcie",
+  name: "Exekučné konanie - Návrh na vykonanie exekúcie",
   schema_url: 'http://schemas.gov.sk/form/00166073.RESS_Exekucne_konanie_Navrh_na_vykonanie_exekucie.sk/1.24'
 )
 
@@ -66,15 +66,6 @@ ga_form = Upvs::Form.find_or_create_by!(
   identifier: "App.GeneralAgenda",
   version: "1.9",
   message_type: "App.GeneralAgenda",
-)
-
-ga_form.templates.find_or_create_by!(
-  name: "Všeobecná agenda",
-  template:
-    '<GeneralAgenda xmlns="http://schemas.gov.sk/form/App.GeneralAgenda/1.9">
-  <subject>{{text_field:subject}}</subject>
-  <text>{{text_area:text}}</text>
-</GeneralAgenda>'
 )
 
 ga_related_documents = [

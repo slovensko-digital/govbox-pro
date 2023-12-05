@@ -455,17 +455,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_01_113708) do
     t.index ["upvs_form_id"], name: "index_upvs_form_related_documents_on_form_id"
   end
 
-  create_table "upvs_form_templates", force: :cascade do |t|
-    t.bigint "upvs_form_id", null: false
-    t.bigint "tenant_id"
-    t.string "name", null: false
-    t.text "template", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["tenant_id"], name: "index_upvs_form_templates_on_tenant_id"
-    t.index ["upvs_form_id"], name: "index_upvs_form_templates_on_upvs_form_id"
-  end
-
   create_table "upvs_forms", force: :cascade do |t|
     t.string "identifier", null: false
     t.string "version", null: false
@@ -542,9 +531,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_01_113708) do
   add_foreign_key "tag_groups", "groups"
   add_foreign_key "tag_groups", "tags"
   add_foreign_key "tags", "tenants"
-  add_foreign_key "tags", "users"
+  add_foreign_key "tags", "users", column: "owner_id"
   add_foreign_key "upvs_form_related_documents", "upvs_forms"
-  add_foreign_key "upvs_form_templates", "tenants"
-  add_foreign_key "upvs_form_templates", "upvs_forms"
   add_foreign_key "users", "tenants"
 end

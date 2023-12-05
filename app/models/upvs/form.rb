@@ -11,7 +11,6 @@
 #
 class Upvs::Form < ApplicationRecord
   has_many :related_documents, class_name: 'Upvs::FormRelatedDocument', foreign_key: 'upvs_form_id'
-  has_many :templates, class_name: 'Upvs::FormTemplate', foreign_key: 'upvs_form_id'
 
   def xslt_html
     related_document('CLS_F_XSLT_HTML')
