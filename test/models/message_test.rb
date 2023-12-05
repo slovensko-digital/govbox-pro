@@ -36,7 +36,7 @@ class MessageTest < ActiveSupport::TestCase
     assert message.thread.tags.include?(tag)
   end
 
-  test "reply to message should create a signable draft" do
+  test "reply to message should create a valid draft" do
     message = messages(:ssd_main_general_one)
     user = users(:basic)
 
