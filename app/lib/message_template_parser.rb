@@ -1,17 +1,17 @@
 module MessageTemplateParser
-  PLACEHOLDER_PATTERN = /({{([a-zA-Z\u00C0-\u017F\s]+):([a-zA-Z\u00C0-\u017F0-9.+@\s]+)*:(\*)?(\w*)}})/
+  PLACEHOLDER_PATTERN=/({{ ?([\p{L} +]+)(\*?):([\p{L}_]+)(?:\:"([\p{L} +]+)")? }})/
 
   def self.parse_template_placeholders(template)
     template_content = template.content
 
     placeholders = []
-    template_content.scan(PLACEHOLDER_PATTERN) do |placeholder, name, default_value, required, type|
+    template_content.scan(PLACEHOLDER_PATTERN) do |placeholder, name, required, type, default_value|
       placeholders << {
         placeholder: placeholder,
         name: name,
-        default_value: default_value,
         required: required.present?,
-        type: type
+        type: type,
+        default_value: default_value
       }
     end
 

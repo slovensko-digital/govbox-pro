@@ -34,8 +34,8 @@ end
 Upvs::MessageTemplate.find_or_create_by!(
   name: 'Všeobecná agenda',
   content: '<GeneralAgenda xmlns="http://schemas.gov.sk/form/App.GeneralAgenda/1.9">
-  <subject>{{Predmet::text_field}}</subject>
-  <text>{{Text::text_area}}</text>
+  <subject>{{ Predmet:text_field }}</subject>
+  <text>{{ Text:text_area }}</text>
 </GeneralAgenda>',
   metadata: {
     posp_id: 'App.GeneralAgenda',
@@ -47,8 +47,8 @@ Upvs::MessageTemplate.find_or_create_by!(
 Upvs::MessageTemplate.find_or_create_by!(
   name: MessageTemplate::REPLY_TEMPLATE_NAME,
   content: '<GeneralAgenda xmlns="http://schemas.gov.sk/form/App.GeneralAgenda/1.9">
-  <subject>{{Predmet::text_field}}</subject>
-  <text>{{Text::text_area}}</text>
+  <subject>{{ Predmet:text_field }}</subject>
+  <text>{{ Text:text_area }}</text>
 </GeneralAgenda>',
   metadata: {
     posp_id: 'App.GeneralAgenda',
@@ -66,25 +66,25 @@ Upvs::MessageTemplate.find_or_create_by!(
 	<CertificateOwner>
 		<IdentityType>PO</IdentityType>
 		<OwnerPoOvm>
-			<ICO>{{IČO::*text_field}}</ICO>
+			<ICO>{{ IČO*:text_field }}</ICO>
 			<Suffix xsi:nil="true" />
 		</OwnerPoOvm>
 	</CertificateOwner>
 	<ContactPerson>
-		<ContactName>{{Kontaktná osoba:Ján Suchal:*text_field}}</ContactName>
-		<Email>{{Email:jan.suchal@test.sk:*email_field}}</Email>
-		<Phone>{{Telefón:+4190000000:*text_field}}</Phone>
+		<ContactName>{{ Kontaktná osoba*:text_field:"Ján Suchal" }}</ContactName>
+		<Email>{{ Email*:email_field:"jan.suchal@test.sk" }}</Email>
+		<Phone>{{ Telefón*:text_field:"+4190000000" }}</Phone>
 	</ContactPerson>
 	<IntegrationContract>
-		<ProjectID>{{Názov prostriedku:IRVIN:text_field}}</ProjectID>
+		<ProjectID>{{ Názov prostriedku:text_field:"IRVIN" }}</ProjectID>
 	</IntegrationContract>
 	<TechnicalAccount>
 		<EDeckAccessType>1</EDeckAccessType>
-		<ValidFrom>{{Dátum začiatku platnosti::*date_field}}</ValidFrom>
+		<ValidFrom>{{ Dátum začiatku platnosti*:date_field }}</ValidFrom>
 		<ValidTo xsi:nil="true" />
 	</TechnicalAccount>
 	<AuthentificationCertificateData>
-		<Thumbprint>{{Digitálny odtlačok::*text_field}}</Thumbprint>
+		<Thumbprint>{{ Digitálny odtlačok*:text_field }}</Thumbprint>
 	</AuthentificationCertificateData>
 </AuthentificationCertificateWithTechnicalAccountRegistration>',
   metadata: {
@@ -104,25 +104,25 @@ Upvs::MessageTemplate.find_or_create_by!(
 	<CertificateOwner>
 		<IdentityType>PO</IdentityType>
 		<OwnerPoOvm>
-			<ICO>{{IČO::*text_field}}</ICO>
+			<ICO>{{ IČO*:text_field }}</ICO>
 			<Suffix xsi:nil="true" />
 		</OwnerPoOvm>
 	</CertificateOwner>
 	<ContactPerson>
-		<ContactName>{{Kontaktná osoba::*text_field}}</ContactName>
-		<Email>{{Email::*email_field}}</Email>
-		<Phone>{{Telefón::*text_field}}</Phone>
+		<ContactName>{{ Kontaktná osoba*:text_field }}</ContactName>
+		<Email>{{ Email*:email_field }}</Email>
+		<Phone>{{ Telefón*:text_field }}</Phone>
 	</ContactPerson>
 	<IntegrationContract>
-		<ProjectID>{{Názov prostriedku::text_field}}</ProjectID>
+		<ProjectID>{{ Názov prostriedku:text_field }}</ProjectID>
 	</IntegrationContract>
 	<TechnicalAccount>
 		<EDeckAccessType>1</EDeckAccessType>
-		<ValidFrom>{{Dátum začiatku platnosti::*date_field}}</ValidFrom>
+		<ValidFrom>{{ Dátum začiatku platnosti*:date_field }}</ValidFrom>
 		<ValidTo xsi:nil="true" />
 	</TechnicalAccount>
 	<AuthentificationCertificateData>
-		<Thumbprint>{{Digitálny odtlačok::*text_field}}</Thumbprint>
+		<Thumbprint>{{ Digitálny odtlačok*:text_field }}</Thumbprint>
 	</AuthentificationCertificateData>
 </AuthentificationCertificateWithTechnicalAccountRegistration>',
   metadata: {
