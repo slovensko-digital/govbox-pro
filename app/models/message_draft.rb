@@ -116,10 +116,6 @@ class MessageDraft < Message
     template&.message_data_validation_errors(self)
   end
 
-  def all_metadata
-    metadata.merge(template&.metadata)
-  end
-
   private
 
   def validate_with_message_template
@@ -127,7 +123,7 @@ class MessageDraft < Message
   end
 
   def validate_metadata
-    all_message_metadata = all_metadata
+    all_message_metadata = metadata.merge(template&.metadata)
 
     errors.add(:metadata, "No recipient URI") unless all_message_metadata["recipient_uri"].present?
     errors.add(:metadata, "No posp ID") unless all_message_metadata["posp_id"].present?

@@ -8,10 +8,12 @@ class Govbox::SubmitMessageDraftJob < ApplicationJob
   retry_on TemporarySubmissionError, wait: 2.minutes, attempts: 5
 
   def perform(message_draft, schedule_sync: true, upvs_client: UpvsEnvironment.upvs_client)
+    all_message_metadata = message_draft.metadata.merge(message_draft.template&.metadata)
+
     message_draft_data = {
-      posp_id: message_draft.all_metadata["posp_id"],
-      posp_version: message_draft.all_metadata["posp_version"],
-      message_type: message_draft.all_metadata["message_type"],
+      posp_id: all_message_metadata["posp_id"],
+      posp_version: all_message_metadata["posp_version"],
+      message_type: all_message_metadata["message_type"],
       message_id: message_draft.uuid,
       correlation_id: message_draft.metadata["correlation_id"],
       recipient_uri: message_draft.metadata["recipient_uri"],
