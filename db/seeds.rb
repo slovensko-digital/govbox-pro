@@ -55,12 +55,6 @@ Upvs::ServiceWithForm.find_or_create_by!(
   name: "Žiadosť o zápis autentifikačného certifikátu do registra autentifikačných certifikátov",
   schema_url: 'http://schemas.gov.sk/form/42156424.IAM_Zapis_autentifikacneho_certifikatu_s_vytvorenim_TU.sk/1.5'
 )
-Upvs::ServiceWithFormAllowRule.find_or_create_by!(
-  institution_uri: 'ico://sk/83369724',
-  institution_name: 'Test OVM 83369724',
-  name: "Exekučné konanie - Návrh na vykonanie exekúcie",
-  schema_url: 'http://schemas.gov.sk/form/00166073.RESS_Exekucne_konanie_Navrh_na_vykonanie_exekucie.sk/1.24'
-)
 
 Upvs::MessageTemplate.find_or_create_by!(
   name: 'Všeobecná agenda',

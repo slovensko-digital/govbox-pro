@@ -2,14 +2,6 @@ class MessagesController < ApplicationController
   before_action :set_message, except: [:new]
 
   include MessagesConcern
-  include Upvs
-
-  def new
-    @recipients_list = Upvs::ServiceWithFormAllowRule.all_institutions
-    @message = Message.new
-
-    authorize @message
-  end
 
   def new
     @templates_list = MessageTemplate.tenant_templates_list(Current.tenant)

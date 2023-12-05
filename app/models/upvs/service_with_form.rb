@@ -12,4 +12,5 @@
 #
 
 class Upvs::ServiceWithForm < ApplicationRecord
+  scope :form_services, ->(form) { where("schema_url LIKE ?", "%#{form.metadata['posp_id']}/#{form.metadata['posp_version']}") }
 end

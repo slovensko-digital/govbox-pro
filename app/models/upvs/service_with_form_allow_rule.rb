@@ -12,7 +12,17 @@
 #
 
 class Upvs::ServiceWithFormAllowRule < ApplicationRecord
+  scope :form_services, ->(form) { where("schema_url LIKE ?", "%#{form.metadata['posp_id']}/#{form.metadata['posp_version']}") }
+
   def self.all_institutions
     (::Upvs::ServiceWithForm.all + ::Upvs::ServiceWithFormAllowRule.all).pluck(:institution_uri, :institution_name).uniq.map { |uri, name| { uri: uri, name: name }}
+  end
+
+  def self.all_institutions_with_form(form)
+    (
+      ::Upvs::ServiceWithForm.form_services(form) +
+      ::Upvs::ServiceWithFormAllowRule.form_services(form)
+    ).pluck(:institution_name, :institution_uri)
+     # .uniq.map { |uri, name| { uri: uri, name: name }}
   end
 end

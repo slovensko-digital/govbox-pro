@@ -18,13 +18,7 @@ class Upvs::MessageTemplate < ::MessageTemplate
   GENERAL_AGENDA_MESSAGE_TYPE = "App.GeneralAgenda"
 
   def recipients
-    # TODO nacitat z DB allow listu
-    [
-      ['Test OVM 83136952', 'ico://sk/83136952'],
-      ['Test OVM 83369721', 'ico://sk/83369721'],
-      ['Test OVM 83369722', 'ico://sk/83369722'],
-      ['Test OVM 83369723', 'ico://sk/83369723']
-    ]
+    Upvs::ServiceWithFormAllowRule.all_institutions_with_form(self)
   end
 
   def create_message(message, author:, box:, recipient_uri:)
