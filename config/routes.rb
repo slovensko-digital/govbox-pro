@@ -106,7 +106,9 @@ Rails.application.routes.draw do
 
   resources :message_drafts do
     member do
-      post 'submit'
+      post :confirm_unlock
+      post :unlock
+      post :submit
     end
 
     post 'submit_all', on: :collection

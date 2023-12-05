@@ -60,12 +60,7 @@ class Upvs::MessageTemplate < ::MessageTemplate
 
     message.save!
 
-    message.objects.create!(
-      name: "form.xml",
-      mimetype: "application/x-eform-xml",
-      object_type: "FORM",
-      is_signed: false
-    )
+    create_form_object(message)
   end
 
   def create_message_reply(message, original_message:, author:)
@@ -95,12 +90,7 @@ class Upvs::MessageTemplate < ::MessageTemplate
     message.thread = original_message.thread
     message.save!
 
-    message.objects.create!(
-      name: "form.xml",
-      mimetype: "application/x-eform-xml",
-      object_type: "FORM",
-      is_signed: false
-    )
+    create_form_object(message)
   end
 
   def build_message_from_template(message)
@@ -130,5 +120,14 @@ class Upvs::MessageTemplate < ::MessageTemplate
     required_template_items.each do |template_item|
       message.errors.add(:metadata, :blank, attribute: template_item) unless message.metadata["data"][template_item].present?
     end
+  end
+
+  def create_form_object(message)
+    message.objects.create!(
+      name: "form.xml",
+      mimetype: "application/x-eform-xml",
+      object_type: "FORM",
+      is_signed: false
+    )
   end
 end

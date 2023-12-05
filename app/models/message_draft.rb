@@ -49,11 +49,10 @@ class MessageDraft < Message
 
   def update_content(parameters)
     metadata["data"] = parameters.to_h
-    self.save!
+    save!
 
     template.build_message_from_template(self)
-
-    self.reload
+    reload
   end
 
   def draft?
@@ -66,6 +65,12 @@ class MessageDraft < Message
 
   def editable?
     custom_visualization? && !form&.is_signed? && not_yet_submitted?
+  end
+
+  def reason_for_readonly
+    return :read_only_agenda unless template.present?
+    return :form_submitted if submitted? || being_submitted?
+    return :form_signed if form.is_signed?
   end
 
   def custom_visualization?
@@ -114,6 +119,15 @@ class MessageDraft < Message
 
   def template_validation_errors
     template&.message_data_validation_errors(self)
+  end
+
+  def remove_form_signature
+    return false unless form
+    return false unless form.is_signed?
+
+    form.destroy
+    template&.create_form_object(self)
+    reload
   end
 
   private
