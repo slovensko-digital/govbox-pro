@@ -29,7 +29,7 @@ class MessageDraftPolicy < ApplicationPolicy
   end
 
   def create?
-    true # TODO can everyone create new messages?
+    true # TODO: can everyone create new messages?
   end
 
   def show?
@@ -52,11 +52,11 @@ class MessageDraftPolicy < ApplicationPolicy
     create?
   end
 
-  def locked?
-    enable_edit?
+  def confirm_unlock?
+    unlock?
   end
 
-  def enable_edit?
+  def unlock?
     create?
   end
 end

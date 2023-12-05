@@ -71,18 +71,16 @@ class MessageDraftsController < ApplicationController
     redirect_to redirect_path, notice: "Draft bol zahodený"
   end
 
-  def enable_edit
+  def unlock
     authorize @message
-    @message.transaction do
-      if @message.remove_form_signature
-        redirect_to message_thread_path(@message.thread), notice: "Podpisy boli úspešne odstránené, správu je možné upravovať"
-      else
-        redirect_to message_thread_path(@message.thread), alert: "Nastala neočakávaná chyba, nepodarilo sa odstrániť podpisy"
-      end
+    if @message.remove_form_signature
+      redirect_to message_thread_path(@message.thread), notice: "Podpisy boli úspešne odstránené, správu je možné upravovať"
+    else
+      redirect_to message_thread_path(@message.thread), alert: "Nastala neočakávaná chyba, nepodarilo sa odstrániť podpisy"
     end
   end
 
-  def locked
+  def confirm_unlock
     authorize @message
   end
 

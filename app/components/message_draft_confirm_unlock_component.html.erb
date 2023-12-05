@@ -3,7 +3,7 @@
     Draft nie je možné upravovať
   <% end %>
   <% modal.with_modal_content do %>
-    <div class="mt-2">
+    <div class="mt-2 pb-4">
       <p class="text-sm text-gray-500">
         <% if @message.reason_for_readonly == :form_signed %>
           <%= t "message_draft.form_signed" %>
@@ -17,7 +17,9 @@
     <%= render Common::ModalActionsComponent.new do |actions| %>
       <% if @message.reason_for_readonly == :form_signed %>
         <% actions.with_submit_button do %>
-          <%= link_to 'Odstrániť podpisy', enable_edit_message_draft_path(@message), class: 'flex justify-center items-center px-2.5 py-1.5 rounded-md bg-blue-600 text-sm font-medium text-white', data: { turbo_frame: "_top" } %>
+          <%= button_to unlock_message_draft_path(@message), class: "inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto", data: { turbo_frame: "_top" } do %>
+            Odstrániť podpisy
+          <% end %>
         <% end %>
       <% end %>
     <% end %>

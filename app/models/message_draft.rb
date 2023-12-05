@@ -70,14 +70,7 @@ class MessageDraft < Message
         "status": "created"
       }
     )
-
-    # TODO clean the domain (no UPVS stuff)
-    message_draft.objects.create!(
-      name: "form.xml",
-      mimetype: "application/x-eform-xml",
-      object_type: "FORM",
-      is_signed: false
-    )
+    create_form_object
 
     message_draft
   end
@@ -86,22 +79,10 @@ class MessageDraft < Message
     self.title = title
     metadata["message_body"] = body
     save!
-
     return unless title.present? && body.present?
 
-    # TODO clean the domain (no UPVS stuff)
-    if form.message_object_datum
-      form.message_object_datum.update(
-        blob: Upvs::FormBuilder.build_general_agenda_xml(subject: title, body: body)
-      )
-    else
-      form.message_object_datum = MessageObjectDatum.create(
-        message_object: form,
-        blob: Upvs::FormBuilder.build_general_agenda_xml(subject: title, body: body)
-      )
-    end
-
-    self.reload
+    update_form_object
+    reload
   end
 
   def draft?
@@ -153,7 +134,7 @@ class MessageDraft < Message
     save!
     EventBus.publish(:message_draft_submitted, self)
   end
-   
+
   def invalid?
     metadata["status"] == "invalid"
   end
@@ -164,8 +145,12 @@ class MessageDraft < Message
 
   def remove_form_signature
     return false unless form
+    return false unless form.is_signed?
 
-    form.remove_signature
+    form.destroy
+    create_form_object
+    reload
+    update_form_object
   end
 
   private
@@ -193,6 +178,30 @@ class MessageDraft < Message
     objects.each do |object|
       object.valid?(:validate_data)
       errors.merge!(object.errors)
+    end
+  end
+
+  def create_form_object
+    # TODO: clean the domain (no UPVS stuff)
+    objects.create!(
+      name: "form.xml",
+      mimetype: "application/x-eform-xml",
+      object_type: "FORM",
+      is_signed: false
+    )
+  end
+
+  def update_form_object
+    # TODO: clean the domain (no UPVS stuff)
+    if form.message_object_datum
+      form.message_object_datum.update(
+        blob: Upvs::FormBuilder.build_general_agenda_xml(subject: title, body: metadata["message_body"])
+      )
+    else
+      form.message_object_datum = MessageObjectDatum.create(
+        message_object: form,
+        blob: Upvs::FormBuilder.build_general_agenda_xml(subject: title, body: metadata["message_body"])
+      )
     end
   end
 end

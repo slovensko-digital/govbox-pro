@@ -16,7 +16,7 @@
 class MessageObject < ApplicationRecord
   belongs_to :message, inverse_of: :objects
   has_one :message_object_datum, dependent: :destroy
-  has_many :nested_message_objects, inverse_of: :message_object
+  has_many :nested_message_objects, inverse_of: :message_object, dependent: :destroy
 
   scope :unsigned, -> { where(is_signed: false) }
   scope :to_be_signed, -> { where(to_be_signed: true) }
@@ -66,18 +66,6 @@ class MessageObject < ApplicationRecord
   def destroyable?
     # TODO: avoid loading message association if we have
     message.draft? && message.not_yet_submitted? && !form?
-  end
-
-  def remove_signature
-    return false unless form?
-    return false unless is_signed
-
-    unsigned_object = nested_message_objects&.first
-    return false unless unsigned_object
-
-    update(name: unsigned_object.name, mimetype: unsigned_object.mimetype, is_signed: false)
-    message_object_datum.update(blob: unsigned_object.content)
-    unsigned_object.destroy
   end
 
   private
