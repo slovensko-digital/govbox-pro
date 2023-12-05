@@ -27,13 +27,7 @@
 
   <div class="flex flex-col justify-stretch items-start relative gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
     <% if @message.custom_visualization? %>
-      <% if @message.editable? %>
-        <%= render MessageTemplateComponent.new(message: @message, is_last: @is_last) %>
-      <% else %>
-        <%= button_to confirm_unlock_message_draft_path(@message), method: 'post', class: "w-full", data: { turbo_frame: "modal" } do %>
-          <%= render MessageTemplateComponent.new(message: @message, is_last: @is_last) %>
-        <% end %>
-      <% end %>
+      <%= render MessageTemplateComponent.new(message: @message, is_last: @is_last) %>
     <% else %>
       <div class="w-full">
         <%= tag.iframe class: "relative border-none overflow-hidden h-full w-full", srcdoc: @message.html_visualization, onload: "(
