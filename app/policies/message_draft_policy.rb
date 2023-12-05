@@ -49,4 +49,12 @@ class MessageDraftPolicy < ApplicationPolicy
   def destroy?
     create?
   end
+
+  def confirm_unlock?
+    unlock?
+  end
+
+  def unlock?
+    create?
+  end
 end
