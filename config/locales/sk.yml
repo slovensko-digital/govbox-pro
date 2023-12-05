@@ -6,6 +6,7 @@ sk:
     errors:
       messages:
         record_invalid: "Validácia neúspešná: %{errors}"
+        invalid_form: "Formulár nie je validný voči XSD"
       models:
         tag:
           attributes:

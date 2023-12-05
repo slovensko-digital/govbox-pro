@@ -164,7 +164,7 @@ ga_form = Upvs::Form.find_or_create_by!(
   message_type: "App.GeneralAgenda"
 )
 
-ga_related_documents = [
+ga_related_docs = [
   {
     data:
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?><xs:schema elementFormDefault=\"qualified\" attributeFormDefault=\"unqualified\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" targetNamespace=\"http://schemas.gov.sk/form/App.GeneralAgenda/1.9\" xmlns=\"http://schemas.gov.sk/form/App.GeneralAgenda/1.9\">\r\n" +
@@ -273,9 +273,1188 @@ ga_related_documents = [
   }
 ]
 
-ga_related_documents.each do |related_document|
+ga_related_docs.each do |related_document|
   Upvs::FormRelatedDocument.find_or_create_by!(
     form: ga_form,
+    data: related_document[:data],
+    language: related_document[:language],
+    document_type: related_document[:document_type]
+  )
+end
+
+crac_cert_registration_form = Upvs::Form.find_or_create_by!(
+  identifier: "42156424.IAM_Zapis_autentifikacneho_certifikatu_s_vytvorenim_TU.sk",
+  version: "1.5",
+  message_type: "42156424.IAM_Zapis_autentifikacneho_certifikatu_s_vytvorenim_TU.sk"
+)
+
+crac_cert_registration_form_related_docs = [
+  {
+    language: "sk",
+    document_type: "CLS_F_XSD_EDOC",
+    data: <<~XSD
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://schemas.gov.sk/form/42156424.IAM_Zapis_autentifikacneho_certifikatu_s_vytvorenim_TU.sk/1.5" xmlns="http://schemas.gov.sk/form/42156424.IAM_Zapis_autentifikacneho_certifikatu_s_vytvorenim_TU.sk/1.5">
+  <xs:simpleType name="ltd_FoPoOvm">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="FO" />
+      <xs:enumeration value="PO" />
+      <xs:enumeration value="OVM" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="ldt_Text_256">
+    <xs:restriction base="xs:string">
+      <xs:maxLength value="256" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="ico">
+    <xs:restriction base="xs:string">
+      <xs:maxLength value="50" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="suffix">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="\d{4,5}" />
+      <xs:minLength value="4" />
+      <xs:maxLength value="5" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="ldt_Text_1023">
+    <xs:restriction base="xs:string">
+      <xs:maxLength value="1023" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="email">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="|[a-zA-Z0-9_.+-]+@[a-zA-Z0-9\-]+\.[a-zA-Z0-9\-.]+" />
+      <xs:maxLength value="254" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="CPhone">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[+]?[()/0-9. -]{9,}" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="edAccessType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="1" />
+      <xs:enumeration value="2" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="ldt_Datum">
+    <xs:restriction base="xs:date">
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="rolename">
+    <xs:restriction base="xs:string">
+      <xs:maxLength value="255" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="ldt_Text_255">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="0" />
+      <xs:maxLength value="255" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="ltd_TextArea_1024">
+    <xs:restriction base="xs:string">
+      <xs:maxLength value="1024" />
+    </xs:restriction>
+  </xs:simpleType>
+
+
+  <xs:element name="AuthentificationCertificateWithTechnicalAccountRegistration">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="CertificateOwner" minOccurs="1" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="IdentityType" type="ltd_FoPoOvm" minOccurs="1" />
+              <xs:element name="OwnerFO" minOccurs="0">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="GivenName" type="ldt_Text_256" minOccurs="1" />
+                    <xs:element name="FamilyName" type="ldt_Text_256" minOccurs="1" />
+                    <xs:element name="BirthNumber" type="ldt_Text_256" minOccurs="1" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="OwnerPoOvm" minOccurs="0">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="ICO" type="ico" minOccurs="1" />
+                    <xs:element name="Suffix" type="suffix" minOccurs="0" nillable="true" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="ContactPerson" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ContactName" type="ldt_Text_1023" minOccurs="1" />
+              <xs:element name="Email" type="email" minOccurs="1" />
+              <xs:element name="Phone" type="CPhone" minOccurs="1" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="IntegrationContract" minOccurs="1" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ProjectID" type="ldt_Text_256" minOccurs="0" nillable="true" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="TechnicalAccount" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="EDeckAccessType" type="edAccessType" minOccurs="1" />
+              <xs:element name="ValidFrom" type="ldt_Datum" minOccurs="1" />
+              <xs:element name="ValidTo" type="ldt_Datum" minOccurs="0" nillable="true" />
+              <xs:element name="Roles" minOccurs="0">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="Role" minOccurs="1" maxOccurs="99">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="RoleName" type="ldt_Text_255" minOccurs="1" />
+                          <xs:element name="RoleCode" type="rolename" minOccurs="1" />
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="AuthentificationCertificateData" minOccurs="1" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Thumbprint" type="ltd_TextArea_1024" minOccurs="1" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
+XSD
+  },
+  {
+    language: "sk",
+    document_type: "CLS_F_XSLT_TXT_SGN",
+    data: <<~XSLT
+<?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet version="1.0"  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  xmlns:egonp="http://schemas.gov.sk/form/42156424.IAM_Zapis_autentifikacneho_certifikatu_s_vytvorenim_TU.sk/1.5" exclude-result-prefixes="egonp">
+  <xsl:output method="html" doctype-system="http://www.w3.org/TR/html4/strict.dtd" doctype-public="-//W3C//DTD HTML 4.01//EN" indent="no" omit-xml-declaration="yes"/>
+  <xsl:template match="/">
+    <html>
+      <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=8" />
+        <title>Žiadosť o zápis autentifikačného certifikátu do registra autentifikačných certifikátov</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <meta name="language" content="sk-SK"/>
+        <style type="text/css">
+          body {
+          font-family: 'Arial', 'Open Sans', 'Segoe UI', 'Trebuchet MS', 'Geneva CE', lucida, sans-serif;
+          background : #ffffff !important ;
+          }
+          .ui-tabs {
+          padding: .2em 0;
+          position: relative;
+          zoom: 1;
+          }
+          .clear { clear: both; height: 0;}
+          .layoutMain {
+          margin: 0px auto;
+          padding: 5px 5px 5px 5px;
+          }
+          .layoutRow { margin-bottom: 0px; }
+          .caption { /*width: 100%; border-bottom: solid 1px black;*/ }
+          .nocaption &gt; .caption { border: 0px !important; }
+          .nocaption &gt; .caption span {
+          background: none !important;
+          display: none;
+          }
+          .caption .title { padding-left: 5px; }
+          .headercorrection {
+          margin: 0px;
+          font-size : 1em;
+          font-weight: bold;
+          }
+          .labelVis {
+          float: left;
+          font-family: 'Arial', 'Open Sans', 'Segoe UI', 'Trebuchet MS', 'Geneva CE', lucida, sans-serif;
+          line-height: 25px;
+          margin: 0px 18px 0px 0px;
+          padding-left: 3px;
+          width: 240px;
+          word-wrap: break-word;
+          font-size: 0.75em;
+          }
+          .labelVisBold {
+          float: left;
+          font-family: 'Arial', 'Open Sans', 'Segoe UI', 'Trebuchet MS', 'Geneva CE', lucida, sans-serif;
+          line-height: 25px;
+          margin: 0px 18px 0px 0px;
+          padding-left: 3px;
+          width: 390px;
+          word-wrap: break-word;
+          font-size: 0.75em;
+          font-weight: bold;
+          }
+          .labelVisBig {
+          float: left;
+          font-family: 'Arial', 'Open Sans', 'Segoe UI', 'Trebuchet MS', 'Geneva CE', lucida, sans-serif;
+          line-height: 25px;
+          margin: 0px 18px 0px 0px;
+          padding-left: 3px;
+          width: 580px;
+          word-wrap: break-word;
+          font-size: 0.75em;
+          }
+
+          .contentVis {
+          float: left;
+          font-family: 'Arial', 'Open Sans', 'Segoe UI', 'Trebuchet MS', 'Geneva CE', lucida, sans-serif;
+          line-height: 25px;
+          width: 395px;
+          word-wrap: break-word;
+          font-size: 0.75em;
+          margin: 0px;
+          padding: 0px;
+          vertical-align: top;
+          }
+          .wordwrap {
+          white-space: pre-wrap;
+          white-space: -moz-pre-wrap;
+          white-space: -pre-wrap;
+          white-space: -o-pre-wrap;
+          word-wrap: break-word;
+          }
+        </style>
+      </head>
+      <body>
+        <div id="main" class="layoutMain">
+          <xsl:apply-templates/>
+        </div>
+      </body>
+    </html>
+  </xsl:template>
+  <xsl:template match="/egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:IntegrationContract">
+    <div class="layoutRow ui-tabs ui-widget-content" >
+      <div class="caption ui-widget-header">
+        <div class="headercorrection">Názov technického alebo programového prostriedku</div>
+      </div>
+      <xsl:apply-templates select="./egonp:ProjectID"/>
+    </div>
+  </xsl:template>
+  <xsl:template match="/egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:AuthentificationCertificateData">
+    <div class="layoutRow ui-tabs ui-widget-content" >
+      <div class="caption ui-widget-header">
+        <div class="headercorrection">Digitálny odtlačok autentifikačného certifikátu</div>
+      </div>
+       <xsl:call-template name="Funkcia"/>
+      <xsl:apply-templates select="./egonp:Thumbprint"/>
+    </div>
+  </xsl:template>
+  <xsl:template match="/egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:CertificateOwner">
+    <div class="layoutRow ui-tabs ui-widget-content" >
+      <div class="caption ui-widget-header">
+        <div class="headercorrection">Údaje o držiteľovi autentifikačného certifikátu</div>
+      </div>
+      <xsl:apply-templates select="./egonp:IdentityType"/>
+      <xsl:apply-templates select="./egonp:OwnerFO"/>
+      <xsl:apply-templates select="./egonp:OwnerPoOvm"/>
+    </div>
+  </xsl:template>
+  <xsl:template match="/egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:CertificateOwner/egonp:OwnerPoOvm">
+    <div class="layoutRow ui-tabs ui-widget-content" >
+      <xsl:apply-templates select="./egonp:ICO"/>
+      <xsl:apply-templates select="./egonp:Suffix"/>
+    </div>
+  </xsl:template>
+  <xsl:template match="/egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:CertificateOwner/egonp:OwnerFO">
+    <div class="layoutRow ui-tabs ui-widget-content" >
+      <xsl:apply-templates select="./egonp:GivenName"/>
+      <xsl:apply-templates select="./egonp:FamilyName"/>
+      <xsl:apply-templates select="./egonp:BirthNumber"/>
+    </div>
+  </xsl:template>
+  <xsl:template match="/egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:ContactPerson">
+    <div class="layoutRow ui-tabs ui-widget-content" >
+      <div class="caption ui-widget-header">
+        <div class="headercorrection">Kontaktné údaje</div>
+      </div>
+      <xsl:apply-templates select="./egonp:ContactName"/>
+      <xsl:apply-templates select="./egonp:Email"/>
+      <xsl:apply-templates select="./egonp:Phone"/>
+    </div>
+  </xsl:template>
+  <xsl:template match="/egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:TechnicalAccount">
+    <div class="layoutRow ui-tabs ui-widget-content" >
+      <div class="caption ui-widget-header">
+        <div class="headercorrection">Oprávnenia</div>
+      </div>
+      <xsl:apply-templates select="./egonp:EDeckAccessType"/>
+      <xsl:apply-templates select="./egonp:ValidFrom"/>
+      <xsl:apply-templates select="./egonp:ValidTo"/>
+      <xsl:apply-templates select="./egonp:Roles"/>
+    </div>
+  </xsl:template>
+  <xsl:template match="/egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:TechnicalAccount/egonp:Roles">
+    <div class="layoutRow ui-tabs ui-widget-content" >
+      <div class="caption ui-widget-header">
+        <div class="headercorrection">Rozsah oprávnenia</div>
+      </div>
+      <xsl:apply-templates select="./egonp:Role"/>
+    </div>
+  </xsl:template>
+  <xsl:template match="/egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:TechnicalAccount/egonp:Roles/egonp:Role">
+    <div class="layoutRow ui-tabs ui-widget-content" >
+      <div class="caption ui-widget-header">
+        <div class="headercorrection" style="font-size:0.8em;">Roly</div>
+      </div>
+      <xsl:apply-templates select="./egonp:RoleCode"/>
+    </div>
+  </xsl:template>
+  <xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:IntegrationContract/egonp:ProjectID">
+    <xsl:if test="./text()">
+      <div>
+        <span class="contentVis wordwrap">
+          <xsl:call-template name="string-replace-all">
+            <xsl:with-param name="text" select="." />
+            <xsl:with-param name="replace" select="'%0A'" />
+            <xsl:with-param name="by" select="'&#13;&#10;'" />
+          </xsl:call-template>
+        </span>
+      </div>
+      <div class="clear">&#xa0;</div>
+    </xsl:if>
+  </xsl:template>
+
+ <xsl:template name= "Funkcia">
+    <xsl:if test="./text()">
+      <div>
+        <label class="labelVis">Funkcia pre výpočet digitálneho odtlačku: </label>
+        <span class="contentVis wordwrap">SHA:256</span>
+      </div>
+      <div class="clear">&#xa0;</div>
+    </xsl:if>
+  </xsl:template>
+
+  <xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:AuthentificationCertificateData/egonp:Thumbprint">
+    <xsl:if test="./text()">
+      <div>
+        <label class="labelVis">Digitálny odtlačok: </label>
+        <span class="contentVis wordwrap">
+          <xsl:call-template name="string-replace-all">
+            <xsl:with-param name="text" select="." />
+            <xsl:with-param name="replace" select="'%0A'" />
+            <xsl:with-param name="by" select="'&#13;&#10;'" />
+          </xsl:call-template>
+        </span>
+      </div>
+      <div class="clear">&#xa0;</div>
+    </xsl:if>
+  </xsl:template>
+  <xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:CertificateOwner/egonp:IdentityType">
+    <xsl:if test="./text()">
+      <div>
+        <label class="labelVis">Typ subjektu: </label>
+        <span class="contentVis wordwrap">
+          <xsl:choose>
+            <xsl:when test=".='FO'">
+              <xsl:text>Fyzick&#225; osoba</xsl:text>
+            </xsl:when>
+            <xsl:when test=".='PO'">
+              <xsl:text>Pr&#225;vnick&#225; osoba/Fyzick&#225; osoba - podnikateľ</xsl:text>
+            </xsl:when>
+            <xsl:when test=".='OVM'">
+              <xsl:text>Org&#225;n verejnej moci</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="."/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </span>
+      </div>
+      <div class="clear">&#xa0;</div>
+    </xsl:if>
+  </xsl:template>
+  <xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:CertificateOwner/egonp:OwnerPoOvm/egonp:ICO">
+    <xsl:if test="./text()">
+      <div>
+        <label class="labelVis">IČO: </label>
+        <span class="contentVis wordwrap">
+          <xsl:call-template name="string-replace-all">
+            <xsl:with-param name="text" select="." />
+            <xsl:with-param name="replace" select="'%0A'" />
+            <xsl:with-param name="by" select="'&#13;&#10;'" />
+          </xsl:call-template>
+        </span>
+      </div>
+      <div class="clear">&#xa0;</div>
+    </xsl:if>
+  </xsl:template>
+  <xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:CertificateOwner/egonp:OwnerPoOvm/egonp:Suffix">
+    <xsl:if test="./text()">
+      <div>
+        <label class="labelVis">Suffix: </label>
+        <span class="contentVis wordwrap">
+          <xsl:call-template name="string-replace-all">
+            <xsl:with-param name="text" select="." />
+            <xsl:with-param name="replace" select="'%0A'" />
+            <xsl:with-param name="by" select="'&#13;&#10;'" />
+          </xsl:call-template>
+        </span>
+      </div>
+      <div class="clear">&#xa0;</div>
+    </xsl:if>
+  </xsl:template>
+  <xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:CertificateOwner/egonp:OwnerFO/egonp:GivenName">
+    <xsl:if test="./text()">
+      <div>
+        <label class="labelVis">Meno: </label>
+        <span class="contentVis wordwrap">
+          <xsl:call-template name="string-replace-all">
+            <xsl:with-param name="text" select="." />
+            <xsl:with-param name="replace" select="'%0A'" />
+            <xsl:with-param name="by" select="'&#13;&#10;'" />
+          </xsl:call-template>
+        </span>
+      </div>
+      <div class="clear">&#xa0;</div>
+    </xsl:if>
+  </xsl:template>
+  <xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:CertificateOwner/egonp:OwnerFO/egonp:FamilyName">
+    <xsl:if test="./text()">
+      <div>
+        <label class="labelVis">Priezvisko: </label>
+        <span class="contentVis wordwrap">
+          <xsl:call-template name="string-replace-all">
+            <xsl:with-param name="text" select="." />
+            <xsl:with-param name="replace" select="'%0A'" />
+            <xsl:with-param name="by" select="'&#13;&#10;'" />
+          </xsl:call-template>
+        </span>
+      </div>
+      <div class="clear">&#xa0;</div>
+    </xsl:if>
+  </xsl:template>
+  <xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:CertificateOwner/egonp:OwnerFO/egonp:BirthNumber">
+    <xsl:if test="./text()">
+      <div>
+        <label class="labelVis">Rodné číslo: </label>
+        <span class="contentVis wordwrap">
+          <xsl:call-template name="string-replace-all">
+            <xsl:with-param name="text" select="." />
+            <xsl:with-param name="replace" select="'%0A'" />
+            <xsl:with-param name="by" select="'&#13;&#10;'" />
+          </xsl:call-template>
+        </span>
+      </div>
+      <div class="clear">&#xa0;</div>
+    </xsl:if>
+  </xsl:template>
+  <xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:ContactPerson/egonp:ContactName">
+    <xsl:if test="./text()">
+      <div>
+        <label class="labelVis">Meno a priezvisko: </label>
+        <span class="contentVis wordwrap">
+          <xsl:call-template name="string-replace-all">
+            <xsl:with-param name="text" select="." />
+            <xsl:with-param name="replace" select="'%0A'" />
+            <xsl:with-param name="by" select="'&#13;&#10;'" />
+          </xsl:call-template>
+        </span>
+      </div>
+      <div class="clear">&#xa0;</div>
+    </xsl:if>
+  </xsl:template>
+  <xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:ContactPerson/egonp:Email">
+    <xsl:if test="./text()">
+      <div>
+        <label class="labelVis">E-mail: </label>
+        <span class="contentVis wordwrap">
+          <xsl:call-template name="string-replace-all">
+            <xsl:with-param name="text" select="." />
+            <xsl:with-param name="replace" select="'%0A'" />
+            <xsl:with-param name="by" select="'&#13;&#10;'" />
+          </xsl:call-template>
+        </span>
+      </div>
+      <div class="clear">&#xa0;</div>
+    </xsl:if>
+  </xsl:template>
+  <xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:ContactPerson/egonp:Phone">
+    <xsl:if test="./text()">
+      <div>
+        <label class="labelVis">Telefón: </label>
+        <span class="contentVis wordwrap">
+          <xsl:call-template name="string-replace-all">
+            <xsl:with-param name="text" select="." />
+            <xsl:with-param name="replace" select="'%0A'" />
+            <xsl:with-param name="by" select="'&#13;&#10;'" />
+          </xsl:call-template>
+        </span>
+      </div>
+      <div class="clear">&#xa0;</div>
+    </xsl:if>
+  </xsl:template>
+  <xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:TechnicalAccount/egonp:EDeckAccessType">
+    <xsl:if test="./text()">
+      <div>
+        <label class="labelVis">Prístup do elektronickej schránky: </label>
+        <span class="contentVis wordwrap">
+          <xsl:if test=".='1'">&#218;pln&#253;</xsl:if>
+          <xsl:if test=".='2'">Čiastočn&#253;</xsl:if>
+        </span>
+      </div>
+      <div class="clear">&#xa0;</div>
+    </xsl:if>
+  </xsl:template>
+  <xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:TechnicalAccount/egonp:ValidFrom">
+    <xsl:if test="./text()">
+      <div>
+        <label class="labelVis">Platnosť od: </label>
+        <span class="contentVis wordwrap">
+          <xsl:call-template name="formatToSkDate">
+            <xsl:with-param name="date" select="." />
+          </xsl:call-template>
+        </span>
+      </div>
+      <div class="clear">&#xa0;</div>
+    </xsl:if>
+  </xsl:template>
+  <xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:TechnicalAccount/egonp:ValidTo">
+    <xsl:if test="./text()">
+      <div>
+        <label class="labelVis">Platnosť do: </label>
+        <span class="contentVis wordwrap">
+          <xsl:call-template name="formatToSkDate">
+            <xsl:with-param name="date" select="." />
+          </xsl:call-template>
+        </span>
+      </div>
+      <div class="clear">&#xa0;</div>
+    </xsl:if>
+  </xsl:template>
+  <xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:TechnicalAccount/egonp:Roles/egonp:Role/egonp:RoleCode">
+    <xsl:if test="./text()">
+      <div>
+        <label class="labelVis">Oprávnenia: </label>
+        <span class="contentVis wordwrap">
+          <xsl:value-of select="."/>
+        </span>
+      </div>
+      <div class="clear">&#xa0;</div>
+    </xsl:if>
+  </xsl:template>
+  <xsl:template name="formatToSkDate">
+    <xsl:param name="date" />
+    <xsl:variable name="dateString" select="string($date)" />
+    <xsl:choose>
+      <xsl:when test="$dateString != '' and string-length($dateString)=10 and string(number(substring($dateString, 1, 4))) != 'NaN' ">
+        <xsl:value-of select="concat(substring($dateString, 9, 2), '.', substring($dateString, 6, 2), '.', substring($dateString, 1, 4))" />
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$dateString"></xsl:value-of>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  <xsl:template name="booleanCheckboxToString">
+    <xsl:param name="boolValue" />
+    <xsl:variable name="boolValueString" select="string($boolValue)" />
+    <xsl:choose>
+      <xsl:when test="$boolValueString = 'true' ">
+        <xsl:text>Áno</xsl:text>
+      </xsl:when>
+      <xsl:when test="$boolValueString = 'false' ">
+        <xsl:text>Nie</xsl:text>
+      </xsl:when>
+      <xsl:when test="$boolValueString = '1' ">
+        <xsl:text>Áno</xsl:text>
+      </xsl:when>
+      <xsl:when test="$boolValueString = '0' ">
+        <xsl:text>Nie</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$boolValueString"></xsl:value-of>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  <xsl:template name="formatTimeTrimSeconds">
+    <xsl:param name="time" />
+    <xsl:variable name="timeString" select="string($time)" />
+    <xsl:if test="$timeString != ''">
+      <xsl:value-of select="substring($timeString, 1, 5)" />
+    </xsl:if>
+  </xsl:template>
+  <xsl:template name="formatTime">
+    <xsl:param name="time" />
+    <xsl:variable name="timeString" select="string($time)" />
+    <xsl:if test="$timeString != ''">
+      <xsl:value-of select="substring($timeString, 1, 8)" />
+    </xsl:if>
+  </xsl:template>
+  <xsl:template name="string-replace-all">
+    <xsl:param name="text"/>
+    <xsl:param name="replace"/>
+    <xsl:param name="by"/>
+    <xsl:choose>
+      <xsl:when test="contains($text, $replace)">
+        <xsl:value-of select="substring-before($text,$replace)"/>
+        <xsl:value-of select="$by"/>
+        <xsl:call-template name="string-replace-all">
+          <xsl:with-param name="text" select="substring-after($text,$replace)"/>
+          <xsl:with-param name="replace" select="$replace"/>
+          <xsl:with-param name="by" select="$by" />
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$text"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  <xsl:template name="formatToSkDateTime">
+    <xsl:param name="dateTime" />
+    <xsl:variable name="dateTimeString" select="string($dateTime)" />
+    <xsl:choose>
+      <xsl:when test="$dateTimeString!= '' and string-length($dateTimeString)>18 and string(number(substring($dateTimeString, 1, 4))) != 'NaN' ">
+        <xsl:value-of select="concat(substring($dateTimeString, 9, 2), '.', substring($dateTimeString, 6, 2), '.', substring($dateTimeString, 1, 4),' ', substring($dateTimeString, 12, 2),':', substring($dateTimeString, 15, 2))" />
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$dateTimeString"></xsl:value-of>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  <xsl:template name="formatToSkDateTimeSecond">
+    <xsl:param name="dateTime" />
+    <xsl:variable name="dateTimeString" select="string($dateTime)" />
+    <xsl:choose>
+      <xsl:when test="$dateTimeString!= '' and string-length($dateTimeString)>18 and string(number(substring($dateTimeString, 1, 4))) != 'NaN' ">
+        <xsl:value-of select="concat(substring($dateTimeString, 9, 2), '.', substring($dateTimeString, 6, 2), '.', substring($dateTimeString, 1, 4),' ', substring($dateTimeString, 12, 2),':', substring($dateTimeString, 15, 2),':', substring($dateTimeString, 18, 2))" />
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$dateTimeString"></xsl:value-of>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+</xsl:stylesheet>
+    XSLT
+  },
+  {
+    language: "sk",
+    document_type: "CLS_F_XSLT_HTML",
+    data: <<~XSLT
+<?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet version="1.0"  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  xmlns:egonp="http://schemas.gov.sk/form/42156424.IAM_Zapis_autentifikacneho_certifikatu_s_vytvorenim_TU.sk/1.5" exclude-result-prefixes="egonp">
+  <xsl:output method="html" doctype-system="http://www.w3.org/TR/html4/strict.dtd" doctype-public="-//W3C//DTD HTML 4.01//EN" indent="no" omit-xml-declaration="yes"/>
+  <xsl:template match="/">
+    <html>
+      <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=8" />
+        <title>Žiadosť o zápis autentifikačného certifikátu do registra autentifikačných certifikátov</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <meta name="language" content="sk-SK"/>
+        <style type="text/css">
+          body {
+          font-family: 'Arial', 'Open Sans', 'Segoe UI', 'Trebuchet MS', 'Geneva CE', lucida, sans-serif;
+          background : #ffffff !important ;
+          }
+          .ui-tabs {
+          padding: .2em 0;
+          position: relative;
+          zoom: 1;
+          }
+          .clear { clear: both; height: 0;}
+          .layoutMain {
+          margin: 0px auto;
+          padding: 5px 5px 5px 5px;
+          }
+          .layoutRow { margin-bottom: 0px; }
+          .caption { /*width: 100%; border-bottom: solid 1px black;*/ }
+          .nocaption &gt; .caption { border: 0px !important; }
+          .nocaption &gt; .caption span {
+          background: none !important;
+          display: none;
+          }
+          .caption .title { padding-left: 5px; }
+          .headercorrection {
+          margin: 0px;
+          font-size : 1em;
+          font-weight: bold;
+          }
+          .labelVis {
+          float: left;
+          font-family: 'Arial', 'Open Sans', 'Segoe UI', 'Trebuchet MS', 'Geneva CE', lucida, sans-serif;
+          line-height: 25px;
+          margin: 0px 18px 0px 0px;
+          padding-left: 3px;
+          width: 240px;
+          word-wrap: break-word;
+          font-size: 0.75em;
+          }
+          .labelVisBold {
+          float: left;
+          font-family: 'Arial', 'Open Sans', 'Segoe UI', 'Trebuchet MS', 'Geneva CE', lucida, sans-serif;
+          line-height: 25px;
+          margin: 0px 18px 0px 0px;
+          padding-left: 3px;
+          width: 390px;
+          word-wrap: break-word;
+          font-size: 0.75em;
+          font-weight: bold;
+          }
+          .labelVisBig {
+          float: left;
+          font-family: 'Arial', 'Open Sans', 'Segoe UI', 'Trebuchet MS', 'Geneva CE', lucida, sans-serif;
+          line-height: 25px;
+          margin: 0px 18px 0px 0px;
+          padding-left: 3px;
+          width: 580px;
+          word-wrap: break-word;
+          font-size: 0.75em;
+          }
+
+          .contentVis {
+          float: left;
+          font-family: 'Arial', 'Open Sans', 'Segoe UI', 'Trebuchet MS', 'Geneva CE', lucida, sans-serif;
+          line-height: 25px;
+          width: 395px;
+          word-wrap: break-word;
+          font-size: 0.75em;
+          margin: 0px;
+          padding: 0px;
+          vertical-align: top;
+          }
+          .wordwrap {
+          white-space: pre-wrap;
+          white-space: -moz-pre-wrap;
+          white-space: -pre-wrap;
+          white-space: -o-pre-wrap;
+          word-wrap: break-word;
+          }
+        </style>
+      </head>
+      <body>
+        <div id="main" class="layoutMain">
+          <xsl:apply-templates/>
+        </div>
+      </body>
+    </html>
+  </xsl:template>
+  <xsl:template match="/egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:IntegrationContract">
+    <div class="layoutRow ui-tabs ui-widget-content" >
+      <div class="caption ui-widget-header">
+        <div class="headercorrection">Názov technického alebo programového prostriedku</div>
+      </div>
+      <xsl:apply-templates select="./egonp:ProjectID"/>
+    </div>
+  </xsl:template>
+  <xsl:template match="/egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:AuthentificationCertificateData">
+    <div class="layoutRow ui-tabs ui-widget-content" >
+      <div class="caption ui-widget-header">
+        <div class="headercorrection">Digitálny odtlačok autentifikačného certifikátu</div>
+      </div>
+       <xsl:call-template name="Funkcia"/>
+      <xsl:apply-templates select="./egonp:Thumbprint"/>
+    </div>
+  </xsl:template>
+  <xsl:template match="/egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:CertificateOwner">
+    <div class="layoutRow ui-tabs ui-widget-content" >
+      <div class="caption ui-widget-header">
+        <div class="headercorrection">Údaje o držiteľovi autentifikačného certifikátu</div>
+      </div>
+      <xsl:apply-templates select="./egonp:IdentityType"/>
+      <xsl:apply-templates select="./egonp:OwnerFO"/>
+      <xsl:apply-templates select="./egonp:OwnerPoOvm"/>
+    </div>
+  </xsl:template>
+  <xsl:template match="/egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:CertificateOwner/egonp:OwnerPoOvm">
+    <div class="layoutRow ui-tabs ui-widget-content" >
+      <xsl:apply-templates select="./egonp:ICO"/>
+      <xsl:apply-templates select="./egonp:Suffix"/>
+    </div>
+  </xsl:template>
+  <xsl:template match="/egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:CertificateOwner/egonp:OwnerFO">
+    <div class="layoutRow ui-tabs ui-widget-content" >
+      <xsl:apply-templates select="./egonp:GivenName"/>
+      <xsl:apply-templates select="./egonp:FamilyName"/>
+      <xsl:apply-templates select="./egonp:BirthNumber"/>
+    </div>
+  </xsl:template>
+  <xsl:template match="/egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:ContactPerson">
+    <div class="layoutRow ui-tabs ui-widget-content" >
+      <div class="caption ui-widget-header">
+        <div class="headercorrection">Kontaktné údaje</div>
+      </div>
+      <xsl:apply-templates select="./egonp:ContactName"/>
+      <xsl:apply-templates select="./egonp:Email"/>
+      <xsl:apply-templates select="./egonp:Phone"/>
+    </div>
+  </xsl:template>
+  <xsl:template match="/egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:TechnicalAccount">
+    <div class="layoutRow ui-tabs ui-widget-content" >
+      <div class="caption ui-widget-header">
+        <div class="headercorrection">Oprávnenia</div>
+      </div>
+      <xsl:apply-templates select="./egonp:EDeckAccessType"/>
+      <xsl:apply-templates select="./egonp:ValidFrom"/>
+      <xsl:apply-templates select="./egonp:ValidTo"/>
+      <xsl:apply-templates select="./egonp:Roles"/>
+    </div>
+  </xsl:template>
+  <xsl:template match="/egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:TechnicalAccount/egonp:Roles">
+    <div class="layoutRow ui-tabs ui-widget-content" >
+      <div class="caption ui-widget-header">
+        <div class="headercorrection">Rozsah oprávnenia</div>
+      </div>
+      <xsl:apply-templates select="./egonp:Role"/>
+    </div>
+  </xsl:template>
+  <xsl:template match="/egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:TechnicalAccount/egonp:Roles/egonp:Role">
+    <div class="layoutRow ui-tabs ui-widget-content" >
+      <div class="caption ui-widget-header">
+        <div class="headercorrection" style="font-size:0.8em;">Roly</div>
+      </div>
+      <xsl:apply-templates select="./egonp:RoleCode"/>
+    </div>
+  </xsl:template>
+  <xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:IntegrationContract/egonp:ProjectID">
+    <xsl:if test="./text()">
+      <div>
+        <span class="contentVis wordwrap">
+          <xsl:call-template name="string-replace-all">
+            <xsl:with-param name="text" select="." />
+            <xsl:with-param name="replace" select="'%0A'" />
+            <xsl:with-param name="by" select="'&#13;&#10;'" />
+          </xsl:call-template>
+        </span>
+      </div>
+      <div class="clear">&#xa0;</div>
+    </xsl:if>
+  </xsl:template>
+
+ <xsl:template name= "Funkcia">
+    <xsl:if test="./text()">
+      <div>
+        <label class="labelVis">Funkcia pre výpočet digitálneho odtlačku: </label>
+        <span class="contentVis wordwrap">SHA:256</span>
+      </div>
+      <div class="clear">&#xa0;</div>
+    </xsl:if>
+  </xsl:template>
+
+  <xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:AuthentificationCertificateData/egonp:Thumbprint">
+    <xsl:if test="./text()">
+      <div>
+        <label class="labelVis">Digitálny odtlačok: </label>
+        <span class="contentVis wordwrap">
+          <xsl:call-template name="string-replace-all">
+            <xsl:with-param name="text" select="." />
+            <xsl:with-param name="replace" select="'%0A'" />
+            <xsl:with-param name="by" select="'&#13;&#10;'" />
+          </xsl:call-template>
+        </span>
+      </div>
+      <div class="clear">&#xa0;</div>
+    </xsl:if>
+  </xsl:template>
+  <xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:CertificateOwner/egonp:IdentityType">
+    <xsl:if test="./text()">
+      <div>
+        <label class="labelVis">Typ subjektu: </label>
+        <span class="contentVis wordwrap">
+          <xsl:choose>
+            <xsl:when test=".='FO'">
+              <xsl:text>Fyzick&#225; osoba</xsl:text>
+            </xsl:when>
+            <xsl:when test=".='PO'">
+              <xsl:text>Pr&#225;vnick&#225; osoba/Fyzick&#225; osoba - podnikateľ</xsl:text>
+            </xsl:when>
+            <xsl:when test=".='OVM'">
+              <xsl:text>Org&#225;n verejnej moci</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="."/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </span>
+      </div>
+      <div class="clear">&#xa0;</div>
+    </xsl:if>
+  </xsl:template>
+  <xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:CertificateOwner/egonp:OwnerPoOvm/egonp:ICO">
+    <xsl:if test="./text()">
+      <div>
+        <label class="labelVis">IČO: </label>
+        <span class="contentVis wordwrap">
+          <xsl:call-template name="string-replace-all">
+            <xsl:with-param name="text" select="." />
+            <xsl:with-param name="replace" select="'%0A'" />
+            <xsl:with-param name="by" select="'&#13;&#10;'" />
+          </xsl:call-template>
+        </span>
+      </div>
+      <div class="clear">&#xa0;</div>
+    </xsl:if>
+  </xsl:template>
+  <xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:CertificateOwner/egonp:OwnerPoOvm/egonp:Suffix">
+    <xsl:if test="./text()">
+      <div>
+        <label class="labelVis">Suffix: </label>
+        <span class="contentVis wordwrap">
+          <xsl:call-template name="string-replace-all">
+            <xsl:with-param name="text" select="." />
+            <xsl:with-param name="replace" select="'%0A'" />
+            <xsl:with-param name="by" select="'&#13;&#10;'" />
+          </xsl:call-template>
+        </span>
+      </div>
+      <div class="clear">&#xa0;</div>
+    </xsl:if>
+  </xsl:template>
+  <xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:CertificateOwner/egonp:OwnerFO/egonp:GivenName">
+    <xsl:if test="./text()">
+      <div>
+        <label class="labelVis">Meno: </label>
+        <span class="contentVis wordwrap">
+          <xsl:call-template name="string-replace-all">
+            <xsl:with-param name="text" select="." />
+            <xsl:with-param name="replace" select="'%0A'" />
+            <xsl:with-param name="by" select="'&#13;&#10;'" />
+          </xsl:call-template>
+        </span>
+      </div>
+      <div class="clear">&#xa0;</div>
+    </xsl:if>
+  </xsl:template>
+  <xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:CertificateOwner/egonp:OwnerFO/egonp:FamilyName">
+    <xsl:if test="./text()">
+      <div>
+        <label class="labelVis">Priezvisko: </label>
+        <span class="contentVis wordwrap">
+          <xsl:call-template name="string-replace-all">
+            <xsl:with-param name="text" select="." />
+            <xsl:with-param name="replace" select="'%0A'" />
+            <xsl:with-param name="by" select="'&#13;&#10;'" />
+          </xsl:call-template>
+        </span>
+      </div>
+      <div class="clear">&#xa0;</div>
+    </xsl:if>
+  </xsl:template>
+  <xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:CertificateOwner/egonp:OwnerFO/egonp:BirthNumber">
+    <xsl:if test="./text()">
+      <div>
+        <label class="labelVis">Rodné číslo: </label>
+        <span class="contentVis wordwrap">
+          <xsl:call-template name="string-replace-all">
+            <xsl:with-param name="text" select="." />
+            <xsl:with-param name="replace" select="'%0A'" />
+            <xsl:with-param name="by" select="'&#13;&#10;'" />
+          </xsl:call-template>
+        </span>
+      </div>
+      <div class="clear">&#xa0;</div>
+    </xsl:if>
+  </xsl:template>
+  <xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:ContactPerson/egonp:ContactName">
+    <xsl:if test="./text()">
+      <div>
+        <label class="labelVis">Meno a priezvisko: </label>
+        <span class="contentVis wordwrap">
+          <xsl:call-template name="string-replace-all">
+            <xsl:with-param name="text" select="." />
+            <xsl:with-param name="replace" select="'%0A'" />
+            <xsl:with-param name="by" select="'&#13;&#10;'" />
+          </xsl:call-template>
+        </span>
+      </div>
+      <div class="clear">&#xa0;</div>
+    </xsl:if>
+  </xsl:template>
+  <xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:ContactPerson/egonp:Email">
+    <xsl:if test="./text()">
+      <div>
+        <label class="labelVis">E-mail: </label>
+        <span class="contentVis wordwrap">
+          <xsl:call-template name="string-replace-all">
+            <xsl:with-param name="text" select="." />
+            <xsl:with-param name="replace" select="'%0A'" />
+            <xsl:with-param name="by" select="'&#13;&#10;'" />
+          </xsl:call-template>
+        </span>
+      </div>
+      <div class="clear">&#xa0;</div>
+    </xsl:if>
+  </xsl:template>
+  <xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:ContactPerson/egonp:Phone">
+    <xsl:if test="./text()">
+      <div>
+        <label class="labelVis">Telefón: </label>
+        <span class="contentVis wordwrap">
+          <xsl:call-template name="string-replace-all">
+            <xsl:with-param name="text" select="." />
+            <xsl:with-param name="replace" select="'%0A'" />
+            <xsl:with-param name="by" select="'&#13;&#10;'" />
+          </xsl:call-template>
+        </span>
+      </div>
+      <div class="clear">&#xa0;</div>
+    </xsl:if>
+  </xsl:template>
+  <xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:TechnicalAccount/egonp:EDeckAccessType">
+    <xsl:if test="./text()">
+      <div>
+        <label class="labelVis">Prístup do elektronickej schránky: </label>
+        <span class="contentVis wordwrap">
+          <xsl:if test=".='1'">&#218;pln&#253;</xsl:if>
+          <xsl:if test=".='2'">Čiastočn&#253;</xsl:if>
+        </span>
+      </div>
+      <div class="clear">&#xa0;</div>
+    </xsl:if>
+  </xsl:template>
+  <xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:TechnicalAccount/egonp:ValidFrom">
+    <xsl:if test="./text()">
+      <div>
+        <label class="labelVis">Platnosť od: </label>
+        <span class="contentVis wordwrap">
+          <xsl:call-template name="formatToSkDate">
+            <xsl:with-param name="date" select="." />
+          </xsl:call-template>
+        </span>
+      </div>
+      <div class="clear">&#xa0;</div>
+    </xsl:if>
+  </xsl:template>
+  <xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:TechnicalAccount/egonp:ValidTo">
+    <xsl:if test="./text()">
+      <div>
+        <label class="labelVis">Platnosť do: </label>
+        <span class="contentVis wordwrap">
+          <xsl:call-template name="formatToSkDate">
+            <xsl:with-param name="date" select="." />
+          </xsl:call-template>
+        </span>
+      </div>
+      <div class="clear">&#xa0;</div>
+    </xsl:if>
+  </xsl:template>
+  <xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:TechnicalAccount/egonp:Roles/egonp:Role/egonp:RoleCode">
+    <xsl:if test="./text()">
+      <div>
+        <label class="labelVis">Oprávnenia: </label>
+        <span class="contentVis wordwrap">
+          <xsl:value-of select="."/>
+        </span>
+      </div>
+      <div class="clear">&#xa0;</div>
+    </xsl:if>
+  </xsl:template>
+  <xsl:template name="formatToSkDate">
+    <xsl:param name="date" />
+    <xsl:variable name="dateString" select="string($date)" />
+    <xsl:choose>
+      <xsl:when test="$dateString != '' and string-length($dateString)=10 and string(number(substring($dateString, 1, 4))) != 'NaN' ">
+        <xsl:value-of select="concat(substring($dateString, 9, 2), '.', substring($dateString, 6, 2), '.', substring($dateString, 1, 4))" />
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$dateString"></xsl:value-of>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  <xsl:template name="booleanCheckboxToString">
+    <xsl:param name="boolValue" />
+    <xsl:variable name="boolValueString" select="string($boolValue)" />
+    <xsl:choose>
+      <xsl:when test="$boolValueString = 'true' ">
+        <xsl:text>Áno</xsl:text>
+      </xsl:when>
+      <xsl:when test="$boolValueString = 'false' ">
+        <xsl:text>Nie</xsl:text>
+      </xsl:when>
+      <xsl:when test="$boolValueString = '1' ">
+        <xsl:text>Áno</xsl:text>
+      </xsl:when>
+      <xsl:when test="$boolValueString = '0' ">
+        <xsl:text>Nie</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$boolValueString"></xsl:value-of>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  <xsl:template name="formatTimeTrimSeconds">
+    <xsl:param name="time" />
+    <xsl:variable name="timeString" select="string($time)" />
+    <xsl:if test="$timeString != ''">
+      <xsl:value-of select="substring($timeString, 1, 5)" />
+    </xsl:if>
+  </xsl:template>
+  <xsl:template name="formatTime">
+    <xsl:param name="time" />
+    <xsl:variable name="timeString" select="string($time)" />
+    <xsl:if test="$timeString != ''">
+      <xsl:value-of select="substring($timeString, 1, 8)" />
+    </xsl:if>
+  </xsl:template>
+  <xsl:template name="string-replace-all">
+    <xsl:param name="text"/>
+    <xsl:param name="replace"/>
+    <xsl:param name="by"/>
+    <xsl:choose>
+      <xsl:when test="contains($text, $replace)">
+        <xsl:value-of select="substring-before($text,$replace)"/>
+        <xsl:value-of select="$by"/>
+        <xsl:call-template name="string-replace-all">
+          <xsl:with-param name="text" select="substring-after($text,$replace)"/>
+          <xsl:with-param name="replace" select="$replace"/>
+          <xsl:with-param name="by" select="$by" />
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$text"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  <xsl:template name="formatToSkDateTime">
+    <xsl:param name="dateTime" />
+    <xsl:variable name="dateTimeString" select="string($dateTime)" />
+    <xsl:choose>
+      <xsl:when test="$dateTimeString!= '' and string-length($dateTimeString)>18 and string(number(substring($dateTimeString, 1, 4))) != 'NaN' ">
+        <xsl:value-of select="concat(substring($dateTimeString, 9, 2), '.', substring($dateTimeString, 6, 2), '.', substring($dateTimeString, 1, 4),' ', substring($dateTimeString, 12, 2),':', substring($dateTimeString, 15, 2))" />
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$dateTimeString"></xsl:value-of>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  <xsl:template name="formatToSkDateTimeSecond">
+    <xsl:param name="dateTime" />
+    <xsl:variable name="dateTimeString" select="string($dateTime)" />
+    <xsl:choose>
+      <xsl:when test="$dateTimeString!= '' and string-length($dateTimeString)>18 and string(number(substring($dateTimeString, 1, 4))) != 'NaN' ">
+        <xsl:value-of select="concat(substring($dateTimeString, 9, 2), '.', substring($dateTimeString, 6, 2), '.', substring($dateTimeString, 1, 4),' ', substring($dateTimeString, 12, 2),':', substring($dateTimeString, 15, 2),':', substring($dateTimeString, 18, 2))" />
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$dateTimeString"></xsl:value-of>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+</xsl:stylesheet>
+    XSLT
+  }
+]
+
+crac_cert_registration_form_related_docs.each do |related_document|
+  Upvs::FormRelatedDocument.find_or_create_by!(
+    form: crac_cert_registration_form,
     data: related_document[:data],
     language: related_document[:language],
     document_type: related_document[:document_type]
@@ -288,7 +1467,7 @@ exe_form = Upvs::Form.find_or_create_by!(
   message_type: "00166073.RESS_Exekucne_konanie_Navrh_na_vykonanie_exekucie.sk"
 )
 
-exe_related_documents = [
+exe_related_docs = [
   {
     data: "<?xml version=\"1.0\" encoding=\"utf-8\"?><xs:schema xmlns=\"http://schemas.gov.sk/form/00166073.RESS_Exekucne_konanie_Navrh_na_vykonanie_exekucie.sk/1.24\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" targetNamespace=\"http://schemas.gov.sk/form/00166073.RESS_Exekucne_konanie_Navrh_na_vykonanie_exekucie.sk/1.24\" elementFormDefault=\"qualified\" attributeFormDefault=\"unqualified\"><xs:element name=\"ProposalForExecution\"><xs:annotation><xs:documentation>NÃ¡vrh na vykonanie exekÃºcieU</xs:documentation></xs:annotation><xs:complexType><xs:sequence><xs:element name=\"ProfilName\" type=\"StringMax255OptType\" minOccurs=\"0\" /><xs:element name=\"LegitimatePerson\" maxOccurs=\"50\"><xs:complexType><xs:sequence><xs:element name=\"SectionNumber\" type=\"NumericOpt10\" minOccurs=\"0\" /><xs:element name=\"SubjectType\" type=\"CodelistItemCType\" /><xs:choice><xs:element name=\"PhysicalPersonData\"><xs:complexType><xs:sequence><xs:element name=\"PersonData\"><xs:complexType><xs:sequence><xs:element name=\"PhysicalPerson\" type=\"PhysicalPersonType\" /><xs:element name=\"CorporateBody\"><xs:complexType><xs:sequence><xs:element name=\"CorporateBodyFullName\" type=\"CorporateBodyFullNameTypeOpt\" minOccurs=\"0\" /></xs:sequence></xs:complexType></xs:element><xs:element name=\"PhysicalAddress\" type=\"PhysicalAddressType\" /><xs:element name=\"TelephoneAddress\" type=\"TelephoneAddressType\" minOccurs=\"0\" maxOccurs=\"5\" /><xs:element name=\"ElectronicAddress\" type=\"ElectronicAddressType\" minOccurs=\"0\" /><xs:element name=\"ID\" minOccurs=\"0\" maxOccurs=\"2\"><xs:complexType><xs:sequence><xs:element name=\"IdentifierType\" type=\"CodelistItemCType\" /><xs:element name=\"IdentifierValue\" type=\"ldt_ICO_RC\" /></xs:sequence></xs:complexType></xs:element><xs:element name=\"PreferenceAddress\" type=\"PhysicalAddressType\" minOccurs=\"0\" /><xs:element name=\"PreferenceAddressCheckBox\" type=\"xs:boolean\" minOccurs=\"0\" /><xs:element name=\"MarkOfElectronicMailbox\" type=\"StringMax255OptType\" minOccurs=\"0\" /></xs:sequence></xs:complexType></xs:element><xs:element name=\"YourMark\" type=\"StringMax20OptType\" minOccurs=\"0\" /></xs:sequence></xs:complexType></xs:element><xs:element name=\"CorporateBodyData\"><xs:complexType><xs:sequence><xs:element name=\"PersonData\"><xs:complexType><xs:sequence><xs:element name=\"CorporateBody\"><xs:complexType><xs:sequence><xs:element name=\"CorporateBodyFullName\" type=\"CorporateBodyFullNameTypeReq\" /></xs:sequence></xs:complexType></xs:element><xs:element name=\"PhysicalAddress\" type=\"PhysicalAddressType\" /><xs:element name=\"TelephoneAddress\" type=\"TelephoneAddressType\" minOccurs=\"0\" maxOccurs=\"5\" /><xs:element name=\"ElectronicAddress\" type=\"ElectronicAddressType\" minOccurs=\"0\" /><xs:element name=\"ID\" minOccurs=\"0\"><xs:complexType><xs:sequence><xs:element name=\"IdentifierType\" type=\"CodelistItemCType\" /><xs:element name=\"IdentifierValue\" type=\"ldt_ICO\" /></xs:sequence></xs:complexType></xs:element><xs:element name=\"OrganizationalInsert\" type=\"xs:boolean\" minOccurs=\"0\" /><xs:element name=\"PreferenceAddress\" type=\"PhysicalAddressType\" minOccurs=\"0\" /><xs:element name=\"PreferenceAddressCheckBox\" type=\"xs:boolean\" minOccurs=\"0\" /><xs:element name=\"MarkOfElectronicMailbox\" type=\"StringMax255OptType\" minOccurs=\"0\" /></xs:sequence></xs:complexType></xs:element><xs:element name=\"OtherIdentifier\" type=\"StringMax100OptType\" minOccurs=\"0\" /><xs:element name=\"YourMark\" type=\"StringMax20OptType\" minOccurs=\"0\" /></xs:sequence></xs:complexType></xs:element><xs:element name=\"State\"><xs:complexType><xs:sequence><xs:element name=\"PersonData\"><xs:complexType><xs:sequence><xs:element name=\"CorporateBody\"><xs:complexType><xs:sequence><xs:element name=\"CorporateBodyFullName\" type=\"CorporateBodyFullNameTypeReq\" /></xs:sequence></xs:complexType></xs:element><xs:element name=\"PhysicalAddress\" type=\"PhysicalAddressType\" /><xs:element name=\"TelephoneAddress\" type=\"TelephoneAddressType\" minOccurs=\"0\" maxOccurs=\"5\" /><xs:element name=\"ElectronicAddress\" type=\"ElectronicAddressType\" minOccurs=\"0\" /><xs:element name=\"ID\"><xs:complexType><xs:sequence><xs:element name=\"IdentifierType\" type=\"CodelistItemCType\" /><xs:element name=\"IdentifierValue\" type=\"ldt_ICO\" /></xs:sequence></xs:complexType></xs:element><xs:element name=\"PreferenceAddress\" type=\"PhysicalAddressType\" minOccurs=\"0\" /><xs:element name=\"PreferenceAddressCheckBox\" type=\"xs:boolean\" minOccurs=\"0\" /><xs:element name=\"MarkOfElectronicMailbox\" type=\"StringMax255OptType\" minOccurs=\"0\" /></xs:sequence></xs:complexType></xs:element><xs:element name=\"IndicationOfThePublicAuthority\" type=\"StringMax200OReqType\" /><xs:element name=\"YourMark\" type=\"StringMax20OptType\" minOccurs=\"0\" /></xs:sequence></xs:complexType></xs:element></xs:choice><xs:element name=\"BankConnection\"><xs:annotation><xs:documentation>Ã\u009ADAJE O BANKOVOM Ã\u009AÄ\u008CTE</xs:documentation></xs:annotation><xs:complexType><xs:sequence><xs:element name=\"InternationalBankConnection\"><xs:complexType><xs:sequence><xs:element name=\"IBAN\" type=\"StringMax100ReqType\" /><xs:element name=\"BIC\" type=\"ldt_BIC\" minOccurs=\"0\" /></xs:sequence></xs:complexType></xs:element><xs:element name=\"VariableSymbol\" type=\"NumericOpt10\" minOccurs=\"0\" /><xs:element name=\"SpecificSymbol\" type=\"NumericOpt10\" minOccurs=\"0\" /></xs:sequence></xs:complexType></xs:element><xs:element name=\"HasLegalRepresentative\" type=\"xs:boolean\" minOccurs=\"0\" /><xs:element name=\"LegalRepresentative\" type=\"LegalRepresentativeType\" minOccurs=\"0\" maxOccurs=\"5\" /></xs:sequence></xs:complexType></xs:element><xs:element name=\"ProposalMethod\"><xs:complexType><xs:sequence><xs:element name=\"Executor\" type=\"xs:boolean\" /><xs:element name=\"EvidenceNumber\" type=\"StringMax50OptType\" minOccurs=\"0\" /><xs:element name=\"PhysicalPersonData\" minOccurs=\"0\"><xs:complexType><xs:sequence><xs:element name=\"PersonData\"><xs:complexType><xs:sequence><xs:element name=\"PhysicalPerson\"><xs:complexType><xs:sequence><xs:element name=\"PersonName\"><xs:complexType><xs:sequence><xs:element name=\"GivenName\" type=\"PersonNameReqType\" maxOccurs=\"5\" /><xs:element name=\"FamilyName\" type=\"PersonNameReqType\" maxOccurs=\"5\" /><xs:element name=\"Affix\" type=\"AffixXsdType\" minOccurs=\"0\" maxOccurs=\"10\" /></xs:sequence></xs:complexType></xs:element></xs:sequence></xs:complexType></xs:element></xs:sequence></xs:complexType></xs:element></xs:sequence></xs:complexType></xs:element></xs:sequence></xs:complexType></xs:element><xs:element name=\"HasCommonRepresentative\" type=\"xs:boolean\" minOccurs=\"0\" /><xs:element name=\"CollectiveRepresentative\" minOccurs=\"0\"><xs:complexType><xs:sequence><xs:element name=\"SubjectType\" type=\"CodelistItemCType\" /><xs:element name=\"CommonRepresentative\" type=\"xs:boolean\" /><xs:choice><xs:element name=\"PhysicalPersonData\"><xs:complexType><xs:sequence><xs:element name=\"PersonData\"><xs:complexType><xs:sequence><xs:element name=\"PhysicalPerson\" type=\"PhysicalPersonType\" /><xs:element name=\"PhysicalAddress\" type=\"PhysicalAddressType\" /><xs:element name=\"TelephoneAddress\" type=\"TelephoneAddressType\" minOccurs=\"0\" maxOccurs=\"5\" /><xs:element name=\"ElectronicAddress\" type=\"ElectronicAddressType\" minOccurs=\"0\" /><xs:element name=\"ID\" minOccurs=\"0\" maxOccurs=\"2\"><xs:complexType><xs:sequence><xs:element name=\"IdentifierType\" type=\"CodelistItemCType\" /><xs:element name=\"IdentifierValue\" type=\"ldt_ICO_RC\" /></xs:sequence></xs:complexType></xs:element><xs:element name=\"MarkOfElectronicMailbox\" type=\"StringMax255OptType\" minOccurs=\"0\" /></xs:sequence></xs:complexType></xs:element></xs:sequence></xs:complexType></xs:element><xs:element name=\"CorporateBodyData\" type=\"CorporateBodyDataType\" /></xs:choice><xs:element name=\"Lawyer\" minOccurs=\"0\"><xs:complexType><xs:sequence><xs:element name=\"LawyerExist\" type=\"xs:boolean\" /><xs:element name=\"EvidenceNumber\" type=\"StringMax50OptType\" minOccurs=\"0\" /></xs:sequence></xs:complexType></xs:element><xs:element name=\"BankConnection\"><xs:annotation><xs:documentation>Ã\u009ADAJE O BANKOVOM Ã\u009AÄ\u008CTE</xs:documentation></xs:annotation><xs:complexType><xs:sequence><xs:element name=\"InternationalBankConnection\"><xs:complexType><xs:sequence><xs:element name=\"IBAN\" type=\"StringMax100ReqType\" minOccurs=\"0\" /><xs:element name=\"BIC\" type=\"ldt_BIC\" minOccurs=\"0\" /></xs:sequence></xs:complexType></xs:element><xs:element name=\"VariableSymbol\" type=\"NumericOpt10\" minOccurs=\"0\" /><xs:element name=\"SpecificSymbol\" type=\"NumericOpt10\" minOccurs=\"0\" /></xs:sequence></xs:complexType></xs:element></xs:sequence></xs:complexType></xs:element><xs:element name=\"ObligatoryPerson\" maxOccurs=\"50\"><xs:complexType><xs:sequence><xs:element name=\"SectionNumber\" type=\"NumericOpt10\" minOccurs=\"0\" /><xs:element name=\"SubjectType\" type=\"CodelistItemCType\" /><xs:choice><xs:element name=\"PhysicalPersonData\"><xs:complexType><xs:sequence><xs:element name=\"PersonData\"><xs:complexType><xs:sequence><xs:element name=\"PhysicalPerson\" type=\"PhysicalPersonType\" /><xs:element name=\"CorporateBody\"><xs:complexType><xs:sequence><xs:element name=\"CorporateBodyFullName\" type=\"CorporateBodyFullNameTypeOpt\" minOccurs=\"0\" /></xs:sequence></xs:complexType></xs:element><xs:element name=\"PhysicalAddress\" type=\"PhysicalAddressType\" /><xs:element name=\"TelephoneAddress\" type=\"TelephoneAddressType\" minOccurs=\"0\" maxOccurs=\"5\" /><xs:element name=\"ElectronicAddress\" type=\"ElectronicAddressType\" minOccurs=\"0\" /><xs:element name=\"ID\" minOccurs=\"0\" maxOccurs=\"2\"><xs:complexType><xs:sequence><xs:element name=\"IdentifierType\" type=\"CodelistItemCType\" /><xs:element name=\"IdentifierValue\" type=\"ldt_ICO_RC\" /></xs:sequence></xs:complexType></xs:element><xs:element name=\"PreferenceAddress\" type=\"PhysicalAddressType\" minOccurs=\"0\" /><xs:element name=\"PreferenceAddressCheckBox\" type=\"xs:boolean\" minOccurs=\"0\" /><xs:element name=\"MarkOfElectronicMailbox\" type=\"StringMax255OptType\" minOccurs=\"0\" /></xs:sequence></xs:complexType></xs:element></xs:sequence></xs:complexType></xs:element><xs:element name=\"CorporateBodyData\"><xs:complexType><xs:sequence><xs:element name=\"PersonData\"><xs:complexType><xs:sequence><xs:element name=\"CorporateBody\"><xs:complexType><xs:sequence><xs:element name=\"CorporateBodyFullName\" type=\"CorporateBodyFullNameTypeReq\" /></xs:sequence></xs:complexType></xs:element><xs:element name=\"PhysicalAddress\" type=\"PhysicalAddressType\" /><xs:element name=\"TelephoneAddress\" type=\"TelephoneAddressType\" minOccurs=\"0\" maxOccurs=\"5\" /><xs:element name=\"ElectronicAddress\" type=\"ElectronicAddressType\" minOccurs=\"0\" /><xs:element name=\"ID\" minOccurs=\"0\"><xs:complexType><xs:sequence><xs:element name=\"IdentifierType\" type=\"CodelistItemCType\" /><xs:element name=\"IdentifierValue\" type=\"ldt_ICO\" /></xs:sequence></xs:complexType></xs:element><xs:element name=\"ControversyCheck\" type=\"xs:boolean\" minOccurs=\"0\" /><xs:element name=\"PreferenceAddress\" type=\"PhysicalAddressType\" minOccurs=\"0\" /><xs:element name=\"PreferenceAddressCheckBox\" type=\"xs:boolean\" minOccurs=\"0\" /><xs:element name=\"MarkOfElectronicMailbox\" type=\"StringMax255OptType\" minOccurs=\"0\" /></xs:sequence></xs:complexType></xs:element><xs:element name=\"OtherIdentifier\" type=\"StringMax100OptType\" minOccurs=\"0\" /></xs:sequence></xs:complexType></xs:element><xs:element name=\"State\"><xs:complexType><xs:sequence><xs:element name=\"IndicationOfThePublicAuthority\" type=\"StringMax200OReqType\" /><xs:element name=\"PersonData\"><xs:complexType><xs:sequence><xs:element name=\"CorporateBody\"><xs:complexType><xs:sequence><xs:element name=\"CorporateBodyFullName\" type=\"CorporateBodyFullNameTypeReq\" /></xs:sequence></xs:complexType></xs:element><xs:element name=\"PhysicalAddress\" type=\"PhysicalAddressType\" maxOccurs=\"2\" /><xs:element name=\"TelephoneAddress\" type=\"TelephoneAddressType\" minOccurs=\"0\" maxOccurs=\"5\" /><xs:element name=\"ElectronicAddress\" type=\"ElectronicAddressType\" minOccurs=\"0\" /><xs:element name=\"ID\"><xs:complexType><xs:sequence><xs:element name=\"IdentifierType\" type=\"CodelistItemCType\" /><xs:element name=\"IdentifierValue\" type=\"ldt_ICO\" /></xs:sequence></xs:complexType></xs:element><xs:element name=\"PreferenceAddress\" type=\"PhysicalAddressType\" minOccurs=\"0\" /><xs:element name=\"PreferenceAddressCheckBox\" type=\"xs:boolean\" minOccurs=\"0\" /><xs:element name=\"MarkOfElectronicMailbox\" type=\"StringMax255OptType\" minOccurs=\"0\" /></xs:sequence></xs:complexType></xs:element></xs:sequence></xs:complexType></xs:element></xs:choice><xs:element name=\"HasLegalRepresentative\" type=\"xs:boolean\" minOccurs=\"0\" /><xs:element name=\"LegalRepresentative\" type=\"LegalRepresentativeType\" minOccurs=\"0\" maxOccurs=\"5\" /></xs:sequence></xs:complexType></xs:element><xs:element name=\"ExecutionTitle\" maxOccurs=\"99\"><xs:annotation><xs:documentation>ExekuÄ\u008DnÃ½ titul</xs:documentation></xs:annotation><xs:complexType><xs:sequence><xs:element name=\"KindOfExecutionTitle\" type=\"CodelistHybridType\"><xs:annotation><xs:documentation>Druh exekuÄ\u008DnÃ©ho titulu</xs:documentation></xs:annotation></xs:element><xs:element name=\"Designation\"><xs:complexType><xs:sequence><xs:element name=\"Organ\" type=\"StringMax500OptType\" minOccurs=\"0\"><xs:annotation><xs:documentation>OrgÃ¡n, ktorÃ½ exekuÄ\u008DnÃ½ titul vydal</xs:documentation></xs:annotation></xs:element><xs:element name=\"FileReference\" type=\"StringMax500OptType\" minOccurs=\"0\"><xs:annotation><xs:documentation>SpisovÃ¡ znaÄ\u008Dka/Ä\u008DÃ­slo konania</xs:documentation></xs:annotation></xs:element><xs:element name=\"ReleaseDate\" type=\"xs:date\" minOccurs=\"0\"><xs:annotation><xs:documentation>DÃ¡tum vydania</xs:documentation></xs:annotation></xs:element><xs:element name=\"EnforceabilityDates\" maxOccurs=\"99\"><xs:complexType><xs:sequence><xs:element name=\"EnforceabilityDate\" type=\"xs:date\" minOccurs=\"0\"><xs:annotation><xs:documentation>DÃ¡tum vykonateÄ¾nosti</xs:documentation></xs:annotation></xs:element><xs:element name=\"AdditionalInformation\" type=\"StringMax10000OptType\" minOccurs=\"0\"><xs:annotation><xs:documentation>DoplÅ\u0088ujÃºce informÃ¡cie</xs:documentation></xs:annotation></xs:element></xs:sequence></xs:complexType></xs:element></xs:sequence></xs:complexType></xs:element></xs:sequence></xs:complexType></xs:element><xs:element name=\"EnforcementOfClaims\"><xs:annotation><xs:documentation>VymÃ¡hanÃ½ nÃ¡rok</xs:documentation></xs:annotation><xs:complexType><xs:sequence><xs:element name=\"KindOfClaims\" type=\"CodelistItemCType\"><xs:annotation><xs:documentation>VymÃ¡hanÃ½ nÃ¡rok</xs:documentation></xs:annotation></xs:element><xs:choice><xs:element name=\"NotMoneyClaim\"><xs:annotation><xs:documentation>nepeÅ\u0088aÅ¾nÃ½ nÃ¡rok</xs:documentation></xs:annotation><xs:complexType><xs:sequence><xs:element name=\"NotMoneyClaim\" type=\"StringMax10000OptType\" /><xs:element name=\"NotMoneyClaimOptional\" minOccurs=\"0\"><xs:complexType><xs:sequence><xs:element name=\"KindOdMoneyClaim\" type=\"CodelistItemCBCType\" minOccurs=\"0\"><xs:annotation><xs:documentation>PeÅ\u0088aÅ¾nÃ½ nÃ¡rok</xs:documentation></xs:annotation></xs:element><xs:element name=\"Principal\" minOccurs=\"0\" maxOccurs=\"99\"><xs:complexType><xs:sequence><xs:element name=\"PrincipalAmount\" type=\"DecimalReqType\" /><xs:element name=\"Currency\" type=\"CodelistItemCType\" minOccurs=\"0\" /></xs:sequence></xs:complexType></xs:element><xs:element name=\"InterestRate\" minOccurs=\"0\" maxOccurs=\"99\"><xs:complexType><xs:sequence><xs:element name=\"Rate\" type=\"DecimalReqType\" /><xs:element name=\"Periodicity\" type=\"CodelistItemCType\" /><xs:element name=\"Amount\" type=\"DecimalReqType\" /><xs:element name=\"Currency\" type=\"CodelistItemCType\" minOccurs=\"0\" /><xs:element name=\"DateFrom\" type=\"DateReqType\" /><xs:element name=\"isDate\" type=\"xs:boolean\" minOccurs=\"0\" /><xs:choice><xs:element name=\"DateTo\" type=\"DateReqType\" /><xs:element name=\"TextTo\" type=\"StringMax50ReqType\" /></xs:choice><xs:element name=\"Arrears\" type=\"DecimalReqType\" minOccurs=\"0\" /></xs:sequence></xs:complexType></xs:element><xs:element name=\"InterestOnArrears\" minOccurs=\"0\" maxOccurs=\"99\"><xs:complexType><xs:sequence><xs:element name=\"Rate\" type=\"DecimalReqType\" /><xs:element name=\"Periodicity\" type=\"CodelistItemCType\" /><xs:element name=\"PercentPromile\" type=\"CodelistItemCType\" minOccurs=\"0\" /><xs:element name=\"Amount\" type=\"DecimalReqType\" /><xs:element name=\"Currency\" type=\"CodelistItemCType\" minOccurs=\"0\" /><xs:element name=\"DateFrom\" type=\"DateReqType\" /><xs:element name=\"isDate\" type=\"xs:boolean\" minOccurs=\"0\" /><xs:choice><xs:element name=\"DateTo\" type=\"DateReqType\" /><xs:element name=\"TextTo\" type=\"StringMax50ReqType\" /></xs:choice><xs:element name=\"Arrears\" type=\"DecimalReqType\" minOccurs=\"0\" /></xs:sequence></xs:complexType></xs:element><xs:element name=\"LatePaymentFee\" minOccurs=\"0\" maxOccurs=\"99\"><xs:complexType><xs:sequence><xs:element name=\"Rate\" type=\"DecimalReqType\" /><xs:element name=\"PercentPromile\" type=\"CodelistItemCType\" minOccurs=\"0\" /><xs:element name=\"Amount\" type=\"DecimalReqType\" /><xs:element name=\"Currency\" type=\"CodelistItemCType\" minOccurs=\"0\" /><xs:element name=\"DateFrom\" type=\"DateReqType\" /><xs:element name=\"isDate\" type=\"xs:boolean\" minOccurs=\"0\" /><xs:choice><xs:element name=\"DateTo\" type=\"DateReqType\" /><xs:element name=\"TextTo\" type=\"StringMax50ReqType\" /></xs:choice><xs:element name=\"Arrears\" type=\"DecimalReqType\" minOccurs=\"0\" /></xs:sequence></xs:complexType></xs:element><xs:element name=\"ContractPenalty\" minOccurs=\"0\" maxOccurs=\"99\"><xs:complexType><xs:sequence><xs:element name=\"ContractPenaltyType\" type=\"CodelistItemCType\" /><xs:choice><xs:element name=\"Fixed\"><xs:complexType><xs:sequence><xs:element name=\"Amount\" type=\"DecimalReqType\" /><xs:element name=\"Currency\" type=\"CodelistItemCType\" minOccurs=\"0\" /></xs:sequence></xs:complexType></xs:element><xs:element name=\"Pecentage\"><xs:complexType><xs:sequence><xs:element name=\"Rate\" type=\"DecimalReqType\" /><xs:element name=\"Periodicity\" type=\"CodelistItemCType\" /><xs:element name=\"Amount\" type=\"DecimalReqType\" /><xs:element name=\"Currency\" type=\"CodelistItemCType\" minOccurs=\"0\" /><xs:element name=\"DateFrom\" type=\"DateReqType\" /><xs:element name=\"isDate\" type=\"xs:boolean\" minOccurs=\"0\" /><xs:choice><xs:element name=\"DateTo\" type=\"DateReqType\" /><xs:element name=\"TextTo\" type=\"StringMax50ReqType\" /></xs:choice></xs:sequence></xs:complexType></xs:element></xs:choice></xs:sequence></xs:complexType></xs:element><xs:element name=\"LegalExpensesClaims\" minOccurs=\"0\" maxOccurs=\"99\"><xs:complexType><xs:sequence><xs:element name=\"Amount\" type=\"DecimalReqType\" /><xs:element name=\"Currency\" type=\"CodelistItemCType\" minOccurs=\"0\" /></xs:sequence></xs:complexType></xs:element><xs:element name=\"Other\" minOccurs=\"0\" maxOccurs=\"99\"><xs:complexType><xs:sequence><xs:element name=\"About\" type=\"StringMax25ReqType\" /><xs:element name=\"OtherType\" type=\"CodelistItemCType\" /><xs:choice><xs:element name=\"Fixed\"><xs:complexType><xs:sequence><xs:element name=\"Amount\" type=\"DecimalReqType\" /><xs:element name=\"Currency\" type=\"CodelistItemCType\" minOccurs=\"0\" /></xs:sequence></xs:complexType></xs:element><xs:element name=\"Pecentage\"><xs:complexType><xs:sequence><xs:element name=\"Rate\" type=\"DecimalReqType\" /><xs:element name=\"Periodicity\" type=\"CodelistItemCType\" /><xs:element name=\"Amount\" type=\"DecimalReqType\" /><xs:element name=\"Currency\" type=\"CodelistItemCType\" minOccurs=\"0\" /><xs:element name=\"DateFrom\" type=\"DateReqType\" /><xs:element name=\"isDate\" type=\"xs:boolean\" minOccurs=\"0\" /><xs:choice><xs:element name=\"DateTo\" type=\"DateReqType\" /><xs:element name=\"TextTo\" type=\"StringMax50ReqType\" /></xs:choice></xs:sequence></xs:complexType></xs:element></xs:choice></xs:sequence></xs:complexType></xs:element></xs:sequence></xs:complexType></xs:element></xs:sequence></xs:complexType></xs:element><xs:element name=\"MoneyClaim\"><xs:annotation><xs:documentation>peÅ\u0088aÅ¾nÃ½ nÃ¡rok</xs:documentation></xs:annotation><xs:complexType><xs:sequence><xs:element name=\"KindOdMoneyClaim\" type=\"CodelistItemCBCType\" minOccurs=\"0\"><xs:annotation><xs:documentation>PeÅ\u0088aÅ¾nÃ½ nÃ¡rok</xs:documentation></xs:annotation></xs:element><xs:element name=\"Principal\" minOccurs=\"0\" maxOccurs=\"99\"><xs:complexType><xs:sequence><xs:element name=\"PrincipalAmount\" type=\"DecimalReqType\" /><xs:element name=\"Currency\" type=\"CodelistItemCType\" minOccurs=\"0\" /></xs:sequence></xs:complexType></xs:element><xs:element name=\"InterestRate\" minOccurs=\"0\" maxOccurs=\"99\"><xs:complexType><xs:sequence><xs:element name=\"Rate\" type=\"DecimalReqType\" /><xs:element name=\"Periodicity\" type=\"CodelistItemCType\" /><xs:element name=\"Amount\" type=\"DecimalReqType\" /><xs:element name=\"Currency\" type=\"CodelistItemCType\" minOccurs=\"0\" /><xs:element name=\"DateFrom\" type=\"DateReqType\" /><xs:element name=\"isDate\" type=\"xs:boolean\" minOccurs=\"0\" /><xs:choice><xs:element name=\"DateTo\" type=\"DateReqType\" /><xs:element name=\"TextTo\" type=\"StringMax50ReqType\" /></xs:choice><xs:element name=\"Arrears\" type=\"DecimalReqType\" minOccurs=\"0\" /></xs:sequence></xs:complexType></xs:element><xs:element name=\"InterestOnArrears\" minOccurs=\"0\" maxOccurs=\"99\"><xs:complexType><xs:sequence><xs:element name=\"Rate\" type=\"DecimalReqType\" /><xs:element name=\"Periodicity\" type=\"CodelistItemCType\" /><xs:element name=\"PercentPromile\" type=\"CodelistItemCType\" minOccurs=\"0\" /><xs:element name=\"Amount\" type=\"DecimalReqType\" /><xs:element name=\"Currency\" type=\"CodelistItemCType\" minOccurs=\"0\" /><xs:element name=\"DateFrom\" type=\"DateReqType\" /><xs:element name=\"isDate\" type=\"xs:boolean\" minOccurs=\"0\" /><xs:choice><xs:element name=\"DateTo\" type=\"DateReqType\" /><xs:element name=\"TextTo\" type=\"StringMax50ReqType\" /></xs:choice><xs:element name=\"Arrears\" type=\"DecimalReqType\" minOccurs=\"0\" /></xs:sequence></xs:complexType></xs:element><xs:element name=\"LatePaymentFee\" minOccurs=\"0\" maxOccurs=\"99\"><xs:complexType><xs:sequence><xs:element name=\"Rate\" type=\"DecimalReqType\" /><xs:element name=\"PercentPromile\" type=\"CodelistItemCType\" minOccurs=\"0\" /><xs:element name=\"Amount\" type=\"DecimalReqType\" /><xs:element name=\"Currency\" type=\"CodelistItemCType\" minOccurs=\"0\" /><xs:element name=\"DateFrom\" type=\"DateReqType\" /><xs:element name=\"isDate\" type=\"xs:boolean\" minOccurs=\"0\" /><xs:choice><xs:element name=\"DateTo\" type=\"DateReqType\" /><xs:element name=\"TextTo\" type=\"StringMax50ReqType\" /></xs:choice><xs:element name=\"Arrears\" type=\"DecimalReqType\" minOccurs=\"0\" /></xs:sequence></xs:complexType></xs:element><xs:element name=\"ContractPenalty\" minOccurs=\"0\" maxOccurs=\"99\"><xs:complexType><xs:sequence><xs:element name=\"ContractPenaltyType\" type=\"CodelistItemCType\" /><xs:choice><xs:element name=\"Fixed\"><xs:complexType><xs:sequence><xs:element name=\"Amount\" type=\"DecimalReqType\" /><xs:element name=\"Currency\" type=\"CodelistItemCType\" minOccurs=\"0\" /></xs:sequence></xs:complexType></xs:element><xs:element name=\"Pecentage\"><xs:complexType><xs:sequence><xs:element name=\"Rate\" type=\"DecimalReqType\" /><xs:element name=\"Periodicity\" type=\"CodelistItemCType\" /><xs:element name=\"Amount\" type=\"DecimalReqType\" /><xs:element name=\"Currency\" type=\"CodelistItemCType\" minOccurs=\"0\" /><xs:element name=\"DateFrom\" type=\"DateReqType\" /><xs:element name=\"isDate\" type=\"xs:boolean\" minOccurs=\"0\" /><xs:choice><xs:element name=\"DateTo\" type=\"DateReqType\" /><xs:element name=\"TextTo\" type=\"StringMax50ReqType\" /></xs:choice></xs:sequence></xs:complexType></xs:element></xs:choice></xs:sequence></xs:complexType></xs:element><xs:element name=\"LegalExpensesClaims\" minOccurs=\"0\" maxOccurs=\"99\"><xs:complexType><xs:sequence><xs:element name=\"Amount\" type=\"DecimalReqType\" /><xs:element name=\"Currency\" type=\"CodelistItemCType\" minOccurs=\"0\" /></xs:sequence></xs:complexType></xs:element><xs:element name=\"Other\" minOccurs=\"0\" maxOccurs=\"99\"><xs:complexType><xs:sequence><xs:element name=\"About\" type=\"StringMax25ReqType\" /><xs:element name=\"OtherType\" type=\"CodelistItemCType\" /><xs:choice><xs:element name=\"Fixed\"><xs:complexType><xs:sequence><xs:element name=\"Amount\" type=\"DecimalReqType\" /><xs:element name=\"Currency\" type=\"CodelistItemCType\" minOccurs=\"0\" /></xs:sequence></xs:complexType></xs:element><xs:element name=\"Pecentage\"><xs:complexType><xs:sequence><xs:element name=\"Rate\" type=\"DecimalReqType\" /><xs:element name=\"Periodicity\" type=\"CodelistItemCType\" /><xs:element name=\"Amount\" type=\"DecimalReqType\" /><xs:element name=\"Currency\" type=\"CodelistItemCType\" minOccurs=\"0\" /><xs:element name=\"DateFrom\" type=\"DateReqType\" /><xs:element name=\"isDate\" type=\"xs:boolean\" minOccurs=\"0\" /><xs:choice><xs:element name=\"DateTo\" type=\"DateReqType\" /><xs:element name=\"TextTo\" type=\"StringMax50ReqType\" /></xs:choice></xs:sequence></xs:complexType></xs:element></xs:choice></xs:sequence></xs:complexType></xs:element><xs:element name=\"AdditionalInformation\" type=\"StringMax10000OptType\" minOccurs=\"0\"><xs:annotation><xs:documentation>DoplÅ\u0088ujÃºce informÃ¡cie o peÅ\u0088aÅ¾nom nÃ¡roku </xs:documentation></xs:annotation></xs:element></xs:sequence></xs:complexType></xs:element><xs:element name=\"Alimony\"><xs:annotation><xs:documentation>PeÅ\u0088aÅ¾nÃ½ nÃ¡rok - vÃ½Å¾ivnÃ©</xs:documentation></xs:annotation><xs:complexType><xs:sequence><xs:element name=\"MissedAlimony\" type=\"StringMax500OptType\" minOccurs=\"0\"><xs:annotation><xs:documentation>missed alimony</xs:documentation></xs:annotation></xs:element><xs:element name=\"NormalAlimony\" type=\"StringMax500OptType\" minOccurs=\"0\"><xs:annotation><xs:documentation>BeÅ¾nÃ© vÃ½Å¾ivnÃ©</xs:documentation></xs:annotation></xs:element><xs:element name=\"AdditionalInformation\" type=\"StringMax10000OptType\" minOccurs=\"0\"><xs:annotation><xs:documentation>DoplÅ\u0088ujÃºce informÃ¡cie o vyÅ¾ivovacej povinnosti </xs:documentation></xs:annotation></xs:element><xs:element name=\"Costs\" type=\"xs:decimal\" minOccurs=\"0\"><xs:annotation><xs:documentation>Trovy konania v ktorom bol vydanÃ½ exekuÄ\u008DnÃ½ titul (vrÃ¡tane trov prÃ¡vneho zastÃºpenia) </xs:documentation></xs:annotation></xs:element><xs:element name=\"Currency\" type=\"CodelistItemCType\" minOccurs=\"0\" /></xs:sequence></xs:complexType></xs:element></xs:choice></xs:sequence></xs:complexType></xs:element><xs:element name=\"CostsOfExecution\"><xs:annotation><xs:documentation>Trovy exekÃºcie- oprÃ¡vnenÃ½</xs:documentation></xs:annotation><xs:complexType><xs:sequence><xs:element name=\"CourtFee\" type=\"xs:boolean\"><xs:annotation><xs:documentation>SÃºdny poplatok (nÃ¡vrh na vykonanie exekÃºcie)</xs:documentation></xs:annotation></xs:element><xs:element name=\"AmountOfCourtFee\" type=\"xs:decimal\" minOccurs=\"0\"><xs:annotation><xs:documentation>SÃºdny poplatok</xs:documentation></xs:annotation></xs:element><xs:element name=\"ConversionFee\" type=\"xs:decimal\" minOccurs=\"0\"><xs:annotation><xs:documentation>Poplatok za konverziu</xs:documentation></xs:annotation></xs:element><xs:element name=\"CostsOfLegalRepresentation\" type=\"xs:decimal\" minOccurs=\"0\"><xs:annotation><xs:documentation>Trovy prÃ¡vneho zastÃºpenia</xs:documentation></xs:annotation></xs:element><xs:element name=\"CostsForDraftingTheProposal\" type=\"xs:boolean\"><xs:annotation><xs:documentation>Trovy za spÃ­sanie nÃ¡vrhu na vykonanie exekÃºcie u sÃºdneho exekÃºtora</xs:documentation></xs:annotation></xs:element><xs:element name=\"AmountOfCostsForDraftingTheProposal\" type=\"xs:decimal\" minOccurs=\"0\"><xs:annotation><xs:documentation>VÃ½Å¡ka trov za spÃ­sanie nÃ¡vrhu na vykonanie exekÃºcie u sÃºdneho exekÃºtora</xs:documentation></xs:annotation></xs:element><xs:element name=\"OtherCosts\" type=\"xs:boolean\" minOccurs=\"0\"><xs:annotation><xs:documentation>InÃ© trovy</xs:documentation></xs:annotation></xs:element><xs:element name=\"AmountOfOtherCosts\" type=\"xs:decimal\" minOccurs=\"0\"><xs:annotation><xs:documentation>VÃ½Å¡ka inÃ½ch trov</xs:documentation></xs:annotation></xs:element><xs:element name=\"TotalCosts\" type=\"xs:decimal\" minOccurs=\"0\"><xs:annotation><xs:documentation>Trovy celkom (vrÃ¡tane DPH)</xs:documentation></xs:annotation></xs:element><xs:element name=\"DescriptionOfCosts\" type=\"StringMax10000OptType\" minOccurs=\"0\"><xs:annotation><xs:documentation>OdÃ´vodnenie trov</xs:documentation></xs:annotation></xs:element></xs:sequence></xs:complexType></xs:element><xs:element name=\"ExemptionFromCourtFees\"><xs:annotation><xs:documentation>Oslobodenie od sÃºdneho poplatku</xs:documentation></xs:annotation><xs:complexType><xs:sequence><xs:element name=\"ItIsExempted\" type=\"xs:boolean\"><xs:annotation><xs:documentation>Oslobodenie od sÃºdneho poplatku</xs:documentation></xs:annotation></xs:element><xs:element name=\"Proposal\" type=\"CodelistItemCType\" minOccurs=\"0\"><xs:annotation><xs:documentation>Oslobodenie od sÃºdneho poplatku </xs:documentation></xs:annotation></xs:element><xs:element name=\"Reasons\" type=\"StringMax10000OptType\" minOccurs=\"0\"><xs:annotation><xs:documentation>DÃ´vody</xs:documentation></xs:annotation></xs:element></xs:sequence></xs:complexType></xs:element><xs:element name=\"StatementsAndProposal\"><xs:annotation><xs:documentation>VyhlÃ¡senia a nÃ¡vrh</xs:documentation></xs:annotation><xs:complexType><xs:sequence><xs:element name=\"TheMandateForRecovery\" type=\"xs:boolean\"><xs:annotation><xs:documentation>OprÃ¡vnenÃ½ vyhlasuje, Å¾e nÃ¡rok uvedenÃ½ v Ä\u008Dasti E) povinnÃ½ ku dÅ\u0088u podania nÃ¡vrhu na vykonanie exekÃºcie nesplnil dobrovoÄ¾ne a preto navrhuje, aby sÃºd vydal poverenie pre sÃºdneho exekÃºtora na jeho vymoÅ¾enie</xs:documentation></xs:annotation></xs:element><xs:element name=\"TheMandateForRecoveryDetail\" type=\"StringMax5000OptType\" minOccurs=\"0\"><xs:annotation><xs:documentation>Podrobnosti</xs:documentation></xs:annotation></xs:element><xs:element name=\"ThereIsNoOtherProceedings\" type=\"xs:boolean\"><xs:annotation><xs:documentation>OprÃ¡vnenÃ½ vyhlasuje, Å¾e na podklade exekuÄ\u008DnÃ©ho titulu uvedenÃ©ho v Ä\u008Dasti D) nie je proti povinnÃ©mu ohÄ¾adne toho istÃ©ho nÃ¡roku vedenÃ© inÃ© exekuÄ\u008DnÃ© konanie alebo obdobnÃ© vykonÃ¡vacie konanie.</xs:documentation></xs:annotation></xs:element><xs:element name=\"ThereIsNoOtherProceedingsDetail\" type=\"StringMax5000OptType\" minOccurs=\"0\"><xs:annotation><xs:documentation>Podrobnosti</xs:documentation></xs:annotation></xs:element><xs:element name=\"InAnotherPartOfTheEnforcementProceedings\" type=\"xs:boolean\"><xs:annotation><xs:documentation>Ä\u008CasÅ¥ nÃ¡roku z exekuÄ\u008DnÃ©ho titulu je vymÃ¡hanÃ¡ v inom exekuÄ\u008Dnom konanÃ­.</xs:documentation></xs:annotation></xs:element><xs:element name=\"InAnotherPartOfTheEnforcementProceedingsDetail\" type=\"StringMax5000OptType\" minOccurs=\"0\"><xs:annotation><xs:documentation>Podrobnosti</xs:documentation></xs:annotation></xs:element><xs:element name=\"ClaimFromOldExecution\" type=\"xs:boolean\" minOccurs=\"0\"><xs:annotation><xs:documentation>NÃ¡vrhom sa uplatÅ\u0088uje nÃ¡rok zo starej exekÃºcie</xs:documentation></xs:annotation></xs:element><xs:element name=\"ClaimFromOldExecutionDetail\" type=\"StringMax5000OptType\" minOccurs=\"0\"><xs:annotation><xs:documentation>Podrobnosti</xs:documentation></xs:annotation></xs:element><xs:element name=\"EnforcementOfClaimsByThirdParties\" type=\"xs:boolean\"><xs:annotation><xs:documentation>OprÃ¡vnenÃ½ je oprÃ¡vnenÃ½ vyÅ¾adovaÅ¥ splnenie vymÃ¡hanÃ©ho nÃ¡roku zÃ¡roveÅ\u0088 od inÃ½ch osÃ´b.</xs:documentation></xs:annotation></xs:element><xs:element name=\"EnforcementOfClaimsByThirdPartiesDetail\" type=\"StringMax5000OptType\" minOccurs=\"0\"><xs:annotation><xs:documentation>Podrobnosti</xs:documentation></xs:annotation></xs:element><xs:element name=\"IsLegalSuccessor\" type=\"xs:boolean\"><xs:annotation><xs:documentation>OprÃ¡vnenÃ½ je oprÃ¡vnenÃ½ vyÅ¾adovaÅ¥ splnenie vymÃ¡hanÃ©ho nÃ¡roku zÃ¡roveÅ\u0088 od inÃ½ch osÃ´b.</xs:documentation></xs:annotation></xs:element><xs:element name=\"IsLegalSuccessorDetail\" type=\"StringMax5000OptType\" minOccurs=\"0\"><xs:annotation><xs:documentation>OpÃ­Å¡te skutoÄ\u008Dnosti, z ktorÃ½ch prÃ¡vne nÃ¡stupnÃ­ctvo vyplÃ½va. ListinnÃ© dÃ´kazy pripojte ako prÃ­lohu.</xs:documentation></xs:annotation></xs:element><xs:element name=\"ClaimOfBills\" type=\"xs:boolean\"><xs:annotation><xs:documentation>NÃ¡rok priznanÃ½ exekuÄ\u008DnÃ½m titulom vyplÃ½va zo zmenky</xs:documentation></xs:annotation></xs:element><xs:element name=\"ClaimOfBillsDetail\" type=\"StringMax5000OptType\" minOccurs=\"0\"><xs:annotation><xs:documentation>OpÃ­Å¡te rozhodujÃºce skutoÄ\u008Dnosti a oznaÄ\u008Dte dÃ´kazy tÃ½kajÃºce sa vlastnÃ©ho vzÅ¥ahu s povinnÃ½m. ListinnÃ© dÃ´kazy pripojte ako prÃ­lohu.</xs:documentation></xs:annotation></xs:element><xs:element name=\"OnEnforcementOfClaimsAreEligibleAlsoOtherAuthorized\" type=\"xs:boolean\"><xs:annotation><xs:documentation>Na vymÃ¡hanie nÃ¡roku sÃº oprÃ¡vnenÃ­ aj inÃ­ oprÃ¡vnenÃ­</xs:documentation></xs:annotation></xs:element><xs:element name=\"OnEnforcementOfClaimsAreEligibleAlsoOtherAuthorizedDetail\" type=\"StringMax5000OptType\" minOccurs=\"0\"><xs:annotation><xs:documentation>OpÃ­Å¡te skutoÄ\u008Dnosti tÃ½kajÃºce sa splnenia podmienky alebo vzÃ¡jomnej povinnosti a oznaÄ\u008Dte dÃ´kazy. ListinnÃ© dÃ´kazy pripojte ako prÃ­lohu.</xs:documentation></xs:annotation></xs:element><xs:element name=\"PersonHavingFulfilledTheConditionOrMutualObligation\" type=\"xs:boolean\" minOccurs=\"0\"><xs:annotation><xs:documentation>NÃ¡vrhom sa uplatÅ\u0088uje nÃ¡rok zo spotrebiteÄ¾skej zmluvy alebo z inÃ½ch zmluvnÃ½ch dokumentov sÃºvisiacich so spotrebiteÄ¾skou zmluvou</xs:documentation></xs:annotation></xs:element></xs:sequence></xs:complexType></xs:element><xs:element name=\"SPRAttachments\" minOccurs=\"0\"><xs:complexType><xs:sequence><xs:element name=\"StoredInRegister\" type=\"xs:boolean\" minOccurs=\"0\" /><xs:element name=\"SPRAttachment\" minOccurs=\"0\" maxOccurs=\"10\"><xs:complexType><xs:sequence><xs:element name=\"Number\" type=\"StringMax25OptType\" minOccurs=\"0\" /><xs:element name=\"Description\" type=\"StringMax50OptType\" minOccurs=\"0\" /></xs:sequence></xs:complexType></xs:element></xs:sequence></xs:complexType></xs:element><xs:element name=\"LabelingInformation\"><xs:complexType><xs:sequence><xs:element name=\"Place\" type=\"StringMax255OptType\" minOccurs=\"0\"><xs:annotation><xs:documentation>PoleV</xs:documentation></xs:annotation></xs:element><xs:element name=\"Date\" type=\"xs:date\" minOccurs=\"0\"><xs:annotation><xs:documentation>PoleDna</xs:documentation></xs:annotation></xs:element><xs:element name=\"Sign\" type=\"StringMax200Opt\" minOccurs=\"0\"><xs:annotation><xs:documentation>PolePodavajuci</xs:documentation></xs:annotation></xs:element></xs:sequence></xs:complexType></xs:element><xs:element name=\"Attachments\"><xs:complexType><xs:sequence><xs:element name=\"Attachment\" minOccurs=\"0\" maxOccurs=\"9999\"><xs:complexType><xs:sequence><xs:element name=\"AttachmentNr\" type=\"AttachmentsNrType\" minOccurs=\"0\" /><xs:element name=\"AttachmentName\" type=\"xs:string\" minOccurs=\"0\" /><xs:element name=\"AttachmentFileName\" type=\"StringMax255OptType\" minOccurs=\"0\" /><xs:element name=\"AttachmentDelivery\" type=\"StringMax2047OptType\" minOccurs=\"0\" /></xs:sequence></xs:complexType></xs:element></xs:sequence></xs:complexType></xs:element></xs:sequence></xs:complexType></xs:element><xs:complexType name=\"LegalRepresentativeType\"><xs:sequence><xs:element name=\"Relationship\" type=\"StringMax200Opt\" minOccurs=\"0\" /><xs:element name=\"RelationshipType\" type=\"StringMax200Opt\" /><xs:element name=\"SubjectType\" type=\"CodelistItemCType\" /><xs:choice><xs:element name=\"PhysicalPersonData\" minOccurs=\"0\"><xs:complexType><xs:sequence><xs:element name=\"PersonData\"><xs:complexType><xs:sequence><xs:element name=\"PhysicalPerson\" type=\"PhysicalPersonType\" /><xs:element name=\"PhysicalAddress\" type=\"PhysicalAddressType\" /><xs:element name=\"TelephoneAddress\" type=\"TelephoneAddressType\" minOccurs=\"0\" maxOccurs=\"5\" /><xs:element name=\"ElectronicAddress\" type=\"ElectronicAddressType\" minOccurs=\"0\" /><xs:element name=\"ID\" minOccurs=\"0\"><xs:complexType><xs:sequence><xs:element name=\"IdentifierType\" type=\"CodelistItemCType\" /><xs:element name=\"IdentifierValue\" type=\"ldt_RC\" /></xs:sequence></xs:complexType></xs:element><xs:element name=\"MarkOfElectronicMailbox\" type=\"StringMax255OptType\" minOccurs=\"0\" /></xs:sequence></xs:complexType></xs:element></xs:sequence></xs:complexType></xs:element><xs:element name=\"CorporateBodyData\" type=\"CorporateBodyDataType\" minOccurs=\"0\" /></xs:choice></xs:sequence></xs:complexType><xs:complexType name=\"CorporateBodyDataType\"><xs:sequence><xs:element name=\"PersonData\"><xs:complexType><xs:sequence><xs:element name=\"CorporateBody\"><xs:complexType><xs:sequence><xs:element name=\"CorporateBodyFullName\" type=\"CorporateBodyFullNameTypeReq\" /></xs:sequence></xs:complexType></xs:element><xs:element name=\"PhysicalAddress\" type=\"PhysicalAddressType\" /><xs:element name=\"TelephoneAddress\" type=\"TelephoneAddressType\" minOccurs=\"0\" maxOccurs=\"5\" /><xs:element name=\"ElectronicAddress\" type=\"ElectronicAddressType\" minOccurs=\"0\" /><xs:element name=\"ID\" minOccurs=\"0\"><xs:complexType><xs:sequence><xs:element name=\"IdentifierType\" type=\"CodelistItemCType\" /><xs:element name=\"IdentifierValue\" type=\"ldt_ICO\" /></xs:sequence></xs:complexType></xs:element><xs:element name=\"MarkOfElectronicMailbox\" type=\"StringMax255OptType\" minOccurs=\"0\" /></xs:sequence></xs:complexType></xs:element><xs:element name=\"OtherIdentifier\" type=\"StringMax100OptType\" minOccurs=\"0\" /></xs:sequence></xs:complexType><xs:complexType name=\"PhysicalPersonType\"><xs:sequence><xs:element name=\"PersonName\" type=\"PersonNameType\" /><xs:element name=\"Birth\" type=\"BirthType\" minOccurs=\"0\" /></xs:sequence></xs:complexType><xs:complexType name=\"BirthType\"><xs:sequence><xs:element name=\"DateOfBirth\" type=\"xs:date\" minOccurs=\"0\" /></xs:sequence></xs:complexType><xs:complexType name=\"PersonNameType\"><xs:sequence><xs:element name=\"GivenName\" type=\"PersonNameReqType\" maxOccurs=\"5\" /><xs:element name=\"FamilyName\" type=\"PersonNameReqType\" maxOccurs=\"5\" /><xs:element name=\"GivenFamilyName\" type=\"StringMax255OptType\" minOccurs=\"0\" /><xs:element name=\"Affix\" type=\"AffixXsdType\" minOccurs=\"0\" maxOccurs=\"10\" /></xs:sequence></xs:complexType><xs:complexType name=\"PhysicalAddressType\"><xs:sequence><xs:element name=\"Country\" type=\"CodelistItemCType\" /><xs:element name=\"Municipality\" type=\"CodelistHybridType\" /><xs:element name=\"StreetName\" type=\"StringMax255OptType\" minOccurs=\"0\" /><xs:element name=\"BuildingNumber\" type=\"BuildingNumberType\" /><xs:element name=\"PropertyRegistrationNumber\" type=\"PropertyRegistrationNumberOPTType\" minOccurs=\"0\" /><xs:element name=\"DeliveryAddress\" minOccurs=\"0\"><xs:complexType><xs:sequence><xs:element name=\"PostalCode\" type=\"ldt_Postal\" minOccurs=\"0\" /></xs:sequence></xs:complexType></xs:element></xs:sequence></xs:complexType><xs:complexType name=\"TelephoneAddressType\"><xs:sequence><xs:element name=\"TelephoneType\" type=\"CodelistItemCType\" minOccurs=\"0\" /><xs:element name=\"Number\" minOccurs=\"0\"><xs:complexType><xs:sequence><xs:element name=\"FormattedNumber\" type=\"ldt_Phone\" minOccurs=\"0\" /></xs:sequence></xs:complexType></xs:element></xs:sequence></xs:complexType><xs:complexType name=\"ElectronicAddressType\"><xs:sequence><xs:element name=\"InternetAddress\" type=\"ldt_Email\" minOccurs=\"0\" /></xs:sequence></xs:complexType><xs:complexType name=\"AddressTypeType\"><xs:sequence><xs:element name=\"AddressClass\" type=\"CodelistItemCType\"><xs:annotation><xs:documentation>Druh adresy (D.1.3.17.1) - CL010139 Druh adresy.</xs:documentation></xs:annotation></xs:element></xs:sequence></xs:complexType><xs:complexType name=\"CodelistItemCType\"><xs:sequence><xs:element name=\"Codelist\" type=\"CodelistCType\" /></xs:sequence></xs:complexType><xs:complexType name=\"CodelistCType\"><xs:sequence><xs:element name=\"CodelistCode\" type=\"StringMax100ReqType\" /><xs:element name=\"CodelistItem\"><xs:complexType><xs:sequence><xs:element name=\"ItemCode\" type=\"StringMax255ReqType\" /><xs:element name=\"ItemName\"><xs:complexType><xs:simpleContent><xs:extension base=\"StringMax2047ReqType\"><xs:attribute name=\"Language\" type=\"StringMax255ReqType\" /></xs:extension></xs:simpleContent></xs:complexType></xs:element></xs:sequence></xs:complexType></xs:element></xs:sequence></xs:complexType><xs:complexType name=\"AffixXsdType\"><xs:complexContent><xs:extension base=\"CodelistItemCType\"><xs:attribute name=\"type\" type=\"AffixType\" fixed=\"qualification\" /><xs:attribute name=\"position\" type=\"AffixPosition\" /></xs:extension></xs:complexContent></xs:complexType><xs:complexType name=\"TelephoneType\"><xs:sequence><xs:element name=\"TelephoneType\" type=\"CodelistItemCType\" /><xs:element name=\"Number\"><xs:complexType><xs:sequence><xs:element name=\"FormattedNumber\" type=\"ldt_Phone\" /></xs:sequence></xs:complexType></xs:element></xs:sequence></xs:complexType><xs:complexType name=\"CodelistItemCBCType\"><xs:sequence><xs:element name=\"Codelist\" type=\"CodelistCBCType\" /></xs:sequence></xs:complexType><xs:complexType name=\"CodelistCBCType\"><xs:sequence><xs:element name=\"CodelistCode\" type=\"StringMax100ReqType\" /><xs:element name=\"CodelistItem\" maxOccurs=\"unbounded\"><xs:complexType><xs:sequence><xs:element name=\"ItemCode\" type=\"StringMax255OptType\" minOccurs=\"0\" /><xs:element name=\"ItemName\"><xs:complexType><xs:simpleContent><xs:extension base=\"StringMax2047ReqType\"><xs:attribute name=\"Language\" type=\"StringMax255ReqType\" /></xs:extension></xs:simpleContent></xs:complexType></xs:element></xs:sequence></xs:complexType></xs:element></xs:sequence></xs:complexType><xs:complexType name=\"CodelistHybridType\"><xs:choice><xs:element name=\"NonCodelistData\" type=\"StringMax2047ReqType\" /><xs:element name=\"Codelist\" type=\"CodelistCType\" /></xs:choice></xs:complexType><xs:complexType name=\"PersonNameReqType\"><xs:simpleContent><xs:extension base=\"StringMax255ReqType\" /></xs:simpleContent></xs:complexType><xs:simpleType name=\"AffixType\"><xs:restriction base=\"xs:string\"><xs:enumeration value=\"aristocraticTitle\" /><xs:enumeration value=\"formOfAddress\" /><xs:enumeration value=\"generation\" /><xs:enumeration value=\"qualification\" /></xs:restriction></xs:simpleType><xs:simpleType name=\"AffixPosition\"><xs:restriction base=\"xs:string\"><xs:enumeration value=\"prefix\" /><xs:enumeration value=\"postfix\" /></xs:restriction></xs:simpleType><xs:simpleType name=\"CodelistCodeType\"><xs:restriction base=\"xs:string\"><xs:maxLength value=\"100\" /></xs:restriction></xs:simpleType><xs:simpleType name=\"ItemCodeType\"><xs:restriction base=\"xs:string\"><xs:minLength value=\"1\" /><xs:maxLength value=\"255\" /></xs:restriction></xs:simpleType><xs:simpleType name=\"ItemNameType\"><xs:restriction base=\"xs:string\"><xs:maxLength value=\"2047\" /></xs:restriction></xs:simpleType><xs:simpleType name=\"CorporateBodyFullNameTypeReq\"><xs:restriction base=\"xs:string\"><xs:maxLength value=\"1023\" /><xs:minLength value=\"1\" /></xs:restriction></xs:simpleType><xs:simpleType name=\"CorporateBodyFullNameTypeOpt\"><xs:restriction base=\"xs:string\"><xs:maxLength value=\"1023\" /></xs:restriction></xs:simpleType><xs:simpleType name=\"NumericOpt10\"><xs:restriction base=\"xs:string\"><xs:maxLength value=\"10\" /><xs:pattern value=\"|\\d{1,10}\" /></xs:restriction></xs:simpleType><xs:simpleType name=\"StringMax100ReqType\"><xs:restriction base=\"xs:string\"><xs:minLength value=\"1\" /><xs:maxLength value=\"100\" /></xs:restriction></xs:simpleType><xs:simpleType name=\"StringMax25OptType\"><xs:restriction base=\"xs:string\"><xs:maxLength value=\"25\" /></xs:restriction></xs:simpleType><xs:simpleType name=\"StringMax255OptType\"><xs:restriction base=\"xs:string\"><xs:maxLength value=\"255\" /></xs:restriction></xs:simpleType><xs:simpleType name=\"StringMax255ReqType\"><xs:restriction base=\"xs:string\"><xs:minLength value=\"1\" /><xs:maxLength value=\"255\" /></xs:restriction></xs:simpleType><xs:simpleType name=\"DecimalReqType\"><xs:restriction base=\"xs:decimal\"><xs:minInclusive value=\"0\" /></xs:restriction></xs:simpleType><xs:simpleType name=\"DateReqType\"><xs:restriction base=\"xs:date\"><xs:minInclusive value=\"1900-01-01\" /></xs:restriction></xs:simpleType><xs:simpleType name=\"YearReqType\"><xs:restriction base=\"xs:gYear\"><xs:minInclusive value=\"1970\" /></xs:restriction></xs:simpleType><xs:simpleType name=\"StringMax200Opt\"><xs:restriction base=\"xs:string\"><xs:maxLength value=\"200\" /></xs:restriction></xs:simpleType><xs:simpleType name=\"StringMax200OReqType\"><xs:restriction base=\"xs:string\"><xs:minLength value=\"1\" /><xs:maxLength value=\"200\" /></xs:restriction></xs:simpleType><xs:simpleType name=\"StringMax100OptType\"><xs:restriction base=\"xs:string\"><xs:maxLength value=\"100\" /></xs:restriction></xs:simpleType><xs:simpleType name=\"StringMax50ReqType\"><xs:restriction base=\"xs:string\"><xs:minLength value=\"1\" /><xs:maxLength value=\"50\" /></xs:restriction></xs:simpleType><xs:simpleType name=\"StringMax500OptType\"><xs:restriction base=\"xs:string\"><xs:maxLength value=\"500\" /></xs:restriction></xs:simpleType><xs:simpleType name=\"StringMax5000OptType\"><xs:restriction base=\"xs:string\"><xs:maxLength value=\"5000\" /></xs:restriction></xs:simpleType><xs:simpleType name=\"StringMax10000OptType\"><xs:restriction base=\"xs:string\"><xs:maxLength value=\"10000\" /></xs:restriction></xs:simpleType><xs:simpleType name=\"StringMax25ReqType\"><xs:restriction base=\"xs:string\"><xs:minLength value=\"1\" /><xs:maxLength value=\"25\" /></xs:restriction></xs:simpleType><xs:simpleType name=\"StringMax2047ReqType\"><xs:restriction base=\"xs:string\"><xs:minLength value=\"1\" /><xs:maxLength value=\"2047\" /></xs:restriction></xs:simpleType><xs:simpleType name=\"ldt_ICO\"><xs:restriction base=\"xs:string\"><xs:maxLength value=\"8\" /><xs:minLength value=\"8\" /><xs:pattern value=\"|\\d{8}\" /></xs:restriction></xs:simpleType><xs:simpleType name=\"ldt_BIC\"><xs:restriction base=\"xs:string\"><xs:maxLength value=\"11\" /><xs:minLength value=\"8\" /><xs:pattern value=\"|[a-zA-Z0-9]{8}|[a-zA-Z0-9]{11}\" /></xs:restriction></xs:simpleType><xs:simpleType name=\"ldt_RC\"><xs:restriction base=\"xs:string\"><xs:maxLength value=\"10\" /><xs:pattern value=\"|\\d{9,10}\" /></xs:restriction></xs:simpleType><xs:simpleType name=\"ldt_ICO_RC\"><xs:restriction base=\"xs:string\"><xs:maxLength value=\"2047\" /><xs:minLength value=\"1\" /><xs:pattern value=\"\\d{8}|\\d{9,10}\" /></xs:restriction></xs:simpleType><xs:simpleType name=\"PropertyRegistrationNumberOPTType\"><xs:restriction base=\"xs:string\"><xs:maxLength value=\"10\" /><xs:pattern value=\"|\\d{1,10}\" /></xs:restriction></xs:simpleType><xs:simpleType name=\"BuildingNumberType\"><xs:restriction base=\"xs:string\"><xs:minLength value=\"1\" /><xs:maxLength value=\"20\" /><xs:pattern value=\"|.{1,20}\" /></xs:restriction></xs:simpleType><xs:simpleType name=\"ldt_Postal\"><xs:restriction base=\"xs:string\"><xs:maxLength value=\"10\" /><xs:pattern value=\"|.{1,10}\" /></xs:restriction></xs:simpleType><xs:simpleType name=\"ldt_Phone\"><xs:restriction base=\"xs:string\"><xs:maxLength value=\"20\" /><xs:pattern value=\"|(\\+|%2b|00)[0-9_ ]{1,20}\" /></xs:restriction></xs:simpleType><xs:simpleType name=\"ldt_Email\"><xs:restriction base=\"xs:anyURI\"><xs:maxLength value=\"255\" /><xs:pattern value=\"|(mailto:(.)+@(.)+)\" /></xs:restriction></xs:simpleType><xs:simpleType name=\"StringMax50OptType\"><xs:restriction base=\"xs:string\"><xs:maxLength value=\"50\" /></xs:restriction></xs:simpleType><xs:simpleType name=\"AttachmentsNrType\"><xs:restriction base=\"xs:string\"><xs:maxLength value=\"12\" /><xs:pattern value=\"|\\d{1,12}\" /></xs:restriction></xs:simpleType><xs:simpleType name=\"StringMax2047OptType\"><xs:restriction base=\"xs:string\"><xs:maxLength value=\"2047\" /></xs:restriction></xs:simpleType><xs:simpleType name=\"StringMax20OptType\"><xs:restriction base=\"xs:string\"><xs:maxLength value=\"20\" /></xs:restriction></xs:simpleType></xs:schema>",
     language: "sk",
@@ -1725,7 +2904,7 @@ exe_related_documents = [
   }
 ]
 
-exe_related_documents.each do |related_document|
+exe_related_docs.each do |related_document|
   Upvs::FormRelatedDocument.find_or_create_by!(
     form: exe_form,
     data: related_document[:data],

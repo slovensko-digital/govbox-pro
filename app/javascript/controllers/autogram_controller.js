@@ -10,7 +10,7 @@ export default class extends Controller {
           // TODO handle login if expired session
 
           if (response.status === 204) {
-            alert("Vyplňte text správy");
+            alert("Vyplňte správu");
           }
           else {
             return response.json();

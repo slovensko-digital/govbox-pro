@@ -1,3 +1,12 @@
+<% if @message.errors[:base].any? %>
+  <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative w-full" role="alert">
+    <% @message.errors.full_messages_for(:base).each do |error| %>
+      <strong class="font-bold"><%= error %></strong>
+  <% end %>
+  </div>
+<% end %>
+
+
 <%
   message_draft_body_form_id = "#{dom_id(@message, :body)}_form"
 %>

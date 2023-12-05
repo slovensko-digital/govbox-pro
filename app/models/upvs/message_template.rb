@@ -114,6 +114,18 @@ class Upvs::MessageTemplate < ::MessageTemplate
     required_template_items.each do |template_item|
       message.errors.add(:metadata, :blank, attribute: template_item) unless message.metadata["data"][template_item].present?
     end
+
+    return if message.errors[:metadata].any?
+
+    xsd_schema = upvs_form&.xsd_schema
+
+    raise "Missing XSD schema: #{name}" unless xsd_schema
+
+    schema = Nokogiri::XML::Schema(xsd_schema)
+    document = Nokogiri::XML(message.form.content)
+    errors = schema.validate(document)
+
+    message.errors.add(:base, :invalid_form) if errors.any?
   end
 
   def create_form_object(message)
@@ -122,6 +134,16 @@ class Upvs::MessageTemplate < ::MessageTemplate
       mimetype: "application/x-eform-xml",
       object_type: "FORM",
       is_signed: false
+    )
+  end
+
+  private
+
+  def upvs_form
+    Upvs::Form.find_by(
+      identifier: metadata['posp_id'],
+      version: metadata['posp_version'],
+      message_type: metadata['message_type']
     )
   end
 end
