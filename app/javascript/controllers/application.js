@@ -17,15 +17,22 @@ application.register('popover', Popover)
 application.register('toggle', Toggle)
 application.register('slideover', Slideover)
 document.addEventListener('turbo:before-cache', function(event) {
-    event.target.querySelectorAll("[data-turbo-temporary-hide]").forEach((elm) => {
-        elm.style = 'display: none';
-    })
-});
+    const setOpenAsFalse = (attribute) => {
+        const element = event.target.querySelector(`[${attribute}="true"]`)
+        element?.setAttribute(attribute, "false")
+    }
 
-if (window.history.state && window.history.state.turbo) {
-    window.addEventListener("popstate", function () {
-        location.reload(true);
-    });
-}
+    const addHiddenClass = () => {
+        event.target.querySelectorAll("[data-turbo-temporary-hide]").forEach((elm) => {
+            if (!elm.classList.contains('hidden')) {
+                elm.classList.add('hidden')
+            }
+        })
+    }
+
+    addHiddenClass()
+    setOpenAsFalse('data-slideover-open-value')
+    setOpenAsFalse('data-dropdown-open-value')
+})
 
 export { application }
