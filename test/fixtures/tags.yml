@@ -44,12 +44,6 @@ ssd_other:
   visible: true
   tenant: ssd
 
-ssd_delivery_notification:
-  name: Na prevzatie
-  type: Upvs::DeliveryNotificationTag
-  visible: true
-  tenant: ssd
-
 ssd_construction:
   name: Construction
   type: SimpleTag
@@ -77,11 +71,5 @@ solver_special:
 solver_drafts:
   name: Drafts
   type: DraftTag
-  visible: true
-  tenant: solver
-
-solver_delivery_notification:
-  name: Na prevzatie
-  type: Upvs::DeliveryNotificationTag
   visible: true
   tenant: solver
