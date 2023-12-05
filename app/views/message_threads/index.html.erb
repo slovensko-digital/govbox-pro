@@ -3,10 +3,9 @@
   <% component.with_message_thread do %>
     <%= render MessageThreadsTableRowComponent.with_collection(@message_threads) %>
   <% end %>
-  <% component.with_next_page_area do %>
-    <%= render Turbo::NextPageAreaComponent.new(
-          id: @next_cursor,
-          url: scroll_message_threads_url(@next_page_params)
-        ) %>
+  <% if @next_cursor %>
+    <% component.with_next_page_area do %>
+      <%= render Turbo::NextPageAreaComponent.new(id: @next_cursor, url: scroll_message_threads_url(@next_page_params)) %>
+    <% end %>
   <% end %>
 <% end %>

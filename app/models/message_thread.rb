@@ -16,7 +16,7 @@ class MessageThread < ApplicationRecord
   belongs_to :folder, optional: true # do not use, will be removed
   belongs_to :box
   has_one :message_thread_note, dependent: :destroy
-  has_many :messages, dependent: :destroy do
+  has_many :messages, dependent: :destroy, inverse_of: :thread do
     def find_or_create_by_uuid!(uuid:)
     end
   end
@@ -43,12 +43,13 @@ class MessageThread < ApplicationRecord
     messages.where(messages: { author_id: user.id }).or(messages.where(messages: { author_id: nil }))
   end
 
-  def add_tag(tag)
-    tags << tag unless tags.include?(tag)
-  end
-
   def automation_rules_for_event(event)
     tenant.automation_rules.where(trigger_event: event)
+  end
+
+  def rename(params)
+    update(params)
+    EventBus.publish(:message_thread_renamed, self)
   end
 
   def mark_all_messages_read
@@ -59,6 +60,7 @@ class MessageThread < ApplicationRecord
   end
 
   def self.merge_threads
+    EventBus.publish(:message_threads_merged, all)
     transaction do
       target_thread = first
       all.each do |thread|

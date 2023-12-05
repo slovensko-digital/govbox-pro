@@ -18,5 +18,11 @@
       "database": "govbox_pro_test",
       "username": "govbox_pro"
     }
-  ]
+  ],
+  "[erb]": {
+    "editor.defaultFormatter": "Jota0222.multi-formatter"
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": null
+  }
 }

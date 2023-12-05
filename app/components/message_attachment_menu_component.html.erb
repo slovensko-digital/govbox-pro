@@ -14,15 +14,14 @@
       <div class="flex flex-col justify-start items-start gap-px py-0.5 rounded-lg bg-white border border-gray-300 mt-1" style="box-shadow: 1px 1px 4px 0 rgba(0,0,0,0.1);">
         <div class="flex justify-start items-start">
           <div class="flex flex-col justify-start items-start relative gap-1">
-            <%# TODO do not trigger DB query %>
             <% if @message_attachment.signable? %>
               <div class="flex justify-start items-start px-4 py-3 rounded-lg hover:bg-gray-50">
                 <%= content_tag(:div,
                                 {
                                   "data-controller": "autogram",
                                   "data-autogram-object-id": @message_attachment.id,
-                                  "data-autogram-message-id": @message_attachment.message_id,
-                                  "data-autogram-object-path": message_message_object_path(@message_attachment.message_id, @message_attachment.id),
+                                  "data-autogram-message-id": @message_attachment.message.id,
+                                  "data-autogram-object-path": message_message_object_path(@message_attachment.message, @message_attachment),
                                   "data-autogram-authenticity-token": form_authenticity_token,
                                 }
                     ) do %>
@@ -37,7 +36,6 @@
                 Stiahnúť
               <% end %>
             </div>
-            <%# TODO do not trigger DB query %>
             <% if @message_attachment.destroyable? %>
               <div class="flex justify-start items-start px-4 py-3 rounded-lg hover:bg-gray-50">
                 <%= link_to message_message_object_path(@message_attachment.message, @message_attachment), method: :delete do %>

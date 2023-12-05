@@ -40,7 +40,6 @@ class MessageDraftsController < ApplicationController
     if @message.submittable?
       Govbox::SubmitMessageDraftJob.perform_later(@message)
       @message.being_submitted!
-
       redirect_to message_thread_path(@message.thread), notice: "Správa bola zaradená na odoslanie"
     else
       # TODO: prisposobit chybovu hlasku aj importovanym draftom
@@ -58,7 +57,8 @@ class MessageDraftsController < ApplicationController
       message_draft.being_submitted!
     end
 
-    jobs_batch.enqueue(on_finish: Govbox::FinishMessageDraftsSubmitJob, box: @messages.first.thread.box)
+    boxes_to_sync = Current.tenant.boxes.joins(message_threads: :messages).where(messages: { id: @messages.map(&:id) }).uniq
+    jobs_batch.enqueue(on_finish: Govbox::ScheduleDelayedSyncBoxJob, boxes: boxes_to_sync)
   end
 
   def destroy
@@ -69,6 +69,19 @@ class MessageDraftsController < ApplicationController
     @message.destroy
 
     redirect_to redirect_path, notice: "Draft bol zahodený"
+  end
+
+  def unlock
+    authorize @message
+    if @message.remove_form_signature
+      redirect_to message_thread_path(@message.thread), notice: "Podpisy boli úspešne odstránené, správu je možné upravovať"
+    else
+      redirect_to message_thread_path(@message.thread), alert: "Nastala neočakávaná chyba, nepodarilo sa odstrániť podpisy"
+    end
+  end
+
+  def confirm_unlock
+    authorize @message
   end
 
   private

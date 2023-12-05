@@ -9,6 +9,8 @@
 #  tag_id     :bigint           not null
 #
 class TagGroup < ApplicationRecord
+  include AuditableEvents
+
   belongs_to :group
   belongs_to :tag
 

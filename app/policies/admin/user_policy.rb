@@ -1,32 +1,40 @@
 # frozen_string_literal: true
 
 class Admin::UserPolicy < ApplicationPolicy
-  attr_reader :user
+  def initialize(actor, user_to_authorize)
+    @actor = actor
+    @user_to_authorize = user_to_authorize
+  end
 
-  def initialize(user_logged_in, user_to_authorize)
-    @user = user_logged_in
+  def user
+    @actor
   end
 
   class Scope < Scope
+    def initialize(actor, scope)
+      @actor = actor
+      @scope = scope
+    end
+
+    def user
+      @actor
+    end
+
     def resolve
-      if @user.site_admin?
-        scope.all
-      else
-        scope.where(tenant_id: @user.tenant_id)
-      end
+      scope.where(tenant: @actor.tenant)
     end
   end
 
   def index?
-    @user.site_admin? || @user.admin?
+    @actor.admin?
   end
 
   def show?
-    @user.site_admin? || @user.admin?
+    @actor.admin?
   end
 
   def create?
-    @user.site_admin? || @user.admin?
+    @actor.admin?
   end
 
   def new?
@@ -34,7 +42,7 @@ class Admin::UserPolicy < ApplicationPolicy
   end
 
   def update?
-    @user.site_admin? || @user.admin?
+    @actor.admin?
   end
 
   def edit?
@@ -42,7 +50,9 @@ class Admin::UserPolicy < ApplicationPolicy
   end
 
   def destroy?
-    @user.site_admin? || @user.admin?
-  end
+    return false unless @actor.admin?
+    return false if @user_to_authorize == @actor
 
+    true
+  end
 end

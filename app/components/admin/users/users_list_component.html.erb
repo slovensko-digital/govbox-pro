@@ -1,3 +1,4 @@
+<%= render Common::AlertComponent.new %>
 <div class="w-full p-4 flex-col justify-start items-start gap-4 inline-flex">
   <div class="self-stretch bg-white rounded-md border border-gray-200 flex-col justify-start items-start flex">
     <div class="self-stretch p-6 border-b border-gray-200 justify-start items-center gap-4 inline-flex">
@@ -33,9 +34,9 @@
         <div class="text-center text-gray-900 text-lg font-medium leading-loose">Určiť prístup skupín k správam</div>
         <div class="text-center text-gray-500 text-base font-normal leading-normal">Jednotlivé skupiny používateľov (ako aj samotný používatelia) môžu mať rozdielny prístup k správam</div>
       </div>
-      <div class="px-3.5 py-2.5 bg-white rounded-md border border-gray-300 justify-center items-center gap-2.5 flex">
+      <%= link_to admin_tenant_tag_groups_path, class: "px-3.5 py-2.5 bg-white rounded-md border border-gray-300 justify-center items-center gap-2.5 flex" do %>
         <div class="text-gray-900 text-base font-medium leading-normal">Nastaviť prístup</div>
-      </div>
+      <% end %>
     </div>
   </div>
 </div>

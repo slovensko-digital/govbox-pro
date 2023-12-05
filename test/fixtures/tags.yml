@@ -2,88 +2,74 @@
 
 ssd_finance:
   name: Finance
-  external: false
+  type: SimpleTag
   visible: true
   tenant: ssd
 
 ssd_legal:
   name: Legal
-  external: false
+  type: SimpleTag
   visible: true
   tenant: ssd
 
 ssd_hidden:
   name: Hidden
-  external: false
+  type: SimpleTag
   visible: false
   tenant: ssd
 
 ssd_external:
   name: External
-  external: true
+  type: SimpleTag
+  external_name: "slovensko.sk:/nieco"
   visible: false
   tenant: ssd
 
 ssd_external_visible:
   name: ExtVisible
-  external: true
+  type: SimpleTag
+  external_name: "slovensko.sk:/nieco"
   visible: true
   tenant: ssd
 
 ssd_drafts:
   name: Drafts
-  system_name: draft
-  external: false
+  type: DraftTag
   visible: true
   tenant: ssd
 
 ssd_other:
   name: Other
-  external: false
-  visible: true
-  tenant: ssd
-
-ssd_delivery_notification:
-  name: DeliveryNotifications
-  system_name: delivery_notification
-  external: false
+  type: SimpleTag
   visible: true
   tenant: ssd
 
 ssd_construction:
   name: Construction
-  external: false
+  type: SimpleTag
   visible: true
   tenant: ssd
 
 ssd_office:
   name: Office
-  external: false
+  type: SimpleTag
   visible: true
   tenant: ssd
 
 ssd_print:
   name: Print
-  external: false
+  type: SimpleTag
   visible: true
   tenant: ssd
 
 solver_special:
   name: Special
-  external: false
+  type: SimpleTag
   visible: true
   tenant: solver
 
 solver_drafts:
   name: Drafts
-  system_name: draft
-  external: false
-  visible: true
-  tenant: solver
-
-solver_delivery_notification:
-  name: DeliveryNotifications
-  system_name: delivery_notification
-  external: false
+  type: DraftTag
   visible: true
   tenant: solver

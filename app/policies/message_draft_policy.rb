@@ -10,8 +10,6 @@ class MessageDraftPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      return scope.all if @user.site_admin?
-
       # TODO: this does not work for imported drafts (no tags present)
       scope.where(author_id: @user.id).where(
         MessageThreadsTag
@@ -29,7 +27,7 @@ class MessageDraftPolicy < ApplicationPolicy
   end
 
   def create?
-    true # TODO can everyone create new messages?
+    true # TODO: can everyone create new messages?
   end
 
   def show?
@@ -49,6 +47,14 @@ class MessageDraftPolicy < ApplicationPolicy
   end
 
   def destroy?
+    create?
+  end
+
+  def confirm_unlock?
+    unlock?
+  end
+
+  def unlock?
     create?
   end
 end

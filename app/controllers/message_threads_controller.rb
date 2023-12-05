@@ -16,11 +16,11 @@ class MessageThreadsController < ApplicationController
   end
 
   def update
+    # currently only title update (rename) expected
     authorize @message_thread
 
     path = message_thread_path(@message_thread)
-
-    return unless @message_thread.update(message_thread_params)
+    return unless @message_thread.rename(message_thread_params)
 
     redirect_back fallback_location: path, notice: 'Názov vlákna bol upravený'
   end

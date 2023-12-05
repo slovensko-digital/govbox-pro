@@ -1,21 +1,21 @@
 <div id="<%= dom_id(@message, :body) %>" is="turbo-frame" class="w-full">
   <div class="flex flex-col justify-stretch items-stretch gap-4 px-6 pt-6 pb-4 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
     <div class="flex justify-between items-start gap-4">
-      <div class="flex flex-col justify-stretch items-start  gap-2">
-        <div class="flex justify-stretch items-start   relative gap-2">
-          <p class="  w-[100px] text-base text-left text-gray-900">Odosielateľ:</p>
-          <p class="  text-base font-semibold text-left text-gray-900"><%= @message.sender_name || 'Neznámy' %> </p>
+      <div class="flex flex-col justify-stretch items-start gap-2">
+        <div class="flex justify-stretch items-start relative gap-2">
+          <p class="w-[100px] text-base text-left text-gray-900">Odosielateľ:</p>
+          <p class="text-base font-semibold text-left text-gray-900"><%= @message.sender_name || "Neznámy" %></p>
         </div>
-        <div class="flex justify-stretch items-start   relative gap-2">
-          <p class="  w-[100px] text-base text-left text-gray-900"> Adresát: </p>
-          <p class="  text-base font-semibold text-left text-gray-900"><%= @message.recipient_name || 'Neznámy' %></p>
+        <div class="flex justify-stretch items-start relative gap-2">
+          <p class="w-[100px] text-base text-left text-gray-900">Adresát:</p>
+          <p class="text-base font-semibold text-left text-gray-900"><%= @message.recipient_name || "Neznámy" %></p>
         </div>
         <% unless @message.not_yet_submitted? %>
           <div class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-1.5 px-1.5 py-0.5 rounded-md bg-purple-50 border border-purple-300">
             <% if @message.being_submitted? %>
               <p class="flex-grow-0 flex-shrink-0 text-sm text-left text-purple-600">Správa sa odosiela</p>
             <% elsif @message.submitted? %>
-              <p class="flex-grow-0 flex-shrink-0 text-sm text-left text-purple-600">Správa je odoslaná</p>
+              <p class="flex-grow-0 flex-shrink-0 text-sm text-left text-purple-600">Správa bola odoslaná</p>
             <% end %>
           </div>
         <% end %>
@@ -25,24 +25,28 @@
     </div>
   </div>
 
-  <div class="flex flex-col justify-stretch items-start    relative gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
+  <div class="flex flex-col justify-stretch items-start relative gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
     <% if @message.custom_visualization? %>
-      <%
-        message_title_id = dom_id(@message, :title)
-        message_text_id = dom_id(@message, :text)
-      %>
+      <% message_title_id = dom_id(@message, :title)
+         message_text_id = dom_id(@message, :text) %>
       <%= content_tag(:div,
-        {
-          "data-controller": "messageDrafts",
-          "data-messageDrafts-message-draft-path": message_draft_path(@message.id),
-          "data-messageDrafts-authenticity-token": form_authenticity_token,
-          "data-messageDrafts-title-id": message_title_id,
-          "data-messageDrafts-text-id": message_text_id,
-          "class": "mb-3 pt-0 w-full"
-        }
-      ) do %>
-        <%= text_field_tag message_title_id, @message.title, placeholder: "Predmet", "data-action": "change->messageDrafts#update", disabled: !@message.editable?, class: "mb-3 px-3 py-4 placeholder-slate-300 text-slate-900 relative bg-white bg-white rounded-lg text-base border-0 shadow outline-none focus:outline-none focus:ring w-full" %>
-        <%= text_area_tag message_text_id, @message.metadata["message_body"], autofocus: @is_last, placeholder: "Text", "data-action": "change->messageDrafts#update", rows: 10, disabled: !@message.editable?, class: "px-3 py-4 placeholder-slate-300 text-slate-900 relative bg-white bg-white rounded-lg text-base border-0 shadow outline-none focus:outline-none focus:ring w-full h-full" %>
+                      {
+                        "data-controller": "message-drafts",
+                        "data-message-drafts-message-draft-path": message_draft_path(@message.id),
+                        "data-message-drafts-authenticity-token": form_authenticity_token,
+                        "data-message-drafts-title-id": message_title_id,
+                        "data-message-drafts-text-id": message_text_id,
+                        "class": "mb-3 pt-0 w-full"
+                      }) do %>
+        <% if @message.editable? %>
+          <%= text_field_tag message_title_id, @message.title, placeholder: "Predmet", "data-action": "change->message-drafts#update", class: "mb-3 px-3 py-4 placeholder-slate-300 text-slate-900 relative bg-white bg-white rounded-lg text-base border-0 shadow outline-none focus:outline-none focus:ring w-full" %>
+          <%= text_area_tag message_text_id, @message.metadata["message_body"], autofocus: @is_last, placeholder: "Text", "data-action": "change->message-drafts#update", rows: 10, class: "px-3 py-4 placeholder-slate-300 text-slate-900 relative bg-white bg-white rounded-lg text-base border-0 shadow outline-none focus:outline-none focus:ring w-full h-full" %>
+        <% else %>
+          <%= button_to confirm_unlock_message_draft_path(@message), class: "w-full", data: { turbo_frame: "modal" } do %>
+            <%= text_field_tag message_title_id, @message.title, placeholder: "Predmet", readonly: true, class: "mb-3 px-3 py-4 placeholder-slate-300 text-slate-900 relative bg-white bg-white rounded-lg text-base border-0 shadow outline-none focus:outline-none focus:ring w-full" %>
+            <%= text_area_tag message_text_id, @message.metadata["message_body"], autofocus: @is_last, readonly: true, placeholder: "Text", rows: 10, class: "px-3 py-4 placeholder-slate-300 text-slate-900 relative bg-white bg-white rounded-lg text-base border-0 shadow outline-none focus:outline-none focus:ring w-full h-full" %>
+          <% end %>
+        <% end %>
       <% end %>
     <% else %>
       <div class="w-full">
@@ -61,14 +65,13 @@
     <div class="gap-2 p-2 border-t-0 border-r-0 border-b-0 border-l-0 border-gray-200">
       <% if @message.not_yet_submitted? && @message.form&.signable? %>
         <%= content_tag(:div,
-         {
-           "data-controller": "autogram",
-           "data-autogram-object-id": @message.form.id,
-           "data-autogram-message-id": @message.id,
-           "data-autogram-object-path": message_message_object_path(@message.id, @message.form.id),
-           "data-autogram-authenticity-token": form_authenticity_token
-         }
-        ) do %>
+                        {
+                          "data-controller": "autogram",
+                          "data-autogram-object-id": @message.form.id,
+                          "data-autogram-message-id": @message.id,
+                          "data-autogram-object-path": message_message_object_path(@message.id, @message.form.id),
+                          "data-autogram-authenticity-token": form_authenticity_token
+                        }) do %>
           <button data-action="click->autogram#signSingleFile" class="flex justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3.5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
             Podpísať
           </button>

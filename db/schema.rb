@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_18_103512) do
+ActiveRecord::Schema[7.0].define(version: 2023_12_01_113708) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -56,6 +56,27 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_18_103512) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "type"
+  end
+
+  create_table "audit_logs", force: :cascade do |t|
+    t.string "type", null: false
+    t.bigint "tenant_id"
+    t.datetime "happened_at", precision: nil, null: false
+    t.string "actor_name"
+    t.bigint "actor_id"
+    t.string "previous_value"
+    t.string "new_value"
+    t.jsonb "changeset"
+    t.bigint "message_thread_id"
+    t.integer "thread_id_archived"
+    t.string "thread_title"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["actor_id"], name: "index_audit_logs_on_actor_id"
+    t.index ["message_thread_id"], name: "index_audit_logs_on_message_thread_id"
+    t.index ["tenant_id", "actor_id", "happened_at"], name: "index_audit_logs_on_tenant_id_and_actor_id_and_happened_at"
+    t.index ["tenant_id", "message_thread_id", "happened_at"], name: "index_audit_logs_on_tenant_id_thread_id_happened_at"
+    t.index ["tenant_id"], name: "index_audit_logs_on_tenant_id"
   end
 
   create_table "automation_actions", force: :cascade do |t|
@@ -231,6 +252,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_18_103512) do
     t.bigint "folder_id", null: false
     t.json "payload", null: false
     t.index "((((payload -> 'delivery_notification'::text) -> 'consignment'::text) ->> 'message_id'::text))", name: "index_govbox_messages_on_delivery_notification_id", using: :hash
+    t.index ["edesk_message_id", "folder_id"], name: "index_govbox_messages_on_edesk_message_id_and_folder_id", unique: true
     t.index ["folder_id"], name: "index_govbox_messages_on_folder_id"
   end
 
@@ -246,9 +268,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_18_103512) do
   create_table "groups", force: :cascade do |t|
     t.string "name", null: false
     t.bigint "tenant_id", null: false
-    t.enum "group_type", null: false, enum_type: "group_type"
+    t.enum "group_type", enum_type: "group_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "type", null: false
     t.index ["tenant_id"], name: "index_groups_on_tenant_id"
   end
 
@@ -406,18 +429,19 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_18_103512) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "visible", default: true, null: false
-    t.bigint "user_id"
-    t.boolean "external", default: false
-    t.string "system_name"
+    t.bigint "owner_id"
+    t.string "external_name"
+    t.string "type", null: false
     t.index "tenant_id, lower((name)::text)", name: "index_tags_on_tenant_id_and_lowercase_name", unique: true
+    t.index ["owner_id"], name: "index_tags_on_owner_id"
     t.index ["tenant_id"], name: "index_tags_on_tenant_id"
-    t.index ["user_id"], name: "index_tags_on_user_id"
   end
 
   create_table "tenants", force: :cascade do |t|
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "feature_flags", default: [], array: true
   end
 
   create_table "upvs_form_related_documents", force: :cascade do |t|
@@ -480,6 +504,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_18_103512) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "audit_logs", "message_threads", on_delete: :nullify
+  add_foreign_key "audit_logs", "tenants", on_delete: :nullify
+  add_foreign_key "audit_logs", "users", column: "actor_id", on_delete: :nullify
   add_foreign_key "automation_actions", "automation_rules"
   add_foreign_key "automation_conditions", "automation_rules"
   add_foreign_key "automation_rules", "tenants"

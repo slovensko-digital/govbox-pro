@@ -9,8 +9,7 @@
 #  message_thread_id :bigint           not null
 #
 class MessageThreadNote < ApplicationRecord
-  belongs_to :message_thread
+  include AuditableEvents
 
-  after_create_commit ->(note) { EventBus.publish(:message_thread_note_created, note) }
-  after_update_commit ->(note) { EventBus.publish(:message_thread_note_changed, note) }
+  belongs_to :message_thread
 end

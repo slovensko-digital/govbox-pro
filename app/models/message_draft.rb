@@ -25,15 +25,16 @@ class MessageDraft < Message
   belongs_to :import, class_name: 'MessageDraftsImport', foreign_key: :import_id, optional: true
 
   after_create do
-    drafts_tag = self.thread.box.tenant.tags.find_by(system_name: Tag::DRAFT_SYSTEM_NAME)
-    self.thread.add_tag(drafts_tag)
+    self.add_cascading_tag(self.thread.box.tenant.draft_tag!)
   end
 
   after_destroy do
-    if self.thread.messages.none?
+    EventBus.publish(:message_draft_destroyed, self)
+    # TODO has to use `reload` because of `inverse_of` messages are in memory and deleting already deleted record fails
+    if self.thread.messages.reload.none?
       self.thread.destroy!
-    elsif self.thread.message_drafts.none?
-      drafts_tag = self.thread.tags.find_by(system_name: Tag::DRAFT_SYSTEM_NAME)
+    elsif self.thread.message_drafts.reload.none?
+      drafts_tag = self.thread.tags.find_by(type: DraftTag.to_s)
       thread.tags.delete(drafts_tag)
     end
   end
@@ -74,14 +75,7 @@ class MessageDraft < Message
         "status": "created"
       }
     )
-
-    # TODO clean the domain (no UPVS stuff)
-    message_draft.objects.create!(
-      name: "form.xml",
-      mimetype: "application/x-eform-xml",
-      object_type: "FORM",
-      is_signed: false
-    )
+    create_form_object
 
     message_draft
   end
@@ -90,22 +84,14 @@ class MessageDraft < Message
     self.title = title
     metadata["message_body"] = body
     save!
-
     return unless title.present? && body.present?
 
-    # TODO clean the domain (no UPVS stuff)
-    if form.message_object_datum
-      form.message_object_datum.update(
-        blob: Upvs::FormBuilder.build_general_agenda_xml(subject: title, body: body)
-      )
-    else
-      form.message_object_datum = MessageObjectDatum.create(
-        message_object: form,
-        blob: Upvs::FormBuilder.build_general_agenda_xml(subject: title, body: body)
-      )
-    end
+    update_form_object
+    reload
+  end
 
-    self.reload
+  def draft?
+    true
   end
 
   def collapsible?
@@ -114,6 +100,12 @@ class MessageDraft < Message
 
   def editable?
     metadata["posp_id"] == GENERAL_AGENDA_POSP_ID && !form&.is_signed? && not_yet_submitted?
+  end
+
+  def reason_for_readonly
+    return :read_only_agenda unless metadata["posp_id"] == GENERAL_AGENDA_POSP_ID
+    return :form_submitted if submitted? || being_submitted?
+    return :form_signed if form.is_signed?
   end
 
   def custom_visualization?
@@ -139,14 +131,31 @@ class MessageDraft < Message
   def being_submitted!
     metadata["status"] = "being_submitted"
     save!
+    EventBus.publish(:message_draft_being_submitted, self)
   end
-  
+
+  def submitted!
+    metadata["status"] = "submitted"
+    save!
+    EventBus.publish(:message_draft_submitted, self)
+  end
+
   def invalid?
     metadata["status"] == "invalid"
   end
 
   def original_message
     Message.find(metadata["original_message_id"]) if metadata["original_message_id"]
+  end
+
+  def remove_form_signature
+    return false unless form
+    return false unless form.is_signed?
+
+    form.destroy
+    create_form_object
+    reload
+    update_form_object
   end
 
   private
@@ -174,6 +183,30 @@ class MessageDraft < Message
     objects.each do |object|
       object.valid?(:validate_data)
       errors.merge!(object.errors)
+    end
+  end
+
+  def create_form_object
+    # TODO: clean the domain (no UPVS stuff)
+    objects.create!(
+      name: "form.xml",
+      mimetype: "application/x-eform-xml",
+      object_type: "FORM",
+      is_signed: false
+    )
+  end
+
+  def update_form_object
+    # TODO: clean the domain (no UPVS stuff)
+    if form.message_object_datum
+      form.message_object_datum.update(
+        blob: Upvs::FormBuilder.build_general_agenda_xml(subject: title, body: metadata["message_body"])
+      )
+    else
+      form.message_object_datum = MessageObjectDatum.create(
+        message_object: form,
+        blob: Upvs::FormBuilder.build_general_agenda_xml(subject: title, body: metadata["message_body"])
+      )
     end
   end
 end

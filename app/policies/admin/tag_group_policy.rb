@@ -10,24 +10,20 @@ class Admin::TagGroupPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      if @user.site_admin?
-        scope.all
-      else
-        scope.includes(:group, :tag).where(group: { tenant_id: Current.tenant.id }, tag: { tenant_id: Current.tenant.id })
-      end
+      scope.includes(:group, :tag).where(group: { tenant: Current.tenant }, tag: { tenant: Current.tenant })
     end
   end
 
   def index?
-    @user.site_admin? || @user.admin?
+    @user.admin?
   end
 
   def show?
-    @user.site_admin? || @user.admin?
+    @user.admin?
   end
 
   def create?
-    return false if !@user.site_admin? && !@user.admin?
+    return false unless @user.admin?
     return false unless @tag_group.tag.tenant == Current.tenant
     return false unless @tag_group.group.tenant == Current.tenant
 
@@ -39,7 +35,7 @@ class Admin::TagGroupPolicy < ApplicationPolicy
   end
 
   def update?
-    @user.site_admin? || @user.admin?
+    @user.admin?
   end
 
   def edit?
@@ -47,6 +43,6 @@ class Admin::TagGroupPolicy < ApplicationPolicy
   end
 
   def destroy?
-    @user.site_admin? || @user.admin?
+    @user.admin?
   end
 end

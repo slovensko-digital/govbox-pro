@@ -3,8 +3,8 @@ require "test_helper"
 class TagTest < ActiveSupport::TestCase
   test "should mark tag readable by admin groups" do
     tenant = tenants(:ssd)
-    tag = Tag.create(name: 'New tag', tenant: tenant)
+    tag = SimpleTag.create(name: 'New tag', tenant: tenant)
 
-    assert tenant.admin_groups == tag.groups
+    assert tag.groups == [tenant.admin_group]
   end
 end
