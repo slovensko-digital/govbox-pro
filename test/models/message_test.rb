@@ -35,4 +35,20 @@ class MessageTest < ActiveSupport::TestCase
     assert_not message.tags.include?(tag)
     assert message.thread.tags.include?(tag)
   end
+
+  test "reply to message should create a signable draft" do
+    message = messages(:ssd_main_general_one)
+    user = users(:basic)
+
+    reply = MessageDraft.create_message_reply(original_message: message, author: user)
+
+    assert_equal reply.sender_name, message.recipient_name
+    assert_equal reply.recipient_name, message.sender_name
+    assert_equal reply.message_thread_id, message.message_thread_id
+    assert_match message.title, reply.title
+    assert_match "Odpoveď", reply.title
+    assert_equal reply.type, "MessageDraft"
+    assert_equal reply.author_id, user.id
+    assert_not reply.collapsed
+  end
 end
