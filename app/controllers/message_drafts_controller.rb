@@ -1,6 +1,7 @@
 class MessageDraftsController < ApplicationController
   before_action :load_message_drafts, only: %i[index submit_all]
   before_action :load_original_message, only: :create
+  before_action :load_message_template, only: :create
   before_action :load_message_draft, except: [:index, :create, :submit_all]
 
   include ActionView::RecordIdentifier
@@ -12,9 +13,11 @@ class MessageDraftsController < ApplicationController
   end
 
   def create
-    authorize @original_message
+    @message = MessageDraft.new
+    authorize @message
 
-    @message = MessageDraft.create_message_reply(original_message: @original_message, author: Current.user)
+    @message_template.create_message(@message, author: Current.user, box: Current.box, recipient_uri: new_message_draft_params[:recipient])
+    redirect_to message_thread_path(@message.thread)
   end
 
   def show
@@ -29,13 +32,13 @@ class MessageDraftsController < ApplicationController
   def update
     authorize @message
 
-    permitted_params = message_params
-
-    @message.update_content(title: permitted_params["message_title"], body: permitted_params["message_text"])
+    @message.update_content(message_draft_params)
   end
 
   def submit
     authorize @message
+
+    render :update_body and return unless @message.valid?(:validate_data)
 
     if @message.submittable?
       Govbox::SubmitMessageDraftJob.perform_later(@message)
@@ -92,14 +95,23 @@ class MessageDraftsController < ApplicationController
   end
 
   def load_original_message
-    @original_message = policy_scope(Message).find(params[:original_message_id])
+    @original_message = policy_scope(Message).find(params[:original_message_id]) if params[:original_message_id]
+  end
+
+  def load_message_template
+    @message_template = policy_scope(MessageTemplate).find(new_message_draft_params[:message_template])
   end
 
   def load_message_draft
     @message = policy_scope(MessageDraft).find(params[:id])
   end
 
-  def message_params
-    params.permit(:message_title, :message_text)
+  def message_draft_params
+    attributes = MessageTemplateParser.parse_template_placeholders(@message.template).map{|item| item[:name]}
+    params[:message_draft].permit(attributes)
+  end
+
+  def new_message_draft_params
+    params.permit(:message_template, :recipient)
   end
 end

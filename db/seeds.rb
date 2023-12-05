@@ -62,10 +62,112 @@ Upvs::ServiceWithFormAllowRule.find_or_create_by!(
   schema_url: 'http://schemas.gov.sk/form/00166073.RESS_Exekucne_konanie_Navrh_na_vykonanie_exekucie.sk/1.24'
 )
 
+Upvs::MessageTemplate.find_or_create_by!(
+  name: 'Všeobecná agenda',
+  content: '<GeneralAgenda xmlns="http://schemas.gov.sk/form/App.GeneralAgenda/1.9">
+  <subject>{{ Predmet:text_field }}</subject>
+  <text>{{ Text:text_area }}</text>
+</GeneralAgenda>',
+  metadata: {
+    posp_id: 'App.GeneralAgenda',
+    posp_version: '1.9',
+    message_type: 'App.GeneralAgenda'
+  }
+)
+
+Upvs::MessageTemplate.find_or_create_by!(
+  name: MessageTemplate::REPLY_TEMPLATE_NAME,
+  content: '<GeneralAgenda xmlns="http://schemas.gov.sk/form/App.GeneralAgenda/1.9">
+  <subject>{{ Predmet:text_field }}</subject>
+  <text>{{ Text:text_area }}</text>
+</GeneralAgenda>',
+  metadata: {
+    posp_id: 'App.GeneralAgenda',
+    posp_version: '1.9',
+    message_type: 'App.GeneralAgenda'
+  },
+  system: true
+)
+
+Upvs::MessageTemplate.find_or_create_by!(
+  name: 'IRVIN - Žiadosť o zápis autentifikačného certifikátu do registra autentifikačných certifikátov',
+  content: '<AuthentificationCertificateWithTechnicalAccountRegistration
+	xmlns="http://schemas.gov.sk/form/42156424.IAM_Zapis_autentifikacneho_certifikatu_s_vytvorenim_TU.sk/1.5"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<CertificateOwner>
+		<IdentityType>PO</IdentityType>
+		<OwnerPoOvm>
+			<ICO>{{ IČO*:text_field }}</ICO>
+			<Suffix xsi:nil="true" />
+		</OwnerPoOvm>
+	</CertificateOwner>
+	<ContactPerson>
+		<ContactName>{{ Kontaktná osoba*:text_field:"Ján Suchal" }}</ContactName>
+		<Email>{{ Email*:email_field:"jan.suchal@test.sk" }}</Email>
+		<Phone>{{ Telefón*:text_field:"+4190000000" }}</Phone>
+	</ContactPerson>
+	<IntegrationContract>
+		<ProjectID>{{ Názov prostriedku:text_field:"IRVIN" }}</ProjectID>
+	</IntegrationContract>
+	<TechnicalAccount>
+		<EDeckAccessType>1</EDeckAccessType>
+		<ValidFrom>{{ Dátum začiatku platnosti*:date_field }}</ValidFrom>
+		<ValidTo xsi:nil="true" />
+	</TechnicalAccount>
+	<AuthentificationCertificateData>
+		<Thumbprint>{{ Digitálny odtlačok*:text_field }}</Thumbprint>
+	</AuthentificationCertificateData>
+</AuthentificationCertificateWithTechnicalAccountRegistration>',
+  metadata: {
+    posp_id: '42156424.IAM_Zapis_autentifikacneho_certifikatu_s_vytvorenim_TU.sk',
+    posp_version: '1.5',
+    message_type: '42156424.IAM_Zapis_autentifikacneho_certifikatu_s_vytvorenim_TU.sk'
+  },
+  tenant: tenant,
+  system: false
+)
+
+Upvs::MessageTemplate.find_or_create_by!(
+  name: 'Žiadosť o zápis autentifikačného certifikátu do registra autentifikačných certifikátov',
+  content: '<AuthentificationCertificateWithTechnicalAccountRegistration
+	xmlns="http://schemas.gov.sk/form/42156424.IAM_Zapis_autentifikacneho_certifikatu_s_vytvorenim_TU.sk/1.5"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<CertificateOwner>
+		<IdentityType>PO</IdentityType>
+		<OwnerPoOvm>
+			<ICO>{{ IČO*:text_field }}</ICO>
+			<Suffix xsi:nil="true" />
+		</OwnerPoOvm>
+	</CertificateOwner>
+	<ContactPerson>
+		<ContactName>{{ Kontaktná osoba*:text_field }}</ContactName>
+		<Email>{{ Email*:email_field }}</Email>
+		<Phone>{{ Telefón*:text_field }}</Phone>
+	</ContactPerson>
+	<IntegrationContract>
+		<ProjectID>{{ Názov prostriedku:text_field }}</ProjectID>
+	</IntegrationContract>
+	<TechnicalAccount>
+		<EDeckAccessType>1</EDeckAccessType>
+		<ValidFrom>{{ Dátum začiatku platnosti*:date_field }}</ValidFrom>
+		<ValidTo xsi:nil="true" />
+	</TechnicalAccount>
+	<AuthentificationCertificateData>
+		<Thumbprint>{{ Digitálny odtlačok*:text_field }}</Thumbprint>
+	</AuthentificationCertificateData>
+</AuthentificationCertificateWithTechnicalAccountRegistration>',
+  metadata: {
+    posp_id: '42156424.IAM_Zapis_autentifikacneho_certifikatu_s_vytvorenim_TU.sk',
+    posp_version: '1.5',
+    message_type: '42156424.IAM_Zapis_autentifikacneho_certifikatu_s_vytvorenim_TU.sk'
+  },
+  system: false
+)
+
 ga_form = Upvs::Form.find_or_create_by!(
   identifier: "App.GeneralAgenda",
   version: "1.9",
-  message_type: "App.GeneralAgenda",
+  message_type: "App.GeneralAgenda"
 )
 
 ga_related_documents = [

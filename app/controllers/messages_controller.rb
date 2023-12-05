@@ -11,12 +11,28 @@ class MessagesController < ApplicationController
     authorize @message
   end
 
+  def new
+    @templates_list = MessageTemplate.tenant_templates_list(Current.tenant)
+    @message = Message.new
+
+    authorize @message
+  end
+
   def show
     authorize @message
 
     @mode = params[:mode].to_sym
     @collapsed = params[:collapsed] == 'true'
     @message.update(read: true)
+  end
+
+  def reply
+    authorize @message
+
+    @message_reply = MessageDraft.new
+    authorize @message_reply
+
+    MessageTemplate.reply_template.create_message_reply(@message_reply, original_message: @message, author: Current.user)
   end
 
   def update

@@ -30,6 +30,10 @@ class MessageDraftPolicy < ApplicationPolicy
     true # TODO: can everyone create new messages?
   end
 
+  def reply?
+    true
+  end
+
   def show?
     true
   end

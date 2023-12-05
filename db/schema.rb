@@ -315,6 +315,18 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_01_113708) do
     t.index ["related_message_id"], name: "index_message_relations_on_related_message_id"
   end
 
+  create_table "message_templates", force: :cascade do |t|
+    t.bigint "tenant_id"
+    t.string "name", null: false
+    t.text "content", null: false
+    t.string "type"
+    t.jsonb "metadata"
+    t.boolean "system", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tenant_id"], name: "index_message_templates_on_tenant_id"
+  end
+
   create_table "message_thread_merge_identifiers", force: :cascade do |t|
     t.bigint "message_thread_id", null: false
     t.uuid "uuid", null: false
@@ -515,6 +527,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_01_113708) do
   add_foreign_key "message_objects", "messages"
   add_foreign_key "message_relations", "messages"
   add_foreign_key "message_relations", "messages", column: "related_message_id"
+  add_foreign_key "message_templates", "tenants"
   add_foreign_key "message_thread_merge_identifiers", "message_threads"
   add_foreign_key "message_thread_notes", "message_threads"
   add_foreign_key "message_threads", "boxes"

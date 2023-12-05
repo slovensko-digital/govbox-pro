@@ -86,6 +86,7 @@ Rails.application.routes.draw do
 
   resources :messages do
     member do
+      post 'reply'
       post 'authorize_delivery_notification'
     end
 
@@ -116,6 +117,10 @@ Rails.application.routes.draw do
   resources :messages_tags
 
   resource :settings
+
+  resources :message_templates, only: :recipients_list do
+    get :recipients_list
+  end
 
   resources :message_drafts_imports, only: :create do
     get :upload_new, path: 'novy', on: :collection

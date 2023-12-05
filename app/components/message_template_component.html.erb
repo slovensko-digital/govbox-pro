@@ -1,0 +1,41 @@
+<%
+  message_draft_body_form_id = "#{dom_id(@message, :body)}_form"
+%>
+<%= content_tag(:div,
+  {
+    "data-controller": "message-drafts",
+    "data-message-drafts-message-draft-body-form-id": message_draft_body_form_id,
+    "data-message-drafts-authenticity-token": form_authenticity_token,
+    "class": "mb-3 pt-0 w-full"
+  }
+) do %>
+  <% if @message.editable? %>
+    <%= form_for :message_draft, url: message_draft_path(@message), method: 'patch', id: message_draft_body_form_id, builder: MessageTemplateBuilder do |form| %>
+      <% MessageTemplateParser.parse_template_placeholders(@message.template).each do |placeholder| %>
+        <%= form.template_field(
+              placeholder,
+              data: @message.metadata.dig('data'),
+              errors: @message.template_validation_errors,
+              editable: @message.editable?,
+              is_last: @is_last
+            )
+        %>
+      <% end %>
+    <% end %>
+  <% else %>
+    <%= button_to confirm_unlock_message_draft_path(@message), class: "w-full", data: { turbo_frame: "modal" } do %>
+      <%= form_for :message_draft, url: confirm_unlock_message_draft_path(@message), method: 'post', id: message_draft_body_form_id, builder: MessageTemplateBuilder, class: "w-full", data: { turbo_frame: "modal" } do |form| %>
+        <% MessageTemplateParser.parse_template_placeholders(@message.template).each do |placeholder| %>
+          <%= form.template_field(
+                placeholder,
+                data: @message.metadata.dig('data'),
+                errors: @message.template_validation_errors,
+                editable: @message.editable?,
+                is_last: @is_last
+              )
+          %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>

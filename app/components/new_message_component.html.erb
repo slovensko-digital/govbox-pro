@@ -1,25 +1,21 @@
-<h2>Nová správa</h2>
+<div class="w-full p-4 flex-col justify-start items-start gap-4 inline-flex">
+  <div class="self-stretch bg-white rounded-md border border-gray-200 flex-col justify-start items-start flex">
+    <div class="self-stretch p-6 border-b border-gray-200 justify-start items-center gap-4 inline-flex">
+      <div class="grow shrink basis-0 text-gray-900 text-xl font-semibold leading-[35px]">Nová správa</div>
+    </div>
+    <div class="self-stretch p-6 flex-col justify-start items-start flex">
+      <%= form_with(url: message_drafts_path, method: :post, local: true) do %>
+        <%= content_tag(:div, { "data-controller": "message-drafts", class: "w-full" }) do %>
+          <label for="message_template" class="block mb-2 text-base font-medium text-gray-900">Typ správy</label>
+          <%= select_tag(:message_template, options_for_select(@templates_list), prompt: "Zvoľte typ správy", "data-action": "change->message-drafts#loadTemplateRecipients", class: "mb-4 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5") %>
+        <% end %>
 
-<%= content_tag(:div,
-  {
-    "data-controller": "messageDrafts",
-    "data-messageDrafts-recipient-services-path": upvs_allowed_recipient_services_path
-  }
-) do %>
-  <label for="recipient" class="block mb-2 text-base text-gray-900">Prijímateľ</label>
-  <select id="recipient" data-action="change->messageDrafts#changed" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-    <option selected disabled hidden>Zvoľte prijímateľa</option>
-    <% @recipients_list.each do |recipient| %>
-      <option value="<%= recipient[:uri] %>"><%= recipient[:name] %></option>
-    <% end %>
-  </select>
-<% end %>
+        <div id="recipients_list" is="turbo-frame"></div>
 
-<% if @services.present? %>
-  <label for="form_template" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Služba</label>
-  <select id="form_template" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-    <% @services.each do |service| %>
-      <option><%= service %></option>
-    <% end %>
-  </select>
-<% end %>
+        <div class="gap-2 border-t-0 border-r-0 border-b-0 border-l-0 border-gray-200">
+          <%= submit_tag "Vytvoriť správu", class: "flex justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 mt-6 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3.5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
