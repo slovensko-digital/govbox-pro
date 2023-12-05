@@ -5,7 +5,7 @@
   <div class="grow shrink basis-0 flex-col justify-start items-start gap-1 inline-flex">
     <div class="text-center text-gray-900 text-lg font-medium leading-loose">
       <% if @group.renamable? %>
-        <%= render Common::InlineRenameComponent.new(name: @group.name, model: [:admin, @group.tenant, @group], url: admin_tenant_group_path(@group.tenant, @group)) %>
+        <%= render Common::InlineRenameComponent.new(name: @group.name, model: @group, url: admin_tenant_group_path(@group.tenant, @group)) %>
     <% else %>
         <%= @group.name %>
       <% end %>

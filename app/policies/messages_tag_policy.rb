@@ -10,11 +10,7 @@ class MessagesTagPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      if @user.site_admin?
-        scope.all
-      else
-        scope.joins(:message, :tag).where(message: Pundit.policy_scope(user, Message), tag: Pundit.policy_scope(user, Tag))
-      end
+      scope.joins(:message, :tag).where(message: Pundit.policy_scope(user, Message), tag: Pundit.policy_scope(user, Tag))
     end
   end
 

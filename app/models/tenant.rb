@@ -17,15 +17,22 @@ class Tenant < ApplicationRecord
   has_one :admin_group
   has_many :custom_groups
 
+  has_one :draft_tag
+
   has_many :boxes, dependent: :destroy
   has_many :automation_rules, class_name: "Automation::Rule", dependent: :destroy
   has_many :tags, dependent: :destroy
+  has_many :simple_tags
   has_many :filters
   after_create :create_default_objects
 
   validates_presence_of :name
 
   AVAILABLE_FEATURE_FLAGS = [:audit_log]
+
+  def draft_tag!
+    draft_tag || raise(ActiveRecord::RecordNotFound.new("`DraftTag` not found in tenant: #{self.id}"))
+  end
 
   def feature_enabled?(feature)
     raise "Unknown feature #{feature}" unless feature.in? AVAILABLE_FEATURE_FLAGS
@@ -55,7 +62,6 @@ class Tenant < ApplicationRecord
     create_all_group!(name: "all")
     create_admin_group!(name: "admins")
     create_signer_group!(name: "signers")
-    tags.create!(name: 'Drafty', system_name: Tag::DRAFT_SYSTEM_NAME, external: false, visible: true)
-    tags.create!(name: 'Na prevzatie', system_name: 'delivery_notification', external: false, visible: true)
+    create_draft_tag!(name: "Rozpracované", visible: true)
   end
 end

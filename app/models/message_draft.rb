@@ -25,8 +25,7 @@ class MessageDraft < Message
   belongs_to :import, class_name: 'MessageDraftsImport', foreign_key: :import_id, optional: true
 
   after_create do
-    drafts_tag = self.thread.box.tenant.tags.find_by(system_name: Tag::DRAFT_SYSTEM_NAME)
-    self.add_cascading_tag(drafts_tag)
+    self.add_cascading_tag(self.thread.box.tenant.draft_tag!)
   end
 
   after_destroy do
@@ -35,7 +34,7 @@ class MessageDraft < Message
     if self.thread.messages.reload.none?
       self.thread.destroy!
     elsif self.thread.message_drafts.reload.none?
-      drafts_tag = self.thread.tags.find_by(system_name: Tag::DRAFT_SYSTEM_NAME)
+      drafts_tag = self.thread.tags.find_by(type: DraftTag.to_s)
       self.remove_cascading_tag(drafts_tag)
     end
   end

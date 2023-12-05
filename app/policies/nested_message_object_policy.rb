@@ -10,8 +10,6 @@ class NestedMessageObjectPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      return scope.all if @user.site_admin?
-
       scope.joins(:message_object).where(
         Message
           .select(1)
