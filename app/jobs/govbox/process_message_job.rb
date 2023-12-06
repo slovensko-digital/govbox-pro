@@ -4,7 +4,7 @@ module Govbox
   class ProcessMessageJob < ApplicationJob
     queue_as :default
 
-    retry_on ::ApplicationRecord::FailedToAcquireLockError, wait: :exponentially_longer, attempts: Float::INFINITY
+    retry_on ::ApplicationRecord::FailedToAcquireLockError, wait: :polynomially_longer, attempts: Float::INFINITY
 
     def perform(govbox_message)
       ActiveRecord::Base.transaction do
