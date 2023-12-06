@@ -1,14 +1,7 @@
 class MessagesController < ApplicationController
-  before_action :set_message, except: [:new]
+  before_action :set_message
 
   include MessagesConcern
-
-  def new
-    @templates_list = MessageTemplate.tenant_templates_list(Current.tenant)
-    @message = Message.new
-
-    authorize @message
-  end
 
   def show
     authorize @message

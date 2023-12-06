@@ -32,8 +32,8 @@ class Upvs::MessageTemplate < ::MessageTemplate
       uuid: SecureRandom.uuid,
       delivered_at: Time.current,
       read: true,
-      # sender_name: TODO - odkial ziskame?,
-      # recipient_name: TODO - bolo by najpraktickejsie si asi posielat vo formulari spolu s URI,
+      sender_name: box&.name,
+      recipient_name: recipient_name,
       replyable: false,
       title: self.name,
       author: author

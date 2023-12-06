@@ -1,12 +1,21 @@
 class MessageDraftsController < ApplicationController
   before_action :load_message_drafts, only: %i[index submit_all]
   before_action :load_original_message, only: :create
+  before_action :load_box, only: :create
   before_action :load_message_template, only: :create
-  before_action :load_message_draft, except: [:index, :create, :submit_all]
+  before_action :load_message_draft, except: [:new, :index, :create, :submit_all]
 
   include ActionView::RecordIdentifier
   include MessagesConcern
   include MessageThreadsConcern
+
+  def new
+    @templates_list = MessageTemplate.tenant_templates_list(Current.tenant)
+    @message = MessageDraft.new
+    @boxes = Current.tenant.boxes.pluck(:name, :id)
+
+    authorize @message
+  end
 
   def index
     @messages = @messages.order(created_at: :desc)
@@ -16,7 +25,13 @@ class MessageDraftsController < ApplicationController
     @message = MessageDraft.new
     authorize @message
 
-    @message_template.create_message(@message, author: Current.user, box: Current.box, recipient_uri: new_message_draft_params[:recipient])
+    @message_template&.create_message(
+      @message,
+      author: Current.user,
+      box: @box,
+      recipient_uri: new_message_draft_params[:recipient]
+    )
+
     redirect_to message_thread_path(@message.thread)
   end
 
@@ -98,8 +113,12 @@ class MessageDraftsController < ApplicationController
     @original_message = policy_scope(Message).find(params[:original_message_id]) if params[:original_message_id]
   end
 
+  def load_box
+    @box = Box.find(new_message_draft_params[:sender]) if new_message_draft_params[:sender].present?
+  end
+
   def load_message_template
-    @message_template = policy_scope(MessageTemplate).find(new_message_draft_params[:message_template])
+    @message_template = policy_scope(MessageTemplate).find(new_message_draft_params[:message_template]) if new_message_draft_params[:message_template].present?
   end
 
   def load_message_draft
@@ -112,6 +131,6 @@ class MessageDraftsController < ApplicationController
   end
 
   def new_message_draft_params
-    params.permit(:message_template, :recipient)
+    params.permit(:message_template, :sender, :recipient)
   end
 end
