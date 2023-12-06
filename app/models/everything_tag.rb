@@ -15,8 +15,8 @@
 #  owner_id         :bigint
 #  tenant_id        :bigint           not null
 #
-class SimpleTag < Tag
+class EverythingTag < Tag
   def destroyable?
-    true
+    false
   end
 end

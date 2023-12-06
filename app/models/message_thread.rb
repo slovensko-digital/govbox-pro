@@ -30,6 +30,7 @@ class MessageThread < ApplicationRecord
 
   attr_accessor :search_highlight
 
+  after_create_commit ->(thread) { thread.tags << thread.tenant.everything_tag }
   after_create_commit ->(thread) { EventBus.publish(:message_thread_created, thread) }
   after_update_commit ->(thread) { EventBus.publish(:message_thread_changed, thread) }
 

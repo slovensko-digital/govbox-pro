@@ -2,18 +2,22 @@
 #
 # Table name: tags
 #
-#  id            :bigint           not null, primary key
-#  external_name :string
-#  name          :string           not null
-#  type          :string           not null
-#  visible       :boolean          default(TRUE), not null
-#  created_at    :datetime         not null
-#  updated_at    :datetime         not null
-#  owner_id      :bigint
-#  tenant_id     :bigint           not null
+#  id               :bigint           not null, primary key
+#  color            :enum
+#  external_name    :string
+#  icon             :string
+#  name             :string           not null
+#  tag_groups_count :integer          default(0), not null
+#  type             :string           not null
+#  visible          :boolean          default(TRUE), not null
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#  owner_id         :bigint
+#  tenant_id        :bigint           not null
 #
 class Tag < ApplicationRecord
   include AuditableEvents
+  include Colorized, Iconized
 
   belongs_to :tenant
   belongs_to :owner, class_name: 'User', optional: true
@@ -31,14 +35,17 @@ class Tag < ApplicationRecord
   scope :simple, -> { where(type: SimpleTag.to_s) }
   scope :visible, -> { where(visible: true) }
 
-  after_create_commit ->(tag) { tag.mark_readable_by_groups([tag.tenant.admin_group]) }
   after_update_commit ->(tag) { EventBus.publish(:tag_renamed, tag) if previous_changes.key?("name") }
 
   def mark_readable_by_groups(groups)
     self.groups += groups
   end
 
+  def gives_access?
+    tag_groups_count.positive?
+  end
+
   def destroyable?
-    false
+    raise NotImplementedError
   end
 end

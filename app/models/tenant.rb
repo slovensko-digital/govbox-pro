@@ -18,6 +18,7 @@ class Tenant < ApplicationRecord
   has_many :custom_groups
 
   has_one :draft_tag
+  has_one :everything_tag
 
   has_many :boxes, dependent: :destroy
   has_many :automation_rules, class_name: "Automation::Rule", dependent: :destroy
@@ -56,12 +57,20 @@ class Tenant < ApplicationRecord
     save!
   end
 
+  def make_admins_see_everything!
+    everything_tag.groups << admin_group
+  end
+
   private
 
   def create_default_objects
+    create_draft_tag!(name: "Rozpracované", visible: true)
+    create_everything_tag!(name: "Všetky správy", visible: false)
+
     create_all_group!(name: "all")
     create_admin_group!(name: "admins")
     create_signer_group!(name: "signers")
-    create_draft_tag!(name: "Rozpracované", visible: true)
+
+    make_admins_see_everything!
   end
 end
