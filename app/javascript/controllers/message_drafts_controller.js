@@ -17,8 +17,7 @@ export default class extends Controller {
       body: JSON.stringify({
         authenticity_token: authenticityToken,
         message_title: document.getElementById(messageDraftTitleId).value,
-        message_text: document.getElementById(messageDraftTextId).value,
-        format: "TURBO_STREAM"
+        message_text: document.getElementById(messageDraftTextId).value
       })
     })
   }

@@ -32,8 +32,4 @@ module PagePartsHelper
       yield
     end
   end
-
-  def unfocus_input
-    page.document.find("body").click
-  end
 end

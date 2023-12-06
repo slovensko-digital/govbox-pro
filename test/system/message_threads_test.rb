@@ -175,22 +175,20 @@ class MessageThreadsTest < ApplicationSystemTestCase
     thread_issue = message_threads(:ssd_main_issue)
     message_one = messages(:ssd_main_issue_one)
 
-    assert_not GoodJob::Job.where(job_class: 'Govbox::SubmitMessageDraftJob').order(scheduled_at: :desc).first
+    assert GoodJob::Job.where(job_class: 'Govbox::SubmitMessageDraftJob').blank?
 
-    visit message_thread_path(thread_issue)
-    within_message_in_thread(message_one) do
+    visit message_thread_path thread_issue
+    within_message_in_thread message_one do
       click_on("Odpovedať")
     end
 
     within '#new_drafts' do
-      fill_in("Predmet", with: "Testovaci predmet")
-      fill_in("Text", with: "Testovacie telo")
-      unfocus_input
-      find("turbo-frame", id: /submittable/, visible: false)
-      click_button("Odoslať")
+      fill_in "Predmet", with: "Testovaci predmet"
+      fill_in "Text", with: "Testovacie telo"
+      click_button "Odoslať"
     end
 
     GoodJob.perform_inline
-    assert GoodJob::Job.where(job_class: 'Govbox::SubmitMessageDraftJob').order(scheduled_at: :desc).first
+    assert GoodJob::Job.where(job_class: 'Govbox::SubmitMessageDraftJob').exists?
   end
 end

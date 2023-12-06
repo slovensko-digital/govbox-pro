@@ -1,5 +1,0 @@
-<% if !@was_submittable && @message.submittable? %>
-  <%= turbo_stream.prepend dom_id(@message) do %>
-    <%= tag.turbo_frame id: dom_id(@message, :submittable) %>
-  <% end %>
-<% end %>
