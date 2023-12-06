@@ -38,15 +38,15 @@ ssd_drafts:
   visible: true
   tenant: ssd
 
+ssd_everything:
+  name: Everything
+  type: EverythingTag
+  visible: false
+  tenant: ssd
+
 ssd_other:
   name: Other
   type: SimpleTag
-  visible: true
-  tenant: ssd
-
-ssd_delivery_notification:
-  name: Na prevzatie
-  type: Upvs::DeliveryNotificationTag
   visible: true
   tenant: ssd
 
@@ -92,8 +92,8 @@ solver_drafts:
   visible: true
   tenant: solver
 
-solver_delivery_notification:
-  name: Na prevzatie
-  type: Upvs::DeliveryNotificationTag
-  visible: true
+solver_everything:
+  name: Everything
+  type: EverythingTag
+  visible: false
   tenant: solver
