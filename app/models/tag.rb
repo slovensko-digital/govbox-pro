@@ -17,7 +17,7 @@
 #
 class Tag < ApplicationRecord
   include AuditableEvents
-  #include Colorized, Iconized
+  include Colorized, Iconized
 
   belongs_to :tenant
   belongs_to :owner, class_name: 'User', optional: true
