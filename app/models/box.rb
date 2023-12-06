@@ -15,6 +15,8 @@
 #  tenant_id         :bigint           not null
 #
 class Box < ApplicationRecord
+  include Colorized
+
   belongs_to :tenant
   belongs_to :api_connection
 
@@ -29,32 +31,6 @@ class Box < ApplicationRecord
   end
 
   before_create { self.color = Box.colors.keys[name.hash % Box.colors.size] if color.blank? }
-
-  enum :color,
-       {
-         slate: 'slate',
-         gray: 'gray',
-         zinc: 'zinc',
-         neutral: 'neutral',
-         stone: 'stone',
-         red: 'red',
-         orange: 'orange',
-         amber: 'amber',
-         yellow: 'yellow',
-         lime: 'lime',
-         green: 'green',
-         emerald: 'emerald',
-         teal: 'teal',
-         cyan: 'cyan',
-         sky: 'sky',
-         blue: 'blue',
-         indigo: 'indigo',
-         violet: 'violet',
-         purple: 'purple',
-         fuchsia: 'fuchsia',
-         pink: 'pink',
-         rose: 'rose'
-       }
 
   validate :validate_box_with_api_connection
 

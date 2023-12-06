@@ -12,7 +12,7 @@ class TagGroup < ApplicationRecord
   include AuditableEvents
 
   belongs_to :group
-  belongs_to :tag
+  belongs_to :tag, counter_cache: true
 
   # used for joins only
   has_many :group_memberships, primary_key: :group_id, foreign_key: :group_id

@@ -1,12 +1,7 @@
 <div class="self-stretch p-6 border-b border-gray-200 items-center gap-4 inline-flex">
   <div class="grow shrink basis-0 gap-1">
     <div class="text-gray-900 text-lg font-medium leading-loose">
-      <%= tag.turbo_frame id: "tag-name-#{@tag.id}" do %>
-        <%= render Common::InlineRenameComponent.new(name: @tag.name, model: @tag, url: admin_tenant_tag_path(@tag.tenant, @tag)) %>
-      <% end %>
-      <% if @tag.external_name.present? %>
-        <span class="text-sm text-gray-600 px-2 py-1 rounded-md bg-gray-50 border border-gray-300"><%= @tag.external_name %></span>
-      <% end %>
+      <%= render Common::TagComponent.new(@tag) %>
     </div>
   </div>
   <%= render Admin::Tags::VisibilityToggleComponent.new(@tag) %>
