@@ -30,7 +30,7 @@ class Tenant < ApplicationRecord
   has_many :simple_tags
   has_many :filters
 
-  after_commit :create_default_objects, on: :create
+  after_create :create_default_objects
 
   validates_presence_of :name
 
