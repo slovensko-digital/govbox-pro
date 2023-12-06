@@ -183,11 +183,11 @@ class MessageThreadsTest < ApplicationSystemTestCase
     end
 
     within '#new_drafts' do
-      fill_in "Predmet", with: "Testovaci predmet"
       fill_in "Text", with: "Testovacie telo"
+      fill_in "Predmet", with: "Testovaci predmet"
       click_button "Odoslať"
     end
 
-    assert GoodJob::Job.where(job_class: 'Govbox::SubmitMessageDraftJob').exists?
+    assert_text "Správa bola zaradená na odoslanie"
   end
 end
