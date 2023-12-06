@@ -40,7 +40,7 @@ class GroupMembership < ApplicationRecord
     find_or_create_signing_tag(
       tags_scope: tenant.signed_by_tags,
       user_group: user_group,
-      tag_name: "Podpisané - #{user.name}"
+      tag_name: "Podpísané - #{user.name}"
     )
   end
 
