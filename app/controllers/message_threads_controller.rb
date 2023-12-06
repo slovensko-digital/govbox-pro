@@ -1,5 +1,5 @@
 class MessageThreadsController < ApplicationController
-  before_action :set_message_thread, only: %i[show rename update search_available_tags history]
+  before_action :set_message_thread, only: %i[show rename update history]
   before_action :set_thread_tags, only: %i[show history]
   before_action :set_thread_messages, only: %i[show history]
   before_action :load_threads, only: %i[index scroll]

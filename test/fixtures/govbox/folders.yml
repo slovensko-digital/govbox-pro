@@ -8,7 +8,7 @@ ssd_one:
 
 ssd_two:
   edesk_folder_id: 7890123
-  parent_folder: one
+  parent_folder: ssd_one
   box: ssd_main
   name: MyName
   system: false

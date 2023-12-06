@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_12_06_090833) do
+ActiveRecord::Schema[7.1].define(version: 2023_12_06_141005) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -20,6 +20,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_06_090833) do
   # Note that some types may not work with other database engines. Be careful if changing database.
   create_enum "color", ["slate", "gray", "zinc", "neutral", "stone", "red", "orange", "amber", "yellow", "lime", "green", "emerald", "teal", "cyan", "sky", "blue", "indigo", "violet", "purple", "fuchsia", "pink", "rose"]
   create_enum "group_type", ["ALL", "USER", "CUSTOM", "ADMIN"]
+  create_enum "icon", ["key", "fingerprint", "pencil", "check"]
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -177,6 +178,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_06_090833) do
     t.datetime "scheduled_at"
     t.datetime "finished_at"
     t.text "error"
+    t.integer "error_event", limit: 2
     t.index ["active_job_id", "created_at"], name: "index_good_job_executions_on_active_job_id_and_created_at"
   end
 
@@ -214,6 +216,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_06_090833) do
     t.boolean "is_discrete"
     t.integer "executions_count"
     t.text "job_class"
+    t.integer "error_event", limit: 2
     t.index ["active_job_id", "created_at"], name: "index_good_jobs_on_active_job_id_and_created_at"
     t.index ["active_job_id"], name: "index_good_jobs_on_active_job_id"
     t.index ["batch_callback_id"], name: "index_good_jobs_on_batch_callback_id", where: "(batch_callback_id IS NOT NULL)"
