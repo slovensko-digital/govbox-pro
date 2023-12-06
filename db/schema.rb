@@ -20,7 +20,6 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_06_141005) do
   # Note that some types may not work with other database engines. Be careful if changing database.
   create_enum "color", ["slate", "gray", "zinc", "neutral", "stone", "red", "orange", "amber", "yellow", "lime", "green", "emerald", "teal", "cyan", "sky", "blue", "indigo", "violet", "purple", "fuchsia", "pink", "rose"]
   create_enum "group_type", ["ALL", "USER", "CUSTOM", "ADMIN"]
-  create_enum "icon", ["key", "fingerprint", "pencil", "check"]
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
