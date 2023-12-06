@@ -1,9 +1,7 @@
 class GenerateSignersTags < ActiveRecord::Migration[7.0]
   def up
     SignerGroup.includes(group_memberships: [:group, :user]).find_each do |group|
-      group.group_memberships.each do |group_membership|
-        GroupMembership.create_signing_tags_for(group_membership)
-      end
+      group.group_memberships.map(&:create_signing_tags!)
     end
   end
 

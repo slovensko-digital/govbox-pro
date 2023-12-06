@@ -20,18 +20,18 @@ class GroupMembershipTest < ActiveSupport::TestCase
     signers_group = groups(:ssd_signers)
 
     SignedByTag.create!(name: "something", groups: [user.user_group], tenant: tenant)
-    SignatureRequestedFromTag.create!(name: "Na podpis - #{user.name}", tenant: tenant)
+    SignatureRequestedFromTag.create!(name: "Na podpis: #{user.name}", tenant: tenant)
 
     GroupMembership.create!(user: user, group: signers_group)
 
     user.reload
 
     assert user.signature_requested_from_tag
-    assert_equal user.signature_requested_from_tag.name, "Na podpis - Basic user"
+    assert_equal user.signature_requested_from_tag.name, "Na podpis: Basic user"
     assert_equal user.signature_requested_from_tag.groups, [user.user_group]
 
     assert user.signed_by_tag
-    assert_equal user.signed_by_tag.name, "Podpísané - Basic user"
+    assert_equal user.signed_by_tag.name, "Podpísané: Basic user"
     assert_equal user.signed_by_tag.groups, [user.user_group]
   end
 

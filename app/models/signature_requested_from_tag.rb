@@ -16,4 +16,7 @@
 #  tenant_id        :bigint           not null
 #
 class SignatureRequestedFromTag < Tag
+  def destroyable?
+    false
+  end
 end

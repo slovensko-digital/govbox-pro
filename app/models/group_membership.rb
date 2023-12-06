@@ -14,42 +14,33 @@ class GroupMembership < ApplicationRecord
   belongs_to :group
   belongs_to :user
 
-  after_create do |group_membership|
-    if group_membership.group.is_a?(SignerGroup)
-      self.class.create_signing_tags_for(group_membership)
-    end
-  end
+  after_create :create_signing_tags!, if: Proc.new { |membership| membership.group.is_a?(SignerGroup) }
+  after_destroy :destroy_all_signature_requests!, if: Proc.new { |membership| membership.group.is_a?(SignerGroup) }
 
-  after_destroy do |group_membership|
-    if group_membership.group.is_a?(SignerGroup)
-      self.class.destroy_all_signature_requests_for(group_membership)
-    end
-  end
-
-  def self.create_signing_tags_for(group_membership)
-    user = group_membership.user
+  def create_signing_tags!
     user_group = user.user_group
-    tenant = group_membership.group.tenant
+    tenant = group.tenant
 
     find_or_create_signing_tag(
       tags_scope: tenant.signature_requested_from_tags,
       user_group: user_group,
-      tag_name: "Na podpis - #{user.name}"
+      tag_name: "Na podpis: #{user.name}"
     )
 
     find_or_create_signing_tag(
       tags_scope: tenant.signed_by_tags,
       user_group: user_group,
-      tag_name: "Podpísané - #{user.name}"
+      tag_name: "Podpísané: #{user.name}"
     )
   end
 
-  def self.destroy_all_signature_requests_for(group_membership)
-    tag = group_membership.group.tenant.signature_requested_from_tags.find_tag_containing_group(group_membership.user.user_group)
+  def destroy_all_signature_requests!
+    tag = group.tenant.signature_requested_from_tags.find_tag_containing_group(user.user_group)
     tag.destroy if tag
   end
 
-  def self.find_or_create_signing_tag(tags_scope:, user_group:, tag_name:)
+
+  def find_or_create_signing_tag(tags_scope:, user_group:, tag_name:)
     tag = tags_scope.find_tag_containing_group(user_group) || tags_scope.find_or_initialize_by(
       name: tag_name
     )
