@@ -170,4 +170,22 @@ class MessageThreadsTest < ApplicationSystemTestCase
       end
     end
   end
+
+  test "a user can go to a thread detail and reply to message" do
+    thread_issue = message_threads(:ssd_main_issue)
+    message_one = messages(:ssd_main_issue_one)
+
+    visit message_thread_path thread_issue
+    within_message_in_thread message_one do
+      click_on("Odpovedať")
+    end
+
+    within '#new_drafts' do
+      fill_in "Text", with: "Testovacie telo"
+      fill_in "Predmet", with: "Testovaci predmet"
+      click_button "Odoslať"
+    end
+
+    assert_text "Správa bola zaradená na odoslanie"
+  end
 end
