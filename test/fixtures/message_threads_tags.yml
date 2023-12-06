@@ -23,7 +23,3 @@ ssd_main_issue_finance:
 ssd_main_issue_hidden:
   message_thread: ssd_main_issue
   tag: ssd_hidden
-
-solver_main_delivery_notification_delivery_notification:
-  message_thread: solver_main_delivery_notification
-  tag: solver_delivery_notification

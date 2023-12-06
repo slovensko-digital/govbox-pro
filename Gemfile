@@ -2,13 +2,13 @@ source 'https://rubygems.org'
 
 ruby '3.2.2'
 
-gem 'rails', '~> 7.0'
+gem 'rails', '~> 7.1'
 gem 'rails-i18n'
 
 gem 'pg', '~> 1.0'
 gem 'with_advisory_lock'
 
-gem 'puma', '~> 5.0'
+gem 'puma', '~> 6.0'
 
 gem 'turbo-rails'
 
