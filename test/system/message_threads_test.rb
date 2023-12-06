@@ -175,7 +175,7 @@ class MessageThreadsTest < ApplicationSystemTestCase
     thread_issue = message_threads(:ssd_main_issue)
     message_one = messages(:ssd_main_issue_one)
 
-    assert GoodJob::Job.where(job_class: 'Govbox::SubmitMessageDraftJob').blank?
+    assert_not GoodJob::Job.where(job_class: 'Govbox::SubmitMessageDraftJob').exists?
 
     visit message_thread_path thread_issue
     within_message_in_thread message_one do
@@ -188,7 +188,6 @@ class MessageThreadsTest < ApplicationSystemTestCase
       click_button "Odoslať"
     end
 
-    GoodJob.perform_inline
     assert GoodJob::Job.where(job_class: 'Govbox::SubmitMessageDraftJob').exists?
   end
 end
