@@ -55,9 +55,5 @@ module Colorized
       :rose
     ]
   end
-
-  def self.select_options
-    [""] + colors.map { |color| [color, { class: "bg-#{color}-100 text-#{color}-600" }] }
-  end
 end
 

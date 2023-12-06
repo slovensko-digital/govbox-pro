@@ -14,9 +14,5 @@ module Common
       @svg = ICONS[icon]
       @classes = classes
     end
-
-    def self.select_options
-      [""] + ICONS.keys
-    end
   end
 end
