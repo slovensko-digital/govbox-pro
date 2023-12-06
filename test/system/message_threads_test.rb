@@ -172,26 +172,25 @@ class MessageThreadsTest < ApplicationSystemTestCase
   end
 
   test "a user can go to a thread detail and reply to message" do
-    visit message_threads_path
-
     thread_issue = message_threads(:ssd_main_issue)
     message_one = messages(:ssd_main_issue_one)
-    job_count_previous = GoodJob::Job.count
 
-    within_thread_in_listing(thread_issue) do
-      click_link
-    end
+    assert_not GoodJob::Job.where(job_class: 'Govbox::SubmitMessageDraftJob').order(scheduled_at: :desc).first
 
+    visit message_thread_path(thread_issue)
     within_message_in_thread(message_one) do
-      find_button("Odpovedať").click
+      click_on("Odpovedať")
     end
 
     within '#new_drafts' do
-      find_field("Predmet").fill_in(with: "Testovaci predmet")
-      find_field("Text").fill_in(with: "Testovacie telo")
-      find_button("Odoslať").click
+      fill_in("Predmet", with: "Testovaci predmet")
+      fill_in("Text", with: "Testovacie telo")
+      unfocus_input
+      find("turbo-frame", id: /submittable/, visible: false)
+      click_button("Odoslať")
     end
 
-    assert GoodJob::Job.count, job_count_previous + 1
+    GoodJob.perform_inline
+    assert GoodJob::Job.where(job_class: 'Govbox::SubmitMessageDraftJob').order(scheduled_at: :desc).first
   end
 end

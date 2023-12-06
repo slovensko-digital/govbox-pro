@@ -30,7 +30,7 @@ class MessageDraftsController < ApplicationController
     authorize @message
 
     permitted_params = message_params
-
+    @was_submittable = @message.submittable?
     @message.update_content(title: permitted_params["message_title"], body: permitted_params["message_text"])
   end
 
@@ -100,6 +100,6 @@ class MessageDraftsController < ApplicationController
   end
 
   def message_params
-    params.permit(:message_title, :message_text)
+    params.permit(:message_title, :message_text, :format)
   end
 end

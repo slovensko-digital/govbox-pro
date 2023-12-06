@@ -17,7 +17,8 @@ export default class extends Controller {
       body: JSON.stringify({
         authenticity_token: authenticityToken,
         message_title: document.getElementById(messageDraftTitleId).value,
-        message_text: document.getElementById(messageDraftTextId).value
+        message_text: document.getElementById(messageDraftTextId).value,
+        format: "TURBO_STREAM"
       })
     })
   }
@@ -31,7 +32,7 @@ export default class extends Controller {
     const messageDraftsTexts = document.querySelectorAll('textarea[id^="text_message_draft_"]');
     const length = messageDraftsTexts.length;
     if (messageDraftsTexts.length > 1) {
-      messageDraftsTexts[length - 2].setAttribute('autofocus', false);
+      messageDraftsTexts[length - 2].setAttribute("autofocus", false);
     }
     messageDraftsTexts[length - 1].focus();
 
