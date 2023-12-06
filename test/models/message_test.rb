@@ -35,8 +35,4 @@ class MessageTest < ActiveSupport::TestCase
     assert_not message.tags.include?(tag)
     assert message.thread.tags.include?(tag)
   end
-
-  test "adds everything tag to every message" do
-
-  end
 end
