@@ -14,5 +14,7 @@ Style/Lambda:
   Enabled: false
 Style/StringLiteralsInInterpolation:
   EnforcedStyle: double_quotes
+Style/ExplicitBlockArgument:
+  Enabled: false
 Rails/Validation:
   Enabled: false

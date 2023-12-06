@@ -170,4 +170,28 @@ class MessageThreadsTest < ApplicationSystemTestCase
       end
     end
   end
+
+  test "a user can go to a thread detail and reply to message" do
+    visit message_threads_path
+
+    thread_issue = message_threads(:ssd_main_issue)
+    message_one = messages(:ssd_main_issue_one)
+    job_count_previous = GoodJob::Job.count
+
+    within_thread_in_listing(thread_issue) do
+      click_link
+    end
+
+    within_message_in_thread(message_one) do
+      find_button("Odpovedať").click
+    end
+
+    within '#new_drafts' do
+      find_field("Predmet").fill_in(with: "Testovaci predmet")
+      find_field("Text").fill_in(with: "Testovacie telo")
+      find_button("Odoslať").click
+    end
+
+    assert GoodJob::Job.count, job_count_previous + 1
+  end
 end
