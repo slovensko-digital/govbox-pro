@@ -31,7 +31,7 @@ export default class extends Controller {
     const messageDraftsTexts = document.querySelectorAll('textarea[id^="text_message_draft_"]');
     const length = messageDraftsTexts.length;
     if (messageDraftsTexts.length > 1) {
-      messageDraftsTexts[length - 2].setAttribute('autofocus', false);
+      messageDraftsTexts[length - 2].setAttribute("autofocus", false);
     }
     messageDraftsTexts[length - 1].focus();
 

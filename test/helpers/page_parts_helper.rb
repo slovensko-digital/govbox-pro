@@ -26,4 +26,10 @@ module PagePartsHelper
       yield
     end
   end
+
+  def within_message_in_thread(message)
+    within("\##{dom_id(message)}") do
+      yield
+    end
+  end
 end

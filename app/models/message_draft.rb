@@ -22,19 +22,19 @@
 #  message_thread_id  :bigint           not null
 #
 class MessageDraft < Message
-  belongs_to :import, class_name: 'MessageDraftsImport', foreign_key: :import_id, optional: true
+  belongs_to :import, class_name: 'MessageDraftsImport', optional: true
 
   after_create do
-    self.add_cascading_tag(self.thread.box.tenant.draft_tag!)
+    add_cascading_tag(thread.box.tenant.draft_tag!)
   end
 
   after_destroy do
     EventBus.publish(:message_draft_destroyed, self)
-    # TODO has to use `reload` because of `inverse_of` messages are in memory and deleting already deleted record fails
-    if self.thread.messages.reload.none?
-      self.thread.destroy!
-    elsif self.thread.message_drafts.reload.none?
-      drafts_tag = self.thread.tags.find_by(type: DraftTag.to_s)
+    # TODO: has to use `reload` because of `inverse_of` messages are in memory and deleting already deleted record fails
+    if thread.messages.reload.none?
+      thread.destroy!
+    elsif thread.message_drafts.reload.none?
+      drafts_tag = thread.tags.find_by(type: DraftTag.to_s)
       thread.tags.delete(drafts_tag)
     end
   end
@@ -43,14 +43,14 @@ class MessageDraft < Message
   GENERAL_AGENDA_POSP_VERSION = "1.9"
   GENERAL_AGENDA_MESSAGE_TYPE = "App.GeneralAgenda"
 
-  with_options on: :validate_data do |message_draft|
-    message_draft.validates :uuid, format: { with: Utils::UUID_PATTERN }, allow_blank: false
-    message_draft.validate :validate_metadata
-    message_draft.validate :validate_form
-    message_draft.validate :validate_objects
+  with_options on: :validate_data do
+    validates :uuid, format: { with: Utils::UUID_PATTERN }, allow_blank: false
+    validate :validate_metadata
+    validate :validate_form
+    validate :validate_objects
   end
 
-  def self.create_message_reply(original_message: , author:)
+  def self.create_message_reply(original_message:, author:)
     message_draft = original_message.thread.message_drafts.create!(
       uuid: SecureRandom.uuid,
       sender_name: original_message.recipient_name,
@@ -70,7 +70,7 @@ class MessageDraft < Message
         "status": "created"
       }
     )
-    create_form_object
+    message_draft.create_form_object
 
     message_draft
   end
@@ -153,6 +153,16 @@ class MessageDraft < Message
     update_form_object
   end
 
+  def create_form_object
+    # TODO: clean the domain (no UPVS stuff)
+    objects.create!(
+      name: "form.xml",
+      mimetype: "application/x-eform-xml",
+      object_type: "FORM",
+      is_signed: false
+    )
+  end
+
   private
 
   def validate_metadata
@@ -179,16 +189,6 @@ class MessageDraft < Message
       object.valid?(:validate_data)
       errors.merge!(object.errors)
     end
-  end
-
-  def create_form_object
-    # TODO: clean the domain (no UPVS stuff)
-    objects.create!(
-      name: "form.xml",
-      mimetype: "application/x-eform-xml",
-      object_type: "FORM",
-      is_signed: false
-    )
   end
 
   def update_form_object
