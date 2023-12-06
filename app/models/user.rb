@@ -14,9 +14,6 @@ class User < ApplicationRecord
 
   belongs_to :tenant
 
-  has_one :signature_requested_to_tag, dependent: :destroy
-  has_one :signed_by_tag, dependent: :nullify
-
   has_many :group_memberships, dependent: :destroy
   has_many :groups, through: :group_memberships
   has_many :own_tags, class_name: 'Tag', inverse_of: :owner, foreign_key: :owner_id, dependent: :nullify
@@ -40,6 +37,14 @@ class User < ApplicationRecord
 
   def user_group
     groups.where(type: "UserGroup").first
+  end
+
+  def signed_by_tag
+    tenant.signed_by_tags.find_tag_containing_group(user_group)
+  end
+
+  def signature_requested_from_tag
+    tenant.signature_requested_from_tags.find_tag_containing_group(user_group)
   end
 
   private

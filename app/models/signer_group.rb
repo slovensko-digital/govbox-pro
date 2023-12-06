@@ -15,19 +15,7 @@ class SignerGroup < Group
     I18n.t("group.names.signer")
   end
 
-  def self.user_added_to_group(signer_group, user)
-    tag = signer_group.tenant.signature_requested_to_tags.find_or_initialize_by(user_id: user.id)
-    tag.name = "Na podpis - #{user.name}"
-    tag.visible = true
-    tag.save!
-
-    tag = signer_group.tenant.signed_by_tags.find_or_initialize_by(user_id: user.id)
-    tag.name = "Podpisané - #{user.name}"
-    tag.visible = true
-    tag.save!
-  end
-
   def self.user_removed_from_group(signer_group, user)
-    signer_group.tenant.signature_requested_to_tags.where(user_id: user.id).destroy_all
+    signer_group.tenant.signature_requested_from_tags.where(user_id: user.id).destroy_all
   end
 end

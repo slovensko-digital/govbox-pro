@@ -15,5 +15,5 @@
 #  owner_id         :bigint
 #  tenant_id        :bigint           not null
 #
-class SignatureRequestedTag < Tag
+class SignatureRequestedFromTag < Tag
 end

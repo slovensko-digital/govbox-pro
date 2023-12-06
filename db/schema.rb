@@ -432,12 +432,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_06_090833) do
     t.bigint "owner_id"
     t.string "external_name"
     t.string "type", null: false
-    t.enum "color", enum_type: "color"
-    t.integer "tag_groups_count", default: 0, null: false
     t.string "icon"
+    t.integer "tag_groups_count", default: 0, null: false
+    t.enum "color", enum_type: "color"
     t.index "tenant_id, lower((name)::text)", name: "index_tags_on_tenant_id_and_lowercase_name", unique: true
     t.index ["owner_id"], name: "index_tags_on_owner_id"
-    t.index ["tenant_id", "type", "user_id"], name: "signers_tags", unique: true, where: "(((type)::text = ANY ((ARRAY['SignatureRequestedToTag'::character varying, 'SignedByTag'::character varying])::text[])) AND (user_id IS NOT NULL))"
     t.index ["tenant_id", "type"], name: "signings_tags", unique: true, where: "((type)::text = ANY ((ARRAY['SignatureRequestedTag'::character varying, 'SignedTag'::character varying])::text[]))"
     t.index ["tenant_id"], name: "index_tags_on_tenant_id"
   end
@@ -518,7 +517,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_06_090833) do
   add_foreign_key "tag_groups", "tags"
   add_foreign_key "tags", "tenants"
   add_foreign_key "tags", "users", column: "owner_id"
-  add_foreign_key "tags", "users", name: "tags_to_users"
   add_foreign_key "upvs_form_template_related_documents", "upvs_form_templates"
   add_foreign_key "users", "tenants"
 end

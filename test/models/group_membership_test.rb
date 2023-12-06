@@ -8,7 +8,7 @@ class GroupMembershipTest < ActiveSupport::TestCase
     GroupMembership.create!(user: user, group: signers_group)
 
     user.reload
-    assert user.signature_requested_to_tag
+    assert user.signature_requested_from_tag
     assert user.signed_by_tag
   end
 end
