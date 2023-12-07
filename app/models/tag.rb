@@ -48,4 +48,8 @@ class Tag < ApplicationRecord
   def destroyable?
     raise NotImplementedError
   end
+
+  def self.find_tag_containing_group(group)
+    includes(:groups).to_a.find { |tag| tag.groups.include?(group) }
+  end
 end

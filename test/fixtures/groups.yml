@@ -1,18 +1,23 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-all:
+ssd_all:
   name: all
   type: AllGroup
   tenant: ssd
 
-admins:
+ssd_admins:
   name: admins
   type: AdminGroup
   tenant: ssd
 
-basic_user:
-  name: "Basic user"
+ssd_basic_user:
+  name: Basic user
   type: UserGroup
+  tenant: ssd
+
+ssd_signers:
+  name: Podpisovaci
+  type: SignerGroup
   tenant: ssd
 
 solver_admin:
