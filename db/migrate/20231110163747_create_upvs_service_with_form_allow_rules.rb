@@ -5,6 +5,7 @@ class CreateUpvsServiceWithFormAllowRules < ActiveRecord::Migration[7.0]
       t.string :institution_uri, null: false
       t.string :institution_name
       t.string :schema_url
+      t.string :type
 
       t.timestamps
     end

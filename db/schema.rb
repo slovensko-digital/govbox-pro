@@ -481,15 +481,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_01_113708) do
     t.string "institution_uri", null: false
     t.string "institution_name"
     t.string "schema_url"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "upvs_service_with_forms", force: :cascade do |t|
-    t.string "name"
-    t.string "institution_uri", null: false
-    t.string "institution_name"
-    t.string "schema_url"
+    t.string "type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
