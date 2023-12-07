@@ -17,8 +17,10 @@ class Upvs::MessageTemplate < ::MessageTemplate
   GENERAL_AGENDA_POSP_VERSION = "1.9"
   GENERAL_AGENDA_MESSAGE_TYPE = "App.GeneralAgenda"
 
+  validate :validate_allow_rules_presence
+
   def recipients
-    Upvs::ServiceWithFormAllowRule.all_institutions_with_form(self)
+    Upvs::ServiceWithFormAllowRule.all_institutions_with_template_support(self)
   end
 
   def create_message(message, author:, box:, recipient_name:, recipient_uri:)
@@ -117,9 +119,11 @@ class Upvs::MessageTemplate < ::MessageTemplate
 
     return if message.errors[:metadata].any?
 
+    raise "Disallowed form: #{self.name}" unless Upvs::ServiceWithFormAllowRule.form_services(self).any?
+
     xsd_schema = upvs_form&.xsd_schema
 
-    raise "Missing XSD schema: #{name}" unless xsd_schema
+    raise "Missing XSD schema: #{self.name}" unless xsd_schema
 
     schema = Nokogiri::XML::Schema(xsd_schema)
     document = Nokogiri::XML(message.form.content)
@@ -145,5 +149,13 @@ class Upvs::MessageTemplate < ::MessageTemplate
       version: metadata['posp_version'],
       message_type: metadata['message_type']
     )
+  end
+
+  def form_services
+    Upvs::ServiceWithFormAllowRule.where("schema_url LIKE ?", "%#{metadata['posp_id']/metadata['posp_version']}")
+  end
+
+  def validate_allow_rules_presence
+    errors.add(:base, "Disallowed form") unless Upvs::ServiceWithFormAllowRule.form_services(self).any?
   end
 end
