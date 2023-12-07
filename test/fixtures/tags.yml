@@ -38,6 +38,12 @@ ssd_drafts:
   visible: true
   tenant: ssd
 
+ssd_everything:
+  name: Everything
+  type: EverythingTag
+  visible: false
+  tenant: ssd
+
 ssd_other:
   name: Other
   type: SimpleTag
@@ -62,6 +68,18 @@ ssd_print:
   visible: true
   tenant: ssd
 
+ssd_signature_requested:
+  name: Na podpis
+  type: SignatureRequestedTag
+  visible: true
+  tenant: ssd
+
+ssd_signed:
+  name: Podpisane
+  type: SignedTag
+  visible: true
+  tenant: ssd
+
 solver_special:
   name: Special
   type: SimpleTag
@@ -72,4 +90,10 @@ solver_drafts:
   name: Drafts
   type: DraftTag
   visible: true
+  tenant: solver
+
+solver_everything:
+  name: Everything
+  type: EverythingTag
+  visible: false
   tenant: solver

@@ -10,20 +10,26 @@
 #
 class Tenant < ApplicationRecord
   has_many :users, dependent: :destroy
-  has_many :groups, dependent: :destroy
 
   has_one :all_group
   has_one :signer_group
   has_one :admin_group
+  has_many :groups, dependent: :destroy
   has_many :custom_groups
 
   has_one :draft_tag
+  has_one :everything_tag
+  has_one :signature_requested_tag
+  has_one :signed_tag
+  has_many :tags, dependent: :destroy
+  has_many :signature_requested_from_tags
+  has_many :signed_by_tags
+  has_many :simple_tags
 
   has_many :boxes, dependent: :destroy
   has_many :automation_rules, class_name: "Automation::Rule", dependent: :destroy
-  has_many :tags, dependent: :destroy
-  has_many :simple_tags
   has_many :filters
+
   after_create :create_default_objects
 
   validates_presence_of :name
@@ -56,12 +62,22 @@ class Tenant < ApplicationRecord
     save!
   end
 
+  def make_admins_see_everything!
+    everything_tag.groups << admin_group
+  end
+
   private
 
   def create_default_objects
     create_all_group!(name: "all")
     create_admin_group!(name: "admins")
     create_signer_group!(name: "signers")
+
     create_draft_tag!(name: "Rozpracované", visible: true)
+    create_everything_tag!(name: "Všetky správy", visible: false)
+    create_signature_requested_tag!(name: "Na podpis", visible: true)
+    create_signed_tag!(name: "Podpísané", visible: true)
+
+    make_admins_see_everything!
   end
 end

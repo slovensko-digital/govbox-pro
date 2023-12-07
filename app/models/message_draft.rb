@@ -22,14 +22,15 @@
 #  message_thread_id  :bigint           not null
 #
 class MessageDraft < Message
-  belongs_to :import, class_name: 'MessageDraftsImport', foreign_key: :import_id, optional: true
+  belongs_to :import, class_name: 'MessageDraftsImport', optional: true
 
   after_create do
-    self.add_cascading_tag(self.thread.box.tenant.draft_tag!)
+    add_cascading_tag(thread.box.tenant.draft_tag!)
   end
 
   after_destroy do
     EventBus.publish(:message_draft_destroyed, self)
+<<<<<<< HEAD
     # TODO has to use `reload` because of `inverse_of` messages are in memory and deleting already deleted record fails
     if self.thread.messages.reload.none?
       self.thread.destroy!
@@ -128,6 +129,16 @@ class MessageDraft < Message
     form.destroy
     template&.create_form_object(self)
     reload
+  end
+
+  def create_form_object
+    # TODO: clean the domain (no UPVS stuff)
+    objects.create!(
+      name: "form.xml",
+      mimetype: "application/x-eform-xml",
+      object_type: "FORM",
+      is_signed: false
+    )
   end
 
   private
