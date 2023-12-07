@@ -7,3 +7,7 @@ one:
 two:
   user: basic
   group: all
+
+three:
+  user: solver_other
+  group: solver_other_user

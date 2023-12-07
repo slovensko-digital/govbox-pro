@@ -126,6 +126,12 @@ Rails.application.routes.draw do
     delete :destroy, on: :collection
   end
 
+  namespace :api do
+    namespace :admin do
+      resources :tenants
+    end
+  end
+
   get :auth, path: 'prihlasenie', to: 'sessions#login'
   get 'auth/google_oauth2/callback', to: 'sessions#create'
   get 'auth/google_oauth2/failure', to: 'sessions#failure'
