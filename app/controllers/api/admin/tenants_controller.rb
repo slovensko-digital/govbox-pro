@@ -3,24 +3,16 @@ class Api::Admin::TenantsController < ActionController::Base
   def create
     @tenant = Tenant.new(tenant_params)
     #    authorize([:admin, @tenant])
-    respond_to do |format|
-      if @tenant.save
-        format.json { render json: @tenant, status: :created }
-      else
-        format.json { render json: @tenant.errors, status: :unprocessable_entity }
-      end
-    end
+    return if @tenant.save
+
+    render json: @tenant.errors, status: :unprocessable_entity
   end
 
   def destroy
     # authorize([:admin, @tenant])
-    respond_to do |format|
-      if @tenant.destroy
-        format.json { render json: {}, status: :ok }
-      else
-        format.json { render json: @tenant.errors, status: :unprocessable_entity }
-      end
-    end
+    return if @tenant.destroy
+
+    render json: @tenant.errors, status: :unprocessable_entity
   end
 
   private
