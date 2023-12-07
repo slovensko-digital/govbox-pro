@@ -16,7 +16,8 @@ class Govbox::AuthorizeDeliveryNotificationJob < ApplicationJob
 
     raise StandardError, "Target message download failed" unless target_message_id
 
-    folder = Govbox::Folder.where(box: message.thread.box, name: "Inbox")
+    # folder is not available in UPVS get_message response, therefore we're using corresponding inbox as target folder
+    folder = Govbox::Folder.where(box: message.thread.box, name: "Inbox", system: true)
     Govbox::DownloadMessageJob.perform_later(folder, target_message_id)
   end
 end
