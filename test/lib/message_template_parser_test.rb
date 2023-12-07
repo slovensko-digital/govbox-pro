@@ -12,13 +12,13 @@ class MessageTemplateParserTest < ActiveSupport::TestCase
     assert_equal '{{ Predmet:text_field }}', template_items.first[:placeholder]
     assert_equal 'Predmet', template_items.first[:name]
     assert_equal false, template_items.first[:required]
-    assert_equal nil, template_items.first[:default_value]
+    assert_nil template_items.first[:default_value]
     assert_equal 'text_field', template_items.first[:type]
 
     assert_equal '{{ Text:text_area }}', template_items.second[:placeholder]
     assert_equal 'Text', template_items.second[:name]
     assert_equal false, template_items.second[:required]
-    assert_equal nil, template_items.second[:default_value]
+    assert_nil template_items.second[:default_value]
     assert_equal 'text_area', template_items.second[:type]
   end
 
@@ -31,7 +31,7 @@ class MessageTemplateParserTest < ActiveSupport::TestCase
     assert_equal '{{ IČO*:text_field }}', template_items.first[:placeholder]
     assert_equal 'IČO', template_items.first[:name]
     assert_equal true, template_items.first[:required]
-    assert_equal nil, template_items.first[:default_value]
+    assert_nil template_items.first[:default_value]
     assert_equal 'text_field', template_items.first[:type]
 
     assert_equal '{{ Kontaktná osoba*:text_field:"Ján Suchal" }}', template_items.second[:placeholder]
@@ -61,13 +61,13 @@ class MessageTemplateParserTest < ActiveSupport::TestCase
     assert_equal '{{ Dátum začiatku platnosti*:date_field }}', template_items[5][:placeholder]
     assert_equal 'Dátum začiatku platnosti', template_items[5][:name]
     assert_equal true, template_items[5][:required]
-    assert_equal nil, template_items[5][:default_value]
+    assert_nil template_items[5][:default_value]
     assert_equal 'date_field', template_items[5][:type]
 
     assert_equal '{{ Digitálny odtlačok*:text_field }}', template_items[6][:placeholder]
     assert_equal 'Digitálny odtlačok', template_items[6][:name]
     assert_equal true, template_items[6][:required]
-    assert_equal nil, template_items[6][:default_value]
+    assert_nil template_items[6][:default_value]
     assert_equal 'text_field', template_items[6][:type]
 
   end
