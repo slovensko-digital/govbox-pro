@@ -16,6 +16,7 @@ class Govbox::AuthorizeDeliveryNotificationJob < ApplicationJob
 
     raise StandardError, "Target message download failed" unless target_message_id
 
-    Govbox::DownloadMessageJob.perform_later(box: message.thread.box, edesk_message_id: target_message_id)
+    folder = Govbox::Folder.where(box: message.thread.box, name: "Inbox")
+    Govbox::DownloadMessageJob.perform_later(folder, target_message_id)
   end
 end
