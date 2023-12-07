@@ -1,10 +1,15 @@
 <%= turbo_stream.update "recipients_list" do %>
-  <div>
-    <label for="recipient" class="block mb-2 text-base font-medium text-gray-900">Príjemca</label>
-  </div>
-  <%= button_to message_template_recipient_selector_path, method: :get, data: { turbo_frame: "modal" }, class: "text-gray-500 hover:text-gray-900 w-full" do %>
-    <div id="recipient" class="mb-4 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-      <p class="text-left">Zvoľte príjemcu</p>
+  <% if @recipients_list.count > 1 %>
+    <div>
+      <label for="recipient" class="block mb-2 text-base font-medium text-gray-900">Príjemca</label>
     </div>
+    <%= button_to message_template_recipient_selector_path, method: :get, data: { turbo_frame: "modal" }, class: "text-gray-500 hover:text-gray-900 w-full" do %>
+      <div id="recipient" class="mb-4 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+        <p class="text-left">Zvoľte príjemcu</p>
+      </div>
+    <% end %>
+  <% else %>
+    <input id="recipient_name" hidden value="<%= @recipients_list.first[0] %>">
+    <input id="recipient_uri" hidden value="<%= @recipients_list.first[1] %>">
   <% end %>
 <% end %>
