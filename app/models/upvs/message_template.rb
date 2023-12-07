@@ -55,6 +55,7 @@ class Upvs::MessageTemplate < ::MessageTemplate
     )
 
     message.save!
+    message.add_cascading_tag(author.draft_tag)
 
     create_form_object(message)
   end
@@ -85,6 +86,8 @@ class Upvs::MessageTemplate < ::MessageTemplate
     }
     message.thread = original_message.thread
     message.save!
+
+    message.add_cascading_tag(author.draft_tag)
 
     create_form_object(message)
   end

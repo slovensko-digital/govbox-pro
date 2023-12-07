@@ -55,14 +55,15 @@ class User < ApplicationRecord
   end
 
   def handle_default_settings
-    groups.create!(name: name, type: "UserGroup", tenant_id: tenant_id)
+    user_group = groups.create!(name: name, type: "UserGroup", tenant_id: tenant_id)
     group_memberships.create!(group: tenant.all_group)
 
-    tenant.tags.create(
+    draft_tag = tenant.tags.create(
       owner: self,
-      name: "Drafts-#{self.name}",
+      name: "Drafts-#{name}",
       type: "DraftTag",
       visible: false
     )
+    draft_tag.mark_readable_by_group([user_group])
   end
 end
