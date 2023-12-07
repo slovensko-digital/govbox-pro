@@ -44,6 +44,7 @@ jobs:
       - run: bundle exec rails db:setup --trace
       - run: bundle exec rails test
       - run: bundle exec rails test:system
+      - run: bundle exec rails test:integration
 
   gitlab-push:
     name: Push to GitLab

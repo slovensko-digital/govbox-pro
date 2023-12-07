@@ -1,0 +1,134 @@
+openapi: 3.1.0
+
+info:
+  title: GovBox Pro API
+  version: 0.0.1
+
+  description: Rozhranie na prácu s prostredníctvom služby GovBox
+
+  contact:
+    name: Služby Slovensko.Digital, s.r.o.
+    url: https://ekosystem.slovensko.digital/sluzby/govbox
+    email: ekosystem@slovensko.digital
+
+servers:
+  - description: Server Govbox Pro v PROD prostredí
+    url: https://pro.govbox.sk
+  - description: Server Govbox Pro v Staging prostredí
+    url: https://govbox-pro.staging.slovensko.digital/
+
+security:
+  - "API Token": []
+
+paths:
+  /api/admin/tenants/{id}s:
+    delete:
+      tags: [Správa tenantov]
+      summary: Vymaže tenanta zo systému vrátane všetkých jeho údajov
+      description: |
+        Vymaže tenanta zo systému.
+      parameters:
+        - $ref: "#/components/parameters/TenantId"
+      responses:
+        204:
+          description: Úspešne vymazaný tenant zo systému.
+
+  /api/admin/tenant/:
+    post:
+      tags: [Správa tenantov]
+      summary: Založí nového tenanta v systéme
+      description: |
+        Založí nového tenanta.
+      parameters:
+        - $ref: "#/components/parameters/MessageId"
+      responses:
+        200:
+          description: Úspešne založený tenant v systéme
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    description: Výsledok odoslania správy na autorizáciu doručenky, hodnota `0` znamená úspešné prijatie správy na autorizáciu doručenky.
+                    type: integer
+                  message_id:
+                    description: eDesk identifikátor prebranej správy.
+                    type: integer
+                    example: 53089851
+                required:
+                  - code
+                example:
+                  code: 0
+
+components:
+  parameters:
+    tenantId:
+      description: Govbox Pro identifikátor tenanta.
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+        example: 20378640
+
+  schemas:
+    Tenant:
+      description: Tenant
+      properties:
+        id:
+          description: Govbox Pro identifikátor tenanta.
+          type: integer
+        name:
+          description: Názov tenanta.
+          type: string
+        feature_flags:
+          description: Aktivované služby tenanta
+          type: boolean
+      required:
+        - id
+        - name
+        - system
+      example:
+        id: 53089851
+        parent_id: null
+        name: Inbox
+        system: true
+
+  securitySchemes:
+    "API Token":
+      description: |
+        Požaduje API token vytvorený treťou stranou, ktorý:
+
+        - je zakodovaný algoritmom RS256,
+        - je podpísaný privátnym kľúčom tretej strany,
+        - má nastavený `sub` claim na identifikátor tretej strany,
+        - má nastavený `exp` claim na max. 120 minút,
+        - má nastavený `jti` claim na identifikátor, ktorý je unikátny počas 120 minút.
+
+        Príklad `header` segmentu:
+
+              {
+                "alg": "RS256",
+              }
+
+        Príklad `payload` segmentu:
+
+              {
+                "sub": "SPL_Irvin_50158635_11012019",
+                "exp": 1543437976,
+                "jti": "4dee8618-abbe-4dc3-83ba-e984d1396f9f",
+              }
+
+        API token musí byť prítomný buď:
+
+        - v hlavičke požiadavky ako `Authorization: Bearer <api-token>`,
+        - alebo v URL parametri požiadavky ako `?token=<api-token>`.
+
+        Poznámky:
+
+        - hodnota `jti` sa kontroluje podľa regulárneho výrazu `/\A[0-9a-z\-_]{32,256}\z/i`,
+        - rovnaké `jti` sa nesmie použiť viac ako jedenkrát počas 120 minút.
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
