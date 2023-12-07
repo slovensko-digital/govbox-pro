@@ -59,8 +59,8 @@ Upvs::ServiceWithForm.find_or_create_by!(
 Upvs::MessageTemplate.find_or_create_by!(
   name: 'Všeobecná agenda',
   content: '<GeneralAgenda xmlns="http://schemas.gov.sk/form/App.GeneralAgenda/1.9">
-  <subject>{{ Predmet:text_field }}</subject>
-  <text>{{ Text:text_area }}</text>
+  <subject>{{ Predmet*:text_field }}</subject>
+  <text>{{ Text*:text_area }}</text>
 </GeneralAgenda>',
   metadata: {
     posp_id: 'App.GeneralAgenda',
@@ -72,8 +72,8 @@ Upvs::MessageTemplate.find_or_create_by!(
 Upvs::MessageTemplate.find_or_create_by!(
   name: MessageTemplate::REPLY_TEMPLATE_NAME,
   content: '<GeneralAgenda xmlns="http://schemas.gov.sk/form/App.GeneralAgenda/1.9">
-  <subject>{{ Predmet:text_field }}</subject>
-  <text>{{ Text:text_area }}</text>
+  <subject>{{ Predmet*:text_field }}</subject>
+  <text>{{ Text*:text_area }}</text>
 </GeneralAgenda>',
   metadata: {
     posp_id: 'App.GeneralAgenda',
