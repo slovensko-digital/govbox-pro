@@ -27,7 +27,7 @@ class Upvs::MessageTemplate < ::MessageTemplate
     ]
   end
 
-  def create_message(message, author:, box:, recipient_uri:)
+  def create_message(message, author:, box:, recipient_name:, recipient_uri:)
     message.update(
       uuid: SecureRandom.uuid,
       delivered_at: Time.current,
