@@ -31,7 +31,7 @@
         <div class="min-w-0 flex text-sm leading-6">
           <%= label_tag "new_tag", class: "flex gap-2 select-none text-gray-900 cursor-pointer" do %>
             <%= @tags_filter.filter_query %>
-            <span class="text-gray-500">(nový štítok)</span>
+            <span class="rounded-full px-2 py-0.5 ml-2 bg-gray-400 text-white">zaškrtnutím vytvoríte nový štítok</span>
           <% end %>
           <%= submit_tag "create_tag", id: "create_tag", formaction: @create_tag_path, formmethod: :post, class: "hidden" %>
         </div>
