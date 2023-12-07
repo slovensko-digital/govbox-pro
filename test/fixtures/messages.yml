@@ -4,6 +4,7 @@ ssd_main_general_one:
   uuid: <%= SecureRandom.uuid %>
   title: The First Message
   sender_name: Social Department
+  recipient_name: SSD
   html_visualization: Visualization 1
   delivered_at: 2023-05-18 16:16:26
   thread: ssd_main_general
