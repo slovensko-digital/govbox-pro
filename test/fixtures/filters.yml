@@ -2,14 +2,14 @@
 
 one:
   tenant: ssd
-  author: one
+  author: basic
   name: With General text
   query: general
   position: 1
 
 two:
   tenant: ssd
-  author: two
+  author: admin
   name: With Legal text
   query: Legal
   position: 2

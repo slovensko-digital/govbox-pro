@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_12_01_113708) do
+ActiveRecord::Schema[7.1].define(version: 2023_12_06_200814) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -177,6 +177,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_01_113708) do
     t.datetime "scheduled_at"
     t.datetime "finished_at"
     t.text "error"
+    t.integer "error_event", limit: 2
     t.index ["active_job_id", "created_at"], name: "index_good_job_executions_on_active_job_id_and_created_at"
   end
 
@@ -214,6 +215,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_01_113708) do
     t.boolean "is_discrete"
     t.integer "executions_count"
     t.text "job_class"
+    t.integer "error_event", limit: 2
     t.index ["active_job_id", "created_at"], name: "index_good_jobs_on_active_job_id_and_created_at"
     t.index ["active_job_id"], name: "index_good_jobs_on_active_job_id"
     t.index ["batch_callback_id"], name: "index_good_jobs_on_batch_callback_id", where: "(batch_callback_id IS NOT NULL)"
@@ -261,7 +263,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_01_113708) do
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["group_id"], name: "index_group_memberships_on_group_id"
+    t.index ["group_id", "user_id"], name: "index_group_memberships_on_group_id_and_user_id", unique: true
     t.index ["user_id"], name: "index_group_memberships_on_user_id"
   end
 
@@ -423,6 +425,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_01_113708) do
     t.integer "tenant_id", null: false
     t.integer "box_id", null: false
     t.string "note", null: false
+    t.index "((((to_tsvector('simple'::regconfig, COALESCE(title, ''::text)) || to_tsvector('simple'::regconfig, COALESCE(content, ''::text))) || to_tsvector('simple'::regconfig, COALESCE((note)::text, ''::text))) || to_tsvector('simple'::regconfig, COALESCE(tag_names, ''::text))))", name: "idx_searchable_message_threads_fulltext", using: :gin
+    t.index ["id", "box_id", "last_message_delivered_at"], name: "idx_on_id_box_id_last_message_delivered_at_5a4090c55e", unique: true
     t.index ["message_thread_id"], name: "index_searchable_message_threads_on_message_thread_id", unique: true
   end
 
@@ -444,8 +448,12 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_01_113708) do
     t.bigint "owner_id"
     t.string "external_name"
     t.string "type", null: false
+    t.string "icon"
+    t.integer "tag_groups_count", default: 0, null: false
+    t.enum "color", enum_type: "color"
     t.index "tenant_id, lower((name)::text)", name: "index_tags_on_tenant_id_and_lowercase_name", unique: true
     t.index ["owner_id"], name: "index_tags_on_owner_id"
+    t.index ["tenant_id", "type"], name: "signings_tags", unique: true, where: "((type)::text = ANY ((ARRAY['SignatureRequestedTag'::character varying, 'SignedTag'::character varying])::text[]))"
     t.index ["tenant_id"], name: "index_tags_on_tenant_id"
   end
 

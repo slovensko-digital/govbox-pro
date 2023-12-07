@@ -9,7 +9,7 @@
       </div>
       <div class="flex flex-wrap justify-start items-center gap-2" data-test="tags">
         <% @thread_tags.each do |thread_tag|%>
-          <%= render MessageThreads::TagComponent.new(thread_tag) %>
+          <%= render Common::TagComponent.new(thread_tag.tag) %>
         <% end %>
         <%= link_to edit_message_thread_tags_path(@message_thread), data: { turbo_frame: "modal" }, title: "Upraviť štítky", class: "rounded-md bg-blue-100 p-1.5 hover:bg-blue-200" do %>
           <%= render Icons::TagComponent.new(css_classes: "h-4 w-4 text-blue-600", stroke_width: 2) %>

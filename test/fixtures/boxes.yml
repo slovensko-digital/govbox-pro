@@ -19,7 +19,7 @@ solver_main:
   uri: MyString2
   tenant: solver
   short_name: MY1
-  api_connection: three
+  api_connection: govbox_api_api_connection1
 
 google_box_with_govbox_api_connection:
   name: Box with GovBox API connection
