@@ -3,11 +3,17 @@ class Api::Admin::TenantsController < ActionController::Base
   rescue_from ActiveRecord::RecordNotFound, with: :not_found
 
   def create
-    @tenant = Tenant.new(tenant_params)
-    #    authorize([:admin, @tenant])
-    return if @tenant.save
+    #    authorize([:admin, Tenant])
+    @tenant = Tenant.create(tenant_params)
+    @admin = User.create(admin_params.merge(tenant_id: @tenant.id)) if @tenant
+    @group_membership = @tenant.admin_group.users.push(@admin) if @tenant && @admin
+    return if @tenant && @admin && @group_membership
 
-    render json: { message: @tenant.errors.full_messages[0] }, status: :unprocessable_entity
+    render json: {
+      message: @tenant.errors.full_messages[0] ||
+               @admin.errors.full_messages[0] ||
+               @group_membership.errors.full_messages[0]
+    }, status: :unprocessable_entity
   end
 
   def destroy
@@ -25,6 +31,10 @@ class Api::Admin::TenantsController < ActionController::Base
 
   def tenant_params
     params.require(:tenant).permit(:name)
+  end
+
+  def admin_params
+    params.require(:admin).permit(:name, :email)
   end
 
   def not_found

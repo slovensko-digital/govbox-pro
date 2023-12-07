@@ -128,7 +128,9 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :admin do
-      resources :tenants
+      resources :tenants do
+        resources :boxes
+      end
     end
   end
 
