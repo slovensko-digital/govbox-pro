@@ -29,7 +29,8 @@ class MessageDraftsController < ApplicationController
       @message,
       author: Current.user,
       box: @box,
-      recipient_uri: new_message_draft_params[:recipient]
+      recipient_name: new_message_draft_params[:recipient_name],
+      recipient_uri: new_message_draft_params[:recipient_uri]
     )
 
     redirect_to message_thread_path(@message.thread)
@@ -114,11 +115,11 @@ class MessageDraftsController < ApplicationController
   end
 
   def load_box
-    @box = Box.find(new_message_draft_params[:sender]) if new_message_draft_params[:sender].present?
+    @box = Box.find(new_message_draft_params[:sender_id]) if new_message_draft_params[:sender_id].present?
   end
 
   def load_message_template
-    @message_template = policy_scope(MessageTemplate).find(new_message_draft_params[:message_template]) if new_message_draft_params[:message_template].present?
+    @message_template = policy_scope(MessageTemplate).find(new_message_draft_params[:message_template_id]) if new_message_draft_params[:message_template_id].present?
   end
 
   def load_message_draft
@@ -131,6 +132,6 @@ class MessageDraftsController < ApplicationController
   end
 
   def new_message_draft_params
-    params.permit(:message_template, :sender, :recipient)
+    params.permit(:message_template_id, :sender_id, :recipient_name, :recipient_uri)
   end
 end

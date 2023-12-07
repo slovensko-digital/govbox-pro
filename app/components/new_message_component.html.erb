@@ -3,25 +3,40 @@
     <div class="self-stretch p-6 border-b border-gray-200 justify-start items-center gap-4 inline-flex">
       <div class="grow shrink basis-0 text-gray-900 text-xl font-semibold leading-[35px]">Nová správa</div>
     </div>
+    <%
+      sender_element_id = "sender"
+      template_element_id = "message_template"
+      recipient_name_element_id = "recipient_name"
+      recipient_id_element_id = "recipient_uri"
+    %>
     <div class="self-stretch p-6 flex-col justify-start items-start flex">
-      <%= form_with(url: message_drafts_path, method: :post, local: true) do %>
-        <% if @boxes.count > 1 %>
-          <label for="sender" class="block mb-2 text-base font-medium text-gray-900">Odosielateľ</label>
-          <%= select_tag(:sender, options_for_select(@boxes, [Current.box&.name, Current.box&.id]), required: true, prompt: "Zvoľte odosielateľa", class: "mb-4 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5") %>
-        <% else %>
-          <%= hidden_field :sender, @boxes.first %>
-        <% end %>
+      <% if @boxes.count > 1 %>
+        <label for="sender" class="block mb-2 text-base font-medium text-gray-900">Odosielateľ</label>
+        <%= select_tag(sender_element_id, options_for_select(@boxes, [Current.box&.name, Current.box&.id]), required: true, prompt: "Zvoľte odosielateľa", class: "mb-4 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5") %>
+      <% else %>
+        <%= hidden_field sender_element_id, @boxes.first %>
+      <% end %>
 
-        <%= content_tag(:div, { "data-controller": "message-drafts", class: "w-full" }) do %>
-          <label for="message_template" class="block mb-2 text-base font-medium text-gray-900">Typ správy</label>
-          <%= select_tag(:message_template, options_for_select(@templates_list), required: true, prompt: "Zvoľte typ správy", "data-action": "change->message-drafts#loadTemplateRecipients", class: "mb-4 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5") %>
-        <% end %>
+      <%= content_tag(:div, { "data-controller": "message-drafts", class: "w-full" }) do %>
+        <label for="<%= template_element_id %>" class="block mb-2 text-base font-medium text-gray-900">Typ správy</label>
+        <%= select_tag(template_element_id, options_for_select(@templates_list), required: true, prompt: "Zvoľte typ správy", "data-action": "change->message-drafts#loadTemplateRecipients", class: "mb-4 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5") %>
+      <% end %>
 
-        <div id="recipients_list" is="turbo-frame"></div>
+      <div id="recipients_list" is="turbo-frame" class="w-full"></div>
 
-        <div class="gap-2 border-t-0 border-r-0 border-b-0 border-l-0 border-gray-200">
-          <%= submit_tag "Vytvoriť správu", class: "flex justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 mt-6 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3.5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" %>
-        </div>
+      <%= content_tag(:div, {
+        "data-controller": "message-drafts",
+        "data-message-drafts-submit-path": message_drafts_path,
+        "data-message-drafts-sender-element-id": sender_element_id,
+        "data-message-drafts-template-element-id": template_element_id,
+        "data-message-drafts-recipient-name-element-id": recipient_name_element_id,
+        "data-message-drafts-recipient-uri-element-id": recipient_id_element_id,
+        "data-message-drafts-authenticity-token": form_authenticity_token,
+        class: "gap-2 border-t-0 border-r-0 border-b-0 border-l-0 border-gray-200 w-full"
+      }) do %>
+        <button data-action="click->message-drafts#create" data-turbo-frame="false" class="flex justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 mt-6 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3.5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+          Vytvoriť správu
+        </button>
       <% end %>
     </div>
   </div>
