@@ -14,8 +14,8 @@ class GroupMembership < ApplicationRecord
   belongs_to :group
   belongs_to :user
 
-  after_create :create_signing_tags!, if: Proc.new { |membership| membership.group.is_a?(SignerGroup) }
-  after_destroy :destroy_all_signature_requests!, if: Proc.new { |membership| membership.group.is_a?(SignerGroup) }
+  after_create :create_signing_tags!, if: ->(membership) { membership.group.is_a?(SignerGroup) }
+  after_destroy :destroy_all_signature_requests!, if: ->(membership) { membership.group.is_a?(SignerGroup) }
 
   def create_signing_tags!
     user_group = user.user_group
