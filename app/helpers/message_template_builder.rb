@@ -19,8 +19,8 @@ class MessageTemplateBuilder < ActionView::Helpers::FormBuilder
 
   def text_field(name, value:, errors:, editable:, **args)
     @template.content_tag(:div, class: 'mb-3') do
+      label(:label, name, class: 'font-semibold') +
       super(name, {
-        placeholder: name,
         value: value,
         disabled: !editable,
         'data-action': 'change->message-drafts#update',
@@ -36,8 +36,8 @@ class MessageTemplateBuilder < ActionView::Helpers::FormBuilder
 
   def email_field(name, value:, errors:, editable:, **args)
     @template.content_tag(:div, class: 'mb-3') do
+      label(:label, name, class: 'font-semibold') +
       super(name, {
-        placeholder: name,
         value: value,
         disabled: !editable,
         'data-action': 'change->message-drafts#update',
@@ -53,8 +53,8 @@ class MessageTemplateBuilder < ActionView::Helpers::FormBuilder
 
   def text_area(name, value:, errors:, editable:, is_last:)
     @template.content_tag(:div, class: 'mb-3') do
+      label(:label, name, class: 'font-semibold') +
       super(name, {
-        placeholder: name,
         value: value,
         disabled: !editable,
         autofocus: is_last,
@@ -72,9 +72,8 @@ class MessageTemplateBuilder < ActionView::Helpers::FormBuilder
 
   def date_field(name, value:, errors:, editable:, **args)
     @template.content_tag(:div, class: 'mb-3') do
-      label(:label, name) +
+      label(:label, name, class: 'font-semibold') +
       super(name, {
-        placeholder: Date.today,
         value: value,
         disabled: !editable,
         'data-action': 'change->message-drafts#update',
