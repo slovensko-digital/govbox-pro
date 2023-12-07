@@ -17,7 +17,7 @@
         <% if @visible_tags.present? %>
           <div class="flex flex-wrap items-start gap-1" data-test="tags">
             <% @visible_tags.each do |tag| %>
-              <%= render Common::TagComponent.new(tag.name) %>
+              <%= render Common::TagComponent.new(tag) %>
             <% end %>
           </div>
         <% end %>

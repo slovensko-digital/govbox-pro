@@ -4,21 +4,25 @@
   </div>
   <div class="grow shrink basis-0 flex-col justify-start items-start gap-1 inline-flex">
     <div class="text-center text-gray-900 text-lg font-medium leading-loose">
-      <%= render Admin::Users::UserRenameComponent.new(@user) %>
+      <%= render Common::InlineRenameComponent.new(name: @user.name, model: [:admin, @user.tenant, @user]) %>
     </div>
     <div class="text-center text-gray-500 text-base font-normal leading-normal">
       <%= @user.email %>
     </div>
   </div>
   <div class="justify-start items-center gap-2 flex">
-    <%= link_to admin_audit_logs_path(actor: @user), title: "Auditné záznamy používateľa" do %>
-      <%= render Common::ShowButtonComponent.new %>
+    <% if Current.tenant.feature_enabled?(:audit_log) %>
+      <%= link_to admin_audit_logs_path(actor: @user), title: "Auditné záznamy používateľa" do %>
+        <%= render Common::ShowButtonComponent.new %>
+      <% end %>
     <% end %>
     <%= link_to edit_admin_tenant_user_path(@user.tenant, @user) do %>
       <%= render Common::EditButtonComponent.new %>
     <% end %>
-    <%= button_to admin_tenant_user_path(@user.tenant, @user), method: :delete do %>
-      <%= render Common::DeleteButtonComponent.new %>
+    <% if Pundit.policy(Current.user, [:admin, @user]).destroy? %>
+      <%= button_to admin_tenant_user_path(@user.tenant, @user), method: :delete do %>
+        <%= render Common::DeleteButtonComponent.new %>
+      <% end %>
     <% end %>
   </div>
 </div>

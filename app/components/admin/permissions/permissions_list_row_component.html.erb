@@ -1,4 +1,4 @@
-<%= render Admin::Permissions::TagComponent.new(tag: @tag_group.tag) %>
+<%= render Common::TagComponent.new(@tag_group.tag) %>
 <%= button_to admin_tenant_tag_group_path(Current.tenant, @tag_group), method: :delete do %>
   <%= render Common::DeleteButtonComponent.new %>
 <% end %>

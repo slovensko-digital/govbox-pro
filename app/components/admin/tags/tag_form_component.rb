@@ -1,6 +1,6 @@
 class Admin::Tags::TagFormComponent < ViewComponent::Base
-  def initialize(tag:, action:)
+  include ColorizedHelper, IconizedHelper
+  def initialize(tag:)
     @tag = tag
-    @actio = action
   end
 end

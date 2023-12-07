@@ -16,7 +16,7 @@
 class MessageObject < ApplicationRecord
   belongs_to :message, inverse_of: :objects
   has_one :message_object_datum, dependent: :destroy
-  has_many :nested_message_objects, inverse_of: :message_object
+  has_many :nested_message_objects, inverse_of: :message_object, dependent: :destroy
 
   scope :unsigned, -> { where(is_signed: false) }
   scope :to_be_signed, -> { where(to_be_signed: true) }
@@ -24,6 +24,8 @@ class MessageObject < ApplicationRecord
 
   validates :name, presence: true, on: :validate_data
   validate :allowed_mime_type?, on: :validate_data
+
+  after_update ->(message_object) { EventBus.publish(:message_object_changed, message_object) }
 
   def self.create_message_objects(message, objects)
     objects.each do |raw_object|
@@ -53,7 +55,7 @@ class MessageObject < ApplicationRecord
   end
 
   def signable?
-    # TODO vymazat druhu podmienku po povoleni viacnasobneho podpisovania
+    # TODO: vymazat druhu podmienku po povoleni viacnasobneho podpisovania
     message.draft? && !is_signed
   end
 
@@ -62,21 +64,13 @@ class MessageObject < ApplicationRecord
   end
 
   def destroyable?
-    # TODO avoid loading message association if we have
-    message.draft? && message.not_yet_submitted? && !form?
-  end
-
-  def asice?
-    mimetype == 'application/vnd.etsi.asic-e+zip'
-  end
-
-  def destroyable?
+    # TODO: avoid loading message association if we have
     message.draft? && message.not_yet_submitted? && !form?
   end
 
   private
 
   def allowed_mime_type?
-    errors.add(:mime_type, "of #{name} object is disallowed, allowed_mime_types: #{Utils::EXTENSIONS_ALLOW_LIST.join(', ')}") unless mimetype
+    errors.add(:mime_type, "of #{name} object is disallowed, allowed_mime_types: #{Utils::EXTENSIONS_ALLOW_LIST.join(", ")}") unless mimetype
   end
 end

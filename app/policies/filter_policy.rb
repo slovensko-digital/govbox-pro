@@ -12,7 +12,7 @@ class FilterPolicy < ApplicationPolicy
     def resolve
       scoped = scope.where(tenant_id: Current.tenant)
 
-      return scoped if @user.admin? || @user.site_admin?
+      return scoped if @user.admin?
 
       scoped.where(author_id: @user.id)
     end
@@ -37,19 +37,19 @@ class FilterPolicy < ApplicationPolicy
   end
 
   def edit?
-    true if @user.admin? || @user.site_admin?
+    true if @user.admin?
 
     is_author_current_user?
   end
 
   def update?
-    true if @user.admin? || @user.site_admin?
+    true if @user.admin?
 
     is_author_current_user?
   end
 
   def destroy?
-    true if @user.admin? || @user.site_admin?
+    true if @user.admin?
 
     is_author_current_user?
   end

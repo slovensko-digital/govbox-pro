@@ -16,7 +16,13 @@
             </button>
           </div>
 
-          <div data-dropdown-target="menu" class="absolute hidden right-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+          <div data-dropdown-target="menu"
+               data-turbo-temporary-hide
+               class="absolute hidden right-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+               role="menu"
+               aria-orientation="vertical"
+               aria-labelledby="menu-button"
+               tabindex="-1">
             <div class="py-1" role="none">
               <%= button_tag "change_tags", type: "submit", id: "menu-item-0",
                                             formaction: edit_message_threads_bulk_tags_path,

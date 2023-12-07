@@ -105,7 +105,9 @@ Rails.application.routes.draw do
 
   resources :message_drafts do
     member do
-      post 'submit'
+      post :confirm_unlock
+      post :unlock
+      post :submit
     end
 
     post 'submit_all', on: :collection
@@ -130,6 +132,10 @@ Rails.application.routes.draw do
 
   get "/service-worker.js" => "service_worker#service_worker"
   get "/manifest.json" => "service_worker#manifest"
+
+  get "/health", to: "health_check#show"
+  get "/health/jobs/failing", to: "health_check#failing_jobs"
+  get "/health/jobs/stuck", to: "health_check#stuck_jobs"
 
   root 'message_threads#index'
 

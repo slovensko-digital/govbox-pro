@@ -8,6 +8,3 @@ ssd_main_general_two_external:
   message: ssd_main_general_two
   tag: ssd_external
 
-solver_main_delivery_notification_one_delivery_notification:
-  message: solver_main_delivery_notification_one
-  tag: solver_delivery_notification

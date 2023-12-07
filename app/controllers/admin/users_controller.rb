@@ -3,7 +3,7 @@ class Admin::UsersController < ApplicationController
 
   def index
     authorize([:admin, User])
-    @users = policy_scope([:admin, User]).where(tenant_id: Current.tenant.id)
+    @users = policy_scope([:admin, User]).where(tenant_id: Current.tenant.id).order(:name)
   end
 
   def new
@@ -37,8 +37,12 @@ class Admin::UsersController < ApplicationController
 
   def destroy
     authorize([:admin, @user])
-    @user.destroy
-    redirect_to admin_tenant_users_url(Current.tenant), notice: 'User was successfully destroyed'
+    if @user.destroy
+      redirect_to admin_tenant_users_url(Current.tenant), notice: 'User was successfully destroyed'
+    else
+      flash[:alert] = @user.errors.full_messages[0]
+      redirect_to admin_tenant_users_url(Current.tenant)
+    end
   end
 
   private

@@ -21,5 +21,11 @@
   ],
   "[erb]": {
     "editor.defaultFormatter": "Jota0222.multi-formatter"
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": null
+  },
+  "[ruby]": {
+    "editor.defaultFormatter": "Shopify.ruby-lsp"
   }
 }

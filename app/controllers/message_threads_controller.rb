@@ -1,5 +1,5 @@
 class MessageThreadsController < ApplicationController
-  before_action :set_message_thread, only: %i[show rename update search_available_tags history]
+  before_action :set_message_thread, only: %i[show rename update history]
   before_action :set_thread_tags, only: %i[show history]
   before_action :set_thread_messages, only: %i[show history]
   before_action :load_threads, only: %i[index scroll]
@@ -16,11 +16,11 @@ class MessageThreadsController < ApplicationController
   end
 
   def update
+    # currently only title update (rename) expected
     authorize @message_thread
 
     path = message_thread_path(@message_thread)
-
-    return unless @message_thread.update(message_thread_params)
+    return unless @message_thread.rename(message_thread_params)
 
     redirect_back fallback_location: path, notice: 'Názov vlákna bol upravený'
   end

@@ -4,7 +4,7 @@
   </div>
   <div class="grow shrink basis-0 flex-col justify-start items-start gap-1 inline-flex">
     <div class="text-center text-gray-900 text-lg font-medium leading-loose">
-      <%= render Filters::FilterRenameComponent.new(@filter) %>
+      <%= render Common::InlineRenameComponent.new(name: @filter.name, model: @filter) %>
     </div>
     <div class="text-center text-gray-500 text-base font-normal leading-normal">
       <%= @filter.query %>
