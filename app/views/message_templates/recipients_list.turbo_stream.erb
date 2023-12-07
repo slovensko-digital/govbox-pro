@@ -9,7 +9,7 @@
       </div>
     <% end %>
   <% else %>
-    <input id="recipient_name" hidden value="<%= @recipients_list.first[0] %>">
-    <input id="recipient_uri" hidden value="<%= @recipients_list.first[1] %>">
+    <input id="recipient_name" hidden value="<%= @recipients_list.first[:name] %>">
+    <input id="recipient_uri" hidden value="<%= @recipients_list.first[:uri] %>">
   <% end %>
 <% end %>

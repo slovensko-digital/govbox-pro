@@ -4,13 +4,17 @@ class MessageTemplatesController < ApplicationController
   def recipient_selector
     authorize(@message_template, policy_class: MessageTemplatePolicy)
 
-    @recipients_list = @message_template.recipients.pluck(:institution_name, :institution_uri)
+    @recipients_list = @message_template.recipients
+                                        .pluck(:institution_name, :institution_uri)
+                                        .map { |name, uri| { uri: uri, name: name }}
   end
 
   def recipients_list
     authorize(@message_template, policy_class: MessageTemplatePolicy)
 
-    @recipients_list = @message_template.recipients.pluck(:institution_name, :institution_uri)
+    @recipients_list = @message_template.recipients
+                                        .pluck(:institution_name, :institution_uri)
+                                        .map { |name, uri| { uri: uri, name: name }}
   end
 
   def search_recipients_list
@@ -19,6 +23,7 @@ class MessageTemplatesController < ApplicationController
     @recipients_list = @message_template.recipients
                                         .where('unaccent(institution_name) ILIKE unaccent(?) OR institution_uri ILIKE ?', "%#{params[:search]}%", "%#{params[:search]}%")
                                         .pluck(:institution_name, :institution_uri)
+                                        .map { |name, uri| { uri: uri, name: name }}
   end
 
   def recipient_selected
