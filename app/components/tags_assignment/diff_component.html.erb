@@ -1,5 +1,5 @@
 <% if @diff.number_of_changes > 0 %>
-  <div class="text-sm w-full mx-2 mb-4">
+  <div class="text-sm w-full mx-2 my-4">
     <p class="mb-2 italic">Po uložení sa vykonajú nasledovné zmeny:</p>
     <% if @diff.to_add.present? %>
       <p class="mb-2" data-test="to_be_added">Pridajú sa: <%= format_tags(@diff.to_add) %></p>

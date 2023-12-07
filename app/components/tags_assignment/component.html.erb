@@ -1,18 +1,17 @@
-<%= render Common::ModalComponent.new("550px") do |modal| %>
+<%= render Common::ModalComponent.new("h-[550px]") do |modal| %>
   <% modal.with_header do %>
     Úprava štítkov
   <% end %>
   <% modal.with_modal_content do %>
     <%= form_with url: prepare_message_thread_tags_path(@message_thread),
-                  data: { controller: 'debounce', debounce_target: 'form' }, class: "mt-4 flex flex-col grow justify-between overflow-hidden" do |form| %>
-      <div class="flex flex-col items-start gap-4 max-height-[85%]">
+                  data: { controller: 'debounce', debounce_target: 'form' }, class: "relative mt-4 flex flex-col grow justify-between" do |form| %>
+      <div class="flex flex-col items-start gap-4">
         <div class="w-full">
           <%= tag.turbo_frame id: TagsAssignment::Component::SEARCH_FIELD_FRAME do %>
             <%= render TagsAssignment::SearchFieldComponent.new %>
           <% end %>
         </div>
-
-        <div class="w-full mb-4 overflow-x-hidden overflow-y-auto">
+        <div class="w-full mb-4 overflow-x-hidden overflow-y-auto pr-2.5 max-h-[300px] sm:max-h-[350px]">
           <% @tags_changes.init_assignments.each do |tag_id, value| %>
             <%= hidden_field_tag "tags_assignments[init][#{tag_id}]", value %>
           <% end %>
@@ -26,7 +25,6 @@
           <%= tag.turbo_frame id: TagsAssignment::Component::DIFF_FRAME %>
         </div>
       </div>
-
       <%= tag.turbo_frame id: TagsAssignment::Component::ACTIONS_FRAME do %>
         <%= render Common::ModalActionsComponent.new %>
       <% end %>

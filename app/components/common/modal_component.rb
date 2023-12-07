@@ -3,8 +3,8 @@ module Common
     renders_one :header
     renders_one :modal_content
 
-    def initialize(height = nil)
-      @height = height
+    def initialize(classes = "")
+      @classes = classes
     end
 
     def remove_content_action
