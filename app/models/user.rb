@@ -39,6 +39,14 @@ class User < ApplicationRecord
     groups.where(type: "UserGroup").first
   end
 
+  def signed_by_tag
+    tenant.signed_by_tags.find_tag_containing_group(user_group)
+  end
+
+  def signature_requested_from_tag
+    tenant.signature_requested_from_tags.find_tag_containing_group(user_group)
+  end
+
   private
 
   def delete_user_group

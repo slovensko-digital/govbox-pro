@@ -2,7 +2,7 @@
 
 finance_basic_user:
   tag: ssd_finance
-  group: basic_user
+  group: ssd_basic_user
 
 #two:
 #  tag: two

@@ -75,4 +75,5 @@ group :test do
   gem 'capybara'
   gem 'capybara-screenshot'
   gem 'webmock'
+  gem 'simplecov', require: false
 end

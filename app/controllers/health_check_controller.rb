@@ -1,7 +1,6 @@
 class HealthCheckController < ApplicationController
   skip_before_action :authenticate
   skip_after_action :verify_authorized
-  skip_after_action :verify_policy_scoped
   skip_before_action :set_menu_context
 
   def show
