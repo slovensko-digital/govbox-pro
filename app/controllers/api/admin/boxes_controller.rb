@@ -1,15 +1,11 @@
 class Api::Admin::BoxesController < ActionController::Base
   include AuditableApiEvents
   before_action :set_tenant
-  rescue_from ActiveRecord::RecordNotFound, with: :not_found
+  rescue_from ActiveRecord::RecordNotFound, with: :save_exception
+  rescue_from ActionController::ParameterMissing, with: :save_exception
 
   def create
-    begin
-      @box = @tenant.boxes.new(box_params)
-    rescue ActionController::ParameterMissing, ActiveRecord::NotFound => e
-      @exception = e
-    end
-
+    @box = @tenant.boxes.new(box_params)
     return if @box.save
 
     render :error, status: :unprocessable_entity
@@ -24,5 +20,9 @@ class Api::Admin::BoxesController < ActionController::Base
 
   def box_params
     params.require(:box).permit(:id, :name, :short_name, :uri, :color, :api_connection_id)
+  end
+
+  def save_exception(exception)
+    @exception = exception
   end
 end

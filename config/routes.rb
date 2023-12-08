@@ -132,6 +132,13 @@ Rails.application.routes.draw do
         resources :boxes
       end
     end
+    namespace :billing do
+      resources :tenants, only: [] do
+        get :users_count
+        get :messages_per_period
+        get :messages_count
+      end
+    end
   end
 
   get :auth, path: 'prihlasenie', to: 'sessions#login'

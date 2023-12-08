@@ -1,0 +1,28 @@
+require "test_helper"
+
+class BillingApiTest < ActionDispatch::IntegrationTest
+  test "can read number of users" do
+    tenant = tenants(:solver)
+    get "/api/billing/tenants/#{tenant.id}/users_count", params: {}, as: :json
+    assert_response :success
+    json_response = JSON.parse(response.body)
+    assert json_response["users_count"].positive?
+  end
+
+  test "can read number of messages per period" do
+    tenant = tenants(:solver)
+    get "/api/billing/tenants/#{tenant.id}/messages_per_period",
+        params: { from: Time.zone.now - 100.days, till: Time.zone.now }, as: :json
+    assert_response :success
+    json_response = JSON.parse(response.body)
+    assert json_response["messages_per_period"].positive?
+  end
+
+  test "can read number of messages" do
+    tenant = tenants(:solver)
+    get "/api/billing/tenants/#{tenant.id}/messages_count", params: {}, as: :json
+    assert_response :success
+    json_response = JSON.parse(response.body)
+    assert json_response["messages_count"].positive?
+  end
+end
