@@ -12,7 +12,7 @@ module Upvs
       @edesk = Edesk.new(self)
       @sktalk = SkTalk.new(self)
       @handler = handler
-      @handler.options.timeout = 900000
+      @handler.options.timeout = 900_000
     end
 
     class Edesk < Namespace
@@ -28,16 +28,17 @@ module Upvs
         @api.request(:get, "#{@api.url}/api/edesk/messages/#{message_id}", {}, header)
       end
 
-      def authorize_delivery_notification(authorization_url)
-        response_status, response_body = @api.request(:post, authorization_url, {}, header)
-        authorization_successful?(response_status, response_body['code'])
+      def authorize_delivery_notification(authorization_url, mode: :async)
+        params = (mode == :sync ? { async: false } : {})
+        response_status, response_body = @api.request(:post, authorization_url, params, header)
+        [authorization_successful?(response_status, response_body['code']), response_body['message_id']]
       end
 
       private
 
       def header
         {
-          "Authorization": authorization_payload,
+          "Authorization": authorization_payload
         }
       end
 
