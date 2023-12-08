@@ -64,6 +64,6 @@ class User < ApplicationRecord
       type: "DraftTag",
       visible: false
     )
-    draft_tag.mark_readable_by_group([user_group])
+    draft_tag.mark_readable_by_groups([user_group])
   end
 end
