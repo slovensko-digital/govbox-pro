@@ -26,7 +26,7 @@ module Govbox
         end
 
         if moved_edesk_message_ids.any?
-          # TODO change tag
+          # TODO: change tag
           Govbox::Message.where(edesk_message_id: moved_edesk_message_ids).update_all(folder_id: folder.id)
         end
 
