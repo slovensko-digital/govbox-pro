@@ -270,6 +270,20 @@ class AuditLog < ApplicationRecord
     end
   end
 
+  class CreateTenantApiCalled < AuditLog
+    def self.create_audit_record(request, response)
+      # TODO: jwt missing
+      create_record(object: { request_url: request.url, request_method: request.method, response_code: response.code })
+    end
+  end
+
+  class DestroyTenantApiCalled < AuditLog
+    def self.create_audit_record(request, response)
+      # TODO: jwt missing
+      create_record(object: { request_url: request.url, request_method: request.method, response_code: response.code })
+    end
+  end
+
   def self.create_record(object:, **args)
     create(
       tenant: Current.tenant,

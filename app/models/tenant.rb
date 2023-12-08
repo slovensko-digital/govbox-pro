@@ -66,6 +66,13 @@ class Tenant < ApplicationRecord
     everything_tag.groups << admin_group
   end
 
+  def self.create_with_admin(params)
+    tenant = create(name: params[:name])
+    admin = tenant.users.create(name: params[:admin][:name], email: params[:admin][:email])
+    group_membership = tenant.admin_group.users.push(admin)
+    [tenant, admin, group_membership]
+  end
+
   private
 
   def create_default_objects

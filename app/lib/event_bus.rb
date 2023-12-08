@@ -35,9 +35,7 @@ EventBus.subscribe :message_destroyed, ->(message) {
   Searchable::ReindexMessageThreadJob.perform_later(message.message_thread_id)
 }
 EventBus.subscribe :message_changed, ->(message) {
-  if Searchable::Indexer.message_searchable_fields_changed?(message)
-    Searchable::ReindexMessageThreadJob.perform_later(message.message_thread_id)
-  end
+  Searchable::ReindexMessageThreadJob.perform_later(message.message_thread_id) if Searchable::Indexer.message_searchable_fields_changed?(message)
 }
 EventBus.subscribe :message_thread_changed, ->(message_thread) {
   Searchable::ReindexMessageThreadJob.perform_later(message_thread.id)
@@ -92,3 +90,6 @@ EventBus.subscribe :automation_rule_destroyed, ->(automation_rule) { AuditLog::A
 EventBus.subscribe :filter_created, ->(filter) { AuditLog::FilterCreated.create_audit_record(filter) }
 EventBus.subscribe :filter_updated, ->(filter) { AuditLog::FilterUpdated.create_audit_record(filter) }
 EventBus.subscribe :filter_destroyed, ->(filter) { AuditLog::FilterDestroyed.create_audit_record(filter) }
+
+EventBus.subscribe :create_tenant_api_called, ->(request, response) { AuditLog::CreateTenantApiCalled.create_audit_record(request, response) }
+EventBus.subscribe :destroy_tenant_api_called, ->(request, response) { AuditLog::DestroyTenantApiCalled.create_audit_record(request, response) }

@@ -1,26 +1,23 @@
 class Api::Admin::TenantsController < ActionController::Base
+  include AuditableApiEvents
   before_action :set_tenant, only: %i[destroy]
   rescue_from ActiveRecord::RecordNotFound, with: :not_found
 
   def create
-    #    authorize([:admin, Tenant])
-    @tenant = Tenant.create(tenant_params)
-    @admin = User.create(admin_params.merge(tenant_id: @tenant.id)) if @tenant
-    @group_membership = @tenant.admin_group.users.push(@admin) if @tenant && @admin
-    return if @tenant && @admin && @group_membership
-
-    render json: {
-      message: @tenant.errors.full_messages[0] ||
-               @admin.errors.full_messages[0] ||
-               @group_membership.errors.full_messages[0]
-    }, status: :unprocessable_entity
+    begin
+      @tenant, @admin, @group_membership = Tenant.create_with_admin(tenant_params)
+    rescue ActionController::ParameterMissing => e
+      @error = e
+    end
+    render :error, status: :unprocessable_entity unless @group_membership
+    log_api_call(:create_tenant_api_called)
   end
 
   def destroy
-    # authorize([:admin, @tenant])
     return if @tenant.destroy
 
     render json: { message: @tenant.errors.full_messages[0] }, status: :unprocessable_entity
+    log_api_call(:create_tenant_api_called)
   end
 
   private
@@ -30,11 +27,7 @@ class Api::Admin::TenantsController < ActionController::Base
   end
 
   def tenant_params
-    params.require(:tenant).permit(:name)
-  end
-
-  def admin_params
-    params.require(:admin).permit(:name, :email)
+    params.require(:tenant).permit(:name, { admin: [:name, :email] })
   end
 
   def not_found

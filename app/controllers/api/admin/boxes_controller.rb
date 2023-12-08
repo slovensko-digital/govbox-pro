@@ -1,13 +1,19 @@
 class Api::Admin::BoxesController < ActionController::Base
+  include AuditableApiEvents
   before_action :set_tenant
   rescue_from ActiveRecord::RecordNotFound, with: :not_found
 
   def create
-    @box = @tenant.boxes.new(box_params)
-    #    authorize([:admin, @box])
+    begin
+      @box = @tenant.boxes.new(box_params)
+    rescue ActionController::ParameterMissing, ActiveRecord::NotFound => e
+      @exception = e
+    end
+
     return if @box.save
 
-    render json: { message: @box.errors.full_messages[0] }, status: :unprocessable_entity
+    render :error, status: :unprocessable_entity
+    log_api_call(:create_tenant_box_api_called)
   end
 
   private
@@ -18,9 +24,5 @@ class Api::Admin::BoxesController < ActionController::Base
 
   def box_params
     params.require(:box).permit(:id, :name, :short_name, :uri, :color, :api_connection_id)
-  end
-
-  def not_found
-    render json: { message: 'not found' }, status: :not_found
   end
 end
