@@ -111,19 +111,26 @@ Rails.application.routes.draw do
       post :submit
     end
 
-    post 'submit_all', on: :collection
+    post :submit_all, on: :collection
   end
 
   resources :messages_tags
 
   resource :settings
 
-  resources :message_templates, only: :recipients_list do
+  resources :message_templates do
+    get :recipient_selector
     get :recipients_list
+    post :search_recipients_list
+    post :recipient_selected
   end
 
   resources :message_drafts_imports, only: :create do
     get :upload_new, path: 'novy', on: :collection
+  end
+
+  namespace :upvs do
+    get :allowed_recipient_services
   end
 
   resources :sessions do

@@ -1,13 +1,13 @@
 class MessageObjectsController < ApplicationController
   before_action :set_message_object, except: :create
-  before_action :set_message, only: [:create, :update, :destroy]
+  before_action :set_message, only: [:create, :update, :destroy, :signing_data]
 
   def create
     authorize @message
 
     MessageObject.create_message_objects(@message, params[:attachments])
 
-    render partial: "list"
+    render partial: 'list'
   end
 
   def update
@@ -30,7 +30,8 @@ class MessageObjectsController < ApplicationController
   def signing_data
     authorize @message_object
 
-    head :no_content unless @message_object.content.present?
+    head :no_content and return unless @message_object.content.present?
+    render template: 'message_drafts/update_body' and return unless @message.valid?(:validate_data)
   end
 
   def destroy
@@ -38,7 +39,7 @@ class MessageObjectsController < ApplicationController
 
     @message_object.destroy
 
-    render partial: "list"
+    render partial: 'list'
   end
 
   private

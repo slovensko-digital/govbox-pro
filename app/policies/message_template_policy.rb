@@ -18,4 +18,16 @@ class MessageTemplatePolicy < ApplicationPolicy
   def recipients_list?
     true
   end
+
+  def recipient_selector?
+    recipients_list?
+  end
+
+  def search_recipients_list?
+    recipients_list?
+  end
+
+  def recipient_selected?
+    recipients_list?
+  end
 end

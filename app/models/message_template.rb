@@ -49,7 +49,7 @@ class MessageTemplate < ApplicationRecord
   end
 
   def self.tenant_templates_list(tenant)
-    MessageTemplate.where(system: false).where("tenant_id = ? OR tenant_id IS NULL", tenant.id).pluck(:name, :id)
+    MessageTemplate.where(system: false).where("tenant_id = ? OR tenant_id IS NULL", tenant.id).select(&:valid?).pluck(:name, :id)
   end
 
   def message_data_validation_errors(message)

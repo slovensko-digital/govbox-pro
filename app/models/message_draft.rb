@@ -39,6 +39,12 @@ class MessageDraft < Message
     end
   end
 
+  with_options on: :create do |message_draft|
+    message_draft.validates :sender_name, presence: true
+    message_draft.validates :recipient_name, presence: true
+    message_draft.validate :validate_metadata_with_template
+  end
+
   with_options on: :validate_data do |message_draft|
     message_draft.validates :uuid, format: { with: Utils::UUID_PATTERN }, allow_blank: false
     message_draft.validate :validate_metadata
@@ -104,7 +110,7 @@ class MessageDraft < Message
     save!
     EventBus.publish(:message_draft_submitted, self)
   end
-   
+
   def invalid?
     metadata["status"] == "invalid" || !valid?(:validate_data)
   end
@@ -159,6 +165,10 @@ class MessageDraft < Message
     errors.add(:metadata, "No message type") unless all_message_metadata["message_type"].present?
     errors.add(:metadata, "No correlation ID") unless all_message_metadata["correlation_id"].present?
     errors.add(:metadata, "Correlation ID must be UUID") unless all_message_metadata["correlation_id"]&.match?(Utils::UUID_PATTERN)
+  end
+
+  def validate_metadata_with_template
+    errors.add(:metadata, :no_template) unless metadata&.dig("template_id").present?
   end
 
   def validate_form

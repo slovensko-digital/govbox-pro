@@ -1,0 +1,9 @@
+<%= turbo_stream.update 'recipients-list' do %>
+  <% @recipients_list.each do |recipient| %>
+    <%= link_to new_message_draft_path, class: "flex justify-between items-center self-stretch flex-grow-0 flex-shrink-0 py-2", data: { turbo_frame: "_top" } do %>
+      <div class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative gap-3">
+        <span class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-gray-900"><%= recipient[:name] %></span>
+      </div>
+    <% end %>
+  <% end %>
+<% end %>

@@ -1,16 +1,23 @@
 import { Controller } from "@hotwired/stimulus"
-import { get } from '@rails/request.js'
+import { get, post } from '@rails/request.js'
 
 export default class extends Controller {
   connect() {
     const newDraftsElement = document.getElementById("new_drafts")
-    newDraftsElement.addEventListener("DOMNodeInserted", this.showLastMessageDraft);
+    if (newDraftsElement != null) {
+      newDraftsElement.addEventListener("DOMNodeInserted", this.showLastMessageDraft);
+    }
   }
 
   async loadTemplateRecipients() {
-    const messageTemplateId = document.getElementById("message_template").value;
+    const messageTemplateId = document.getElementById("message_template_id").value;
     const templateRecipientsPath = `/message_templates/${messageTemplateId}/recipients_list`;
     await get(templateRecipientsPath, { responseKind: "turbo-stream" })
+  }
+
+  async create() {
+    const formId = this.data.get("formId");
+    document.getElementById(formId).requestSubmit();
   }
 
   async update() {
