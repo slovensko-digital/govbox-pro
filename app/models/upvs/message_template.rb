@@ -47,17 +47,20 @@ class Upvs::MessageTemplate < ::MessageTemplate
       status: 'created'
     }
 
-    message.thread = box.message_threads.find_or_create_by_merge_uuid!(
+    message.thread = box&.message_threads&.find_or_create_by_merge_uuid!(
       box: box,
       merge_uuid: message.metadata['correlation_id'],
       title: self.name,
       delivered_at: message.delivered_at
     )
 
-    message.save!
-    message.add_cascading_tag(author.draft_tag)
+    message.save
 
-    create_form_object(message)
+    if message.valid?(:create)
+      message.add_cascading_tag(author.draft_tag)
+
+      create_form_object(message)
+    end
   end
 
   def create_message_reply(message, original_message:, author:)

@@ -33,6 +33,15 @@ class MessageDraftsController < ApplicationController
       recipient_uri: new_message_draft_params[:recipient_uri]
     )
 
+    unless @message.valid?(:create)
+      @templates_list = MessageTemplate.tenant_templates_list(Current.tenant)
+      @boxes = Current.tenant.boxes.pluck(:name, :id)
+
+      @recipients_list = @message_template&.recipients&.pluck(:institution_name, :institution_uri)&.map { |name, uri| { uri: uri, name: name }}
+
+      render :update_new and return
+    end
+
     redirect_to message_thread_path(@message.thread)
   end
 

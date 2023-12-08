@@ -10,36 +10,14 @@ export default class extends Controller {
   }
 
   async loadTemplateRecipients() {
-    const messageTemplateId = document.getElementById("message_template").value;
+    const messageTemplateId = document.getElementById("message_template_id").value;
     const templateRecipientsPath = `/message_templates/${messageTemplateId}/recipients_list`;
     await get(templateRecipientsPath, { responseKind: "turbo-stream" })
   }
 
   async create() {
-    const submitPath = this.data.get("submitPath");
-    const authenticityToken = this.data.get("authenticityToken");
-
-    const senderElementId = this.data.get("senderElementId");
-    const templateElementId = this.data.get("templateElementId");
-    const recipientNameElementId = this.data.get("recipientNameElementId");
-    const recipientUriElementId = this.data.get("recipientUriElementId");
-
-    await fetch(submitPath, {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      redirect: 'follow',
-      body: JSON.stringify({
-        authenticity_token: authenticityToken,
-        sender_id: document.getElementById(senderElementId).value,
-        message_template_id: document.getElementById(templateElementId).value,
-        recipient_name: document.getElementById(recipientNameElementId).value,
-        recipient_uri: document.getElementById(recipientUriElementId).value
-      })
-    }).then(response => {
-      if (response.redirected) {
-        window.location.href = response.url;
-      }
-    })
+    const formId = this.data.get("formId");
+    document.getElementById(formId).requestSubmit();
   }
 
   async update() {
