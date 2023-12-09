@@ -7,3 +7,7 @@ ssd_basic_basic_user:
 ssd_basic_all:
   user: basic
   group: ssd_all
+
+ssd_admin_admin:
+  user: admin
+  group: ssd_admins
