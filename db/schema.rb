@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_12_06_200814) do
+ActiveRecord::Schema[7.1].define(version: 2023_12_07_165737) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -129,6 +129,16 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_06_200814) do
     t.index ["api_connection_id"], name: "index_boxes_on_api_connection_id"
     t.index ["tenant_id", "short_name"], name: "index_boxes_on_tenant_id_and_short_name", unique: true
     t.index ["tenant_id"], name: "index_boxes_on_tenant_id"
+  end
+
+  create_table "filter_subscriptions", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "filter_id", null: false
+    t.string "events", null: false, array: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["filter_id"], name: "index_filter_subscriptions_on_filter_id"
+    t.index ["user_id"], name: "index_filter_subscriptions_on_user_id"
   end
 
   create_table "filters", force: :cascade do |t|
@@ -401,6 +411,19 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_06_200814) do
     t.index ["message_object_id"], name: "index_nested_message_objects_on_message_object_id"
   end
 
+  create_table "notifications", force: :cascade do |t|
+    t.string "type", null: false
+    t.bigint "user_id", null: false
+    t.bigint "message_thread_id", null: false
+    t.bigint "message_id"
+    t.datetime "happened_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["message_id"], name: "index_notifications_on_message_id"
+    t.index ["message_thread_id"], name: "index_notifications_on_message_thread_id"
+    t.index ["user_id"], name: "index_notifications_on_user_id"
+  end
+
   create_table "searchable_message_threads", force: :cascade do |t|
     t.integer "message_thread_id", null: false
     t.text "title", null: false
@@ -441,7 +464,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_06_200814) do
     t.enum "color", enum_type: "color"
     t.index "tenant_id, lower((name)::text)", name: "index_tags_on_tenant_id_and_lowercase_name", unique: true
     t.index ["owner_id"], name: "index_tags_on_owner_id"
-    t.index ["tenant_id", "type"], name: "signings_tags", unique: true, where: "((type)::text = ANY ((ARRAY['SignatureRequestedTag'::character varying, 'SignedTag'::character varying])::text[]))"
+    t.index ["tenant_id", "type"], name: "signings_tags", unique: true, where: "((type)::text = ANY (ARRAY[('SignatureRequestedTag'::character varying)::text, ('SignedTag'::character varying)::text]))"
     t.index ["tenant_id"], name: "index_tags_on_tenant_id"
   end
 
@@ -491,6 +514,8 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_06_200814) do
   add_foreign_key "automation_rules", "users"
   add_foreign_key "boxes", "api_connections"
   add_foreign_key "boxes", "tenants"
+  add_foreign_key "filter_subscriptions", "filters"
+  add_foreign_key "filter_subscriptions", "users"
   add_foreign_key "filters", "tenants", on_delete: :cascade
   add_foreign_key "filters", "users", column: "author_id", on_delete: :cascade
   add_foreign_key "folders", "boxes"
@@ -516,6 +541,9 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_06_200814) do
   add_foreign_key "messages_tags", "messages"
   add_foreign_key "messages_tags", "tags"
   add_foreign_key "nested_message_objects", "message_objects", on_delete: :cascade
+  add_foreign_key "notifications", "message_threads"
+  add_foreign_key "notifications", "messages"
+  add_foreign_key "notifications", "users"
   add_foreign_key "searchable_message_threads", "message_threads", on_delete: :cascade
   add_foreign_key "tag_groups", "groups"
   add_foreign_key "tag_groups", "tags"
