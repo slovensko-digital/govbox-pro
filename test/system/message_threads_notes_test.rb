@@ -5,7 +5,7 @@ class MessageThreadsNoteTest < ApplicationSystemTestCase
     sign_in_as(:admin)
   end
 
-  test "a user can add a thread note" do
+  test "user can add a thread note" do
     visit message_thread_path(message_threads(:ssd_main_delivery))
 
     click_button "message-thread-options"
@@ -19,7 +19,7 @@ class MessageThreadsNoteTest < ApplicationSystemTestCase
     assert_text "A note"
   end
 
-  test "a user can update a thread note" do
+  test "user can update a thread note" do
     visit message_thread_path(message_threads(:ssd_main_general))
 
     click_button "message-thread-options"

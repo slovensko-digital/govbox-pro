@@ -7,7 +7,7 @@ class AuditLogTest < ApplicationSystemTestCase
     sign_in_as(:admin)
   end
 
-  test "an admin can access thread audit logs" do
+  test "admin can access thread audit logs" do
     visit message_thread_path(message_threads(:ssd_main_general))
 
     click_button "message-thread-options"
@@ -18,7 +18,7 @@ class AuditLogTest < ApplicationSystemTestCase
     click_link "Export CSV"
   end
 
-  test "an admin can access user audit logs" do
+  test "admin can access user audit logs" do
     visit root_path
 
     click_link "Nastavenia"

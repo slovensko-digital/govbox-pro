@@ -7,7 +7,7 @@ class MessageThreadsRenameTest < ApplicationSystemTestCase
     sign_in_as(:basic)
   end
 
-  test "a user can rename thread" do
+  test "user can rename thread" do
     visit message_thread_path(@thread_general)
 
     click_button "message-thread-options"

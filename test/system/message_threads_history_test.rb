@@ -7,7 +7,7 @@ class MessageThreadsHistoryTest < ApplicationSystemTestCase
     sign_in_as(:basic)
   end
 
-  test "a user visit thread history" do
+  test "user can visit thread history" do
     visit message_thread_path(@thread_general)
 
     click_button "message-thread-options"

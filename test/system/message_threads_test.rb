@@ -18,7 +18,7 @@ class MessageThreadsTest < ApplicationSystemTestCase
     end
   end
 
-  test "a user can see threads he has access to" do
+  test "user can see threads he has access to" do
     visit message_threads_path
 
     thread_general = message_threads(:ssd_main_general)
@@ -69,7 +69,7 @@ class MessageThreadsTest < ApplicationSystemTestCase
     end
   end
 
-  test "a user can use fulltext search to filter threads" do
+  test "user can use fulltext search to filter threads" do
     visit message_threads_path
 
     fill_in "search", with: "Social Department"
@@ -87,7 +87,7 @@ class MessageThreadsTest < ApplicationSystemTestCase
     refute_selector(thread_in_listing_selector(thread_issue))
   end
 
-  test "a user can filter by tag from sidebar" do
+  test "user can filter by tag from sidebar" do
     visit message_threads_path
 
     within_sidebar do
@@ -107,7 +107,7 @@ class MessageThreadsTest < ApplicationSystemTestCase
     refute_selector(thread_in_listing_selector(thread_issue))
   end
 
-  test "a user can go to a thread detail of the thread he has access to" do
+  test "user can go to a thread detail of the thread he has access to" do
     visit message_threads_path
 
     thread_general = message_threads(:ssd_main_general)
@@ -171,7 +171,7 @@ class MessageThreadsTest < ApplicationSystemTestCase
     end
   end
 
-  test "a user can go to a thread detail and reply to message" do
+  test "user can go to a thread detail and reply to message" do
     thread_issue = message_threads(:ssd_main_issue)
     message_one = messages(:ssd_main_issue_one)
 

@@ -6,7 +6,7 @@ class MessageThreadsBulkMergeTest < ApplicationSystemTestCase
     sign_in_as(:basic)
   end
 
-  test "a user merge multiple threads" do
+  test "user can merge multiple threads" do
     visit message_threads_path
 
     thread_issue = message_threads(:ssd_main_issue)
