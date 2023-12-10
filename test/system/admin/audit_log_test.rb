@@ -2,8 +2,6 @@ require "application_system_test_case"
 
 class AuditLogTest < ApplicationSystemTestCase
   setup do
-    Searchable::MessageThread.reindex_all
-
     sign_in_as(:admin)
   end
 
