@@ -25,8 +25,6 @@ class Admin::TagsController < ApplicationController
   end
 
   def create
-    puts Current.user.inspect
-    puts Current.user.user_group.inspect
     @tag = SimpleTag.new(simple_tag_params.merge(simple_tag_creation_params))
     authorize(@tag, policy_class: Admin::TagPolicy)
 
