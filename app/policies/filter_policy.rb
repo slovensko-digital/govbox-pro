@@ -54,6 +54,14 @@ class FilterPolicy < ApplicationPolicy
     is_author_current_user?
   end
 
+  def pin?
+    is_author_current_user?
+  end
+
+  def unpin?
+    pin?
+  end
+
   private
 
   def is_author_current_user?

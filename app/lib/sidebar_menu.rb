@@ -1,8 +1,8 @@
 class SidebarMenu
   include Rails.application.routes.url_helpers
 
-  def initialize(controller, action, parameters = nil)
-    @parameters = parameters
+  def initialize(controller, action, filters: [])
+    @filters = filters
     @menu = initial_structure(controller, action)
   end
 
@@ -19,8 +19,9 @@ class SidebarMenu
   def default_main_menu
     [
       TW::SidebarMenuItemComponent.new(name: 'Všetky správy', url: message_threads_path, icon: Icons::EnvelopeComponent.new),
-      Layout::FilterListComponent.new(filters: @parameters[:filters]),
-      Layout::TagListComponent.new(tags: @parameters[:tags]),
+      Layout::FilterListComponent.new(filters: pinned_filters),
+      Layout::FilterListComponent.new(label: 'Filtre', filters: fulltext_filters),
+      Layout::FilterListComponent.new(label: 'Štítky', filters: tag_filters),
       TW::SidebarMenuItemComponent.new(name: 'Nastavenia', url: filters_path, icon: Icons::CogSixToothComponent.new)
     ]
   end
@@ -50,5 +51,27 @@ class SidebarMenu
       TW::SidebarMenuDividerComponent.new(name: 'Admin'),
       TW::SidebarMenuItemComponent.new(name: 'Good Job Dashboard', url: good_job_path, icon: Icons::CogSixToothComponent.new)
     ]
+  end
+
+  private
+
+  def pinned_filters
+    @filters
+      .pinned
+      .order(position: :asc)
+  end
+
+  def fulltext_filters
+    @filters
+      .not_pinned
+      .where(type: 'FulltextFilter')
+      .order(position: :asc)
+  end
+
+  def tag_filters
+    @filters
+      .not_pinned
+      .where(type: 'TagFilter')
+      .order(position: :asc)
   end
 end

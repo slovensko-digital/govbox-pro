@@ -1,5 +1,5 @@
 class FiltersController < ApplicationController
-  before_action :set_filter, only: [:edit, :update, :destroy]
+  before_action :set_filter, only: [:edit, :update, :destroy, :pin, :unpin]
 
   def index
     authorize Filter
@@ -22,7 +22,7 @@ class FiltersController < ApplicationController
   def create
     authorize Filter
 
-    @filter = Current.tenant.filters.build(filter_params.merge({author_id: Current.user.id}))
+    @filter = Current.tenant.filters.build(filter_params.merge({ author_id: Current.user.id }))
     if @filter.save
       flash[:notice] = 'Filter bol úspešne vytvorený'
       if params[:to] == 'search'
@@ -57,6 +57,18 @@ class FiltersController < ApplicationController
     authorize @filter
     @filter.destroy
     redirect_to filters_path, notice: 'Filter bol úspešne odstránený'
+  end
+
+  def pin
+    authorize @filter
+    @filter.update(is_pinned: true)
+    redirect_back fallback_location: filters_path
+  end
+
+  def unpin
+    authorize @filter
+    @filter.update(is_pinned: false)
+    redirect_back fallback_location: filters_path
   end
 
   private

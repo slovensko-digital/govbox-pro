@@ -1,13 +1,30 @@
 <% if @filters.present? %>
-  <div class="flex flex-col justify-start items-start gap-2" data-test="filters">
-    <div class="flex justify-start items-start px-4 py-2">
-      <p class="text-sm text-center text-gray-400">Filtre</p>
-    </div>
+  <div class="w-full flex flex-col justify-start items-start gap-2" data-test="filters">
+    <% if @label.present? %>
+      <div class="flex justify-start items-start px-4 py-2">
+        <p class="text-sm text-center text-gray-400"><%= @label %></p>
+      </div>
+    <% end %>
     <% @filters.each do |filter| %>
-      <% url = filtered_message_threads_path(filter:) %>
-      <%= link_to url, class: "text-gray-700 hover:text-indigo-600 hover:bg-gray-50 group w-72 flex gap-x-3 rounded-md p-2 px-4 text-sm leading-6 font-semibold data-[active=true]:bg-gray-50 data-[active=true]:text-indigo-600", data: { active: current_page?(url) } do %>
-        <%= render Icons::BookmarkComponent.new %>
-        <p class="truncate text-base font-medium"><%= filter.name %></p>
+      <%= render TW::SidebarMenuItemComponent.new(
+        name: filter.name,
+        url: filtered_message_threads_path(filter:),
+        icon: icon_for(filter),
+        variant: :light,
+      ) do |menu_item| %>
+        <% menu_item.with_accessory do %>
+          <% if filter.is_pinned %>
+            <%= link_to unpin_filter_path(filter), class: "invisible group-hover:visible fill-yellow-400 group-one p-4", data: { turbo_method: :patch } do %>
+              <%= render Icons::StarComponent.new(css_classes: 'hidden group-one-hover:inline w-6 h-6', variant: :light) %>
+              <%= render Icons::StarComponent.new(css_classes: 'inline group-one-hover:hidden w-6 h-6', variant: :solid) %>
+            <% end %>
+          <% else %>
+            <%= link_to pin_filter_path(filter), class: "invisible group-hover:visible fill-yellow-400 group-one p-4", data: { turbo_method: :patch } do %>
+              <%= render Icons::StarComponent.new(css_classes: 'inline group-one-hover:hidden w-6 h-6', variant: :light) %>
+              <%= render Icons::StarComponent.new(css_classes: 'hidden group-one-hover:inline w-6 h-6', variant: :solid) %>
+            <% end %>
+          <% end %>
+        <% end %>
       <% end %>
     <% end %>
   </div>

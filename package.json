@@ -9,6 +9,7 @@
     "@hotwired/turbo-rails": "^7.0.0",
     "@rails/request.js": "^0.0.9",
     "esbuild": "^0.19.8",
+    "tailwindcss-scoped-groups": "^2.0.0",
     "tailwindcss-stimulus-components": "^4.0.4"
   },
   "scripts": {

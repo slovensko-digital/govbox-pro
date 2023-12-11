@@ -101,7 +101,12 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :filters
+  resources :filters do
+    member do
+      patch :pin
+      patch :unpin
+    end
+  end
 
   resources :message_drafts do
     member do
