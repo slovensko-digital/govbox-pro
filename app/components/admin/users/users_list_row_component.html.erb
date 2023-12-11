@@ -1,4 +1,4 @@
-<div class="self-stretch p-6 border-b border-gray-200 justify-start items-center gap-4 inline-flex">
+<div class="self-stretch p-6 border-b border-gray-200 justify-start items-center gap-4 inline-flex" id="<%= dom_id(@user) %>">
   <div class="relative inline-flex items-center justify-center w-16 h-16 overflow-hidden bg-blue-600 rounded-full">
     <span class="text-white text-2xl font-normal"><%= @user.name[0] %></span>
   </div>
@@ -16,11 +16,11 @@
         <%= render Common::ShowButtonComponent.new %>
       <% end %>
     <% end %>
-    <%= link_to edit_admin_tenant_user_path(@user.tenant, @user) do %>
+    <%= link_to edit_admin_tenant_user_path(@user.tenant, @user), title: "Editovať používateľa" do %>
       <%= render Common::EditButtonComponent.new %>
     <% end %>
     <% if Pundit.policy(Current.user, [:admin, @user]).destroy? %>
-      <%= button_to admin_tenant_user_path(@user.tenant, @user), method: :delete do %>
+      <%= button_to admin_tenant_user_path(@user.tenant, @user), method: :delete, title: "Vymazať používateľa" do %>
         <%= render Common::DeleteButtonComponent.new %>
       <% end %>
     <% end %>

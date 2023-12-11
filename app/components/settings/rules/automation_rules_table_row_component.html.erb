@@ -1,4 +1,4 @@
-<div class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6">
+<div class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6" id="<%= dom_id(@automation_rule) %>">
   <div class="flex flex-col justify-start items-start flex-grow relative gap-1">
     <p class="flex-grow-0 flex-shrink-0 text-lg text-left text-gray-900">
       <span class="flex-grow-0 flex-shrink-0 text-lg text-left text-gray-900">Správy, kde</span>
@@ -26,10 +26,10 @@
     </p>
   </div>
   <div class="flex justify-start items-start flex-grow-0 flex-shrink-0 gap-2">
-    <%= link_to edit_settings_automation_rule_path(@automation_rule) do %>
+    <%= link_to edit_settings_automation_rule_path(@automation_rule), title: "Upraviť pravidlo" do %>
       <%= render Common::EditButtonComponent.new %>
     <% end %>
-    <%= button_to settings_automation_rule_path(@automation_rule), method: :delete do %>
+    <%= button_to settings_automation_rule_path(@automation_rule), method: :delete, title: "Zmazať pravidlo" do %>
       <%= render Common::DeleteButtonComponent.new %>
     <% end %>
   </div>

@@ -5,7 +5,10 @@
 tenant = Tenant.find_or_create_by!(name: 'Dummy Tenant')
 
 ENV['SITE_ADMIN_EMAILS'].to_s.split(',').each.with_index(1) do |email, i|
-  tenant.users.find_or_create_by!(email: email, name: "Site ADMIN User #{i}")
+  tenant.users.find_or_create_by!(email: email, name: "Site ADMIN User #{i}").tap do |user|
+    user.groups << tenant.admin_group
+    user.save!
+  end
 end
 
 api_connection = Govbox::ApiConnection.find_or_create_by!(sub: "SPL_Irvin_83300252_KK_24022023", api_token_private_key: File.read(Rails.root + "security/govbox_api_fix.pem"))
