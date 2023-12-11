@@ -9,7 +9,7 @@ class MessageThreadsBulkTagsTest < ApplicationSystemTestCase
     sign_in_as(:basic)
   end
 
-  test "a user can change tags on multiple threads with bulk action" do
+  test "user can change tags on multiple threads with bulk action" do
     visit message_threads_path
 
     thread_issue = message_threads(:ssd_main_issue)

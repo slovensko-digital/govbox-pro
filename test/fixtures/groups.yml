@@ -15,6 +15,21 @@ ssd_basic_user:
   type: UserGroup
   tenant: ssd
 
+ssd_basic_two_user:
+  name: Another User
+  type: UserGroup
+  tenant: ssd
+
+ssd_admin_user:
+  name: Admin user
+  type: UserGroup
+  tenant: ssd
+
+ssd_custom:
+  name: Custom group
+  type: CustomGroup
+  tenant: ssd
+
 ssd_signers:
   name: Podpisovaci
   type: SignerGroup

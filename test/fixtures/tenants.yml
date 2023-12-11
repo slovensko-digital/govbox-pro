@@ -2,6 +2,7 @@
 
 ssd:
   name: SSD
+  feature_flags: ['audit_log']
 
 solver:
   name: Solver

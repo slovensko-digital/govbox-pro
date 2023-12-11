@@ -1,14 +1,24 @@
+one_one:
+  automation_rule: one
+  type: Automation::AddMessageThreadTagAction
+  action_object: ssd_external_visible (Tag)
+
 one:
   automation_rule: two
   type: Automation::AddMessageThreadTagAction
   action_object: ssd_construction (Tag)
 
 two:
-  automation_rule: three
+  automation_rule: two
   type: Automation::AddMessageThreadTagAction
   action_object: ssd_office (Tag)
 
 three:
-  automation_rule: four
+  automation_rule: three
   type: Automation::AddMessageThreadTagAction
   action_object: ssd_print (Tag)
+
+four:
+  automation_rule: four
+  type: Automation::AddMessageThreadTagAction
+  action_object: ssd_external_visible (Tag)

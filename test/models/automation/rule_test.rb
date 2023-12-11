@@ -42,6 +42,7 @@ class Automation::RuleTest < ActiveSupport::TestCase
     Govbox::Message.create_message_with_thread!(govbox_message)
     travel_to(15.minutes.from_now) { GoodJob.perform_inline }
     message = Message.last
+    message.reload
 
     assert_includes message.thread.tags, tags(:ssd_construction)
   end

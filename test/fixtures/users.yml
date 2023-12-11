@@ -5,6 +5,11 @@ basic:
   email: basic_user@email.com
   tenant: ssd
 
+basic_two:
+  name: Another user
+  email: anotheruser@email.com
+  tenant: ssd
+
 admin:
   name: Admin user
   email: admin_user@email.com

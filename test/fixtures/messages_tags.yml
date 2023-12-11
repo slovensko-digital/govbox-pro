@@ -8,3 +8,6 @@ ssd_main_general_two_external:
   message: ssd_main_general_two
   tag: ssd_external
 
+ssd_main_general_one_everything:
+  message: ssd_main_general_one
+  tag: ssd_everything

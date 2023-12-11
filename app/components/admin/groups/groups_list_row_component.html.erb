@@ -1,4 +1,4 @@
-<div class="self-stretch p-6 border-b border-gray-200 justify-start items-center gap-4 inline-flex">
+<div class="self-stretch p-6 border-b border-gray-200 justify-start items-center gap-4 inline-flex" id="<%= dom_id(@group) %>">
   <div class="relative inline-flex items-center justify-center w-16 h-16 overflow-hidden bg-blue-600 rounded-full">
     <span class="text-white text-2xl font-normal"><%= @group.name[0] %></span>
   </div>
@@ -18,11 +18,11 @@
   </div>
   <div class="justify-start items-start gap-2 flex">
     <% if @group.editable? %>
-      <%= link_to edit_members_admin_tenant_group_path(@group.tenant, @group), data: { turbo_frame: "modal" } do %>
+      <%= link_to edit_members_admin_tenant_group_path(@group.tenant, @group), title: "Zmeniť členov skupiny", data: { turbo_frame: "modal" } do %>
         <%= render Common::EditButtonComponent.new %>
       <% end %>
       <% if @group.destroyable? %>
-        <%= button_to admin_tenant_group_path(@group.tenant, @group), method: :delete, data: { turbo_confirm: "Naozaj chcete zmazať skupinu '#{@group.name}'?" } do %>
+        <%= button_to admin_tenant_group_path(@group.tenant, @group), title: "Zmazať skupinu", method: :delete, data: { turbo_confirm: "Naozaj chcete zmazať skupinu '#{@group.name}'?" } do %>
           <%= render Common::DeleteButtonComponent.new %>
         <% end %>
       <% end %>
