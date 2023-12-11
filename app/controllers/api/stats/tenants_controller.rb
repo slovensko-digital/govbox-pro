@@ -1,4 +1,4 @@
-class Api::Billing::TenantsController < ActionController::Base
+class Api::Stats::TenantsController < ActionController::Base
   include AuditableApiEvents
   before_action :set_tenant
   rescue_from ActiveRecord::RecordNotFound, with: :save_exception

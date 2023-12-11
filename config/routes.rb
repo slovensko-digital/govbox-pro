@@ -132,7 +132,7 @@ Rails.application.routes.draw do
         resources :boxes
       end
     end
-    namespace :billing do
+    namespace :stats do
       resources :tenants, only: [] do
         get :users_count
         get :messages_per_period
