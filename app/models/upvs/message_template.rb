@@ -100,7 +100,7 @@ class Upvs::MessageTemplate < ::MessageTemplate
     filled_content = self.content
 
     template_items.each do |template_item|
-      filled_content.gsub!(template_item[:placeholder], message.metadata['data'][template_item[:name]])
+      filled_content.gsub!(template_item[:placeholder], message.metadata['data'][template_item[:name]].to_s)
     end
 
     if message.form.message_object_datum
@@ -131,6 +131,8 @@ class Upvs::MessageTemplate < ::MessageTemplate
 
     raise "Missing XSD schema: #{self.name}" unless xsd_schema
 
+    return if message.form.is_signed?
+
     schema = Nokogiri::XML::Schema(xsd_schema)
     document = Nokogiri::XML(message.form.content)
     errors = schema.validate(document)
@@ -145,6 +147,7 @@ class Upvs::MessageTemplate < ::MessageTemplate
       object_type: "FORM",
       is_signed: false
     )
+    build_message_from_template(message)
   end
 
   private

@@ -93,7 +93,9 @@ class MessageDraftsController < ApplicationController
   def destroy
     authorize @message
 
-    redirect_path = @message.original_message.present? ? message_thread_path(@message.original_message.thread) : message_drafts_path
+    # TODO uncomment when /message_drafts endpoint has FE
+    # redirect_path = @message.original_message.present? ? message_thread_path(@message.original_message.thread) : message_drafts_path
+    redirect_path = @message.original_message.present? ? message_thread_path(@message.original_message.thread) : message_threads_path
 
     @message.destroy
 

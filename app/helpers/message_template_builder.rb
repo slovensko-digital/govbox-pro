@@ -18,7 +18,7 @@ class MessageTemplateBuilder < ActionView::Helpers::FormBuilder
   end
 
   def text_field(name, value:, errors:, editable:, **args)
-    @template.content_tag(:div, class: 'mb-3') do
+    @template.content_tag(:div, class: 'text-left mb-3') do
       label(:label, name, class: 'font-semibold') +
       super(name, {
         value: value,
@@ -35,7 +35,7 @@ class MessageTemplateBuilder < ActionView::Helpers::FormBuilder
   end
 
   def email_field(name, value:, errors:, editable:, **args)
-    @template.content_tag(:div, class: 'mb-3') do
+    @template.content_tag(:div, class: 'text-left mb-3') do
       label(:label, name, class: 'font-semibold') +
       super(name, {
         value: value,
@@ -52,7 +52,7 @@ class MessageTemplateBuilder < ActionView::Helpers::FormBuilder
   end
 
   def text_area(name, value:, errors:, editable:, is_last:)
-    @template.content_tag(:div, class: 'mb-3') do
+    @template.content_tag(:div, class: 'text-left mb-3') do
       label(:label, name, class: 'font-semibold') +
       super(name, {
         value: value,
@@ -71,7 +71,7 @@ class MessageTemplateBuilder < ActionView::Helpers::FormBuilder
   end
 
   def date_field(name, value:, errors:, editable:, **args)
-    @template.content_tag(:div, class: 'mb-3') do
+    @template.content_tag(:div, class: 'text-left mb-3') do
       label(:label, name, class: 'font-semibold') +
       super(name, {
         value: value,

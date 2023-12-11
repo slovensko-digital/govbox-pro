@@ -88,7 +88,7 @@ class MessageDraft < Message
   end
 
   def not_yet_submitted?
-    !%w[being_submitted submitted].include? metadata["status"]
+    metadata["status"] == "created"
   end
 
   def being_submitted?
@@ -132,6 +132,7 @@ class MessageDraft < Message
     return false unless form.is_signed?
 
     form.destroy
+    reload
     template&.create_form_object(self)
     reload
   end
