@@ -13,6 +13,7 @@ class MessageDraftsController < ApplicationController
     @templates_list = MessageTemplate.tenant_templates_list(Current.tenant)
     @message = MessageDraft.new
     @boxes = Current.tenant.boxes.pluck(:name, :id)
+    @box = (Current.box&.slice(:name, :id).values.to_a if Current.box) || @boxes.first
 
     authorize @message
   end

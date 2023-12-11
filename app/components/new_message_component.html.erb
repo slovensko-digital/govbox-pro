@@ -15,7 +15,7 @@
           <div class="mb-4 w-full">
             <% if @boxes.count > 1 %>
               <label for="<%= sender_element_id %>" class="block mb-2 text-base font-medium text-gray-900">Odosielateľ</label>
-              <%= select_tag(sender_element_id, options_for_select(@boxes, ([Current.box&.name, Current.box&.id] if Current.box) || [@selected_box&.name, @selected_box&.id]), prompt: "Zvoľte odosielateľa", class: "text-sm rounded-lg block w-full p-2.5 #{@message.errors[:sender_name].any? && !@selected_box ? ERROR_CLASSES : DEFAULT_CLASSES}") %>
+              <%= select_tag(sender_element_id, options_for_select(@boxes, @selected_box), class: "text-sm rounded-lg block w-full p-2.5 #{@message.errors[:sender_name].any? && !@selected_box ? ERROR_CLASSES : DEFAULT_CLASSES}") %>
               <% if @message.errors[:sender_name].any? && !@selected_box %>
                 <p class="mt-2 text-sm text-red-600 dark:text-red-500">
                   <span class="font-medium"><%= @message.errors.full_messages_for(:sender_name).to_sentence %></span>
@@ -28,7 +28,7 @@
 
           <%= content_tag(:div, { "data-controller": "message-drafts", class: "mb-4 w-full" }) do %>
             <label for="<%= template_element_id %>" class="block mb-2 text-base font-medium text-gray-900">Typ správy</label>
-            <%= select_tag(template_element_id, options_for_select(@templates_list, [@selected_message_template&.name, @selected_message_template&.id]), prompt: "Zvoľte typ správy", "data-action": "change->message-drafts#loadTemplateRecipients", class: "text-sm rounded-lg block w-full p-2.5 #{@message.errors[:metadata].any? ? ERROR_CLASSES : DEFAULT_CLASSES}") %>
+            <%= select_tag(template_element_id, options_for_select(@templates_list, [@selected_message_template&.name, @selected_message_template&.id]), "data-action": "change->message-drafts#loadTemplateRecipients", class: "text-sm rounded-lg block w-full p-2.5 #{@message.errors[:metadata].any? ? ERROR_CLASSES : DEFAULT_CLASSES}") %>
             <% if @message.errors[:metadata].any? %>
               <p class="mt-2 text-sm text-red-600 dark:text-red-500">
                 <span class="font-medium"><%= @message.errors[:metadata].to_sentence %></span>
