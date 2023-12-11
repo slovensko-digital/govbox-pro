@@ -26,13 +26,13 @@ class FiltersController < ApplicationController
     if @filter.save
       flash[:notice] = 'Filter bol úspešne vytvorený'
       if params[:to] == 'search'
-        redirect_to message_threads_path(q: @filter.query)
+        redirect_to helpers.filtered_message_threads_path(filter: @filter)
       else
         redirect_to filters_path
       end
     else
       if params[:to] == 'search'
-        redirect_to message_threads_path(q: @filter.query), alert: 'Filter sa nepodarilo vytvoriť :('
+        redirect_to helpers.filtered_message_threads_path(query: @filter.query), alert: 'Filter sa nepodarilo vytvoriť :('
       else
         render :new
       end

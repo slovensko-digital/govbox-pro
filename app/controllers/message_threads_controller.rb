@@ -27,6 +27,9 @@ class MessageThreadsController < ApplicationController
 
   def index
     authorize MessageThread
+
+    @filter = policy_scope(Filter, policy_scope_class: FilterPolicy::ScopeShowable).find_by(id: params[:filter_id]) if params[:filter_id].present?
+    @query = search_params[:q]
   end
 
   def scroll
@@ -62,13 +65,18 @@ class MessageThreadsController < ApplicationController
   end
 
   def load_threads
+    query = Searchable::QueryBuilder.new(
+      filter_id: params[:filter_id],
+      query: search_params[:q],
+    ).build
+
     cursor = MessageThreadCollection.init_cursor(search_params[:cursor])
 
     result =
       MessageThreadCollection.all(
         scope: message_thread_policy_scope.includes(:tags, :box),
         search_permissions: search_permissions,
-        query: search_params[:q],
+        query:,
         cursor: cursor
       )
 
