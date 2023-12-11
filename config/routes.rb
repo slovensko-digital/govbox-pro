@@ -127,17 +127,22 @@ Rails.application.routes.draw do
   end
 
   namespace :api do
-    namespace :admin do
-      resources :tenants do
-        resources :boxes
+    namespace :site_admin do
+      namespace :stats do
+        resources :tenants, only: [] do
+          member do
+            get :users_count
+            get :messages_per_period
+            get :messages_count
+          end
+        end
       end
+
+      resources :tenants
+      resources :boxes
     end
-    namespace :stats do
-      resources :tenants, only: [] do
-        get :users_count
-        get :messages_per_period
-        get :messages_count
-      end
+
+    namespace :tenant do
     end
   end
 

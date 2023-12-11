@@ -34,7 +34,7 @@ class Tenant < ApplicationRecord
 
   validates_presence_of :name
 
-  AVAILABLE_FEATURE_FLAGS = [:audit_log]
+  AVAILABLE_FEATURE_FLAGS = [:audit_log, :api]
 
   def draft_tag!
     draft_tag || raise(ActiveRecord::RecordNotFound.new("`DraftTag` not found in tenant: #{self.id}"))

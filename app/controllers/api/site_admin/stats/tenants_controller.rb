@@ -1,12 +1,10 @@
-class Api::Stats::TenantsController < ActionController::Base
-  include AuditableApiEvents
+class Api::SiteAdmin::Stats::TenantsController < Api::SiteAdminController
   before_action :set_tenant
-  rescue_from ActiveRecord::RecordNotFound, with: :save_exception
-  rescue_from ActionController::ParameterMissing, with: :save_exception
 
   def users_count
     @users_count = @tenant.users.count
     render :error, status: :unprocessable_entity unless @tenant
+    puts "no exception"
   end
 
   def messages_per_period
@@ -24,19 +22,5 @@ class Api::Stats::TenantsController < ActionController::Base
   def messages_count
     @messages_count = Message.joins(thread: :box).where(box: { tenant_id: @tenant.id }).count
     render :error, status: :unprocessable_entity unless @tenant
-  end
-
-  private
-
-  def set_tenant
-    @tenant = Tenant.find(params[:tenant_id])
-  end
-
-  def tenant_params
-    params.require(:tenant).permit(:name, { admin: [:name, :email] })
-  end
-
-  def save_exception(exception)
-    @exception = exception
   end
 end
