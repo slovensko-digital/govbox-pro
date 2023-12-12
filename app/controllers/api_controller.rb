@@ -8,8 +8,8 @@ class ApiController < ActionController::API
     if error.message == 'Nil JSON web token'
       render_bad_request(:no_credentials)
     else
-      key = error.message == 'obo' ? :obo : :credentials
-      render_unauthorized(key)
+      # key = error.message == 'obo' ? "obo : :credentials
+      render_unauthorized(error.message)
     end
   end
 
@@ -39,7 +39,7 @@ class ApiController < ActionController::API
 
   def wrap_in_request_logger
     yield
-  rescue Error => error
+  rescue Exception => error
     log_request(error) and raise(error)
   else
     log_request
@@ -50,9 +50,9 @@ class ApiController < ActionController::API
     render status: :bad_request, json: { message: "Bad request" }
   end
 
-  def render_unauthorized(key = :credentials)
+  def render_unauthorized(key = "credentials")
     self.headers['WWW-Authenticate'] = 'Token realm="API"'
-    render status: :unauthorized, json: { message: "Unauthorized" }
+    render status: :unauthorized, json: { message: "Unauthorized " + key }
   end
 
   def render_unpermitted_param(**options)

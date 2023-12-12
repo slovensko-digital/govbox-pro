@@ -1,4 +1,5 @@
 class Api::SiteAdmin::BoxesController < Api::SiteAdminController
+  before_action :set_tenant
 
   def create
     @box = @tenant.boxes.new(box_params)

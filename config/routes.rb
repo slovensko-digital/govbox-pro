@@ -138,8 +138,11 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :tenants
-      resources :boxes
+      resources :tenants do
+        member do
+          resources :boxes
+        end
+      end
     end
 
     namespace :tenant do
