@@ -1,5 +1,5 @@
 class ApiTokenAuthenticator
-  MAX_EXP_IN = 120.minutes
+  MAX_EXP_IN = 5.minutes
   JTI_PATTERN = /\A[0-9a-z\-_]{32,256}\z/i
 
   def initialize(public_key_reader:, return_handler:)
