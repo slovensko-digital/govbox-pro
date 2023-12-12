@@ -8,8 +8,6 @@ module UpvsEnvironment
 
     idp_metadata = OneLogin::RubySaml::IdpMetadataParser.new.parse_to_hash(File.read(sso_metadata_file(:idp)))
     sp_metadata = Hash.from_xml(File.read(sso_metadata_file(:sp))).fetch('EntityDescriptor')
-    # TODO is there a reason for SP sign cert to be in JKS file? (move it to PEM file under security/sso); remove lib/keystore.rb
-    sp_keystore = KeyStore.new(sso_keystore_file, generate_pass(:ks))
 
     @sso_settings ||= idp_metadata.merge(
       request_path: '/auth/saml',
@@ -28,8 +26,8 @@ module UpvsEnvironment
       # TODO this gets called on IDP initiated logout, we need to invalidate SAML assertion here! removing assertion actually invalidates OBO token which is the desired effect here (cover it in specs)
       idp_slo_session_destroy: proc { |env, session| },
 
-      certificate: sp_keystore.certificate_in_base64,
-      private_key: sp_keystore.private_key_in_base64(generate_pass(:pk)),
+      certificate: Base64.strict_encode64(File.read(Rails.root+'security/upvs_fix.sp.cer')),
+      private_key: Base64.strict_encode64(File.read(Rails.root+'security/upvs_fix.sp.pem')),
 
       security: {
         authn_requests_signed: true,
@@ -68,7 +66,7 @@ module UpvsEnvironment
     Rails.root.join('security', "upvs_#{Upvs.env}.sp.keystore").to_s
   end
 
-  def self.sso_sp_metadata_file(type)
+  def self.sso_metadata_file(type)
     Rails.root.join('security', "upvs_#{Upvs.env}.#{type.to_s}.metadata.xml").to_s
   end
 end
