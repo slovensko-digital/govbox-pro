@@ -4,13 +4,13 @@
     <% @tags_filter.all_tags.each do |tag| %>
       <div class="flex <%= "hidden" if @tags_filter.filtered_ids.exclude?(tag.id) %>">
         <div class="mr-3 ml-1 flex h-6 items-center">
-          <%= hidden_field_tag "tags_assignments[new][#{tag.id}]", TagsChanges::REMOVE_SIGN, id: nil %>
+          <%= hidden_field_tag "tags_assignments[new][#{tag.id}]", RelationChanges::REMOVE_SIGN, id: nil %>
 
-          <% checkbox = TagsChanges::Checkbox.new(tag_assignments: @tags_assignments, tag_id: tag.id.to_s) %>
+          <% checkbox = RelationChanges::Checkbox.new(assignments: @tags_assignments, record_id: tag.id.to_s) %>
           <% if checkbox.indeterminate? %>
             <%= check_box_tag "tags_assignments[new][#{tag.id}]",
                               checkbox.value, checkbox.checked?,
-                              data: { controller: "tri-state-checkbox", action: "click->tri-state-checkbox#nextState", "tri-state-checkbox-checked-value": TagsChanges::ADD_SIGN, "tri-state-checkbox-indeterminate-value": TagsChanges::KEEP_SIGN },
+                              data: { controller: "tri-state-checkbox", action: "click->tri-state-checkbox#nextState", "tri-state-checkbox-checked-value": RelationChanges::ADD_SIGN, "tri-state-checkbox-indeterminate-value": RelationChanges::KEEP_SIGN },
                               onchange: "this.form.requestSubmit(document.getElementById('assignments_update'));",
                               id: "new_tags_assignments_#{tag.id}",
                               class: "h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer" %>
