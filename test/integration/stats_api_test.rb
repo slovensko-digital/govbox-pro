@@ -1,5 +1,4 @@
 require "test_helper"
-require "helpers/api_helper"
 
 class StatsApiTest < ActionDispatch::IntegrationTest
   test "can read number of users" do
