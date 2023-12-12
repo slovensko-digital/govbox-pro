@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_12_06_200814) do
+ActiveRecord::Schema[7.1].define(version: 2023_12_12_094024) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -441,7 +441,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_06_200814) do
     t.enum "color", enum_type: "color"
     t.index "tenant_id, lower((name)::text)", name: "index_tags_on_tenant_id_and_lowercase_name", unique: true
     t.index ["owner_id"], name: "index_tags_on_owner_id"
-    t.index ["tenant_id", "type"], name: "signings_tags", unique: true, where: "((type)::text = ANY ((ARRAY['SignatureRequestedTag'::character varying, 'SignedTag'::character varying])::text[]))"
+    t.index ["tenant_id", "type"], name: "signings_tags", unique: true, where: "((type)::text = ANY (ARRAY[('SignatureRequestedTag'::character varying)::text, ('SignedTag'::character varying)::text]))"
     t.index ["tenant_id"], name: "index_tags_on_tenant_id"
   end
 
@@ -450,6 +450,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_06_200814) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "feature_flags", default: [], array: true
+    t.string "api_token_public_key"
   end
 
   create_table "upvs_form_template_related_documents", force: :cascade do |t|
