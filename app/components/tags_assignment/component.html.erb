@@ -22,7 +22,6 @@
                 tags_assignments: @tags_changes.tags_assignments,
                 create_tag_path: create_tag_message_thread_tags_path(@message_thread)) %>
           <% end %>
-          <%= tag.turbo_frame id: TagsAssignment::Component::DIFF_FRAME %>
         </div>
       </div>
       <%= tag.turbo_frame id: TagsAssignment::Component::ACTIONS_FRAME do %>
