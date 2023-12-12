@@ -1,7 +1,5 @@
 # Be sure to restart your server when you modify this file.
 
-return unless UpvsEnvironment.sso_support?
-
 Rails.application.config.middleware.use OmniAuth::Builder do
   configure do |config|
     # Raise errors in every environment instead of redirecting to the default error page.

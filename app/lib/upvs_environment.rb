@@ -1,11 +1,6 @@
 module UpvsEnvironment
-  extend self
 
-  def upvs_client
-    @upvs_client ||= Upvs::GovboxApiClient.new
-  end
-
-  def sso_settings
+  def self.sso_settings
     # TODO remove the next line to support live UPVS specs, need to figure out how to bring /security into CI first
     return {} if Rails.env.test?
 
@@ -56,24 +51,24 @@ module UpvsEnvironment
     )
   end
 
-  def sso_support?
+  def self.sso_support?
     @sso_support ||= ENV.key?('UPVS_SSO')
   end
 
   private
 
-  def generate_pass(type)
+  def self.generate_pass(type)
     return 'password' unless Upvs.env.prod?
     salt = ENV.fetch("UPVS_#{type.to_s.upcase}_SALT")
     raise "Short #{type.to_s.upcase} salt" if Upvs.env.prod? && salt.size < 40
     Digest::SHA1.hexdigest("#{salt}:upvs")
   end
 
-  def sso_keystore_file
+  def self.sso_keystore_file
     Rails.root.join('security', "upvs_#{Upvs.env}.sp.keystore").to_s
   end
 
-  def sso_sp_metadata_file(type)
+  def self.sso_sp_metadata_file(type)
     Rails.root.join('security', "upvs_#{Upvs.env}.#{type.to_s}.metadata.xml").to_s
   end
 end
