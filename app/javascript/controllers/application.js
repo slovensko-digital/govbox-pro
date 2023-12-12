@@ -16,14 +16,18 @@ application.register('tabs', Tabs)
 application.register('popover', Popover)
 application.register('toggle', Toggle)
 application.register('slideover', Slideover)
-document.addEventListener('turbo:before-cache', function(event) {
+document.addEventListener('turbo:before-cache', function({ target}) {
     const setOpenAsFalse = (attribute) => {
-        const element = event.target.querySelector(`[${attribute}="true"]`)
+        const element = target.querySelector(`[${attribute}="true"]`)
         element?.setAttribute(attribute, "false")
     }
 
+    const queryAllAndModify = (selector, modify) => {
+        target.querySelectorAll(selector).forEach(modify)
+    }
+
     const addHiddenClass = () => {
-        event.target.querySelectorAll("[data-turbo-temporary-hide]").forEach((elm) => {
+        queryAllAndModify("[data-turbo-temporary-hide]", (elm) => {
             if (!elm.classList.contains('hidden')) {
                 elm.classList.add('hidden')
             }
