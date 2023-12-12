@@ -34,16 +34,9 @@ document.addEventListener('turbo:before-cache', function({ target}) {
         })
     }
 
-    const removeAlerts = () => {
-        queryAllAndModify("[data-controller=\"dismissible-alert\"][data-turbo-temporary-hide]", (elm) => {
-            elm.remove()
-        })
-    }
-
     addHiddenClass()
     setOpenAsFalse('data-slideover-open-value')
     setOpenAsFalse('data-dropdown-open-value')
-    removeAlerts()
 })
 
 export { application }
