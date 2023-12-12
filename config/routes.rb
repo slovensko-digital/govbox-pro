@@ -126,6 +126,19 @@ Rails.application.routes.draw do
     delete :destroy, on: :collection
   end
 
+
+  # if UpvsEnvironment.sso_support?
+    get :login, to: 'upvs#login'
+    get :logout, to: 'upvs#logout'
+
+    scope 'auth/saml', as: :upvs, controller: :upvs do
+      get :login
+      get :logout
+
+      post :callback
+    end
+  # end
+
   get :auth, path: 'prihlasenie', to: 'sessions#login'
   get 'auth/google_oauth2/callback', to: 'sessions#create'
   get 'auth/google_oauth2/failure', to: 'sessions#failure'
