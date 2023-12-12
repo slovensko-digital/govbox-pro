@@ -9,7 +9,7 @@ class SessionsController < ApplicationController
 
   def create
     create_session
-    EventBus.publish(:user_logged_in, Current.user)
+    EventBus.publish(:user_logged_in, Current.user) if Current.user
   end
 
   def destroy

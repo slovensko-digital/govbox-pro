@@ -5,6 +5,7 @@
 #  id         :bigint           not null, primary key
 #  email      :string           not null
 #  name       :string           not null
+#  uuid       :uuid
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #  tenant_id  :bigint
