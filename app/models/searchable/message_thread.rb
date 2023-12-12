@@ -43,17 +43,19 @@ class Searchable::MessageThread < ApplicationRecord
     )
   end
 
-  def self.search_ids(query_filter, search_permissions:, cursor:, per_page:, direction: )
+  def self.search_ids(query_filter, search_permissions:, cursor:, per_page:, direction:)
+    raise SecurityError if search_permissions[:tag_ids].present? && search_permissions[:tag_ids].empty?
+
     scope = self
 
     scope = scope.where(tenant_id: search_permissions.fetch(:tenant))
     scope = scope.where(box_id: search_permissions.fetch(:box)) if search_permissions[:box]
 
-    if search_permissions.key?(:tag_ids)
+    scope = scope.where(message_thread_id: search_permissions[:only_id]) if search_permissions[:only_id]
+
+    if search_permissions[:tag_ids]
       if search_permissions[:tag_ids].any?
         scope = scope.where("tag_ids && ARRAY[?]", search_permissions[:tag_ids])
-      else
-        scope = scope.none
       end
     end
 

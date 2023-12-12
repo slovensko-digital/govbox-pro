@@ -1,3 +1,6 @@
+# == Route Map
+#
+
 Rails.application.routes.draw do
   namespace :settings do
     resources :automation_rules
@@ -101,7 +104,9 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :filters
+  resources :filters do
+    resources :filter_subscriptions
+  end
 
   resources :message_drafts do
     member do

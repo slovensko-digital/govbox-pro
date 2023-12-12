@@ -27,7 +27,7 @@ class Govbox::Message < ApplicationRecord
 
   def self.create_message_with_thread!(govbox_message)
     message = MessageThread.with_advisory_lock!(govbox_message.correlation_id, transaction: true, timeout_seconds: 10) do
-      message = self.create_message(govbox_message)
+      message = create_message(govbox_message)
 
       thread_title = if message.metadata["delivery_notification"].present?
         message.metadata["delivery_notification"]["consignment"]["subject"]
@@ -44,12 +44,12 @@ class Govbox::Message < ApplicationRecord
 
       message.save!
 
-      self.add_upvs_related_tags(message, govbox_message)
+      add_upvs_related_tags(message, govbox_message)
       
       message
     end
 
-    self.create_message_objects(message, govbox_message.payload)
+    create_message_objects(message, govbox_message.payload)
 
     message
   end
@@ -129,7 +129,7 @@ class Govbox::Message < ApplicationRecord
     end
     message.add_cascading_tag(upvs_tag)
 
-    self.add_delivery_notification_tag(message) if message.can_be_authorized?
+    add_delivery_notification_tag(message) if message.can_be_authorized?
   end
 
   def self.add_delivery_notification_tag(message)

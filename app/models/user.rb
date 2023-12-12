@@ -20,6 +20,7 @@ class User < ApplicationRecord
   has_many :message_drafts, foreign_key: :author_id
   has_many :automation_rules, class_name: 'Automation::Rule'
   has_many :filters, foreign_key: :author_id
+  has_many :filter_subscriptions
   has_many :notifications
 
   validates_presence_of :name, :email

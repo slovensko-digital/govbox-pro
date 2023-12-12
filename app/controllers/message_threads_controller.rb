@@ -3,6 +3,7 @@ class MessageThreadsController < ApplicationController
   before_action :set_thread_tags, only: %i[show history]
   before_action :set_thread_messages, only: %i[show history]
   before_action :load_threads, only: %i[index scroll]
+  before_action :set_subscription, only: :index
   after_action :mark_thread_as_read, only: %i[show history]
 
   include MessageThreadsConcern
@@ -82,6 +83,13 @@ class MessageThreadsController < ApplicationController
   end
 
   private
+
+  def set_subscription
+    return unless params[:q]
+
+    @filter = Current.tenant.filters.where(query: params[:q]).first
+    @filter_subscription = Current.user.filter_subscriptions.joins(:filter).where(filter: { query: params[:q] }).first
+  end
 
   def set_message_thread
     @message_thread = message_thread_policy_scope.find(params[:id])
