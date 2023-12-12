@@ -32,7 +32,8 @@ module Authentication
       session[:box_id] = Current.user.tenant.boxes.first.id if Current.user.tenant.boxes.one?
       redirect_to session[:after_login_path] || default_after_login_path
     else
-      render html: 'Not authorized', status: :forbidden
+      # TODO pass UPVS ID to view
+      render 'sessions/no_account'
     end
   end
 
