@@ -1,4 +1,4 @@
-class Api::Admin::TenantsController < ActionController::Base
+class Api::SiteAdmin::TenantsController < Api::SiteAdminController
   include AuditableApiEvents
   before_action :set_tenant, only: %i[destroy]
   rescue_from ActiveRecord::RecordNotFound, with: :save_exception
@@ -18,10 +18,6 @@ class Api::Admin::TenantsController < ActionController::Base
   end
 
   private
-
-  def set_tenant
-    @tenant = Tenant.find(params[:id])
-  end
 
   def tenant_params
     params.require(:tenant).permit(:name, :feature_flags, { admin: [:name, :email] })

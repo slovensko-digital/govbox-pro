@@ -1,4 +1,4 @@
-class Api::Admin::BoxesController < ActionController::Base
+class Api::SiteAdmin::BoxesController < Api::SiteAdminController
   include AuditableApiEvents
   before_action :set_tenant
   rescue_from ActiveRecord::RecordNotFound, with: :handle_exception
@@ -16,7 +16,7 @@ class Api::Admin::BoxesController < ActionController::Base
   private
 
   def set_tenant
-    @tenant = Tenant.find(params[:tenant_id])
+    @tenant = Tenant.find(params.require(:tenant_id))
   end
 
   def box_params

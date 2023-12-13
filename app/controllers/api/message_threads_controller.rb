@@ -1,4 +1,4 @@
-class Api::MessageThreadsController < ActionController::Base
+class Api::MessageThreadsController < Api::TenantController
   include AuditableApiEvents
   rescue_from ActiveRecord::RecordNotFound, with: :handle_exception
 
