@@ -24,10 +24,11 @@ class Api::Admin::TenantsController < ActionController::Base
   end
 
   def tenant_params
-    params.require(:tenant).permit(:name, { admin: [:name, :email] })
+    params.require(:tenant).permit(:name, :feature_flags, { admin: [:name, :email] })
   end
 
   def save_exception(exception)
     @exception = exception
+    render :error, status: :unprocessable_entity unless @group_membership
   end
 end

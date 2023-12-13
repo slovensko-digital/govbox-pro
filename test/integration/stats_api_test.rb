@@ -12,7 +12,7 @@ class StatsApiTest < ActionDispatch::IntegrationTest
   test "can read number of messages per period" do
     tenant = tenants(:solver)
     get "/api/stats/tenants/#{tenant.id}/messages_per_period",
-        params: { from: Time.zone.now - 100.days, till: Time.zone.now }, as: :json
+        params: { from: Time.zone.now - 100.days, to: Time.zone.now }, as: :json
     assert_response :success
     json_response = JSON.parse(response.body)
     assert json_response["messages_per_period"].positive?

@@ -128,8 +128,9 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :admin do
-      resources :tenants do
-        resources :boxes
+      resources :tenants, only: [:create, :destroy] do
+        resources :boxes, only: :create
+        resources :api_connections, only: :create
       end
     end
     namespace :stats do
@@ -139,6 +140,8 @@ Rails.application.routes.draw do
         get :messages_count
       end
     end
+    resources :threads, only: [:show], controller: 'message_threads'
+    resources :messages, only: [:show]
   end
 
   get :auth, path: 'prihlasenie', to: 'sessions#login'
