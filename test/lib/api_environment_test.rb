@@ -1,39 +1,66 @@
 require 'test_helper'
 
-# TODO write rails tests inspired by this RSpec code
-
 class ApiEnvironmentTest < ActiveSupport::TestCase
-#   it 'returns token authenticator' do
-#     expect(subject.token_authenticator).to respond_to(:verify_token)
-#   end
+  setup do
+    @api_environment = ApiEnvironment
+    @key_pair = OpenSSL::PKey::RSA.new(512)
+  end
 
-#   describe 'returned token authenticator' do
-#     subject { described_class.token_authenticator }
+  test '.tenant_token_authenticator returns tenant token authenticator' do
+    assert_respond_to @api_environment.tenant_token_authenticator, :verify_token
+  end
 
-#     let(:key_pair) { OpenSSL::PKey::RSA.new(512) }
+  test '.site_admin_token_authenticator returns site_admin token authenticator' do
+    assert_respond_to @api_environment.site_admin_token_authenticator, :verify_token
+  end
 
-#     it 'returns API box' do
-#       box = create(:edesk_box, :active, :api_mode, api_token_public_key: key_pair.public_key)
+  class SiteAdminTokenAuthenticatorTest < ApiEnvironmentTest
+    test 'returns 0 for site_admin' do
+      result = @api_environment.site_admin_token_authenticator.verify_token(generate_api_token)
+      assert_equal 0, result
+    end
 
-#       expect(subject.verify_token(api_token(box, key_pair))).to eq([box, nil])
-#     end
+    test 'fail on token verification with different key' do
+      key_pair = OpenSSL::PKey::RSA.new(512)
 
-#     it 'fails on token verification for non-API box' do
-#       box = create(:edesk_box, :active, :sync_mode, api_token_public_key: key_pair.public_key)
+      assert_raises(JWT::DecodeError) do
+        @api_environment.site_admin_token_authenticator.verify_token(generate_api_token(key_pair: key_pair))
+      end
+    end
+  end
 
-#       expect { subject.verify_token(api_token(box, key_pair)) }.to raise_error(JWT::DecodeError)
-#     end
+  class TenantTokenAuthenticatorTest < ApiEnvironmentTest
+    test 'fails on token verification for non-existent tenant' do
+      assert_raises(JWT::DecodeError) do
+        @api_environment.tenant_token_authenticator.verify_token(generate_api_token(sub: 123))
+      end
+    end
 
-#     it 'fails on token verification for non-active box' do
-#       box = create(:edesk_box, :ready, :api_mode, api_token_public_key: key_pair.public_key)
+    test 'fails on token verification for non-api tenant' do
+      tenant = Tenant.new(name: "Test tenant")
+      tenant.save
 
-#       expect { subject.verify_token(api_token(box, key_pair)) }.to raise_error(JWT::DecodeError)
-#     end
+      assert_raises(JWT::DecodeError) do
+        @api_environment.tenant_token_authenticator.verify_token(generate_api_token(sub: tenant.id))
+      end
+    end
 
-#     it 'fails on token verification for API box without public key' do
-#       box = create(:edesk_box, :active, :api_mode, api_token_public_key: nil)
+    test 'fails on token verification for API box without public key' do
+      tenant = Tenant.new(name: "Test tenant", feature_flags: [:api])
+      tenant.save
 
-#       expect { subject.verify_token(api_token(box, key_pair)) }.to raise_error(JWT::DecodeError)
-#     end
-#   end
+      assert_raises(JWT::DecodeError) do
+        @api_environment.tenant_token_authenticator.verify_token(generate_api_token(sub: tenant.id))
+      end
+    end
+
+    test 'succeeds on token verification for tenant with API enabled and api_token_public_key present' do
+      key_pair = OpenSSL::PKey::RSA.new(512)
+      tenant = Tenant.new(name: "Test tenant", feature_flags: [:api], api_token_public_key: key_pair.public_key)
+      tenant.save
+
+      result = @api_environment.tenant_token_authenticator.verify_token(generate_api_token(sub: tenant.id, key_pair: key_pair))
+      assert_equal tenant, result
+    end
+  end
 end
