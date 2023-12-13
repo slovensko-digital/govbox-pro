@@ -26,14 +26,16 @@ class Govbox::Message < ApplicationRecord
   DELIVERY_NOTIFICATION_TAG = 'delivery_notification'
 
   def self.create_message_with_thread!(govbox_message)
-    message = MessageThread.with_advisory_lock!(govbox_message.correlation_id, transaction: true, timeout_seconds: 10) do
+    message = nil
+
+    MessageThread.with_advisory_lock!(govbox_message.correlation_id, transaction: true, timeout_seconds: 10) do
       message = create_message(govbox_message)
 
       thread_title = if message.metadata["delivery_notification"].present?
-        message.metadata["delivery_notification"]["consignment"]["subject"]
-      else
-        message.title
-      end
+                       message.metadata["delivery_notification"]["consignment"]["subject"]
+                     else
+                       message.title
+                     end
 
       message.thread = govbox_message.box.message_threads.find_or_create_by_merge_uuid!(
         box: govbox_message.box,
@@ -45,11 +47,12 @@ class Govbox::Message < ApplicationRecord
       message.save!
 
       add_upvs_related_tags(message, govbox_message)
-      
-      message
     end
 
     create_message_objects(message, govbox_message.payload)
+
+    EventBus.publish(:message_thread_created, message.thread) if message.thread.previously_new_record?
+    EventBus.publish(:message_created, message)
 
     message
   end

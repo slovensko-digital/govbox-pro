@@ -120,6 +120,8 @@ Rails.application.routes.draw do
 
   resources :messages_tags
 
+  resources :notifications
+
   resource :settings
 
   resources :message_drafts_imports, only: :create do

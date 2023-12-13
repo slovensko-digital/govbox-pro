@@ -32,3 +32,6 @@
 en:
   hello: "Hello world"
   no_message_object_name: "File without name"
+  filter_subscription:
+    flash:
+      update: ""

@@ -41,6 +41,16 @@ class User < ApplicationRecord
     groups.where(type: "UserGroup").first
   end
 
+  def accessible_tags
+    Tag.where(
+      TagGroup.select(1)
+       .joins(:group_memberships)
+       .where("tag_groups.tag_id = tags.id")
+       .where(group_memberships: { user_id: id })
+       .arel.exists
+    )
+  end
+
   def signed_by_tag
     tenant.signed_by_tags.find_tag_containing_group(user_group)
   end

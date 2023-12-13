@@ -11,7 +11,7 @@
 class MessageThreadsTag < ApplicationRecord
   include AuditableEvents
 
-  belongs_to :message_thread
+  belongs_to :message_thread, touch: true
   belongs_to :tag
 
   # used for joins only
@@ -23,6 +23,7 @@ class MessageThreadsTag < ApplicationRecord
 
   scope :only_visible_tags, -> { includes(:tag).joins(:tag).where("tags.visible = ?", true).order("tags.name") }
 
+  after_commit ->(message_threads_tag) { EventBus.publish(:message_thread_tag_changed, message_threads_tag) }
   after_commit ->(message_threads_tag) { EventBus.publish(:message_thread_tag_changed, message_threads_tag) }
 
   def thread_and_tag_tenants_matches

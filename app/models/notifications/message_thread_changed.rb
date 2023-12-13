@@ -13,6 +13,6 @@
 #  user_id                :bigint           not null
 #
 module Notifications
-  class MessageCreated < ::Notification
+  class MessageThreadChanged < ::Notification
   end
 end

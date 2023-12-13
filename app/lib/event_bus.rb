@@ -32,33 +32,14 @@ EventBus.subscribe_job :message_thread_created, Automation::MessageThreadCreated
 EventBus.subscribe_job :message_created, Automation::MessageCreatedJob
 
 # notifications
-EventBus.subscribe :message_created, ->(message) {
-  NotifyFilterSubscriptionsJob.perform_now(:message_created, message)
+EventBus.subscribe :message_thread_changed, ->(thread) {
+  ReindexAndNotifyFilterSubscriptionsJob.perform_later(thread.id)
 }
-EventBus.subscribe :message_thread_note_created, ->(note) {
-  Searchable::ReindexMessageThreadJob.perform_later(note.message_thread_id)
-}
-EventBus.subscribe :message_thread_note_changed, ->(note) {
-  Searchable::ReindexMessageThreadJob.perform_later(note.message_thread_id)
-}
-EventBus.subscribe :message_changed, ->(message) {
-  if Searchable::Indexer.message_searchable_fields_changed?(message)
-    NotifyFilterSubscriptionsJob.perform_now(:message_created, message)
-  end
-}
-EventBus.subscribe :message_thread_changed, ->(message_thread) {
-  Searchable::ReindexMessageThreadJob.perform_later(message_thread.id)
-}
-EventBus.subscribe :message_thread_tag_changed, ->(message_thread_tag) {
-  Searchable::ReindexMessageThreadJob.perform_later(message_thread_tag.message_thread_id)
-}
+
 
 # reindexing on removals
 EventBus.subscribe :tag_renamed, ->(tag) { Searchable::ReindexMessageThreadsWithTagIdJob.perform_later(tag.id) }
 EventBus.subscribe :tag_destroyed, ->(tag) { Searchable::ReindexMessageThreadsWithTagIdJob.perform_later(tag.id) }
-EventBus.subscribe :message_destroyed, ->(message) {
-  Searchable::ReindexMessageThreadJob.perform_later(message.message_thread_id)
-}
 
 # cleanup
 EventBus.subscribe :box_destroyed, ->(box_id) { Govbox::DestroyBoxDataJob.perform_later(box_id) }

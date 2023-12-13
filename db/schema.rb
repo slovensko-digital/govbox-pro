@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_12_07_165737) do
+ActiveRecord::Schema[7.1].define(version: 2023_12_12_210558) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -135,7 +135,8 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_07_165737) do
     t.bigint "tenant_id", null: false
     t.bigint "user_id", null: false
     t.bigint "filter_id", null: false
-    t.string "events", null: false, array: true
+    t.datetime "last_notify_run_at"
+    t.string "events", default: [], null: false, array: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["filter_id"], name: "index_filter_subscriptions_on_filter_id"
@@ -355,7 +356,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_07_165737) do
     t.datetime "delivered_at", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.datetime "last_message_delivered_at", null: false
+    t.datetime "last_message_delivered_at", precision: nil, null: false
     t.bigint "box_id", null: false
     t.index ["folder_id"], name: "index_message_threads_on_folder_id"
   end
@@ -418,9 +419,11 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_07_165737) do
     t.bigint "user_id", null: false
     t.bigint "message_thread_id", null: false
     t.bigint "message_id"
-    t.datetime "happened_at", null: false
+    t.bigint "filter_subscription_id"
+    t.string "filter_name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["filter_subscription_id"], name: "index_notifications_on_filter_subscription_id"
     t.index ["message_id"], name: "index_notifications_on_message_id"
     t.index ["message_thread_id"], name: "index_notifications_on_message_thread_id"
     t.index ["user_id"], name: "index_notifications_on_user_id"
@@ -438,6 +441,9 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_07_165737) do
     t.integer "tenant_id", null: false
     t.integer "box_id", null: false
     t.string "note", null: false
+    t.datetime "last_message_created_at", null: false
+    t.datetime "message_thread_updated_at", null: false
+    t.datetime "message_thread_note_updated_at"
     t.index "((((to_tsvector('simple'::regconfig, COALESCE(title, ''::text)) || to_tsvector('simple'::regconfig, COALESCE(content, ''::text))) || to_tsvector('simple'::regconfig, COALESCE((note)::text, ''::text))) || to_tsvector('simple'::regconfig, COALESCE(tag_names, ''::text))))", name: "idx_searchable_message_threads_fulltext", using: :gin
     t.index ["id", "box_id", "last_message_delivered_at"], name: "idx_on_id_box_id_last_message_delivered_at_5a4090c55e", unique: true
     t.index ["message_thread_id"], name: "index_searchable_message_threads_on_message_thread_id", unique: true
@@ -544,6 +550,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_07_165737) do
   add_foreign_key "messages_tags", "messages"
   add_foreign_key "messages_tags", "tags"
   add_foreign_key "nested_message_objects", "message_objects", on_delete: :cascade
+  add_foreign_key "notifications", "filter_subscriptions", on_delete: :nullify
   add_foreign_key "notifications", "message_threads"
   add_foreign_key "notifications", "messages"
   add_foreign_key "notifications", "users"
