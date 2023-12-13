@@ -1,4 +1,5 @@
 class Api::SiteAdmin::Stats::TenantsController < Api::SiteAdminController
+  include AuditableApiEvents
   before_action :set_tenant
   rescue_from ActiveRecord::RecordNotFound, with: :handle_exception
   rescue_from ActionController::ParameterMissing, with: :handle_exception
@@ -6,7 +7,6 @@ class Api::SiteAdmin::Stats::TenantsController < Api::SiteAdminController
   def users_count
     @users_count = @tenant.users.count
     render :error, status: :unprocessable_entity unless @tenant
-    puts "no exception"
   end
 
   def messages_per_period

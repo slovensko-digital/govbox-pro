@@ -128,6 +128,11 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :site_admin do
+      resources :tenants, only: [:create, :destroy] do
+        resources :boxes, only: :create
+        resources :api_connections, only: :create
+      end
+
       namespace :stats do
         resources :tenants, only: [] do
           member do
@@ -136,11 +141,6 @@ Rails.application.routes.draw do
             get :messages_count
           end
         end
-      end
-
-      resources :tenants, only: [:create, :destroy] do
-        resources :boxes, only: :create
-        resources :api_connections, only: :create
       end
     end
 

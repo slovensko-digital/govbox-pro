@@ -1,5 +1,8 @@
 class Api::SiteAdmin::TenantsController < Api::SiteAdminController
+  include AuditableApiEvents
   before_action :set_tenant, only: %i[destroy]
+  rescue_from ActiveRecord::RecordNotFound, with: :handle_exception
+  rescue_from ActionController::ParameterMissing, with: :handle_exception
 
   def create
     @tenant, @admin, @group_membership = Tenant.create_with_admin(tenant_params)
