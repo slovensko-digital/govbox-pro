@@ -12,14 +12,14 @@
               message_object: @form,
               name: "Hlavný dokument",
               checked_ids: @message_object_ids,
-              icon: render(Icons::EnvelopeComponent.new(css_classes: "w-4 h-4 md:w-6 md:h-6 text-gray-400"))) %>
+              icon: "envelope") %>
           <% end %>
 
           <% @attachments.each do |attachment| %>
             <%= render Signing::DocumentsSelection::ItemComponent.new(
               message_object: attachment,
               checked_ids: @message_object_ids,
-              icon: render(Icons::PaperClipComponent.new(css_classes: "w-4 h-4 md:w-6 md:h-6 text-gray-400"))) %>
+              icon: "paper_clip") %>
           <% end %>
         </div>
       </div>
