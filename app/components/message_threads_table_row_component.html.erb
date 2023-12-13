@@ -10,10 +10,10 @@
               <%= @message_thread.title %>
           </span>
         </div>
-        <div class="flex flex-wrap items-center gap-1" data-test="tags">
-          <div class="flex gap-4 mr-3">
+        <div class="flex flex-wrap items-center gap-1" data-test="tags" data-controller="vertical-hr-content">
+          <div class="flex gap-4 mr-3" data-vertical-hr-content-target="hr-container">
             <%= render Common::BoxLabelComponent.new(@message_thread.box, "", "text-xs sm:text-sm", "px-2 py-0.5") %>
-            <div class="h-6 sm:h-8 w-px bg-gray-900/10" aria-hidden="true"></div>
+            <div class="h-6 sm:h-8 w-px bg-gray-900/10" aria-hidden="true" data-vertical-hr-content-target="hr"></div>
           </div>
           <% @visible_tags.each do |tag| %>
             <%= render Common::TagComponent.new(tag) %>

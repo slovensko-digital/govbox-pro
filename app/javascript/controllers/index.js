@@ -30,3 +30,6 @@ application.register("tri-state-checkbox", TriStateCheckboxController)
 
 import TurboContentController from "./turbo_content_controller"
 application.register("turbo-content", TurboContentController)
+
+import VerticalHrContent from "./vertical_hr_content"
+application.register("vertical-hr-content", VerticalHrContent)
