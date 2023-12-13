@@ -2,6 +2,8 @@ module UpvsEnvironment
   extend self
 
   def sso_settings
+    return {} if Rails.env.test?
+
     return @sso_settings if @sso_settings
 
     idp_metadata = OneLogin::RubySaml::IdpMetadataParser.new.parse_to_hash(File.read(sso_metadata_file('upvs')))

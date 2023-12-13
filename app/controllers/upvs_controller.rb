@@ -18,8 +18,8 @@ class UpvsController < ActionController::API
 
   def logout
     if params[:SAMLRequest]
+      EventBus.publish(:user_logged_out, User.find_by(id: session[:user_id]))
       clean_session
-      EventBus.publish(:user_logged_out, User.find_by(id: session[:user_id])) if session[:user_id]
 
       redirect_to "/auth/saml/slo?#{slo_request_params.to_query}"
     elsif params[:SAMLResponse]
