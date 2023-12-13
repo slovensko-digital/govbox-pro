@@ -1,9 +1,12 @@
 <div
-  class="flex items-center justify-between gap-x-3 text-gray-700 hover:text-indigo-600 hover:bg-gray-50 w-full group rounded-md leading-6 font-semibold data-[active=true]:bg-gray-50 data-[active=true]:text-indigo-600"
+  class="flex items-center text-gray-700 hover:text-indigo-600 hover:bg-gray-50 w-full group rounded-md leading-6 font-semibold data-[active=true]:bg-gray-50 data-[active=true]:text-indigo-600 <%= @classes %>"
 >
+  <% if leading %>
+    <%= leading %>
+  <% end %>
   <%= link_to \
         @url,
-        class: "w-full flex gap-x-3 p-4",
+        class: "w-full flex gap-x-3 p-4 grow",
         data: { active: current_page?(@url, check_parameters: true) } \
         do %>
     <% if @icon_component %>
@@ -11,7 +14,7 @@
     <% end %>
     <span class="truncate text-base <%= light? ? 'font-medium' : '' %>"><%= @name %></span>
   <% end %>
-  <% if accessory %>
-    <%= accessory %>
+  <% if trailing %>
+    <%= trailing %>
   <% end %>
 </div>

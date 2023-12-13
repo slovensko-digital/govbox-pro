@@ -62,6 +62,10 @@ class FilterPolicy < ApplicationPolicy
     pin?
   end
 
+  def sort?
+    is_author_current_user?
+  end
+
   private
 
   def is_author_current_user?

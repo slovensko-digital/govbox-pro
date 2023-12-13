@@ -1,5 +1,17 @@
 <% if @filters.present? %>
-  <div class="w-full flex flex-col justify-start items-start gap-2" data-test="filters">
+  <div
+    <% if @sortable %>
+    data-controller="sortable"
+    data-sortable-url-value="<%= sort_filters_path %>"
+    data-sortable-draggable-class=".item"
+    data-sortable-handle-class=".handle"
+    <% end %>
+    class="w-full flex flex-col justify-start items-start gap-2"
+    data-test="filters"
+    >
+    <% if @sortable %>
+      <%= link_to 'Sort', '', class: 'hidden', data: { turbo_method: :patch, sortable_target: 'submit', url: sort_filters_path } %>
+    <% end %>
     <% if @label.present? %>
       <div class="flex justify-start items-start px-4 py-2">
         <p class="text-sm text-center text-gray-400"><%= @label %></p>
@@ -11,8 +23,16 @@
         url: filtered_message_threads_path(filter:),
         icon: icon_for(filter),
         variant: :light,
+        classes: 'item',
       ) do |menu_item| %>
-        <% menu_item.with_accessory do %>
+        <% if @sortable %>
+          <% menu_item.with_leading do %>
+            <div class="py-4 handle cursor-move invisible group-hover:visible" data-sortable-target="item" data-id="<%= filter.id %>">
+              <%= render Icons::BarsComponent.new(css_classes: 'w-4 h-4 fill-gray-300') %>
+            </div>
+          <% end %>
+        <% end %>
+        <% menu_item.with_trailing do %>
           <% if filter.is_pinned %>
             <%= link_to unpin_filter_path(filter), class: "invisible group-hover:visible fill-yellow-400 group/icon p-4", data: { turbo_method: :patch } do %>
               <%= render Icons::StarComponent.new(css_classes: 'hidden group-hover/icon:inline w-6 h-6', variant: :light) %>

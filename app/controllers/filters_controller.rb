@@ -71,6 +71,25 @@ class FiltersController < ApplicationController
     redirect_back fallback_location: filters_path
   end
 
+  def sort
+    filters = filter_scope
+      .where(id: params[:filter_ids])
+      .reorder('')
+      .in_order_of(:id, params[:filter_ids])
+
+    filters.map do |filter|
+      authorize filter
+    end
+
+    Filter.transaction do
+      filters.map.with_index do |filter, i|
+        filter.update!(position: i + 1)
+      end
+    end
+
+    redirect_back fallback_location: filters_path
+  end
+
   private
 
   def filter_params

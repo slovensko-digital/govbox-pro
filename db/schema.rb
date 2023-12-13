@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_12_11_140731) do
+ActiveRecord::Schema[7.1].define(version: 2023_12_13_100122) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -145,7 +145,6 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_11_140731) do
     t.index ["author_id"], name: "index_filters_on_author_id"
     t.index ["is_pinned"], name: "index_filters_on_is_pinned"
     t.index ["tag_id"], name: "index_filters_on_tag_id"
-    t.index ["tenant_id", "position"], name: "index_filters_on_tenant_id_and_position", unique: true
     t.index ["tenant_id"], name: "index_filters_on_tenant_id"
     t.index ["type"], name: "index_filters_on_type"
   end

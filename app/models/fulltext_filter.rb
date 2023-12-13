@@ -3,6 +3,7 @@
 # Table name: filters
 #
 #  id         :bigint           not null, primary key
+#  is_pinned  :boolean          default(FALSE), not null
 #  name       :string           not null
 #  position   :integer          not null
 #  query      :string

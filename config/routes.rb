@@ -106,6 +106,10 @@ Rails.application.routes.draw do
       patch :pin
       patch :unpin
     end
+
+    collection do
+      patch :sort
+    end
   end
 
   resources :message_drafts do

@@ -25,6 +25,9 @@ application.register("form", FormController)
 import MessageDraftsController from "./message_drafts_controller"
 application.register("message-drafts", MessageDraftsController)
 
+import SortableController from "./sortable_controller"
+application.register("sortable", SortableController)
+
 import TriStateCheckboxController from "./tri_state_checkbox_controller"
 application.register("tri-state-checkbox", TriStateCheckboxController)
 
