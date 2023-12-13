@@ -79,8 +79,8 @@ class Tenant < ApplicationRecord
 
     create_draft_tag!(name: "Rozpracované", visible: true)
     create_everything_tag!(name: "Všetky správy", visible: false)
-    create_signature_requested_tag!(name: "Na podpis", visible: true)
-    create_signed_tag!(name: "Podpísané", visible: true)
+    create_signature_requested_tag!(name: "Na podpis", visible: true, color: "yellow", icon: "pencil")
+    create_signed_tag!(name: "Podpísané", visible: true, color: "green", icon: "fingerprint")
 
     make_admins_see_everything!
   end

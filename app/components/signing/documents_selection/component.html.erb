@@ -10,7 +10,7 @@
           <% if @form.present? %>
             <%= render Signing::DocumentsSelection::ItemComponent.new(
               message_object: @form,
-              name: "Hlavný dokument",
+              name: "Hlavný formulár",
               checked_ids: @message_object_ids,
               icon: "envelope") %>
           <% end %>
