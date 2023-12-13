@@ -28,7 +28,7 @@
         <% if @sortable %>
           <% menu_item.with_leading do %>
             <div class="py-4 handle cursor-move invisible group-hover:visible" data-sortable-target="item" data-id="<%= filter.id %>">
-              <%= render Icons::BarsComponent.new(css_classes: 'w-4 h-4 fill-gray-300') %>
+              <%= render Icons::GripComponent.new(css_classes: 'w-4 h-4 fill-gray-400') %>
             </div>
           <% end %>
         <% end %>
