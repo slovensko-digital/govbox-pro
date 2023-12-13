@@ -36,6 +36,7 @@ class Tag < ApplicationRecord
 
   scope :simple, -> { where(type: SimpleTag.to_s) }
   scope :visible, -> { where(visible: true) }
+  scope :signing_tags, -> { where(type: ["SignedTag", "SignedByTag", "SignatureRequestedTag", "SignatureRequestedFromTag"]) }
 
   after_update_commit ->(tag) { EventBus.publish(:tag_renamed, tag) if previous_changes.key?("name") }
 
