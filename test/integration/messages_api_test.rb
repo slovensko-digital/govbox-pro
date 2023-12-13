@@ -2,11 +2,8 @@ require "test_helper"
 
 class ThreadsApiTest < ActionDispatch::IntegrationTest
   setup do
-    @key_pair = OpenSSL::PKey::RSA.new(512)
+    @key_pair = OpenSSL::PKey::RSA.new File.read 'test/fixtures/tenant_test_cert.pem'
     @tenant = tenants(:solver)
-    @tenant.enable_feature(:api) unless @tenant.feature_enabled? :api
-    @tenant.api_token_public_key = @key_pair.public_key
-    @tenant.save
   end
   test "can read message" do
     message = messages(:ssd_main_general_one)

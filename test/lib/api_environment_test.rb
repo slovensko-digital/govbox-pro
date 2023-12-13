@@ -17,7 +17,7 @@ class ApiEnvironmentTest < ActiveSupport::TestCase
   class SiteAdminTokenAuthenticatorTest < ApiEnvironmentTest
     test 'returns 0 for site_admin' do
       result = @api_environment.site_admin_token_authenticator.verify_token(generate_api_token)
-      assert_equal 0, result
+      assert_equal true, result
     end
 
     test 'fail on token verification with different key' do

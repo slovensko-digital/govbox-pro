@@ -23,5 +23,5 @@ end
 private
 
 def default_key_pair
-  OpenSSL::PKey::RSA.new File.read 'test/fixtures/test_cert.pem'
+  OpenSSL::PKey::RSA.new File.read 'test/fixtures/site_admin_test_cert.pem'
 end

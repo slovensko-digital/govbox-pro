@@ -9,7 +9,7 @@ module ApiEnvironment
   def self.site_admin_token_authenticator
     @site_admin_token_authenticator ||= ApiTokenAuthenticator.new(
       public_key_reader: API_SITE_ADMIN_PUBLIC_KEY_READER,
-      return_handler: -> (sub) { 0 },
+      return_handler: -> (sub) { true },
     )
   end
 
