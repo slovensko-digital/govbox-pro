@@ -22,7 +22,9 @@ class ApiConnection < ApplicationRecord
   end
 
   def validate_box(box)
-    raise NotImplementedError
+    # TODO: complete validation
+    return unless box.api_connection.type == "Govbox::ApiConnectionWithOboSupport"
+    raise "Obo parameter mandatory for Api connection with Obo support" unless box.settings && box.settings["obo"]
   end
 
   private

@@ -138,15 +138,14 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :tenants do
-        member do
-          resources :boxes
-        end
+      resources :tenants, only: [:create, :destroy] do
+        resources :boxes, only: :create
+        resources :api_connections, only: :create
       end
     end
 
-    namespace :tenant do
-    end
+    resources :threads, only: [:show], controller: 'message_threads'
+    resources :messages, only: [:show]
   end
 
   get :auth, path: 'prihlasenie', to: 'sessions#login'

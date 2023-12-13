@@ -1,1 +1,1 @@
-json.message @error || @box.errors.full_messages[0]
+json.message @exception || @box.errors.full_messages[0]

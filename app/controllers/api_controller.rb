@@ -16,6 +16,7 @@ class ApiController < ActionController::API
   rescue_from RestClient::Exceptions::Timeout, with: :render_request_timeout
   rescue_from ActiveRecord::RecordNotFound, with: :render_not_found
   rescue_from ActionController::ParameterMissing, with: :render_unprocessable_entity
+  rescue_from Exception, with: :render_internal_server_error
 
   private
 
@@ -23,39 +24,35 @@ class ApiController < ActionController::API
     (ActionController::HttpAuthentication::Token.token_and_options(request)&.first || params[:token])&.squish.presence
   end
 
-  def set_tenant
-    @tenant = Tenant.find(params.require(:id))
-  end
-
-
   def raise_with_resource_details(error = $!, resource, id, **options)
     error.resource = [resource, options.merge(id: id)] if error.respond_to?(:resource=)
     raise error
   end
 
   def log_request(error = nil)
-    # TODO save the log somewhere
+    # TODO: log somewhere
+    puts "Error: ", error if error
   end
 
   def wrap_in_request_logger
     yield
-  rescue Exception => error
-    log_request(error) and raise(error)
+  rescue Exception => e
+    log_request(e)
+    raise e
   else
     log_request
   end
 
-
-  def render_bad_request(key, **options)
+  def render_bad_request(_key, **_options)
     render status: :bad_request, json: { message: "Bad request" }
   end
 
   def render_unauthorized(key = "credentials")
-    self.headers['WWW-Authenticate'] = 'Token realm="API"'
+    headers['WWW-Authenticate'] = 'Token realm="API"'
     render status: :unauthorized, json: { message: "Unauthorized " + key }
   end
 
-  def render_unpermitted_param(**options)
+  def render_unpermitted_param(**_options)
     render status: :unprocessable_entity, json: { message: "Unprocessable entity" }
   end
 
@@ -63,11 +60,11 @@ class ApiController < ActionController::API
     render status: :forbidden, json: { message: "Forbidden" }
   end
 
-  def render_forbidden(key, **options)
+  def render_forbidden(_key, **_options)
     render status: :forbidden, json: { message: "Forbidden" }
   end
 
-  def render_not_found(key, **options)
+  def render_not_found(_key, **_options)
     render status: :not_found, json: { message: "Not found" }
   end
 
