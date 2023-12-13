@@ -4,7 +4,7 @@
   <% end %>
   <% modal.with_modal_content do %>
     <%= form_with model: [@filter, @subscription] do |f| %>
-      <fieldset class="mt-4">
+      <fieldset class="px-1 my-6">
         <div class="space-y-5">
           <% FilterSubscription::AVAILABLE_EVENT_NAMES.each_with_index do |event_name, idx| %>
             <div class="relative flex items-start">

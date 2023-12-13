@@ -31,7 +31,7 @@ class FilterSubscriptionsController < ApplicationController
     if @subscription.valid?
       redirect_to message_threads_path(q: @subscription.filter.query), notice: t("filter_subscription.flash.create")
     else
-      render :edit
+      redirect_to message_threads_path(q: @subscription.filter.query)
     end
   end
 
