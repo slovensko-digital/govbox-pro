@@ -1,4 +1,4 @@
-<%= render Common::ModalComponent.new(max_size: "max-w-4xl") do |modal| %>
+<%= render Common::ModalComponent.new(max_size: "max-w-lg md:max-w-2xl xl:max-w-4xl") do |modal| %>
   <% modal.with_header do %>
     Dokumenty na podpis
   <% end %>
@@ -12,14 +12,14 @@
               message_object: @form,
               name: "Hlavný dokument",
               checked_ids: @message_object_ids,
-              icon: render(Icons::EnvelopeComponent.new(css_classes: "w-6 h-6 text-gray-400"))) %>
+              icon: render(Icons::EnvelopeComponent.new(css_classes: "w-4 h-4 md:w-6 md:h-6 text-gray-400"))) %>
           <% end %>
 
           <% @attachments.each do |attachment| %>
             <%= render Signing::DocumentsSelection::ItemComponent.new(
               message_object: attachment,
               checked_ids: @message_object_ids,
-              icon: render(Icons::PaperClipComponent.new(css_classes: "w-6 h-6 text-gray-400"))) %>
+              icon: render(Icons::PaperClipComponent.new(css_classes: "w-4 h-4 md:w-6 md:h-6 text-gray-400"))) %>
           <% end %>
         </div>
       </div>
