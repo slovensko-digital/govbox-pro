@@ -21,10 +21,8 @@ class ApiEnvironmentTest < ActiveSupport::TestCase
     end
 
     test 'fail on token verification with different key' do
-      key_pair = OpenSSL::PKey::RSA.new(512)
-
       assert_raises(JWT::DecodeError) do
-        @api_environment.site_admin_token_authenticator.verify_token(generate_api_token(key_pair: key_pair))
+        @api_environment.site_admin_token_authenticator.verify_token(generate_api_token(key_pair: OpenSSL::PKey::RSA.new(512)))
       end
     end
   end
@@ -61,6 +59,15 @@ class ApiEnvironmentTest < ActiveSupport::TestCase
 
       result = @api_environment.tenant_token_authenticator.verify_token(generate_api_token(sub: tenant.id, key_pair: key_pair))
       assert_equal tenant, result
+    end
+
+    test 'fails on token verification for tenant with different key' do
+      tenant = Tenant.new(name: "Test tenant", feature_flags: [:api], api_token_public_key: OpenSSL::PKey::RSA.new(512).public_key)
+      tenant.save
+
+      assert_raises(JWT::DecodeError) do
+        @api_environment.tenant_token_authenticator.verify_token(generate_api_token(sub: tenant.id, key_pair: OpenSSL::PKey::RSA.new(512)))
+      end
     end
   end
 end
