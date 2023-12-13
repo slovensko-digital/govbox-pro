@@ -1,0 +1,15 @@
+<div class="flex px-2 py-4 border-b border-gray-200 items-center">
+  <%= check_box_tag "object_ids[]", @message_object.id, @checked, id: "object_#{@message_object.id}", class: "mr-3 ml-1 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer", onchange: "this.form.requestSubmit();" %>
+  <%= label_tag "object_#{@message_object.id}", class: "flex h-full items-center gap-2 text-gray-900 cursor-pointer" do %>
+    <%= @icon %>
+
+    <span class="text-xs md:text-sm truncate">
+      <%= @name %>
+    </span>
+  <% end %>
+  <div class="flex flex-wrap gap-1 ml-2">
+    <% SigningTagsHelper.sort_tags(@message_object.tags).each do |tag|%>
+      <%= render Common::TagComponent.new(tag) %>
+    <% end %>
+  </div>
+</div>

@@ -28,6 +28,8 @@ class Tag < ApplicationRecord
   has_many :message_threads_tags, dependent: :destroy
   has_many :message_threads, through: :message_threads_tags
   has_many :automation_actions, class_name: "Automation::Action", as: :action_object, dependent: :restrict_with_error
+  has_many :message_objects_tags, dependent: :destroy
+  has_many :message_objects, through: :message_objects_tags
 
   validates :name, presence: true
   validates :name, uniqueness: { scope: :tenant_id, case_sensitive: false }

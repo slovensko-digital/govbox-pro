@@ -163,4 +163,69 @@ module RelationChanges
       end
     end
   end
+
+  class Signers
+    def self.build_signature_requested_assignments(message_objects:, signers_scope:)
+      signers_ids = signers_scope.pluck(:id)
+
+      # TODO do in one query
+      tag_id_to_user_id_map = signers_scope.map { |user| [user.signature_requested_from_tag.id, user.id] }.to_h
+
+      init_assignments = signers_ids.map { |tag_id| [tag_id.to_s, REMOVE_SIGN] }.to_h
+
+      assigned_thread_by_tag = MessageObjectsTag.
+        joins(:tag).
+        where(tag: { type: SignatureRequestedFromTag.to_s }).
+        where(message_object: message_objects).pluck(:tag_id, :message_object_id).group_by(&:first)
+
+      assigned_thread_by_tag.each do |tag_id, values|
+        init_assignments[tag_id_to_user_id_map.fetch(tag_id).to_s] = values.length == message_objects.length ? ADD_SIGN : KEEP_SIGN
+      end
+
+      {
+        init: init_assignments,
+        new: init_assignments,
+      }
+    end
+
+    attr_reader :diff, :assignments
+
+    def initialize(signers_scope:, assignments: { init: {}, new: {} })
+      @signers_scope = signers_scope
+      @assignments = assignments.to_h
+      build_diff
+    end
+
+    def init_assignments
+      @assignments[:init]
+    end
+
+    def new_assignments
+      @assignments[:new]
+    end
+
+    def number_of_changes
+      @diff.number_of_changes
+    end
+
+    def build_diff
+      @diff = Diff.build_from_assignments(@assignments, @signers_scope)
+    end
+
+    def signer_users
+      @signers_scope
+    end
+
+    def save(message_objects)
+      MessageObjectsTag.transaction do
+        @diff.to_add.each do |user|
+          message_objects.each { |message_object| message_object.add_signature_request_from_tag(user.signature_requested_from_tag) }
+        end
+
+        @diff.to_remove.each do |user|
+          message_objects.each { |message_object| message_object.remove_signature_request_from_tag(user.signature_requested_from_tag) }
+        end
+      end
+    end
+  end
 end
