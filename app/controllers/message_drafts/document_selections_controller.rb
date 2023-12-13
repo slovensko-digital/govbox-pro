@@ -3,11 +3,11 @@ module MessageDrafts
     before_action :set_message_draft, :set_message_object_ids
 
     def new
-      authorize @message_draft, "show?" # TODO use own policy
+      authorize @message_draft, "show?"
     end
 
     def update
-      authorize @message_draft, "show?" # TODO use own policy
+      authorize @message_draft, "show?"
     end
 
     private

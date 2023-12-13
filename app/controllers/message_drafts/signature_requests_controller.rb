@@ -3,7 +3,7 @@ module MessageDrafts
     before_action :set_message_draft, :set_message_objects
 
     def edit
-      authorize @message_draft, "show?" # TODO use own policy
+      authorize MessageObjectsTag
 
       @signers_changes = RelationChanges::Signers.new(
         signers_scope: signers_scope,
@@ -15,7 +15,7 @@ module MessageDrafts
     end
 
     def prepare
-      authorize @message_draft, "show?" # TODO use own policy
+      authorize MessageObjectsTag
 
       @signers_changes = RelationChanges::Signers.new(
         signers_scope: signers_scope,
@@ -24,7 +24,7 @@ module MessageDrafts
     end
 
     def update
-      authorize @message_draft, "show?" # TODO use own policy
+      authorize MessageObjectsTag
 
       signers_changes = RelationChanges::Signers.new(
         signers_scope: signers_scope.includes(tenant: :signature_requested_tag),
