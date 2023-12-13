@@ -15,7 +15,7 @@ class SessionsController < ApplicationController
   end
 
   def destroy
-    EventBus.publish(:user_logged_out, User.find_by(id: session[:user_id]))
+    EventBus.publish(:user_logged_out, User.find_by(id: session[:user_id])) if session[:user_id]
 
     if session[:upvs_login]
       redirect_to upvs_logout_path and return

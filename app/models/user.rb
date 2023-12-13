@@ -2,13 +2,13 @@
 #
 # Table name: users
 #
-#  id         :bigint           not null, primary key
-#  email      :string           not null
-#  name       :string           not null
-#  uuid       :uuid
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  tenant_id  :bigint
+#  id              :bigint           not null, primary key
+#  email           :string           not null
+#  name            :string           not null
+#  saml_identifier :string
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#  tenant_id       :bigint
 #
 class User < ApplicationRecord
   include AuditableEvents

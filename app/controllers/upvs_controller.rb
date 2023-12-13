@@ -8,11 +8,11 @@ class UpvsController < ActionController::API
 
   def callback
     response = request.env['omniauth.auth']['extra']['response_object']
-    user_uuid = response.attributes["Subject.UPVSIdentityID"]
+    saml_identifier = response.attributes["Subject.UPVSIdentityID"]
 
-    Current.user = User.find_by(uuid: user_uuid)
+    Current.user = User.find_by(saml_identifier: saml_identifier)
 
-    create_session(user_uuid: user_uuid)
+    create_session(saml_identifier: saml_identifier)
     EventBus.publish(:user_logged_in, Current.user) if Current.user
   end
 
