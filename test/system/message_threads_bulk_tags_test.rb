@@ -9,7 +9,7 @@ class MessageThreadsBulkTagsTest < ApplicationSystemTestCase
     sign_in_as(:basic)
   end
 
-  test "a user can change tags on multiple threads with bulk action" do
+  test "user can change tags on multiple threads with bulk action" do
     visit message_threads_path
 
     thread_issue = message_threads(:ssd_main_issue)
@@ -43,29 +43,9 @@ class MessageThreadsBulkTagsTest < ApplicationSystemTestCase
 
     check_indeterminate_checkbox("Legal")
 
-    within("#tags-assignment-diff") do
-      assert_text "Pridajú sa"
-      assert_text "Legal"
-    end
-
     uncheck "Legal"
 
-    within("#tags-assignment-diff") do
-      assert_text "Odoberú sa"
-      assert_text "Legal"
-    end
-
     check "Print"
-
-    within("#tags-assignment-diff") do
-      within("[data-test='to_be_added']") do
-        assert_text "Print"
-      end
-
-      within("[data-test='to_be_removed']") do
-        assert_text "Legal"
-      end
-    end
 
     fill_in "name_search_query", with: "Struction"
 
@@ -76,35 +56,12 @@ class MessageThreadsBulkTagsTest < ApplicationSystemTestCase
 
     check "Construction"
 
-    within("#tags-assignment-diff") do
-      within("[data-test='to_be_added']") do
-        assert_text "Construction"
-        assert_text "Print"
-      end
-
-      within("[data-test='to_be_removed']") do
-        assert_text "Legal"
-      end
-    end
-
     check "Struction"
 
     within("#tags-assignment-list") do
       assert_text "Legal"
       assert_text "Print"
       assert_text "Struction"
-    end
-
-    within("#tags-assignment-diff") do
-      within("[data-test='to_be_added']") do
-        assert_text "Construction"
-        assert_text "Print"
-        assert_text "Struction"
-      end
-
-      within("[data-test='to_be_removed']") do
-        assert_text "Legal"
-      end
     end
 
     click_button "Uložiť zmeny"

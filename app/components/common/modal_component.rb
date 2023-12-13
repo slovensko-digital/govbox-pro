@@ -3,8 +3,8 @@ module Common
     renders_one :header
     renders_one :modal_content
 
-    def initialize(max_size: "max-w-lg")
-      @max_size = max_size
+    def initialize(classes = "")
+      @classes = classes
     end
 
     def remove_content_action

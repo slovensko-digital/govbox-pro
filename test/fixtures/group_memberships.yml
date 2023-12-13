@@ -4,6 +4,18 @@ ssd_basic_basic_user:
   user: basic
   group: ssd_basic_user
 
+ssd_basic_two_basic_two_user:
+  user: basic_two
+  group: ssd_basic_two_user
+
+ssd_admin_admin_user:
+  user: admin
+  group: ssd_admin_user
+
 ssd_basic_all:
   user: basic
   group: ssd_all
+
+ssd_admin_admin:
+  user: admin
+  group: ssd_admins

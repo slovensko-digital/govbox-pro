@@ -11,10 +11,10 @@
     </div>
   </div>
   <div class="justify-start items-start gap-2 flex">
-    <%= link_to edit_filter_path(@filter) do %>
+    <%= link_to edit_filter_path(@filter), title: "Upraviť filter" do %>
       <%= render Common::EditButtonComponent.new %>
     <% end %>
-    <%= link_to filter_path(@filter), data: { turbo_confirm: "Naozaj?", turbo_method: :delete } do %>
+    <%= link_to filter_path(@filter), title: "Zmazať filter", data: { turbo_confirm: "Naozaj?", turbo_method: :delete } do %>
       <%= render Common::DeleteButtonComponent.new %>
     <% end %>
   </div>

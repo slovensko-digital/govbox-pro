@@ -1,5 +1,5 @@
 class Settings::AutomationRulesController < ApplicationController
-  before_action :set_automation_rule, only: %i[show edit edit_actions update destroy]
+  before_action :set_automation_rule, only: %i[edit update destroy]
   before_action :set_form_automation_rule, only: %i[header_step conditions_step actions_step create]
   before_action :transform_delete_destroy, only: %i[create update]
 
