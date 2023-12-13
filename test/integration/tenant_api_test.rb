@@ -14,8 +14,8 @@ class TenantApiTest < ActionDispatch::IntegrationTest
     tenant = Tenant.find(json_response["id"])
     assert_empty tenant.feature_flags
     assert_equal "Testovaci tenant", tenant.name
-    assert tenant.admin_group.users.first.name, "Testovaci admin"
-    assert tenant.admin_group.users.first.email, "test@test.sk"
+    assert_equal "Testovaci admin", tenant.admin_group.users.first.name
+    assert_equal "test@test.sk", tenant.admin_group.users.first.email
   end
 
   test "can destroy tenant" do
@@ -42,7 +42,7 @@ class TenantApiTest < ActionDispatch::IntegrationTest
     box = tenant.boxes.find_by(name: "Test box")
     assert box
     assert json_response["id"]
-    assert_equal json_response["id"], box.id
+    assert_equal box.id, json_response["id"]
   end
 
   test "can add box with new api connection without obo" do
@@ -60,8 +60,8 @@ class TenantApiTest < ActionDispatch::IntegrationTest
     box = tenant.boxes.find_by(name: "Test box")
     assert box
     assert json_response["id"]
-    assert_equal json_response["id"], box.id
-    assert_equal box.api_connection.api_token_private_key, "supertajnykluc"
+    assert_equal box.id, json_response["id"]
+    assert_equal "supertajnykluc", box.api_connection.api_token_private_key
   end
   test "can not add box without api connection" do
     tenant = tenants(:solver)
@@ -74,7 +74,7 @@ class TenantApiTest < ActionDispatch::IntegrationTest
          as: :json
     assert_response :unprocessable_entity
     json_response = JSON.parse(response.body)
-    assert json_response, { message: "Api connection must be provided" }
+    assert_equal "Api connection must be provided", json_response["message"]
     assert_not tenant.boxes.find_by(name: "Test box")
   end
 end

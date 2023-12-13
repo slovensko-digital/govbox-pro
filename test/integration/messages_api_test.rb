@@ -10,20 +10,20 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
     get "/api/messages/#{message.id}", params: { token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }, as: :json
     assert_response :success
     json_response = JSON.parse(response.body)
-    assert json_response["id"], message.id
-    assert json_response["uuid"], message.uuid
-    assert json_response["title"], message.title
-    assert json_response["sender_name"], message.sender_name
-    assert json_response["recipient_name"] || "nil", message.recipient_name || "nil"
-    assert json_response["delivered_at"], message.delivered_at
-    assert json_response["metadata"], message.metadata
+    assert_equal message.id, json_response["id"]
+    assert_equal message.uuid, json_response["uuid"]
+    assert_equal message.title, json_response["title"]
+    assert_equal message.sender_name, json_response["sender_name"]
+    assert_equal message.recipient_name, json_response["recipient_name"]
+    assert_equal message.delivered_at, Time.zone.parse(json_response["delivered_at"])
+    assert_equal message.metadata, json_response["metadata"]
     message.objects.each do |object|
-      assert json_response["objects"][0]["name"], object.name
-      assert json_response["objects"][0]["mimetype"], object.mimetype
-      assert json_response["objects"][0]["object_type"], object.object_type
-      assert json_response["objects"][0]["updated_at"], object.updated_at
-      assert json_response["objects"][0]["is_signed"], object.is_signed
-      assert Base64.decode64(json_response["objects"][0]["data"]), object.message_object_datum.blob
+      assert_equal object.name, json_response["objects"][0]["name"]
+      assert_equal object.mimetype, json_response["objects"][0]["mimetype"]
+      assert_equal object.object_type, json_response["objects"][0]["object_type"]
+      assert_in_delta object.updated_at, Time.zone.parse(json_response["objects"][0]["updated_at"]), 0.001
+      assert_equal object.is_signed, json_response["objects"][0]["is_signed"]
+      assert_equal object.message_object_datum.blob, Base64.decode64(json_response["objects"][0]["data"])
     end
   end
 

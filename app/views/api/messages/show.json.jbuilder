@@ -11,6 +11,6 @@ json.objects @message.objects do |object|
   json.mimetype object.mimetype
   json.object_type object.object_type
   json.updated_at object.updated_at
-  json.is_signed object.is_signed ? "true" : "false"
+  json.is_signed object.is_signed
   json.data Base64.encode64(object.message_object_datum.blob)
 end
