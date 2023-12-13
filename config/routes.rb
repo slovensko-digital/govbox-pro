@@ -123,11 +123,12 @@ Rails.application.routes.draw do
 
   resources :sessions do
     get :login, on: :collection
+    get :no_account, on: :collection
     delete :destroy, on: :collection
   end
 
 
-  # if UpvsEnvironment.sso_support?
+  if UpvsEnvironment.sso_support?
     get :login, to: 'upvs#login'
     get :logout, to: 'upvs#logout'
 
@@ -137,7 +138,7 @@ Rails.application.routes.draw do
 
       post :callback
     end
-  # end
+  end
 
   get :auth, path: 'prihlasenie', to: 'sessions#login'
   get 'auth/google_oauth2/callback', to: 'sessions#create'

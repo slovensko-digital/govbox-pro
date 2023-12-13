@@ -1,13 +1,11 @@
 module UpvsEnvironment
+  extend self
 
-  def self.sso_settings
-    # TODO remove the next line to support live UPVS specs, need to figure out how to bring /security into CI first
-    return {} if Rails.env.test?
-
+  def sso_settings
     return @sso_settings if @sso_settings
 
-    idp_metadata = OneLogin::RubySaml::IdpMetadataParser.new.parse_to_hash(File.read(sso_metadata_file(:idp)))
-    sp_metadata = Hash.from_xml(File.read(sso_metadata_file(:sp))).fetch('EntityDescriptor')
+    idp_metadata = OneLogin::RubySaml::IdpMetadataParser.new.parse_to_hash(File.read(sso_metadata_file('upvs')))
+    sp_metadata = Hash.from_xml(File.read(sso_metadata_file(ENV.fetch('UPVS_SSO_SUBJECT')))).fetch('EntityDescriptor')
 
     @sso_settings ||= idp_metadata.merge(
       request_path: '/auth/saml',
@@ -23,11 +21,10 @@ module UpvsEnvironment
       sp_name_qualifier: sp_metadata['entityID'],
       idp_name_qualifier: idp_metadata[:idp_entity_id],
 
-      # TODO this gets called on IDP initiated logout, we need to invalidate SAML assertion here! removing assertion actually invalidates OBO token which is the desired effect here (cover it in specs)
       idp_slo_session_destroy: proc { |env, session| },
 
-      certificate: Base64.strict_encode64(File.read(Rails.root+'security/upvs_fix.sp.cer')),
-      private_key: Base64.strict_encode64(File.read(Rails.root+'security/upvs_fix.sp.pem')),
+      certificate: File.read(sso_certificate),
+      private_key: File.read(sso_private_key),
 
       security: {
         authn_requests_signed: true,
@@ -45,28 +42,26 @@ module UpvsEnvironment
 
       double_quote_xml_attribute_values: true,
       force_authn: false,
-      passive: false
+      passive: false,
+      allow_clock_drift: 5000
     )
   end
 
-  def self.sso_support?
-    @sso_support ||= ENV.key?('UPVS_SSO')
+  def sso_support?
+    @sso_support ||= ENV.key?('UPVS_SSO_SUBJECT')
   end
 
   private
 
-  def self.generate_pass(type)
-    return 'password' unless Upvs.env.prod?
-    salt = ENV.fetch("UPVS_#{type.to_s.upcase}_SALT")
-    raise "Short #{type.to_s.upcase} salt" if Upvs.env.prod? && salt.size < 40
-    Digest::SHA1.hexdigest("#{salt}:upvs")
+  def sso_private_key
+    Rails.root.join('security', "#{ENV.fetch('UPVS_SSO_SUBJECT')}_#{Upvs.env}.pem").to_s
   end
 
-  def self.sso_keystore_file
-    Rails.root.join('security', "upvs_#{Upvs.env}.sp.keystore").to_s
+  def sso_certificate
+    Rails.root.join('security', "#{ENV.fetch('UPVS_SSO_SUBJECT')}_#{Upvs.env}.cer").to_s
   end
 
-  def self.sso_metadata_file(type)
-    Rails.root.join('security', "upvs_#{Upvs.env}.#{type.to_s}.metadata.xml").to_s
+  def sso_metadata_file(subject)
+    Rails.root.join('security', "#{subject}_#{Upvs.env}.metadata.xml").to_s
   end
 end

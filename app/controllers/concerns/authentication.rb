@@ -21,19 +21,17 @@ module Authentication
     load_current_user
   end
 
-  def create_session
-    Current.user = User.find_by(email: auth_hash.info.email)
-
+  def create_session(user_uuid: nil)
     if Current.user
       session[:user_id] = Current.user.id
       session[:login_expires_at] = SESSION_TIMEOUT.from_now
       session[:tenant_id] = Current.user.tenant_id
       session[:user_profile_picture_url] = auth_hash.info.image
       session[:box_id] = Current.user.tenant.boxes.first.id if Current.user.tenant.boxes.one?
+      session[:upvs_login] = user_uuid.present?
       redirect_to session[:after_login_path] || default_after_login_path
     else
-      # TODO pass UPVS ID to view
-      render 'sessions/no_account'
+      redirect_to no_account_sessions_path(uuid: user_uuid)
     end
   end
 
