@@ -6,8 +6,8 @@
   <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
     <div class="bg-white px-6 py-12 shadow sm:rounded-lg sm:px-12">
       <p class="text-center text-gray-900">
-        <a href="#" class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">Kontaktujte nás</a>
-        <%= ("s požiadavkou o vytvorenie účtu spolu s Vašim identifikátorom: " + params[:saml_identifier]) if params[:saml_identifier] %>
+        <a href="#" class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">Kontaktujte nás</a> s požiadavkou o vytvorenie účtu
+        <%= (" spolu s Vašim identifikátorom: " + params[:saml_identifier]) if params[:saml_identifier] %>
       </p>
     </div>
   </div>
