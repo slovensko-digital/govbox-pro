@@ -6,7 +6,7 @@ export default class extends Controller {
   initialize() {
     new ResizeObserver(() => {
       const hrContainerTagOffset = this.separatorTarget.offsetLeft
-      const firstNonHrContainerTagOffset = this["separator-containerTarget"].nextElementSibling.offsetLeft
+      const firstNonHrContainerTagOffset = this["separator-containerTarget"].nextElementSibling?.offsetLeft ?? -1
 
       this.separatorTarget.classList[firstNonHrContainerTagOffset < hrContainerTagOffset ? "add" : "remove"]("opacity-0")
     }).observe(document.body)
