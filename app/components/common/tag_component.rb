@@ -1,6 +1,6 @@
 module Common
   class TagComponent < ViewComponent::Base
-    def initialize(tag, classes="", color: nil)
+    def initialize(tag, classes: "", color: nil)
       @label = tag.name || tag.external_name
       @classes = classes
       @color = tag.color || "gray"

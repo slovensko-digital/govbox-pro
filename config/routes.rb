@@ -111,6 +111,21 @@ Rails.application.routes.draw do
     end
 
     post 'submit_all', on: :collection
+
+    scope module: 'message_drafts' do
+      resource :document_selections, only: [:new, :update] do
+        collection do
+          post :new
+        end
+      end
+
+      resource :signature_requests, only: [:update] do
+        collection do
+          post :edit
+          post :prepare
+        end
+      end
+    end
   end
 
   resources :messages_tags

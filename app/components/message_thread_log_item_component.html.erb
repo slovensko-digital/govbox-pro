@@ -12,7 +12,7 @@
                 <% elsif @message.collapsed %>
                   <%= render Icons::CogEightToothComponent.new(css_classes: "w-5 h-5 text-gray-600") %>
                 <% else %>
-                  <%= render Icons::EnvelopeComponent.new(css_classes: "w-5 h-5 text-gray-600") %>
+                  <%= render Common::IconComponent.new("envelope", classes: "w-5 h-5 text-gray-600") %>
                 <% end %>
               </span>
             </div>
