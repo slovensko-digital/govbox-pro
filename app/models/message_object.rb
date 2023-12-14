@@ -48,12 +48,12 @@ class MessageObject < ApplicationRecord
     end
   end
 
-  def add_signature_request_from_tag(tag)
+  def add_signature_requested_from_tag(tag)
     add_cascading_tag(tag)
     add_cascading_tag(tag.tenant.signature_requested_tag)
   end
 
-  def remove_signature_request_from_tag(tag)
+  def remove_signature_requested_from_tag(tag)
     remove_cascading_tag(tag)
     remove_cascading_tag(tag.tenant.signature_requested_tag) unless has_signature_request_from_tags?
   end

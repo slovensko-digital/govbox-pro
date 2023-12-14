@@ -10,14 +10,14 @@ class MessageDraftsSigningTest < ApplicationSystemTestCase
     sign_in_as(:basic)
   end
 
-  test "user can requests signature on message drafts" do
+  test "user can request a signature from a user on message drafts" do
     visit message_thread_path(@thread_general)
 
     within_message_in_thread(@first_draft) do
       click_link "Vyžiadať podpis"
     end
 
-    check "Hlavný formulár"
+    check "Hlavný dokument"
     click_button "Vybrať podpisovačov"
 
     click_button "Späť na výber dokumentov"
