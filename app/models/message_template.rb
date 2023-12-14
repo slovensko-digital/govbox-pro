@@ -18,6 +18,7 @@ class MessageTemplate < ApplicationRecord
   scope :global, -> { where(tenant_id: nil) }
 
   REPLY_TEMPLATE_NAME = 'message_reply'
+  DEFAULT_TEMPLATE_NAME = 'Všeobecná agenda'
 
   def recipients
     '*'
@@ -44,6 +45,14 @@ class MessageTemplate < ApplicationRecord
     MessageTemplate.find_by!(
       system: true,
       name: REPLY_TEMPLATE_NAME,
+      tenant: nil
+    )
+  end
+
+  def self.default_template
+    MessageTemplate.find_by!(
+      system: false,
+      name: DEFAULT_TEMPLATE_NAME,
       tenant: nil
     )
   end
