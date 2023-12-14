@@ -2,25 +2,24 @@
 #
 # Table name: searchable_message_threads
 #
-#  id                             :bigint           not null, primary key
-#  content                        :text             not null
-#  last_message_created_at        :datetime         not null
-#  last_message_delivered_at      :datetime         not null
-#  message_thread_note_updated_at :datetime
-#  message_thread_updated_at      :datetime         not null
-#  note                           :string           not null
-#  tag_ids                        :integer          default([]), not null, is an Array
-#  tag_names                      :text             not null
-#  title                          :text             not null
-#  created_at                     :datetime         not null
-#  updated_at                     :datetime         not null
-#  box_id                         :integer          not null
-#  message_thread_id              :integer          not null
-#  tenant_id                      :integer          not null
+#  id                        :bigint           not null, primary key
+#  content                   :text             not null
+#  last_message_delivered_at :datetime         not null
+#  note                      :string           not null
+#  tag_ids                   :integer          default([]), not null, is an Array
+#  tag_names                 :text             not null
+#  title                     :text             not null
+#  created_at                :datetime         not null
+#  updated_at                :datetime         not null
+#  box_id                    :integer          not null
+#  message_thread_id         :integer          not null
+#  tenant_id                 :integer          not null
 #
 class Searchable::MessageThread < ApplicationRecord
   belongs_to :message_thread, class_name: '::MessageThread'
   belongs_to :tenant, class_name: '::Tenant'
+
+  scope :with_tag_id, ->(tag_id) { where("tag_ids && ARRAY[?]", [tag_id]) }
 
   include PgSearch::Model
   pg_search_scope :pg_search_all,

@@ -36,10 +36,14 @@ EventBus.subscribe :message_thread_changed, ->(thread) {
   ReindexAndNotifyFilterSubscriptionsJob.perform_later(thread.id)
 }
 
-
 # reindexing on removals
-EventBus.subscribe :tag_renamed, ->(tag) { Searchable::ReindexMessageThreadsWithTagIdJob.perform_later(tag.id) }
-EventBus.subscribe :tag_destroyed, ->(tag) { Searchable::ReindexMessageThreadsWithTagIdJob.perform_later(tag.id) }
+EventBus.subscribe :tag_renamed, ->(tag) do
+  ReindexAndNotifyFilterSubscriptionsJob.perform_later_for_tag_id(tag.id)
+end
+
+EventBus.subscribe :tag_destroyed, ->(tag) do
+  ReindexAndNotifyFilterSubscriptionsJob.perform_later_for_tag_id(tag.id)
+end
 
 # cleanup
 EventBus.subscribe :box_destroyed, ->(box_id) { Govbox::DestroyBoxDataJob.perform_later(box_id) }
