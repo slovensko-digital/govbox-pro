@@ -25,8 +25,8 @@ module UpvsEnvironment
 
       idp_slo_session_destroy: proc { |env, session| },
 
-      certificate: File.read(sso_certificate),
-      private_key: File.read(sso_private_key),
+      certificate: sso_certificate,
+      private_key: sso_private_key,
 
       security: {
         authn_requests_signed: true,
@@ -56,11 +56,11 @@ module UpvsEnvironment
   private
 
   def sso_private_key
-    Rails.root.join('security', "#{ENV.fetch('UPVS_SSO_SUBJECT')}_#{Upvs.env}.pem").to_s
+    ENV.fetch('UPVS_SSO_SP_PRIVATE_KEY')
   end
 
   def sso_certificate
-    Rails.root.join('security', "#{ENV.fetch('UPVS_SSO_SUBJECT')}_#{Upvs.env}.cer").to_s
+    ENV.fetch('UPVS_SSO_SP_CERTIFICATE')
   end
 
   def sso_metadata_file(subject)
