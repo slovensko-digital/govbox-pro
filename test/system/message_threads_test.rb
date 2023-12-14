@@ -115,7 +115,7 @@ class MessageThreadsTest < ApplicationSystemTestCase
     message_two = messages(:ssd_main_general_two)
     message_three = messages(:ssd_main_general_three)
 
-    draft_one = message_drafts(:ssd_main_general_draft_one)
+    draft_one = messages(:ssd_main_general_draft_one)
 
     within_thread_in_listing(thread_general) do
       click_link
