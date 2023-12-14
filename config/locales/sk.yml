@@ -260,13 +260,13 @@ sk:
     read_only_agenda: "Správu nie je možné ďalej upravovať. V prípade potreby pripravte novú správu a odošlite ju."
   filter_subscription:
     events:
-      message_thread_changed:
+      Notifications::NewMessageThread:
         name: "Nová konverzácia"
         description: "Dostanete notifikáciu o novom vlákne vyhovujúcemu filtru."
-      message_created:
+      Notifications::NewMessage:
         name: "Nová správa"
         description: "Dostanete notifikáciu ku každej novej správe vo vláknach vyhovujúcim filtru."
-      message_thread_note_changed:
+      Notifications::MessageThreadNoteChanged:
         name: "Zmena poznámky"
         description: "Dostanete notifikáciu o zmene poznámky k vláknu."
     flash:

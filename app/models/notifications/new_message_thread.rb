@@ -13,6 +13,16 @@
 #  user_id                :bigint           not null
 #
 module Notifications
-  class MessageCreated < ::Notification
+  class NewMessageThread < ::Notification # TODO rename to MessageThreadMatched
+    def self.create_notifications!(subscription, thread, matched_before)
+      return if matched_before
+
+      subscription.user.notifications.create!(
+        type: Notifications::NewMessageThread,
+        message_thread: thread,
+        filter_subscription: subscription,
+        filter_name: subscription.filter.name,
+      )
+    end
   end
 end

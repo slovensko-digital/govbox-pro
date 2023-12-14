@@ -13,7 +13,7 @@ class ReindexAndNotifyFilterSubscriptionsJob < ApplicationJob
     # Can be an Integer or Lambda/Proc that is invoked in the context of the job
     perform_limit: 1,
 
-    key: -> { "Searchable::ReindexMessageThreadJob-#{arguments.first}" }
+    key: -> { "ReindexAndNotifyFilterSubscriptionsJob-#{arguments.first}" }
   )
 
   def perform(thread_id)
@@ -21,10 +21,28 @@ class ReindexAndNotifyFilterSubscriptionsJob < ApplicationJob
 
     return unless thread
 
-    Searchable::Indexer.index_message_thread(thread)
-    
-    thread.tenant.filter_subscriptions.find_each do |subscription|
-      NotifyFilterSubscriptionJob.perform_later(subscription)
+    candidates = thread.tenant.filter_subscriptions
+
+    matching_before = matching_subscriptions(candidates, thread)
+    update_snapshot(thread)
+    matching_after = matching_subscriptions(candidates, thread)
+
+    matching_after.each do |s|
+      NotifyFilterSubscriptionJob.perform_later(s, thread, matching_before.include?(s))
     end
+  end
+
+  def matching_subscriptions(candidates, thread)
+    candidates.select do |subscription|
+      Searchable::MessageThread
+        .matching(subscription)
+        .where(message_thread: thread)
+        .exists?
+    end
+  end
+
+  def update_snapshot(thread)
+    # using fulltext index as snapshotting engine
+    Searchable::Indexer.index_message_thread(thread)
   end
 end

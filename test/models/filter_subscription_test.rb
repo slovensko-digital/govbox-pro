@@ -4,14 +4,14 @@ class FilterSubscriptionTest < ActiveSupport::TestCase
   test "new thread matching subscription fires event" do
     user = users(:admin)
     filter = filters(:one)
-    s = FilterSubscription.create!(tenant: user.tenant, user: user, filter: filter, events: ["message_thread_changed"])
+    s = FilterSubscription.create!(tenant: user.tenant, user: user, filter: filter, events: ["Notifications::NewMessageThread"])
 
-    message = Govbox::Message.create_message_with_thread!(govbox_messages(:one))
+    m = Govbox::Message.create_message_with_thread!(govbox_messages(:one))
 
-    Searchable::Indexer.index_message_thread(message.thread) # TODO
+    GoodJob.perform_inline
 
-    s.create_notifications!
-
-    assert user.notifications.last
+    assert_equal 1, user.notifications.count
+    assert_equal s, user.notifications.last.filter_subscription
+    assert_equal m.thread, user.notifications.last.message_thread
   end
 end
