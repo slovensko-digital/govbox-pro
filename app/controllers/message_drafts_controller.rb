@@ -14,7 +14,7 @@ class MessageDraftsController < ApplicationController
     @message_template = MessageTemplate.default_template
     @message = MessageDraft.new
     @boxes = Current.tenant.boxes.pluck(:name, :id)
-    @box = (Current.box&.slice(:name, :id).values.to_a if Current.box) || @boxes.first
+    @box = (Current.box if Current.box || @boxes.first)&.slice(:name, :id).values.to_a
     @recipients_list = @message_template&.recipients&.pluck(:institution_name, :institution_uri)&.map { |name, uri| { uri: uri, name: name }}
 
     authorize @message
@@ -40,6 +40,7 @@ class MessageDraftsController < ApplicationController
       @templates_list = MessageTemplate.tenant_templates_list(Current.tenant)
       @message_template ||= MessageTemplate.default_template
       @boxes = Current.tenant.boxes.pluck(:name, :id)
+      @box = @box&.slice(:name, :id).values.to_a
 
       @recipients_list = @message_template&.recipients&.pluck(:institution_name, :institution_uri)&.map { |name, uri| { uri: uri, name: name }}
 

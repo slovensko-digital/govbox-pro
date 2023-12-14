@@ -1,6 +1,6 @@
 class UpdateMessageDraftsAfterMessageTemplatesAdded < ActiveRecord::Migration[7.0]
   def up
-    message_reply_template = Upvs::MessageTemplate.find_or_create_by!(
+    message_reply_template = Upvs::MessageTemplate.find_or_create_by(
       name: MessageTemplate::REPLY_TEMPLATE_NAME,
       content: '<GeneralAgenda xmlns="http://schemas.gov.sk/form/App.GeneralAgenda/1.9">
   <subject>{{Predmet::text_field}}</subject>

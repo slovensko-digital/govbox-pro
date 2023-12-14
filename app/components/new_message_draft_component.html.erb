@@ -22,7 +22,7 @@
                 </p>
               <% end %>
             <% else %>
-              <%= hidden_field_tag sender_element_id, @boxes.first %>
+              <%= hidden_field_tag sender_element_id, @boxes.first[1] %>
             <% end %>
           </div>
 
