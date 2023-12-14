@@ -1,0 +1,28 @@
+<%= tag.turbo_frame id: "modal" do %>
+  <%= render Common::ModalComponent.new do |modal| %>
+    <% modal.with_header do %>
+      Archivovať vlákno
+    <% end %>
+    <% modal.with_modal_content do %>
+      <%= form_with url: update_archived_message_thread_path, method: :patch, data: {turbo_frame: "_top"}, class: "flex flex-col justify-stretch w-full gap-2 mt-4" do %>
+        <%= hidden_field_tag("archived", !@message_thread.archived?) %>
+        <div class="flex flex-col items-start gap-4">
+          <% if @message_thread.archived? %>
+            Vlákno je archivované
+          <% end %>
+        </div>
+        <%= render Common::ModalActionsComponent.new do |actions| %>
+          <% actions.with_submit_button do %>
+            <%= button_tag type: 'submit', class: 'flex justify-center items-center px-2.5 py-1.5 rounded-md bg-blue-600 text-sm font-medium text-white'  do %>
+              <% if @message_thread.archived? %>
+                Zrušiť archivovanie vlákna
+              <% else %>
+                Archivovať vlákno
+              <% end %>
+            <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>
