@@ -129,8 +129,10 @@ Rails.application.routes.draw do
 
 
   if UpvsEnvironment.sso_support?
-    get :login, to: 'upvs#login'
-    get :logout, to: 'upvs#logout'
+    namespace :upvs do
+      get :login
+      get :logout
+    end
 
     scope 'auth/saml', as: :upvs, controller: :upvs do
       get :login
