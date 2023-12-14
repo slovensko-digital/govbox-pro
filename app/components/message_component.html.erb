@@ -102,7 +102,7 @@
     <% if @message.attachments.present? %>
       <div class="flex justify-start items-center gap-2 px-6 py-4 bg-white border-t-0 border-r-0 border-b border-l-0 border-gray-200">
         <div>
-          <%= render Icons::PaperClipComponent.new(css_classes: "w-6 h-6 text-gray-400") %>
+          <%= render Common::IconComponent.new("paper_clip", classes: "w-6 h-6 text-gray-400") %>
         </div>
         <p class="grow text-base text-left text-gray-900">
           Správa obsahuje <span class="font-semibold"><%= t('message_object', count: @message.attachments.length, locale: :sk) %></span>

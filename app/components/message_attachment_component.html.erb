@@ -13,6 +13,12 @@
         <span class="truncate text-base font-semibold text-left text-gray-900">
           <%= MessageObjectHelper.displayable_name(@message_attachment) %>
         </span>
+        <div class="flex flex-wrap gap-1">
+          <% SigningTagsHelper.sort_tags(@message_attachment.tags).each do |tag| %>
+            <%= render Common::TagComponent.new(tag) %>
+          <% end %>
+        </div>
+
         <% if @message_attachment.is_signed? %>
           <%= render Common::BadgeComponent.new("Podpísané", "hidden md:flex") %>
         <% end %>

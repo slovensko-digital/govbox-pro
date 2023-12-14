@@ -4,13 +4,13 @@ class HealthCheckController < ApplicationController
   skip_before_action :set_menu_context
 
   def show
+    ActiveRecord::Base.connection.verify! # connect if not connected
+
     if ActiveRecord::Base.connection.active?
       render status: :ok, json: { ok: true }
     else
       render status: :service_unavailable, json: { ok: false }
     end
-  rescue Exception
-    render status: :service_unavailable, json: { ok: false }
   end
 
   def failing_jobs

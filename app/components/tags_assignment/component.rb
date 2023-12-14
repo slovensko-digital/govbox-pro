@@ -1,7 +1,6 @@
 module TagsAssignment
   class Component < ViewComponent::Base
     LIST_FRAME = "tags-assignment-list"
-    DIFF_FRAME = "tags-assignment-diff"
     ACTIONS_FRAME = "tags-assignment-actions"
     SEARCH_FIELD_FRAME = "tags-assignment-search-field"
 

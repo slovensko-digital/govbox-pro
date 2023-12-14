@@ -1,0 +1,25 @@
+<%= render Common::ModalComponent.new do |modal| %>
+  <% modal.with_header do %>
+    Dokumenty na podpis
+  <% end %>
+  <% modal.with_modal_content do %>
+    <%= form_with url: prepare_message_draft_signature_requests_path(@message_draft) do %>
+
+      <% @message_objects.each do |message_object| %>
+        <%= hidden_field_tag "object_ids[]", message_object.id %>
+      <% end %>
+
+      <div class="flex flex-col items-start gap-4 mt-4">
+        <div class="w-full mb-4">
+          <%= render Signing::SignersRequests::ListComponent.new(signers_changes: @signers_changes) %>
+        </div>
+      </div>
+
+      <%= tag.turbo_frame id: Signing::SignersRequests::Component::DIFF_FRAME %>
+
+      <%= tag.turbo_frame id: Signing::SignersRequests::Component::ACTIONS_FRAME do %>
+        <%= render Signing::SignersRequests::ActionsComponent.new(message_draft: @message_draft, signers_changes: @signers_changes) %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>
