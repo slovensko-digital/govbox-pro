@@ -17,6 +17,8 @@ class MessageObject < ApplicationRecord
   belongs_to :message, inverse_of: :objects
   has_one :message_object_datum, dependent: :destroy
   has_many :nested_message_objects, inverse_of: :message_object, dependent: :destroy
+  has_many :message_objects_tags, dependent: :destroy
+  has_many :tags, through: :message_objects_tags
 
   scope :unsigned, -> { where(is_signed: false) }
   scope :to_be_signed, -> { where(to_be_signed: true) }
@@ -46,6 +48,16 @@ class MessageObject < ApplicationRecord
     end
   end
 
+  def add_signature_requested_from_tag(tag)
+    add_cascading_tag(tag)
+    add_cascading_tag(tag.tenant.signature_requested_tag)
+  end
+
+  def remove_signature_requested_from_tag(tag)
+    remove_cascading_tag(tag)
+    remove_cascading_tag(tag.tenant.signature_requested_tag) unless has_signature_request_from_tags?
+  end
+
   def content
     message_object_datum&.blob
   end
@@ -68,9 +80,31 @@ class MessageObject < ApplicationRecord
     message.draft? && message.not_yet_submitted? && !form?
   end
 
+  def has_signature_request_from_tags?
+    message_objects_tags.joins(:tag).where(tag: { type: SignatureRequestedFromTag.to_s }).exists?
+  end
+
   private
 
   def allowed_mime_type?
     errors.add(:mime_type, "of #{name} object is disallowed, allowed_mime_types: #{Utils::EXTENSIONS_ALLOW_LIST.join(", ")}") unless mimetype
+  end
+
+  def add_cascading_tag(tag)
+    message_objects_tags.find_or_create_by!(tag: tag)
+    message.thread.message_threads_tags.find_or_create_by!(tag: tag)
+  end
+
+  def remove_cascading_tag(tag)
+    message_objects_tags.find_by(tag: tag)&.destroy
+
+    thread = message.thread
+
+    same_tag_on_other_thread_object = MessageObjectsTag.
+      joins(:tag, message_object: { message: :thread }).
+      where(message_threads: { id: thread }).
+      where(tag: tag).exists?
+
+    message.thread.message_threads_tags.find_by(tag: tag)&.destroy unless same_tag_on_other_thread_object
   end
 end
