@@ -3,7 +3,5 @@
               message_thread_path(notification.message_thread, anchor: dom_id(notification.message)),
               class: "underline font-semibold",
               title: notification.message.title
-  %> vo
-  vlákne <%= link_to notification.message_thread.title, notification.message_thread, class: "underline font-semibold" %>
-  vo filtri <%= link_to notification.filter_name, message_threads_path(q: notification.filter.query), class: "underline font-semibold" %>.
+  %> vo vlákne <%= link_to notification.message_thread.title, notification.message_thread, class: "underline font-semibold" %><% if notification.filter_subscription %> vo filtri <%= link_to notification.filter_name, message_threads_path(q: notification.filter.query), class: "underline font-semibold" %><% end %>.
 </p>
