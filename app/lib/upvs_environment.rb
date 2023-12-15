@@ -2,7 +2,7 @@ module UpvsEnvironment
   extend self
 
   def sso_settings
-    return {} if Rails.env.test?
+    return {} if Rails.env.test? || !sso_support?
 
     return @sso_settings if @sso_settings
 
