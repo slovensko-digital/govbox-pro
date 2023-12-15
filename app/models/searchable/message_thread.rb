@@ -57,8 +57,6 @@ class Searchable::MessageThread < ApplicationRecord
     scope = scope.where(tenant_id: search_permissions.fetch(:tenant))
     scope = scope.where(box_id: search_permissions.fetch(:box)) if search_permissions[:box]
 
-    scope = scope.where(message_thread_id: search_permissions[:only_id]) if search_permissions[:only_id]
-
     if search_permissions[:tag_ids]
       if search_permissions[:tag_ids].any?
         scope = scope.where("tag_ids && ARRAY[?]", search_permissions[:tag_ids])
