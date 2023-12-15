@@ -8,9 +8,9 @@ module MessageThreads
       def edit
         authorize MessageThreadsTag
 
-        @tags_changes = TagsChanges.new(
+        @tags_changes = RelationChanges::Tags.new(
           tag_scope: tag_scope,
-          tags_assignments: TagsChanges::Helpers.build_bulk_assignments(message_threads: @message_threads, tag_scope: tag_scope)
+          tags_assignments: RelationChanges::Tags.build_bulk_assignments(message_threads: @message_threads, tag_scope: tag_scope)
         )
         @tags_filter = TagsFilter.new(tag_scope: tag_scope)
       end
@@ -18,7 +18,7 @@ module MessageThreads
       def prepare
         authorize MessageThreadsTag
 
-        @tags_changes = TagsChanges.new(
+        @tags_changes = RelationChanges::Tags.new(
           tag_scope: tag_scope,
           tags_assignments: tags_assignments,
           )
@@ -30,7 +30,7 @@ module MessageThreads
         new_tag = SimpleTag.new(simple_tag_creation_params.merge(name: params[:new_tag].strip))
         authorize(new_tag, "create?", policy_class: TagPolicy)
 
-        @tags_changes = TagsChanges.new(
+        @tags_changes = RelationChanges::Tags.new(
           tag_scope: tag_scope,
           tags_assignments: tags_assignments,
           )
@@ -47,7 +47,7 @@ module MessageThreads
       def update
         authorize MessageThreadsTag
 
-        tag_changes = TagsChanges.new(
+        tag_changes = RelationChanges::Tags.new(
           tag_scope: tag_scope.includes(:tenant),
           tags_assignments: tags_assignments
         )

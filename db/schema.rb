@@ -321,6 +321,16 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_15_074429) do
     t.index ["message_id"], name: "index_message_objects_on_message_id"
   end
 
+  create_table "message_objects_tags", force: :cascade do |t|
+    t.bigint "message_object_id", null: false
+    t.bigint "tag_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["message_object_id", "tag_id"], name: "index_message_objects_tags_on_message_object_id_and_tag_id", unique: true
+    t.index ["message_object_id"], name: "index_message_objects_tags_on_message_object_id"
+    t.index ["tag_id"], name: "index_message_objects_tags_on_tag_id"
+  end
+
   create_table "message_relations", force: :cascade do |t|
     t.bigint "message_id"
     t.bigint "related_message_id"
@@ -466,6 +476,8 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_15_074429) do
     t.string "type", null: false
     t.enum "color", enum_type: "color"
     t.integer "tag_groups_count", default: 0, null: false
+    t.enum "color", enum_type: "color"
+    t.index "tenant_id, type, lower((name)::text)", name: "index_tags_on_tenant_id_and_type_and_lowercase_name", unique: true
     t.string "icon"
     t.index "tenant_id, lower((name)::text)", name: "index_tags_on_tenant_id_and_lowercase_name", unique: true
     t.index ["owner_id"], name: "index_tags_on_owner_id"
@@ -535,6 +547,8 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_15_074429) do
   add_foreign_key "message_drafts_imports", "boxes"
   add_foreign_key "message_object_data", "message_objects"
   add_foreign_key "message_objects", "messages"
+  add_foreign_key "message_objects_tags", "message_objects"
+  add_foreign_key "message_objects_tags", "tags"
   add_foreign_key "message_relations", "messages"
   add_foreign_key "message_relations", "messages", column: "related_message_id"
   add_foreign_key "message_thread_merge_identifiers", "message_threads"

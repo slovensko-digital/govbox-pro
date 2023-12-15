@@ -18,7 +18,7 @@ class SidebarMenu
 
   def default_main_menu
     [
-      TW::SidebarMenuItemComponent.new(name: 'Všetky správy', url: message_threads_path, icon: Icons::EnvelopeComponent.new),
+      TW::SidebarMenuItemComponent.new(name: 'Všetky správy', url: message_threads_path, icon: Common::IconComponent.new("envelope")),
       Layout::FilterListComponent.new(filters: @parameters[:filters]),
       Layout::TagListComponent.new(tags: @parameters[:tags]),
       TW::SidebarMenuItemComponent.new(name: 'Nastavenia', url: filters_path, icon: Icons::CogSixToothComponent.new)

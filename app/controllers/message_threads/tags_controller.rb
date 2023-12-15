@@ -6,9 +6,9 @@ class MessageThreads::TagsController < ApplicationController
   def edit
     authorize MessageThreadsTag
 
-    @tags_changes = TagsChanges.new(
+    @tags_changes = RelationChanges::Tags.new(
       tag_scope: tag_scope,
-      tags_assignments: TagsChanges::Helpers.build_assignment(message_thread: @message_thread, tag_scope: tag_scope)
+      tags_assignments: RelationChanges::Tags.build_assignment(message_thread: @message_thread, tag_scope: tag_scope)
     )
 
     @tags_filter = TagsFilter.new(tag_scope: tag_scope)
@@ -17,7 +17,7 @@ class MessageThreads::TagsController < ApplicationController
   def prepare
     authorize MessageThreadsTag
 
-    @tags_changes = TagsChanges.new(
+    @tags_changes = RelationChanges::Tags.new(
       tag_scope: tag_scope,
       tags_assignments: tags_assignments
     )
@@ -30,7 +30,7 @@ class MessageThreads::TagsController < ApplicationController
     new_tag = SimpleTag.new(simple_tag_creation_params.merge(name: params[:new_tag].strip))
     authorize(new_tag, "create?", policy_class: TagPolicy)
 
-    @tags_changes = TagsChanges.new(
+    @tags_changes = RelationChanges::Tags.new(
       tag_scope: tag_scope,
       tags_assignments: tags_assignments
     )
@@ -46,7 +46,7 @@ class MessageThreads::TagsController < ApplicationController
   def update
     authorize MessageThreadsTag
 
-    tag_changes = TagsChanges.new(
+    tag_changes = RelationChanges::Tags.new(
       tag_scope: tag_scope,
       tags_assignments: tags_assignments
     )

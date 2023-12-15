@@ -4,7 +4,7 @@
       <div class="flex justify-between items-center gap-4 overflow-clip">
         <div class="flex justify-start items-center gap-4 overflow-clip">
           <div class="flex justify-stretch items-center gap-4">
-            <%= render Icons::PaperClipComponent.new(css_classes: "w-6 h-6 text-gray-400") %>
+            <%= render Common::IconComponent.new("paper_clip", classes: "w-6 h-6 text-gray-400") %>
             <p class="flex-grow-0 flex-shrink-0 text-base text-left text-gray-900">
               <% if @attachments.present? %>
                 Správa obsahuje <b><%= t("message_object", count: @attachments.length, locale: :sk) %></b>
