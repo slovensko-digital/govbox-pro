@@ -4,11 +4,11 @@
     <span class="grow sm:text-xl text-base font-semibold text-left text-gray-900"><%= @ids.present? ? t(:selected_message, count: @ids.count) : "Správy v schránke" %>
       <% if @filter %>
         <% if @filter_subscription %>
-          <%= link_to edit_filter_filter_subscription_path(@filter, @filter_subscription), title: "Nastaviť notifikácie", "data-turbo-stream": true, form_class: "inline" do %>
+          <%= link_to edit_filter_filter_subscription_path(@filter, @filter_subscription), title: "Nastaviť notifikácie", "data-turbo-frame": :modal, form_class: "inline" do %>
             <%= render Common::IconComponent.new("bell-alert", classes: "h-6 w-6 inline stroke-gray-400 hover:stroke-gray-700") %>
           <% end %>
         <% else %>
-          <%= link_to new_filter_filter_subscription_path(@filter), title: "Nastaviť notifikácie", "data-turbo-stream": true, form_class: "inline" do %>
+          <%= link_to new_filter_filter_subscription_path(@filter), title: "Nastaviť notifikácie", "data-turbo-frame": :modal, form_class: "inline" do %>
             <%= render Common::IconComponent.new("bell", classes: "h-6 w-6 inline stroke-gray-300 hover:stroke-gray-700") %>
           <% end %>
         <% end %>

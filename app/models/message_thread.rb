@@ -48,8 +48,9 @@ class MessageThread < ApplicationRecord
   end
 
   def rename(params)
-    update(params)
+    result = update(params)
     EventBus.publish(:message_thread_renamed, self)
+    result
   end
 
   def mark_all_messages_read

@@ -22,6 +22,8 @@ class MessageThreadsController < ApplicationController
 
     if @message_thread.rename(message_thread_params)
       redirect_to @message_thread, notice: 'Názov vlákna bol upravený'
+    else
+      render :rename
     end
   end
 

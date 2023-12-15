@@ -24,7 +24,6 @@ class MessageThreadsTag < ApplicationRecord
   scope :only_visible_tags, -> { includes(:tag).joins(:tag).where("tags.visible = ?", true).order("tags.name") }
 
   after_commit ->(message_threads_tag) { EventBus.publish(:message_thread_tag_changed, message_threads_tag) }
-  after_commit ->(message_threads_tag) { EventBus.publish(:message_thread_tag_changed, message_threads_tag) }
 
   def thread_and_tag_tenants_matches
     return if message_thread.box.tenant == tag.tenant && tag.tenant
