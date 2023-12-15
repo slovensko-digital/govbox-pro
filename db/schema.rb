@@ -487,6 +487,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_13_130631) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "saml_identifier"
     t.index "tenant_id, lower((email)::text)", name: "index_users_on_tenant_id_and_lowercase_email", unique: true
   end
 
