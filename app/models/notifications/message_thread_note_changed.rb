@@ -15,6 +15,7 @@
 module Notifications
   class MessageThreadNoteChanged < ::Notification
     def self.create_notifications!(subscription, thread, _)
+      return unless thread.message_thread_note
       return unless thread.message_thread_note.updated_at > subscription.last_notify_run_at
 
       subscription.user.notifications.create!(

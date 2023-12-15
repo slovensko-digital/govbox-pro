@@ -17,12 +17,14 @@ class NotifyFilterSubscriptionJob < ApplicationJob
   )
 
   def perform(subscription, thread, matched_before)
-    run_started_at = Time.current
+    Notification.transaction do
+      run_started_at = Time.current
 
-    subscription.event_types.each do |type|
-      type.create_notifications!(subscription, thread, matched_before)
+      subscription.event_types.each do |type|
+        type.create_notifications!(subscription, thread, matched_before)
+      end
+
+      subscription.update!(last_notify_run_at: run_started_at)
     end
-
-    subscription.update!(last_notify_run_at: run_started_at)
   end
 end
