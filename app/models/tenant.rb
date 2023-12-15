@@ -30,6 +30,8 @@ class Tenant < ApplicationRecord
   has_many :automation_rules, class_name: "Automation::Rule", dependent: :destroy
   has_many :filters
 
+  has_many :filter_subscriptions
+
   after_create :create_default_objects
 
   validates_presence_of :name

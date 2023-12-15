@@ -25,8 +25,12 @@
       <div class="flex flex-col justify-start items-start gap-px py-0.5 rounded-lg bg-white border border-gray-300" style="box-shadow: 1px 1px 4px 0 rgba(0,0,0,0.1);">
         <div class="flex justify-start items-start px-4 py-3">
           <div class="flex flex-col justify-start items-start relative gap-1">
+            <%= link_to "Notifikácie", notifications_path, class: "text-base font-medium text-center text-gray-900" %>
+          </div>
+        </div>
+        <div class="flex justify-start items-start px-4 py-3">
+          <div class="flex flex-col justify-start items-start relative gap-1">
             <% if @user %>
-              <p class="text-base text-center text-gray-900">Prihlásený ako</p>
               <p class="text-base font-medium text-center text-gray-900"><%= @user.email %></p>
             <% else %>
               <p class="text-base text-center text-gray-900">Neprihlásený</p>
