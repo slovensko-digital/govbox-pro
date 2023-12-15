@@ -21,14 +21,16 @@ class ReindexAndNotifyFilterSubscriptionsJob < ApplicationJob
 
     return unless thread
 
-    candidates = thread.tenant.filter_subscriptions
+    MessageThread.transaction do
+      candidates = thread.tenant.filter_subscriptions
 
-    matching_before = matching_subscriptions(candidates, thread)
-    update_snapshot(thread)
-    matching_after = matching_subscriptions(candidates, thread)
+      matching_before = matching_subscriptions(candidates, thread)
+      update_snapshot(thread)
+      matching_after = matching_subscriptions(candidates, thread)
 
-    matching_after.each do |s|
-      NotifyFilterSubscriptionJob.perform_later(s, thread, matching_before.include?(s))
+      matching_after.each do |s|
+        NotifyFilterSubscriptionJob.perform_later(s, thread, matching_before.include?(s))
+      end
     end
   end
 
@@ -37,6 +39,7 @@ class ReindexAndNotifyFilterSubscriptionsJob < ApplicationJob
   end
 
   private
+
   def matching_subscriptions(candidates, thread)
     candidates.select do |subscription|
       Searchable::MessageThread
