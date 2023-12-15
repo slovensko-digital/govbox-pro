@@ -50,7 +50,7 @@ module UpvsEnvironment
   end
 
   def sso_support?
-    @sso_support ||= ENV['UPVS_SSO_SUBJECT'].present?
+    ENV['UPVS_SSO_SUBJECT'].present?
   end
 
   private
