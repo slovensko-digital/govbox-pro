@@ -2,12 +2,14 @@
 #
 # Table name: users
 #
-#  id         :bigint           not null, primary key
-#  email      :string           not null
-#  name       :string           not null
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  tenant_id  :bigint
+#  id                           :bigint           not null, primary key
+#  email                        :string           not null
+#  name                         :string           not null
+#  notifications_last_opened_at :datetime
+#  notifications_reset_at       :datetime
+#  created_at                   :datetime         not null
+#  updated_at                   :datetime         not null
+#  tenant_id                    :bigint
 #
 class User < ApplicationRecord
   include AuditableEvents
@@ -44,10 +46,10 @@ class User < ApplicationRecord
   def accessible_tags
     Tag.where(
       TagGroup.select(1)
-       .joins(:group_memberships)
-       .where("tag_groups.tag_id = tags.id")
-       .where(group_memberships: { user_id: id })
-       .arel.exists
+              .joins(:group_memberships)
+              .where("tag_groups.tag_id = tags.id")
+              .where(group_memberships: { user_id: id })
+              .arel.exists
     )
   end
 
@@ -57,6 +59,17 @@ class User < ApplicationRecord
 
   def signature_requested_from_tag
     tenant.signature_requested_from_tags.find_tag_containing_group(user_group)
+  end
+
+  def update_notifications_retention
+    if notifications_reset_at.blank? || true
+      update(notifications_reset_at: 5.minutes.from_now)
+    elsif notifications_reset_at < Time.current
+      update(
+        notifications_last_opened_at: notifications_reset_at,
+        notifications_reset_at: 5.minutes.from_now
+      )
+    end
   end
 
   private

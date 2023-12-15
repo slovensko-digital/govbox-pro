@@ -6,7 +6,9 @@
     <div class="flow-root m-6">
       <ul role="list" class="-mb-8" id="notifications">
         <%= render partial: "notifications", object: @notifications %>
-
+        <% if @next_cursor %>
+          <%= render Turbo::NextPageAreaComponent.new(id: @next_cursor, url: scroll_notifications_path(cursor: @next_cursor, format: :turbo_stream)) %>
+        <% end %>
       </ul>
     </div>
   </div>

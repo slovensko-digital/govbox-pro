@@ -4,7 +4,8 @@
       <span class="group-last:hidden absolute left-4 top-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
       <div class="relative flex space-x-3">
         <div>
-          <span class="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center ring-8 ring-white">
+          <% recent = notification.created_at > @last_opened_at %>
+          <span class="h-8 w-8 rounded-full <%= recent ? "bg-blue-200" : "bg-gray-200" %> flex items-center justify-center ring-8 ring-white">
              <%= render Common::IconComponent.new(to_icon_name(notification), classes: "w-5 h-5 text-gray-600") %>
           </span>
         </div>

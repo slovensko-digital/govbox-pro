@@ -3,7 +3,7 @@
 <% end %>
 <% if @next_cursor %>
   <%= turbo_stream.append "next_page_area" do %>
-    <%= render Turbo::NextPageComponent.new(id: @next_cursor, url: scroll_notifications_url(format: 'turbo_stream')) %>
+    <%= render Turbo::NextPageComponent.new(id: @next_cursor, url: scroll_notifications_url(format: :turbo_stream)) %>
   <% end %>
 <% else %>
   <%= turbo_stream.remove "next_page_area" %>
