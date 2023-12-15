@@ -18,4 +18,15 @@ module ApplicationHelper
       l(datetime, format: '%e. %b %Y %H:%M')
     end
   end
+
+  def to_icon_name(thing)
+    case thing
+    when Notifications::NewMessageThread
+      "envelope"
+    when Notifications::NewMessage
+      "chat-bubble-left-right"
+    when Notifications::MessageThreadNoteChanged
+      "pencil-square"
+    end
+  end
 end

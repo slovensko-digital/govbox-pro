@@ -17,4 +17,6 @@ class Notification < ApplicationRecord
   belongs_to :message_thread
   belongs_to :message, optional: true
   belongs_to :filter_subscription, optional: true
+
+  delegate :filter, to: :filter_subscription
 end

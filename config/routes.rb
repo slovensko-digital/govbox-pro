@@ -120,7 +120,9 @@ Rails.application.routes.draw do
 
   resources :messages_tags
 
-  resources :notifications
+  resources :notifications do
+    get :scroll, on: :collection
+  end
 
   resource :settings
 

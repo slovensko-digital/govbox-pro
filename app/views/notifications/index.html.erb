@@ -1,5 +1,13 @@
-<ul>
-  <% @notifications.each do |n| %>
-    <li><code><%= n.inspect %></code></li>
-  <% end %>
-</ul>
+<div class="p-4">
+  <div class="overflow-hidden bg-white sm:rounded-lg sm:shadow">
+    <div class="border-b border-gray-200 bg-white px-4 py-5 sm:px-6">
+      <h3 class="text-base font-semibold leading-6 text-gray-900">Notifikácie</h3>
+    </div>
+    <div class="flow-root m-6">
+      <ul role="list" class="-mb-8" id="notifications">
+        <%= render partial: "notifications", object: @notifications %>
+
+      </ul>
+    </div>
+  </div>
+</div>

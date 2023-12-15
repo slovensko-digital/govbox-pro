@@ -64,7 +64,7 @@ class FilterSubscription < ApplicationRecord
     )
 
     if query[:filter_tag_ids].present?
-      return none if query[:filter_tag_ids] == :missing_tag
+      return scope.none if query[:filter_tag_ids] == :missing_tag
 
       scope = scope.where("tag_ids @> ARRAY[?]", query[:filter_tag_ids])
     end
