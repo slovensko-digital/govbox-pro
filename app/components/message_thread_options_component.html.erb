@@ -1,6 +1,6 @@
 <%= render Common::OptionsComponent.new(id: "message-thread-options") do |options| %>
   <% options.with_menu_content do %>
-    <%= link_to rename_message_thread_path(@message_thread), method: :get, "data-turbo-stream": true, class: "flex gap-3 items-center", role: "menuitem", tabindex: "-1" do %>
+    <%= link_to rename_message_thread_path(@message_thread), "data-turbo-stream": true, class: "flex gap-3 items-center", role: "menuitem", tabindex: "-1" do %>
       <%= render Icons::PencilComponent.new(css_classes: "h-5 w-5") %>
       Premenovať
     <% end %>
