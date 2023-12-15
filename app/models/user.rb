@@ -62,7 +62,7 @@ class User < ApplicationRecord
   end
 
   def update_notifications_retention
-    if notifications_reset_at.blank? || true
+    if notifications_reset_at.blank?
       update(notifications_reset_at: 5.minutes.from_now)
     elsif notifications_reset_at < Time.current
       update(
