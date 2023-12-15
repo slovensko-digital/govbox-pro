@@ -7,7 +7,7 @@ class Govbox::SubmitMessageDraftJob < ApplicationJob
 
   retry_on TemporarySubmissionError, wait: 2.minutes, attempts: 5
 
-  def perform(message_draft, schedule_sync: true, upvs_client: UpvsEnvironment.upvs_client)
+  def perform(message_draft, schedule_sync: true)
     message_draft_data = {
       posp_id: message_draft.metadata["posp_id"],
       posp_version: message_draft.metadata["posp_version"],
@@ -21,7 +21,7 @@ class Govbox::SubmitMessageDraftJob < ApplicationJob
       objects: build_objects(message_draft)
     }.compact
 
-    sktalk_api = upvs_client.api(message_draft.thread.box).sktalk
+    sktalk_api = UpvsEnvironment.upvs_api(message_draft.thread.box).sktalk
     success, response_status, response_body = sktalk_api.receive_and_save_to_outbox(message_draft_data)
 
     if success

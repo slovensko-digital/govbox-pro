@@ -5,6 +5,8 @@ module Upvs
     attr_reader :sub, :obo, :api_token_private_key, :url, :edesk, :sktalk
 
     def initialize(url, box:, handler: Faraday)
+      raise "Box API connection is not of type Govbox API connection" unless (box.api_connection.is_a?(Govbox::ApiConnection) || box.api_connection.is_a?(Govbox::ApiConnectionWithOboSupport))
+
       @sub = box.api_connection.sub
       @obo = box.api_connection.box_obo(box)
       @api_token_private_key = OpenSSL::PKey::RSA.new(box.api_connection.api_token_private_key)
