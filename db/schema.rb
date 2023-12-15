@@ -476,10 +476,8 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_15_074429) do
     t.string "type", null: false
     t.enum "color", enum_type: "color"
     t.integer "tag_groups_count", default: 0, null: false
-    t.enum "color", enum_type: "color"
-    t.index "tenant_id, type, lower((name)::text)", name: "index_tags_on_tenant_id_and_type_and_lowercase_name", unique: true
     t.string "icon"
-    t.index "tenant_id, lower((name)::text)", name: "index_tags_on_tenant_id_and_lowercase_name", unique: true
+    t.index "tenant_id, type, lower((name)::text)", name: "index_tags_on_tenant_id_and_type_and_lowercase_name", unique: true
     t.index ["owner_id"], name: "index_tags_on_owner_id"
     t.index ["tenant_id", "type"], name: "signings_tags", unique: true, where: "((type)::text = ANY ((ARRAY['SignatureRequestedTag'::character varying, 'SignedTag'::character varying])::text[]))"
     t.index ["tenant_id"], name: "index_tags_on_tenant_id"
