@@ -16,5 +16,5 @@ Rails.application.config.middleware.use OmniAuth::Builder do
     scope: 'email'
   }
 
-  provider :saml, UpvsEnvironment.sso_settings
+  provider :saml, UpvsEnvironment.sso_settings if UpvsEnvironment.sso_support?
 end

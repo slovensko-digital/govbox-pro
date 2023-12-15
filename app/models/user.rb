@@ -7,16 +7,10 @@
 #  name                         :string           not null
 #  notifications_last_opened_at :datetime
 #  notifications_reset_at       :datetime
+#  saml_identifier              :string
 #  created_at                   :datetime         not null
 #  updated_at                   :datetime         not null
 #  tenant_id                    :bigint
-#  id              :bigint           not null, primary key
-#  email           :string           not null
-#  name            :string           not null
-#  saml_identifier :string
-#  created_at      :datetime         not null
-#  updated_at      :datetime         not null
-#  tenant_id       :bigint
 #
 class User < ApplicationRecord
   include AuditableEvents
