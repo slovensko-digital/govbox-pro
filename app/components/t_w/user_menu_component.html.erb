@@ -43,7 +43,7 @@
           </svg>
         </div>
         <div class="flex justify-start items-start px-4 py-2">
-          <%= button_to sessions_path, method: :delete, class: "text-base font-medium text-left text-gray-900 hover:underline", role: "menuitem", tabindex: "-1", id: "user-menu-item-1" do %>
+          <%= button_to sessions_path, method: :delete, data: { turbo: false }, class: "text-base font-medium text-left text-gray-900 hover:underline", role: "menuitem", tabindex: "-1", id: "user-menu-item-1" do %>
             <div class="flex justify-center items-center relative gap-3">
               <%= render Icons::ArrowRightOnRectangleComponent.new %>
               Odhlásiť sa
