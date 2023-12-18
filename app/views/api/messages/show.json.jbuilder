@@ -4,7 +4,6 @@ json.title @message.title
 json.sender_name @message.sender_name
 json.recipient_name @message.recipient_name
 json.delivered_at @message.delivered_at
-json.metadata @message.metadata
 
 json.objects @message.objects do |object|
   json.name object.name

@@ -144,7 +144,7 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :threads, only: [:show], controller: 'message_threads'
+    resources :message_threads, only: [:show]
     resources :messages, only: [:show]
   end
 

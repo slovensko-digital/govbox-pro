@@ -9,7 +9,9 @@ class ApiLoggingTest < ActionDispatch::IntegrationTest
   test "can log successful call" do
     thread = message_threads(:ssd_main_general)
     token =  generate_api_token(sub: @tenant.id, key_pair: @key_pair)
-    get "/api/threads/#{thread.id}", params: { token: token }, as: :json
+
+    get "/api/message_threads/#{thread.id}", params: { token: token }, as: :json
+
     assert_response :success
     json_response = JSON.parse(response.body)
     api_request = ApiRequest.last
@@ -25,7 +27,9 @@ class ApiLoggingTest < ActionDispatch::IntegrationTest
     thread_id = 1
     thread_id += 1 while MessageThread.exists?(thread_id)
     token = generate_api_token(sub: @tenant.id, key_pair: @key_pair)
-    get "/api/threads/#{thread_id}", params: { token: token }, as: :json
+
+    get "/api/message_threads/#{thread_id}", params: { token: token }, as: :json
+
     assert_response :not_found
     api_request = ApiRequest.last
     assert api_request
