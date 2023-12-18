@@ -18,6 +18,15 @@ class StatsApiTest < ActionDispatch::IntegrationTest
     assert json_response["messages_per_period"].positive?
   end
 
+  test "can not read period stats without from/to" do
+    tenant = tenants(:solver)
+    get "/api/site_admin/stats/tenants/#{tenant.id}/messages_per_period",
+        params: { token: generate_api_token }, as: :json
+    assert_response :bad_request
+    json_response = JSON.parse(response.body)
+    assert_match "param is missing or the value is empty: from", json_response["message"]
+  end
+
   test "can read number of messages" do
     tenant = tenants(:solver)
     get "/api/site_admin/stats/tenants/#{tenant.id}/messages_count", params: { token: generate_api_token }, as: :json

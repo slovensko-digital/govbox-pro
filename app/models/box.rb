@@ -34,17 +34,15 @@ class Box < ApplicationRecord
 
   validate :validate_box_with_api_connection
 
-  def self.create_with_api_connection(params)
+  def self.create_with_api_connection!(params)
     if params[:api_connection]
-      api_connection = ApiConnection.create(params[:api_connection])
+      api_connection = ApiConnection.create!(params[:api_connection])
     elsif params[:api_connection_id]
       api_connection = ApiConnection.find(params[:api_connection_id])
     end
     raise ArgumentError, "Api connection must be provided" unless api_connection
 
-    box_params = params.deep_dup
-    box_params.delete(:api_connection)
-    api_connection.boxes.create!(box_params)
+    api_connection.boxes.create!(params.except(:api_connection))
   end
 
   private

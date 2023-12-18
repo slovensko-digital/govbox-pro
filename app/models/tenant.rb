@@ -38,7 +38,7 @@ class Tenant < ApplicationRecord
   AVAILABLE_FEATURE_FLAGS = [:audit_log, :api]
 
   def draft_tag!
-    draft_tag || raise(ActiveRecord::RecordNotFound.new("`DraftTag` not found in tenant: #{self.id}"))
+    draft_tag || raise(ActiveRecord::RecordNotFound, "`DraftTag` not found in tenant: #{id}")
   end
 
   def feature_enabled?(feature)
@@ -67,11 +67,11 @@ class Tenant < ApplicationRecord
     everything_tag.groups << admin_group
   end
 
-  def self.create_with_admin(params)
-    tenant = create(name: params[:name])
-    admin = tenant.users.create(name: params[:admin][:name], email: params[:admin][:email])
-    group_membership = tenant.admin_group.users.push(admin)
-    [tenant, admin, group_membership]
+  def self.create_with_admin!(params)
+    tenant = create!(name: params.require(:name))
+    admin = tenant.users.create!(name: params.require(:admin).require(:name), email: params.require(:admin)[:email])
+    tenant.admin_group.users << admin
+    tenant
   end
 
   private

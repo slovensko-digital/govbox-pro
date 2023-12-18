@@ -1,6 +1,4 @@
 class ApiController < ActionController::API
-  include AuditableApiEvents
-
   before_action :authenticate_user
   around_action :wrap_in_request_logger
 
@@ -13,10 +11,11 @@ class ApiController < ActionController::API
     end
   end
 
+  rescue_from Exception, with: :render_internal_server_error
   rescue_from RestClient::Exceptions::Timeout, with: :render_request_timeout
   rescue_from ActiveRecord::RecordNotFound, with: :render_not_found
-  rescue_from ActionController::ParameterMissing, with: :render_unprocessable_entity
-  rescue_from Exception, with: :render_internal_server_error
+  rescue_from ActionController::ParameterMissing, with: :render_bad_request
+  rescue_from ArgumentError, with: :render_unprocessable_entity
 
   private
 
@@ -30,8 +29,14 @@ class ApiController < ActionController::API
   end
 
   def log_request(error = nil)
-    # TODO: log somewhere
-    puts "Error: ", error if error
+    exception_wrapper = ActionDispatch::ExceptionWrapper.new(nil, error) if error
+    ApiRequest::ProvidedApiRequest.create!(
+      ip_address: request.ip,
+      authenticity_token: authenticity_token,
+      endpoint_method: request.method,
+      endpoint_path: request.path,
+      response_status: error ? exception_wrapper.status_code : 200
+    )
   end
 
   def wrap_in_request_logger
@@ -43,8 +48,8 @@ class ApiController < ActionController::API
     log_request
   end
 
-  def render_bad_request(_key, **_options)
-    render status: :bad_request, json: { message: "Bad request" }
+  def render_bad_request(exception)
+    render status: :bad_request, json: { message: exception.message }
   end
 
   def render_unauthorized(key = "credentials")
@@ -82,5 +87,9 @@ class ApiController < ActionController::API
 
   def render_service_unavailable_error
     render status: :service_unavailable, json: { message: "Service unavailable" }
+  end
+
+  def render_unprocessable_entity(exception)
+    render status: :unprocessable_entity, json: { message: exception.message }
   end
 end

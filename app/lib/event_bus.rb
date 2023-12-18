@@ -90,6 +90,3 @@ EventBus.subscribe :automation_rule_destroyed, ->(automation_rule) { AuditLog::A
 EventBus.subscribe :filter_created, ->(filter) { AuditLog::FilterCreated.create_audit_record(filter) }
 EventBus.subscribe :filter_updated, ->(filter) { AuditLog::FilterUpdated.create_audit_record(filter) }
 EventBus.subscribe :filter_destroyed, ->(filter) { AuditLog::FilterDestroyed.create_audit_record(filter) }
-
-EventBus.subscribe :create_tenant_api_called, ->(request, response) { AuditLog::CreateTenantApiCalled.create_audit_record(request, response) }
-EventBus.subscribe :destroy_tenant_api_called, ->(request, response) { AuditLog::DestroyTenantApiCalled.create_audit_record(request, response) }

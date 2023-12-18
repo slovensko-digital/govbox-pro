@@ -3,8 +3,9 @@ require "test_helper"
 class ThreadsApiTest < ActionDispatch::IntegrationTest
   setup do
     @key_pair = OpenSSL::PKey::RSA.new File.read 'test/fixtures/tenant_test_cert.pem'
-    @tenant = tenants(:solver)
+    @tenant = tenants(:ssd)
   end
+
   test "can read message" do
     message = messages(:ssd_main_general_one)
     get "/api/messages/#{message.id}", params: { token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }, as: :json
@@ -31,6 +32,11 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
     message_id = 1
     message_id += 1 while Message.exists?(message_id)
     get "/api/messages/#{message_id}", params: { token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }, as: :json
+    assert_response :not_found
+  end
+
+  test "can not read message from other tenant" do
+    get "/api/messages/#{messages(:solver_main_delivery_notification_one).id}", params: { token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }, as: :json
     assert_response :not_found
   end
 end

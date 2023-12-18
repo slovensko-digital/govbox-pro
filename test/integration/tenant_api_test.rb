@@ -17,6 +17,15 @@ class TenantApiTest < ActionDispatch::IntegrationTest
     assert_equal "Testovaci admin", tenant.admin_group.users.first.name
     assert_equal "test@test.sk", tenant.admin_group.users.first.email
   end
+  test "can not create tenant without admin" do
+    post "/api/site_admin/tenants", params: { tenant: { name: "Testovaci tenant",
+                                                        feature_flags: [:audit_logs] },
+                                              token: generate_api_token },
+                                    as: :json
+    assert_response :bad_request
+    json_response = JSON.parse(response.body)
+    assert_match "param is missing or the value is empty: admin", json_response["message"]
+  end
 
   test "can destroy tenant" do
     tenant = tenants(:solver)
@@ -76,5 +85,16 @@ class TenantApiTest < ActionDispatch::IntegrationTest
     json_response = JSON.parse(response.body)
     assert_equal "Api connection must be provided", json_response["message"]
     assert_not tenant.boxes.find_by(name: "Test box")
+  end
+  test "can not add box without tenant" do
+    tenant = tenants(:solver)
+    post "/api/site_admin/tenants//boxes",
+         params: { box: { name: "Test box",
+                          uri: "ico://sk//12345678",
+                          short_name: "TST",
+                          color: "blue" },
+                   token: generate_api_token },
+         as: :json
+    assert_response :not_found
   end
 end
