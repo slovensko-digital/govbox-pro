@@ -1,0 +1,6 @@
+<%= tag.turbo_frame id: "modal" do %>
+  <%=
+    render Signing::DocumentsSelection::Component.new(
+      message_draft: @message_draft,
+      message_object_ids: @message_object_ids) %>
+<% end %>

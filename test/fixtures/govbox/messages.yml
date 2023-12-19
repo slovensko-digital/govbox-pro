@@ -7,7 +7,7 @@ one:
   delivered_at: <%= DateTime.current %>
   edesk_class: TEST
   folder: ssd_one
-  body: MyText
+  body: general text
   payload:
     message_id: <%= SecureRandom.uuid %>
     subject: MySubject
@@ -15,7 +15,7 @@ one:
     sender_uri: MySenderURI
     recipient_name: MyRecipient
     delivered_at: <%= DateTime.current.to_s %>
-    original_html: MyHtml
+    original_html: general text
     objects:
       - name: MyName
         mime_type: MyMimeType

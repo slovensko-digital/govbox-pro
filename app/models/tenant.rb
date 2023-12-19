@@ -30,6 +30,8 @@ class Tenant < ApplicationRecord
   has_many :automation_rules, class_name: "Automation::Rule", dependent: :destroy
   has_many :filters
 
+  has_many :filter_subscriptions
+
   after_create :create_default_objects
 
   validates_presence_of :name
@@ -38,6 +40,10 @@ class Tenant < ApplicationRecord
 
   def draft_tag!
     draft_tag || raise(ActiveRecord::RecordNotFound.new("`DraftTag` not found in tenant: #{self.id}"))
+  end
+
+  def signature_requested_tag!
+    signature_requested_tag || raise(ActiveRecord::RecordNotFound.new("`SignatureRequestedTag` not found in tenant: #{self.id}"))
   end
 
   def feature_enabled?(feature)
@@ -75,8 +81,8 @@ class Tenant < ApplicationRecord
 
     create_draft_tag!(name: "Rozpracované", visible: true)
     create_everything_tag!(name: "Všetky správy", visible: false)
-    create_signature_requested_tag!(name: "Na podpis", visible: true)
-    create_signed_tag!(name: "Podpísané", visible: true)
+    create_signature_requested_tag!(name: "Na podpis", visible: true, color: "yellow", icon: "pencil")
+    create_signed_tag!(name: "Podpísané", visible: true, color: "green", icon: "fingerprint")
 
     make_admins_see_everything!
   end

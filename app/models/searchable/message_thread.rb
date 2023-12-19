@@ -19,6 +19,8 @@ class Searchable::MessageThread < ApplicationRecord
   belongs_to :message_thread, class_name: '::MessageThread'
   belongs_to :tenant, class_name: '::Tenant'
 
+  scope :with_tag_id, ->(tag_id) { where("tag_ids && ARRAY[?]", [tag_id]) }
+
   include PgSearch::Model
   pg_search_scope :pg_search_all,
                   against: [:title, :content, :note, :tag_names],
@@ -37,23 +39,27 @@ class Searchable::MessageThread < ApplicationRecord
                     }
                   }
 
+  def self.matching(scopeable)
+    scopeable.scope_searchable(self) # double dispatch
+  end
+
   def self.fulltext_search(query)
     pg_search_all(
       Searchable::IndexHelpers.searchable_string(query)
     )
   end
 
-  def self.search_ids(query_filter, search_permissions:, cursor:, per_page:, direction: )
+  def self.search_ids(query_filter, search_permissions:, cursor:, per_page:, direction:)
+    raise SecurityError if search_permissions[:tag_ids].present? && search_permissions[:tag_ids].empty?
+
     scope = self
 
     scope = scope.where(tenant_id: search_permissions.fetch(:tenant))
     scope = scope.where(box_id: search_permissions.fetch(:box)) if search_permissions[:box]
 
-    if search_permissions.key?(:tag_ids)
+    if search_permissions[:tag_ids]
       if search_permissions[:tag_ids].any?
         scope = scope.where("tag_ids && ARRAY[?]", search_permissions[:tag_ids])
-      else
-        scope = scope.none
       end
     end
 

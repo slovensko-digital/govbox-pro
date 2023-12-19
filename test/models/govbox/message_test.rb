@@ -11,7 +11,7 @@ class Govbox::MessageTest < ActiveSupport::TestCase
     assert_equal message.title, "MySubject"
     assert_equal message.sender_name, "MySender"
     assert_equal message.recipient_name, "MyRecipient"
-    assert_equal message.html_visualization, "MyHtml"
+    assert_equal message.html_visualization, "general text"
 
     assert_equal message.objects.count, 1
     assert_equal message.objects.first.name, "MyName"

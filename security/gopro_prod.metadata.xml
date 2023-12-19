@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<EntityDescriptor xmlns="urn:oasis:names:tc:SAML:2.0:metadata" entityID="https://podaas.pro.gb.sk">
+    <SPSSODescriptor WantAssertionsSigned="true" AuthnRequestsSigned="true"
+                     protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+        <KeyDescriptor use="signing">
+            <KeyInfo xmlns="http://www.w3.org/2000/09/xmldsig#">
+                <X509Data>
+                    <X509Certificate>MIIC0jCCAbqgAwIBAgIJAOAb+pCHqjnwMA0GCSqGSIb3DQEBDQUAMBcxFTATBgNV
+BAMTDGljby01MDg4MTMzNzAeFw0yMzEyMTQwODUyNThaFw0yNTEyMTMwODUyNTha
+MBcxFTATBgNVBAMTDGljby01MDg4MTMzNzCCASIwDQYJKoZIhvcNAQEBBQADggEP
+ADCCAQoCggEBALGS+GKheLb2ZkW0AHYbnhQozVha3KpX7CqWT53KtVZPZkFtgF/g
+WWjBfl0hlDQ/jwGR83AmupKMNoQ60xEO1iI3I9f3o83ZZKTiCpLWLmQIbHlx1TJV
+eq3UiSIq5Aw411UCDnF77oSMoDrTHmjd5andD5cXnmd/sujFf3BjAlQKYw4LCWz+
+hKWM9r/lJxKxD0tEwANatsg5lo/PI1kRyTvc351zbqzue2KxYm8DLbiQuTLDiPit
+Y8I6CtYOfWpRReJA9tDvoQcVworOJ/Xs/81XV/o79j2HYOf1BLRpAuyYeejtmBu/
+D/39IrUbA9aak8N1SIEzvmHVFYtYRT73GQ8CAwEAAaMhMB8wHQYDVR0OBBYEFHtM
+nTO3wYlZLMluRrkADvcG3jnFMA0GCSqGSIb3DQEBDQUAA4IBAQCc+efYFbHBRBPt
+7ol/krPBrbkAn6dni0gFH+1qduhfF4pLyOcixz+pKtsUXIlBjYQSOz3rAHQv/uJQ
+wE9OMkad4nkZ1H+Zq8FSi18jztYVMlpQIfiIzRqbOYjc37Aso7tqhaJaXMrles0S
+DQWmh4zPt1suRJqzwbP6TPKrdXAbnuYiK1/KAUO4ogDc54Xgl3uKUYzWMGN42Rdh
+FjbvqNhBYUbUCZukUmIFGuXFp+5cWv8IIiwEjZEZrA2bzx0U3nKchr7VefmVd626
+2IoklraznJtg6dhVbwL8yzFhTrc12RZO6vvRAnpRh3Hpqfq38PnbpNj4qqV/QgAf
+8bSpoiLX</X509Certificate>
+                </X509Data>
+            </KeyInfo>
+        </KeyDescriptor>
+        <KeyDescriptor use="encryption">
+            <KeyInfo xmlns="http://www.w3.org/2000/09/xmldsig#">
+                <X509Data>
+                    <X509Certificate>MIIC0jCCAbqgAwIBAgIJAOAb+pCHqjnwMA0GCSqGSIb3DQEBDQUAMBcxFTATBgNV
+BAMTDGljby01MDg4MTMzNzAeFw0yMzEyMTQwODUyNThaFw0yNTEyMTMwODUyNTha
+MBcxFTATBgNVBAMTDGljby01MDg4MTMzNzCCASIwDQYJKoZIhvcNAQEBBQADggEP
+ADCCAQoCggEBALGS+GKheLb2ZkW0AHYbnhQozVha3KpX7CqWT53KtVZPZkFtgF/g
+WWjBfl0hlDQ/jwGR83AmupKMNoQ60xEO1iI3I9f3o83ZZKTiCpLWLmQIbHlx1TJV
+eq3UiSIq5Aw411UCDnF77oSMoDrTHmjd5andD5cXnmd/sujFf3BjAlQKYw4LCWz+
+hKWM9r/lJxKxD0tEwANatsg5lo/PI1kRyTvc351zbqzue2KxYm8DLbiQuTLDiPit
+Y8I6CtYOfWpRReJA9tDvoQcVworOJ/Xs/81XV/o79j2HYOf1BLRpAuyYeejtmBu/
+D/39IrUbA9aak8N1SIEzvmHVFYtYRT73GQ8CAwEAAaMhMB8wHQYDVR0OBBYEFHtM
+nTO3wYlZLMluRrkADvcG3jnFMA0GCSqGSIb3DQEBDQUAA4IBAQCc+efYFbHBRBPt
+7ol/krPBrbkAn6dni0gFH+1qduhfF4pLyOcixz+pKtsUXIlBjYQSOz3rAHQv/uJQ
+wE9OMkad4nkZ1H+Zq8FSi18jztYVMlpQIfiIzRqbOYjc37Aso7tqhaJaXMrles0S
+DQWmh4zPt1suRJqzwbP6TPKrdXAbnuYiK1/KAUO4ogDc54Xgl3uKUYzWMGN42Rdh
+FjbvqNhBYUbUCZukUmIFGuXFp+5cWv8IIiwEjZEZrA2bzx0U3nKchr7VefmVd626
+2IoklraznJtg6dhVbwL8yzFhTrc12RZO6vvRAnpRh3Hpqfq38PnbpNj4qqV/QgAf
+8bSpoiLX</X509Certificate>
+                </X509Data>
+            </KeyInfo>
+        </KeyDescriptor>
+        <SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
+                             Location="https://pro.govbox.sk/upvs/logout"
+                             ResponseLocation="https://pro.govbox.sk/auth/saml/logout"/>
+        <SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+                             Location="https://pro.govbox.sk/upvs/logout"
+                             ResponseLocation="https://pro.govbox.sk/auth/saml/logout"/>
+        <AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+                                  Location="https://pro.govbox.sk/auth/saml/callback" index="0" isDefault="true"/>
+        <AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Artifact"
+                                  Location="https://pro.govbox.sk/auth/saml/callback" index="1"/>
+        <AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
+                                  Location="https://pro.govbox.sk/auth/saml/callback" index="2"/>
+    </SPSSODescriptor>
+</EntityDescriptor>
