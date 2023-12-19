@@ -14,4 +14,18 @@
 class ArchivedObject < ApplicationRecord
   has_many :archived_object_versions
   belongs_to :message_object
+
+  def valid?
+    validation_result == '0'
+  end
+
+  def content
+    return nil if archived?
+
+    archived_object_versions.last.content
+  end
+
+  def archived?
+    !archived_object_versions.empty?
+  end
 end

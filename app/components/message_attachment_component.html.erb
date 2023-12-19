@@ -22,9 +22,15 @@
         <% if @message_attachment.is_signed? %>
           <%= render Common::BadgeComponent.new("Podpísané", "hidden md:flex") %>
         <% end %>
+        <% if @message_attachment.message.thread.archived? %>
+          <%= render ArchivedObjectTagComponent.new(@message_attachment.message_object_datum.message_object.archived_object, "hidden md:flex") %>
+        <% end %>
       </div>
       <% if @message_attachment.is_signed? %>
         <%= render Common::BadgeComponent.new("Podpísané", "md:hidden") %>
+      <% end %>
+      <% if @message_attachment.message.thread.archived? %>
+        <%= render ArchivedObjectTagComponent.new(@message_attachment.message_object_datum.message_object.archived_object, "md:hidden") %>
       <% end %>
     </div>
   <% end %>

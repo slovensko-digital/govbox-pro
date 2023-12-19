@@ -6,5 +6,8 @@
     <% if @message.authorized? %>
       <%= render Common::BadgeComponent.new("Prevzatá doručenka") %>
     <% end %>
+    <% if @message.thread.archived? %>
+      <%= render ArchivedObjectTagComponent.new(@message.form&.archived_object, "hidden md:flex") %>
+    <% end %>
   </div>
 <% end %>
