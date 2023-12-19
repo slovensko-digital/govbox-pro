@@ -7,7 +7,7 @@ GovBox pro je zameraný primárne na používateľov, ktorí majú väčšie mno
 ![Screenshot](docs/govbox-pro-screenshot2.png?raw=true)
 
 **Medzi klúčové funkcionality (na rozdiel od štátnych schránok) patrí:**
-- Zobrazovanie správ vo vláknach a filtrovanie nepodstatných technických správ.
+- Zobrazovanie správ vo vláknach a odfiltrovanie nepodstatných technických správ.
 - Okamžité prepínanie medzi viacerými schránkami alebo zobrazenie správ naprieč rôznymi schránkami naraz.
 - Riadenie workflowu a prístupu k správam pre rôzne skupiny používateľov.
 - Podpora pre automatizáciu, hromadné spracovanie, elektronické podpisovanie (cez [Autogram](https://github.com/slovensko-digital/autogram)) a podávanie podaní.
