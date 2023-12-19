@@ -25,7 +25,7 @@ Autorom tohto projektu je Solver IT, s.r.o. v spolupráci so občianskym združe
 
 ## Vývoj
 
-Komunitný vývoj prebieha na GitHube, detaily k rozbehaniu prostredia je môžné nájsť v [DEVELOPER.md](README). 
+Komunitný vývoj prebieha na GitHube, detaily k rozbehaniu prostredia je môžné nájsť v [DEVELOPER.md](DEVELOPER.md). 
 
 Ak sa chcete zapojiť, ozvi sa nám [na komunitnom Slack](https://slack.slovensko.digital/)-u.
 
