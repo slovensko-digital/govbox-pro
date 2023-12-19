@@ -1,52 +1,38 @@
-<div class="md:hidden w-fit" data-controller="dropdown" data-action="click->dropdown#toggle click@window->dropdown#hide">
-  <div class="inline-block">
-    <div role="button" tabindex="0" data-dropdown-target="button" class="inline-block select-none">
-      <%= render Icons::EllipsisVerticalComponent.new(css_classes: "w-6 h-6", stroke_width: 2) %>
-    </div>
-    <div data-dropdown-target="menu"
-         data-transition-enter="transition ease-out duration-100"
-         data-transition-enter-from="transform opacity-0 scale-9"
-         data-transition-enter-to="transform opacity-100 scale-100"
-         data-transition-leave="transition ease-in duration-75"
-         data-transition-leave-from="transform opacity-100 scale-100"
-         data-transition-leave-to="transform opacity-0 scale-95"
-         data-turbo-temporary-hide
-         class="hidden absolute right-0 z-30">
-      <div class="flex flex-col justify-start items-start gap-px py-0.5 rounded-lg bg-white border border-gray-300 mt-1" style="box-shadow: 1px 1px 4px 0 rgba(0,0,0,0.1);">
-        <div class="flex justify-start items-start">
-          <div class="flex flex-col justify-start items-start relative gap-1">
-            <% if @message_attachment.signable? %>
-              <div class="flex justify-start items-start px-4 py-3 rounded-lg hover:bg-gray-50">
-                <%= content_tag(:div,
-                                {
-                                  "data-controller": "autogram",
-                                  "data-autogram-object-id": @message_attachment.id,
-                                  "data-autogram-message-id": @message_attachment.message.id,
-                                  "data-autogram-object-path": message_message_object_path(@message_attachment.message, @message_attachment),
-                                  "data-autogram-authenticity-token": form_authenticity_token,
-                                }
-                    ) do %>
-                  <button data-action="click->autogram#signSingleFile">
-                    Podpísať
-                  </button>
-                <% end %>
-              </div>
-            <% end %>
-            <div class="flex justify-start items-start px-4 py-3 rounded-lg hover:bg-gray-50">
-              <%= link_to download_message_message_object_path(@message_attachment.message, @message_attachment), data: { turbo_frame: "_top" } do %>
-                Stiahnúť
-              <% end %>
-            </div>
-            <% if @message_attachment.destroyable? %>
-              <div class="flex justify-start items-start px-4 py-3 rounded-lg hover:bg-gray-50">
-                <%= link_to message_message_object_path(@message_attachment.message, @message_attachment), method: :delete do %>
-                  Zmazať
-                <% end %>
-              </div>
-            <% end %>
-          </div>
-        </div>
+<%= render Common::OptionsComponent.new(id: "message-attachment-menu") do |options| %>
+  <% options.with_menu_content do %>
+    <% if @message_attachment.signable? %>
+      <div class="flex justify-start items-start px-4 py-3 rounded-lg hover:bg-gray-50">
+        <%= content_tag(:div,
+                        {
+                          "data-controller": "autogram",
+                          "data-autogram-object-id": @message_attachment.id,
+                          "data-autogram-message-id": @message_attachment.message.id,
+                          "data-autogram-object-path": message_message_object_path(@message_attachment.message, @message_attachment),
+                          "data-autogram-authenticity-token": form_authenticity_token,
+                        }
+            ) do %>
+          <button data-action="click->autogram#signSingleFile">
+            <%= render Icons::ArchiveBoxComponent.new(css_classes: "h-5 w-5") %>
+            Podpísať
+          </button>
+        <% end %>
       </div>
-    </div>
-  </div>
-</div>
+    <% end %>
+    <%= link_to download_message_message_object_path(@message_attachment.message, @message_attachment), class: "flex gap-3", role: "menuitem", tabindex: "-1", data: { turbo_frame: "_top" } do %>
+      <%= render Icons::ArrowDownTrayComponent.new(css_classes: "h-5 w-5") %>
+      Stiahnuť
+    <% end %>
+    <% unless @message_attachment.message_object_datum.message_object.archived_object.nil? %>
+      <%= link_to download_message_message_object_path(@message_attachment.message, @message_attachment), class: "flex gap-3", role: "menuitem", tabindex: "-1", data: { turbo_frame: "_top" } do %>
+        <%= render Icons::ArrowDownTrayComponent.new(css_classes: "h-5 w-5") %>
+        Stiahnuť archivované
+      <% end %>
+    <% end %>
+    <% if @message_attachment.destroyable? %>
+      <%= link_to message_message_object_path(@message_attachment.message, @message_attachment), class: "flex gap-3", role: "menuitem", tabindex: "-1", method: :delete do %>
+        <%= render Icons::ArchiveBoxComponent.new(css_classes: "h-5 w-5") %>
+        Zmazať
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>
