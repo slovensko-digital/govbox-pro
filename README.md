@@ -1,59 +1,38 @@
 # GovBox Pro
 
-## Requirements
-- ruby (version is specified in [.tool-versions](.tool-versions))
-  - [asdf version manager](https://asdf-vm.com/)
-- PostgreSQL 14
-- node.js (version is specified in [.tool-versions](.tool-versions))
+GovBox Pro je webová aplikácia, ktorá slúži na organizáciu práce so správami zo schránok na slovensko.sk. Je intuitívna, responzívna a dôrazom na silnú konfigurovateľnosť podľa potrieb používateľov.
 
-## Instalation steps
+GovBox pro je zameraný primárne na používateľov, ktorí majú väčšie množstvo agendy so štátom alebo chcú v roku 2024 so štátnou schránkou pracovať v modernom rozhraní a z mobilných zariadení.
 
-1. create own env file `cp .env .env.local`
-2. setup db connection in `.env.local`, example:
+![Screenshot](docs/govbox-pro-screenshot2.png?raw=true)
 
-```dotenv
-DB_HOST=localhost
-DB_USER=postgres
-DB_PASSWORD=postgres
-```
-3. setup an email with which you will sign in in `.env.local`
+**Medzi klúčové funkcionality (na rozdiel od štátnych schránok) patrí:**
+- Zobrazovanie správ vo vláknach a filtrovanie nepodstatných technických správ.
+- Okamžité prepínanie medzi viacerými schránkami alebo zobrazenie správ naprieč rôznymi schránkami naraz.
+- Riadenie workflowu a prístupu k správam pre rôzne skupiny používateľov.
+- Podpora pre automatizáciu, hromadné spracovanie, elektronické podpisovanie (cez [Autogram](https://github.com/slovensko-digital/autogram)) a podávanie podaní.
+- Dlhodobá archivácia elektronicky podpísaných dokumentov.
+- Responzívny dizajn pre mobilné zariadenia, natívne notifikácie, PWA.
+- Pripravené pre SaaS, aj on-premise nasadenie.
+- Open API pre integráciu s inými systémami.
+- Kompletne open-source.
 
-```dotenv
-SITE_ADMIN_EMAILS=your-g-suite-sign-up-email@gmail.com
-```
+## Autori a sponzori
 
-4. install deps and setup database with `bin/setup`
-5. install javascript deps with `yarn`
+Autorom tohto projektu je Solver IT, s.r.o. v spolupráci so občianskym združením Slovensko.Digital, ďaľší rozvoj a prevádzku v SaaS režime zabezpečujú Služby Slovensko.Digital, s.r.o.
 
-## Running commands
+*Tento projekt je spolufinancovaný z prostriedkov Európskeho fondu regionálneho rozvoja v rámci Operačného programu Integrovaná infraštruktúra. **Govbox Pro/NFP311070CTK1**.* 
 
-- run local environment `bin/dev`
-- run tests with `bin/rails test`
-- run console `bin/rails c`
+## Vývoj
 
-## Application Setup
+Komunitný vývoj prebieha na GitHube, detaily k rozbehaniu prostredia je môžné nájsť v [DEVELOPER.md](README). 
 
-### Google OAuth2
-- [Get / Create OAuth permissions by guide](https://medium.com/@jenn.leigh.hansen/google-oauth2-for-rails-ba1bcfd1b863)
-  - don't forget to Add an Authorized Redirect URI `http://localhost:3000/auth/google_oauth2/callback`
-- write permissions to `.env.local`, example:
+Ak sa chcete zapojiť, ozvi sa nám [na komunitnom Slack](https://slack.slovensko.digital/)-u.
 
-```dotenv
-GOOGLE_CLIENT_ID=some-numbers-and-characters.apps.googleusercontent.com
-GOOGLE_CLIENT_SECRET=GOCSPX-and-other-secret-part
-```
+## Licencia
 
-### Async Jobs
-- we use [Good Jobs](https://github.com/bensheldon/good_job)
-- settings in env
+Tento softvér je licencovaný pod [licenciou EUPL v1.2](LICENSE).
 
-```dotenv
-ADMIN_IDS=1 # set your user_id be able to see dashboard
-GOOD_JOB_EXECUTION_MODE=async # make job runs along rails server (default)
-```
+V skratke to znamená, že tento softvér môžete voľne používať komerčne aj nekomerčne, môžete vytvárať vlastné verzie a to všetko za predpokladu, že prípadné vlastné zmeny a rozšírenia tiež zverejníte pod rovnakou licenciou a zachováte originálny copyright pôvodných autorov. Softvér sa poskytuje "ber ako je", bez záväzkov.
 
-- [jobs web ui / dashboard](http://localhost:3000/good_job)
-
-### Getting sample data
-- your public IP has to be added to whitelist (ask colleague)
-- in rails console run `Govbox::SyncBoxJob.perform_later(Box.last)`
+Tento projekt je postavený výhradne na open-source softvéri, ktorý umožnuje jeho používanie tiež komerčne, aj nekomerčne.
