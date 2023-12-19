@@ -20,7 +20,7 @@ class ArchivedObject < ApplicationRecord
   end
 
   def content
-    return nil if archived?
+    return nil unless archived?
 
     archived_object_versions.last.content
   end

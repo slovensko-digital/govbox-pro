@@ -5,6 +5,12 @@
         <%= render Icons::ArrowDownTrayComponent.new(css_classes: "w-5 h-5") %>
         Stiahnuť správu
       <% end %>
+      <% unless @message.form.archived_object.content.nil? %>
+        <%= link_to download_archived_message_message_object_path(@message, @message.form), class: "flex gap-3", role: "menuitem", tabindex: "-1", data: { turbo_frame: "_top" } do %>
+          <%= render Icons::ArrowDownTrayComponent.new(css_classes: "h-5 w-5") %>
+          Stiahnuť archivovanú správu
+        <% end %>
+      <% end %>
       <% if @mode == :thread_view && @message.collapsible? %>
         <% if @message.collapsed %>
           <%= button_to message_path(@message), params: { collapsed: false }, method: :patch, class: 'whitespace-nowrap flex gap-3', role: 'menu-item', tabindex: -1 do %>
