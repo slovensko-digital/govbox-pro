@@ -89,7 +89,7 @@ class MessageThreadsController < ApplicationController
 
   def update_archived
     authorize @message_thread
-    return unless @message_thread.archived(params.require(:archived) == 'true')
+    return unless @message_thread.archive(params.require(:archived) == 'true')
 
     redirect_back_or_to message_threads_path(@message_thread), notice: 'Archivácia vlákna bola úspešne upravená'
   end

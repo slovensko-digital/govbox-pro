@@ -51,7 +51,7 @@ class MessageThread < ApplicationRecord
     tags.find_by(type: ArchivedTag.to_s) != nil
   end
 
-  def archived(value)
+  def archive(value)
     return unless value != archived?
 
     if value

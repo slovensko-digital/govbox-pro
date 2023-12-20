@@ -8,7 +8,7 @@ module MessageThreads
         message_threads = message_thread_policy_scope.where(id: ids).includes(:messages)
         message_threads.transaction do
           message_threads.each do |message_thread|
-            message_thread.archived(true)
+            message_thread.archive(true)
             message_thread.save
             Archivation::ArchiveMessageThreadJob.perform_later(message_thread)
           end
