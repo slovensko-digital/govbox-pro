@@ -41,6 +41,12 @@ module GovboxPro
         }
       }
     end
+
+    config.good_job.cron['check_archived_documents'] = {
+      cron: "30 3 * * *",  # run every day at 3:30 am
+      class: "Archivation::ProcessAllArchivedObjectsJob",
+      description: "Regular job to archive message_threads"
+    }
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files

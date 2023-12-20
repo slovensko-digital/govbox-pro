@@ -32,11 +32,9 @@
       <% end %>
     <% end %>
     <% if Current.tenant.feature_enabled?(:archive) %>
-      <% if Current.user.admin? %>
-        <%= link_to show_archived_message_thread_path(message_thread: @message_thread), method: :get, data: { turbo_frame: "modal" }, class: "flex gap-3", role: "menuitem", tabindex: "-1" do %>
-          <%= render Icons::ArchiveBoxComponent.new(css_classes: "h-5 w-5") %>
-          Archivovať vlákno
-        <% end %>
+      <%= link_to show_archived_message_thread_path(message_thread: @message_thread), method: :get, data: { turbo_frame: "modal" }, class: "flex gap-3", role: "menuitem", tabindex: "-1" do %>
+        <%= render Icons::ArchiveBoxComponent.new(css_classes: "h-5 w-5") %>
+        Archivovať vlákno
       <% end %>
     <% end %>
   <% end %>

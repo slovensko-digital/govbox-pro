@@ -64,6 +64,7 @@ Rails.application.routes.draw do
       end
 
       resource :authorize_deliveries, only: [:update]
+      resource :archive, only: [:update]
     end
   end
 

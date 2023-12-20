@@ -8,23 +8,21 @@ module Archiver
     def validate_document(document_bytes)
       response = @handler.public_send(:post, "#{@url}validate", { content: Base64.strict_encode64(document_bytes) }.to_json)
       structure = response.body.empty? ? nil : JSON.parse(response.body)
-    rescue StandardError => e
-      raise Error, e.response if e.respond_to?(:response) && e.response
 
-      raise e
-    else
-      [response.status, structure]
+      return nil if response.status == 422 || response.status == 400
+      raise StandardError unless response.status == 200
+
+      structure
     end
 
     def extend_document(document_bytes)
       response = @handler.public_send(:post, "#{@url}extend", { content: Base64.strict_encode64(document_bytes) }.to_json)
       structure = response.body.empty? ? nil : JSON.parse(response.body)
-    rescue StandardError => e
-      raise Error, e.response if e.respond_to?(:response) && e.response
 
-      raise e
-    else
-      [response.status, structure]
+      return nil if response.status == 422 || response.status == 400
+      raise StandardError unless response.status == 200
+
+      structure['content']
     end
   end
 end
