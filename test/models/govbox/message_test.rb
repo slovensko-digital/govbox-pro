@@ -29,6 +29,18 @@ class Govbox::MessageTest < ActiveSupport::TestCase
     assert_equal message.tags.first, message.thread.tags.simple.first
   end
 
+  test "should take name from box as recipient_name if no recipient_name in govbox message" do
+    govbox_message = govbox_messages(:ssd_without_recipient_name)
+
+    Govbox::Message.create_message_with_thread!(govbox_message)
+
+    message = Message.last
+
+    assert_equal message.title, "Všeobecná Agenda - Rozhodnutie ..."
+    assert_equal message.sender_name, "MySender"
+    assert_equal message.recipient_name, "SSD main"
+  end
+
   test "should include general agenda subject in message title" do
     govbox_message = govbox_messages(:ssd_general_agenda)
 
