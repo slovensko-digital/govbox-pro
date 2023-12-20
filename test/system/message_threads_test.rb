@@ -171,12 +171,12 @@ class MessageThreadsTest < ApplicationSystemTestCase
     end
   end
 
-  test "user can go to a thread detail and reply to message" do
+  test "user can go to a thread detail and reply to last replyable message" do
     thread_issue = message_threads(:ssd_main_issue)
-    message_one = messages(:ssd_main_issue_one)
+    message_two = messages(:ssd_main_issue_two)
 
     visit message_thread_path thread_issue
-    within_message_in_thread message_one do
+    within_message_in_thread message_two do
       click_on("Odpovedať")
     end
 
