@@ -18,6 +18,8 @@ module Notifications
       new_messages = thread.messages.where("created_at > ?", subscription.last_notify_run_at)
 
       new_messages.find_each do |message|
+        next if message.draft?
+
         subscription.user.notifications.create!(
           type: Notifications::NewMessage,
           message_thread: thread,
