@@ -1,7 +1,7 @@
 <%= tag.turbo_frame id: dom_id(@message) do %>
   <%= tag.div class: "relative flex flex-col justify-stretch items-stretch rounded-md border border-gray-200 bg-white data-[mode=historylog]:-top-2 data-[mode=historylog]:mb-4", data: { mode: @mode } do %>
-    <div class="flex justify-between items-start gap-4 px-6 pt-6 pb-4 border-b border-gray-200">
-      <div class="flex flex-col gap-2">
+    <div class="flex justify-between items-start gap-4 px-4 sm:px-6 pt-6 pb-4 border-b border-gray-200">
+      <div class="flex flex-col gap-2 basis-3/4">
         <dl class="flex flex-col gap-2 text-gray-90 text-sm leading-6">
           <div class="flex">
             <dt class="w-[100px] shrink-0 hidden sm:block">
@@ -22,7 +22,15 @@
         <%= render MessageStateComponent.new(message: @message, classes: "md:hidden") %>
       </div>
       <div class="flex flex-col items-end gap-2">
-        <%= render MessageOptionsComponent.new(message: @message, mode: @mode) %>
+        <div class="flex justify-end gap-0.5">
+          <time class="shrink-0 md:hidden text-sm py-0.5" datetime="<%= @message.delivered_at %>">
+            <%= helpers.nice_datetime(@message.delivered_at) %>
+          </time>
+          <time class="shrink-0 hidden md:block text-sm py-0.5" datetime="<%= @message.delivered_at %>">
+            <%= helpers.nice_datetime_with_time(@message.delivered_at) %>
+          </time>
+          <%= render MessageOptionsComponent.new(message: @message, mode: @mode) %>
+        </div>
         <%= render MessageStateComponent.new(message: @message, classes: "hidden md:flex") %>
       </div>
     </div>
