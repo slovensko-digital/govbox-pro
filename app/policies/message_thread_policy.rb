@@ -53,7 +53,7 @@ class MessageThreadPolicy < ApplicationPolicy
     true
   end
 
-  def show_archived?
+  def confirm_unarchive?
     true
   end
 

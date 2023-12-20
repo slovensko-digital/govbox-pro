@@ -76,7 +76,7 @@ Rails.application.routes.draw do
     end
     get :rename, on: :member
     get :history, on: :member
-    get :show_archived, on: :member
+    get :confirm_unarchive, on: :member
     patch :archive, on: :member
     resources :messages
     resources :message_thread_notes

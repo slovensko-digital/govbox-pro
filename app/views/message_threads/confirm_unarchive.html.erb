@@ -5,20 +5,14 @@
     <% end %>
     <% modal.with_modal_content do %>
       <%= form_with url: archive_message_thread_path, method: :patch, data: {turbo_frame: "_top"}, class: "flex flex-col justify-stretch w-full gap-2 mt-4" do %>
-        <%= hidden_field_tag("archived", !@message_thread.archived?) %>
+        <%= hidden_field_tag("archived", "false") %>
         <div class="flex flex-col items-start gap-4">
-          <% if @message_thread.archived? %>
-            Vlákno je archivované
-          <% end %>
+          Vlákno je archivované
         </div>
         <%= render Common::ModalActionsComponent.new do |actions| %>
           <% actions.with_submit_button do %>
             <%= button_tag type: 'submit', class: 'flex justify-center items-center px-2.5 py-1.5 rounded-md bg-blue-600 text-sm font-medium text-white'  do %>
-              <% if @message_thread.archived? %>
-                Zrušiť archiváciu vlákna
-              <% else %>
-                Archivovať vlákno
-              <% end %>
+              Zrušiť archiváciu vlákna
             <% end %>
           <% end %>
         <% end %>
