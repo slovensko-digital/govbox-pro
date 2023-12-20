@@ -1,7 +1,7 @@
 class MessageThreadsController < ApplicationController
-  before_action :set_message_thread, only: %i[show rename update history show_archived update_archived]
+  before_action :set_message_thread, only: %i[show rename update history show_archived archive]
   before_action :set_thread_tags, only: %i[show history]
-  before_action :set_thread_messages, only: %i[show history show_archived update_archived]
+  before_action :set_thread_messages, only: %i[show history show_archived archive]
   before_action :load_threads, only: %i[index scroll]
   before_action :set_subscription, only: :index
   after_action :mark_thread_as_read, only: %i[show history]
@@ -87,7 +87,7 @@ class MessageThreadsController < ApplicationController
     authorize @message_thread
   end
 
-  def update_archived
+  def archive
     authorize @message_thread
     return unless @message_thread.archive(params.require(:archived) == 'true')
 

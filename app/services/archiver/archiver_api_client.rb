@@ -1,9 +1,5 @@
 class Archiver::ArchiverApiClient
-  def initialize(host: ENV['ARCHIVER_API_URL'])
-    @host = host
-  end
-
-  def api
-    Archiver::ArchiverApi.new(@host)
+  def self.api
+    Archiver::ArchiverApi.new(ENV['ARCHIVER_API_URL'])
   end
 end

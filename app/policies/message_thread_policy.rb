@@ -57,7 +57,7 @@ class MessageThreadPolicy < ApplicationPolicy
     true
   end
 
-  def update_archived?
+  def archive?
     true
   end
 end

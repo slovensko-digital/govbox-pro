@@ -1,5 +1,5 @@
 class Archivation::ArchiveMessageObjectJob < ApplicationJob
-  def perform(object, archiver_client: ArchiverEnvironment.archiver_client)
+  def perform(object, archiver_client: Archiver::ArchiverApiClient)
     object.archived_object = create_archived_object(object, archiver_client) if object.archived_object.nil?
     return unless object.archived_object.archived_object_versions.empty? || object.archived_object.archived_object_versions.last.valid_to < DateTime.now.since(90.days)
     Archivation::ExtendArchivedObjectJob.perform_later(object.archived_object)

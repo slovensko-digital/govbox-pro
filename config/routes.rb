@@ -77,7 +77,7 @@ Rails.application.routes.draw do
     get :rename, on: :member
     get :history, on: :member
     get :show_archived, on: :member
-    patch :update_archived, on: :member
+    patch :archive, on: :member
     resources :messages
     resources :message_thread_notes
     scope module: 'message_threads' do

@@ -1,5 +1,5 @@
 class Archivation::ExtendArchivedObjectJob < ApplicationJob
-  def perform(archived_object, archiver_client: ArchiverEnvironment.archiver_client)
+  def perform(archived_object, archiver_client: Archiver::ArchiverApiClient)
     content = object_content_to_extend(archived_object)
     return unless content
 
