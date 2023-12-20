@@ -86,7 +86,7 @@ class MessageObject < ApplicationRecord
   end
 
   def archived?
-    !archived_object.nil?
+    archived_object.present?
   end
 
   private
