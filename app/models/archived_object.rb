@@ -3,9 +3,7 @@
 # Table name: archived_objects
 #
 #  id                :bigint           not null, primary key
-#  signed_by         :string
 #  signature_level   :string
-#  signed_at         :datetime
 #  validation_result :string           not null
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null

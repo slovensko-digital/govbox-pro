@@ -11,14 +11,14 @@ class Archivation::ArchiveMessageObjectJob < ApplicationJob
     response = archiver_client.api.validate_document(object.content)
     return signed_archived_object(response, object) unless response.nil?
 
-    archived_object = ArchivedObject.new(validation_result: '-1', signed_by: nil, signature_level: nil, signed_at: nil, message_object: object)
+    archived_object = ArchivedObject.new(validation_result: '-1', signature_level: nil, message_object: object)
     archived_object.save
     archived_object
   end
 
   def signed_archived_object(response, object)
     signature_info = response['signatures'].first['signatureInfo']
-    archived_object = ArchivedObject.new(validation_result: validation_result_code(response), signed_by: signature_info['signingCertificate']['subjectDN'], signature_level: signature_info['level'], signed_at: signature_info['signingCertificate']['productionTime'], message_object: object)
+    archived_object = ArchivedObject.new(validation_result: validation_result_code(response), signature_level: signature_info['level'], message_object: object)
     archived_object.save
     archived_object
   end

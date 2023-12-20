@@ -71,8 +71,6 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_15_074429) do
   create_table "archived_objects", force: :cascade do |t|
     t.bigint "message_object_id", null: false
     t.string "validation_result", null: false
-    t.string "signed_by"
-    t.datetime "signed_at"
     t.string "signature_level"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
