@@ -17,15 +17,12 @@
           <% SigningTagsHelper.sort_tags(@message_attachment.tags).each do |tag| %>
             <%= render Common::TagComponent.new(tag) %>
           <% end %>
-        </div>
 
-        <% if @message_attachment.is_signed? %>
-          <%= render Common::BadgeComponent.new("Podpísané", "hidden md:flex") %>
-        <% end %>
+          <% if @message_attachment.is_signed? %>
+            <%= render Common::TagComponent.new(SigningTagsHelper.signed_externally) %>
+          <% end %>
+        </div>
       </div>
-      <% if @message_attachment.is_signed? %>
-        <%= render Common::BadgeComponent.new("Podpísané", "md:hidden") %>
-      <% end %>
     </div>
   <% end %>
   <div class="hidden md:flex justify-end items-center gap-4">
