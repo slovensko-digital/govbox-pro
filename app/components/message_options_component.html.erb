@@ -11,6 +11,14 @@
           Stiahnuť archivovanú správu
         <% end %>
       <% end %>
+      <% if @message.replyable? %>
+        <div data-controller="message-drafts">
+          <%= button_to message_drafts_path, params: { original_message_id: @message.id }, method: :post, class: 'whitespace-nowrap flex gap-3', role: 'menu-item', tabindex: -1 do %>
+            <%= render Icons::ArrowUturnLeftComponent.new(css_classes: "w-5 h-5") %>
+            Odpovedať
+          <% end %>
+        </div>
+      <% end %>
       <% if @mode == :thread_view && @message.collapsible? %>
         <% if @message.collapsed %>
           <%= button_to message_path(@message), params: { collapsed: false }, method: :patch, class: 'whitespace-nowrap flex gap-3', role: 'menu-item', tabindex: -1 do %>

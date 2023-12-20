@@ -2,7 +2,7 @@
   <%= render MessageThreadHeaderComponent.new(@message_thread, @thread_tags) %>
   <%= render MessageThreadNoteComponent.new(@message_thread.message_thread_note) %>
   <div class="flex flex-col justify-stretch items-stretch gap-2 pt-4 sm:p-4" data-test="messages">
-    <%= render Common::AlertComponent.new %>
+    <%= render Common::FlashComponent.new %>
     <% @thread_messages.each do |message| %>
       <% if message.type == 'MessageDraft' %>
         <%# TODO find a better way for handling focus than `message.id == @thread_last_message_draft_id` %>

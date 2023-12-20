@@ -76,11 +76,20 @@ class Govbox::Message < ApplicationRecord
 
     message_title = [raw_message["subject"], raw_message.dig("general_agenda", "subject")].compact.join(' - ')
 
+    sender_name = raw_message["sender_name"]
+    recipient_name = raw_message["recipient_name"]
+
+    if govbox_message.payload["sender_uri"] == govbox_message.folder.box.uri
+      sender_name ||= govbox_message.folder.box.name
+    elsif govbox_message.payload["recipient_uri"] == govbox_message.folder.box.uri
+      recipient_name ||= govbox_message.folder.box.name
+    end
+
     ::Message.create(
       uuid: raw_message["message_id"],
       title: message_title,
-      sender_name: raw_message["sender_name"],
-      recipient_name: raw_message["recipient_name"],
+      sender_name: sender_name,
+      recipient_name: recipient_name,
       delivered_at: Time.parse(raw_message["delivered_at"]),
       html_visualization: raw_message["original_html"],
       replyable: govbox_message.replyable?,
