@@ -8,14 +8,11 @@ class Api::SiteAdmin::Stats::TenantsController < Api::SiteAdminController
   def messages_per_period
     stats = Api::SiteAdmin::Stats::Tenant.new(params)
     stats.validate!
-    @messages_per_period = Message.joins(thread: :box)
-                                  .where(box: { tenant_id: @tenant.id })
-                                  .where("messages.created_at between ? and ?", stats.from, stats.to)
-                                  .count
+    @messages_per_period = @tenant.messages.where("messages.created_at between ? and ?", stats.from, stats.to).count
   end
 
   def messages_count
-    @messages_count = Message.joins(thread: :box).where(box: { tenant_id: @tenant.id }).count
+    @messages_count = @tenant.messages.count
   end
 
   private

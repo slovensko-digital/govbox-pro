@@ -1,7 +1,6 @@
 class CreateApiRequest < ActiveRecord::Migration[7.1]
   def change
     create_table :api_requests do |t|
-      t.string :type, null: false
       t.string :endpoint_path, null: false
       t.string :endpoint_method, null: false
       t.integer :response_status, null: false

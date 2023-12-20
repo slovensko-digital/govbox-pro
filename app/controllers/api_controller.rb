@@ -30,7 +30,7 @@ class ApiController < ActionController::API
 
   def log_request(error = nil)
     exception_wrapper = ActionDispatch::ExceptionWrapper.new(nil, error) if error
-    ApiRequest::ProvidedApiRequest.create!(
+    ApiRequest.create!(
       ip_address: request.ip,
       authenticity_token: authenticity_token,
       endpoint_method: request.method,

@@ -3,7 +3,7 @@ class Api::SiteAdmin::TenantsController < Api::SiteAdminController
 
   def create
     Tenant.transaction do
-      @tenant = Tenant.create_with_admin!(tenant_params)
+      @tenant = Tenant.create_with_admin!(tenant_params, tenant_params.require(:admin))
     end
   end
 

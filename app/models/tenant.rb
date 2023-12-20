@@ -30,6 +30,8 @@ class Tenant < ApplicationRecord
   has_many :boxes, dependent: :destroy
   has_many :automation_rules, class_name: "Automation::Rule", dependent: :destroy
   has_many :filters
+  has_many :message_threads, through: :boxes
+  has_many :messages, through: :message_threads
 
   after_create :create_default_objects
 
@@ -67,9 +69,9 @@ class Tenant < ApplicationRecord
     everything_tag.groups << admin_group
   end
 
-  def self.create_with_admin!(params)
-    tenant = create!(name: params.require(:name))
-    admin = tenant.users.create!(name: params.require(:admin).require(:name), email: params.require(:admin)[:email])
+  def self.create_with_admin!(tenant_params, admin_params)
+    tenant = create!(name: tenant_params[:name])
+    admin = tenant.users.create!(name: admin_params[:name], email: admin_params[:email])
     tenant.admin_group.users << admin
     tenant
   end

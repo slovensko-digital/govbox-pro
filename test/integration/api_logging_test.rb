@@ -16,7 +16,6 @@ class ApiLoggingTest < ActionDispatch::IntegrationTest
     json_response = JSON.parse(response.body)
     api_request = ApiRequest.last
     assert api_request
-    assert_equal api_request.type, "ApiRequest::ProvidedApiRequest"
     assert_match api_request.endpoint_path, request.url
     assert_equal api_request.endpoint_method, request.method
     assert_equal api_request.response_status, response.code.to_i
@@ -33,7 +32,6 @@ class ApiLoggingTest < ActionDispatch::IntegrationTest
     assert_response :not_found
     api_request = ApiRequest.last
     assert api_request
-    assert_equal api_request.type, "ApiRequest::ProvidedApiRequest"
     assert_match api_request.endpoint_path, request.url
     assert_equal api_request.endpoint_method, request.method
     assert_equal api_request.response_status, response.code.to_i

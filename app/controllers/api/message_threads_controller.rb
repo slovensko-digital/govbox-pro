@@ -1,5 +1,5 @@
 class Api::MessageThreadsController < Api::TenantController
   def show
-    @thread = MessageThread.joins(:box).where(box: { tenant_id: @tenant.id }).find(params[:id])
+    @thread = @tenant.message_threads.find(params[:id])
   end
 end
