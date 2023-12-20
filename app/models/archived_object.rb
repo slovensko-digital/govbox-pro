@@ -26,4 +26,14 @@ class ArchivedObject < ApplicationRecord
   def archived?
     !archived_object_versions.empty?
   end
+
+  def needs_extension?
+    archived_object_versions.empty? || needs_renewal?
+  end
+
+  private
+
+  def needs_renewal?
+    archived_object_versions.last.valid_to < 90.days.ago
+  end
 end
