@@ -1,4 +1,4 @@
-<% if !@archived_object.valid? %>
+<% if !@archived_object&.signed_valid? %>
   <%= render Common::BadgeComponent.new("Nedá sa archivovať", "#{@classes} text-red-600 bg-red-50 ring-red-500/10 border-red-500", "text-red-600 bg-red-50 ring-red-500/10 border-red-500") %>
 <% else %>
   <% if !@archived_object.archived? %>

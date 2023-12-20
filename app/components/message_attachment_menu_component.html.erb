@@ -12,7 +12,7 @@
                         }
             ) do %>
           <button data-action="click->autogram#signSingleFile">
-            <%= render Icons::ArchiveBoxComponent.new(css_classes: "h-5 w-5") %>
+            <%= render Common::IconComponent.new("pencil", classes: "h-5 w-5") %>
             Podpísať
           </button>
         <% end %>
@@ -30,7 +30,7 @@
     <% end %>
     <% if @message_attachment.destroyable? %>
       <%= link_to message_message_object_path(@message_attachment.message, @message_attachment), class: "flex gap-3", role: "menuitem", tabindex: "-1", method: :delete do %>
-        <%= render Icons::ArchiveBoxComponent.new(css_classes: "h-5 w-5") %>
+        <%= render Common::IconComponent.new("trash", classes: "h-5 w-5") %>
         Zmazať
       <% end %>
     <% end %>

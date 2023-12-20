@@ -2,7 +2,6 @@ class Archivation::ProcessMessageObjectJob < ApplicationJob
   def perform(object, archiver_client: ArchiverEnvironment.archiver_client)
     object.archived_object = create_archived_object(object, archiver_client) if object.archived_object.nil?
     return unless object.archived_object.archived_object_versions.empty? || object.archived_object.archived_object_versions.last.valid_to < DateTime.now.since(90.days)
-
     Archivation::ExtendArchivedObjectJob.perform_later(object.archived_object)
   end
 
@@ -12,14 +11,14 @@ class Archivation::ProcessMessageObjectJob < ApplicationJob
     response = archiver_client.api.validate_document(object.content)
     return signed_archived_object(response, object) unless response.nil?
 
-    archived_object = ArchivedObject.new(validation_result: '-1', sgined_by: nil, signature_level: nil, signed_at: nil, message_object: object)
+    archived_object = ArchivedObject.new(validation_result: '-1', signed_by: nil, signature_level: nil, signed_at: nil, message_object: object)
     archived_object.save
     archived_object
   end
 
   def signed_archived_object(response, object)
     signature_info = response['signatures'].first['signatureInfo']
-    archived_object = ArchivedObject.new(validation_result: validation_result_code(response), sgined_by: signature_info['signingCertificate']['subjectDN'], signature_level: signature_info['level'], signed_at: signature_info['signingCertificate']['productionTime'], message_object: object)
+    archived_object = ArchivedObject.new(validation_result: validation_result_code(response), signed_by: signature_info['signingCertificate']['subjectDN'], signature_level: signature_info['level'], signed_at: signature_info['signingCertificate']['productionTime'], message_object: object)
     archived_object.save
     archived_object
   end

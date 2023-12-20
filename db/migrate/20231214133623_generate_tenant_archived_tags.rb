@@ -4,7 +4,7 @@ class GenerateTenantArchivedTags < ActiveRecord::Migration[7.1]
       tenant.create_archived_tag!(name: "Archivované", visible: true)
     end
 
-    ArchivedTag.update_all(color: "green", icon: "fingerprint")
+    ArchivedTag.update_all(color: "green", icon: "archive-box")
   end
 
   def down

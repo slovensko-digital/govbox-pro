@@ -3,7 +3,7 @@
 # Table name: archived_objects
 #
 #  id                :bigint           not null, primary key
-#  sgined_by         :string
+#  signed_by         :string
 #  signature_level   :string
 #  signed_at         :datetime
 #  validation_result :string           not null
@@ -15,7 +15,7 @@ class ArchivedObject < ApplicationRecord
   has_many :archived_object_versions
   belongs_to :message_object
 
-  def valid?
+  def signed_valid?
     validation_result == '0'
   end
 
