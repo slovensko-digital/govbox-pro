@@ -68,6 +68,10 @@ class Message < ApplicationRecord
     true
   end
 
+  def replyable_in_thread?
+    thread.messages.where(replyable: true).order(:delivered_at).last == self
+  end
+
   def visualizable_body?
     html_visualization.present? || (form && form.nested_message_objects.count > 1)
   end
