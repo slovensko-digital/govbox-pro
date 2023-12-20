@@ -14,7 +14,7 @@ class FillMissingRecipientsOrSenders < ActiveRecord::Migration[7.1]
         recipient_name ||= govbox_message.folder.box.name
       end
 
-      message.update!(
+      message&.update!(
         recipient_name: recipient_name,
         sender_name: sender_name
       )
