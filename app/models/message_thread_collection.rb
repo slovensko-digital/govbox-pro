@@ -45,7 +45,7 @@ class MessageThreadCollection
     records = message_thread_scope.select(
       'message_threads.*',
       '(select bool_and(read) from messages where messages.message_thread_id = message_threads.id) as all_read',
-      # TODO: - mame tu velmi hruby sposob ako zistit, s kym je dany thread komunikacie, vedeny, len pre ucely zobrazenia. Dohodnut aj s @Taja, co s tym
+      # TODO: - vsetky vypocitane hodnoty treba materializovat na uroven vlakna
       '(select max(coalesce(recipient_name)) from messages where messages.id = (select m.id FROM (select * from messages where messages.message_thread_id = message_threads.id ORDER BY messages.delivered_at) as m LIMIT 1)) as recipient',
       '(select max(coalesce(sender_name)) from messages where messages.id = (select m.id FROM (select * from messages where messages.message_thread_id = message_threads.id ORDER BY messages.delivered_at) as m LIMIT 1)) as sender',
       '(select messages.outbox from messages where messages.id = (select m.id FROM (select * from messages where messages.message_thread_id = message_threads.id ORDER BY messages.delivered_at) as m LIMIT 1)) as is_outbox',
