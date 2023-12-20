@@ -10,7 +10,7 @@ module MessageThreads
           message_threads.each do |message_thread|
             message_thread.archived(true)
             message_thread.save
-            Archivation::ProcessMessageThreadJob.perform_later(message_thread)
+            Archivation::ArchiveMessageThreadJob.perform_later(message_thread)
           end
 
           redirect_back fallback_location: message_threads_path, notice: "Vlákna boli zaradené na archiváciu", status: 303

@@ -1,4 +1,4 @@
-class Archivation::ProcessMessageObjectJob < ApplicationJob
+class Archivation::ArchiveMessageObjectJob < ApplicationJob
   def perform(object, archiver_client: ArchiverEnvironment.archiver_client)
     object.archived_object = create_archived_object(object, archiver_client) if object.archived_object.nil?
     return unless object.archived_object.archived_object_versions.empty? || object.archived_object.archived_object_versions.last.valid_to < DateTime.now.since(90.days)
