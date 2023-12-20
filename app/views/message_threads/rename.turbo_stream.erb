@@ -1,0 +1,3 @@
+<%= turbo_stream.update "modal" do %>
+  <%= render MessageThreadRenameComponent.new(message_thread: @message_thread) %>
+<% end %>

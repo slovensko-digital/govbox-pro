@@ -5,9 +5,8 @@ class MessageThreadCollection
   PER_PAGE = 20
   DIRECTION = :desc
 
-  def self.init_cursor(cursor_params)
-    cursor_params = cursor_params || {}
-
+  def self.init_cursor(cursor_params = nil)
+    cursor_params ||= {}
     {
       DELIVERED_AT => cursor_params[DELIVERED_AT] ? millis_to_time(cursor_params[DELIVERED_AT]) : Time.now,
       ID => cursor_params[ID]
@@ -21,8 +20,11 @@ class MessageThreadCollection
     cursor
   end
 
-  def self.all(scope: nil, search_permissions:, query: nil, cursor:)
-    parsed_query = Searchable::MessageThreadQuery.parse(query.to_s)
+  # TODO
+  # def self.exists_by_query()
+
+  def self.all(scope: MessageThread, search_permissions:, query: "", cursor:)
+    parsed_query = Searchable::MessageThreadQuery.parse(query)
     filter = Searchable::MessageThreadQuery.labels_to_ids(
       parsed_query,
       tenant: search_permissions.fetch(:tenant)
@@ -36,7 +38,7 @@ class MessageThreadCollection
       per_page: PER_PAGE
     ).fetch_values(:ids, :next_cursor, :highlights)
 
-    message_thread_scope = (scope || MessageThread).
+    message_thread_scope = scope.
       where(id: ids).
       order(Pagination.order_clause(searchable_cursor_to_cursor(cursor), DIRECTION))
 
@@ -50,11 +52,11 @@ class MessageThreadCollection
       '(select max(messages.id) from messages where messages.message_thread_id = message_threads.id and messages.delivered_at = message_threads.last_message_delivered_at) as last_message_id'
     )
 
-    records.map { |row| row.search_highlight = highlights[row.id] }
+    records.each { |row| row.search_highlight = highlights[row.id] }
 
     {
       records: records,
-      next_cursor: next_cursor,
+      next_cursor: next_cursor
     }
   end
 

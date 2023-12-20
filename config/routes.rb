@@ -1,3 +1,6 @@
+# == Route Map
+#
+
 Rails.application.routes.draw do
   namespace :settings do
     resources :automation_rules
@@ -102,7 +105,9 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :filters
+  resources :filters do
+    resources :filter_subscriptions
+  end
 
   resources :message_drafts do
     member do
@@ -112,9 +117,28 @@ Rails.application.routes.draw do
     end
 
     post :submit_all, on: :collection
+
+    scope module: 'message_drafts' do
+      resource :document_selections, only: [:new, :update] do
+        collection do
+          post :new
+        end
+      end
+
+      resource :signature_requests, only: [:update] do
+        collection do
+          post :edit
+          post :prepare
+        end
+      end
+    end
   end
 
   resources :messages_tags
+
+  resources :notifications do
+    get :scroll, on: :collection
+  end
 
   resource :settings
 
@@ -135,7 +159,23 @@ Rails.application.routes.draw do
 
   resources :sessions do
     get :login, on: :collection
+    get :no_account, on: :collection
     delete :destroy, on: :collection
+  end
+
+
+  if UpvsEnvironment.sso_support?
+    namespace :upvs do
+      get :login
+      get :logout
+    end
+
+    scope 'auth/saml', as: :upvs, controller: :upvs do
+      get :login
+      get :logout
+
+      post :callback
+    end
   end
 
   get :auth, path: 'prihlasenie', to: 'sessions#login'

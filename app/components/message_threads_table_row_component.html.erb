@@ -1,26 +1,24 @@
 <li class="flex px-4 py-5 hover:bg-blue-50 gap-2" data-test="<%= dom_id(@message_thread) %>" <% if @message_thread_iteration.last? %> data-all-checkboxes-target="refresh" <% end %>>
-  <div class="hidden sm:flex">
-    <div class="flex pr-2 md:gap-4 md:pr-4 items-center justify-start mb-auto">
-      <%= check_box_tag("message_thread_ids[]", @message_thread.id, false, { id: "message_thread_#{@message_thread.id}", class: "h-4 w-4 rounded border-gray-300 text-blue-500 focus:ring-0 hidden sm:block", type: "checkbox", data: { action: "form#send" } }) %>
-      <%= render Common::BoxLabelComponent.new(@message_thread.box, "hidden md:block") %>
-    </div>
+  <div class="hidden sm:flex pr-2 md:gap-4 md:pr-4 items-center justify-start mb-auto h-8">
+    <%= check_box_tag("message_thread_ids[]", @message_thread.id, false, { id: "message_thread_#{@message_thread.id}", class: "h-4 w-4 rounded border-gray-300 text-blue-500 focus:ring-0 hidden sm:block my-auto", type: "checkbox", data: { action: "form#send" } }) %>
   </div>
   <%= link_to @message_thread, class: "flex flex-col md:flex-row md:flex-nowrap justify-between grow gap-2" do %>
     <div class="flex flex-col gap-2">
       <div class="flex flex-wrap grow gap-x-4 gap-y-1">
-        <div class="inline-block md:flex">
-          <%= render Common::BoxLabelComponent.new(@message_thread.box, "inline-flex md:hidden", "text-xs") %>
-          <span class="text-sm sm:text-base text-gray-900 <%= "font-semibold" unless @message_thread.all_read %> [word-break:break-word]">
-            <%= @message_thread.title %>
+        <div class="flex items-center sm:min-h-[32px]">
+          <span title="<%= @message_thread.title %>" class="inline text-sm sm:text-lg text-gray-900 <%= "font-semibold" unless @message_thread.all_read %> [word-break:break-word]">
+              <%= @message_thread.title %>
           </span>
         </div>
-        <% if @visible_tags.present? %>
-          <div class="flex flex-wrap items-start gap-1" data-test="tags">
-            <% @visible_tags.each do |tag| %>
-              <%= render Common::TagComponent.new(tag) %>
-            <% end %>
+        <div class="flex flex-wrap items-center gap-1" data-test="tags" data-controller="content-with-separator">
+          <div class="flex gap-4 mr-3" data-content-with-separator-target="separator-container">
+            <%= render Common::BoxLabelComponent.new(@message_thread.box, "", "text-xs sm:text-sm", "px-2 py-0.5") %>
+            <div class="h-6 sm:h-8 w-px bg-gray-900/10" aria-hidden="true" data-content-with-separator-target="separator"></div>
           </div>
-        <% end %>
+          <% @visible_tags.each do |tag| %>
+            <%= render Common::TagComponent.new(tag) %>
+          <% end %>
+        </div>
       </div>
       <!--      <div>-->
       <%#= render Common::TagComponent.new("2 nové správy") %>
@@ -50,7 +48,7 @@
     </div>
     <div class="hidden md:flex gap-x-4 items-center">
       <div class="flex flex-col gap-y-1 text-right whitespace-nowrap">
-        <time class="text-lg text-gray-900" datetime="<%= @message_thread.last_message_delivered_at %>">
+        <time class="text-lg text-gray-900 <%= "font-semibold" unless @message_thread.all_read %>" datetime="<%= @message_thread.last_message_delivered_at %>">
           <%= helpers.nice_datetime(@message_thread.last_message_delivered_at) %>
         </time>
         <%#= render Common::TagComponent.new("2 nové správy") %>

@@ -266,3 +266,18 @@ sk:
     form_signed: "Správa už bola podpísaná. Podpísanú správu nie je možné ďalej upravovať. V prípade potreby zmien kliknite na tlačidlo Odstrániť podpisy. Všetky podpisy budú odstránené, správu bude ďalej možné upravovať. Následne ju bude potrebné znova podpísať."
     form_submitted: "Správa už bola odoslaná. Odoslanú správu nie je možné ďalej upravovať. V prípade potreby pripravte novú správu a odošlite ju."
     read_only_agenda: "Správu nie je možné ďalej upravovať. V prípade potreby pripravte novú správu a odošlite ju."
+  filter_subscription:
+    events:
+      Notifications::NewMessageThread:
+        name: "Nová konverzácia"
+        description: "Dostanete notifikáciu o novom vlákne vyhovujúcemu filtru."
+      Notifications::NewMessage:
+        name: "Nová správa"
+        description: "Dostanete notifikáciu ku každej novej správe vo vláknach vyhovujúcim filtru."
+      Notifications::MessageThreadNoteChanged:
+        name: "Zmena poznámky"
+        description: "Dostanete notifikáciu o zmene poznámky k vláknu."
+    flash:
+      create: "Notifikácie boli nastavené!"
+      update: "Notifikacie boli zmenené!"
+      destroy: "Notifikácie boli zrušené!"

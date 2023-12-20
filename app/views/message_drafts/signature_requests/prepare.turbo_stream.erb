@@ -1,0 +1,7 @@
+<%= turbo_stream.update Signing::SignersRequests::Component::DIFF_FRAME do %>
+  <%= render Signing::SignersRequests::DiffComponent.new(diff: @signers_changes.diff) %>
+<% end %>
+
+<%= turbo_stream.update Signing::SignersRequests::Component::ACTIONS_FRAME do %>
+  <%= render Signing::SignersRequests::ActionsComponent.new(message_draft: @message_draft, signers_changes: @signers_changes) %>
+<% end %>

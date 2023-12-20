@@ -73,12 +73,16 @@ ssd_signature_requested:
   type: SignatureRequestedTag
   visible: true
   tenant: ssd
+  icon: pencil
+  color: yellow
 
 ssd_signed:
   name: Podpisane
   type: SignedTag
   visible: true
   tenant: ssd
+  icon: fingerprint
+  color: green
 
 solver_special:
   name: Special

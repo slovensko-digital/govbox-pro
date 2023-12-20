@@ -7,7 +7,7 @@ one:
   delivered_at: <%= DateTime.current %>
   edesk_class: TEST
   folder: ssd_one
-  body: MyText
+  body: general text
   payload:
     message_id: <%= SecureRandom.uuid %>
     subject: MySubject
@@ -15,7 +15,7 @@ one:
     sender_uri: MySenderURI
     recipient_name: MyRecipient
     delivered_at: <%= DateTime.current.to_s %>
-    original_html: MyHtml
+    original_html: general text
     objects:
       - name: MyName
         mime_type: MyMimeType
@@ -145,10 +145,35 @@ ssd_referring_to_outbox_message:
         class: MyClass
         content: MyContent
 
+ssd_without_recipient_name:
+  message_id: <%= SecureRandom.uuid %>
+  correlation_id: <%= SecureRandom.uuid %>
+  edesk_message_id: 7
+  delivered_at: <%= DateTime.current %>
+  edesk_class: TEST
+  folder: ssd_one
+  body: MyText
+  payload:
+    message_id: <%= SecureRandom.uuid %>
+    subject: Všeobecná Agenda
+    sender_name: MySender
+    sender_uri: MySenderURI
+    recipient_uri: SSDMainURI
+    delivered_at: <%= DateTime.current.to_s %>
+    original_html: MyHtml
+    general_agenda:
+      subject: Rozhodnutie ...
+    objects:
+      - name: MyName
+        mime_type: MyMimeType
+        signed: true
+        class: MyClass
+        content: MyContent
+
 solver_authorized_delivery_notification:
   message_id: bbff2617-3430-44c6-b827-519059ff1e90
   correlation_id: <%= SecureRandom.uuid %>
-  edesk_message_id: 7
+  edesk_message_id: 8
   delivered_at: <%= DateTime.current %>
   edesk_class: TEST
   folder: solver_one
@@ -177,7 +202,7 @@ solver_authorized_delivery_notification:
 solver_delivery_notification:
   message_id: cdd45d69-f917-4fca-b296-0b3759a0936a
   correlation_id: <%= SecureRandom.uuid %>
-  edesk_message_id: 8
+  edesk_message_id: 9
   delivered_at: <%= DateTime.current %>
   edesk_class: TEST
   folder: solver_one
