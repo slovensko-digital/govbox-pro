@@ -89,6 +89,10 @@ class MessageObject < ApplicationRecord
     archived_object.present?
   end
 
+  def downloadable_archived_object?
+    archived_object&.archived?
+  end
+
   private
 
   def allowed_mime_type?

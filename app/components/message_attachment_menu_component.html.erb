@@ -22,7 +22,7 @@
       <%= render Icons::ArrowDownTrayComponent.new(css_classes: "h-5 w-5") %>
       Stiahnuť
     <% end %>
-    <% if @message_attachment.message_object_datum.message_object.archived? %>
+    <% if @message_attachment.downloadable_archived_object? %>
       <%= link_to download_archived_message_message_object_path(@message_attachment.message, @message_attachment), class: "flex gap-3", role: "menuitem", tabindex: "-1", data: { turbo_frame: "_top" } do %>
         <%= render Icons::ArrowDownTrayComponent.new(css_classes: "h-5 w-5") %>
         Stiahnuť archivované
