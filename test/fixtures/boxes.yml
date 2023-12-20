@@ -2,7 +2,7 @@
 
 ssd_main:
   name: SSD main
-  uri: MyString
+  uri: SSDMainURI
   tenant: ssd
   short_name: MY1
   api_connection: govbox_api_api_connection1
