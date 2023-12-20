@@ -1,20 +1,20 @@
 <!-- Slightly modified https://tailwindui.com/components/application-ui/lists/stacked-lists#component-f0f183415de745e81fa742d6e1df9e04 -->
 <!-- In card with links -->
-<%= tag.turbo_frame id: dom_id(@message), class: "overflow-hidden bg-white shadow-sm rounded-md border border-gray-200" do %>
-  <%= link_to message_path(@message, mode: :thread_view), class: "flex justify-stretch gap-x-4 px-4 py-5 hover:bg-gray-50 sm:px-6" do %>
-    <div class="flex grow min-w-0 gap-x-4 justify-between text-sm font-normal leading-6 text-gray-900">
-      <span class="[word-break:break-word]">
-        <%= @message.title %>
-      </span>
-      <time class="shrink-0 md:hidden" datetime="<%= @message.delivered_at %>">
-        <%= helpers.nice_datetime(@message.delivered_at) %>
-      </time>
-      <time class="shrink-0 hidden md:block" datetime="<%= @message.delivered_at %>">
-        <%= helpers.nice_datetime_with_time(@message.delivered_at) %>
-      </time>
-    </div>
-    <div class="flex shrink-0 items-start">
-      <%= render Icons::ChevronDownComponent.gray %>
-    </div>
-  <% end %>
+<%= tag.turbo_frame id: dom_id(@message) do %>
+  <div class="overflow-hidden bg-white shadow-sm rounded-md border border-gray-200">
+    <%= link_to message_path(@message, mode: :thread_view), class: "flex justify-stretch gap-x-4 px-4 py-5 hover:bg-gray-50 sm:px-6" do %>
+      <div class="flex grow min-w-0 gap-x-4 justify-between text-sm font-normal leading-6 text-gray-900">
+        <span class="[word-break:break-word]">
+          <%= @message.title %>
+        </span>
+        <time class="shrink-0 md:hidden" datetime="<%= @message.delivered_at %>">
+          <%= helpers.nice_datetime(@message.delivered_at) %>
+        </time>
+        <time class="shrink-0 hidden md:block" datetime="<%= @message.delivered_at %>">
+          <%= helpers.nice_datetime_with_time(@message.delivered_at) %>
+        </time>
+      </div>
+      <%= render Common::IconComponent.new("chevron-down", classes: "w-6 h-6 text-gray-400") %>
+    <% end %>
+  </div>
 <% end %>
