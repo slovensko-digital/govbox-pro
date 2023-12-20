@@ -68,22 +68,5 @@
           )" %>
       </div>
     <% end %>
-
-    <div class="gap-2 p-2 border-t-0 border-r-0 border-b-0 border-l-0 border-gray-200">
-      <% if @message.not_yet_submitted? && @message.form&.signable? %>
-        <%= content_tag(:div,
-                        {
-                          "data-controller": "autogram",
-                          "data-autogram-object-id": @message.form.id,
-                          "data-autogram-message-id": @message.id,
-                          "data-autogram-object-path": message_message_object_path(@message.id, @message.form.id),
-                          "data-autogram-authenticity-token": form_authenticity_token
-                        }) do %>
-          <button data-action="click->autogram#signSingleFile" class="flex justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3.5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
-            Podpísať
-          </button>
-        <% end %>
-      <% end %>
-    </div>
   </div>
 </div>

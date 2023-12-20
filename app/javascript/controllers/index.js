@@ -13,6 +13,9 @@ application.register("autofocus", AutofocusController)
 import AutogramController from "./autogram_controller"
 application.register("autogram", AutogramController)
 
+import NewAutogramController from "./new_autogram_controller"
+application.register("new-autogram", NewAutogramController)
+
 import DebounceController from "./debounce_controller"
 application.register("debounce", DebounceController)
 

@@ -48,11 +48,53 @@ class MessageObject < ApplicationRecord
     end
   end
 
+  def mark_signed_by_user(user)
+    # object, user_signed_tag
+    message_objects_tags.find_or_create_by!(tag: user.signed_by_tag)
+    message_objects_tags.find_by(tag: user.signature_requested_from_tag)&.destroy
+
+    # object, signed_tag
+    unless has_signature_request_from_tags?
+      message_objects_tags.find_or_create_by!(tag: user.tenant.signed_tag)
+      message_objects_tags.find_by(tag: user.tenant.signature_requested_tag)&.destroy
+    end
+
+    has_the_user_signature_requests_tags_within_thread = MessageObjectsTag.
+      joins(:tag, message_object: { message: :thread }).
+      where(message_threads: { id: message.thread }).
+      where(tag: user.signature_requested_from_tag).exists?
+
+    # thread, user_signed_tag
+    unless has_the_user_signature_requests_tags_within_thread
+      message.thread.message_threads_tags.find_or_create_by!(tag: user.signed_by_tag)
+      message.thread.message_threads_tags.find_by(tag: user.signature_requested_from_tag)&.destroy
+    end
+
+    has_any_signature_requests_tags_within_thread = MessageObjectsTag.
+      joins(:tag, message_object: { message: :thread }).
+      where(message_threads: { id: message.thread }).
+      where(tag: { type: SignatureRequestedFromTag.to_s }).exists?
+
+    # thread, signed_tag
+    unless has_any_signature_requests_tags_within_thread
+      message.thread.message_threads_tags.find_or_create_by!(tag: user.tenant.signed_tag)
+      message.thread.message_threads_tags.find_by(tag: user.tenant.signature_requested_tag)&.destroy
+    end
+  end
+
+  def add_signature_requested_from_user(user)
+    return if tags.exists?(id: user.signed_by_tag)
+
+    add_signature_requested_from_tag(user.signature_requested_from_tag)
+  end
+
+  # TODO make private
   def add_signature_requested_from_tag(tag)
     add_cascading_tag(tag)
     add_cascading_tag(tag.tenant.signature_requested_tag)
   end
 
+  # TODO make private
   def remove_signature_requested_from_tag(tag)
     remove_cascading_tag(tag)
     remove_cascading_tag(tag.tenant.signature_requested_tag) unless has_signature_request_from_tags?

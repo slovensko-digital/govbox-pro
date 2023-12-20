@@ -16,7 +16,7 @@
                 <% end %>
               <% end %>
 
-              <%= link_to "Vyžiadať podpis", new_message_draft_document_selections_path(@message), data: { turbo_frame: "modal" }, class: "flex justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3.5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" %>
+              <%= render MessageDraftSigningMultiButtonComponent.new(message: @message, user_is_signer: @user_is_signer) %>
             </div>
           </div>
           <div class="gap-2 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">

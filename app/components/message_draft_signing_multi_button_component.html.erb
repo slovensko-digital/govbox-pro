@@ -1,0 +1,10 @@
+<%= link_to "Vyžiadať podpis",
+            new_message_draft_document_selections_path(@message),
+            data: { turbo_frame: "modal" },
+            class: "flex justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6 font-medium rounded-lg text-sm px-3.5 py-2.5 bg-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" %>
+<% if @user_is_signer %>
+  <%= link_to "Podpísať",
+              new_message_draft_document_selections_path(@message, next_step: "sign"),
+              data: { turbo_frame: "modal" },
+              class: "flex justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6 font-medium rounded-lg text-sm px-3.5 py-2.5 bg-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" %>
+<% end %>
