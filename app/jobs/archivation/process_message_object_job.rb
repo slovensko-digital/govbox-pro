@@ -1,8 +1,6 @@
 class Archivation::ProcessMessageObjectJob < ApplicationJob
-  @api = ArchiverEnvironment.archiver_client.api
-
-  def perform(object)
-    object.archived_object = create_archived_object(object) if object.archived_object.nil?
+  def perform(object, archiver_client: ArchiverEnvironment.archiver_client)
+    object.archived_object = create_archived_object(object, archiver_client) if object.archived_object.nil?
     return unless object.archived_object.archived_object_versions.empty? || object.archived_object.archived_object_versions.last.valid_to < DateTime.now.since(90.days)
 
     Archivation::ExtendArchivedObjectJob.perform_later(object.archived_object)
@@ -10,8 +8,8 @@ class Archivation::ProcessMessageObjectJob < ApplicationJob
 
   private
 
-  def create_archived_object(object)
-    response = @api.validate_document(object.content)
+  def create_archived_object(object, archiver_client)
+    response = archiver_client.api.validate_document(object.content)
     return signed_archived_object(response, object) unless response.nil?
 
     archived_object = ArchivedObject.new(validation_result: '-1', sgined_by: nil, signature_level: nil, signed_at: nil, message_object: object)

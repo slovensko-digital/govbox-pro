@@ -1,12 +1,10 @@
 class Archivation::ExtendArchivedObjectJob < ApplicationJob
-  @api = ArchiverEnvironment.archiver_client.api
-
-  def perform(archived_object)
+  def perform(archived_object, archiver_client: ArchiverEnvironment.archiver_client)
     content = object_content_to_extend(archived_object)
     return unless content
 
-    extended_document = @api.extend_document(content)
-    validation_response = @api.validate_document(Base64.strict_decode64(extended_document))
+    extended_document = archiver_client.api.extend_document(content)
+    validation_response = archiver_client.api.validate_document(Base64.strict_decode64(extended_document))
     archived_object_version = ArchivedObjectVersion.new(content: Base64.strict_decode64(extended_document), valid_to: last_archive_timestamp(validation_response), validation_result: validation_result_code(validation_response), archived_object: archived_object)
     archived_object_version.save
   end
