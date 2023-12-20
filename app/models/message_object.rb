@@ -83,18 +83,26 @@ class MessageObject < ApplicationRecord
   end
 
   def add_signature_requested_from_user(user)
+    # done, if already signed by user
     return if tags.exists?(id: user.signed_by_tag)
 
-    add_signature_requested_from_tag(user.signature_requested_from_tag)
+    # object, user_signature_requested_tag
+    message_objects_tags.find_or_create_by!(tag: user.signature_requested_from_tag)
+
+    # object, signature_requested_tag
+    message_objects_tags.find_or_create_by!(tag: user.tenant.signature_requested_tag)
+    message_objects_tags.find_by(tag: user.tenant.signed_tag)&.destroy
+
+    # thread, user_signature_requested_tag
+    message.thread.message_threads_tags.find_or_create_by!(tag: user.signature_requested_from_tag)
+    message.thread.message_threads_tags.find_by(tag: user.signed_by_tag)&.destroy
+
+    # thread, signature_requested_tag
+    message.thread.message_threads_tags.find_or_create_by!(tag: user.tenant.signature_requested_tag)
+    message.thread.message_threads_tags.find_by(tag: user.tenant.signed_tag)&.destroy
   end
 
-  # TODO make private
-  def add_signature_requested_from_tag(tag)
-    add_cascading_tag(tag)
-    add_cascading_tag(tag.tenant.signature_requested_tag)
-  end
-
-  # TODO make private
+  # TODO use user interface and handle edge cases
   def remove_signature_requested_from_tag(tag)
     remove_cascading_tag(tag)
     remove_cascading_tag(tag.tenant.signature_requested_tag) unless has_signature_request_from_tags?

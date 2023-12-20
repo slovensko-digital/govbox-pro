@@ -46,6 +46,10 @@ class Tenant < ApplicationRecord
     signature_requested_tag || raise(ActiveRecord::RecordNotFound.new("`SignatureRequestedTag` not found in tenant: #{self.id}"))
   end
 
+  def signed_tag!
+    signed_tag || raise(ActiveRecord::RecordNotFound.new("`SignatureRequestedTag` not found in tenant: #{self.id}"))
+  end
+
   def feature_enabled?(feature)
     raise "Unknown feature #{feature}" unless feature.in? AVAILABLE_FEATURE_FLAGS
 
