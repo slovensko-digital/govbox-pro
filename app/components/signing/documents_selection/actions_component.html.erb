@@ -2,9 +2,9 @@
   <% actions.with_submit_button do %>
     <% if @message_object_ids.present? %>
       <% if @next_step == "sign" %>
-        <%= submit_tag "Podpísať Autogramom", formaction: message_draft_signing_path(@message_draft), formmethod: :post, data: { turbo_frame: "modal" }, class: "inline-flex w-full justify-center items-center px-3 py-2 rounded-md bg-blue-600 font-medium text-left text-sm text-white hover:cursor-pointer sm:w-auto" %>
+        <%= submit_tag "Podpísať Autogramom", formaction: message_draft_signing_path(@message_draft), formmethod: :post, data: { turbo_frame: "modal" }, class: "inline-flex w-full justify-center items-center px-3 py-2 rounded-md font-medium text-left text-sm text-white bg-blue-700 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 focus:outline-none dark:focus:ring-blue-800 hover:cursor-pointer sm:w-auto" %>
       <% else %>
-        <%= submit_tag "Vybrať podpisovačov", formaction: edit_message_draft_signature_requests_path(@message_draft), formmethod: :post, data: { turbo_frame: "modal" }, class: "inline-flex w-full justify-center items-center px-3 py-2 rounded-md bg-blue-600 font-medium text-left text-sm text-white hover:cursor-pointer sm:w-auto" %>
+        <%= submit_tag "Vybrať podpisujúcich", formaction: edit_message_draft_signature_requests_path(@message_draft), formmethod: :post, data: { turbo_frame: "modal" }, class: "inline-flex w-full justify-center items-center px-3 py-2 rounded-md font-medium text-left text-sm text-white bg-blue-700 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 focus:outline-none dark:focus:ring-blue-800 hover:cursor-pointer sm:w-auto" %>
       <% end %>
     <% end %>
   <% end %>

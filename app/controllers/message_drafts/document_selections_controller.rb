@@ -21,7 +21,7 @@ module MessageDrafts
     def set_message_object_ids
       @message_object_ids = params[:object_ids] || []
 
-      if @next_step == "sign" && Current.user.signer?
+      if action_name != "update" && @next_step == "sign" && Current.user.signer?
         @message_object_ids = MessageObject.
           joins(:tags).
           where(message_id: @message_draft).

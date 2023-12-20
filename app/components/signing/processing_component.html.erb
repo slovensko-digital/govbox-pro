@@ -1,4 +1,4 @@
-<%= render Common::ModalComponent.new(closable: true) do |modal| %>
+<%= render Common::ModalComponent.new(closable: false) do |modal| %>
   <% modal.with_header do %>
     Prebieha podpisovanie
   <% end %>
@@ -34,7 +34,7 @@
                       data: { "new-autogram-target": "doneOk" },
                       class: "hidden" %>
 
-        <%= button_to "Podpísané zlyhalo",
+        <%= button_to "Podpisovanie zlyhalo",
                       message_draft_signing_path(@message_draft),
                       method: :patch,
                       params: { result: "error" },
