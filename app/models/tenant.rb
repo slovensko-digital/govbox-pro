@@ -71,7 +71,7 @@ class Tenant < ApplicationRecord
 
   def self.create_with_admin!(tenant_params, admin_params)
     tenant = create!(name: tenant_params[:name])
-    admin = tenant.users.create!(name: admin_params[:name], email: admin_params[:email])
+    admin = tenant.users.create!(admin_params)
     tenant.admin_group.users << admin
     tenant
   end
