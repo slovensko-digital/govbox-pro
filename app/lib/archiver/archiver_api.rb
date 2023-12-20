@@ -6,7 +6,7 @@ module Archiver
     end
 
     def validate_document(document_bytes)
-      response = @handler.public_send(:post, "#{@url}validate", { content: Base64.strict_encode64(document_bytes) }.to_json)
+      response = @handler.post("#{@url}validate", { content: Base64.strict_encode64(document_bytes) }.to_json)
       structure = response.body.empty? ? nil : JSON.parse(response.body)
 
       return nil if response.status == 422 || response.status == 400
@@ -16,7 +16,7 @@ module Archiver
     end
 
     def extend_document(document_bytes)
-      response = @handler.public_send(:post, "#{@url}extend", { content: Base64.strict_encode64(document_bytes) }.to_json)
+      response = @handler.post("#{@url}extend", { content: Base64.strict_encode64(document_bytes) }.to_json)
       structure = response.body.empty? ? nil : JSON.parse(response.body)
 
       return nil if response.status == 422 || response.status == 400

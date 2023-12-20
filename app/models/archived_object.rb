@@ -15,7 +15,7 @@ class ArchivedObject < ApplicationRecord
   has_many :archived_object_versions
   belongs_to :message_object
 
-  def signed_valid?
+  def valid_signature?
     validation_result == '0'
   end
 

@@ -85,6 +85,10 @@ class MessageObject < ApplicationRecord
     message_objects_tags.joins(:tag).where(tag: { type: SignatureRequestedFromTag.to_s }).exists?
   end
 
+  def archived?
+    !archived_object.nil?
+  end
+
   private
 
   def allowed_mime_type?
