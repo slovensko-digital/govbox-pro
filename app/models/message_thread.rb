@@ -57,10 +57,10 @@ class MessageThread < ApplicationRecord
     if value
       tags << tenant.tags.find_by(type: ArchivedTag.to_s)
       Archivation::ArchiveMessageThreadJob.perform_later(self)
-      EventBus.publish(:message_thread_archived, self)
+      EventBus.publish(:message_thread_archive_on, self)
     else
       tags.delete(tags.find_by(type: ArchivedTag.to_s))
-      EventBus.publish(:message_thread_unarchived, self)
+      EventBus.publish(:message_thread_archive_off, self)
     end
   end
 
