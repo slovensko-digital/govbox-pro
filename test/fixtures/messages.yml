@@ -72,6 +72,7 @@ ssd_main_issue_one:
   html_visualization: MyString
   delivered_at: 2023-05-18 16:19:26
   thread: ssd_main_issue
+  outbox: true
   metadata: {}
 
 ssd_main_issue_two:

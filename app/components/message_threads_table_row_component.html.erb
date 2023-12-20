@@ -23,11 +23,15 @@
       <!--      <div>-->
       <%#= render Common::TagComponent.new("2 nové správy") %>
       <!--      </div>-->
-      <% if @message_thread.with_whom || @message_thread.last_message_delivered_at %>
+      <% if @message_thread.sender || @message_thread.recipient || @message_thread.last_message_delivered_at %>
         <div class="flex flex-wrap gap-2 text-gray-500 text-xs md:text-base items-center">
-          <% if @message_thread.with_whom %>
+          <% if @message_thread.sender || @message_thread.recipient %>
             <span class="text-left font-normal">
-              <%= @message_thread.with_whom %>
+              <% if @message_thread.is_outbox && @message_thread.recipient.present? %>
+                Komu: <%= @message_thread.recipient %>
+              <% elsif !@message_thread.is_outbox && @message_thread.sender.present? %>
+                Od: <%= @message_thread.sender %>
+              <% end %>
             </span>
           <% end %>
           <% if @message_thread.last_message_delivered_at %>
