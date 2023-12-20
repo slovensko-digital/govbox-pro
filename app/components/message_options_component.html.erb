@@ -6,14 +6,12 @@
         Stiahnuť správu
       <% end %>
       <% if @message.replyable? %>
-        <%= content_tag(:div, { "data-controller": "message-drafts" }) do %>
+        <div data-controller="message-drafts">
           <%= button_to message_drafts_path, params: { original_message_id: @message.id }, method: :post, class: 'whitespace-nowrap flex gap-3', role: 'menu-item', tabindex: -1 do %>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" data-slot="icon" class="shrink-0 w-5 h-5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
-            </svg>
+            <%= render Icons::ArrowUturnLeftComponent.new(css_classes: "w-5 h-5") %>
             Odpovedať
           <% end %>
-        <% end %>
+        </div>
       <% end %>
       <% if @mode == :thread_view && @message.collapsible? %>
         <% if @message.collapsed %>
