@@ -45,11 +45,12 @@ class MessageThreadCollection
     records = message_thread_scope.select(
       'message_threads.*',
       '(select bool_and(read) from messages where messages.message_thread_id = message_threads.id) as all_read',
-      # TODO: - mame tu velmi hruby sposob ako zistit, s kym je dany thread komunikacie, vedeny, len pre ucely zobrazenia. Dohodnut aj s @Taja, co s tym
-      'coalesce((select max(coalesce(recipient_name)) from messages where messages.message_thread_id = message_threads.id),
-        (select max(coalesce(sender_name)) from messages where messages.message_thread_id = message_threads.id)) as with_whom',
+      # TODO: - vsetky vypocitane hodnoty treba materializovat na uroven vlakna
+      '(select max(coalesce(recipient_name)) from messages where messages.id = (select m.id FROM (select * from messages where messages.message_thread_id = message_threads.id ORDER BY messages.delivered_at) as m LIMIT 1)) as recipient',
+      '(select max(coalesce(sender_name)) from messages where messages.id = (select m.id FROM (select * from messages where messages.message_thread_id = message_threads.id ORDER BY messages.delivered_at) as m LIMIT 1)) as sender',
+      '(select messages.outbox from messages where messages.id = (select m.id FROM (select * from messages where messages.message_thread_id = message_threads.id ORDER BY messages.delivered_at) as m LIMIT 1)) as is_outbox',
       # last_message_id - potrebujeme kvoli spravnej linke na konkretny message, ktory chceme otvorit, a nech to netahame potom pre kazdy thread
-      '(select max(messages.id) from messages where messages.message_thread_id = message_threads.id and messages.delivered_at = message_threads.last_message_delivered_at) as last_message_id'
+      '(select max(messages.id) from messages where messages.message_thread_id = message_threads.id and messages.delivered_at = message_threads.last_message_delivered_at) as last_message_id',
     )
 
     records.each { |row| row.search_highlight = highlights[row.id] }
