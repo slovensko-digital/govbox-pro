@@ -11,6 +11,7 @@
     <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
   </head>
   <body class = "h-full">
+    <%= render Common::FlashComponent.new %>
     <%= render TW::LightLayoutWithSidebarComponent.new do |component| %>
       <% component.with_mobile_sidebar do %>
         <%= render TW::MobileSidebarComponent.new(menu: @menu) %>

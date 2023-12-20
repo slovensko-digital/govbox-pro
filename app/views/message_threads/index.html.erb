@@ -1,4 +1,3 @@
-<%= render Common::FlashComponent.new %>
 <%= render MessageThreadsTableComponent.new(filter: @filter, filter_subscription: @filter_subscription) do |component| %>
   <% component.with_message_thread do %>
     <%= render MessageThreadsTableRowComponent.with_collection(@message_threads) %>
