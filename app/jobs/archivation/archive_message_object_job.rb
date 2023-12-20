@@ -1,7 +1,7 @@
 class Archivation::ArchiveMessageObjectJob < ApplicationJob
   def perform(object, archiver_client: Archiver::ArchiverApiClient)
     object.archived_object = create_archived_object(object, archiver_client) if object.archived_object.nil?
-    return unless object.archived_object.needs_extension
+    return unless object.archived_object.needs_extension?
 
     Archivation::ExtendArchivedObjectJob.perform_later(object.archived_object)
   end
@@ -25,11 +25,6 @@ class Archivation::ArchiveMessageObjectJob < ApplicationJob
   end
 
   def validation_result_code(validation_response)
-    result = -1
-    validation_response['signatures'].each do |s|
-      result = s['validationResult']['code'] if s['validationResult']['code'] > result
-    end
-
-    result
+    validation_response['signatures'].max_by { |s| s['validationResult']['code'] }['validationResult']['code']
   end
 end

@@ -31,6 +31,10 @@ class ArchivedObject < ApplicationRecord
     archived_object_versions.empty? || needs_renewal?
   end
 
+  def signed?
+    validation_result != '-1'
+  end
+
   private
 
   def needs_renewal?

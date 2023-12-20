@@ -1,9 +1,1 @@
-<% if !@archived_object&.valid_signature? %>
-  <%= render Common::BadgeComponent.new("Nedá sa archivovať", "#{@classes} text-red-600 bg-red-50 ring-red-500/10 border-red-500", "text-red-600 bg-red-50 ring-red-500/10 border-red-500") %>
-<% else %>
-  <% if !@archived_object.archived? %>
-    <%= render Common::BadgeComponent.new("Čaká na archiváciu", "#{@classes} text-yellow-600 bg-yellow-50 ring-yellow-500/10 border-yellow-500", "text-yellow-600 bg-yellow-50 ring-yellow-500/10 border-yellow-500") %>
-  <% else %>
-    <%= render Common::BadgeComponent.new("Archivované", "#{@classes} text-green-600 bg-green-50 ring-green-500/10 border-green-500", "text-green-600 bg-green-50 ring-green-500/10 border-green-500") %>
-  <% end %>
-<% end %>
+<%= render Common::BadgeComponent.new(@text, "#{@classes} text-#{@color}-600 bg-#{@color}-50 ring-#{@color}-500/10 border-#{@color}-500", "text-#{@color}-600 bg-#{@color}-50 ring-#{@color}-500/10 border-#{@color}-500") %>
