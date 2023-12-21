@@ -50,62 +50,81 @@ class MessageObject < ApplicationRecord
 
   def mark_signed_by_user(user)
     # object, user_signed_tag
-    message_objects_tags.find_or_create_by!(tag: user.signed_by_tag)
-    message_objects_tags.find_by(tag: user.signature_requested_from_tag)&.destroy
+    assign_tag(user.signed_by_tag)
+    unassign_tag(user.signature_requested_from_tag)
 
     # object, signed_tag
-    unless has_signature_request_from_tags?
-      message_objects_tags.find_or_create_by!(tag: user.tenant.signed_tag)
-      message_objects_tags.find_by(tag: user.tenant.signature_requested_tag)&.destroy
+    unless has_tag?({ type: SignatureRequestedFromTag.to_s })
+      assign_tag(user.tenant.signed_tag)
+      unassign_tag(user.tenant.signature_requested_tag)
     end
-
-    has_the_user_signature_requests_tags_within_thread = MessageObjectsTag.
-      joins(:tag, message_object: { message: :thread }).
-      where(message_threads: { id: message.thread }).
-      where(tag: user.signature_requested_from_tag).exists?
 
     # thread, user_signed_tag
-    unless has_the_user_signature_requests_tags_within_thread
-      message.thread.message_threads_tags.find_or_create_by!(tag: user.signed_by_tag)
-      message.thread.message_threads_tags.find_by(tag: user.signature_requested_from_tag)&.destroy
+    unless has_tag_within_thread?(user.signature_requested_from_tag)
+      assign_tag_to_thread(user.signed_by_tag)
+      unassign_tag_from_thread(user.signature_requested_from_tag)
     end
 
-    has_any_signature_requests_tags_within_thread = MessageObjectsTag.
-      joins(:tag, message_object: { message: :thread }).
-      where(message_threads: { id: message.thread }).
-      where(tag: { type: SignatureRequestedFromTag.to_s }).exists?
-
     # thread, signed_tag
-    unless has_any_signature_requests_tags_within_thread
-      message.thread.message_threads_tags.find_or_create_by!(tag: user.tenant.signed_tag)
-      message.thread.message_threads_tags.find_by(tag: user.tenant.signature_requested_tag)&.destroy
+    unless has_tag_within_thread?({ type: SignatureRequestedFromTag.to_s })
+      assign_tag_to_thread(user.tenant.signed_tag)
+      unassign_tag_from_thread(user.tenant.signature_requested_tag)
     end
   end
 
   def add_signature_requested_from_user(user)
     # done, if already signed by user
-    return if tags.exists?(id: user.signed_by_tag)
+    return if has_tag?(user.signed_by_tag)
 
     # object, user_signature_requested_tag
-    message_objects_tags.find_or_create_by!(tag: user.signature_requested_from_tag)
+    assign_tag(user.signature_requested_from_tag)
 
     # object, signature_requested_tag
-    message_objects_tags.find_or_create_by!(tag: user.tenant.signature_requested_tag)
-    message_objects_tags.find_by(tag: user.tenant.signed_tag)&.destroy
+    assign_tag(user.tenant.signature_requested_tag)
+    unassign_tag(user.tenant.signed_tag)
 
     # thread, user_signature_requested_tag
-    message.thread.message_threads_tags.find_or_create_by!(tag: user.signature_requested_from_tag)
-    message.thread.message_threads_tags.find_by(tag: user.signed_by_tag)&.destroy
+    assign_tag_to_thread(user.signature_requested_from_tag)
+    unassign_tag_from_thread(user.signed_by_tag)
 
     # thread, signature_requested_tag
-    message.thread.message_threads_tags.find_or_create_by!(tag: user.tenant.signature_requested_tag)
-    message.thread.message_threads_tags.find_by(tag: user.tenant.signed_tag)&.destroy
+    assign_tag_to_thread(user.tenant.signature_requested_tag)
+    unassign_tag_from_thread(user.tenant.signed_tag)
   end
 
-  # TODO use user interface and handle edge cases
-  def remove_signature_requested_from_tag(tag)
-    remove_cascading_tag(tag)
-    remove_cascading_tag(tag.tenant.signature_requested_tag) unless has_signature_request_from_tags?
+  def remove_signature_requested_from_user(user)
+    return unless has_tag?(user.signature_requested_from_tag)
+
+    # object, user_signature_requested_tag
+    unassign_tag(user.signature_requested_from_tag)
+
+    # object, signature_requested_tag
+    unless has_tag?({ type: SignatureRequestedFromTag.to_s })
+      unassign_tag(user.tenant.signature_requested_tag)
+
+      # object, back to signed_tag
+      if has_tag?({ type: SignedByTag.to_s })
+        assign_tag(user.tenant.signed_tag)
+      end
+    end
+
+    # thread, user_signature_requested_tag
+    unless has_tag_within_thread?(user.signature_requested_from_tag)
+      unassign_tag_from_thread(user.signature_requested_from_tag)
+
+      if has_tag_within_thread?(user.signed_by_tag)
+        assign_tag_to_thread(user.signed_by_tag)
+      end
+    end
+
+    # thread, signature_requested_tag
+    unless has_tag_within_thread?({ type: SignatureRequestedFromTag.to_s })
+      unassign_tag_from_thread(user.tenant.signature_requested_tag)
+
+      if has_tag_within_thread?({ type: SignedByTag.to_s })
+        assign_tag_to_thread(user.tenant.signed_tag)
+      end
+    end
   end
 
   def content
@@ -114,11 +133,6 @@ class MessageObject < ApplicationRecord
 
   def form?
     object_type == "FORM"
-  end
-
-  def signable?
-    # TODO: vymazat druhu podmienku po povoleni viacnasobneho podpisovania
-    message.draft? && !is_signed
   end
 
   def asice?
@@ -130,31 +144,36 @@ class MessageObject < ApplicationRecord
     message.draft? && message.not_yet_submitted? && !form?
   end
 
-  def has_signature_request_from_tags?
-    message_objects_tags.joins(:tag).where(tag: { type: SignatureRequestedFromTag.to_s }).exists?
-  end
-
   private
 
   def allowed_mime_type?
     errors.add(:mime_type, "of #{name} object is disallowed, allowed_mime_types: #{Utils::EXTENSIONS_ALLOW_LIST.join(", ")}") unless mimetype
   end
 
-  def add_cascading_tag(tag)
+  def has_tag?(tag)
+    message_objects_tags.joins(:tag).where(tag: tag).exists?
+  end
+
+  def has_tag_within_thread?(tag)
+    MessageObjectsTag.
+      joins(:tag, message_object: :message).
+      where(tag: tag, messages: { message_thread_id: message.message_thread_id }).
+      exists?
+  end
+
+  def assign_tag(tag)
     message_objects_tags.find_or_create_by!(tag: tag)
+  end
+
+  def unassign_tag(tag)
+    message_objects_tags.find_by(tag: tag)&.destroy
+  end
+
+  def assign_tag_to_thread(tag)
     message.thread.message_threads_tags.find_or_create_by!(tag: tag)
   end
 
-  def remove_cascading_tag(tag)
-    message_objects_tags.find_by(tag: tag)&.destroy
-
-    thread = message.thread
-
-    same_tag_on_other_thread_object = MessageObjectsTag.
-      joins(:tag, message_object: { message: :thread }).
-      where(message_threads: { id: thread }).
-      where(tag: tag).exists?
-
-    message.thread.message_threads_tags.find_by(tag: tag)&.destroy unless same_tag_on_other_thread_object
+  def unassign_tag_from_thread(tag)
+    message.thread.message_threads_tags.find_by(tag: tag)&.destroy
   end
 end
