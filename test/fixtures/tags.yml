@@ -84,6 +84,15 @@ ssd_signed:
   icon: fingerprint
   color: green
 
+ssd_archived:
+  name: Archivovane
+  type: ArchivedTag
+  visible: true
+  tenant: ssd
+  icon: archive-box
+  color: green
+
+
 solver_special:
   name: Special
   type: SimpleTag
