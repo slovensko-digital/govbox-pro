@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 import { isAutogramRunning, startBatch, signMessageObject, endBatch } from "../autogram"
 
 export default class extends Controller {
-  static targets = ["appNotRunning", "signingInProgress", "doneOk", "doneError"]
+  static targets = ["appNotRunning", "signingInProgress", "doneOk", "doneError", "openAutogramApp"]
 
   connect() {
     this.signAll()
@@ -58,6 +58,8 @@ export default class extends Controller {
     this.appNotRunningTarget.classList.add("hidden")
 
     if (!await isAutogramRunning()) {
+      this.openAutogramAppTarget.click()
+
       this.signingInProgressTarget.classList.add("hidden")
       this.appNotRunningTarget.classList.remove("hidden")
       return false
