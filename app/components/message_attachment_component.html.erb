@@ -23,7 +23,7 @@
           <% end %>
 
           <% if !@is_draft_view && @message_attachment.message.thread.archived? %>
-            <%= render ArchivedObjectTagComponent.new(@message_attachment.message_object_datum.message_object.archived_object, "") %>
+            <%= render ArchivedObjectTagComponent.new(@message_attachment.message_object_datum.message_object.archived_object) %>
           <% end %>
         </div>
       </div>

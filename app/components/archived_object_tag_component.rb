@@ -1,7 +1,5 @@
 class ArchivedObjectTagComponent < ViewComponent::Base
-  def initialize(archived_object, classes) # rubocop:disable Lint/MissingSuper,Metrics/MethodLength
-    @classes = classes
-
+  def initialize(archived_object) # rubocop:disable Lint/MissingSuper,Metrics/MethodLength
     if archived_object.nil?
       @label = "Čaká na archiváciu"
       @color = "yellow"
