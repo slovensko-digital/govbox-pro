@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_12_20_102044) do
+ActiveRecord::Schema[7.1].define(version: 2023_12_21_134539) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -509,6 +509,14 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_20_102044) do
     t.index ["identifier", "version"], name: "index_form_templates_on_identifier_and_version", unique: true
   end
 
+  create_table "upvs_signing_certificates", force: :cascade do |t|
+    t.string "subject", null: false
+    t.bigint "box_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["box_id"], name: "index_upvs_signing_certificates_on_box_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.bigint "tenant_id"
     t.string "email", null: false
@@ -572,5 +580,6 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_20_102044) do
   add_foreign_key "tags", "tenants"
   add_foreign_key "tags", "users", column: "owner_id"
   add_foreign_key "upvs_form_template_related_documents", "upvs_form_templates"
+  add_foreign_key "upvs_signing_certificates", "boxes"
   add_foreign_key "users", "tenants"
 end

@@ -24,7 +24,7 @@ module Upvs
 
       def sign_v2(data)
         response_status, response_body = @api.request(:post, "#{@api.url}/api/cep/sign_v2", data.to_json, header)
-        response_body['signed_objects'] if sign_successful?(response_status, response_body)
+        response_body['signed_object_groups'] if sign_successful?(response_status, response_body)
       end
 
       private
