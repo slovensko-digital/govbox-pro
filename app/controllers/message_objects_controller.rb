@@ -72,7 +72,6 @@ class MessageObjectsController < ApplicationController
       message_object.update!(
         name: permitted_params[:name],
         mimetype: permitted_params[:mimetype],
-        is_signed: permitted_params[:is_signed],
       )
 
       message_object.message_object_datum.update!(
