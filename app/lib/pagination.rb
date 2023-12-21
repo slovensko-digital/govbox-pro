@@ -1,9 +1,9 @@
 module Pagination
   def self.paginate(collection:, cursor:, direction: 'desc', items_per_page: 10)
     rows = collection
-           .where(where_clause(cursor, direction), *cursor.compact.values)
            .order(order_clause(cursor, direction))
            .limit(items_per_page + 1) # +1 needed to find out if we need next page
+    rows = rows.where(where_clause(cursor, direction), *cursor.compact.values) if cursor.values.compact.any?
     next_cursor = row_to_cursor(rows.second_to_last, cursor) if rows.length > items_per_page
     [rows.take(items_per_page), next_cursor]
   end

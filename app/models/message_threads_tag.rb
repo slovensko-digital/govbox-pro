@@ -11,7 +11,7 @@
 class MessageThreadsTag < ApplicationRecord
   include AuditableEvents
 
-  belongs_to :message_thread
+  belongs_to :message_thread, touch: true
   belongs_to :tag
 
   # used for joins only

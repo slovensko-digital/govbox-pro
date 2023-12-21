@@ -190,7 +190,10 @@ class AuditLog < ApplicationRecord
   end
 
   class UserUpdated < AuditLog
+    BLACKLISTED_ATTRIBUTES = ["updated_at", "notifications_last_opened_at", "notifications_reset_at"]
     def self.create_audit_record(user)
+      return if (user.previous_changes.keys - BLACKLISTED_ATTRIBUTES).empty?
+
       create_record(object: user, new_value: user.name, previous_value: user.name_previously_was)
     end
   end
