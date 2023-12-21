@@ -5,9 +5,7 @@ class ArchivedObjectTagComponent < ViewComponent::Base
       @color = "yellow"
       @icon = "clock"
     elsif !archived_object.signed?
-      @label = "Nedá sa archivovať"
-      @color = "gray"
-      @icon = ""
+      @label = nil
     elsif !archived_object.valid_signature?
       @label = "Nedá sa overiť platnosť"
       @color = "red"
@@ -21,5 +19,9 @@ class ArchivedObjectTagComponent < ViewComponent::Base
       @color = "green"
       @icon = "archive-box"
     end
+  end
+
+  def render?
+    @label.present?
   end
 end
