@@ -3,20 +3,25 @@ class ArchivedObjectTagComponent < ViewComponent::Base
     @classes = classes
 
     if archived_object.nil?
-      @text = "Čaká na archiváciu"
+      @label = "Čaká na archiváciu"
       @color = "yellow"
+      @icon = "clock"
     elsif !archived_object.signed?
-      @text = "Nedá sa archivovať"
+      @label = "Nedá sa archivovať"
       @color = "gray"
+      @icon = ""
     elsif !archived_object.valid_signature?
-      @text = "Nedá sa overiť platnosť"
+      @label = "Nedá sa overiť platnosť"
       @color = "red"
+      @icon = "exclamation-triangle"
     elsif !archived_object.archived?
-      @text = "Čaká na archiváciu"
+      @label = "Čaká na archiváciu"
       @color = "yellow"
+      @icon = "clock"
     else
-      @text = "Archivované"
+      @label = "Archivované"
       @color = "green"
+      @icon = "archive-box"
     end
   end
 end

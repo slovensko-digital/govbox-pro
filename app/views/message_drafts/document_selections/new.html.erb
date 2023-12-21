@@ -2,5 +2,6 @@
   <%=
     render Signing::DocumentsSelection::Component.new(
       message_draft: @message_draft,
-      message_object_ids: @message_object_ids) %>
+      message_object_ids: @message_object_ids,
+      next_step: @next_step) %>
 <% end %>

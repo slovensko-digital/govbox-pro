@@ -1,10 +1,10 @@
 <% if @message.form&.is_signed? || @message.form.present? || @message.authorized?  %>
   <div class="w-fit flex flex-col gap-1 <%= @classes %>">
     <% if @message.form&.is_signed? %>
-      <%= render Common::BadgeComponent.new("Podpísané") %>
+      <%= render Common::BadgeComponent.new("Podpísané", "purple", "fingerprint") %>
     <% end %>
     <% if @message.authorized? %>
-      <%= render Common::BadgeComponent.new("Prevzatá doručenka") %>
+      <%= render Common::BadgeComponent.new("Prevzatá doručenka", "purple") %>
     <% end %>
     <% if @message.thread.archived? %>
       <%= render ArchivedObjectTagComponent.new(@message.form&.archived_object, "hidden md:flex") %>

@@ -13,4 +13,8 @@ module SigningTagsHelper
         "3"
     end
   end
+
+  def self.signed_externally
+    Tag.new(name: "Externe podpísané", icon: "shield-check", color: "purple")
+  end
 end

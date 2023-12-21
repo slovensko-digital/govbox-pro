@@ -10,6 +10,7 @@ class MessageThreadsController < ApplicationController
 
   def show
     authorize @message_thread
+    @user_is_signer = Current.user.signer?
   end
 
   def rename

@@ -1,6 +1,10 @@
 class MessageObjectsTagPolicy < ApplicationPolicy
   attr_reader :user, :message_objects_tag
 
+  def new?
+    true
+  end
+
   def edit?
     true
   end

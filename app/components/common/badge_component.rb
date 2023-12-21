@@ -1,9 +1,10 @@
 module Common
   class BadgeComponent < ViewComponent::Base
-    def initialize(label, classes="", span_classes="")
+    def initialize(label="", color=nil, icon=nil, classes="")
       @label = label
       @classes = classes
-      @span_classes = span_classes
+      @color = color || "gray"
+      @icon = icon
     end
   end
 end

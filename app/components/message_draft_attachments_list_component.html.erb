@@ -32,27 +32,6 @@
             <% end %>
           <% end %>
         </div>
-
-        <div class="flex justify-end items-center gap-4">
-          <% if @unsigned_attachments.present? %>
-            <%
-              files_to_be_signed = @unsigned_attachments.map do |message_object|
-                { path: message_message_object_path(message_object.message_id, message_object.id) }
-             end
-            %>
-            <%= content_tag(:div,
-              {
-                "data-controller": "autogram",
-                "data-autogram-files-to-be-signed": files_to_be_signed.to_json.html_safe,
-                "data-autogram-authenticity-token": form_authenticity_token
-              }
-            ) do %>
-              <button type="button" data-action="click->autogram#signMultipleFiles" class="flex justify-end items-center gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300 hover:bg-gray-100">
-                Podpísať všetky nepodpísané dokumenty
-              </button>
-            <% end %>
-          <% end %>
-        </div>
       </div>
     </div>
 
