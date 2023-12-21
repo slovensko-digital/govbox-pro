@@ -2,12 +2,11 @@
 #
 # Table name: tenants
 #
-#  id                   :bigint           not null, primary key
-#  api_token_public_key :string
-#  feature_flags        :string           default([]), is an Array
-#  name                 :string           not null
-#  created_at           :datetime         not null
-#  updated_at           :datetime         not null
+#  id            :bigint           not null, primary key
+#  feature_flags :string           default([]), is an Array
+#  name          :string           not null
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
 #
 class Tenant < ApplicationRecord
   has_many :users, dependent: :destroy
