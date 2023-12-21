@@ -95,7 +95,11 @@ class MessageDraft < Message
   end
 
   def editable?
-    metadata["posp_id"] == GENERAL_AGENDA_POSP_ID && !form&.is_signed? && not_yet_submitted?
+    metadata["posp_id"] == GENERAL_AGENDA_POSP_ID && !at_least_partially_signed? && not_yet_submitted?
+  end
+
+  def at_least_partially_signed?
+    form&.is_signed? || (form && form.tags.exists?(type: SignedByTag.to_s))
   end
 
   def reason_for_readonly
