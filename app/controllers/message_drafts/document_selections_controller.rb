@@ -4,6 +4,14 @@ module MessageDrafts
 
     def new
       authorize @message_draft, "show?"
+
+      if @message_draft.objects.length == 1
+        if @next_step == "sign"
+          redirect_to new_message_draft_signing_path(@message_draft, object_ids: @message_draft.objects.map(&:id))
+        else
+          redirect_to edit_message_draft_signature_requests_path(@message_draft, object_ids: @message_draft.objects.map(&:id))
+        end
+      end
     end
 
     def update
