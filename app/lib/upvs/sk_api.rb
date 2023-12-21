@@ -5,7 +5,7 @@ module Upvs
     attr_reader :sub, :obo, :api_token_private_key, :url, :cep
 
     def initialize(url, box:, handler: Faraday)
-      raise "Box API connection is not of type SK API connection" unless box.api_connection.is_a?(SkApi::ApiConnection)
+      raise "Box API connection is not of type SK API connection" unless box.api_connection.is_a?(::SkApi::ApiConnectionWithOboSupport)
 
       @sub = box.api_connection.sub
       @obo = box.api_connection.box_obo(box)
@@ -32,7 +32,7 @@ module Upvs
       def header
         {
           "Authorization": authorization_payload,
-          "Content-Type": "application/vnd.sktalk+json;type=SkTalk"
+          "Content-Type": "application/json"
         }
       end
 
