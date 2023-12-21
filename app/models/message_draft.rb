@@ -60,6 +60,7 @@ class MessageDraft < Message
       delivered_at: Time.now,
       author: author,
       outbox: true,
+      replyable: false,
       metadata: {
         "recipient_uri": original_message.metadata["sender_uri"],
         "posp_id": GENERAL_AGENDA_POSP_ID,
