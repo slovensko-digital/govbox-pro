@@ -130,6 +130,12 @@ Rails.application.routes.draw do
           post :prepare
         end
       end
+
+      resource :signing, only: [:update] do
+        collection do
+          post :new
+        end
+      end
     end
   end
 

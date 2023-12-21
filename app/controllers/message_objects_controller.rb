@@ -78,6 +78,8 @@ class MessageObjectsController < ApplicationController
       message_object.message_object_datum.update!(
         blob: Base64.decode64(permitted_params[:content])
       )
+
+      message_object.mark_signed_by_user(Current.user)
     end
   end
 end

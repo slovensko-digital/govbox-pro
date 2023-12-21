@@ -1,0 +1,46 @@
+<%= render Common::ModalComponent.new(closable: false) do |modal| %>
+  <% modal.with_header do %>
+    Prebieha podpisovanie
+  <% end %>
+  <% modal.with_modal_content do %>
+    <%
+      files_to_be_signed = @message_objects.map do |message_object|
+        { path: message_message_object_path(message_object.message_id, message_object.id) }
+      end
+    %>
+    <div class="py-4">
+      <%= content_tag(:div,
+                      {
+                        "data-controller": "new-autogram",
+                        "data-new-autogram-files-to-be-signed": files_to_be_signed.to_json.html_safe,
+                        "data-new-autogram-authenticity-token": form_authenticity_token
+                      }
+          ) do %>
+        <div data-new-autogram-target="appNotRunning">
+          <p class="pb-4">Spustite aplikáciu `Autogram` a</p>
+          <div data-action="click->new-autogram#signAll" class="inline-flex w-full justify-center items-center px-3 py-2 rounded-md bg-blue-600 font-medium text-left text-sm text-white hover:cursor-pointer sm:w-auto">
+            Skúste znova
+          </div>
+        </div>
+
+        <div data-new-autogram-target="signingInProgress">
+          <p class="pb-4">Prosím, nezatvárajte okno prehliadača.</p>
+        </div>
+
+        <%= button_to "Úspešne podpísané",
+                      message_draft_signing_path(@message_draft),
+                      method: :patch,
+                      params: { result: "ok" },
+                      data: { "new-autogram-target": "doneOk" },
+                      class: "hidden" %>
+
+        <%= button_to "Podpisovanie zlyhalo",
+                      message_draft_signing_path(@message_draft),
+                      method: :patch,
+                      params: { result: "error" },
+                      data: { "new-autogram-target": "doneError" },
+                      class: "hidden" %>
+      <% end %>
+    </div>
+  <% end %>
+<% end %>
