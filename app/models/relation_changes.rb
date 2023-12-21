@@ -219,7 +219,7 @@ module RelationChanges
     def save(message_objects)
       MessageObjectsTag.transaction do
         @diff.to_add.each do |user|
-          message_objects.each { |message_object| message_object.add_signature_requested_from_tag(user.signature_requested_from_tag) }
+          message_objects.each { |message_object| message_object.add_signature_requested_from_user(user) }
         end
 
         @diff.to_remove.each do |user|

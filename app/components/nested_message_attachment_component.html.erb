@@ -1,19 +1,20 @@
-<div class="flex justify-between items-center gap-4 p-2 overflow-clip">
+<div class="flex justify-between items-center gap-4 p-2 overflow-x-clip">
   <%= link_to message_message_object_nested_message_object_path(@message, @message_object, @nested_message_attachment), data: { turbo_frame: "_top" }, class: "flex justify-start items-center gap-4 overflow-clip" do %>
     <div class="flex justify-stretch items-center gap-4">
       <%= render Icons::DocumentTextComponent.gray_big %>
     </div>
-    <div class="flex flex-col justify-start items-start overflow-clip">
+    <div class="flex flex-col justify-start items-start overflow-x-clip">
       <div class="flex justify-start items-start gap-4 w-full">
         <span class="truncate text-base font-semibold text-left text-gray-900"><%= @nested_message_attachment.name %></span>
       </div>
     </div>
   <% end %>
-  <div class="flex justify-end items-center gap-4">
-    <%= link_to message_message_object_nested_message_object_path(@message, @message_object, @nested_message_attachment), data: { turbo_frame: "_top" } do %>
-      <div class="flex justify-end items-center md:px-3.5 md:py-2.5 md:rounded-md bg-white md:border md:border-gray-300 hover:bg-gray-100">
-        <%= render Icons::ArrowDownTrayComponent.new(css_classes: "w-5 h-5") %>
-      </div>
+  <%= render Common::OptionsComponent.new(id: "message-attachment-menu") do |options| %>
+    <% options.with_menu_content do %>
+      <%= link_to message_message_object_nested_message_object_path(@message, @message_object, @nested_message_attachment), class: "flex gap-3", role: "menuitem", tabindex: "-1", data: { turbo_frame: "_top" } do %>
+        <%= render Icons::ArrowDownTrayComponent.new(css_classes: "h-5 w-5") %>
+        Stiahnuť
+      <% end %>
     <% end %>
-  </div>
+  <% end %>
 </div>

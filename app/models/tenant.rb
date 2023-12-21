@@ -2,11 +2,12 @@
 #
 # Table name: tenants
 #
-#  id            :bigint           not null, primary key
-#  feature_flags :string           default([]), is an Array
-#  name          :string           not null
-#  created_at    :datetime         not null
-#  updated_at    :datetime         not null
+#  id                   :bigint           not null, primary key
+#  api_token_public_key :string
+#  feature_flags        :string           default([]), is an Array
+#  name                 :string           not null
+#  created_at           :datetime         not null
+#  updated_at           :datetime         not null
 #
 class Tenant < ApplicationRecord
   has_many :users, dependent: :destroy
@@ -25,6 +26,7 @@ class Tenant < ApplicationRecord
   has_many :signature_requested_from_tags
   has_many :signed_by_tags
   has_many :simple_tags
+  has_one :archived_tag
 
   has_many :boxes, dependent: :destroy
   has_many :automation_rules, class_name: "Automation::Rule", dependent: :destroy
@@ -36,7 +38,7 @@ class Tenant < ApplicationRecord
 
   validates_presence_of :name
 
-  AVAILABLE_FEATURE_FLAGS = [:audit_log]
+  AVAILABLE_FEATURE_FLAGS = [:audit_log, :archive]
 
   def draft_tag!
     draft_tag || raise(ActiveRecord::RecordNotFound.new("`DraftTag` not found in tenant: #{self.id}"))
@@ -44,6 +46,10 @@ class Tenant < ApplicationRecord
 
   def signature_requested_tag!
     signature_requested_tag || raise(ActiveRecord::RecordNotFound.new("`SignatureRequestedTag` not found in tenant: #{self.id}"))
+  end
+
+  def signed_tag!
+    signed_tag || raise(ActiveRecord::RecordNotFound.new("`SignatureRequestedTag` not found in tenant: #{self.id}"))
   end
 
   def feature_enabled?(feature)

@@ -1,3 +1,8 @@
-<div class="flex justify-center items-center gap-1.5 px-2 py-1 rounded-md bg-blue-50 border border-blue-300 <%= @classes %>">
-  <span class="text-sm text-left text-blue-600"><%= @label %></span>
+<div class="flex gap-1.5 max-w-[calc(100vw-32px)] sm:max-w-[calc(100vw-64px)] items-center rounded-md px-1.5 py-[3px] text-xs sm:text-sm font-medium ring-1 ring-inset text-<%= @color %>-600 bg-<%= @color %>-50 ring-<%= @color %>-500/10 <%= @classes %>">
+  <% if @icon.present? %>
+    <%= render Common::IconComponent.new(@icon, classes: "w-3 h-3") %>
+  <% end %>
+  <span title="<%= @label %>" class="truncate">
+    <%= @label %>
+  </span>
 </div>

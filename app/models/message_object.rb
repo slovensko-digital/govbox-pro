@@ -19,6 +19,7 @@ class MessageObject < ApplicationRecord
   has_many :nested_message_objects, inverse_of: :message_object, dependent: :destroy
   has_many :message_objects_tags, dependent: :destroy
   has_many :tags, through: :message_objects_tags
+  has_one :archived_object, dependent: :destroy
 
   scope :unsigned, -> { where(is_signed: false) }
   scope :to_be_signed, -> { where(to_be_signed: true) }
@@ -48,11 +49,61 @@ class MessageObject < ApplicationRecord
     end
   end
 
-  def add_signature_requested_from_tag(tag)
-    add_cascading_tag(tag)
-    add_cascading_tag(tag.tenant.signature_requested_tag)
+  def mark_signed_by_user(user)
+    # object, user_signed_tag
+    message_objects_tags.find_or_create_by!(tag: user.signed_by_tag)
+    message_objects_tags.find_by(tag: user.signature_requested_from_tag)&.destroy
+
+    # object, signed_tag
+    unless has_signature_request_from_tags?
+      message_objects_tags.find_or_create_by!(tag: user.tenant.signed_tag)
+      message_objects_tags.find_by(tag: user.tenant.signature_requested_tag)&.destroy
+    end
+
+    has_the_user_signature_requests_tags_within_thread = MessageObjectsTag.
+      joins(:tag, message_object: { message: :thread }).
+      where(message_threads: { id: message.thread }).
+      where(tag: user.signature_requested_from_tag).exists?
+
+    # thread, user_signed_tag
+    unless has_the_user_signature_requests_tags_within_thread
+      message.thread.message_threads_tags.find_or_create_by!(tag: user.signed_by_tag)
+      message.thread.message_threads_tags.find_by(tag: user.signature_requested_from_tag)&.destroy
+    end
+
+    has_any_signature_requests_tags_within_thread = MessageObjectsTag.
+      joins(:tag, message_object: { message: :thread }).
+      where(message_threads: { id: message.thread }).
+      where(tag: { type: SignatureRequestedFromTag.to_s }).exists?
+
+    # thread, signed_tag
+    unless has_any_signature_requests_tags_within_thread
+      message.thread.message_threads_tags.find_or_create_by!(tag: user.tenant.signed_tag)
+      message.thread.message_threads_tags.find_by(tag: user.tenant.signature_requested_tag)&.destroy
+    end
   end
 
+  def add_signature_requested_from_user(user)
+    # done, if already signed by user
+    return if tags.exists?(id: user.signed_by_tag)
+
+    # object, user_signature_requested_tag
+    message_objects_tags.find_or_create_by!(tag: user.signature_requested_from_tag)
+
+    # object, signature_requested_tag
+    message_objects_tags.find_or_create_by!(tag: user.tenant.signature_requested_tag)
+    message_objects_tags.find_by(tag: user.tenant.signed_tag)&.destroy
+
+    # thread, user_signature_requested_tag
+    message.thread.message_threads_tags.find_or_create_by!(tag: user.signature_requested_from_tag)
+    message.thread.message_threads_tags.find_by(tag: user.signed_by_tag)&.destroy
+
+    # thread, signature_requested_tag
+    message.thread.message_threads_tags.find_or_create_by!(tag: user.tenant.signature_requested_tag)
+    message.thread.message_threads_tags.find_by(tag: user.tenant.signed_tag)&.destroy
+  end
+
+  # TODO use user interface and handle edge cases
   def remove_signature_requested_from_tag(tag)
     remove_cascading_tag(tag)
     remove_cascading_tag(tag.tenant.signature_requested_tag) unless has_signature_request_from_tags?
@@ -82,6 +133,14 @@ class MessageObject < ApplicationRecord
 
   def has_signature_request_from_tags?
     message_objects_tags.joins(:tag).where(tag: { type: SignatureRequestedFromTag.to_s }).exists?
+  end
+
+  def archived?
+    archived_object.present?
+  end
+
+  def downloadable_archived_object?
+    archived_object&.archived?
   end
 
   private

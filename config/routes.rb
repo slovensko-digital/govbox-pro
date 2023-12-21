@@ -64,6 +64,7 @@ Rails.application.routes.draw do
       end
 
       resource :authorize_deliveries, only: [:update]
+      resource :archive, only: [:update]
     end
   end
 
@@ -75,6 +76,8 @@ Rails.application.routes.draw do
     end
     get :rename, on: :member
     get :history, on: :member
+    get :confirm_unarchive, on: :member
+    patch :archive, on: :member
     resources :messages
     resources :message_thread_notes
     scope module: 'message_threads' do
@@ -96,6 +99,7 @@ Rails.application.routes.draw do
       member do
         get 'download'
         get 'signing_data'
+        get 'download_archived'
       end
 
       resources :nested_message_objects do
@@ -128,6 +132,12 @@ Rails.application.routes.draw do
         collection do
           post :edit
           post :prepare
+        end
+      end
+
+      resource :signing, only: [:update] do
+        collection do
+          post :new
         end
       end
     end
