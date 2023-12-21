@@ -15,20 +15,21 @@ export default class extends Controller {
     }
 
     try {
-      const batchId = await startBatch(files.length)
+      const usingBatch = files.length > 1
+      const batchId = usingBatch ? await startBatch(files.length) : null
 
       for await (const file of files) {
         await signMessageObject(file.path, batchId, token)
       }
-
-      await endBatch(batchId)
 
       this.doneOkTarget.click()
     } catch (error) {
       console.log('error during signing', error)
 
       try {
-        await endBatch(batchId)
+        if (batchId !== null) {
+          await endBatch(batchId)
+        }
       }
       catch {
         // delete batch should be idempotent
