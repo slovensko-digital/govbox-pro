@@ -31,6 +31,7 @@ class Upvs::MessageTemplate < ::MessageTemplate
       sender_name: box&.name,
       recipient_name: recipient_name,
       replyable: false,
+      outbox: true,
       title: self.name,
       author: author
     )
@@ -73,6 +74,7 @@ class Upvs::MessageTemplate < ::MessageTemplate
       sender_name: original_message.recipient_name,
       recipient_name: original_message.sender_name,
       replyable: false,
+      outbox: true,
       title: message_title,
       author: author
     )
