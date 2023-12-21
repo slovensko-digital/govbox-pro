@@ -58,6 +58,25 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_20_151119) do
     t.string "type"
   end
 
+  create_table "archived_object_versions", force: :cascade do |t|
+    t.bigint "archived_object_id", null: false
+    t.binary "content", null: false
+    t.string "validation_result"
+    t.datetime "valid_to", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["archived_object_id"], name: "index_archived_object_versions_on_archived_object_id"
+  end
+
+  create_table "archived_objects", force: :cascade do |t|
+    t.bigint "message_object_id", null: false
+    t.string "validation_result", null: false
+    t.string "signature_level"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["message_object_id"], name: "index_archived_objects_on_message_object_id"
+  end
+
   create_table "audit_logs", force: :cascade do |t|
     t.string "type", null: false
     t.bigint "tenant_id"
@@ -474,12 +493,12 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_20_151119) do
     t.bigint "owner_id"
     t.string "external_name"
     t.string "type", null: false
-    t.enum "color", enum_type: "color"
-    t.integer "tag_groups_count", default: 0, null: false
     t.string "icon"
+    t.integer "tag_groups_count", default: 0, null: false
+    t.enum "color", enum_type: "color"
     t.index "tenant_id, type, lower((name)::text)", name: "index_tags_on_tenant_id_and_type_and_lowercase_name", unique: true
     t.index ["owner_id"], name: "index_tags_on_owner_id"
-    t.index ["tenant_id", "type"], name: "signings_tags", unique: true, where: "((type)::text = ANY ((ARRAY['SignatureRequestedTag'::character varying, 'SignedTag'::character varying])::text[]))"
+    t.index ["tenant_id", "type"], name: "signings_tags", unique: true, where: "((type)::text = ANY (ARRAY[('SignatureRequestedTag'::character varying)::text, ('SignedTag'::character varying)::text]))"
     t.index ["tenant_id"], name: "index_tags_on_tenant_id"
   end
 
@@ -488,6 +507,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_20_151119) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "feature_flags", default: [], array: true
+    t.string "api_token_public_key"
   end
 
   create_table "upvs_form_template_related_documents", force: :cascade do |t|
@@ -515,14 +535,16 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_20_151119) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "saml_identifier"
     t.datetime "notifications_last_opened_at"
     t.datetime "notifications_reset_at"
-    t.string "saml_identifier"
     t.index "tenant_id, lower((email)::text)", name: "index_users_on_tenant_id_and_lowercase_email", unique: true
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "archived_object_versions", "archived_objects"
+  add_foreign_key "archived_objects", "message_objects"
   add_foreign_key "audit_logs", "message_threads", on_delete: :nullify
   add_foreign_key "audit_logs", "tenants", on_delete: :nullify
   add_foreign_key "audit_logs", "users", column: "actor_id", on_delete: :nullify

@@ -27,6 +27,11 @@ class MessageObjectsController < ApplicationController
     send_data @message_object.content, filename: MessageObjectHelper.displayable_name(@message_object), type: @message_object.mimetype, disposition: :download
   end
 
+  def download_archived
+    authorize @message_object
+    send_data @message_object.archived_object.content, filename: MessageObjectHelper.displayable_name(@message_object), type: @message_object.mimetype, disposition: :download
+  end
+
   def signing_data
     authorize @message_object
 

@@ -47,6 +47,23 @@ class MessageThread < ApplicationRecord
     tenant.automation_rules.where(trigger_event: event)
   end
 
+  def archived?
+    tags.find_by(type: ArchivedTag.to_s).present?
+  end
+
+  def archive(value)
+    return unless value != archived?
+
+    if value
+      tags << tenant.tags.find_by(type: ArchivedTag.to_s)
+      Archivation::ArchiveMessageThreadJob.perform_later(self)
+      EventBus.publish(:message_thread_archive_on, self)
+    else
+      tags.delete(tags.find_by(type: ArchivedTag.to_s))
+      EventBus.publish(:message_thread_archive_off, self)
+    end
+  end
+
   def rename(params)
     result = update(params)
     EventBus.publish(:message_thread_renamed, self)

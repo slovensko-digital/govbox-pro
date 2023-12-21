@@ -19,6 +19,7 @@ class MessageObject < ApplicationRecord
   has_many :nested_message_objects, inverse_of: :message_object, dependent: :destroy
   has_many :message_objects_tags, dependent: :destroy
   has_many :tags, through: :message_objects_tags
+  has_one :archived_object, dependent: :destroy
 
   scope :unsigned, -> { where(is_signed: false) }
   scope :to_be_signed, -> { where(to_be_signed: true) }
@@ -132,6 +133,14 @@ class MessageObject < ApplicationRecord
 
   def has_signature_request_from_tags?
     message_objects_tags.joins(:tag).where(tag: { type: SignatureRequestedFromTag.to_s }).exists?
+  end
+
+  def archived?
+    archived_object.present?
+  end
+
+  def downloadable_archived_object?
+    archived_object&.archived?
   end
 
   private
