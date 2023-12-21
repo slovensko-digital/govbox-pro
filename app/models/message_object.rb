@@ -19,6 +19,7 @@ class MessageObject < ApplicationRecord
   has_many :nested_message_objects, inverse_of: :message_object, dependent: :destroy
   has_many :message_objects_tags, dependent: :destroy
   has_many :tags, through: :message_objects_tags
+  has_one :archived_object, dependent: :destroy
 
   scope :unsigned, -> { where(is_signed: false) }
   scope :to_be_signed, -> { where(to_be_signed: true) }
@@ -142,6 +143,14 @@ class MessageObject < ApplicationRecord
   def destroyable?
     # TODO: avoid loading message association if we have
     message.draft? && message.not_yet_submitted? && !form?
+  end
+
+  def archived?
+    archived_object.present?
+  end
+
+  def downloadable_archived_object?
+    archived_object&.archived?
   end
 
   private
