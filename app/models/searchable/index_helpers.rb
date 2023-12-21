@@ -6,7 +6,8 @@ module Searchable::IndexHelpers
   def html_to_searchable_string(html)
     return html unless html
 
-    body = html.match(BODY_REGEXP)[1]
+    match = html.match(BODY_REGEXP)
+    body = match ? match[1] : html
 
     create_single_line_string(
       transliterate(

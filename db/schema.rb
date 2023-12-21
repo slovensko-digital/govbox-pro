@@ -58,6 +58,25 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_21_204646) do
     t.string "type"
   end
 
+  create_table "archived_object_versions", force: :cascade do |t|
+    t.bigint "archived_object_id", null: false
+    t.binary "content", null: false
+    t.string "validation_result"
+    t.datetime "valid_to", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["archived_object_id"], name: "index_archived_object_versions_on_archived_object_id"
+  end
+
+  create_table "archived_objects", force: :cascade do |t|
+    t.bigint "message_object_id", null: false
+    t.string "validation_result", null: false
+    t.string "signature_level"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["message_object_id"], name: "index_archived_objects_on_message_object_id"
+  end
+
   create_table "audit_logs", force: :cascade do |t|
     t.string "type", null: false
     t.bigint "tenant_id"
@@ -523,6 +542,8 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_21_204646) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "archived_object_versions", "archived_objects"
+  add_foreign_key "archived_objects", "message_objects"
   add_foreign_key "audit_logs", "message_threads", on_delete: :nullify
   add_foreign_key "audit_logs", "tenants", on_delete: :nullify
   add_foreign_key "audit_logs", "users", column: "actor_id", on_delete: :nullify
