@@ -6,7 +6,7 @@
         Stiahnuť správu
       <% end %>
       <% if @message.form.downloadable_archived_object? %>
-        <%= link_to download_archived_message_message_object_path(@message, @message.form), class: "flex gap-3", role: "menuitem", tabindex: "-1", data: { turbo_frame: "_top" } do %>
+        <%= link_to download_archived_message_message_object_path(@message, @message.form), class: "flex gap-3", role: "menuitem", tabindex: "-1" do %>
           <%= render Icons::ArrowDownTrayComponent.new(css_classes: "h-5 w-5") %>
           Stiahnuť archivovanú správu
         <% end %>
