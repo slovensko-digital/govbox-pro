@@ -35,7 +35,7 @@ class ApiController < ActionController::API
       authenticity_token: authenticity_token,
       endpoint_method: request.method,
       endpoint_path: request.path,
-      response_status: error ? exception_wrapper.status_code : 200
+      response_status: error ? exception_wrapper.status_code : response.code
     )
   end
 
