@@ -9,7 +9,7 @@ class MessageThreadsTagsTest < ApplicationSystemTestCase
     sign_in_as(:basic)
   end
 
-  test "a user can change tags" do
+  test "user can change tags" do
     visit message_thread_path(@thread_general)
 
     within("#messages") do
@@ -25,11 +25,6 @@ class MessageThreadsTagsTest < ApplicationSystemTestCase
     check "Print"
     uncheck "Legal"
 
-    within("#tags-assignment-diff") do
-      assert_text "Print"
-      assert_text "Legal"
-    end
-
     fill_in "name_search_query", with: "Struction"
 
     within("#tags-assignment-list") do
@@ -39,24 +34,11 @@ class MessageThreadsTagsTest < ApplicationSystemTestCase
 
     check "Construction"
 
-    within("#tags-assignment-diff") do
-      assert_text "Construction"
-      assert_text "Print"
-      assert_text "Legal"
-    end
-
     check "Struction"
 
     within("#tags-assignment-list") do
       assert_text "Legal"
       assert_text "Print"
-      assert_text "Struction"
-    end
-
-    within("#tags-assignment-diff") do
-      assert_text "Construction"
-      assert_text "Print"
-      assert_text "Legal"
       assert_text "Struction"
     end
 

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<EntityDescriptor xmlns="urn:oasis:names:tc:SAML:2.0:metadata" entityID="https://govbox-pro.staging.slovensko.digital">
+    <SPSSODescriptor WantAssertionsSigned="true" AuthnRequestsSigned="true"
+                     protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+        <KeyDescriptor use="signing">
+            <KeyInfo xmlns="http://www.w3.org/2000/09/xmldsig#">
+                <X509Data>
+                    <X509Certificate>MIIC0TCCAbmgAwIBAgIIVloS/s1OEpIwDQYJKoZIhvcNAQENBQAwFzEVMBMGA1UE
+AxMMaWNvLTgzMTMwMDY5MB4XDTIzMTIxNDA4MjkwM1oXDTI1MTIxMzA4MjkwM1ow
+FzEVMBMGA1UEAxMMaWNvLTgzMTMwMDY5MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A
+MIIBCgKCAQEAyTtvc/anOUd1rs8pdAWyVD4XZyLQ1HUAz8BXekcni6Gaf2l+ru/w
+oiVh4Ro3ih6b+Dj26XL51xBa4knwDLI4n0V+i3EgTjfkEXpo/PRX24f9TEJOZEt7
+n/QZrIifCwdUFlKWvV7MEKImGkbAQ28mIVfSHxwqqmvxSJHQ9cSWZQ8KRrpQv3Si
+6Je9yZxatMsHdFbAIY/zIqGXoRsxk8EoogLbuhTaFx+AZpRhvIlYfvsn6tWcktEs
+2M4MqZplpqOyQHqyLXbP4nCCnNpWiZgotLpmHvjecA4zVRfaTCkQkl060sRSn+P2
+puIHPLv7ZHYTPzSSBP0ETpYdYGOknQ9+9QIDAQABoyEwHzAdBgNVHQ4EFgQUJt1L
+NwOIjQ9zLIENhX+1xdSD07EwDQYJKoZIhvcNAQENBQADggEBAEEOiS89x6IwKUOM
+0KXfVoOhScv3WVSkcmFh8WgduyKdkwr/DrCjsJ5xEPMEqTxpRXSSbWM4KiQB7Qn7
+MUdJOPZTZ+VNvtL4H0e5PETteNPypLjCqDUGfB5pSDm81mB8aoE5+B8GLKxvOMmC
+71I8czCZiTXPCysex1vbUgHuLo7Fmw6mTYkNDN0gw4PC9gYQntiXCS7vlHkF7mlI
+5mZQXbbzvlPVP9SvzW3CdDkcA/dwVuEhjEYNaMEvVJXBnGUKsLsOti4bjrbEidtH
+LtWWOxi1cyRgAMAslESfAQnuGyYt3ksMRAA+f4UxMorb/QkgccIHPY6x3IQNnJ4u
+S87VKQI=</X509Certificate>
+                </X509Data>
+            </KeyInfo>
+        </KeyDescriptor>
+        <KeyDescriptor use="encryption">
+            <KeyInfo xmlns="http://www.w3.org/2000/09/xmldsig#">
+                <X509Data>
+                    <X509Certificate>MIIC0TCCAbmgAwIBAgIIVloS/s1OEpIwDQYJKoZIhvcNAQENBQAwFzEVMBMGA1UE
+AxMMaWNvLTgzMTMwMDY5MB4XDTIzMTIxNDA4MjkwM1oXDTI1MTIxMzA4MjkwM1ow
+FzEVMBMGA1UEAxMMaWNvLTgzMTMwMDY5MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A
+MIIBCgKCAQEAyTtvc/anOUd1rs8pdAWyVD4XZyLQ1HUAz8BXekcni6Gaf2l+ru/w
+oiVh4Ro3ih6b+Dj26XL51xBa4knwDLI4n0V+i3EgTjfkEXpo/PRX24f9TEJOZEt7
+n/QZrIifCwdUFlKWvV7MEKImGkbAQ28mIVfSHxwqqmvxSJHQ9cSWZQ8KRrpQv3Si
+6Je9yZxatMsHdFbAIY/zIqGXoRsxk8EoogLbuhTaFx+AZpRhvIlYfvsn6tWcktEs
+2M4MqZplpqOyQHqyLXbP4nCCnNpWiZgotLpmHvjecA4zVRfaTCkQkl060sRSn+P2
+puIHPLv7ZHYTPzSSBP0ETpYdYGOknQ9+9QIDAQABoyEwHzAdBgNVHQ4EFgQUJt1L
+NwOIjQ9zLIENhX+1xdSD07EwDQYJKoZIhvcNAQENBQADggEBAEEOiS89x6IwKUOM
+0KXfVoOhScv3WVSkcmFh8WgduyKdkwr/DrCjsJ5xEPMEqTxpRXSSbWM4KiQB7Qn7
+MUdJOPZTZ+VNvtL4H0e5PETteNPypLjCqDUGfB5pSDm81mB8aoE5+B8GLKxvOMmC
+71I8czCZiTXPCysex1vbUgHuLo7Fmw6mTYkNDN0gw4PC9gYQntiXCS7vlHkF7mlI
+5mZQXbbzvlPVP9SvzW3CdDkcA/dwVuEhjEYNaMEvVJXBnGUKsLsOti4bjrbEidtH
+LtWWOxi1cyRgAMAslESfAQnuGyYt3ksMRAA+f4UxMorb/QkgccIHPY6x3IQNnJ4u
+S87VKQI=</X509Certificate>
+                </X509Data>
+            </KeyInfo>
+        </KeyDescriptor>
+        <SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
+                             Location="https://govbox-pro.staging.slovensko.digital/upvs/logout"
+                             ResponseLocation="https://govbox-pro.staging.slovensko.digital/auth/saml/logout"/>
+        <SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+                             Location="https://govbox-pro.staging.slovensko.digital/upvs/logout"
+                             ResponseLocation="https://govbox-pro.staging.slovensko.digital/auth/saml/logout"/>
+        <AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+                                  Location="https://govbox-pro.staging.slovensko.digital/auth/saml/callback" index="0" isDefault="true"/>
+        <AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Artifact"
+                                  Location="https://govbox-pro.staging.slovensko.digital/auth/saml/callback" index="1"/>
+        <AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
+                                  Location="https://govbox-pro.staging.slovensko.digital/auth/saml/callback" index="2"/>
+    </SPSSODescriptor>
+</EntityDescriptor>

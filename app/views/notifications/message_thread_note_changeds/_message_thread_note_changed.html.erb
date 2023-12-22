@@ -1,0 +1,3 @@
+<p class="text-sm text-gray-500">
+  Zmenená poznámka na vlákne <%= link_to notification.message_thread.title, notification.message_thread, class: "underline font-semibold" %><% if notification.filter_subscription %>vo filtri <%= link_to notification.filter_name, message_threads_path(q: notification.filter.query), class: "underline font-semibold" %><% end %>.
+</p>

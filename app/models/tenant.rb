@@ -26,10 +26,12 @@ class Tenant < ApplicationRecord
   has_many :signature_requested_from_tags
   has_many :signed_by_tags
   has_many :simple_tags
+  has_one :archived_tag
 
   has_many :boxes, dependent: :destroy
   has_many :automation_rules, class_name: "Automation::Rule", dependent: :destroy
   has_many :filters
+  has_many :filter_subscriptions
   has_many :message_threads, through: :boxes
   has_many :messages, through: :message_threads
 
@@ -37,10 +39,26 @@ class Tenant < ApplicationRecord
 
   validates_presence_of :name
 
-  AVAILABLE_FEATURE_FLAGS = [:audit_log, :api]
+  AVAILABLE_FEATURE_FLAGS = [:audit_log, :archive, :api]
 
   def draft_tag!
     draft_tag || raise(ActiveRecord::RecordNotFound, "`DraftTag` not found in tenant: #{id}")
+  end
+
+  def signature_requested_tag!
+    signature_requested_tag || raise(ActiveRecord::RecordNotFound, "`SignatureRequestedTag` not found in tenant: #{id}")
+  end
+
+  def signed_tag!
+    signed_tag || raise(ActiveRecord::RecordNotFound, "`SignatureRequestedTag` not found in tenant: #{id}")
+  end
+
+  def signature_requested_tag!
+    signature_requested_tag || raise(ActiveRecord::RecordNotFound, "`SignatureRequestedTag` not found in tenant: #{id}")
+  end
+
+  def signed_tag!
+    signed_tag || raise(ActiveRecord::RecordNotFound, "`SignatureRequestedTag` not found in tenant: #{id}")
   end
 
   def feature_enabled?(feature)
@@ -85,8 +103,8 @@ class Tenant < ApplicationRecord
 
     create_draft_tag!(name: "Rozpracované", visible: true)
     create_everything_tag!(name: "Všetky správy", visible: false)
-    create_signature_requested_tag!(name: "Na podpis", visible: true)
-    create_signed_tag!(name: "Podpísané", visible: true)
+    create_signature_requested_tag!(name: "Na podpis", visible: true, color: "yellow", icon: "pencil")
+    create_signed_tag!(name: "Podpísané", visible: true, color: "green", icon: "fingerprint")
 
     make_admins_see_everything!
   end

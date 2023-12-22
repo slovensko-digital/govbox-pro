@@ -26,34 +26,29 @@ end
 EventBus.reset!
 
 # wiring
+
+# automation
 EventBus.subscribe_job :message_thread_created, Automation::MessageThreadCreatedJob
 EventBus.subscribe_job :message_created, Automation::MessageCreatedJob
-EventBus.subscribe :message_created, ->(message) {
-  Searchable::ReindexMessageThreadJob.perform_later(message.message_thread_id)
-}
-EventBus.subscribe :message_destroyed, ->(message) {
-  Searchable::ReindexMessageThreadJob.perform_later(message.message_thread_id)
-}
-EventBus.subscribe :message_changed, ->(message) {
-  Searchable::ReindexMessageThreadJob.perform_later(message.message_thread_id) if Searchable::Indexer.message_searchable_fields_changed?(message)
-}
-EventBus.subscribe :message_thread_changed, ->(message_thread) {
-  Searchable::ReindexMessageThreadJob.perform_later(message_thread.id)
+
+# notifications
+EventBus.subscribe :message_thread_changed, ->(thread) {
+  ReindexAndNotifyFilterSubscriptionsJob.perform_later(thread.id)
 }
 
-EventBus.subscribe :message_thread_note_created, ->(note) {
-  Searchable::ReindexMessageThreadJob.perform_later(note.message_thread_id)
-}
-EventBus.subscribe :message_thread_note_changed, ->(note) {
-  Searchable::ReindexMessageThreadJob.perform_later(note.message_thread_id)
-}
+# reindexing on removals
+EventBus.subscribe :tag_renamed, ->(tag) do
+  ReindexAndNotifyFilterSubscriptionsJob.perform_later_for_tag_id(tag.id)
+end
 
-EventBus.subscribe :message_thread_tag_changed,
-                   ->(message_thread_tag) { Searchable::ReindexMessageThreadJob.perform_later(message_thread_tag.message_thread_id) }
-EventBus.subscribe :tag_renamed, ->(tag) { Searchable::ReindexMessageThreadsWithTagIdJob.perform_later(tag.id) }
-EventBus.subscribe :tag_destroyed, ->(tag) { Searchable::ReindexMessageThreadsWithTagIdJob.perform_later(tag.id) }
+EventBus.subscribe :tag_destroyed, ->(tag) do
+  ReindexAndNotifyFilterSubscriptionsJob.perform_later_for_tag_id(tag.id)
+end
+
+# cleanup
 EventBus.subscribe :box_destroyed, ->(box_id) { Govbox::DestroyBoxDataJob.perform_later(box_id) }
 
+# audit logs
 EventBus.subscribe :message_thread_note_created, ->(note) { AuditLog::MessageThreadNoteCreated.create_audit_record(note) }
 EventBus.subscribe :message_thread_note_updated, ->(note) { AuditLog::MessageThreadNoteUpdated.create_audit_record(note) }
 EventBus.subscribe :message_threads_tag_created, ->(thread_tag) { AuditLog::MessageThreadTagCreated.create_audit_record(thread_tag) }

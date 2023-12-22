@@ -16,6 +16,10 @@ ssd_main_general_other:
   message_thread: ssd_main_general
   tag: ssd_other
 
+ssd_main_general_everything:
+  message_thread: ssd_main_general
+  tag: ssd_everything
+
 ssd_main_issue_finance:
   message_thread: ssd_main_issue
   tag: ssd_finance
@@ -23,3 +27,11 @@ ssd_main_issue_finance:
 ssd_main_issue_hidden:
   message_thread: ssd_main_issue
   tag: ssd_hidden
+
+ssd_main_issue_archived:
+  message_thread: ssd_main_issue
+  tag: ssd_archived
+
+ssd_main_delivery_everything:
+  message_thread: ssd_main_delivery
+  tag: ssd_everything

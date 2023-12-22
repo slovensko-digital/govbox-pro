@@ -1,0 +1,31 @@
+<%= render Common::ModalComponent.new do |modal| %>
+  <% modal.with_header do %>
+    Nastavenie notifikácii
+  <% end %>
+  <% modal.with_modal_content do %>
+    <%= form_with model: [@filter, @subscription] do |f| %>
+      <fieldset class="px-1 my-6">
+        <div class="space-y-5">
+          <% FilterSubscription::AVAILABLE_EVENT_NAMES.each_with_index do |event_name, idx| %>
+            <div class="relative flex items-start">
+              <div class="flex h-6 items-center">
+                <% id = "event-#{idx}" %>
+                <%= check_box_tag "events[]", event_name, @subscription.events.include?(event_name.to_s), class: "h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600", id: "filter_subscription_#{id}" %>
+              </div>
+              <div class="ml-3 text-sm leading-6">
+                <%= f.label id, t("filter_subscription.events.#{event_name}.name"), class: "font-medium text-gray-900" %>
+                <p class="text-gray-500"><%= t("filter_subscription.events.#{event_name}.description") %></p>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </fieldset>
+
+      <%= render Common::ModalActionsComponent.new do |actions| %>
+        <% actions.with_submit_button do %>
+          <%= f.submit "Nastaviť notifikácie", class: "inline-flex w-full justify-center items-center px-3 py-2 rounded-md bg-blue-600 font-medium text-left text-sm text-white hover:cursor-pointer sm:w-auto" %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>

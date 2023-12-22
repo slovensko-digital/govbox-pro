@@ -8,7 +8,7 @@ class Api::SiteAdmin::TenantsController < Api::SiteAdminController
   end
 
   def destroy
-    @tenant.destroy
+    Tenant.find(params[:id]).destroy!
   end
 
   private

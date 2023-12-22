@@ -13,6 +13,9 @@ application.register("autofocus", AutofocusController)
 import AutogramController from "./autogram_controller"
 application.register("autogram", AutogramController)
 
+import NewAutogramController from "./new_autogram_controller"
+application.register("new-autogram", NewAutogramController)
+
 import DebounceController from "./debounce_controller"
 application.register("debounce", DebounceController)
 
@@ -30,3 +33,6 @@ application.register("tri-state-checkbox", TriStateCheckboxController)
 
 import TurboContentController from "./turbo_content_controller"
 application.register("turbo-content", TurboContentController)
+
+import ContentWithSeparator from "./content_with_separator"
+application.register("content-with-separator", ContentWithSeparator)

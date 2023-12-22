@@ -1,3 +1,6 @@
+# == Route Map
+#
+
 Rails.application.routes.draw do
   namespace :settings do
     resources :automation_rules
@@ -61,6 +64,7 @@ Rails.application.routes.draw do
       end
 
       resource :authorize_deliveries, only: [:update]
+      resource :archive, only: [:update]
     end
   end
 
@@ -72,6 +76,8 @@ Rails.application.routes.draw do
     end
     get :rename, on: :member
     get :history, on: :member
+    get :confirm_unarchive, on: :member
+    patch :archive, on: :member
     resources :messages
     resources :message_thread_notes
     scope module: 'message_threads' do
@@ -93,6 +99,7 @@ Rails.application.routes.draw do
       member do
         get 'download'
         get 'signing_data'
+        get 'download_archived'
       end
 
       resources :nested_message_objects do
@@ -101,7 +108,9 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :filters
+  resources :filters do
+    resources :filter_subscriptions
+  end
 
   resources :message_drafts do
     member do
@@ -111,9 +120,34 @@ Rails.application.routes.draw do
     end
 
     post 'submit_all', on: :collection
+
+    scope module: 'message_drafts' do
+      resource :document_selections, only: [:new, :update] do
+        collection do
+          post :new
+        end
+      end
+
+      resource :signature_requests, only: [:update] do
+        collection do
+          post :edit
+          post :prepare
+        end
+      end
+
+      resource :signing, only: [:update] do
+        collection do
+          post :new
+        end
+      end
+    end
   end
 
   resources :messages_tags
+
+  resources :notifications do
+    get :scroll, on: :collection
+  end
 
   resource :settings
 
@@ -123,6 +157,7 @@ Rails.application.routes.draw do
 
   resources :sessions do
     get :login, on: :collection
+    get :no_account, on: :collection
     delete :destroy, on: :collection
   end
 
@@ -146,6 +181,20 @@ Rails.application.routes.draw do
 
     resources :message_threads, only: [:show]
     resources :messages, only: [:show]
+  end
+
+  if UpvsEnvironment.sso_support?
+    namespace :upvs do
+      get :login
+      get :logout
+    end
+
+    scope 'auth/saml', as: :upvs, controller: :upvs do
+      get :login
+      get :logout
+
+      post :callback
+    end
   end
 
   get :auth, path: 'prihlasenie', to: 'sessions#login'

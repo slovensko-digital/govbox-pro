@@ -1,15 +1,15 @@
-<div class="self-stretch p-6 border-b border-gray-200 items-center gap-4 inline-flex">
+<div class="self-stretch p-6 border-b border-gray-200 items-center gap-4 inline-flex" id="<%= dom_id(@tag) %>">
   <div class="grow shrink basis-0 gap-1">
-    <div class="text-gray-900 text-lg font-medium leading-loose">
+    <div class="text-gray-900 text-lg font-medium leading-loose w-fit">
       <%= render Common::TagComponent.new(@tag) %>
     </div>
   </div>
   <%= render Admin::Tags::VisibilityToggleComponent.new(@tag) %>
   <div class="justify-start items-start gap-2 flex">
-    <%= link_to edit_admin_tenant_tag_path(@tag.tenant, @tag), data: { turbo_frame: "modal" } do %>
+    <%= link_to edit_admin_tenant_tag_path(@tag.tenant, @tag), title: "Editovať štítok", data: { turbo_frame: "modal" } do %>
       <%= render Common::EditButtonComponent.new %>
     <% end %>
-    <%= button_to admin_tenant_tag_path(@tag.tenant, @tag), method: :delete, data: { turbo_confirm: "Naozaj chcete zmazať štítok '#{@tag.name}'? Štítok bude zmazaný aj zo všetkých vlákien!" } do %>
+    <%= button_to admin_tenant_tag_path(@tag.tenant, @tag), title: "Zmazať štítok", method: :delete, data: { turbo_confirm: "Naozaj chcete zmazať štítok '#{@tag.name}'? Štítok bude zmazaný aj zo všetkých vlákien!" } do %>
       <%= render Common::DeleteButtonComponent.new %>
     <% end %>
   </div>

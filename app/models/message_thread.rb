@@ -31,7 +31,6 @@ class MessageThread < ApplicationRecord
   attr_accessor :search_highlight
 
   after_create_commit ->(thread) { thread.tags << thread.tenant.everything_tag }
-  after_create_commit ->(thread) { EventBus.publish(:message_thread_created, thread) }
   after_update_commit ->(thread) { EventBus.publish(:message_thread_changed, thread) }
 
   delegate :tenant, to: :box
@@ -48,9 +47,27 @@ class MessageThread < ApplicationRecord
     tenant.automation_rules.where(trigger_event: event)
   end
 
+  def archived?
+    tags.find_by(type: ArchivedTag.to_s).present?
+  end
+
+  def archive(value)
+    return unless value != archived?
+
+    if value
+      tags << tenant.tags.find_by(type: ArchivedTag.to_s)
+      Archivation::ArchiveMessageThreadJob.perform_later(self)
+      EventBus.publish(:message_thread_archive_on, self)
+    else
+      tags.delete(tags.find_by(type: ArchivedTag.to_s))
+      EventBus.publish(:message_thread_archive_off, self)
+    end
+  end
+
   def rename(params)
-    update(params)
+    result = update(params)
     EventBus.publish(:message_thread_renamed, self)
+    result
   end
 
   def mark_all_messages_read

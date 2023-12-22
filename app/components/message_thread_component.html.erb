@@ -1,12 +1,12 @@
 <div id="messages" class="flex flex-col justify-stretch items-stretch overflow-x-hidden" data-test="thread-detail">
   <%= render MessageThreadHeaderComponent.new(@message_thread, @thread_tags) %>
   <%= render MessageThreadNoteComponent.new(@message_thread.message_thread_note) %>
-  <div class="flex flex-col justify-stretch items-stretch gap-2 pt-4 sm:p-4" data-test="messages">
-    <%= render Common::AlertComponent.new %>
+  <div class="flex flex-col justify-stretch items-stretch gap-2 pt-4 pb-16 sm:px-4" data-test="messages">
+    <%= render Common::FlashComponent.new %>
     <% @thread_messages.each do |message| %>
       <% if message.type == 'MessageDraft' %>
         <%# TODO find a better way for handling focus than `message.id == @thread_last_message_draft_id` %>
-        <%= render MessageDraftComponent.new(message: message, is_last: message.id == @thread_last_message_draft_id) %>
+        <%= render MessageDraftComponent.new(message: message, user_is_signer: @user_is_signer, is_last: message.id == @thread_last_message_draft_id) %>
       <% elsif message.collapsed? %>
         <%= render CollapsedMessageComponent.new(message: message) %>
       <% else %>

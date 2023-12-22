@@ -1,5 +1,5 @@
 <%= tag.turbo_frame id: 'thread-note' do %>
-  <% if @message_thread_note %>
+  <% if @message_thread_note && @message_thread_note.note.present? %>
     <div class="flex items-start space-x-4 p-6 bg-white">
       <div class="min-w-0 flex-1">
         <div class="overflow-hidden">
