@@ -5,7 +5,7 @@ class Api::SiteAdmin::Stats::Tenant
   validates :from, :to, presence: true
 
   def initialize(params)
-    @from = Time.zone.parse(params.require(:from))
-    @to = Time.zone.parse(params.require(:to))
+    @from = Time.zone.parse(params[:from]) if params[:from]
+    @to = Time.zone.parse(params[:to]) if params[:to]
   end
 end

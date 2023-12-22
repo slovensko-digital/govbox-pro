@@ -21,26 +21,48 @@ security:
   - "API Token": []
 
 paths:
-  /api/admin/tenants/{id}s:
+  /api/site_admin/tenants/{id}:
     delete:
       tags: [Správa tenantov]
       summary: Vymaže tenanta zo systému vrátane všetkých jeho údajov
       description: |
         Vymaže tenanta zo systému.
       parameters:
-        - $ref: "#/components/parameters/TenantId"
+        - name: id
+          in: path
+          description: Tenant id
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         204:
           description: Úspešne vymazaný tenant zo systému.
 
-  /api/admin/tenant/:
+  /api/site_admin/tenant/:
     post:
       tags: [Správa tenantov]
       summary: Založí nového tenanta v systéme
       description: |
         Založí nového tenanta.
-      parameters:
-        - $ref: "#/components/parameters/MessageId"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  description: Názov nového tenanta, typicky názov spoločnosti
+                  type: string
+                admin:
+                  type: object
+                  properties:
+                    name:
+                      description: Meno administrátora pre daného tenanta
+                      type: string
+                    email:
+                      description: email administrátora, bude použitý na OAUTH2 autentifikáciu
+                      type: string
       responses:
         200:
           description: Úspešne založený tenant v systéme
@@ -49,51 +71,98 @@ paths:
               schema:
                 type: object
                 properties:
-                  code:
-                    description: Výsledok odoslania správy na autorizáciu doručenky, hodnota `0` znamená úspešné prijatie správy na autorizáciu doručenky.
+                  id:
+                    description: Identifikátor založeného tenanta v systéme
                     type: integer
-                  message_id:
-                    description: eDesk identifikátor prebranej správy.
+
+  /api/site_admin/tenant/{id}/box:
+    post:
+      tags: [Správa tenantov]
+      summary: Založí novú schránku v rámci tenanta.
+      description: |
+        Založí novú schránku v rámci tenanta. Pre korektné fungovanie musí schránka existovať na slovensko.sk
+      parameters:
+        - name: id
+          in: path
+          description: Identifikátor tenanta
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  description: Názov schránky, typicky názov spoločnosti
+                  type: string
+                  example: "Moja firma s.r.o."
+                uri:
+                  description: URI schránky na slovensko.sk
+                  type: string
+                  example: "ico://12345678/"
+                short_name:
+                  description: Skrátený názov pre odlíšenie vlákien/správ z rôznych schránok v používateľskom rozhraní. Odporúčame maximálne 3 znaky
+                  type: string
+                  example: "MF"
+                color:
+                  description: Farba z palety tailwind farieb použitá v štítku pre dlíšenie vlákien/správ z rôznych schránok v používateľskom rozhraní
+                  type: string
+                  enum:
+                    [
+                      "slate",
+                      "gray",
+                      "zinc",
+                      "neutral",
+                      "stone",
+                      "red",
+                      "orange",
+                      "amber",
+                      "yellow",
+                      "lime",
+                      "green",
+                      "emerald",
+                      "teal",
+                      "cyan",
+                      "sky",
+                      "blue",
+                      "indigo",
+                      "violet",
+                      "purple",
+                      "fuchsia",
+                      "pink",
+                      "rose",
+                    ]
+                  example: "red"
+                settings:
+                  type: object
+                  properties:
+                    obo:
+                      description: V prípade použitia spoločného prístupu k schránke OBO identifikátor
+                      type: string
+                api_connection:
+                  type: object
+                  description: Parametre pripojenia na ÚPVS
+                  properties:
+                    sub:
+                      description: TBD
+                      type: string
+                    api_token_private_key:
+                      description: Privátny kľúč k pripojeniu na ÚPVS
+                      type: string
+      responses:
+        200:
+          description: Úspešne založený tenant v systéme
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    description: Identifikátor založeného tenanta v systéme
                     type: integer
-                    example: 53089851
-                required:
-                  - code
-                example:
-                  code: 0
-
-components:
-  parameters:
-    tenantId:
-      description: Govbox Pro identifikátor tenanta.
-      name: id
-      in: path
-      required: true
-      schema:
-        type: integer
-        example: 20378640
-
-  schemas:
-    Tenant:
-      description: Tenant
-      properties:
-        id:
-          description: Govbox Pro identifikátor tenanta.
-          type: integer
-        name:
-          description: Názov tenanta.
-          type: string
-        feature_flags:
-          description: Aktivované služby tenanta
-          type: boolean
-      required:
-        - id
-        - name
-        - system
-      example:
-        id: 53089851
-        parent_id: null
-        name: Inbox
-        system: true
 
   securitySchemes:
     "API Token":

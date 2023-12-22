@@ -6,9 +6,12 @@ class Api::SiteAdmin::Stats::TenantsController < Api::SiteAdminController
   end
 
   def messages_per_period
-    stats = Api::SiteAdmin::Stats::Tenant.new(params)
-    stats.validate!
-    @messages_per_period = @tenant.messages.where("messages.created_at between ? and ?", stats.from, stats.to).count
+    stats = Api::SiteAdmin::Stats::Tenant.new(period_params)
+    if stats.valid?
+      @messages_per_period = @tenant.messages.where("messages.created_at between ? and ?", stats.from, stats.to).count
+    else
+      render status: :bad_request, json: { message: stats.errors.first.full_message }
+    end
   end
 
   def messages_count
@@ -19,5 +22,9 @@ class Api::SiteAdmin::Stats::TenantsController < Api::SiteAdminController
 
   def tenant_params
     params.require(:tenant).permit(:name, { admin: [:name, :email] })
+  end
+
+  def period_params
+    params.permit(:from, :to)
   end
 end
