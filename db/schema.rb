@@ -500,12 +500,12 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_22_111755) do
     t.bigint "owner_id"
     t.string "external_name"
     t.string "type", null: false
-    t.string "icon"
-    t.integer "tag_groups_count", default: 0, null: false
     t.enum "color", enum_type: "color"
+    t.integer "tag_groups_count", default: 0, null: false
+    t.string "icon"
     t.index "tenant_id, type, lower((name)::text)", name: "index_tags_on_tenant_id_and_type_and_lowercase_name", unique: true
     t.index ["owner_id"], name: "index_tags_on_owner_id"
-    t.index ["tenant_id", "type"], name: "signings_tags", unique: true, where: "((type)::text = ANY (ARRAY[('SignatureRequestedTag'::character varying)::text, ('SignedTag'::character varying)::text]))"
+    t.index ["tenant_id", "type"], name: "signings_tags", unique: true, where: "((type)::text = ANY ((ARRAY['SignatureRequestedTag'::character varying, 'SignedTag'::character varying])::text[]))"
     t.index ["tenant_id"], name: "index_tags_on_tenant_id"
   end
 
@@ -550,9 +550,9 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_22_111755) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "saml_identifier"
     t.datetime "notifications_last_opened_at"
     t.datetime "notifications_reset_at"
+    t.string "saml_identifier"
     t.index "tenant_id, lower((email)::text)", name: "index_users_on_tenant_id_and_lowercase_email", unique: true
   end
 
