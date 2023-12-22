@@ -78,19 +78,6 @@ module Upvs
         cep_sk_api = Upvs::SkApiClient.new.api(api_connection: api_connection).cep
         cep_sk_api.sign_v2(data)
       end
-
-      private
-
-      def header
-        {
-          "Authorization": authorization_payload,
-          "Content-Type": "application/json"
-        }
-      end
-
-      def sign_successful?(response_status, response_body)
-        response_status == 200 && response_body['sign_description'] == 'OK'
-      end
     end
 
     class Error < StandardError
