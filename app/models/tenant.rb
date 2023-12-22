@@ -97,9 +97,9 @@ class Tenant < ApplicationRecord
   end
 
   def create_default_signing_options!
-    autogram_siging_settings = AutogramSigningSetting.create!
+    autogram_signing = AutogramSigningOption.create!
     tenant_signing_options.create!(
-      signing_setting: autogram_siging_settings
+      signing_option: autogram_signing
     )
   end
 end

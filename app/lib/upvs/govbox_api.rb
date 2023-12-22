@@ -2,7 +2,7 @@ require 'jwt'
 
 module Upvs
   class GovboxApi < Api
-    attr_reader :sub, :obo, :api_token_private_key, :url, :edesk, :sktalk
+    attr_reader :sub, :obo, :api_token_private_key, :url, :edesk, :sktalk, :cep
 
     def initialize(url, box:, handler: Faraday)
       raise "Box API connection is not of type Govbox API connection" unless (box.api_connection.is_a?(::Govbox::ApiConnection) || box.api_connection.is_a?(::Govbox::ApiConnectionWithOboSupport))
@@ -13,6 +13,7 @@ module Upvs
       @url = url
       @edesk = Edesk.new(self)
       @sktalk = SkTalk.new(self)
+      @cep = Cep.new(self)
       @handler = handler
       @handler.options.timeout = 900_000
     end
@@ -66,6 +67,31 @@ module Upvs
 
       def submit_successful?(response_status, receive_result, save_to_outbox_result)
         response_status == 200 && receive_result == 0 && save_to_outbox_result == 0
+      end
+    end
+
+    class Cep < Namespace
+      def sign(data, api_connection)
+        cep_sk_api = Upvs::SkApiClient.new.api(api_connection: api_connection).cep
+        cep_sk_api.sign(data)
+      end
+
+      def sign_v2(data, api_connection)
+        cep_sk_api = Upvs::SkApiClient.new.api(api_connection: api_connection).cep
+        cep_sk_api.sign_v2(data)
+      end
+
+      private
+
+      def header
+        {
+          "Authorization": authorization_payload,
+          "Content-Type": "application/json"
+        }
+      end
+
+      def sign_successful?(response_status, response_body)
+        response_status == 200 && response_body['sign_description'] == 'OK'
       end
     end
 

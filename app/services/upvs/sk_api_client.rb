@@ -3,7 +3,7 @@ class Upvs::SkApiClient
     @host = host
   end
 
-  def api(box)
-    Upvs::SkApi.new(@host, box: box)
+  def api(box: nil, api_connection: nil)
+    Upvs::SkApi.new(@host, box: box, api_connection: api_connection)
   end
 end

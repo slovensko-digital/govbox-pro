@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_12_22_111236) do
+ActiveRecord::Schema[7.1].define(version: 2023_12_22_111755) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -96,11 +96,6 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_22_111236) do
     t.index ["tenant_id", "actor_id", "happened_at"], name: "index_audit_logs_on_tenant_id_and_actor_id_and_happened_at"
     t.index ["tenant_id", "message_thread_id", "happened_at"], name: "index_audit_logs_on_tenant_id_thread_id_happened_at"
     t.index ["tenant_id"], name: "index_audit_logs_on_tenant_id"
-  end
-
-  create_table "autogram_signing_settings", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "automation_actions", force: :cascade do |t|
@@ -463,13 +458,6 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_22_111236) do
     t.index ["user_id"], name: "index_notifications_on_user_id"
   end
 
-  create_table "seal_signing_settings", force: :cascade do |t|
-    t.string "certificate_subject"
-    t.string "connection_sub"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "searchable_message_threads", force: :cascade do |t|
     t.integer "message_thread_id", null: false
     t.text "title", null: false
@@ -485,6 +473,13 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_22_111236) do
     t.index "((((to_tsvector('simple'::regconfig, COALESCE(title, ''::text)) || to_tsvector('simple'::regconfig, COALESCE(content, ''::text))) || to_tsvector('simple'::regconfig, COALESCE((note)::text, ''::text))) || to_tsvector('simple'::regconfig, COALESCE(tag_names, ''::text))))", name: "idx_searchable_message_threads_fulltext", using: :gin
     t.index ["id", "box_id", "last_message_delivered_at"], name: "idx_on_id_box_id_last_message_delivered_at_5a4090c55e", unique: true
     t.index ["message_thread_id"], name: "index_searchable_message_threads_on_message_thread_id", unique: true
+  end
+
+  create_table "signing_options", force: :cascade do |t|
+    t.string "type"
+    t.jsonb "settings"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "tag_groups", force: :cascade do |t|
@@ -516,11 +511,10 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_22_111236) do
 
   create_table "tenant_signing_options", force: :cascade do |t|
     t.bigint "tenant_id", null: false
-    t.string "signing_setting_type"
-    t.bigint "signing_setting_id"
+    t.bigint "signing_option_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["signing_setting_type", "signing_setting_id"], name: "index_tenant_signing_options_on_signing_setting"
+    t.index ["signing_option_id"], name: "index_tenant_signing_options_on_signing_option_id"
     t.index ["tenant_id"], name: "index_tenant_signing_options_on_tenant_id"
   end
 

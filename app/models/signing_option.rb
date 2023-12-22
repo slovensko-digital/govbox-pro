@@ -1,11 +1,12 @@
 # == Schema Information
 #
-# Table name: autogram_signing_settings
+# Table name: signing_options
 #
 #  id         :bigint           not null, primary key
+#  settings   :jsonb
+#  type       :string
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #
-class AutogramSigningSetting < ApplicationRecord
-  has_one :tenant_signing_options, as: :signing_setting
+class SigningOption < ApplicationRecord
 end

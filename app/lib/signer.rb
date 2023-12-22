@@ -1,14 +1,16 @@
 module Signer
-  def self.sign(message_object)
+  def self.sign(message_object, signing_option)
+    raise "Invalid signing option" unless signing_option.is_a?(SealSigningOption)
+
     cep_api = UpvsEnvironment.upvs_api(message_object.message.thread.box).cep
-    certificate = Upvs::SigningCertificate.find_by!(box: message_object.message.thread.box)
+    cep_api_connection = ApiConnection.find(signing_option.settings["api_connection_id"])
 
     if message_object.mimetype == 'application/pdf'
       data = {
         objects: [
           {
             certificate_type: 'Subject',
-            certificate_subject: certificate.subject,
+            certificate_subject: signing_option.settings["certificate_subject"],
             signature_type: 'PAdES',
             class: 'http://schemas.gov.sk/attachment/pdf',
             mime_type: 'application/pdf',
@@ -17,7 +19,7 @@ module Signer
           }
         ]
       }
-      signed_objects = cep_api.sign(data)
+      signed_objects = cep_api.sign(data, cep_api_connection)
       signed_data = signed_objects&.first
     else
       data = {
@@ -26,7 +28,7 @@ module Signer
             id: SecureRandom.uuid,
             signing_certificate: {
               type: 'Subject',
-              subject: certificate.subject,
+              subject: signing_option.settings["certificate_subject"],
             },
             unsigned_objects: [
               {
@@ -37,7 +39,7 @@ module Signer
           }
         ]
       }
-      signed_objects = cep_api.sign_v2(data)
+      signed_objects = cep_api.sign_v2(data, cep_api_connection)
       signed_data = signed_objects&.first
     end
 
