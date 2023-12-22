@@ -40,7 +40,7 @@ export const signMessageObject = async (messageObjectPath, batchId = null, authe
   const signedData = await makeSignRequest(prepareSingingRequestBody(signingData, batchId))
   const signedFile = signedFileData(signingData)
 
-  return await updateObject(messageObjectPath, signedFile.name, signedFile.mineType, signedData.content, authenticityToken)
+  return await markMessageObjectAsSigned(messageObjectPath, signedFile.name, signedFile.mineType, signedData.content, authenticityToken)
 }
 
 const signedFileName = (fileName) => {
@@ -108,7 +108,7 @@ const prepareSingingRequestBody = (messageObjectData, batchId = null) => {
   }
 }
 
-const updateObject = async (messageObjectPath, signedFileName, signedFileMimeType, signedContent, authenticityToken) => {
+const markMessageObjectAsSigned = async (messageObjectPath, signedFileName, signedFileMimeType, signedContent, authenticityToken) => {
   return await patch(messageObjectPath, {
     body: JSON.stringify({
       authenticity_token: authenticityToken,

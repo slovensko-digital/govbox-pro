@@ -12,7 +12,7 @@ class MessageObjectsController < ApplicationController
 
   def update
     authorize @message_object
-    update_message_object(@message_object)
+    mark_message_object_as_signed(@message_object)
     last_thread_message_draft = @message.thread.messages_visible_to_user(Current.user).where(type: 'MessageDraft').includes(objects: :nested_message_objects, attachments: :nested_message_objects).order(delivered_at: :asc)&.last
     @is_last = @message == last_thread_message_draft
   end
@@ -67,16 +67,17 @@ class MessageObjectsController < ApplicationController
   end
 
   def message_object_params
-    params.permit(:name, :mimetype, :is_signed, :content)
+    params.permit(:name, :mimetype, :content)
   end
 
-  def update_message_object(message_object)
+  def mark_message_object_as_signed(message_object)
     permitted_params = message_object_params
 
     message_object.transaction do
       message_object.update!(
         name: permitted_params[:name],
         mimetype: permitted_params[:mimetype],
+        is_signed: true
       )
 
       message_object.message_object_datum.update!(

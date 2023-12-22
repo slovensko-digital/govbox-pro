@@ -34,12 +34,16 @@ class MessageObject < ApplicationRecord
     objects.each do |raw_object|
       message_object_content = raw_object.read.force_encoding("UTF-8")
 
+      is_signed = Utils.is_signed?(entry_name: raw_object.original_filename, content: message_object_content)
+      tags = is_signed ? [message.thread.box.tenant.signed_externally_tag!] : []
+
       message_object = MessageObject.create!(
         message: message,
         name: raw_object.original_filename,
         mimetype: Utils.file_mime_type_by_name(entry_name: raw_object.original_filename),
-        is_signed: Utils.is_signed?(entry_name: raw_object.original_filename, content: message_object_content),
-        object_type: "ATTACHMENT"
+        is_signed: is_signed,
+        object_type: "ATTACHMENT",
+        tags: tags
       )
 
       MessageObjectDatum.create!(

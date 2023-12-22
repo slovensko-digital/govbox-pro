@@ -13,10 +13,6 @@
       <% SigningTagsHelper.sort_tags(@message_object.tags).each do |tag|%>
         <%= render Common::TagComponent.new(tag) %>
       <% end %>
-
-      <% if @message_object.is_signed? %>
-        <%= render Common::TagComponent.new(SigningTagsHelper.signed_externally) %>
-      <% end %>
     </div>
   <% end %>
 </div>

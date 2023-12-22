@@ -109,13 +109,15 @@ class Govbox::Message < ApplicationRecord
     raw_message["objects"].each do |raw_object|
       message_object_type = raw_object["class"]
       visualizable = (message_object_type == "FORM" && message.html_visualization.present?) ? true : nil
+      tags = raw_object["signed"] ? [message.thread.box.tenant.signed_externally_tag!] : []
 
       message_object = message.objects.create!(
         name: raw_object["name"],
         mimetype: raw_object["mime_type"],
         is_signed: raw_object["signed"],
         object_type: message_object_type,
-        visualizable: visualizable
+        visualizable: visualizable,
+        tags: tags
       )
 
       if raw_object["encoding"] == "Base64"

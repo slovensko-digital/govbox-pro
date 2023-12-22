@@ -44,6 +44,12 @@ ssd_everything:
   visible: false
   tenant: ssd
 
+ssd_signed_externally:
+  name: SignedExternally
+  type: SignedExternallyTag
+  visible: false
+  tenant: ssd
+
 ssd_other:
   name: Other
   type: SimpleTag
@@ -92,7 +98,6 @@ ssd_archived:
   icon: archive-box
   color: green
 
-
 solver_special:
   name: Special
   type: SimpleTag
@@ -108,5 +113,11 @@ solver_drafts:
 solver_everything:
   name: Everything
   type: EverythingTag
+  visible: false
+  tenant: solver
+
+solver_signed_externally:
+  name: SignedExternally
+  type: SignedExternallyTag
   visible: false
   tenant: solver

@@ -21,6 +21,7 @@ class Tenant < ApplicationRecord
   has_one :everything_tag
   has_one :signature_requested_tag
   has_one :signed_tag
+  has_one :signed_externally_tag
   has_many :tags, dependent: :destroy
   has_many :signature_requested_from_tags
   has_many :signed_by_tags
@@ -48,7 +49,11 @@ class Tenant < ApplicationRecord
   end
 
   def signed_tag!
-    signed_tag || raise(ActiveRecord::RecordNotFound.new("`SignatureRequestedTag` not found in tenant: #{self.id}"))
+    signed_tag || raise(ActiveRecord::RecordNotFound.new("`SignedTag` not found in tenant: #{self.id}"))
+  end
+
+  def signed_externally_tag!
+    signed_externally_tag || raise(ActiveRecord::RecordNotFound.new("`SignedExternallyTag` not found in tenant: #{self.id}"))
   end
 
   def feature_enabled?(feature)
@@ -88,6 +93,7 @@ class Tenant < ApplicationRecord
     create_everything_tag!(name: "Všetky správy", visible: false)
     create_signature_requested_tag!(name: "Na podpis", visible: true, color: "yellow", icon: "pencil")
     create_signed_tag!(name: "Podpísané", visible: true, color: "green", icon: "fingerprint")
+    create_signed_externally_tag!(name: "Externe podpísané", visible: false, color: "purple", icon: "shield-check")
 
     make_admins_see_everything!
   end
