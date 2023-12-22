@@ -58,12 +58,6 @@ class MessageObject < ApplicationRecord
     assign_tag(user.signed_by_tag)
     unassign_tag(user.signature_requested_from_tag)
 
-    # object, signed_tag
-    unless has_tag?({ type: SignatureRequestedFromTag.to_s })
-      assign_tag(user.tenant.signed_tag)
-      unassign_tag(user.tenant.signature_requested_tag)
-    end
-
     # thread, user_signed_tag
     unless has_tag_within_thread?(user.signature_requested_from_tag)
       assign_tag_to_thread(user.signed_by_tag)
@@ -84,10 +78,6 @@ class MessageObject < ApplicationRecord
     # object, user_signature_requested_tag
     assign_tag(user.signature_requested_from_tag)
 
-    # object, signature_requested_tag
-    assign_tag(user.tenant.signature_requested_tag)
-    unassign_tag(user.tenant.signed_tag)
-
     # thread, user_signature_requested_tag
     assign_tag_to_thread(user.signature_requested_from_tag)
     unassign_tag_from_thread(user.signed_by_tag)
@@ -102,16 +92,6 @@ class MessageObject < ApplicationRecord
 
     # object, user_signature_requested_tag
     unassign_tag(user.signature_requested_from_tag)
-
-    # object, signature_requested_tag
-    unless has_tag?({ type: SignatureRequestedFromTag.to_s })
-      unassign_tag(user.tenant.signature_requested_tag)
-
-      # object, back to signed_tag
-      if has_tag?({ type: SignedByTag.to_s })
-        assign_tag(user.tenant.signed_tag)
-      end
-    end
 
     # thread, user_signature_requested_tag
     unless has_tag_within_thread?(user.signature_requested_from_tag)

@@ -18,13 +18,13 @@ class MessageObjectTest < ActiveSupport::TestCase
     assert_equal [], object.message.thread.tags.signing_tags.reload
 
     object.add_signature_requested_from_user(@user_one)
-    assert_equal [@user_one.signature_requested_from_tag, tenant.signature_requested_tag!].to_set,
+    assert_equal [@user_one.signature_requested_from_tag].to_set,
                  object.tags.reload.to_set
     assert_equal [@user_one.signature_requested_from_tag, tenant.signature_requested_tag!].to_set,
                  object.message.thread.tags.signing_tags.reload.to_set
 
     object.add_signature_requested_from_user(@user_one)
-    assert_equal [@user_one.signature_requested_from_tag, tenant.signature_requested_tag!].to_set,
+    assert_equal [@user_one.signature_requested_from_tag].to_set,
                  object.tags.reload.to_set
     assert_equal [@user_one.signature_requested_from_tag, tenant.signature_requested_tag!].to_set,
                  object.message.thread.tags.signing_tags.reload.to_set
@@ -38,13 +38,13 @@ class MessageObjectTest < ActiveSupport::TestCase
     assert_equal [], object.message.thread.tags.signing_tags.reload
 
     object.add_signature_requested_from_user(@user_one)
-    assert_equal [@user_one.signature_requested_from_tag, tenant.signature_requested_tag!].to_set,
+    assert_equal [@user_one.signature_requested_from_tag].to_set,
                  object.tags.reload.to_set
     assert_equal [@user_one.signature_requested_from_tag, tenant.signature_requested_tag!].to_set,
                  object.message.thread.tags.signing_tags.reload.to_set
 
     object.add_signature_requested_from_user(@user_two)
-    assert_equal [@user_one.signature_requested_from_tag, @user_two.signature_requested_from_tag, tenant.signature_requested_tag!].to_set,
+    assert_equal [@user_one.signature_requested_from_tag, @user_two.signature_requested_from_tag].to_set,
                  object.tags.reload.to_set
     assert_equal [@user_one.signature_requested_from_tag, @user_two.signature_requested_from_tag, tenant.signature_requested_tag!].to_set,
                  object.message.thread.tags.signing_tags.reload.to_set
@@ -56,14 +56,14 @@ class MessageObjectTest < ActiveSupport::TestCase
 
     object.mark_signed_by_user(@user_one)
 
-    assert_equal [@user_one.signed_by_tag, tenant.signed_tag!].to_set,
+    assert_equal [@user_one.signed_by_tag].to_set,
                  object.tags.reload.to_set
     assert_equal [@user_one.signed_by_tag, tenant.signed_tag!].to_set,
                  object.message.thread.tags.signing_tags.reload.to_set
 
     object.add_signature_requested_from_user(@user_one)
 
-    assert_equal [@user_one.signed_by_tag, tenant.signed_tag!].to_set,
+    assert_equal [@user_one.signed_by_tag].to_set,
                  object.tags.reload.to_set
     assert_equal [@user_one.signed_by_tag, tenant.signed_tag!].to_set,
                  object.message.thread.tags.signing_tags.reload.to_set
@@ -81,25 +81,25 @@ class MessageObjectTest < ActiveSupport::TestCase
     object_1.add_signature_requested_from_user(@user_two)
     object_2.add_signature_requested_from_user(@user_one)
 
-    assert_equal [user_1_signature_requested_tag, user_2_signature_requested_tag, tenant.signature_requested_tag!].to_set,
+    assert_equal [user_1_signature_requested_tag, user_2_signature_requested_tag].to_set,
                  object_1.tags.reload.to_set
-    assert_equal [user_1_signature_requested_tag, tenant.signature_requested_tag!].to_set,
+    assert_equal [user_1_signature_requested_tag].to_set,
                  object_2.tags.reload.to_set
     assert_equal [user_1_signature_requested_tag, user_2_signature_requested_tag, tenant.signature_requested_tag!].to_set,
                  object_1.message.thread.tags.signing_tags.reload.to_set
 
     object_1.remove_signature_requested_from_user(@user_one)
 
-    assert_equal [user_2_signature_requested_tag, tenant.signature_requested_tag!].to_set,
+    assert_equal [user_2_signature_requested_tag].to_set,
                  object_1.tags.reload.to_set
-    assert_equal [user_1_signature_requested_tag, tenant.signature_requested_tag!].to_set,
+    assert_equal [user_1_signature_requested_tag].to_set,
                  object_2.tags.reload.to_set
     assert_equal [user_1_signature_requested_tag, user_2_signature_requested_tag, tenant.signature_requested_tag!].to_set,
                  object_1.message.thread.tags.signing_tags.reload.to_set
 
     object_2.remove_signature_requested_from_user(@user_one)
 
-    assert_equal [user_2_signature_requested_tag, tenant.signature_requested_tag!].to_set,
+    assert_equal [user_2_signature_requested_tag].to_set,
                  object_1.tags.reload.to_set
     assert_equal [], object_2.tags.reload
     assert_equal [user_2_signature_requested_tag, tenant.signature_requested_tag!].to_set,
@@ -121,36 +121,36 @@ class MessageObjectTest < ActiveSupport::TestCase
     object_1.add_signature_requested_from_user(@user_two)
     object_2.add_signature_requested_from_user(@user_one)
 
-    assert_equal [@user_one.signature_requested_from_tag, @user_two.signature_requested_from_tag, tenant.signature_requested_tag!].to_set,
+    assert_equal [@user_one.signature_requested_from_tag, @user_two.signature_requested_from_tag].to_set,
                  object_1.tags.reload.to_set
-    assert_equal [@user_one.signature_requested_from_tag, tenant.signature_requested_tag!].to_set,
+    assert_equal [@user_one.signature_requested_from_tag].to_set,
                  object_2.tags.reload.to_set
     assert_equal [@user_one.signature_requested_from_tag, @user_two.signature_requested_from_tag, tenant.signature_requested_tag!].to_set,
                  object_1.message.thread.tags.signing_tags.reload.to_set
 
     object_1.mark_signed_by_user(@user_one)
 
-    assert_equal [@user_one.signed_by_tag, @user_two.signature_requested_from_tag, tenant.signature_requested_tag!].to_set,
+    assert_equal [@user_one.signed_by_tag, @user_two.signature_requested_from_tag].to_set,
                  object_1.tags.reload.to_set
-    assert_equal [@user_one.signature_requested_from_tag, tenant.signature_requested_tag!].to_set,
+    assert_equal [@user_one.signature_requested_from_tag].to_set,
                  object_2.tags.reload.to_set
     assert_equal [@user_one.signature_requested_from_tag, @user_two.signature_requested_from_tag, tenant.signature_requested_tag!].to_set,
                  object_1.message.thread.tags.signing_tags.reload.to_set
 
     object_2.mark_signed_by_user(@user_one)
 
-    assert_equal [@user_one.signed_by_tag, @user_two.signature_requested_from_tag, tenant.signature_requested_tag!].to_set,
+    assert_equal [@user_one.signed_by_tag, @user_two.signature_requested_from_tag].to_set,
                  object_1.tags.reload.to_set
-    assert_equal [@user_one.signed_by_tag, tenant.signed_tag!].to_set,
+    assert_equal [@user_one.signed_by_tag].to_set,
                  object_2.tags.reload.to_set
     assert_equal [@user_one.signed_by_tag, @user_two.signature_requested_from_tag, tenant.signature_requested_tag!].to_set,
                  object_1.message.thread.tags.signing_tags.reload.to_set
 
     object_1.mark_signed_by_user(@user_two)
 
-    assert_equal [@user_one.signed_by_tag, @user_two.signed_by_tag, tenant.signed_tag!].to_set,
+    assert_equal [@user_one.signed_by_tag, @user_two.signed_by_tag].to_set,
                  object_1.tags.reload.to_set
-    assert_equal [@user_one.signed_by_tag, tenant.signed_tag!].to_set,
+    assert_equal [@user_one.signed_by_tag].to_set,
                  object_2.tags.reload.to_set
     assert_equal [@user_one.signed_by_tag, @user_two.signed_by_tag, tenant.signed_tag!].to_set,
                  object_1.message.thread.tags.signing_tags.reload.to_set
@@ -164,25 +164,25 @@ class MessageObjectTest < ActiveSupport::TestCase
     object_1.mark_signed_by_user(@user_one)
     object_2.mark_signed_by_user(@user_two)
 
-    assert_equal [@user_one.signed_by_tag, tenant.signed_tag!].to_set,
+    assert_equal [@user_one.signed_by_tag].to_set,
                  object_1.tags.reload.to_set
-    assert_equal [@user_two.signed_by_tag, tenant.signed_tag!].to_set,
+    assert_equal [@user_two.signed_by_tag].to_set,
                  object_2.tags.reload.to_set
     assert_equal [@user_one.signed_by_tag, @user_two.signed_by_tag, tenant.signed_tag!].to_set,
                  object_1.message.thread.tags.signing_tags.reload.to_set
 
     object_1.add_signature_requested_from_user(@user_two)
-    assert_equal [@user_one.signed_by_tag, @user_two.signature_requested_from_tag, tenant.signature_requested_tag!].to_set,
+    assert_equal [@user_one.signed_by_tag, @user_two.signature_requested_from_tag].to_set,
                  object_1.tags.reload.to_set
-    assert_equal [@user_two.signed_by_tag, tenant.signed_tag!].to_set,
+    assert_equal [@user_two.signed_by_tag].to_set,
                  object_2.tags.reload.to_set
     assert_equal [@user_one.signed_by_tag, @user_two.signature_requested_from_tag, tenant.signature_requested_tag!].to_set,
                  object_1.message.thread.tags.signing_tags.reload.to_set
 
     object_1.remove_signature_requested_from_user(@user_two)
-    assert_equal [@user_one.signed_by_tag, tenant.signed_tag!].to_set,
+    assert_equal [@user_one.signed_by_tag].to_set,
                  object_1.tags.reload.to_set
-    assert_equal [@user_two.signed_by_tag, tenant.signed_tag!].to_set,
+    assert_equal [@user_two.signed_by_tag].to_set,
                  object_2.tags.reload.to_set
     assert_equal [@user_one.signed_by_tag, @user_two.signed_by_tag, tenant.signed_tag!].to_set,
                  object_1.message.thread.tags.signing_tags.reload.to_set
