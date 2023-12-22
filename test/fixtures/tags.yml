@@ -116,6 +116,14 @@ solver_everything:
   visible: false
   tenant: solver
 
+solver_archived:
+  name: Archivovane
+  type: ArchivedTag
+  visible: true
+  tenant: solver
+  icon: archive-box
+  color: green
+
 solver_signed_externally:
   name: SignedExternally
   type: SignedExternallyTag
