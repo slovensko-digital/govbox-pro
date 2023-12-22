@@ -54,62 +54,24 @@ class MessageObject < ApplicationRecord
   end
 
   def mark_signed_by_user(user)
-    # object, user_signed_tag
     assign_tag(user.signed_by_tag)
     unassign_tag(user.signature_requested_from_tag)
 
-    # thread, user_signed_tag
-    unless has_tag_within_thread?(user.signature_requested_from_tag)
-      assign_tag_to_thread(user.signed_by_tag)
-      unassign_tag_from_thread(user.signature_requested_from_tag)
-    end
-
-    # thread, signed_tag
-    unless has_tag_within_thread?({ type: SignatureRequestedFromTag.to_s })
-      assign_tag_to_thread(user.tenant.signed_tag)
-      unassign_tag_from_thread(user.tenant.signature_requested_tag)
-    end
+    thread.mark_signed_by_user(user)
   end
 
   def add_signature_requested_from_user(user)
-    # done, if already signed by user
     return if has_tag?(user.signed_by_tag)
 
-    # object, user_signature_requested_tag
     assign_tag(user.signature_requested_from_tag)
-
-    # thread, user_signature_requested_tag
-    assign_tag_to_thread(user.signature_requested_from_tag)
-    unassign_tag_from_thread(user.signed_by_tag)
-
-    # thread, signature_requested_tag
-    assign_tag_to_thread(user.tenant.signature_requested_tag)
-    unassign_tag_from_thread(user.tenant.signed_tag)
+    thread.add_signature_requested_from_user(user)
   end
 
   def remove_signature_requested_from_user(user)
     return unless has_tag?(user.signature_requested_from_tag)
 
-    # object, user_signature_requested_tag
     unassign_tag(user.signature_requested_from_tag)
-
-    # thread, user_signature_requested_tag
-    unless has_tag_within_thread?(user.signature_requested_from_tag)
-      unassign_tag_from_thread(user.signature_requested_from_tag)
-
-      if has_tag_within_thread?(user.signed_by_tag)
-        assign_tag_to_thread(user.signed_by_tag)
-      end
-    end
-
-    # thread, signature_requested_tag
-    unless has_tag_within_thread?({ type: SignatureRequestedFromTag.to_s })
-      unassign_tag_from_thread(user.tenant.signature_requested_tag)
-
-      if has_tag_within_thread?({ type: SignedByTag.to_s })
-        assign_tag_to_thread(user.tenant.signed_tag)
-      end
-    end
+    thread.remove_signature_requested_from_user(user)
   end
 
   def content
@@ -147,13 +109,6 @@ class MessageObject < ApplicationRecord
     message_objects_tags.joins(:tag).where(tag: tag).exists?
   end
 
-  def has_tag_within_thread?(tag)
-    MessageObjectsTag.
-      joins(:tag, message_object: :message).
-      where(tag: tag, messages: { message_thread_id: message.message_thread_id }).
-      exists?
-  end
-
   def assign_tag(tag)
     message_objects_tags.find_or_create_by!(tag: tag)
   end
@@ -162,11 +117,7 @@ class MessageObject < ApplicationRecord
     message_objects_tags.find_by(tag: tag)&.destroy
   end
 
-  def assign_tag_to_thread(tag)
-    message.thread.message_threads_tags.find_or_create_by!(tag: tag)
-  end
-
-  def unassign_tag_from_thread(tag)
-    message.thread.message_threads_tags.find_by(tag: tag)&.destroy
+  def thread
+    message.thread
   end
 end
