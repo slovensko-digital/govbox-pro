@@ -2,12 +2,11 @@
 #
 # Table name: tenants
 #
-#  id                   :bigint           not null, primary key
-#  api_token_public_key :string
-#  feature_flags        :string           default([]), is an Array
-#  name                 :string           not null
-#  created_at           :datetime         not null
-#  updated_at           :datetime         not null
+#  id            :bigint           not null, primary key
+#  feature_flags :string           default([]), is an Array
+#  name          :string           not null
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
 #
 class Tenant < ApplicationRecord
   has_many :users, dependent: :destroy
@@ -17,6 +16,8 @@ class Tenant < ApplicationRecord
   has_one :admin_group
   has_many :groups, dependent: :destroy
   has_many :custom_groups
+
+  has_many :tenant_signing_options, dependent: :destroy
 
   has_one :draft_tag
   has_one :everything_tag
@@ -91,5 +92,14 @@ class Tenant < ApplicationRecord
     create_signed_tag!(name: "Podpísané", visible: true, color: "green", icon: "fingerprint")
 
     make_admins_see_everything!
+
+    create_default_signing_options!
+  end
+
+  def create_default_signing_options!
+    autogram_siging_settings = AutogramSigningSetting.create!
+    tenant_signing_options.create!(
+      signing_setting: autogram_siging_settings
+    )
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_12_21_134539) do
+ActiveRecord::Schema[7.1].define(version: 2023_12_22_111236) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -96,6 +96,11 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_21_134539) do
     t.index ["tenant_id", "actor_id", "happened_at"], name: "index_audit_logs_on_tenant_id_and_actor_id_and_happened_at"
     t.index ["tenant_id", "message_thread_id", "happened_at"], name: "index_audit_logs_on_tenant_id_thread_id_happened_at"
     t.index ["tenant_id"], name: "index_audit_logs_on_tenant_id"
+  end
+
+  create_table "autogram_signing_settings", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "automation_actions", force: :cascade do |t|
@@ -458,6 +463,13 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_21_134539) do
     t.index ["user_id"], name: "index_notifications_on_user_id"
   end
 
+  create_table "seal_signing_settings", force: :cascade do |t|
+    t.string "certificate_subject"
+    t.string "connection_sub"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "searchable_message_threads", force: :cascade do |t|
     t.integer "message_thread_id", null: false
     t.text "title", null: false
@@ -502,12 +514,21 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_21_134539) do
     t.index ["tenant_id"], name: "index_tags_on_tenant_id"
   end
 
+  create_table "tenant_signing_options", force: :cascade do |t|
+    t.bigint "tenant_id", null: false
+    t.string "signing_setting_type"
+    t.bigint "signing_setting_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["signing_setting_type", "signing_setting_id"], name: "index_tenant_signing_options_on_signing_setting"
+    t.index ["tenant_id"], name: "index_tenant_signing_options_on_tenant_id"
+  end
+
   create_table "tenants", force: :cascade do |t|
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "feature_flags", default: [], array: true
-    t.string "api_token_public_key"
   end
 
   create_table "upvs_form_template_related_documents", force: :cascade do |t|
@@ -527,14 +548,6 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_21_134539) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["identifier", "version"], name: "index_form_templates_on_identifier_and_version", unique: true
-  end
-
-  create_table "upvs_signing_certificates", force: :cascade do |t|
-    t.string "subject", null: false
-    t.bigint "box_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["box_id"], name: "index_upvs_signing_certificates_on_box_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -602,6 +615,5 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_21_134539) do
   add_foreign_key "tags", "tenants"
   add_foreign_key "tags", "users", column: "owner_id"
   add_foreign_key "upvs_form_template_related_documents", "upvs_form_templates"
-  add_foreign_key "upvs_signing_certificates", "boxes"
   add_foreign_key "users", "tenants"
 end
