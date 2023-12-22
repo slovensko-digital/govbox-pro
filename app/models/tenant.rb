@@ -17,7 +17,7 @@ class Tenant < ApplicationRecord
   has_many :groups, dependent: :destroy
   has_many :custom_groups
 
-  has_many :tenant_signing_options, dependent: :destroy
+  has_many :signing_options, dependent: :destroy
 
   has_one :draft_tag
   has_one :everything_tag
@@ -97,9 +97,8 @@ class Tenant < ApplicationRecord
   end
 
   def create_default_signing_options!
-    autogram_signing = AutogramSigningOption.create!
-    tenant_signing_options.create!(
-      signing_option: autogram_signing
+    signing_options.create!(
+      type: 'AutogramSigningOption',
     )
   end
 end

@@ -476,10 +476,12 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_22_111755) do
   end
 
   create_table "signing_options", force: :cascade do |t|
+    t.bigint "tenant_id", null: false
     t.string "type"
     t.jsonb "settings"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["tenant_id"], name: "index_signing_options_on_tenant_id"
   end
 
   create_table "tag_groups", force: :cascade do |t|
@@ -507,15 +509,6 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_22_111755) do
     t.index ["owner_id"], name: "index_tags_on_owner_id"
     t.index ["tenant_id", "type"], name: "signings_tags", unique: true, where: "((type)::text = ANY ((ARRAY['SignatureRequestedTag'::character varying, 'SignedTag'::character varying])::text[]))"
     t.index ["tenant_id"], name: "index_tags_on_tenant_id"
-  end
-
-  create_table "tenant_signing_options", force: :cascade do |t|
-    t.bigint "tenant_id", null: false
-    t.bigint "signing_option_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["signing_option_id"], name: "index_tenant_signing_options_on_signing_option_id"
-    t.index ["tenant_id"], name: "index_tenant_signing_options_on_tenant_id"
   end
 
   create_table "tenants", force: :cascade do |t|

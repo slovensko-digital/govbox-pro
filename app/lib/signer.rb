@@ -1,7 +1,5 @@
 module Signer
   def self.sign(message_object, signing_option)
-    raise "Invalid signing option" unless signing_option.is_a?(SealSigningOption)
-
     cep_api = UpvsEnvironment.upvs_api(message_object.message.thread.box).cep
     cep_api_connection = ApiConnection.find(signing_option.settings["api_connection_id"])
 

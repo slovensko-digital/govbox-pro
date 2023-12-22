@@ -13,6 +13,10 @@
 class ApiConnection < ApplicationRecord
   has_many :boxes
 
+  def upvs_api(box)
+    raise NotImplementedError
+  end
+
   def box_obo(box)
     raise NotImplementedError
   end

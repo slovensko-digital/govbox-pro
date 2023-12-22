@@ -7,6 +7,7 @@
 #  type       :string
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
+#  tenant_id  :bigint           not null
 #
 class AutogramSigningOption < SigningOption
 end

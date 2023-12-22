@@ -11,6 +11,10 @@
 #  updated_at            :datetime         not null
 #
 class Govbox::ApiConnection < ::ApiConnection
+  def upvs_api(box)
+    Upvs::GovboxApiClient.new.api(box)
+  end
+
   def box_obo(box)
     raise "OBO not allowed!" if invalid_obo?(box)
     obo

@@ -11,6 +11,10 @@
 #  updated_at            :datetime         not null
 #
 class SkApi::ApiConnectionWithOboSupport < ::ApiConnection
+  def upvs_api(box)
+    Upvs::SkApiClient.new.api(box: box)
+  end
+
   def box_obo(box)
     raise "OBO not allowed!" if box && invalid_obo?(box)
 

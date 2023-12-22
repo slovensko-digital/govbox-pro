@@ -5,8 +5,6 @@ module Upvs
     attr_reader :sub, :obo, :api_token_private_key, :url, :cep
 
     def initialize(url, box: nil, api_connection: nil, handler: Faraday)
-      raise "Box API connection is not of type SK API connection" unless box&.api_connection.is_a?(::SkApi::ApiConnectionWithOboSupport) || api_connection.is_a?(::SkApi::ApiConnectionWithOboSupport)
-
       @sub = api_connection&.sub || box&.api_connection&.sub
       @obo = api_connection&.box_obo(box) || box&.api_connection&.box_obo(box)
       @api_token_private_key = OpenSSL::PKey::RSA.new(api_connection&.api_token_private_key || box&.api_connection.api_token_private_key)
