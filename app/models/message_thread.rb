@@ -25,6 +25,7 @@ class MessageThread < ApplicationRecord
   has_many :tags, through: :message_threads_tags
   has_many :tag_users, through: :message_threads_tags
   has_many :merge_identifiers, class_name: 'MessageThreadMergeIdentifier', dependent: :destroy
+  has_many :objects, through: :messages
 
   validates :title, presence: true
 
@@ -166,10 +167,7 @@ class MessageThread < ApplicationRecord
   end
 
   def has_tag_in_message_objects?(tag)
-    MessageObjectsTag.
-      joins(:tag, message_object: :message).
-      where(tag: tag, messages: { message_thread_id: id }).
-      exists?
+    objects.joins(:tags).where(tags: tag).exists?
   end
 
   def assign_tag(tag)
