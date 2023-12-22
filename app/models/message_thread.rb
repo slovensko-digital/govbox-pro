@@ -40,7 +40,7 @@ class MessageThread < ApplicationRecord
   end
 
   def messages_visible_to_user(user)
-    messages.where(messages: { author_id: user.id }).or(messages.where(messages: { author_id: nil }))
+    messages.where(author_id: [nil, user.id])
   end
 
   def automation_rules_for_event(event)
@@ -48,7 +48,8 @@ class MessageThread < ApplicationRecord
   end
 
   def archived?
-    tags.find_by(type: ArchivedTag.to_s).present?
+    # TODO find a way how not to fire query every time this method is called
+    tags.exists?(type: ArchivedTag.to_s)
   end
 
   def archive(value)

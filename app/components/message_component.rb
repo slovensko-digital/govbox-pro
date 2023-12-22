@@ -3,6 +3,7 @@ class MessageComponent < ViewComponent::Base
 
   def initialize(message:, mode:)
     @message = message
+    @attachments = message.objects.reject(&:form?)
     @mode = mode
   end
 end
