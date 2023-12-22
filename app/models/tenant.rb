@@ -22,11 +22,11 @@ class Tenant < ApplicationRecord
   has_one :signature_requested_tag
   has_one :signed_tag
   has_one :signed_externally_tag
+  has_one :archived_tag
   has_many :tags, dependent: :destroy
   has_many :signature_requested_from_tags
   has_many :signed_by_tags
   has_many :simple_tags
-  has_one :archived_tag
 
   has_many :boxes, dependent: :destroy
   has_many :automation_rules, class_name: "Automation::Rule", dependent: :destroy
@@ -91,6 +91,7 @@ class Tenant < ApplicationRecord
 
     create_draft_tag!(name: "Rozpracované", visible: true)
     create_everything_tag!(name: "Všetky správy", visible: false)
+    create_archived_tag!(name: "Archivované", color: "green", icon: "archive-box", visible: true)
     create_signature_requested_tag!(name: "Na podpis", visible: true, color: "yellow", icon: "pencil")
     create_signed_tag!(name: "Podpísané", visible: true, color: "green", icon: "fingerprint")
     create_signed_externally_tag!(name: "Externe podpísané", visible: false, color: "purple", icon: "shield-check")
