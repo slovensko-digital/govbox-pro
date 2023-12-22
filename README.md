@@ -29,10 +29,16 @@ Komunitný vývoj prebieha na GitHube, detaily k rozbehaniu prostredia je môžn
 
 Ak sa chcete zapojiť, ozvi sa nám [na komunitnom Slack](https://slack.slovensko.digital/)-u.
 
+### Externé závislosti
+
+- Sťahovanie správ vyžaduje integráciu na slovensko.sk (ÚPVS) a napojenie cez komponent [slovensko.sk API](https://github.com/slovensko-digital/slovensko-sk-api) alebo  cez službu [GovBox API](https://ekosystem.slovensko.digital/sluzby/govbox-api).
+- Na podpisovanie sa využíva [Autogram](https://sluzby.slovensko.digital/autogram).
+- Dlhodobá archivácia vyžaduje komponent [govbox-pro-archiver](https://github.com/slovensko-digital/govbox-pro-archiver).
+
 ## Licencia
 
 Tento softvér je licencovaný pod [licenciou EUPL v1.2](LICENSE).
 
 V skratke to znamená, že tento softvér môžete voľne používať komerčne aj nekomerčne, môžete vytvárať vlastné verzie a to všetko za predpokladu, že prípadné vlastné zmeny a rozšírenia tiež zverejníte pod rovnakou licenciou a zachováte originálny copyright pôvodných autorov. Softvér sa poskytuje "ber ako je", bez záväzkov.
 
-Tento projekt je postavený výhradne na open-source softvéri, ktorý umožnuje jeho používanie tiež komerčne, aj nekomerčne.
+Tento projekt je postavený na open-source softvéri, ktorý umožnuje jeho používanie tiež komerčne, aj nekomerčne.
