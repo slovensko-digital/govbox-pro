@@ -18,7 +18,7 @@ class MessageDraftsSigningTest < ApplicationSystemTestCase
       click_link "Vyžiadať podpis"
     end
 
-    check "Hlavný dokument"
+    uncheck "Hlavný dokument"
     click_button "Vybrať podpisujúcich"
 
     click_button "Späť na výber dokumentov"

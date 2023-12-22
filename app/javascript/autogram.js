@@ -77,7 +77,6 @@ const prepareSingingRequestBody = (messageObjectData, batchId = null) => {
       signatureContainer = null
       break
     case 'application/xml':
-      payloadMimeType = "application/xml;base64"
       autoLoadEform = !messageObjectData.is_form
       break
     case 'application/x-eform-xml':
