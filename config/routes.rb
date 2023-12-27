@@ -161,6 +161,27 @@ Rails.application.routes.draw do
     delete :destroy, on: :collection
   end
 
+  namespace :api do
+    namespace :site_admin do
+      resources :tenants, only: [:create, :destroy] do
+        resources :boxes, only: :create
+        resources :api_connections, only: :create
+      end
+
+      namespace :stats do
+        resources :tenants, only: [] do
+          member do
+            get :users_count
+            get :messages_per_period
+            get :messages_count
+          end
+        end
+      end
+    end
+
+    resources :message_threads, only: [:show]
+    resources :messages, only: [:show]
+  end
 
   if UpvsEnvironment.sso_support?
     namespace :upvs do

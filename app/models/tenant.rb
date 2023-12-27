@@ -31,29 +31,38 @@ class Tenant < ApplicationRecord
   has_many :boxes, dependent: :destroy
   has_many :automation_rules, class_name: "Automation::Rule", dependent: :destroy
   has_many :filters
-
   has_many :filter_subscriptions
+  has_many :message_threads, through: :boxes
+  has_many :messages, through: :message_threads
 
   after_create :create_default_objects
 
   validates_presence_of :name
 
-  AVAILABLE_FEATURE_FLAGS = [:audit_log, :archive]
+  AVAILABLE_FEATURE_FLAGS = [:audit_log, :archive, :api]
 
   def draft_tag!
-    draft_tag || raise(ActiveRecord::RecordNotFound.new("`DraftTag` not found in tenant: #{self.id}"))
+    draft_tag || raise(ActiveRecord::RecordNotFound, "`DraftTag` not found in tenant: #{id}")
   end
 
   def signature_requested_tag!
-    signature_requested_tag || raise(ActiveRecord::RecordNotFound.new("`SignatureRequestedTag` not found in tenant: #{self.id}"))
+    signature_requested_tag || raise(ActiveRecord::RecordNotFound, "`SignatureRequestedTag` not found in tenant: #{id}")
   end
 
   def signed_tag!
-    signed_tag || raise(ActiveRecord::RecordNotFound.new("`SignedTag` not found in tenant: #{self.id}"))
+    signed_tag || raise(ActiveRecord::RecordNotFound, "`SignedTag` not found in tenant: #{self.id}")
   end
 
   def signed_externally_tag!
-    signed_externally_tag || raise(ActiveRecord::RecordNotFound.new("`SignedExternallyTag` not found in tenant: #{self.id}"))
+    signed_externally_tag || raise(ActiveRecord::RecordNotFound, "`SignedExternallyTag` not found in tenant: #{self.id}")
+  end
+
+  def signature_requested_tag!
+    signature_requested_tag || raise(ActiveRecord::RecordNotFound, "`SignatureRequestedTag` not found in tenant: #{id}")
+  end
+
+  def signed_tag!
+    signed_tag || raise(ActiveRecord::RecordNotFound, "`SignatureRequestedTag` not found in tenant: #{id}")
   end
 
   def feature_enabled?(feature)
@@ -80,6 +89,13 @@ class Tenant < ApplicationRecord
 
   def make_admins_see_everything!
     everything_tag.groups << admin_group
+  end
+
+  def self.create_with_admin!(tenant_params, admin_params)
+    tenant = create!(name: tenant_params[:name])
+    admin = tenant.users.create!(admin_params)
+    tenant.admin_group.users << admin
+    tenant
   end
 
   private
