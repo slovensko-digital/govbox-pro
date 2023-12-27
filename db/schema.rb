@@ -20,6 +20,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_21_204646) do
   # Note that some types may not work with other database engines. Be careful if changing database.
   create_enum "color", ["slate", "gray", "zinc", "neutral", "stone", "red", "orange", "amber", "yellow", "lime", "green", "emerald", "teal", "cyan", "sky", "blue", "indigo", "violet", "purple", "fuchsia", "pink", "rose"]
   create_enum "group_type", ["ALL", "USER", "CUSTOM", "ADMIN"]
+  create_enum "icon", ["key", "fingerprint", "pencil", "check"]
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -56,6 +57,19 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_21_204646) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "type"
+  end
+
+  create_table "api_requests", force: :cascade do |t|
+    t.string "endpoint_path", null: false
+    t.string "endpoint_method", null: false
+    t.integer "response_status", null: false
+    t.string "authenticity_token", null: false
+    t.inet "ip_address"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_at"], name: "index_api_requests_on_created_at"
+    t.index ["endpoint_path", "created_at"], name: "index_api_requests_on_endpoint_path_and_created_at"
+    t.index ["ip_address", "created_at"], name: "index_api_requests_on_ip_address_and_created_at"
   end
 
   create_table "archived_object_versions", force: :cascade do |t|
@@ -507,6 +521,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_21_204646) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "feature_flags", default: [], array: true
+    t.string "api_token_public_key"
   end
 
   create_table "upvs_form_template_related_documents", force: :cascade do |t|
@@ -534,9 +549,9 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_21_204646) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "saml_identifier"
     t.datetime "notifications_last_opened_at"
     t.datetime "notifications_reset_at"
-    t.string "saml_identifier"
     t.index "tenant_id, lower((email)::text)", name: "index_users_on_tenant_id_and_lowercase_email", unique: true
   end
 
