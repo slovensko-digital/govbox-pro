@@ -521,6 +521,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_21_204646) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "feature_flags", default: [], array: true
+    t.string "api_token_public_key"
   end
 
   create_table "upvs_form_template_related_documents", force: :cascade do |t|
@@ -548,9 +549,9 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_21_204646) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "saml_identifier"
     t.datetime "notifications_last_opened_at"
     t.datetime "notifications_reset_at"
-    t.string "saml_identifier"
     t.index "tenant_id, lower((email)::text)", name: "index_users_on_tenant_id_and_lowercase_email", unique: true
   end
 
