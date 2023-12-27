@@ -6,3 +6,4 @@ json.container_xmlns @message_object_container_xmlns if @message_object_containe
 json.schema Base64.strict_encode64(@message_object_schema) if @message_object_schema
 json.transformation Base64.strict_encode64(@message_object_transformation) if @message_object_transformation
 json.content Base64.strict_encode64(@message_object.content)
+json.is_form @message_object.form?

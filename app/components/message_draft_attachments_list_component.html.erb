@@ -7,7 +7,7 @@
             <%= render Common::IconComponent.new("paper_clip", classes: "w-6 h-6 text-gray-400") %>
             <p class="flex-grow-0 flex-shrink-0 text-base text-left text-gray-900">
               <% if @attachments.present? %>
-                Správa obsahuje <b><%= t("message_object", count: @attachments.length, locale: :sk) %></b>
+                Správa obsahuje <b><%= t("message_object", count: @attachments.length) %></b>
               <% elsif @message.not_yet_submitted? %>
                 <b>Pridať prílohu</b>
               <% end %>

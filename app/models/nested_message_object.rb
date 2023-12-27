@@ -20,6 +20,7 @@ class NestedMessageObject < ApplicationRecord
     return unless message_object.asice?
 
     nested_message_objects = SignedAttachment::Asice.extract_documents_from_content(message_object.content)
+    message_object.nested_message_objects.destroy_all
 
     nested_message_objects.each do |nested_message_object|
       message_object.nested_message_objects.create!(

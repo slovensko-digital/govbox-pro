@@ -223,7 +223,7 @@ module RelationChanges
         end
 
         @diff.to_remove.each do |user|
-          message_objects.each { |message_object| message_object.remove_signature_requested_from_tag(user.signature_requested_from_tag) }
+          message_objects.each { |message_object| message_object.remove_signature_requested_from_user(user) }
         end
       end
     end

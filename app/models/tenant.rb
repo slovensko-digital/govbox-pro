@@ -2,12 +2,11 @@
 #
 # Table name: tenants
 #
-#  id                   :bigint           not null, primary key
-#  api_token_public_key :string
-#  feature_flags        :string           default([]), is an Array
-#  name                 :string           not null
-#  created_at           :datetime         not null
-#  updated_at           :datetime         not null
+#  id            :bigint           not null, primary key
+#  feature_flags :string           default([]), is an Array
+#  name          :string           not null
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
 #
 class Tenant < ApplicationRecord
   has_many :users, dependent: :destroy
@@ -22,11 +21,12 @@ class Tenant < ApplicationRecord
   has_one :everything_tag
   has_one :signature_requested_tag
   has_one :signed_tag
+  has_one :signed_externally_tag
+  has_one :archived_tag
   has_many :tags, dependent: :destroy
   has_many :signature_requested_from_tags
   has_many :signed_by_tags
   has_many :simple_tags
-  has_one :archived_tag
 
   has_many :boxes, dependent: :destroy
   has_many :automation_rules, class_name: "Automation::Rule", dependent: :destroy
@@ -50,7 +50,11 @@ class Tenant < ApplicationRecord
   end
 
   def signed_tag!
-    signed_tag || raise(ActiveRecord::RecordNotFound, "`SignatureRequestedTag` not found in tenant: #{id}")
+    signed_tag || raise(ActiveRecord::RecordNotFound, "`SignedTag` not found in tenant: #{self.id}")
+  end
+
+  def signed_externally_tag!
+    signed_externally_tag || raise(ActiveRecord::RecordNotFound, "`SignedExternallyTag` not found in tenant: #{self.id}")
   end
 
   def signature_requested_tag!
@@ -103,8 +107,10 @@ class Tenant < ApplicationRecord
 
     create_draft_tag!(name: "Rozpracované", visible: true)
     create_everything_tag!(name: "Všetky správy", visible: false)
+    create_archived_tag!(name: "Archivované", color: "green", icon: "archive-box", visible: true)
     create_signature_requested_tag!(name: "Na podpis", visible: true, color: "yellow", icon: "pencil")
     create_signed_tag!(name: "Podpísané", visible: true, color: "green", icon: "fingerprint")
+    create_signed_externally_tag!(name: "Externe podpísané", visible: false, color: "purple", icon: "shield-check")
 
     make_admins_see_everything!
   end

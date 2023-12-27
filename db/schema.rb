@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_12_21_204646) do
+ActiveRecord::Schema[7.1].define(version: 2023_12_22_155111) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -507,12 +507,12 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_21_204646) do
     t.bigint "owner_id"
     t.string "external_name"
     t.string "type", null: false
-    t.enum "color", enum_type: "color"
-    t.integer "tag_groups_count", default: 0, null: false
     t.string "icon"
+    t.integer "tag_groups_count", default: 0, null: false
+    t.enum "color", enum_type: "color"
     t.index "tenant_id, type, lower((name)::text)", name: "index_tags_on_tenant_id_and_type_and_lowercase_name", unique: true
     t.index ["owner_id"], name: "index_tags_on_owner_id"
-    t.index ["tenant_id", "type"], name: "signings_tags", unique: true, where: "((type)::text = ANY ((ARRAY['SignatureRequestedTag'::character varying, 'SignedTag'::character varying])::text[]))"
+    t.index ["tenant_id", "type"], name: "signings_tags", unique: true, where: "((type)::text = ANY (ARRAY[('SignatureRequestedTag'::character varying)::text, ('SignedTag'::character varying)::text]))"
     t.index ["tenant_id"], name: "index_tags_on_tenant_id"
   end
 

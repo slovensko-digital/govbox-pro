@@ -40,20 +40,20 @@ export const signMessageObject = async (messageObjectPath, batchId = null, authe
   const signedData = await makeSignRequest(prepareSingingRequestBody(signingData, batchId))
   const signedFile = signedFileData(signingData)
 
-  return await updateObject(messageObjectPath, signedFile.name, signedFile.mineType, signedData.content, authenticityToken)
+  return await markMessageObjectAsSigned(messageObjectPath, signedFile.name, signedFile.mineType, signedData.content, authenticityToken)
 }
 
 const signedFileName = (fileName) => {
-  return fileName.substring(0, fileName.lastIndexOf('.')).concat(".asice") || fileName;
+  return fileName.substring(0, fileName.lastIndexOf('.')).concat(".asice") || fileName
 }
 
 const signedFileData = (messageObjectData) => {
-  let name = signedFileName(messageObjectData.file_name);
-  let mineType = "application/vnd.etsi.asic-e+zip";
+  let name = signedFileName(messageObjectData.file_name)
+  let mineType = "application/vnd.etsi.asic-e+zip"
 
   if (messageObjectData.mime_type === "application/pdf") {
-    name = messageObjectData.file_name;
-    mineType = messageObjectData.mime_type;
+    name = messageObjectData.file_name
+    mineType = messageObjectData.mime_type
   }
 
   return {
@@ -64,32 +64,27 @@ const signedFileData = (messageObjectData) => {
 
 const prepareSingingRequestBody = (messageObjectData, batchId = null) => {
   if (!messageObjectData) {
-    return;
+    return
   }
-  let payloadMimeType = `${messageObjectData.mime_type};base64`;
-  let signatureLevel = "XAdES_BASELINE_B";
-  let signatureContainer = "ASiC_E";
+  let payloadMimeType = `${messageObjectData.mime_type};base64`
+  let signatureLevel = "XAdES_BASELINE_B"
+  let signatureContainer = "ASiC_E"
+  let autoLoadEform = false
 
   switch (messageObjectData.mime_type) {
     case "application/pdf":
-      signatureLevel = "PAdES_BASELINE_B";
-      signatureContainer = null;
-      break;
-    // TODO check what in this case
-    // case 'application/xml':
-    //   break;
+      signatureLevel = "PAdES_BASELINE_B"
+      signatureContainer = null
+      break
+    case 'application/xml':
     case 'application/x-eform-xml':
+      autoLoadEform = true
       payloadMimeType = "application/xml;base64"
-      break;
+      break
     case 'application/msword':
     case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
       payloadMimeType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64"
-      break;
-    case 'image/jpeg':
-    case 'image/tiff':
-    case 'image/png':
-      signatureLevel = "CAdES_BASELINE_B";
-      break;
+      break
   }
 
   return {
@@ -104,13 +99,14 @@ const prepareSingingRequestBody = (messageObjectData, batchId = null) => {
       identifier: messageObjectData.identifier,
       schema: messageObjectData.schema,
       containerXmlns: messageObjectData.container_xmlns,
-      transformation: messageObjectData.transformation
+      transformation: messageObjectData.transformation,
+      autoLoadEform: autoLoadEform,
     },
     payloadMimeType: payloadMimeType
   }
 }
 
-const updateObject = async (messageObjectPath, signedFileName, signedFileMimeType, signedContent, authenticityToken) => {
+const markMessageObjectAsSigned = async (messageObjectPath, signedFileName, signedFileMimeType, signedContent, authenticityToken) => {
   return await patch(messageObjectPath, {
     body: JSON.stringify({
       authenticity_token: authenticityToken,

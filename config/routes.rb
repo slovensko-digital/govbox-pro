@@ -128,14 +128,14 @@ Rails.application.routes.draw do
         end
       end
 
-      resource :signature_requests, only: [:update] do
+      resource :signature_requests, only: [:edit, :update] do
         collection do
           post :edit
           post :prepare
         end
       end
 
-      resource :signing, only: [:update] do
+      resource :signing, only: [:new, :update] do
         collection do
           post :new
         end
