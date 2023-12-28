@@ -72,7 +72,6 @@ end
 
 group :test do
   gem 'selenium-webdriver'
-  gem 'webdrivers'
   gem 'capybara'
   gem 'capybara-screenshot'
   gem 'webmock'
