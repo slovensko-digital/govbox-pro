@@ -52,6 +52,6 @@ class Admin::BoxesController < ApplicationController
   end
 
   def box_params
-    params.require(:box).permit(:api_connection_id, :name, :uri, :short_name, :color, settings: {})
+    params.require(:box).permit(:api_connection_id, :name, :uri, :short_name, :color, :settings_obo)
   end
 end
