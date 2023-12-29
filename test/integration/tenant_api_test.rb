@@ -41,7 +41,7 @@ class TenantApiTest < ActionDispatch::IntegrationTest
   end
 
   test "can add box with obo" do
-    tenant = tenants(:solver)
+    tenant = tenants(:google)
 
     post "/api/site_admin/tenants/#{tenant.id}/boxes",
          params: { box: { name: "Test box",
@@ -49,7 +49,7 @@ class TenantApiTest < ActionDispatch::IntegrationTest
                           short_name: "TST",
                           color: "blue",
                           api_connection_id: api_connections(:govbox_api_api_connection_with_obo_support).id,
-                          obo: SecureRandom.uuid },
+                          settings_obo: SecureRandom.uuid },
                    token: generate_api_token },
          as: :json
 

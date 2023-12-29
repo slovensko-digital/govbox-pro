@@ -29,6 +29,7 @@ class Tenant < ApplicationRecord
   has_many :simple_tags
 
   has_many :boxes, dependent: :destroy
+  has_many :api_connections, dependent: :destroy
   has_many :automation_rules, class_name: "Automation::Rule", dependent: :destroy
   has_many :filters
   has_many :filter_subscriptions
@@ -43,14 +44,6 @@ class Tenant < ApplicationRecord
 
   def draft_tag!
     draft_tag || raise(ActiveRecord::RecordNotFound, "`DraftTag` not found in tenant: #{id}")
-  end
-
-  def signature_requested_tag!
-    signature_requested_tag || raise(ActiveRecord::RecordNotFound, "`SignatureRequestedTag` not found in tenant: #{id}")
-  end
-
-  def signed_tag!
-    signed_tag || raise(ActiveRecord::RecordNotFound, "`SignedTag` not found in tenant: #{self.id}")
   end
 
   def signed_externally_tag!
