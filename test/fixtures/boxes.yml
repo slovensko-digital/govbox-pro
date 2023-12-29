@@ -23,17 +23,18 @@ solver_main:
 
 google_box_with_govbox_api_connection:
   name: Box with GovBox API connection
-  uri: MyString
+  uri: google_box_with_govbox_api_connection_uri
   tenant: google
   short_name: box2
   api_connection: govbox_api_api_connection2
 
 google_box_with_govbox_api_connection_with_obo_support:
   name: Box with GovBox API connection with OBO support
-  uri: MyString
+  uri: google_box_with_govbox_api_connection_with_obo_support_uri
   tenant: google
   short_name: box3
   api_connection: govbox_api_api_connection_with_obo_support
+  settings: {"obo": 1123-1123}
 
 google_box_with_sk_api_api_connection_with_obo_support:
   name: Box with SkAPi API connection with OBO support
