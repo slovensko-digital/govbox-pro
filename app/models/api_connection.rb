@@ -12,6 +12,7 @@
 #  tenant_id             :bigint
 #
 class ApiConnection < ApplicationRecord
+  belongs_to :tenant, optional: true
   has_many :boxes
 
   def box_obo(box)

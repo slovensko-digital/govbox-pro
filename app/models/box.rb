@@ -49,6 +49,8 @@ class Box < ApplicationRecord
   private
 
   def validate_box_with_api_connection
+    errors.add(:api_connection, :invalid) unless api_connection.tenant == tenant || api_connection.tenant == nil
+
     api_connection.validate_box(self)
   end
 end
