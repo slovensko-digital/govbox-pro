@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_12_22_111755) do
+ActiveRecord::Schema[7.1].define(version: 2023_12_22_155111) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -20,6 +20,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_22_111755) do
   # Note that some types may not work with other database engines. Be careful if changing database.
   create_enum "color", ["slate", "gray", "zinc", "neutral", "stone", "red", "orange", "amber", "yellow", "lime", "green", "emerald", "teal", "cyan", "sky", "blue", "indigo", "violet", "purple", "fuchsia", "pink", "rose"]
   create_enum "group_type", ["ALL", "USER", "CUSTOM", "ADMIN"]
+  create_enum "icon", ["key", "fingerprint", "pencil", "check"]
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -56,6 +57,19 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_22_111755) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "type"
+  end
+
+  create_table "api_requests", force: :cascade do |t|
+    t.string "endpoint_path", null: false
+    t.string "endpoint_method", null: false
+    t.integer "response_status", null: false
+    t.string "authenticity_token", null: false
+    t.inet "ip_address"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_at"], name: "index_api_requests_on_created_at"
+    t.index ["endpoint_path", "created_at"], name: "index_api_requests_on_endpoint_path_and_created_at"
+    t.index ["ip_address", "created_at"], name: "index_api_requests_on_ip_address_and_created_at"
   end
 
   create_table "archived_object_versions", force: :cascade do |t|
@@ -502,12 +516,12 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_22_111755) do
     t.bigint "owner_id"
     t.string "external_name"
     t.string "type", null: false
-    t.enum "color", enum_type: "color"
-    t.integer "tag_groups_count", default: 0, null: false
     t.string "icon"
+    t.integer "tag_groups_count", default: 0, null: false
+    t.enum "color", enum_type: "color"
     t.index "tenant_id, type, lower((name)::text)", name: "index_tags_on_tenant_id_and_type_and_lowercase_name", unique: true
     t.index ["owner_id"], name: "index_tags_on_owner_id"
-    t.index ["tenant_id", "type"], name: "signings_tags", unique: true, where: "((type)::text = ANY ((ARRAY['SignatureRequestedTag'::character varying, 'SignedTag'::character varying])::text[]))"
+    t.index ["tenant_id", "type"], name: "signings_tags", unique: true, where: "((type)::text = ANY (ARRAY[('SignatureRequestedTag'::character varying)::text, ('SignedTag'::character varying)::text]))"
     t.index ["tenant_id"], name: "index_tags_on_tenant_id"
   end
 
@@ -516,6 +530,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_22_111755) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "feature_flags", default: [], array: true
+    t.string "api_token_public_key"
   end
 
   create_table "upvs_form_template_related_documents", force: :cascade do |t|
@@ -543,9 +558,9 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_22_111755) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "saml_identifier"
     t.datetime "notifications_last_opened_at"
     t.datetime "notifications_reset_at"
-    t.string "saml_identifier"
     t.index "tenant_id, lower((email)::text)", name: "index_users_on_tenant_id_and_lowercase_email", unique: true
   end
 

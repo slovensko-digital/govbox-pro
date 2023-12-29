@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby '3.2.2'
+ruby '3.3.0'
 
 gem 'rails', '~> 7.1'
 gem 'rails-i18n'
@@ -72,7 +72,6 @@ end
 
 group :test do
   gem 'selenium-webdriver'
-  gem 'webdrivers'
   gem 'capybara'
   gem 'capybara-screenshot'
   gem 'webmock'

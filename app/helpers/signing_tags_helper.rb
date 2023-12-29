@@ -4,17 +4,19 @@ module SigningTagsHelper
   end
 
   def self.tag_type_to_order(tag)
-    case tag.class
+    case tag
       when SignatureRequestedTag
+        "1"
+      when SignedTag
         "1"
       when SignatureRequestedFromTag
         "2"
-      else
+      when SignedByTag
         "3"
+      when SignedExternallyTag
+        "5"
+      else
+        "4"
     end
-  end
-
-  def self.signed_externally
-    Tag.new(name: "Externe podpísané", icon: "shield-check", color: "purple")
   end
 end

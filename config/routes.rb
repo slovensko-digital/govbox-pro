@@ -128,14 +128,14 @@ Rails.application.routes.draw do
         end
       end
 
-      resource :signature_requests, only: [:update] do
+      resource :signature_requests, only: [:edit, :update] do
         collection do
           post :edit
           post :prepare
         end
       end
 
-      resource :signing, only: [:update] do
+      resource :signing, only: [:new, :update] do
         collection do
           post :new
         end
@@ -161,6 +161,27 @@ Rails.application.routes.draw do
     delete :destroy, on: :collection
   end
 
+  namespace :api do
+    namespace :site_admin do
+      resources :tenants, only: [:create, :destroy] do
+        resources :boxes, only: :create
+        resources :api_connections, only: :create
+      end
+
+      namespace :stats do
+        resources :tenants, only: [] do
+          member do
+            get :users_count
+            get :messages_per_period
+            get :messages_count
+          end
+        end
+      end
+    end
+
+    resources :message_threads, only: [:show]
+    resources :messages, only: [:show]
+  end
 
   if UpvsEnvironment.sso_support?
     namespace :upvs do

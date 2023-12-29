@@ -32,6 +32,7 @@ class Drafts::LoadContentJob < ApplicationJob
       next if file_name == '.' or file_name == '..'
 
       is_form = form?(message_draft, file_name)
+      tags = signed ? [message_draft.thread.box.tenant.signed_externally_tag!] : []
 
       message_draft_object = MessageObject.create(
         name: file_name,
@@ -40,7 +41,8 @@ class Drafts::LoadContentJob < ApplicationJob
         is_signed: signed,
         to_be_signed: to_be_signed,
         message: message_draft,
-        visualizable: is_form ? false : nil
+        visualizable: is_form ? false : nil,
+        tags: tags
       )
 
       MessageObjectDatum.create(

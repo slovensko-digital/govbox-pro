@@ -19,3 +19,7 @@ ssd_basic_all:
 ssd_admin_admin:
   user: admin
   group: ssd_admins
+
+solver_other_user_other_user:
+  user: solver_other
+  group: solver_other_user

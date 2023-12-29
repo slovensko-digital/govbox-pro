@@ -17,9 +17,14 @@
                       }
           ) do %>
         <div data-new-autogram-target="appNotRunning">
-          <p class="pb-4">Spustite aplikáciu `Autogram` a</p>
+          <%= link_to "Autogram", "autogram://go", class: "hidden", data: { "new-autogram-target": "openAutogramApp" } %>
+          <p class="pb-4">
+            Spustite aplikáciu
+            <%= link_to "Autogram", "https://sluzby.slovensko.digital/autogram/", target: "_blank", class: "underline font-bold hover:no-underline" %>
+            a skúste znova
+          </p>
           <div data-action="click->new-autogram#signAll" class="inline-flex w-full justify-center items-center px-3 py-2 rounded-md bg-blue-600 font-medium text-left text-sm text-white hover:cursor-pointer sm:w-auto">
-            Skúste znova
+            Skúsiť znova
           </div>
         </div>
 

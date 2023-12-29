@@ -18,10 +18,6 @@
             <%= render Common::TagComponent.new(tag) %>
           <% end %>
 
-          <% if @message_attachment.is_signed? %>
-            <%= render Common::TagComponent.new(SigningTagsHelper.signed_externally) %>
-          <% end %>
-
           <% if !@is_draft_view && @message_attachment.message.thread.archived? %>
             <%= render ArchivedObjectTagComponent.new(@message_attachment.message_object_datum.message_object.archived_object) %>
           <% end %>
