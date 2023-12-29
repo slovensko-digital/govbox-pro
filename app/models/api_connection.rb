@@ -9,6 +9,7 @@
 #  type                  :string
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
+#  tenant_id             :bigint
 #
 class ApiConnection < ApplicationRecord
   has_many :boxes
