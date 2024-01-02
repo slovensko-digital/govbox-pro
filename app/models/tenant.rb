@@ -31,6 +31,7 @@ class Tenant < ApplicationRecord
   has_many :simple_tags
 
   has_many :boxes, dependent: :destroy
+  has_many :api_connections, dependent: :destroy
   has_many :automation_rules, class_name: "Automation::Rule", dependent: :destroy
   has_many :filters
   has_many :filter_subscriptions

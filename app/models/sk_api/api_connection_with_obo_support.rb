@@ -9,8 +9,11 @@
 #  type                  :string
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
+#  tenant_id             :bigint
 #
 class SkApi::ApiConnectionWithOboSupport < ::ApiConnection
+  validates :tenant_id, presence: true
+
   def upvs_api(box)
     Upvs::SkApiClient.new.api(box: box)
   end

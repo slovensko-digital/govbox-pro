@@ -9,8 +9,10 @@
 #  type                  :string
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
+#  tenant_id             :bigint
 #
 class ApiConnection < ApplicationRecord
+  belongs_to :tenant, optional: true
   has_many :boxes
 
   def upvs_api(box)
