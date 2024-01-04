@@ -12,7 +12,7 @@ class MessageObjectsController < ApplicationController
 
   def update
     authorize @message_object
-    update_message_object(@message_object)
+    mark_message_object_as_signed(@message_object)
     last_thread_message_draft = @message.thread.messages_visible_to_user(Current.user).where(type: 'MessageDraft').includes(objects: :nested_message_objects, attachments: :nested_message_objects).order(delivered_at: :asc)&.last
     @is_last = @message == last_thread_message_draft
   end
@@ -25,6 +25,11 @@ class MessageObjectsController < ApplicationController
   def download
     authorize @message_object
     send_data @message_object.content, filename: MessageObjectHelper.displayable_name(@message_object), type: @message_object.mimetype, disposition: :download
+  end
+
+  def download_archived
+    authorize @message_object
+    send_data @message_object.archived_object.content, filename: MessageObjectHelper.displayable_name(@message_object), type: @message_object.mimetype, disposition: :download
   end
 
   def signing_data
@@ -62,22 +67,24 @@ class MessageObjectsController < ApplicationController
   end
 
   def message_object_params
-    params.permit(:name, :mimetype, :is_signed, :content)
+    params.permit(:name, :mimetype, :content)
   end
 
-  def update_message_object(message_object)
+  def mark_message_object_as_signed(message_object)
     permitted_params = message_object_params
 
     message_object.transaction do
       message_object.update!(
         name: permitted_params[:name],
         mimetype: permitted_params[:mimetype],
-        is_signed: permitted_params[:is_signed],
+        is_signed: true
       )
 
       message_object.message_object_datum.update!(
         blob: Base64.decode64(permitted_params[:content])
       )
+
+      message_object.mark_signed_by_user(Current.user)
     end
   end
 end

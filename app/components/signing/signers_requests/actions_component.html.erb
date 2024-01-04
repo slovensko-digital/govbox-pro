@@ -1,0 +1,13 @@
+<div class="flex sm:flex-row flex-col-reverse gap-4 justify-end sm:-mx-6 sm:px-6 -mx-4 p-4 -mb-4 bg-gray-50">
+  <% if @message_draft.objects.count > 1 %>
+    <%= submit_tag "Späť na výber dokumentov", formaction: message_draft_document_selections_path(@message_draft), formmethod: :post, data: { turbo_frame: "modal" }, class: "inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:cursor-pointer hover:bg-gray-50 sm:w-auto" %>
+  <% else %>
+    <button data-action="click-><%= remove_content_action %>" type="button" class="inline-flex w-full justify-center rounded-md px-3 py-2 text-sm font-semibold bg-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:w-auto">
+      Zavrieť
+    </button>
+  <% end %>
+
+  <% if @signers_changes.number_of_changes > 0 %>
+    <%= submit_tag "Uložiť zmeny (#{@signers_changes.number_of_changes})", formaction: message_draft_signature_requests_path(@message_draft), formmethod: :patch, data: { turbo_frame: "_top" }, class: "inline-flex w-full justify-center items-center px-3 py-2 rounded-md bg-blue-600 font-medium text-left text-sm text-white hover:cursor-pointer sm:w-auto" %>
+  <% end %>
+</div>

@@ -1,5 +1,5 @@
 class NestedMessageObjectsController < ApplicationController
-  before_action :set_nested_message_object, except: :create
+  before_action :set_nested_message_object
 
   def show
     authorize @nested_message_object

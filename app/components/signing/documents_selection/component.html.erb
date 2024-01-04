@@ -1,0 +1,37 @@
+<%= render Common::ModalComponent.new(max_size: "max-w-lg md:max-w-xl") do |modal| %>
+  <% modal.with_header do %>
+    Dokumenty na podpis
+  <% end %>
+  <% modal.with_modal_content do %>
+    <%= form_with url: message_draft_document_selections_path(@message_draft), method: :patch do %>
+      <%= hidden_field_tag "next_step", @next_step %>
+      <div class="flex flex-col items-start gap-4 mt-4">
+        <div class="w-full mb-4">
+          <div class="flex flex-col gap-2 overflow-y-scroll p-1">
+            <% if @form.present? %>
+              <%= render Signing::DocumentsSelection::ItemComponent.new(
+                message_object: @form,
+                name: "Hlavný dokument",
+                checked_ids: @message_object_ids,
+                icon: "envelope") %>
+            <% end %>
+
+            <% @attachments.each do |attachment| %>
+              <%= render Signing::DocumentsSelection::ItemComponent.new(
+                message_object: attachment,
+                checked_ids: @message_object_ids,
+                icon: "paper_clip") %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <%= tag.turbo_frame id: Signing::DocumentsSelection::Component::ACTIONS_FRAME do %>
+        <%= render Signing::DocumentsSelection::ActionsComponent.new(
+          message_draft: @message_draft,
+          message_object_ids: @message_object_ids,
+          next_step: @next_step) %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>

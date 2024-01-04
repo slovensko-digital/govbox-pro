@@ -17,6 +17,9 @@ class MessageObject < ApplicationRecord
   belongs_to :message, inverse_of: :objects
   has_one :message_object_datum, dependent: :destroy
   has_many :nested_message_objects, inverse_of: :message_object, dependent: :destroy
+  has_many :message_objects_tags, dependent: :destroy
+  has_many :tags, through: :message_objects_tags
+  has_one :archived_object, dependent: :destroy
 
   scope :unsigned, -> { where(is_signed: false) }
   scope :to_be_signed, -> { where(to_be_signed: true) }
@@ -31,12 +34,16 @@ class MessageObject < ApplicationRecord
     objects.each do |raw_object|
       message_object_content = raw_object.read.force_encoding("UTF-8")
 
+      is_signed = Utils.is_signed?(entry_name: raw_object.original_filename, content: message_object_content)
+      tags = is_signed ? [message.thread.box.tenant.signed_externally_tag!] : []
+
       message_object = MessageObject.create!(
         message: message,
         name: raw_object.original_filename,
         mimetype: Utils.file_mime_type_by_name(entry_name: raw_object.original_filename),
-        is_signed: Utils.is_signed?(entry_name: raw_object.original_filename, content: message_object_content),
-        object_type: "ATTACHMENT"
+        is_signed: is_signed,
+        object_type: "ATTACHMENT",
+        tags: tags
       )
 
       MessageObjectDatum.create!(
@@ -46,17 +53,33 @@ class MessageObject < ApplicationRecord
     end
   end
 
+  def mark_signed_by_user(user)
+    assign_tag(user.signed_by_tag)
+    unassign_tag(user.signature_requested_from_tag)
+
+    thread.mark_signed_by_user(user)
+  end
+
+  def add_signature_requested_from_user(user)
+    return if has_tag?(user.signed_by_tag)
+
+    assign_tag(user.signature_requested_from_tag)
+    thread.add_signature_requested_from_user(user)
+  end
+
+  def remove_signature_requested_from_user(user)
+    return unless has_tag?(user.signature_requested_from_tag)
+
+    unassign_tag(user.signature_requested_from_tag)
+    thread.remove_signature_requested_from_user(user)
+  end
+
   def content
     message_object_datum&.blob
   end
 
   def form?
     object_type == "FORM"
-  end
-
-  def signable?
-    # TODO: vymazat druhu podmienku po povoleni viacnasobneho podpisovania
-    message.draft? && !is_signed
   end
 
   def asice?
@@ -68,9 +91,33 @@ class MessageObject < ApplicationRecord
     message.draft? && message.not_yet_submitted? && !form?
   end
 
+  def archived?
+    archived_object.present?
+  end
+
+  def downloadable_archived_object?
+    archived_object&.archived?
+  end
+
   private
 
   def allowed_mime_type?
     errors.add(:mime_type, "of #{name} object is disallowed, allowed_mime_types: #{Utils::EXTENSIONS_ALLOW_LIST.join(", ")}") unless mimetype
+  end
+
+  def has_tag?(tag)
+    message_objects_tags.joins(:tag).where(tag: tag).exists?
+  end
+
+  def assign_tag(tag)
+    message_objects_tags.find_or_create_by!(tag: tag)
+  end
+
+  def unassign_tag(tag)
+    message_objects_tags.find_by(tag: tag)&.destroy
+  end
+
+  def thread
+    message.thread
   end
 end

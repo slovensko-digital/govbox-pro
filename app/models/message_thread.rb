@@ -25,13 +25,13 @@ class MessageThread < ApplicationRecord
   has_many :tags, through: :message_threads_tags
   has_many :tag_users, through: :message_threads_tags
   has_many :merge_identifiers, class_name: 'MessageThreadMergeIdentifier', dependent: :destroy
+  has_many :objects, through: :messages
 
   validates :title, presence: true
 
   attr_accessor :search_highlight
 
   after_create_commit ->(thread) { thread.tags << thread.tenant.everything_tag }
-  after_create_commit ->(thread) { EventBus.publish(:message_thread_created, thread) }
   after_update_commit ->(thread) { EventBus.publish(:message_thread_changed, thread) }
 
   delegate :tenant, to: :box
@@ -41,16 +41,35 @@ class MessageThread < ApplicationRecord
   end
 
   def messages_visible_to_user(user)
-    messages.where(messages: { author_id: user.id }).or(messages.where(messages: { author_id: nil }))
+    messages.where(author_id: [nil, user.id])
   end
 
   def automation_rules_for_event(event)
     tenant.automation_rules.where(trigger_event: event)
   end
 
+  def archived?
+    # TODO find a way how not to fire query every time this method is called
+    tags.exists?(type: ArchivedTag.to_s)
+  end
+
+  def archive(value)
+    return unless value != archived?
+
+    if value
+      tags << tenant.tags.find_by(type: ArchivedTag.to_s)
+      Archivation::ArchiveMessageThreadJob.perform_later(self)
+      EventBus.publish(:message_thread_archive_on, self)
+    else
+      tags.delete(tags.find_by(type: ArchivedTag.to_s))
+      EventBus.publish(:message_thread_archive_off, self)
+    end
+  end
+
   def rename(params)
-    update(params)
+    result = update(params)
     EventBus.publish(:message_thread_renamed, self)
+    result
   end
 
   def mark_all_messages_read
@@ -95,5 +114,67 @@ class MessageThread < ApplicationRecord
     else
       target_thread.build_message_thread_note(note: message_thread_note.note)
     end
+  end
+
+  def mark_signed_by_user(user)
+    # user_signed_tag
+    unless has_tag_in_message_objects?(user.signature_requested_from_tag)
+      assign_tag(user.signed_by_tag)
+      unassign_tag(user.signature_requested_from_tag)
+    end
+
+    # signed_tag
+    unless has_tag_in_message_objects?({ type: SignatureRequestedFromTag.to_s })
+      assign_tag(user.tenant.signed_tag)
+      unassign_tag(user.tenant.signature_requested_tag)
+    end
+  end
+
+  def add_signature_requested_from_user(user)
+    # user_signature_requested_tag
+    assign_tag(user.signature_requested_from_tag)
+    unassign_tag(user.signed_by_tag)
+
+    # signature_requested_tag
+    assign_tag(user.tenant.signature_requested_tag)
+    unassign_tag(user.tenant.signed_tag)
+  end
+
+  def remove_signature_requested_from_user(user)
+    # user_signature_requested_tag
+    unless has_tag_in_message_objects?(user.signature_requested_from_tag)
+      unassign_tag(user.signature_requested_from_tag)
+
+      if has_tag_in_message_objects?(user.signed_by_tag)
+        assign_tag(user.signed_by_tag)
+      end
+    end
+
+    # signature_requested_tag
+    unless has_tag_in_message_objects?({ type: SignatureRequestedFromTag.to_s })
+      unassign_tag(user.tenant.signature_requested_tag)
+
+      if has_tag_in_message_objects?({ type: SignedByTag.to_s })
+        assign_tag(user.tenant.signed_tag)
+      end
+    end
+  end
+
+  private
+
+  def has_tag?(tag)
+    message_threads_tags.joins(:tag).where(tag: tag).exists?
+  end
+
+  def has_tag_in_message_objects?(tag)
+    objects.joins(:tags).where(tags: tag).exists?
+  end
+
+  def assign_tag(tag)
+    message_threads_tags.find_or_create_by!(tag: tag)
+  end
+
+  def unassign_tag(tag)
+    message_threads_tags.find_by(tag: tag)&.destroy
   end
 end

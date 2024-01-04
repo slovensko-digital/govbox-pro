@@ -115,7 +115,7 @@ class MessageThreadsTest < ApplicationSystemTestCase
     message_two = messages(:ssd_main_general_two)
     message_three = messages(:ssd_main_general_three)
 
-    draft_one = message_drafts(:ssd_main_general_draft_one)
+    draft_one = messages(:ssd_main_general_draft_one)
 
     within_thread_in_listing(thread_general) do
       click_link
@@ -171,13 +171,13 @@ class MessageThreadsTest < ApplicationSystemTestCase
     end
   end
 
-  test "user can go to a thread detail and reply to message" do
+  test "user can go to a thread detail and reply to last replyable message" do
     thread_issue = message_threads(:ssd_main_issue)
-    message_one = messages(:ssd_main_issue_one)
+    message_two = messages(:ssd_main_issue_two)
 
     visit message_thread_path thread_issue
-    within_message_in_thread message_one do
-      click_on("Odpovedať")
+    within_message_in_thread message_two do
+      click_button "Odpovedať"
     end
 
     within '#new_drafts' do

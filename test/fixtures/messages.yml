@@ -34,6 +34,36 @@ ssd_main_general_three:
   metadata: {}
   collapsed: true
 
+ssd_main_general_draft_one:
+  type: MessageDraft
+  uuid: <%= SecureRandom.uuid %>
+  title: Title is not shown
+  html_visualization: Reply to something
+  delivered_at: 2023-05-18 16:18:26
+  thread: ssd_main_general
+  metadata: {}
+  author: basic
+
+ssd_main_general_draft_two:
+  type: MessageDraft
+  uuid: <%= SecureRandom.uuid %>
+  title: MyStringDraft2
+  html_visualization: MyString
+  delivered_at: 2023-05-18 16:18:26
+  thread: ssd_main_general
+  metadata: {}
+  author: basic
+
+ssd_main_delivery_draft:
+  type: MessageDraft
+  uuid: <%= SecureRandom.uuid %>
+  title: MyStringDraft3
+  html_visualization: MyString
+  delivered_at: 2023-05-18 16:19:26
+  thread: ssd_main_delivery
+  metadata: {}
+  author: basic
+
 ssd_main_issue_one:
   uuid: <%= SecureRandom.uuid %>
   title: MyString3
@@ -41,6 +71,7 @@ ssd_main_issue_one:
   html_visualization: MyString
   delivered_at: 2023-05-18 16:19:26
   thread: ssd_main_issue
+  outbox: true
   metadata: {}
 
 ssd_main_issue_two:

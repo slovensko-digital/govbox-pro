@@ -1,13 +1,37 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
+ssd_main_general_one_attachment:
   message: ssd_main_general_one
   name: MyString
   mimetype: MyString
-  object_type: Attachment
+  object_type: ATTACHMENT
 
-two:
+ssd_main_general_two_from:
   message: ssd_main_general_two
   name: MyString
   mimetype: MyString
-  object_type: Form
+  object_type: FORM
+
+ssd_main_general_draft_one_from:
+  message: ssd_main_general_draft_one
+  name: MyString
+  mimetype: MyString
+  object_type: FORM
+
+ssd_main_general_draft_one_attachment:
+  message: ssd_main_general_draft_one
+  name: Attachment
+  mimetype: MyString
+  object_type: ATTACHMENT
+
+ssd_main_general_draft_two_from:
+  message: ssd_main_general_draft_two
+  name: MyString
+  mimetype: MyString
+  object_type: FORM
+
+ssd_main_delivery_draft_form:
+  message: ssd_main_delivery_draft
+  name: MyString
+  mimetype: MyString
+  object_type: FORM

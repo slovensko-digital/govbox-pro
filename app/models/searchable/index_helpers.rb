@@ -1,13 +1,18 @@
 module Searchable::IndexHelpers
   extend self
 
+  BODY_REGEXP = /<body[^>]*>(.*?)<\/body>/im
+
   def html_to_searchable_string(html)
     return html unless html
+
+    match = html.match(BODY_REGEXP)
+    body = match ? match[1] : html
 
     create_single_line_string(
       transliterate(
         remove_html_tags(
-          add_spaces_between_tags(html)
+          add_spaces_between_tags(body)
         )
       )
     )
@@ -36,6 +41,7 @@ module Searchable::IndexHelpers
 
   def transliterate(str)
     return str unless str
+
     str.tr("ÀÁÂÃÄÅàáâãäåĀāĂăĄąÇçĆćĈĉĊċČčÐðĎďĐđÈÉÊËèéêëĒēĔĕĖėĘęĚěĜĝĞğĠġĢģĤĥĦħÌÍÎÏìíîïĨĩĪīĬĭĮįİıĴĵĶķĸĹĺĻļĽľĿŀŁłÑñŃńŅņŇňŉŊŋÒÓÔÕÖØòóôõöøŌōŎŏŐőŔŕŖŗŘřŚśŜŝŞşŠšȘșſŢţŤťŦŧȚțÙÚÛÜùúûüŨũŪūŬŭŮůŰűŲųŴŵÝýÿŶŷŸŹźŻżŽž",
            "AAAAAAaaaaaaAaAaAaCcCcCcCcCcDdDdDdEEEEeeeeEeEeEeEeEeGgGgGgGgHhHhIIIIiiiiIiIiIiIiIiJjKkkLlLlLlLlLlNnNnNnNnnNnOOOOOOooooooOoOoOoRrRrRrSsSsSsSsSssTtTtTtTtUUUUuuuuUuUuUuUuUuUuWwYyyYyYZzZzZz")
   end

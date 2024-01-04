@@ -44,6 +44,12 @@ ssd_everything:
   visible: false
   tenant: ssd
 
+ssd_signed_externally:
+  name: SignedExternally
+  type: SignedExternallyTag
+  visible: false
+  tenant: ssd
+
 ssd_other:
   name: Other
   type: SimpleTag
@@ -73,12 +79,24 @@ ssd_signature_requested:
   type: SignatureRequestedTag
   visible: true
   tenant: ssd
+  icon: pencil
+  color: yellow
 
 ssd_signed:
   name: Podpisane
   type: SignedTag
   visible: true
   tenant: ssd
+  icon: fingerprint
+  color: green
+
+ssd_archived:
+  name: Archivovane
+  type: ArchivedTag
+  visible: true
+  tenant: ssd
+  icon: archive-box
+  color: green
 
 solver_special:
   name: Special
@@ -95,5 +113,19 @@ solver_drafts:
 solver_everything:
   name: Everything
   type: EverythingTag
+  visible: false
+  tenant: solver
+
+solver_archived:
+  name: Archivovane
+  type: ArchivedTag
+  visible: true
+  tenant: solver
+  icon: archive-box
+  color: green
+
+solver_signed_externally:
+  name: SignedExternally
+  type: SignedExternallyTag
   visible: false
   tenant: solver

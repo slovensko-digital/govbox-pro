@@ -10,6 +10,13 @@
           <p class="w-[100px] text-base text-left text-gray-900">Adresát:</p>
           <p class="text-base font-semibold text-left text-gray-900"><%= @message.recipient_name || "Neznámy" %></p>
         </div>
+        <% if @message.form.tags.present? %>
+          <div class="flex flex-wrap gap-1">
+            <% SigningTagsHelper.sort_tags(@message.form.tags).each do |tag| %>
+              <%= render Common::TagComponent.new(tag) %>
+            <% end %>
+          </div>
+        <% end %>
         <% unless @message.not_yet_submitted? %>
           <div class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-1.5 px-1.5 py-0.5 rounded-md bg-purple-50 border border-purple-300">
             <% if @message.being_submitted? %>
@@ -61,22 +68,5 @@
           )" %>
       </div>
     <% end %>
-
-    <div class="gap-2 p-2 border-t-0 border-r-0 border-b-0 border-l-0 border-gray-200">
-      <% if @message.not_yet_submitted? && @message.form&.signable? %>
-        <%= content_tag(:div,
-                        {
-                          "data-controller": "autogram",
-                          "data-autogram-object-id": @message.form.id,
-                          "data-autogram-message-id": @message.id,
-                          "data-autogram-object-path": message_message_object_path(@message.id, @message.form.id),
-                          "data-autogram-authenticity-token": form_authenticity_token
-                        }) do %>
-          <button data-action="click->autogram#signSingleFile" class="flex justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3.5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
-            Podpísať
-          </button>
-        <% end %>
-      <% end %>
-    </div>
   </div>
 </div>

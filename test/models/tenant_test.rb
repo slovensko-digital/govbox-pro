@@ -9,8 +9,10 @@ class TenantTest < ActiveSupport::TestCase
     assert tenant.admin_group
     assert tenant.draft_tag
     assert tenant.everything_tag
+    assert tenant.archived_tag
     assert tenant.signature_requested_tag
     assert tenant.signed_tag
+    assert tenant.signed_externally_tag
     assert_equal tenant.everything_tag.groups, [tenant.admin_group]
   end
 end

@@ -39,3 +39,8 @@ solver_admin:
   name: admins
   type: AdminGroup
   tenant: solver
+
+solver_other_user:
+  name: Other user
+  type: UserGroup
+  tenant: solver

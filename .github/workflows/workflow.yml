@@ -2,7 +2,7 @@ name: Push CI
 
 on:
   push:
-    branches: '**'
+  pull_request:
 
 jobs:
   brakeman:
@@ -44,11 +44,12 @@ jobs:
       - run: bundle exec rails db:setup --trace
       - run: bundle exec rails test
       - run: bundle exec rails test:system
+      - run: bundle exec rails test:integration
 
   gitlab-push:
     name: Push to GitLab
 
-    if: ${{(github.repository == 'solver-it-sro/govbox-pro') && (github.ref == 'refs/heads/main')}}
+    if: ${{(github.repository == 'slovensko-digital/govbox-pro') && (github.ref == 'refs/heads/main')}}
 
     runs-on: ubuntu-latest
 

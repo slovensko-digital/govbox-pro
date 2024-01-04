@@ -1,14 +1,16 @@
 class MessageThreadsController < ApplicationController
-  before_action :set_message_thread, only: %i[show rename update history]
+  before_action :set_message_thread, only: %i[show rename update history confirm_unarchive archive]
   before_action :set_thread_tags, only: %i[show history]
-  before_action :set_thread_messages, only: %i[show history]
+  before_action :set_thread_messages, only: %i[show history confirm_unarchive archive]
   before_action :load_threads, only: %i[index scroll]
+  before_action :set_subscription, only: :index
   after_action :mark_thread_as_read, only: %i[show history]
 
   include MessageThreadsConcern
 
   def show
     authorize @message_thread
+    @user_is_signer = Current.user.signer?
   end
 
   def rename
@@ -19,10 +21,11 @@ class MessageThreadsController < ApplicationController
     # currently only title update (rename) expected
     authorize @message_thread
 
-    path = message_thread_path(@message_thread)
-    return unless @message_thread.rename(message_thread_params)
-
-    redirect_back fallback_location: path, notice: 'Názov vlákna bol upravený'
+    if @message_thread.rename(message_thread_params)
+      redirect_to @message_thread, notice: 'Názov vlákna bol upravený'
+    else
+      render :rename, status: :unprocessable_entity
+    end
   end
 
   def index
@@ -89,7 +92,25 @@ class MessageThreadsController < ApplicationController
     authorize @message_thread
   end
 
+  def confirm_unarchive
+    authorize @message_thread
+  end
+
+  def archive
+    authorize @message_thread
+    return unless @message_thread.archive(params.require(:archived) == 'true')
+
+    redirect_back_or_to message_threads_path(@message_thread), notice: 'Archivácia vlákna bola úspešne upravená'
+  end
+
   private
+
+  def set_subscription
+    return unless params[:q]
+
+    @filter = Current.tenant.filters.where(query: params[:q]).first
+    @filter_subscription = Current.user.filter_subscriptions.joins(:filter).where(filter: { query: params[:q] }).first
+  end
 
   def set_message_thread
     @message_thread = message_thread_policy_scope.find(params[:id])
