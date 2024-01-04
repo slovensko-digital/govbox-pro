@@ -2,7 +2,7 @@ class TW::SidebarMenuItemComponent < ViewComponent::Base
   renders_one :leading
   renders_one :trailing
 
-  def initialize(name:, url:, icon:, variant: :regular, classes: '')
+  def initialize(name:, url:, icon:, variant: :regular, classes: 'pl-4')
     @name = name
     @url = url
     @icon_component = icon

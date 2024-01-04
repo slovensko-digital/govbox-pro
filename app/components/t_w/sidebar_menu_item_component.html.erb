@@ -6,7 +6,7 @@
   <% end %>
   <%= link_to \
         @url,
-        class: "w-full flex gap-x-3 p-4 grow",
+        class: "w-full flex gap-x-3 py-4 grow",
         data: { active: current_page?(@url, check_parameters: true) } \
         do %>
     <% if @icon_component %>

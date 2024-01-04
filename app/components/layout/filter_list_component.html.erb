@@ -23,11 +23,11 @@
         url: filtered_message_threads_path(filter:),
         icon: icon_for(filter),
         variant: :light,
-        classes: 'item',
+        classes: "item #{!@sortable ? 'pl-4' : ''}",
       ) do |menu_item| %>
         <% if @sortable %>
           <% menu_item.with_leading do %>
-            <div class="py-4 handle cursor-move invisible group-hover:visible" data-sortable-target="item" data-id="<%= filter.id %>">
+            <div class="w-4 py-4 handle cursor-move invisible group-hover:visible" data-sortable-target="item" data-id="<%= filter.id %>">
               <%= render Icons::GripComponent.new(css_classes: 'w-4 h-4 fill-gray-400') %>
             </div>
           <% end %>
