@@ -278,3 +278,13 @@ sk:
       create: "Notifikácie boli nastavené!"
       update: "Notifikacie boli zmenené!"
       destroy: "Notifikácie boli zrušené!"
+  signing:
+    processed: "Dokumenty boli úspešne podpísané"
+    failed: "Pri podpisovaní dokumentov sa vyskytla chyba"
+    documents:
+      one: "1 dokument"
+      few: "%{count} dokumenty"
+      other: "%{count} dokumentov"
+  bulk:
+    signing:
+      nothing_to_sign: "Vo vybraných vláknach sa nenašli žiadne dokumenty so žiadosťou na podpis"

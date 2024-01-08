@@ -11,11 +11,11 @@ module MessageDrafts
 
       if params[:result] == "ok"
         redirect_to message_thread_path(@message_draft.thread, anchor: helpers.dom_id(@message_draft)),
-                    notice: "Dokumenty boli úspešne podpísané",
+                    notice: t("signing.processed"),
                     status: 303
       else
         redirect_to message_thread_path(@message_draft.thread, anchor: helpers.dom_id(@message_draft)),
-                    alert: "Pri podpisovaní dokumentov sa vyskytla chyba",
+                    alert: t("signing.failed"),
                     status: 303
       end
     end
