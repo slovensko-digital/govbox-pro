@@ -12,8 +12,13 @@ class ApplicationController < ActionController::Base
   def set_menu_context
     return unless Current.user
 
-    @tags = policy_scope(Tag, policy_scope_class: TagPolicy::ScopeListable).where(visible: true).order(:name)
-    @filters = policy_scope(Filter, policy_scope_class: FilterPolicy::ScopeShowable).order(:position)
+    @tags = policy_scope(Tag, policy_scope_class: TagPolicy::ScopeListable)
+            .where(visible: true)
+            .where.not(id: UserHiddenItem.where(user: Current.user, user_hideable_type: "Tag").select(:user_hideable_id))
+            .order(:name)
+    @filters = policy_scope(Filter, policy_scope_class: FilterPolicy::ScopeShowable)
+               .where.not(id: UserHiddenItem.where(user: Current.user, user_hideable_type: "Filter").select(:user_hideable_id))
+               .order(:position)
     @menu = SidebarMenu.new(controller_name, action_name, { tags: @tags, filters: @filters }).menu
     @current_tenant_boxes_count = Current.tenant.boxes.count
   end
