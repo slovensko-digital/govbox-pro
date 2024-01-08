@@ -8,7 +8,7 @@ gem 'rails-i18n'
 gem 'pg', '~> 1.0'
 gem 'with_advisory_lock'
 
-gem 'puma', '~> 6.0'
+gem 'puma', '~> 6.4'
 
 gem 'turbo-rails'
 
