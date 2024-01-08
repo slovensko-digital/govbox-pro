@@ -36,7 +36,7 @@
                aria-labelledby="menu-button"
                tabindex="-1">
             <div class="py-1" role="none">
-              <%= button_tag "change_tags", type: "submit", id: "menu-item-0",
+              <%= button_tag "change_tags", type: "submit",
                                             formaction: edit_message_threads_bulk_tags_path,
                                             formmethod: :post, data: { turbo_frame: "modal" },
                                             class: "w-full text-gray-700 group flex items-center px-4 py-2 text-sm hover:bg-gray-100 hover:text-gray-900", role: "menuitem" do %>
@@ -45,7 +45,7 @@
               <% end %>
             </div>
             <div class="py-1" role="none">
-              <%= button_tag "merge", type: "submit", id: "menu-item-1",
+              <%= button_tag "merge", type: "submit",
                                       title: (@ids.length < 2 ? "Označte aspoň dve vlákna" : "Spojiť označené vlákna do jedného"),
                                       disabled: @ids.length < 2, data: { turbo_confirm: "Naozaj chcete spojiť označené vlákna do jedného?" },
                                       class: "w-full group flex items-center px-4 py-2 text-sm #{@ids.length < 2 ? 'text-gray-300' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'}",
@@ -56,7 +56,7 @@
             </div>
             <% if Current.tenant.feature_enabled?(:archive) %>
               <div class="py-1" role="none">
-                <%= button_tag "archive", type: "submit", id: "menu-item-0",
+                <%= button_tag "archive", type: "submit",
                                                      formaction: message_threads_bulk_archive_path(archived: true),
                                                      formmethod: :patch, data: { turbo_confirm: "Naozaj chcete archivovať označené vlákna?" },
                                                      class: "w-full text-gray-700 group flex items-center px-4 py-2 text-sm hover:bg-gray-100 hover:text-gray-900", role: "menuitem" do %>
@@ -65,7 +65,7 @@
                 <% end %>
               </div>
               <div class="py-1" role="none">
-                <%= button_tag "unarchive", type: "submit", id: "menu-item-0",
+                <%= button_tag "unarchive", type: "submit",
                                                      formaction: message_threads_bulk_archive_path(archived: false),
                                                      formmethod: :patch, data: { turbo_confirm: "Naozaj chcete zrušiť archiváciu označených vlákien?" },
                                                      class: "w-full text-gray-700 group flex items-center px-4 py-2 text-sm hover:bg-gray-100 hover:text-gray-900", role: "menuitem" do %>
@@ -75,7 +75,7 @@
               </div>
             <% end %>
             <div class="py-1" role="none">
-              <%= button_tag "authorize_delivery", type: "submit", id: "menu-item-0",
+              <%= button_tag "authorize_delivery", type: "submit",
                                                    formaction: message_threads_bulk_authorize_deliveries_path,
                                                    formmethod: :patch, data: { turbo_confirm: "Naozaj chcete prevziať správy v označených vláknach?" },
                                                    class: "w-full text-gray-700 group flex items-center px-4 py-2 text-sm hover:bg-gray-100 hover:text-gray-900", role: "menuitem" do %>
