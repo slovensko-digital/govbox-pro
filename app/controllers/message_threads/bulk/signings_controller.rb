@@ -3,7 +3,7 @@ module MessageThreads
     class SigningsController < ::ApplicationController
       before_action :set_message_ids
       before_action :set_message_objects
-      before_action :nothing_to_sign_redirect, only: %i[new start]
+      before_action :redirect_on_no_signable_objects, only: %i[new start]
 
       include TurboReload
 
@@ -28,16 +28,24 @@ module MessageThreads
       private
 
       def set_message_ids
-        @message_thread_ids = params[:message_thread_ids] || []
+        @message_thread_ids = message_thread_policy_scope.where(id: params[:message_thread_ids] || []).pluck(:id)
       end
 
       def set_message_objects
-        @message_objects = MessageObject.joins(:tags, message: :thread).
+        @message_objects = message_object_policy_scope.joins(:tags, message: :thread).
           where(message_threads: { id: @message_thread_ids }).
           where(tags: { id: Current.user.signature_requested_from_tag })
       end
 
-      def nothing_to_sign_redirect
+      def message_thread_policy_scope
+        policy_scope(MessageThread)
+      end
+
+      def message_object_policy_scope
+        policy_scope(MessageObject)
+      end
+
+      def redirect_on_no_signable_objects
         if @message_objects.blank?
           request_turbo_reload
           redirect_back fallback_location: message_threads_path, alert: t("bulk.signing.nothing_to_sign"), status: 303
