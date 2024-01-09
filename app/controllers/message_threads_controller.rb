@@ -7,7 +7,6 @@ class MessageThreadsController < ApplicationController
   before_action :set_thread_messages, only: %i[show history confirm_unarchive archive]
   before_action :load_threads, only: %i[index scroll]
   before_action :set_subscription, only: :index
-  before_action :set_signer_flag, only: %i[index show bulk_actions]
   after_action :mark_thread_as_read, only: %i[show history]
   before_action :set_reload
 
@@ -135,9 +134,5 @@ class MessageThreadsController < ApplicationController
 
   def set_thread_tags
     @thread_tags = @message_thread.message_threads_tags.only_visible_tags
-  end
-
-  def set_signer_flag
-    @user_is_signer = Current.user.signer?
   end
 end

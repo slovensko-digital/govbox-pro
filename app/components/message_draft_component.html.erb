@@ -16,7 +16,7 @@
                 <% end %>
               <% end %>
 
-              <%= render MessageDraftSigningMultiButtonComponent.new(message: @message, user_is_signer: @user_is_signer) %>
+              <%= render MessageDraftSigningMultiButtonComponent.new(message: @message, signable: @signable) %>
             </div>
           </div>
           <div class="gap-2 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">

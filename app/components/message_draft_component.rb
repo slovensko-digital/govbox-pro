@@ -1,7 +1,7 @@
 class MessageDraftComponent < ViewComponent::Base
-  def initialize(message:, is_last:, user_is_signer:)
+  def initialize(message:, is_last:, signable:)
     @message = message
     @is_last = is_last
-    @user_is_signer = user_is_signer
+    @signable = signable
   end
 end

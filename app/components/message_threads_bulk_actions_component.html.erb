@@ -84,7 +84,7 @@
               <% end %>
             </div>
 
-            <% if @user_is_signer %>
+            <% if @signable %>
               <div class="py-1" role="none">
                 <%= button_tag "sign", type: "submit",
                                formaction: message_threads_bulk_signing_path,

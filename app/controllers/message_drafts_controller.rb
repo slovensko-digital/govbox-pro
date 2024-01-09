@@ -15,14 +15,12 @@ class MessageDraftsController < ApplicationController
     authorize @original_message
 
     @message = MessageDraft.create_message_reply(original_message: @original_message, author: Current.user)
-    @user_is_signer = Current.user.signer?
   end
 
   def show
     authorize @message
 
     @message_thread = @message.thread
-    @user_is_signer = Current.user.signer?
 
     set_thread_messages
     set_visible_tags_for_thread
