@@ -1,5 +1,5 @@
-<div class="flex justify-between items-center p-2 overflow-clip">
-  <%= link_to message_message_object_path(@message_attachment.message_id, @message_attachment), data: { turbo_frame: "_top" }, class: "flex justify-start items-center gap-4 overflow-clip" do %>
+<div class="flex justify-between items-center p-2 overflow-x-clip">
+  <%= link_to message_message_object_path(@message_attachment.message_id, @message_attachment), data: { turbo_frame: "_top" }, class: "flex justify-start items-center gap-4 overflow-x-clip" do %>
     <div class="flex justify-stretch items-center gap-4">
       <% if @message_attachment.nested_message_objects.present? %>
         <!--        TODO najst inu ikonku-->
@@ -8,7 +8,7 @@
         <%= render Icons::DocumentTextComponent.gray_big %>
       <% end %>
     </div>
-    <div class="flex flex-col justify-start items-start overflow-clip gap-1">
+    <div class="flex flex-col justify-start items-start overflow-x-clip gap-1">
       <div class="flex justify-start items-center gap-4 w-full">
         <span class="truncate text-base font-semibold text-left text-gray-900">
           <%= MessageObjectHelper.displayable_name(@message_attachment) %>
@@ -17,43 +17,28 @@
           <% SigningTagsHelper.sort_tags(@message_attachment.tags).each do |tag| %>
             <%= render Common::TagComponent.new(tag) %>
           <% end %>
-        </div>
 
-        <% if @message_attachment.is_signed? %>
-          <%= render Common::BadgeComponent.new("Podpísané", "hidden md:flex") %>
-        <% end %>
+          <% if !@is_draft_view && @message_attachment.message.thread.archived? %>
+            <%= render ArchivedObjectTagComponent.new(@message_attachment.message_object_datum.message_object.archived_object) %>
+          <% end %>
+        </div>
       </div>
-      <% if @message_attachment.is_signed? %>
-        <%= render Common::BadgeComponent.new("Podpísané", "md:hidden") %>
-      <% end %>
     </div>
   <% end %>
-  <div class="hidden md:flex justify-end items-center gap-4">
-    <% if @message_attachment.signable? %>
-      <%= content_tag(:div,
-        {
-          "data-controller": "autogram",
-          "data-autogram-object-id": @message_attachment.id,
-          "data-autogram-message-id": @message_attachment.message.id,
-          "data-autogram-object-path": message_message_object_path(@message_attachment.message, @message_attachment),
-          "data-autogram-authenticity-token": form_authenticity_token,
-        }
-      ) do %>
-        <button data-action="click->autogram#signSingleFile" class="flex justify-end items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300 hover:bg-gray-100">
-          Podpísať
-        </button>
+  <% if @is_draft_view %>
+    <div class="hidden md:flex justify-end items-center gap-4">
+      <%= link_to download_message_message_object_path(@message_attachment.message, @message_attachment), data: { turbo_frame: "_top" }, class: "flex justify-end items-center gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300 hover:bg-gray-100", "aria-label": "Stiahnúť" do %>
+        <%= render Icons::ArrowDownTrayComponent.new(css_classes: "w-5 h-5") %>
       <% end %>
-    <% end %>
-    <%= link_to download_message_message_object_path(@message_attachment.message, @message_attachment), data: { turbo_frame: "_top" }, class: "flex justify-end items-center gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300 hover:bg-gray-100", "aria-label": "Stiahnúť" do %>
-      <%= render Icons::ArrowDownTrayComponent.new(css_classes: "w-5 h-5") %>
-    <% end %>
-    <% if @message_attachment.destroyable? %>
-      <%= button_to message_message_object_path(@message_attachment.message, @message_attachment), method: :delete, class: "flex justify-end items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300 hover:bg-gray-100", "aria-label": "Zmazať" do %>
-        <%= render Icons::TrashComponent.new(css_classes: "w-5 h-5 text-red-600") %>
+      <% if @message_attachment.destroyable? %>
+        <%= button_to message_message_object_path(@message_attachment.message, @message_attachment), method: :delete, class: "flex justify-end items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300 hover:bg-gray-100", "aria-label": "Zmazať" do %>
+          <%= render Icons::TrashComponent.new(css_classes: "w-5 h-5 text-red-600") %>
+        <% end %>
       <% end %>
-    <% end %>
-  </div>
-  <%= render MessageAttachmentMenuComponent.new(@message_attachment) %>
+    </div>
+  <% else %>
+    <%= render MessageAttachmentMenuComponent.new(@message_attachment) %>
+  <% end %>
 </div>
 <% if @message_attachment.nested_message_objects.present? %>
   <div class="flex-col pl-12 divide-y">

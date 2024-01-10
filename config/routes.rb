@@ -64,6 +64,7 @@ Rails.application.routes.draw do
       end
 
       resource :authorize_deliveries, only: [:update]
+      resource :archive, only: [:update]
     end
   end
 
@@ -75,6 +76,8 @@ Rails.application.routes.draw do
     end
     get :rename, on: :member
     get :history, on: :member
+    get :confirm_unarchive, on: :member
+    patch :archive, on: :member
     resources :messages
     resources :message_thread_notes
     scope module: 'message_threads' do
@@ -97,6 +100,7 @@ Rails.application.routes.draw do
       member do
         get 'download'
         get 'signing_data'
+        get 'download_archived'
       end
 
       resources :nested_message_objects do
@@ -125,10 +129,16 @@ Rails.application.routes.draw do
         end
       end
 
-      resource :signature_requests, only: [:update] do
+      resource :signature_requests, only: [:edit, :update] do
         collection do
           post :edit
           post :prepare
+        end
+      end
+
+      resource :signing, only: [:new, :update] do
+        collection do
+          post :new
         end
       end
     end
@@ -163,6 +173,27 @@ Rails.application.routes.draw do
     delete :destroy, on: :collection
   end
 
+  namespace :api do
+    namespace :site_admin do
+      resources :tenants, only: [:create, :destroy] do
+        resources :boxes, only: :create
+        resources :api_connections, only: :create
+      end
+
+      namespace :stats do
+        resources :tenants, only: [] do
+          member do
+            get :users_count
+            get :messages_per_period
+            get :messages_count
+          end
+        end
+      end
+    end
+
+    resources :message_threads, only: [:show]
+    resources :messages, only: [:show]
+  end
 
   if UpvsEnvironment.sso_support?
     namespace :upvs do

@@ -19,6 +19,7 @@ class MessageObject < ApplicationRecord
   has_many :nested_message_objects, inverse_of: :message_object, dependent: :destroy
   has_many :message_objects_tags, dependent: :destroy
   has_many :tags, through: :message_objects_tags
+  has_one :archived_object, dependent: :destroy
 
   scope :unsigned, -> { where(is_signed: false) }
   scope :to_be_signed, -> { where(to_be_signed: true) }
@@ -33,12 +34,16 @@ class MessageObject < ApplicationRecord
     objects.each do |raw_object|
       message_object_content = raw_object.read.force_encoding("UTF-8")
 
+      is_signed = Utils.is_signed?(entry_name: raw_object.original_filename, content: message_object_content)
+      tags = is_signed ? [message.thread.box.tenant.signed_externally_tag!] : []
+
       message_object = MessageObject.create!(
         message: message,
         name: raw_object.original_filename,
         mimetype: Utils.file_mime_type_by_name(entry_name: raw_object.original_filename),
-        is_signed: Utils.is_signed?(entry_name: raw_object.original_filename, content: message_object_content),
-        object_type: "ATTACHMENT"
+        is_signed: is_signed,
+        object_type: "ATTACHMENT",
+        tags: tags
       )
 
       MessageObjectDatum.create!(
@@ -48,14 +53,25 @@ class MessageObject < ApplicationRecord
     end
   end
 
-  def add_signature_requested_from_tag(tag)
-    add_cascading_tag(tag)
-    add_cascading_tag(tag.tenant.signature_requested_tag)
+  def mark_signed_by_user(user)
+    assign_tag(user.signed_by_tag)
+    unassign_tag(user.signature_requested_from_tag)
+
+    thread.mark_signed_by_user(user)
   end
 
-  def remove_signature_requested_from_tag(tag)
-    remove_cascading_tag(tag)
-    remove_cascading_tag(tag.tenant.signature_requested_tag) unless has_signature_request_from_tags?
+  def add_signature_requested_from_user(user)
+    return if has_tag?(user.signed_by_tag)
+
+    assign_tag(user.signature_requested_from_tag)
+    thread.add_signature_requested_from_user(user)
+  end
+
+  def remove_signature_requested_from_user(user)
+    return unless has_tag?(user.signature_requested_from_tag)
+
+    unassign_tag(user.signature_requested_from_tag)
+    thread.remove_signature_requested_from_user(user)
   end
 
   def content
@@ -64,11 +80,6 @@ class MessageObject < ApplicationRecord
 
   def form?
     object_type == "FORM"
-  end
-
-  def signable?
-    # TODO: vymazat druhu podmienku po povoleni viacnasobneho podpisovania
-    message.draft? && !is_signed
   end
 
   def asice?
@@ -80,8 +91,12 @@ class MessageObject < ApplicationRecord
     message.draft? && message.not_yet_submitted? && !form?
   end
 
-  def has_signature_request_from_tags?
-    message_objects_tags.joins(:tag).where(tag: { type: SignatureRequestedFromTag.to_s }).exists?
+  def archived?
+    archived_object.present?
+  end
+
+  def downloadable_archived_object?
+    archived_object&.archived?
   end
 
   private
@@ -90,21 +105,19 @@ class MessageObject < ApplicationRecord
     errors.add(:mime_type, "of #{name} object is disallowed, allowed_mime_types: #{Utils::EXTENSIONS_ALLOW_LIST.join(", ")}") unless mimetype
   end
 
-  def add_cascading_tag(tag)
-    message_objects_tags.find_or_create_by!(tag: tag)
-    message.thread.message_threads_tags.find_or_create_by!(tag: tag)
+  def has_tag?(tag)
+    message_objects_tags.joins(:tag).where(tag: tag).exists?
   end
 
-  def remove_cascading_tag(tag)
+  def assign_tag(tag)
+    message_objects_tags.find_or_create_by!(tag: tag)
+  end
+
+  def unassign_tag(tag)
     message_objects_tags.find_by(tag: tag)&.destroy
+  end
 
-    thread = message.thread
-
-    same_tag_on_other_thread_object = MessageObjectsTag.
-      joins(:tag, message_object: { message: :thread }).
-      where(message_threads: { id: thread }).
-      where(tag: tag).exists?
-
-    message.thread.message_threads_tags.find_by(tag: tag)&.destroy unless same_tag_on_other_thread_object
+  def thread
+    message.thread
   end
 end

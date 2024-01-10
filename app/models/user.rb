@@ -55,6 +55,10 @@ class User < ApplicationRecord
     )
   end
 
+  def signer?
+    groups.exists?(id: tenant.signer_group)
+  end
+
   def signed_by_tag
     tenant.signed_by_tags.find_tag_containing_group(user_group)
   end

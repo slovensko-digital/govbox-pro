@@ -107,18 +107,18 @@
     </div>
     <% end %>
 
-    <% if @message.attachments.present? %>
+    <% if @attachments.present? %>
       <div class="flex justify-start items-center gap-2 px-6 py-4 bg-white border-t-0 border-r-0 border-b border-l-0 border-gray-200">
         <div>
           <%= render Common::IconComponent.new("paper_clip", classes: "w-6 h-6 text-gray-400") %>
         </div>
         <p class="grow text-base text-left text-gray-900">
-          Správa obsahuje <span class="font-semibold"><%= t('message_object', count: @message.attachments.length, locale: :sk) %></span>
+          Správa obsahuje <span class="font-semibold"><%= t("message_object", count: @attachments.length) %></span>
         </p>
       </div>
 
       <div class="flex flex-col justify-stretch items-stretch divide-y px-4 bg-white border-t-0 border-r-0 border-b border-l-0 border-gray-200">
-        <%= render MessageAttachmentComponent.with_collection(@message.attachments) %>
+        <%= render MessageAttachmentComponent.with_collection(@attachments) %>
       </div>
     <% end %>
 

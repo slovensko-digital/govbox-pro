@@ -18,6 +18,12 @@ ssd_main_general_draft_one_from:
   mimetype: MyString
   object_type: FORM
 
+ssd_main_general_draft_one_attachment:
+  message: ssd_main_general_draft_one
+  name: Attachment
+  mimetype: MyString
+  object_type: ATTACHMENT
+
 ssd_main_general_draft_two_from:
   message: ssd_main_general_draft_two
   name: MyString

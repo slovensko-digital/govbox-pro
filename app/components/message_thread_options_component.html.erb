@@ -31,5 +31,18 @@
         <% end %>
       <% end %>
     <% end %>
+    <% if Current.tenant.feature_enabled?(:archive) %>
+      <% if @message_thread.archived? %>
+        <%= link_to confirm_unarchive_message_thread_path(message_thread: @message_thread), data: { turbo_frame: "modal" }, class: "flex gap-3", role: "menuitem", tabindex: "-1" do %>
+          <%= render Common::IconComponent.new("archive-box", classes: "h-5 w-5") %>
+          Nearchivovať vlákno
+        <% end %>
+      <% else %>
+        <%= button_to archive_message_thread_path(message_thread: @message_thread, archived: true), method: :patch, data: { turbo_frame: "_top" }, class: "flex gap-3", role: "menuitem", tabindex: "-1" do %>
+          <%= render Common::IconComponent.new("archive-box", classes: "h-5 w-5") %>
+          Archivovať vlákno
+        <% end %>
+      <% end %>
+    <% end %>
   <% end %>
 <% end %>

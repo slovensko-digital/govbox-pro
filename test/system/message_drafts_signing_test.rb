@@ -14,14 +14,15 @@ class MessageDraftsSigningTest < ApplicationSystemTestCase
     visit message_thread_path(@thread_general)
 
     within_message_in_thread(@first_draft) do
+      click_button "option-menu-button"
       click_link "Vyžiadať podpis"
     end
 
-    check "Hlavný dokument"
-    click_button "Vybrať podpisovačov"
+    uncheck "Hlavný dokument"
+    click_button "Vybrať podpisujúcich"
 
     click_button "Späť na výber dokumentov"
-    click_button "Vybrať podpisovačov"
+    click_button "Vybrať podpisujúcich"
 
     check "Basic user"
     click_button "Uložiť zmeny"

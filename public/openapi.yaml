@@ -1,0 +1,472 @@
+openapi: 3.0.3
+
+info:
+  title: GovBox Pro API
+  version: 0.0.1
+
+  description: API rozhranie na prácu s GovBox PRO.
+
+  contact:
+    name: Služby Slovensko.Digital, s.r.o.
+    url: https://sluzby.slovensko.digital/govbox-pro
+    email: podpora@slovensko.digital
+
+servers:
+  - description: Server Govbox PRO v PROD prostredí
+    url: https://pro.govbox.sk
+  - description: Server Govbox PRO v Staging prostredí
+    url: https://govbox-pro.staging.slovensko.digital
+  - description: Lokálne vývojové prostredie
+    url: http://localhost:3000
+
+paths:
+  /api/message_threads/{id}:
+    get:
+      tags: [ Vlákna ]
+      summary: Vráti konkrétne komunikačné vlákno a odkazy na príslušné správy
+      description: |
+        Vráti konkrétne komunikačné vlákno a odkazy na príslušné správy. Predpokladom je, že konzument disponuje identifikátorom vlákna, napr. z na to vytvoreného subscription na udalosť vytvorenia nového komunikačného vlákna.
+      parameters:
+        - name: id
+          in: path
+          description: Identifikátor vlákna
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: Úspešné získanie údajov vlákna
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tags:
+                    description: Zoznam štítkov priradených vláknu
+                    type: array
+                    items:
+                      description: Názov štítka priradeného vláknu
+                      type: string
+                  messages:
+                    description: Zoznam URL na získanie jednotlivých správ vo vlákne
+                    type: array
+                    items:
+                      description: URL na získanie konkrétnej správy
+                      type: string
+                      format: url
+      security:
+        - "Tenant_Token": []
+
+
+  /api/messages/{id}:
+    get:
+      tags: [ Správy ]
+      summary: Vráti konkrétnu správu vrátane jej objektov
+      description: |
+        Vráti konkrétnu správu vrátane jej objektov.
+      parameters:
+        - name: id
+          in: path
+          description: Identifikátor správy
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: Úspešné získanie údajov správy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    description: Identifikátor správy v systéme Govbox Pro
+                    type: integer
+                  uuid:
+                    description: UUID správy
+                    type: string
+                    format: uuid
+                  title:
+                    description: Predmet správy
+                    type: string
+                  sender_name:
+                    description: Odosielateľ správy
+                    type: string
+                  recipient_name:
+                    description: Prijímateľ správy
+                    type: string
+                  delivered_at:
+                    description: Dátum a čas doručenia správy
+                    type: string
+                    format: date-time
+                  message_objects:
+                    description: Zoznam objektov správy
+                    type: array
+                    items:
+                      description: Objekt správy
+                      type: object
+                      properties:
+                        name:
+                          description: Názov objektu
+                          type: string
+                        mimetype:
+                          description: Typ súboru objektu
+                          type: string
+                        object_type:
+                          description: Typ objektu
+                          type: string
+                          enum: [ "FORM", "ATTACHMENT" ]
+                        updated_at:
+                          description: Dátum poslednej zmeny (pridanie, podpísanie, ...) objektu
+                          type: string
+                          format: date-time
+                        is_signed:
+                          description: Príznak, či je objekt podpísaný
+                          type: boolean
+                        data:
+                          description: Samotný objektu zakódovaný ako Base64 text
+                          type: string
+                          format: byte
+      security:
+        - "Tenant_Token": []
+
+  /api/site_admin/tenant/:
+    post:
+      tags: [Správa tenantov (Administrácia)]
+      summary: Založí nového tenanta v systéme
+      description: |
+        Založí nového tenanta.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  description: Názov nového tenanta, typicky názov spoločnosti
+                  type: string
+                admin:
+                  type: object
+                  properties:
+                    name:
+                      description: Meno administrátora pre daného tenanta
+                      type: string
+                    email:
+                      description: email administrátora, bude použitý na OAuth2 autentifikáciu
+                      type: string
+                  required:
+                    - name
+              required:
+                - name
+                - admin
+      responses:
+        200:
+          description: Úspešne založený tenant v systéme
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    description: Identifikátor tenanta v systéme
+                    type: integer
+      security:
+        - "Site_Admin_Token": []
+
+  /api/site_admin/tenant/{id}/box:
+    post:
+      tags: [Správa tenantov (Administrácia)]
+      summary: Založí novú schránku v rámci tenanta
+      description: |
+        Založí novú schránku v rámci tenanta. Pre korektné fungovanie musí schránka existovať na slovensko.sk
+      parameters:
+        - name: id
+          in: path
+          description: Identifikátor tenanta
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  description: Názov schránky, typicky názov spoločnosti
+                  type: string
+                  example: "Moja firma s.r.o."
+                uri:
+                  description: URI schránky na slovensko.sk
+                  type: string
+                  example: "ico://12345678/"
+                short_name:
+                  description: Skrátený názov pre odlíšenie vlákien/správ z rôznych schránok v používateľskom rozhraní. Odporúčame maximálne 3 znaky
+                  type: string
+                  example: "MF"
+                color:
+                  description: Farba z palety tailwind farieb použitá v štítku pre dlíšenie vlákien/správ z rôznych schránok v používateľskom rozhraní
+                  type: string
+                  enum:
+                    [
+                      "slate",
+                      "gray",
+                      "zinc",
+                      "neutral",
+                      "stone",
+                      "red",
+                      "orange",
+                      "amber",
+                      "yellow",
+                      "lime",
+                      "green",
+                      "emerald",
+                      "teal",
+                      "cyan",
+                      "sky",
+                      "blue",
+                      "indigo",
+                      "violet",
+                      "purple",
+                      "fuchsia",
+                      "pink",
+                      "rose",
+                    ]
+                  example: "red"
+                settings:
+                  type: object
+                  properties:
+                    obo:
+                      description: V prípade použitia spoločného prístupu k schránke OBO identifikátor
+                      type: string
+                api_connection_id:
+                  type: integer
+                  description: V prípade použitia spoločného prístupu k schránke identifikátor pripojenia v systéme Govbox Pro
+                api_connection:
+                  type: object
+                  description: Parametre pripojenia na ÚPVS
+                  properties:
+                    sub:
+                      description: V prípade pripojenia cez legacy GovBox API sa používa identifikátor subjektu.
+                      type: string
+                    api_token_private_key:
+                      description: Privátny kľúč k pripojeniu na ÚPVS cez legacy GovBox API.
+                      type: string
+              required:
+                - name
+                - uri
+                - short_name
+                - color
+      responses:
+        200:
+          description: Úspešne založená schránka v systéme
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    description: Identifikátor založenej schránky v systéme Govbox Pro
+                    type: integer
+      security:
+        - "Site_Admin_Token": []
+
+  /api/site_admin/tenants/{id}:
+    delete:
+      tags: [Správa tenantov (Administrácia)]
+      summary: Vymaže tenanta zo systému vrátane všetkých jeho údajov
+      description: |
+        Vymaže tenanta zo systému.
+      parameters:
+        - name: id
+          in: path
+          description: Tenant id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        204:
+          description: Úspešne vymazaný tenant zo systému.
+      security:
+        - "Site_Admin_Token": []
+
+  /api/site_admin/stats/tenants/{id}/user_count:
+    get:
+      tags: [Štatistiky]
+      summary: Vráti počet používateľov v rámci tenanta
+      description: |
+        Vráti počet používateľov v rámci tenanta
+      parameters:
+        - name: id
+          in: path
+          description: Identifikátor tenanta
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: Úspešné získanie štatistického údaju
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  users_count:
+                    description: Počet používateľov v rámci tenanta
+                    type: integer
+      security:
+        - "Site_Admin_Token": []
+
+  /api/site_admin/stats/tenants/{id}/messages_per_period:
+    get:
+      tags: [Štatistiky (Administrácia)]
+      summary: Vráti počet správ pre daného tenanta za definované obdobie
+      description: |
+        Vráti počet správ pre daného tenanta za definované obdobie
+      parameters:
+        - name: id
+          in: path
+          description: Identifikátor tenanta
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: from
+          in: query
+          description: Obdobie od
+          required: true
+          schema:
+            type: string
+            format: date-time
+            example: "2023-12-22T00:00:00.000+01:00"
+        - name: to
+          in: query
+          description: Obdobie do
+          required: true
+          schema:
+            type: string
+            format: date-time
+            example: "2023-12-23T00:00:00.000+01:00"
+      responses:
+        200:
+          description: Úspešné získanie štatistického údaju
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  messages_per_period:
+                    description: Počet správ pre tenanta za definované obdobie
+                    type: integer
+      security:
+        - "Site_Admin_Token": []
+
+  /api/site_admin/stats/tenants/{id}/messages_count:
+    get:
+      tags: [Štatistiky]
+      summary: Vráti počet správ pre daného tenanta
+      description: |
+        Vráti počet správ pre daného tenanta
+      parameters:
+        - name: id
+          in: path
+          description: Identifikátor tenanta
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: Úspešné získanie štatistického údaju
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  messages_count:
+                    description: Počet správ pre tenanta
+                    type: integer
+      security:
+        - "Site_Admin_Token": []
+
+components:
+  securitySchemes:
+    Tenant_Token:
+      description: |
+        Požaduje API token vytvorený treťou stranou, ktorý:
+
+        - je zakodovaný algoritmom RS256,
+        - je podpísaný privátnym kľúčom tretej strany,
+        - má nastavený `sub` claim na identifikátor tenanta,
+        - má nastavený `exp` claim na max. 5 minút,
+        - má nastavený `jti` claim na identifikátor, ktorý je unikátny počas 5 minút.
+
+        Príklad `header` segmentu:
+
+              {
+                "alg": "RS256",
+              }
+
+        Príklad `payload` segmentu:
+
+              {
+                "sub": "123",
+                "exp": 1543437976,
+                "jti": "4dee8618-abbe-4dc3-83ba-e984d1396f9f",
+              }
+
+        API token musí byť prítomný buď:
+
+        - v hlavičke požiadavky ako `Authorization: Bearer <api-token>`,
+        - alebo v URL parametri požiadavky ako `?token=<api-token>`.
+
+        Poznámky:
+
+        - hodnota `jti` sa kontroluje podľa regulárneho výrazu `/\A[0-9a-z\-_]{32,256}\z/i`,
+        - rovnaké `jti` sa nesmie použiť viac ako jedenkrát počas 5 minút.
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+    Site_Admin_Token:
+      description: |
+        Požaduje API token vytvorený treťou stranou, ktorý:
+  
+        - je zakodovaný algoritmom RS256,
+        - je podpísaný privátnym kľúčom tretej strany,
+        - má nastavený `exp` claim na čas expirácie, ktorý vyprší o 5 minút alebo skôr od vytvorenia tokenu,
+        - má nastavený `jti` claim na identifikátor, ktorý je unikátny počas 5 minút.
+  
+        Príklad `header` segmentu:
+  
+              {
+                "alg": "RS256"
+              }
+  
+        Príklad `payload` segmentu:
+  
+              {
+                "exp": 1543437976,
+                "jti": "4dee8618-abbe-4dc3-83ba-e984d1396f9f"
+              }
+  
+        API token musí byť prítomný buď:
+  
+        - v hlavičke požiadavky ako `Authorization: Bearer <api-token>`,
+        - alebo v URL parametri požiadavky ako `?token=<api-token>`.
+  
+        Poznámky:
+  
+        - hodnota `exp` sa odporúča nastaviť na čo najkratší možný čas od vytvorenia tokenu,
+        - hodnota `exp` sa kontroluje ako počet sekúnd od 1970-01-01T00:00:00 UTC,
+        - hodnota `jti` sa kontroluje podľa regulárneho výrazu `/\A[0-9a-z\-_]{32,256}\z/i`,
+        - rovnaké `jti` sa nesmie použiť v viac ako jedenkrát počas 5 minút.
+
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

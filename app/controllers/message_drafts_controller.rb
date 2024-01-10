@@ -28,6 +28,8 @@ class MessageDraftsController < ApplicationController
     @message = MessageDraft.new
     authorize @message
 
+    @user_is_signer = Current.user.signer?
+
     @message_template&.create_message(
       @message,
       author: Current.user,
@@ -54,6 +56,7 @@ class MessageDraftsController < ApplicationController
     authorize @message
 
     @message_thread = @message.thread
+    @user_is_signer = Current.user.signer?
 
     set_thread_messages
     set_visible_tags_for_thread

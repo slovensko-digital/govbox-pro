@@ -7,7 +7,7 @@
             <%= render Common::IconComponent.new("paper_clip", classes: "w-6 h-6 text-gray-400") %>
             <p class="flex-grow-0 flex-shrink-0 text-base text-left text-gray-900">
               <% if @attachments.present? %>
-                Správa obsahuje <b><%= t("message_object", count: @attachments.length, locale: :sk) %></b>
+                Správa obsahuje <b><%= t("message_object", count: @attachments.length) %></b>
               <% elsif @message.not_yet_submitted? %>
                 <b>Pridať prílohu</b>
               <% end %>
@@ -29,27 +29,6 @@
                 <%= label_tag :attachments_, "Pridať prílohy", class: "hidden" %>
                 <%= file_field_tag "attachments[]", "data-action": "change->message-drafts#uploadAttachments", class: "text-gray-900 bg-white focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm font-semibold px-5 py-2.5 dark:border-gray-600", multiple: true %>
               <% end %>
-            <% end %>
-          <% end %>
-        </div>
-
-        <div class="flex justify-end items-center gap-4">
-          <% if @unsigned_attachments.present? %>
-            <%
-              files_to_be_signed = @unsigned_attachments.map do |message_object|
-                { path: message_message_object_path(message_object.message_id, message_object.id) }
-             end
-            %>
-            <%= content_tag(:div,
-              {
-                "data-controller": "autogram",
-                "data-autogram-files-to-be-signed": files_to_be_signed.to_json.html_safe,
-                "data-autogram-authenticity-token": form_authenticity_token
-              }
-            ) do %>
-              <button type="button" data-action="click->autogram#signMultipleFiles" class="flex justify-end items-center gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300 hover:bg-gray-100">
-                Podpísať všetky nepodpísané dokumenty
-              </button>
             <% end %>
           <% end %>
         </div>

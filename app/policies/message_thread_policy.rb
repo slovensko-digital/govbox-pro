@@ -52,4 +52,12 @@ class MessageThreadPolicy < ApplicationPolicy
   def history?
     true
   end
+
+  def confirm_unarchive?
+    true
+  end
+
+  def archive?
+    true
+  end
 end

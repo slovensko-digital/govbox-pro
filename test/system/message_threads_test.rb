@@ -177,7 +177,7 @@ class MessageThreadsTest < ApplicationSystemTestCase
 
     visit message_thread_path thread_issue
     within_message_in_thread message_two do
-      click_on("Odpovedať")
+      click_button "Odpovedať"
     end
 
     within '#new_drafts' do
