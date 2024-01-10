@@ -27,7 +27,7 @@ class MessageDraftPolicy < ApplicationPolicy
   end
 
   def index?
-    true
+    Current.tenant.feature_enabled?(:message_draft_import)
   end
 
   def create?

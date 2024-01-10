@@ -39,18 +39,10 @@ class Tenant < ApplicationRecord
 
   validates_presence_of :name
 
-  AVAILABLE_FEATURE_FLAGS = [:audit_log, :archive, :api]
+  AVAILABLE_FEATURE_FLAGS = [:audit_log, :archive, :api, :message_draft_import]
 
   def draft_tag!
     draft_tag || raise(ActiveRecord::RecordNotFound, "`DraftTag` not found in tenant: #{id}")
-  end
-
-  def signature_requested_tag!
-    signature_requested_tag || raise(ActiveRecord::RecordNotFound, "`SignatureRequestedTag` not found in tenant: #{id}")
-  end
-
-  def signed_tag!
-    signed_tag || raise(ActiveRecord::RecordNotFound, "`SignedTag` not found in tenant: #{self.id}")
   end
 
   def signed_externally_tag!
