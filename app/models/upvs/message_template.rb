@@ -99,7 +99,7 @@ class Upvs::MessageTemplate < ::MessageTemplate
 
   def build_message_from_template(message)
     template_items = MessageTemplateParser.parse_template_placeholders(self)
-    filled_content = self.content
+    filled_content = self.content.dup
 
     template_items.each do |template_item|
       filled_content.gsub!(template_item[:placeholder], message.metadata['data'][template_item[:name]].to_s)
