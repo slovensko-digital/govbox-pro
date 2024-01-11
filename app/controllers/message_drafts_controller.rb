@@ -8,6 +8,8 @@ class MessageDraftsController < ApplicationController
   include MessageThreadsConcern
 
   def index
+    redirect_to message_threads_path(q: "label:(#{Current.tenant.draft_tag.name})") unless Current.tenant.feature_enabled?(:message_draft_import)
+
     @messages = @messages.order(created_at: :desc)
   end
 
