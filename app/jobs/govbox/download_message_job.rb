@@ -19,9 +19,7 @@ module Govbox
         govbox_message.payload = raw_message
       end
 
-      processed_message = ::Message.where(uuid: govbox_message.message_id).joins(:thread).where(thread: { box_id: govbox_message.box.id }).take
-
-      ProcessMessageJob.perform_later(govbox_message) unless processed_message
+      ProcessMessageJob.perform_later(govbox_message)
     end
   end
 end
