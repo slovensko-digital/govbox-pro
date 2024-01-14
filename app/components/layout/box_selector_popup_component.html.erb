@@ -33,8 +33,8 @@
     </div>
     <div class="flex sm:flex-row flex-col-reverse gap-4 justify-center sm:-mx-6 sm:px-6 -mx-4 p-4 -mb-4 bg-gray-50">
       <%= button_to sync_all_boxes_path, class: "flex w-full justify-center gap-4", data: { turbo_frame: "_top", turbo_confirm: "Naozaj vynútiť aktualizáciu správ?\nVynútenie využívajte len v nevyhnutných situáciách, a keď máte potvrdenie o novej správe nezobrazujúcej sa v Govbox Pro.\nSprávy sa sťahujú automaticky, najbližšia aktualizácia nastane v čase #{l(@next_sync_at, format: "%H:%M")}" } do %>
-        <%= render Common::IconComponent.new("cloud-arrow-down", classes: "w-6 h-6 text-gray-400") %>
-        <%= "Vynútiť aktualizáciu správ" %>
+        <%= render Common::IconComponent.new("cloud-arrow-down", classes: "size-6 text-gray-400") %>
+        <%= "Stiahnuť nové správy" %>
       <% end %>
     </div>
   <% end %>

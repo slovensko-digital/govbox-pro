@@ -273,13 +273,13 @@ class AuditLog < ApplicationRecord
     end
   end
 
-  class BoxSyncInvoked < AuditLog
+  class BoxSyncRequested < AuditLog
     def self.create_audit_record(box)
       create_record(object: box)
     end
   end
 
-  class BoxSyncAllInvoked < AuditLog
+  class BoxSyncAllRequested < AuditLog
     def self.create_audit_record
       create_record(object: nil)
     end

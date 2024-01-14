@@ -14,16 +14,14 @@ class BoxesController < ApplicationController
     authorize @box
     raise ActionController::MethodNotAllowed, 'Not authorized' unless policy_scope(Box).exists?(@box.id)
 
-    EventBus.publish(:box_sync_invoked, @box)
-    Govbox::SyncBoxJob.perform_later(@box)
+    @box.sync
   end
 
   def sync_all
     authorize Box
-    EventBus.publish(:box_sync_all_invoked)
+    EventBus.publish(:box_sync_all_requested)
 
-    boxes = Current.tenant.boxes
-    boxes.each { |box| Govbox::SyncBoxJob.perform_later(box) }
+    Current.tenant.boxes.sync_all
   end
 
   def select
