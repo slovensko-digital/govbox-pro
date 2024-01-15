@@ -41,7 +41,6 @@ class MessageDraft < Message
 
   with_options on: :create do |message_draft|
     message_draft.validates :sender_name, presence: true
-    message_draft.validates :recipient_name, presence: true
     message_draft.validate :validate_metadata_with_template
   end
 

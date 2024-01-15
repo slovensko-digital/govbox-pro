@@ -51,7 +51,7 @@
       <p>Správu nie je možné vizualizovať.</p>
     <% end %>
 
-    <% if @message.not_yet_submitted? && @message.form&.signable? %>
+    <% if @message.not_yet_submitted? %>
       <div class="gap-2 p-2 border-t-0 border-r-0 border-b-0 border-l-0 border-gray-200">
         <%= content_tag(:div,
           {
