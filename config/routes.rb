@@ -47,6 +47,7 @@ Rails.application.routes.draw do
 
   resources :boxes, path: 'schranky', only: %i[index show] do
     post :sync
+    post :sync_all, on: :collection
     get :select, on: :member
     get :select_all, on: :collection
     get :get_selector, on: :collection

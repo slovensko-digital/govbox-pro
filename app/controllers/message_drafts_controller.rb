@@ -1,4 +1,5 @@
 class MessageDraftsController < ApplicationController
+  before_action :ensure_drafts_enabled, only: :index
   before_action :load_message_drafts, only: %i[index submit_all]
   before_action :load_original_message, only: :create
   before_action :load_message_draft, except: [:index, :create, :submit_all]
@@ -84,6 +85,10 @@ class MessageDraftsController < ApplicationController
   end
 
   private
+
+  def ensure_drafts_enabled
+    redirect_to message_threads_path(q: "label:(#{Current.tenant.draft_tag.name})") unless Current.tenant.feature_enabled?(:message_draft_import)
+  end
 
   def load_message_drafts
     authorize MessageDraft

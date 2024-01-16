@@ -273,6 +273,18 @@ class AuditLog < ApplicationRecord
     end
   end
 
+  class BoxSyncRequested < AuditLog
+    def self.create_audit_record(box)
+      create_record(object: box)
+    end
+  end
+
+  class BoxSyncAllRequested < AuditLog
+    def self.create_audit_record
+      create_record(object: nil)
+    end
+  end
+
   def self.create_record(object:, **args)
     create(
       tenant: Current.tenant,
