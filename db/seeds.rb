@@ -116,6 +116,7 @@ Upvs::MessageTemplate.find_or_create_by!(
 	</AuthentificationCertificateData>
 </AuthentificationCertificateWithTechnicalAccountRegistration>',
   metadata: {
+    sktalk_class: 'IAM_FORM_REGISTRACIA_TU_REQ_01',
     posp_id: '42156424.IAM_Zapis_autentifikacneho_certifikatu_s_vytvorenim_TU.sk',
     posp_version: '1.5',
     message_type: '42156424.IAM_Zapis_autentifikacneho_certifikatu_s_vytvorenim_TU.sk'
@@ -154,6 +155,7 @@ Upvs::MessageTemplate.find_or_create_by!(
 	</AuthentificationCertificateData>
 </AuthentificationCertificateWithTechnicalAccountRegistration>',
   metadata: {
+    sktalk_class: 'IAM_FORM_REGISTRACIA_TU_REQ_01',
     posp_id: '42156424.IAM_Zapis_autentifikacneho_certifikatu_s_vytvorenim_TU.sk',
     posp_version: '1.5',
     message_type: '42156424.IAM_Zapis_autentifikacneho_certifikatu_s_vytvorenim_TU.sk'

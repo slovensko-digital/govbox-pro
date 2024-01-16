@@ -13,6 +13,7 @@ class Govbox::SubmitMessageDraftJob < ApplicationJob
     all_message_metadata = message_draft.metadata.merge(message_draft.template&.metadata)
 
     message_draft_data = {
+      sktalk_class: all_message_metadata["sktalk_class"],
       posp_id: all_message_metadata["posp_id"],
       posp_version: all_message_metadata["posp_version"],
       message_type: all_message_metadata["message_type"],
