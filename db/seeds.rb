@@ -53,6 +53,12 @@ Upvs::ServiceWithForm.find_or_create_by!(
   schema_url: 'http://schemas.gov.sk/form/App.GeneralAgenda/1.9'
 )
 Upvs::ServiceWithForm.find_or_create_by!(
+  institution_uri: 'ico://sk/42156424',
+  institution_name: 'Národná agentúra pre sieťové a elektronické služby',
+  name: "Žiadosť o zápis autentifikačného certifikátu do registra autentifikačných certifikátov",
+  schema_url: 'http://schemas.gov.sk/form/42156424.IAM_Zapis_autentifikacneho_certifikatu_s_vytvorenim_TU.sk/1.5'
+)
+Upvs::ServiceWithForm.find_or_create_by!(
   institution_uri: 'ico://sk/83369723',
   institution_name: 'Test OVM 83369723',
   name: "Žiadosť o zápis autentifikačného certifikátu do registra autentifikačných certifikátov",
