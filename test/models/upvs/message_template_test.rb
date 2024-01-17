@@ -8,13 +8,13 @@ class Upvs::MessageTemplateTest < ActiveSupport::TestCase
     message_template.create_message(message_draft, author: users(:basic), box: boxes(:ssd_main), recipient_name: 'Test OVM', recipient_uri: 'ico://sk/12345678')
 
     message_draft.metadata['data'] = {
-      Predmet: 'Odpoveď',
-      Text: 'Odpoveď k rozhodnutiu...'
+      Predmet: 'Odpoved',
+      Text: 'Odpoved k rozhodnutiu...'
     }
     message_draft.save
 
     message_template.build_message_from_template(message_draft)
 
-    assert_equal '<GeneralAgenda xmlns="http://schemas.gov.sk/form/App.GeneralAgenda/1.9"> <subject>Odpoveď</subject> <text>Odpoveď k rozhodnutiu...</text> </GeneralAgenda>', message_draft.form.content
+    assert_equal '<GeneralAgenda xmlns="http://schemas.gov.sk/form/App.GeneralAgenda/1.9"> <subject>Odpoved</subject> <text>Odpoved k rozhodnutiu...</text> </GeneralAgenda>', message_draft.form.content
   end
 end

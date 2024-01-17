@@ -75,7 +75,7 @@ class MessageObject < ApplicationRecord
   end
 
   def content
-    message_object_datum&.blob.force_encoding('UTF-8')
+    message_object_datum&.blob
   end
 
   def form?
