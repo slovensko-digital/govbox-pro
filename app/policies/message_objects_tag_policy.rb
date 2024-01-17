@@ -16,4 +16,8 @@ class MessageObjectsTagPolicy < ApplicationPolicy
   def update?
     true
   end
+
+  def start?
+    true
+  end
 end

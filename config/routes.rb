@@ -66,6 +66,11 @@ Rails.application.routes.draw do
 
       resource :authorize_deliveries, only: [:update]
       resource :archive, only: [:update]
+
+      resource :signing, only: [:update] do
+        post :new
+        post :start
+      end
     end
   end
 

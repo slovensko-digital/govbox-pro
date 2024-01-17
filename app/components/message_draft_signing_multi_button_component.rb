@@ -1,6 +1,6 @@
 class MessageDraftSigningMultiButtonComponent < ViewComponent::Base
-  def initialize(message:, user_is_signer: false)
+  def initialize(message:, signable:)
     @message = message
-    @user_is_signer = user_is_signer
+    @signable = signable
   end
 end

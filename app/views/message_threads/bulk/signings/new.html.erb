@@ -1,0 +1,25 @@
+<%= tag.turbo_frame id: "modal" do %>
+  <%= render Common::ModalComponent.new(max_size: "max-w-lg md:max-w-xl") do |modal| %>
+    <% modal.with_header do %>
+      Hromadné podpisovanie
+    <% end %>
+    <% modal.with_modal_content do %>
+      <%= form_with url: start_message_threads_bulk_signing_path, method: :post, data: { turbo_frame: "modal" } do %>
+
+        <% @message_thread_ids.each do |id| %>
+          <%= hidden_field_tag "message_thread_ids[]", id %>
+        <% end %>
+
+        <div class="w-full my-4">
+          <p class="pb-4">Vybrané vlákna obsahujú <%= t("signing.documents", count: @message_objects.length) %> na podpis.</p>
+        </div>
+
+        <%= render Common::ModalActionsComponent.new do |actions| %>
+          <% actions.with_submit_button do %>
+            <%= submit_tag "Podpísať Autogramom", class: "inline-flex w-full justify-center items-center px-3 py-2 rounded-md font-medium text-left text-sm text-white bg-blue-700 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 focus:outline-none dark:focus:ring-blue-800 hover:cursor-pointer sm:w-auto" %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>
