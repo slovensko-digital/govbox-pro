@@ -15,6 +15,7 @@ govbox_api_api_connection2:
 govbox_api_api_connection_with_obo_support:
   sub: sub3
   api_token_private_key: private_key
+  tenant: google
   type: 'Govbox::ApiConnectionWithOboSupport'
 
 sk_api_api_connection_with_obo_support:

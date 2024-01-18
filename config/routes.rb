@@ -45,8 +45,9 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :boxes, path: 'schranky', only: %i[index show] do
+  resources :boxes, path: 'schranky', only: [] do
     post :sync
+    post :sync_all, on: :collection
     get :select, on: :member
     get :select_all, on: :collection
     get :get_selector, on: :collection
@@ -65,6 +66,11 @@ Rails.application.routes.draw do
 
       resource :authorize_deliveries, only: [:update]
       resource :archive, only: [:update]
+
+      resource :signing, only: [:update] do
+        post :new
+        post :start
+      end
     end
   end
 

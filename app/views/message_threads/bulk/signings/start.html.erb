@@ -2,6 +2,6 @@
   <%=
     render Signing::ProcessingComponent.new(
       message_objects: @message_objects,
-      after_singing_path: message_draft_signing_path(@message_draft)
+      after_singing_path: message_threads_bulk_signing_path
     ) %>
 <% end %>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_12_22_155111) do
+ActiveRecord::Schema[7.1].define(version: 2023_12_29_100057) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -20,7 +20,6 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_22_155111) do
   # Note that some types may not work with other database engines. Be careful if changing database.
   create_enum "color", ["slate", "gray", "zinc", "neutral", "stone", "red", "orange", "amber", "yellow", "lime", "green", "emerald", "teal", "cyan", "sky", "blue", "indigo", "violet", "purple", "fuchsia", "pink", "rose"]
   create_enum "group_type", ["ALL", "USER", "CUSTOM", "ADMIN"]
-  create_enum "icon", ["key", "fingerprint", "pencil", "check"]
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -57,6 +56,8 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_22_155111) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "type"
+    t.bigint "tenant_id"
+    t.index ["tenant_id"], name: "index_api_connections_on_tenant_id"
   end
 
   create_table "api_requests", force: :cascade do |t|
@@ -519,12 +520,12 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_22_155111) do
     t.bigint "owner_id"
     t.string "external_name"
     t.string "type", null: false
-    t.string "icon"
-    t.integer "tag_groups_count", default: 0, null: false
     t.enum "color", enum_type: "color"
+    t.integer "tag_groups_count", default: 0, null: false
+    t.string "icon"
     t.index "tenant_id, type, lower((name)::text)", name: "index_tags_on_tenant_id_and_type_and_lowercase_name", unique: true
     t.index ["owner_id"], name: "index_tags_on_owner_id"
-    t.index ["tenant_id", "type"], name: "signings_tags", unique: true, where: "((type)::text = ANY (ARRAY[('SignatureRequestedTag'::character varying)::text, ('SignedTag'::character varying)::text]))"
+    t.index ["tenant_id", "type"], name: "signings_tags", unique: true, where: "((type)::text = ANY ((ARRAY['SignatureRequestedTag'::character varying, 'SignedTag'::character varying])::text[]))"
     t.index ["tenant_id"], name: "index_tags_on_tenant_id"
   end
 
@@ -580,6 +581,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_22_155111) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "api_connections", "tenants"
   add_foreign_key "archived_object_versions", "archived_objects"
   add_foreign_key "archived_objects", "message_objects"
   add_foreign_key "audit_logs", "message_threads", on_delete: :nullify

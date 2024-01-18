@@ -6,6 +6,11 @@ sk:
         recipient_name: 'Prijímateľ'
       message_thread:
         title: "Názov"
+      box:
+        name: Názov
+        short_name: Krátky názov
+        uri: URI
+        settings_obo: ID identity
     errors:
       messages:
         record_invalid: "Validácia neúspešná: %{errors}"
@@ -131,7 +136,7 @@ sk:
     format: "%{attribute} %{message}"
     messages:
       accepted: musí byť potvrdené
-      blank: je povinná položka
+      blank: "%{attribute} je povinná položka"
       confirmation: nebolo potvrdené
       empty: nesmie byť prázdny/e
       equal_to: sa musí rovnať %{count}
@@ -148,7 +153,7 @@ sk:
       not_an_integer: musí byť celé číslo
       odd: musí byť nepárne číslo
       required: musí existovať
-      taken: ste už použili
+      taken: "%{attribute} ste už použili"
       too_long: je príliš dlhá/ý (max. %{count} znakov)
       too_short: je príliš krátky/a (min. %{count} znakov)
       wrong_length: nemá správnu dĺžku (očakáva sa %{count} znakov)
@@ -281,3 +286,13 @@ sk:
       create: "Notifikácie boli nastavené!"
       update: "Notifikacie boli zmenené!"
       destroy: "Notifikácie boli zrušené!"
+  signing:
+    processed: "Dokumenty boli úspešne podpísané"
+    failed: "Pri podpisovaní dokumentov sa vyskytla chyba"
+    documents:
+      one: "1 dokument"
+      few: "%{count} dokumenty"
+      other: "%{count} dokumentov"
+  bulk:
+    signing:
+      nothing_to_sign: "Vo vybraných vláknach sa nenašli žiadne dokumenty so žiadosťou na podpis"
