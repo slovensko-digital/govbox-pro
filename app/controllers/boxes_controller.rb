@@ -1,9 +1,5 @@
 class BoxesController < ApplicationController
-  before_action :load_box, only: %i[show sync select]
-
-  def show
-    authorize @box
-  end
+  before_action :load_box, only: %i[sync select]
 
   def sync
     authorize @box
