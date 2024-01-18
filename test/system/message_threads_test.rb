@@ -166,6 +166,7 @@ class MessageThreadsTest < ApplicationSystemTestCase
           assert_text "Reply to something"
         end
 
+      within("#submission_message_draft_#{draft_one.id}") do
         assert_button "Odoslať"
       end
     end
