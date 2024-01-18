@@ -1,4 +1,4 @@
 <%= turbo_stream.before "new_message_placeholder" do %>
-  <%= render MessageDraftComponent.new(message: @message_reply, user_is_signer: @user_is_signer, is_last: true) %>
+  <%= render MessageDraftComponent.new(message: @message_reply, signable: Current.user.signer?, is_last: true) %>
 <% end %>
 
