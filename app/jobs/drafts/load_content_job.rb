@@ -20,7 +20,7 @@ class Drafts::LoadContentJob < ApplicationJob
     end
 
     save_form_visualisation(message_draft)
-  rescue Exception
+  rescue
     message_draft.metadata["status"] = "invalid"
     message_draft.save
   end
@@ -66,10 +66,6 @@ class Drafts::LoadContentJob < ApplicationJob
       message_type: message_draft.metadata["message_type"],
     )
     upvs_form_xslt_html = upvs_form&.xslt_html
-
-    upvs_form_template = upvs_form.templates.where(tenant: message_draft.thread.tenant)&.take
-    message_draft.metadata["form_template_id"] = upvs_form_template&.id
-    message_draft.save!
 
     return unless upvs_form_xslt_html
 

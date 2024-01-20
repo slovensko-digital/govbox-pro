@@ -39,7 +39,7 @@ class MessageDraftsController < ApplicationController
       recipient_uri: new_message_draft_params[:recipient_uri]
     )
 
-    unless @message.valid?(:create)
+    unless @message.valid?(:create_from_template)
       @templates_list = MessageTemplate.tenant_templates_list(Current.tenant)
       @message_template ||= MessageTemplate.default_template
       @boxes = Current.tenant.boxes.pluck(:name, :id)

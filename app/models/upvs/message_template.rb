@@ -57,7 +57,7 @@ class Upvs::MessageTemplate < ::MessageTemplate
 
     message.save
 
-    if message.valid?(:create)
+    if message.valid?(:create_from_template)
       message.add_cascading_tag(author.draft_tag)
 
       create_form_object(message)
