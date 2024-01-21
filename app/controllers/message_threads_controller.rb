@@ -125,11 +125,11 @@ class MessageThreadsController < ApplicationController
   end
 
   def message_thread_params
-    params.require(:message_thread).permit(:title, :original_title, :merge_uuids, :tag_id, :tags)
+    params.require(:message_thread).permit(:title, :original_title, :merge_uuids, :tag_id, :tags, :referrer)
   end
 
   def search_params
-    params.permit(:q, :format, cursor: MessageThreadCollection::CURSOR_PARAMS)
+    params.permit(:q, :format, :referrer, cursor: MessageThreadCollection::CURSOR_PARAMS)
   end
 
   def set_thread_tags

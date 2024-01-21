@@ -1,11 +1,13 @@
-<% if @automation_rules.any? %>
-  <%= render Settings::Rules::AutomationRulesListComponent.new do |component| %>
+<%= render Settings::Rules::AutomationRulesListComponent.new do |component| %>
+  <% if @automation_rules.any? %>
     <% @automation_rules.each do |automation_rule| %>
       <% component.with_automation_rule do %>
         <%= render Settings::Rules::AutomationRulesTableRowComponent.new(automation_rule) %>
       <% end %>
     <% end %>
+  <% else %>
+    <% component.with_blank_results_area do %>
+      <%= render Common::BlankResultsComponent.new(:empty) %>
+    <% end %>
   <% end %>
-<% else %>
-  <%= render Common::BlankResultsComponent.new(:empty) %>
 <% end %>
