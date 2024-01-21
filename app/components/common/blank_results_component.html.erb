@@ -1,0 +1,9 @@
+<div class="flex flex-col justify-start items-start self-stretch flex-grow-0 flex-shrink-0">
+  <div class="flex flex-col justify-center items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-6 px-6 py-12 bg-white">
+    <%= render Common::IconComponent.new(@icon, classes: "size-32 text-gray-500") %>
+    <div class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 relative gap-1">
+      <p class="flex-grow-0 flex-shrink-0 text-base font-semibold text-center text-gray-500"><%= @text1 %></p>
+      <p class="flex-grow-0 flex-shrink-0 text-base text-center text-gray-500"><%= @text2 %></p>
+    </div>
+  </div>
+</div>
