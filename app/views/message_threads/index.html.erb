@@ -3,8 +3,8 @@
     <meta name="turbo-visit-control" content="reload">
   <% end %>
 <% end %>
-<% if @message_threads.any? %>
-  <%= render MessageThreadsTableComponent.new(filter: @filter, filter_subscription: @filter_subscription) do |component| %>
+<%= render MessageThreadsTableComponent.new(filter: @filter, filter_subscription: @filter_subscription) do |component| %>
+  <% if @message_threads.any? %>
     <% component.with_message_thread do %>
       <%= render MessageThreadsTableRowComponent.with_collection(@message_threads) %>
     <% end %>
@@ -13,11 +13,13 @@
         <%= render Turbo::NextPageAreaComponent.new(id: @next_cursor, url: scroll_message_threads_url(@next_page_params)) %>
       <% end %>
     <% end %>
-  <% end %>
-<% else %>
-  <% if params[:referrer] == "menu" %>
-    <%= render Common::BlankResultsComponent.new(:all_done) %>
   <% else %>
-    <%= render Common::BlankResultsComponent.new(:not_found) %>
+    <% component.with_blank_results_area do %>
+      <% if params[:referrer] == "menu" %>
+        <%= render Common::BlankResultsComponent.new(:all_done) %>
+      <% else %>
+        <%= render Common::BlankResultsComponent.new(:not_found) %>
+      <% end %>
+    <% end %>
   <% end %>
 <% end %>
