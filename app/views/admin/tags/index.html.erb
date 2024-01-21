@@ -1,1 +1,5 @@
-<%= render Admin::Tags::TagsListComponent.new(simple_tags: @simple_tags) %>
+<% if @simple_tags.any? %>
+  <%= render Admin::Tags::TagsListComponent.new(simple_tags: @simple_tags) %>
+<% else %>
+  <%= render Common::BlankResultsComponent.new(:empty) %>
+<% end %>
