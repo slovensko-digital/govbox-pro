@@ -18,7 +18,7 @@ class Tenant < ApplicationRecord
   has_many :groups, dependent: :destroy
   has_many :custom_groups
 
-  has_one :draft_tag
+  has_one :draft_tag, -> { where(owner_id: nil) }
   has_one :everything_tag
   has_one :signature_requested_tag
   has_one :signed_tag
