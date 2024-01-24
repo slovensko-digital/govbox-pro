@@ -99,6 +99,10 @@ class MessageDraft < Message
     metadata["status"] == "submitted"
   end
 
+  def submit_failed?
+    metadata["status"] == "submit_fail"
+  end
+
   def being_submitted!
     metadata["status"] = "being_submitted"
     save!

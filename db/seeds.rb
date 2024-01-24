@@ -65,6 +65,19 @@ Upvs::ServiceWithForm.find_or_create_by!(
   schema_url: 'http://schemas.gov.sk/form/42156424.IAM_Zapis_autentifikacneho_certifikatu_s_vytvorenim_TU.sk/1.5'
 )
 
+Upvs::ServiceWithForm.find_or_create_by!(
+  institution_uri: 'ico://sk/42156424',
+  institution_name: 'Národná agentúra pre sieťové a elektronické služby',
+  name: "Žiadosť o zmenu zápisu autentifikačného certifikátu v registri autentifikačných certifikátov",
+  schema_url: 'http://schemas.gov.sk/form/42156424.IAM_Zmena_zapisu_autentifikacneho_certifikatu.sk/1.5'
+)
+Upvs::ServiceWithForm.find_or_create_by!(
+  institution_uri: 'ico://sk/83369723',
+  institution_name: 'Test OVM 83369723',
+  name: "Žiadosť o zmenu zápisu autentifikačného certifikátu v registri autentifikačných certifikátov",
+  schema_url: 'http://schemas.gov.sk/form/42156424.IAM_Zmena_zapisu_autentifikacneho_certifikatu.sk/1.5'
+)
+
 Upvs::MessageTemplate.find_or_create_by!(
   name: 'Všeobecná agenda',
   content: '<GeneralAgenda xmlns="http://schemas.gov.sk/form/App.GeneralAgenda/1.9">
@@ -165,6 +178,69 @@ Upvs::MessageTemplate.find_or_create_by!(
     posp_id: '42156424.IAM_Zapis_autentifikacneho_certifikatu_s_vytvorenim_TU.sk',
     posp_version: '1.5',
     message_type: '42156424.IAM_Zapis_autentifikacneho_certifikatu_s_vytvorenim_TU.sk'
+  },
+  system: false
+)
+
+Upvs::MessageTemplate.find_or_create_by!(
+  name: 'IRVIN - Žiadosť o zmenu zápisu autentifikačného certifikátu v registri autentifikačných certifikátov',
+  content: '<AuthentificationCertificateRegistration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.gov.sk/form/42156424.IAM_Zmena_zapisu_autentifikacneho_certifikatu.sk/1.5">
+  <CertificateOwner>
+    <IdentityType>PO</IdentityType>
+    <OwnerPoOvm>
+      <ICO>{{ IČO*:text_field }}</ICO>
+      <Suffix xsi:nil="true" />
+    </OwnerPoOvm>
+  </CertificateOwner>
+  <ContactPerson>
+    <ContactName>{{ Kontaktná osoba*:text_field:"Ján Suchal" }}</ContactName>
+    <Email>{{ Email*:email_field:"jan.suchal@test.sk" }}</Email>
+    <Phone>{{ Telefón*:text_field:"+4190000000" }}</Phone>
+  </ContactPerson>
+  <AuthentificationCertificateData>
+    <Thumbprint>{{ Digitálny odtlačok*:text_field }}</Thumbprint>
+  </AuthentificationCertificateData>
+  <TechnicalAccountData>
+    <TechnicalAccountName>{{ Názov technického účtu*:text_field }}</TechnicalAccountName>
+  </TechnicalAccountData>
+</AuthentificationCertificateRegistration>',
+  metadata: {
+    sktalk_class: 'IAM_FORM_REGISTRACIA_AC_REQ_01',
+    posp_id: '42156424.IAM_Zmena_zapisu_autentifikacneho_certifikatu.sk',
+    posp_version: '1.5',
+    message_type: '42156424.IAM_Zmena_zapisu_autentifikacneho_certifikatu.sk'
+  },
+  tenant: tenant,
+  system: false
+)
+
+Upvs::MessageTemplate.find_or_create_by!(
+  name: 'Žiadosť o zmenu zápisu autentifikačného certifikátu v registri autentifikačných certifikátov',
+  content: '<AuthentificationCertificateRegistration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.gov.sk/form/42156424.IAM_Zmena_zapisu_autentifikacneho_certifikatu.sk/1.5">
+  <CertificateOwner>
+    <IdentityType>PO</IdentityType>
+    <OwnerPoOvm>
+      <ICO>{{ IČO*:text_field }}</ICO>
+      <Suffix xsi:nil="true" />
+    </OwnerPoOvm>
+  </CertificateOwner>
+  <ContactPerson>
+    <ContactName>{{ Kontaktná osoba*:text_field }}</ContactName>
+    <Email>{{ Email*:email_field }}</Email>
+    <Phone>{{ Telefón*:text_field }}</Phone>
+  </ContactPerson>
+  <AuthentificationCertificateData>
+    <Thumbprint>{{ Digitálny odtlačok*:text_field }}</Thumbprint>
+  </AuthentificationCertificateData>
+  <TechnicalAccountData>
+    <TechnicalAccountName>{{ Názov technického účtu*:text_field }}</TechnicalAccountName>
+  </TechnicalAccountData>
+</AuthentificationCertificateRegistration>',
+  metadata: {
+    sktalk_class: 'IAM_FORM_REGISTRACIA_AC_REQ_01',
+    posp_id: '42156424.IAM_Zmena_zapisu_autentifikacneho_certifikatu.sk',
+    posp_version: '1.5',
+    message_type: '42156424.IAM_Zmena_zapisu_autentifikacneho_certifikatu.sk'
   },
   system: false
 )
@@ -293,13 +369,13 @@ ga_related_docs.each do |related_document|
   )
 end
 
-crac_cert_registration_form = Upvs::Form.find_or_create_by!(
+crac_tu_registration_form = Upvs::Form.find_or_create_by!(
   identifier: "42156424.IAM_Zapis_autentifikacneho_certifikatu_s_vytvorenim_TU.sk",
   version: "1.5",
   message_type: "42156424.IAM_Zapis_autentifikacneho_certifikatu_s_vytvorenim_TU.sk"
 )
 
-crac_cert_registration_form_related_docs = [
+crac_tu_registration_form_related_docs = [
   {
     language: "sk",
     document_type: "CLS_F_XSD_EDOC",
@@ -1459,6 +1535,197 @@ XSD
     </xsl:choose>
   </xsl:template>
 </xsl:stylesheet>
+    XSLT
+  }
+]
+
+crac_tu_registration_form_related_docs.each do |related_document|
+  Upvs::FormRelatedDocument.find_or_create_by!(
+    form: crac_tu_registration_form,
+    data: related_document[:data],
+    language: related_document[:language],
+    document_type: related_document[:document_type]
+  )
+end
+
+crac_cert_registration_form = Upvs::Form.find_or_create_by!(
+  identifier: "42156424.IAM_Zmena_zapisu_autentifikacneho_certifikatu.sk",
+  version: "1.5",
+  message_type: "42156424.IAM_Zmena_zapisu_autentifikacneho_certifikatu.sk"
+)
+
+crac_cert_registration_form_related_docs = [
+  {
+    language: "sk",
+    document_type: "CLS_F_XSD_EDOC",
+    data: <<~XSD
+  <?xml version="1.0" encoding="UTF-8"?><xs:schema elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://schemas.gov.sk/form/42156424.IAM_Zmena_zapisu_autentifikacneho_certifikatu.sk/1.5" xmlns="http://schemas.gov.sk/form/42156424.IAM_Zmena_zapisu_autentifikacneho_certifikatu.sk/1.5"><xs:simpleType name="ltd_FoPoOvm"><xs:restriction base="xs:string"><xs:enumeration value="FO" /><xs:enumeration value="PO" /><xs:enumeration value="OVM" /></xs:restriction></xs:simpleType><xs:simpleType name="ldt_Text_256"><xs:restriction base="xs:string"><xs:maxLength value="256" /></xs:restriction></xs:simpleType><xs:simpleType name="ico"><xs:restriction base="xs:string"><xs:maxLength value="50" /></xs:restriction></xs:simpleType><xs:simpleType name="suffix"><xs:restriction base="xs:string"><xs:pattern value="\d{4,5}" /><xs:minLength value="4" /><xs:maxLength value="5" /></xs:restriction></xs:simpleType><xs:simpleType name="ldt_Text_1023"><xs:restriction base="xs:string"><xs:maxLength value="1023" /></xs:restriction></xs:simpleType><xs:simpleType name="email"><xs:restriction base="xs:string"><xs:pattern value="|[a-zA-Z0-9_.+-]+@[a-zA-Z0-9\-]+\.[a-zA-Z0-9\-.]+" /><xs:maxLength value="254" /></xs:restriction></xs:simpleType><xs:simpleType name="CPhone"><xs:restriction base="xs:string"><xs:pattern value="[+]?[()/0-9. -]{9,}" /></xs:restriction></xs:simpleType><xs:simpleType name="ltd_TextArea_1024"><xs:restriction base="xs:string"><xs:maxLength value="1024" /></xs:restriction></xs:simpleType><xs:simpleType name="ldt_Text_64"><xs:restriction base="xs:string"><xs:maxLength value="64" /></xs:restriction></xs:simpleType><xs:element name="AuthentificationCertificateRegistration"><xs:complexType><xs:sequence><xs:element name="CertificateOwner" minOccurs="1" maxOccurs="1"><xs:complexType><xs:sequence><xs:element name="IdentityType" type="ltd_FoPoOvm" minOccurs="1" /><xs:element name="OwnerFO" minOccurs="0"><xs:complexType><xs:sequence><xs:element name="GivenName" type="ldt_Text_256" minOccurs="1" /><xs:element name="FamilyName" type="ldt_Text_256" minOccurs="1" /><xs:element name="BirthNumber" type="ldt_Text_256" minOccurs="1" /></xs:sequence></xs:complexType></xs:element><xs:element name="OwnerPoOvm" minOccurs="0"><xs:complexType><xs:sequence><xs:element name="ICO" type="ico" minOccurs="1" /><xs:element name="Suffix" type="suffix" minOccurs="0" nillable="true" /></xs:sequence></xs:complexType></xs:element></xs:sequence></xs:complexType></xs:element><xs:element name="ContactPerson" minOccurs="0"><xs:complexType><xs:sequence><xs:element name="ContactName" type="ldt_Text_1023" minOccurs="1" /><xs:element name="Email" type="email" minOccurs="1" /><xs:element name="Phone" type="CPhone" minOccurs="1" /></xs:sequence></xs:complexType></xs:element><xs:element name="AuthentificationCertificateData" minOccurs="1" maxOccurs="1"><xs:complexType><xs:sequence><xs:element name="Thumbprint" type="ltd_TextArea_1024" minOccurs="1" /></xs:sequence></xs:complexType></xs:element><xs:element name="TechnicalAccountData" minOccurs="0"><xs:complexType><xs:sequence><xs:element name="TechnicalAccountName" type="ldt_Text_64" minOccurs="1" /></xs:sequence></xs:complexType></xs:element></xs:sequence></xs:complexType></xs:element></xs:schema>
+    XSD
+  },
+  {
+    language: "sk",
+    document_type: "CLS_F_XSLT_TXT_SGN",
+    data: <<~XSLT
+  <?xml version="1.0" encoding="UTF-8"?><xsl:stylesheet version="1.0"  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  xmlns:egonp="http://schemas.gov.sk/form/42156424.IAM_Zmena_zapisu_autentifikacneho_certifikatu.sk/1.5" exclude-result-prefixes="egonp"><xsl:output method="html" doctype-system="http://www.w3.org/TR/html4/strict.dtd" doctype-public="-//W3C//DTD HTML 4.01//EN" indent="no" omit-xml-declaration="yes"/><xsl:template match="/"><html><head><meta http-equiv="X-UA-Compatible" content="IE=8" /><title>Žiadosť o zmenu zápisu autentifikačného certifikátu v registri autentifikačných certifikátov</title><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="language" content="sk-SK"/><style type="text/css">body {
+font-family: 'Arial', 'Open Sans', 'Segoe UI', 'Trebuchet MS', 'Geneva CE', lucida, sans-serif;
+background : #ffffff !important ;
+}
+.ui-tabs {
+padding: .2em 0;
+position: relative;
+zoom: 1;
+}
+.clear { clear: both; height: 0;}
+.layoutMain {
+margin: 0px auto;
+padding: 5px 5px 5px 5px;
+}
+.layoutRow { margin-bottom: 0px; }
+.caption { /*width: 100%; border-bottom: solid 1px black;*/ }
+.nocaption &gt; .caption { border: 0px !important; }
+.nocaption &gt; .caption span {
+background: none !important;
+display: none;
+}
+.caption .title { padding-left: 5px; }
+.headercorrection {
+margin: 0px;
+font-size : 1em;
+font-weight: bold;
+}
+.labelVis {
+float: left;
+font-family: 'Arial', 'Open Sans', 'Segoe UI', 'Trebuchet MS', 'Geneva CE', lucida, sans-serif;
+line-height: 25px;
+margin: 0px 18px 0px 0px;
+padding-left: 3px;
+width: 240px;
+word-wrap: break-word;
+font-size: 0.75em;
+}
+.labelVisBold {
+float: left;
+font-family: 'Arial', 'Open Sans', 'Segoe UI', 'Trebuchet MS', 'Geneva CE', lucida, sans-serif;
+line-height: 25px;
+margin: 0px 18px 0px 0px;
+padding-left: 3px;
+width: 390px;
+word-wrap: break-word;
+font-size: 0.75em;
+font-weight: bold;
+}
+.labelVisBig {
+float: left;
+font-family: 'Arial', 'Open Sans', 'Segoe UI', 'Trebuchet MS', 'Geneva CE', lucida, sans-serif;
+line-height: 25px;
+margin: 0px 18px 0px 0px;
+padding-left: 3px;
+width: 580px;
+word-wrap: break-word;
+font-size: 0.75em;
+}
+
+.contentVis {
+float: left;
+font-family: 'Arial', 'Open Sans', 'Segoe UI', 'Trebuchet MS', 'Geneva CE', lucida, sans-serif;
+line-height: 25px;
+width: 395px;
+word-wrap: break-word;
+font-size: 0.75em;
+margin: 0px;
+padding: 0px;
+vertical-align: top;
+}
+.wordwrap {
+white-space: pre-wrap;
+white-space: -moz-pre-wrap;
+white-space: -pre-wrap;
+white-space: -o-pre-wrap;
+word-wrap: break-word;
+}</style></head><body><div id="main" class="layoutMain"><xsl:apply-templates/></div></body></html></xsl:template><xsl:template match="/egonp:AuthentificationCertificateRegistration/egonp:AuthentificationCertificateData"><div class="layoutRow ui-tabs ui-widget-content" ><div class="caption ui-widget-header"><div class="headercorrection">Digitálny odtlačok autentifikačného certifikátu</div></div><xsl:call-template name="Funkcia"/><xsl:apply-templates select="./egonp:Thumbprint"/></div></xsl:template><xsl:template match="/egonp:AuthentificationCertificateRegistration/egonp:TechnicalAccountData"><div class="layoutRow ui-tabs ui-widget-content" ><div class="caption ui-widget-header"><div class="headercorrection">Údaje technického účtu</div></div><xsl:apply-templates select="./egonp:TechnicalAccountName"/></div></xsl:template><xsl:template match="/egonp:AuthentificationCertificateRegistration/egonp:CertificateOwner"><div class="layoutRow ui-tabs ui-widget-content" ><div class="caption ui-widget-header"><div class="headercorrection">Údaje o držiteľovi autentifikačného certifikátu</div></div><xsl:apply-templates select="./egonp:IdentityType"/><xsl:apply-templates select="./egonp:OwnerFO"/><xsl:apply-templates select="./egonp:OwnerPoOvm"/></div></xsl:template><xsl:template match="/egonp:AuthentificationCertificateRegistration/egonp:CertificateOwner/egonp:OwnerPoOvm"><div class="layoutRow ui-tabs ui-widget-content" ><xsl:apply-templates select="./egonp:ICO"/><xsl:apply-templates select="./egonp:Suffix"/></div></xsl:template><xsl:template match="/egonp:AuthentificationCertificateRegistration/egonp:CertificateOwner/egonp:OwnerFO"><div class="layoutRow ui-tabs ui-widget-content" ><xsl:apply-templates select="./egonp:GivenName"/><xsl:apply-templates select="./egonp:FamilyName"/><xsl:apply-templates select="./egonp:BirthNumber"/></div></xsl:template><xsl:template match="/egonp:AuthentificationCertificateRegistration/egonp:ContactPerson"><div class="layoutRow ui-tabs ui-widget-content" ><div class="caption ui-widget-header"><div class="headercorrection">Kontaktné údaje</div></div><xsl:apply-templates select="./egonp:ContactName"/><xsl:apply-templates select="./egonp:Email"/><xsl:apply-templates select="./egonp:Phone"/></div></xsl:template><xsl:template name= "Funkcia"><xsl:if test="./text()"><div><label class="labelVis">Funkcia pre výpočet digitálneho odtlačku:</label><span class="contentVis wordwrap">SHA:256</span></div><div class="clear">&#xa0;</div></xsl:if></xsl:template><xsl:template match="egonp:AuthentificationCertificateRegistration/egonp:AuthentificationCertificateData/egonp:Thumbprint"><xsl:if test="./text()"><div><label class="labelVis">Digitálny odtlačok:</label><span class="contentVis wordwrap"><xsl:call-template name="string-replace-all"><xsl:with-param name="text" select="." /><xsl:with-param name="replace" select="'%0A'" /><xsl:with-param name="by" select="'&#13;&#10;'" /></xsl:call-template></span></div><div class="clear">&#xa0;</div></xsl:if></xsl:template><xsl:template match="egonp:AuthentificationCertificateRegistration/egonp:TechnicalAccountData/egonp:TechnicalAccountName"><xsl:if test="./text()"><div><span class="contentVis wordwrap"><xsl:call-template name="string-replace-all"><xsl:with-param name="text" select="." /><xsl:with-param name="replace" select="'%0A'" /><xsl:with-param name="by" select="'&#13;&#10;'" /></xsl:call-template></span></div><div class="clear">&#xa0;</div></xsl:if></xsl:template><xsl:template match="egonp:AuthentificationCertificateRegistration/egonp:CertificateOwner/egonp:IdentityType"><xsl:if test="./text()"><div><label class="labelVis">Typ subjektu:</label><span class="contentVis wordwrap"><xsl:choose><xsl:when test=".='FO'"><xsl:text>Fyzick&#225; osoba</xsl:text></xsl:when><xsl:when test=".='PO'"><xsl:text>Pr&#225;vnick&#225; osoba/Fyzick&#225; osoba - podnikateľ</xsl:text></xsl:when><xsl:when test=".='OVM'"><xsl:text>Org&#225;n verejnej moci</xsl:text></xsl:when><xsl:otherwise><xsl:value-of select="."/></xsl:otherwise></xsl:choose></span></div><div class="clear">&#xa0;</div></xsl:if></xsl:template><xsl:template match="egonp:AuthentificationCertificateRegistration/egonp:CertificateOwner/egonp:OwnerPoOvm/egonp:ICO"><xsl:if test="./text()"><div><label class="labelVis">IČO:</label><span class="contentVis wordwrap"><xsl:call-template name="string-replace-all"><xsl:with-param name="text" select="." /><xsl:with-param name="replace" select="'%0A'" /><xsl:with-param name="by" select="'&#13;&#10;'" /></xsl:call-template></span></div><div class="clear">&#xa0;</div></xsl:if></xsl:template><xsl:template match="egonp:AuthentificationCertificateRegistration/egonp:CertificateOwner/egonp:OwnerPoOvm/egonp:Suffix"><xsl:if test="./text()"><div><label class="labelVis">Suffix:</label><span class="contentVis wordwrap"><xsl:call-template name="string-replace-all"><xsl:with-param name="text" select="." /><xsl:with-param name="replace" select="'%0A'" /><xsl:with-param name="by" select="'&#13;&#10;'" /></xsl:call-template></span></div><div class="clear">&#xa0;</div></xsl:if></xsl:template><xsl:template match="egonp:AuthentificationCertificateRegistration/egonp:CertificateOwner/egonp:OwnerFO/egonp:GivenName"><xsl:if test="./text()"><div><label class="labelVis">Meno:</label><span class="contentVis wordwrap"><xsl:call-template name="string-replace-all"><xsl:with-param name="text" select="." /><xsl:with-param name="replace" select="'%0A'" /><xsl:with-param name="by" select="'&#13;&#10;'" /></xsl:call-template></span></div><div class="clear">&#xa0;</div></xsl:if></xsl:template><xsl:template match="egonp:AuthentificationCertificateRegistration/egonp:CertificateOwner/egonp:OwnerFO/egonp:FamilyName"><xsl:if test="./text()"><div><label class="labelVis">Priezvisko:</label><span class="contentVis wordwrap"><xsl:call-template name="string-replace-all"><xsl:with-param name="text" select="." /><xsl:with-param name="replace" select="'%0A'" /><xsl:with-param name="by" select="'&#13;&#10;'" /></xsl:call-template></span></div><div class="clear">&#xa0;</div></xsl:if></xsl:template><xsl:template match="egonp:AuthentificationCertificateRegistration/egonp:CertificateOwner/egonp:OwnerFO/egonp:BirthNumber"><xsl:if test="./text()"><div><label class="labelVis">Rodné číslo:</label><span class="contentVis wordwrap"><xsl:call-template name="string-replace-all"><xsl:with-param name="text" select="." /><xsl:with-param name="replace" select="'%0A'" /><xsl:with-param name="by" select="'&#13;&#10;'" /></xsl:call-template></span></div><div class="clear">&#xa0;</div></xsl:if></xsl:template><xsl:template match="egonp:AuthentificationCertificateRegistration/egonp:ContactPerson/egonp:ContactName"><xsl:if test="./text()"><div><label class="labelVis">Meno a priezvisko:</label><span class="contentVis wordwrap"><xsl:call-template name="string-replace-all"><xsl:with-param name="text" select="." /><xsl:with-param name="replace" select="'%0A'" /><xsl:with-param name="by" select="'&#13;&#10;'" /></xsl:call-template></span></div><div class="clear">&#xa0;</div></xsl:if></xsl:template><xsl:template match="egonp:AuthentificationCertificateRegistration/egonp:ContactPerson/egonp:Email"><xsl:if test="./text()"><div><label class="labelVis">E-mail:</label><span class="contentVis wordwrap"><xsl:call-template name="string-replace-all"><xsl:with-param name="text" select="." /><xsl:with-param name="replace" select="'%0A'" /><xsl:with-param name="by" select="'&#13;&#10;'" /></xsl:call-template></span></div><div class="clear">&#xa0;</div></xsl:if></xsl:template><xsl:template match="egonp:AuthentificationCertificateRegistration/egonp:ContactPerson/egonp:Phone"><xsl:if test="./text()"><div><label class="labelVis">Telefón:</label><span class="contentVis wordwrap"><xsl:call-template name="string-replace-all"><xsl:with-param name="text" select="." /><xsl:with-param name="replace" select="'%0A'" /><xsl:with-param name="by" select="'&#13;&#10;'" /></xsl:call-template></span></div><div class="clear">&#xa0;</div></xsl:if></xsl:template><xsl:template name="formatToSkDate"><xsl:param name="date" /><xsl:variable name="dateString" select="string($date)" /><xsl:choose><xsl:when test="$dateString != '' and string-length($dateString)=10 and string(number(substring($dateString, 1, 4))) != 'NaN' "><xsl:value-of select="concat(substring($dateString, 9, 2), '.', substring($dateString, 6, 2), '.', substring($dateString, 1, 4))" /></xsl:when><xsl:otherwise><xsl:value-of select="$dateString"></xsl:value-of></xsl:otherwise></xsl:choose></xsl:template><xsl:template name="booleanCheckboxToString"><xsl:param name="boolValue" /><xsl:variable name="boolValueString" select="string($boolValue)" /><xsl:choose><xsl:when test="$boolValueString = 'true' "><xsl:text>Áno</xsl:text></xsl:when><xsl:when test="$boolValueString = 'false' "><xsl:text>Nie</xsl:text></xsl:when><xsl:when test="$boolValueString = '1' "><xsl:text>Áno</xsl:text></xsl:when><xsl:when test="$boolValueString = '0' "><xsl:text>Nie</xsl:text></xsl:when><xsl:otherwise><xsl:value-of select="$boolValueString"></xsl:value-of></xsl:otherwise></xsl:choose></xsl:template><xsl:template name="formatTimeTrimSeconds"><xsl:param name="time" /><xsl:variable name="timeString" select="string($time)" /><xsl:if test="$timeString != ''"><xsl:value-of select="substring($timeString, 1, 5)" /></xsl:if></xsl:template><xsl:template name="formatTime"><xsl:param name="time" /><xsl:variable name="timeString" select="string($time)" /><xsl:if test="$timeString != ''"><xsl:value-of select="substring($timeString, 1, 8)" /></xsl:if></xsl:template><xsl:template name="string-replace-all"><xsl:param name="text"/><xsl:param name="replace"/><xsl:param name="by"/><xsl:choose><xsl:when test="contains($text, $replace)"><xsl:value-of select="substring-before($text,$replace)"/><xsl:value-of select="$by"/><xsl:call-template name="string-replace-all"><xsl:with-param name="text" select="substring-after($text,$replace)"/><xsl:with-param name="replace" select="$replace"/><xsl:with-param name="by" select="$by" /></xsl:call-template></xsl:when><xsl:otherwise><xsl:value-of select="$text"/></xsl:otherwise></xsl:choose></xsl:template><xsl:template name="formatToSkDateTime"><xsl:param name="dateTime" /><xsl:variable name="dateTimeString" select="string($dateTime)" /><xsl:choose><xsl:when test="$dateTimeString!= '' and string-length($dateTimeString)>18 and string(number(substring($dateTimeString, 1, 4))) != 'NaN' "><xsl:value-of select="concat(substring($dateTimeString, 9, 2), '.', substring($dateTimeString, 6, 2), '.', substring($dateTimeString, 1, 4),' ', substring($dateTimeString, 12, 2),':', substring($dateTimeString, 15, 2))" /></xsl:when><xsl:otherwise><xsl:value-of select="$dateTimeString"></xsl:value-of></xsl:otherwise></xsl:choose></xsl:template><xsl:template name="formatToSkDateTimeSecond"><xsl:param name="dateTime" /><xsl:variable name="dateTimeString" select="string($dateTime)" /><xsl:choose><xsl:when test="$dateTimeString!= '' and string-length($dateTimeString)>18 and string(number(substring($dateTimeString, 1, 4))) != 'NaN' "><xsl:value-of select="concat(substring($dateTimeString, 9, 2), '.', substring($dateTimeString, 6, 2), '.', substring($dateTimeString, 1, 4),' ', substring($dateTimeString, 12, 2),':', substring($dateTimeString, 15, 2),':', substring($dateTimeString, 18, 2))" /></xsl:when><xsl:otherwise><xsl:value-of select="$dateTimeString"></xsl:value-of></xsl:otherwise></xsl:choose></xsl:template></xsl:stylesheet>
+    XSLT
+  },
+  {
+    language: "sk",
+    document_type: "CLS_F_XSLT_HTML",
+    data: <<~XSLT
+  <?xml version="1.0" encoding="UTF-8"?><xsl:stylesheet version="1.0"  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  xmlns:egonp="http://schemas.gov.sk/form/42156424.IAM_Zmena_zapisu_autentifikacneho_certifikatu.sk/1.5" exclude-result-prefixes="egonp"><xsl:output method="html" doctype-system="http://www.w3.org/TR/html4/strict.dtd" doctype-public="-//W3C//DTD HTML 4.01//EN" indent="no" omit-xml-declaration="yes"/><xsl:template match="/"><html><head><meta http-equiv="X-UA-Compatible" content="IE=8" /><title>Žiadosť o zmenu zápisu autentifikačného certifikátu v registri autentifikačných certifikátov</title><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="language" content="sk-SK"/><style type="text/css">body {
+font-family: 'Arial', 'Open Sans', 'Segoe UI', 'Trebuchet MS', 'Geneva CE', lucida, sans-serif;
+background : #ffffff !important ;
+}
+.ui-tabs {
+padding: .2em 0;
+position: relative;
+zoom: 1;
+}
+.clear { clear: both; height: 0;}
+.layoutMain {
+margin: 0px auto;
+padding: 5px 5px 5px 5px;
+}
+.layoutRow { margin-bottom: 0px; }
+.caption { /*width: 100%; border-bottom: solid 1px black;*/ }
+.nocaption &gt; .caption { border: 0px !important; }
+.nocaption &gt; .caption span {
+background: none !important;
+display: none;
+}
+.caption .title { padding-left: 5px; }
+.headercorrection {
+margin: 0px;
+font-size : 1em;
+font-weight: bold;
+}
+.labelVis {
+float: left;
+font-family: 'Arial', 'Open Sans', 'Segoe UI', 'Trebuchet MS', 'Geneva CE', lucida, sans-serif;
+line-height: 25px;
+margin: 0px 18px 0px 0px;
+padding-left: 3px;
+width: 240px;
+word-wrap: break-word;
+font-size: 0.75em;
+}
+.labelVisBold {
+float: left;
+font-family: 'Arial', 'Open Sans', 'Segoe UI', 'Trebuchet MS', 'Geneva CE', lucida, sans-serif;
+line-height: 25px;
+margin: 0px 18px 0px 0px;
+padding-left: 3px;
+width: 390px;
+word-wrap: break-word;
+font-size: 0.75em;
+font-weight: bold;
+}
+.labelVisBig {
+float: left;
+font-family: 'Arial', 'Open Sans', 'Segoe UI', 'Trebuchet MS', 'Geneva CE', lucida, sans-serif;
+line-height: 25px;
+margin: 0px 18px 0px 0px;
+padding-left: 3px;
+width: 580px;
+word-wrap: break-word;
+font-size: 0.75em;
+}
+
+.contentVis {
+float: left;
+font-family: 'Arial', 'Open Sans', 'Segoe UI', 'Trebuchet MS', 'Geneva CE', lucida, sans-serif;
+line-height: 25px;
+width: 395px;
+word-wrap: break-word;
+font-size: 0.75em;
+margin: 0px;
+padding: 0px;
+vertical-align: top;
+}
+.wordwrap {
+white-space: pre-wrap;
+white-space: -moz-pre-wrap;
+white-space: -pre-wrap;
+white-space: -o-pre-wrap;
+word-wrap: break-word;
+}</style></head><body><div id="main" class="layoutMain"><xsl:apply-templates/></div></body></html></xsl:template><xsl:template match="/egonp:AuthentificationCertificateRegistration/egonp:AuthentificationCertificateData"><div class="layoutRow ui-tabs ui-widget-content" ><div class="caption ui-widget-header"><div class="headercorrection">Digitálny odtlačok autentifikačného certifikátu</div></div><xsl:call-template name="Funkcia"/><xsl:apply-templates select="./egonp:Thumbprint"/></div></xsl:template><xsl:template match="/egonp:AuthentificationCertificateRegistration/egonp:TechnicalAccountData"><div class="layoutRow ui-tabs ui-widget-content" ><div class="caption ui-widget-header"><div class="headercorrection">Údaje technického účtu</div></div><xsl:apply-templates select="./egonp:TechnicalAccountName"/></div></xsl:template><xsl:template match="/egonp:AuthentificationCertificateRegistration/egonp:CertificateOwner"><div class="layoutRow ui-tabs ui-widget-content" ><div class="caption ui-widget-header"><div class="headercorrection">Údaje o držiteľovi autentifikačného certifikátu</div></div><xsl:apply-templates select="./egonp:IdentityType"/><xsl:apply-templates select="./egonp:OwnerFO"/><xsl:apply-templates select="./egonp:OwnerPoOvm"/></div></xsl:template><xsl:template match="/egonp:AuthentificationCertificateRegistration/egonp:CertificateOwner/egonp:OwnerPoOvm"><div class="layoutRow ui-tabs ui-widget-content" ><xsl:apply-templates select="./egonp:ICO"/><xsl:apply-templates select="./egonp:Suffix"/></div></xsl:template><xsl:template match="/egonp:AuthentificationCertificateRegistration/egonp:CertificateOwner/egonp:OwnerFO"><div class="layoutRow ui-tabs ui-widget-content" ><xsl:apply-templates select="./egonp:GivenName"/><xsl:apply-templates select="./egonp:FamilyName"/><xsl:apply-templates select="./egonp:BirthNumber"/></div></xsl:template><xsl:template match="/egonp:AuthentificationCertificateRegistration/egonp:ContactPerson"><div class="layoutRow ui-tabs ui-widget-content" ><div class="caption ui-widget-header"><div class="headercorrection">Kontaktné údaje</div></div><xsl:apply-templates select="./egonp:ContactName"/><xsl:apply-templates select="./egonp:Email"/><xsl:apply-templates select="./egonp:Phone"/></div></xsl:template><xsl:template name= "Funkcia"><xsl:if test="./text()"><div><label class="labelVis">Funkcia pre výpočet digitálneho odtlačku:</label><span class="contentVis wordwrap">SHA:256</span></div><div class="clear">&#xa0;</div></xsl:if></xsl:template><xsl:template match="egonp:AuthentificationCertificateRegistration/egonp:AuthentificationCertificateData/egonp:Thumbprint"><xsl:if test="./text()"><div><label class="labelVis">Digitálny odtlačok:</label><span class="contentVis wordwrap"><xsl:call-template name="string-replace-all"><xsl:with-param name="text" select="." /><xsl:with-param name="replace" select="'%0A'" /><xsl:with-param name="by" select="'&#13;&#10;'" /></xsl:call-template></span></div><div class="clear">&#xa0;</div></xsl:if></xsl:template><xsl:template match="egonp:AuthentificationCertificateRegistration/egonp:TechnicalAccountData/egonp:TechnicalAccountName"><xsl:if test="./text()"><div><span class="contentVis wordwrap"><xsl:call-template name="string-replace-all"><xsl:with-param name="text" select="." /><xsl:with-param name="replace" select="'%0A'" /><xsl:with-param name="by" select="'&#13;&#10;'" /></xsl:call-template></span></div><div class="clear">&#xa0;</div></xsl:if></xsl:template><xsl:template match="egonp:AuthentificationCertificateRegistration/egonp:CertificateOwner/egonp:IdentityType"><xsl:if test="./text()"><div><label class="labelVis">Typ subjektu:</label><span class="contentVis wordwrap"><xsl:choose><xsl:when test=".='FO'"><xsl:text>Fyzick&#225; osoba</xsl:text></xsl:when><xsl:when test=".='PO'"><xsl:text>Pr&#225;vnick&#225; osoba/Fyzick&#225; osoba - podnikateľ</xsl:text></xsl:when><xsl:when test=".='OVM'"><xsl:text>Org&#225;n verejnej moci</xsl:text></xsl:when><xsl:otherwise><xsl:value-of select="."/></xsl:otherwise></xsl:choose></span></div><div class="clear">&#xa0;</div></xsl:if></xsl:template><xsl:template match="egonp:AuthentificationCertificateRegistration/egonp:CertificateOwner/egonp:OwnerPoOvm/egonp:ICO"><xsl:if test="./text()"><div><label class="labelVis">IČO:</label><span class="contentVis wordwrap"><xsl:call-template name="string-replace-all"><xsl:with-param name="text" select="." /><xsl:with-param name="replace" select="'%0A'" /><xsl:with-param name="by" select="'&#13;&#10;'" /></xsl:call-template></span></div><div class="clear">&#xa0;</div></xsl:if></xsl:template><xsl:template match="egonp:AuthentificationCertificateRegistration/egonp:CertificateOwner/egonp:OwnerPoOvm/egonp:Suffix"><xsl:if test="./text()"><div><label class="labelVis">Suffix:</label><span class="contentVis wordwrap"><xsl:call-template name="string-replace-all"><xsl:with-param name="text" select="." /><xsl:with-param name="replace" select="'%0A'" /><xsl:with-param name="by" select="'&#13;&#10;'" /></xsl:call-template></span></div><div class="clear">&#xa0;</div></xsl:if></xsl:template><xsl:template match="egonp:AuthentificationCertificateRegistration/egonp:CertificateOwner/egonp:OwnerFO/egonp:GivenName"><xsl:if test="./text()"><div><label class="labelVis">Meno:</label><span class="contentVis wordwrap"><xsl:call-template name="string-replace-all"><xsl:with-param name="text" select="." /><xsl:with-param name="replace" select="'%0A'" /><xsl:with-param name="by" select="'&#13;&#10;'" /></xsl:call-template></span></div><div class="clear">&#xa0;</div></xsl:if></xsl:template><xsl:template match="egonp:AuthentificationCertificateRegistration/egonp:CertificateOwner/egonp:OwnerFO/egonp:FamilyName"><xsl:if test="./text()"><div><label class="labelVis">Priezvisko:</label><span class="contentVis wordwrap"><xsl:call-template name="string-replace-all"><xsl:with-param name="text" select="." /><xsl:with-param name="replace" select="'%0A'" /><xsl:with-param name="by" select="'&#13;&#10;'" /></xsl:call-template></span></div><div class="clear">&#xa0;</div></xsl:if></xsl:template><xsl:template match="egonp:AuthentificationCertificateRegistration/egonp:CertificateOwner/egonp:OwnerFO/egonp:BirthNumber"><xsl:if test="./text()"><div><label class="labelVis">Rodné číslo:</label><span class="contentVis wordwrap"><xsl:call-template name="string-replace-all"><xsl:with-param name="text" select="." /><xsl:with-param name="replace" select="'%0A'" /><xsl:with-param name="by" select="'&#13;&#10;'" /></xsl:call-template></span></div><div class="clear">&#xa0;</div></xsl:if></xsl:template><xsl:template match="egonp:AuthentificationCertificateRegistration/egonp:ContactPerson/egonp:ContactName"><xsl:if test="./text()"><div><label class="labelVis">Meno a priezvisko:</label><span class="contentVis wordwrap"><xsl:call-template name="string-replace-all"><xsl:with-param name="text" select="." /><xsl:with-param name="replace" select="'%0A'" /><xsl:with-param name="by" select="'&#13;&#10;'" /></xsl:call-template></span></div><div class="clear">&#xa0;</div></xsl:if></xsl:template><xsl:template match="egonp:AuthentificationCertificateRegistration/egonp:ContactPerson/egonp:Email"><xsl:if test="./text()"><div><label class="labelVis">E-mail:</label><span class="contentVis wordwrap"><xsl:call-template name="string-replace-all"><xsl:with-param name="text" select="." /><xsl:with-param name="replace" select="'%0A'" /><xsl:with-param name="by" select="'&#13;&#10;'" /></xsl:call-template></span></div><div class="clear">&#xa0;</div></xsl:if></xsl:template><xsl:template match="egonp:AuthentificationCertificateRegistration/egonp:ContactPerson/egonp:Phone"><xsl:if test="./text()"><div><label class="labelVis">Telefón:</label><span class="contentVis wordwrap"><xsl:call-template name="string-replace-all"><xsl:with-param name="text" select="." /><xsl:with-param name="replace" select="'%0A'" /><xsl:with-param name="by" select="'&#13;&#10;'" /></xsl:call-template></span></div><div class="clear">&#xa0;</div></xsl:if></xsl:template><xsl:template name="formatToSkDate"><xsl:param name="date" /><xsl:variable name="dateString" select="string($date)" /><xsl:choose><xsl:when test="$dateString != '' and string-length($dateString)=10 and string(number(substring($dateString, 1, 4))) != 'NaN' "><xsl:value-of select="concat(substring($dateString, 9, 2), '.', substring($dateString, 6, 2), '.', substring($dateString, 1, 4))" /></xsl:when><xsl:otherwise><xsl:value-of select="$dateString"></xsl:value-of></xsl:otherwise></xsl:choose></xsl:template><xsl:template name="booleanCheckboxToString"><xsl:param name="boolValue" /><xsl:variable name="boolValueString" select="string($boolValue)" /><xsl:choose><xsl:when test="$boolValueString = 'true' "><xsl:text>Áno</xsl:text></xsl:when><xsl:when test="$boolValueString = 'false' "><xsl:text>Nie</xsl:text></xsl:when><xsl:when test="$boolValueString = '1' "><xsl:text>Áno</xsl:text></xsl:when><xsl:when test="$boolValueString = '0' "><xsl:text>Nie</xsl:text></xsl:when><xsl:otherwise><xsl:value-of select="$boolValueString"></xsl:value-of></xsl:otherwise></xsl:choose></xsl:template><xsl:template name="formatTimeTrimSeconds"><xsl:param name="time" /><xsl:variable name="timeString" select="string($time)" /><xsl:if test="$timeString != ''"><xsl:value-of select="substring($timeString, 1, 5)" /></xsl:if></xsl:template><xsl:template name="formatTime"><xsl:param name="time" /><xsl:variable name="timeString" select="string($time)" /><xsl:if test="$timeString != ''"><xsl:value-of select="substring($timeString, 1, 8)" /></xsl:if></xsl:template><xsl:template name="string-replace-all"><xsl:param name="text"/><xsl:param name="replace"/><xsl:param name="by"/><xsl:choose><xsl:when test="contains($text, $replace)"><xsl:value-of select="substring-before($text,$replace)"/><xsl:value-of select="$by"/><xsl:call-template name="string-replace-all"><xsl:with-param name="text" select="substring-after($text,$replace)"/><xsl:with-param name="replace" select="$replace"/><xsl:with-param name="by" select="$by" /></xsl:call-template></xsl:when><xsl:otherwise><xsl:value-of select="$text"/></xsl:otherwise></xsl:choose></xsl:template><xsl:template name="formatToSkDateTime"><xsl:param name="dateTime" /><xsl:variable name="dateTimeString" select="string($dateTime)" /><xsl:choose><xsl:when test="$dateTimeString!= '' and string-length($dateTimeString)>18 and string(number(substring($dateTimeString, 1, 4))) != 'NaN' "><xsl:value-of select="concat(substring($dateTimeString, 9, 2), '.', substring($dateTimeString, 6, 2), '.', substring($dateTimeString, 1, 4),' ', substring($dateTimeString, 12, 2),':', substring($dateTimeString, 15, 2))" /></xsl:when><xsl:otherwise><xsl:value-of select="$dateTimeString"></xsl:value-of></xsl:otherwise></xsl:choose></xsl:template><xsl:template name="formatToSkDateTimeSecond"><xsl:param name="dateTime" /><xsl:variable name="dateTimeString" select="string($dateTime)" /><xsl:choose><xsl:when test="$dateTimeString!= '' and string-length($dateTimeString)>18 and string(number(substring($dateTimeString, 1, 4))) != 'NaN' "><xsl:value-of select="concat(substring($dateTimeString, 9, 2), '.', substring($dateTimeString, 6, 2), '.', substring($dateTimeString, 1, 4),' ', substring($dateTimeString, 12, 2),':', substring($dateTimeString, 15, 2),':', substring($dateTimeString, 18, 2))" /></xsl:when><xsl:otherwise><xsl:value-of select="$dateTimeString"></xsl:value-of></xsl:otherwise></xsl:choose></xsl:template></xsl:stylesheet>
     XSLT
   }
 ]
