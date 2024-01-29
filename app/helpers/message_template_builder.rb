@@ -1,5 +1,5 @@
 class MessageTemplateBuilder < ActionView::Helpers::FormBuilder
-  ALLOWED_TEMPLATE_FIELD_TYPES = %w[text_field email_field text_area date_field]
+  ALLOWED_TEMPLATE_FIELD_TYPES = %w[text_field email_field text_area date_field datetime_local_field]
 
   DEFAULT_CLASSES = 'basis-1/2 rounded-md shadow-sm ring-0 ring-inset ring-gray-400 focus-within:ring-1 focus-within:ring-inset focus-within:ring-blue-500 sm:max-w-md text-gray-900 placeholder:text-gray-400 sm:text-sm sm:leading-6'
   DEFAULT_CONTENT_TAG_CLASSES = 'flex flex-col text-left gap-2 mb-3'
@@ -73,6 +73,24 @@ class MessageTemplateBuilder < ActionView::Helpers::FormBuilder
   end
 
   def date_field(name, value:, errors:, editable:, **args)
+    @template.content_tag(:div, class: DEFAULT_CONTENT_TAG_CLASSES) do
+      label(:label, name, class: DEFAULT_LABEL_CLASSES) +
+      super(name, {
+        value: value,
+        disabled: !editable,
+        'data-action': 'change->message-drafts#update',
+        rows: 10,
+        class: "#{errors[name].present? ? ERROR_CLASSES : DEFAULT_CLASSES}"
+      }) +
+      (
+        @template.content_tag(:p, nil, class: 'mt-2 text-sm text-red-600 dark:text-red-500') do
+          @template.content_tag(:span, errors[name], class: 'font-medium')
+        end if errors.present?
+      )
+    end
+  end
+
+  def datetime_local_field(name, value:, errors:, editable:, **args)
     @template.content_tag(:div, class: DEFAULT_CONTENT_TAG_CLASSES) do
       label(:label, name, class: DEFAULT_LABEL_CLASSES) +
       super(name, {

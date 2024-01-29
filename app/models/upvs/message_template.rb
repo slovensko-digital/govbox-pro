@@ -102,7 +102,9 @@ class Upvs::MessageTemplate < ::MessageTemplate
     filled_content = self.content.dup
 
     template_items.each do |template_item|
-      filled_content.gsub!(template_item[:placeholder], message.metadata['data'][template_item[:name]].to_s)
+      value = message.metadata['data'][template_item[:name]]
+      value = "#{value}:00" if value && template_item[:type] == 'datetime_local_field'
+      filled_content.gsub!(template_item[:placeholder], value.to_s)
     end
 
     if message.form.message_object_datum
