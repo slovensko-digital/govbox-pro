@@ -3,15 +3,18 @@ module Govbox
     queue_as :default
 
     def perform
-      unmapped_govbox_message_ids = []
+      unmapped_govbox_messages_sql =
+      "SELECT gm.id FROM govbox_messages gm JOIN govbox_folders gf ON gm.folder_id = gf.id
+       WHERE NOT EXISTS (
+        SELECT 1 FROM messages m
+        JOIN message_threads mt ON m.message_thread_id = mt.id
+        WHERE m.uuid = gm.message_id
+        AND mt.box_id = gf.box_id
+        LIMIT 1
+       )"
+      unmapped_govbox_messages = ActiveRecord::Base.connection.execute(unmapped_govbox_messages_sql)
 
-      Govbox::Message.find_each do |govbox_message|
-        mapped_message = ::Message.where(uuid: govbox_message.message_id)
-                           .joins(:thread).where(thread: { box_id: govbox_message.box.id }).take
-        unmapped_govbox_message_ids << govbox_message.id unless mapped_message
-      end
-
-      raise "Unmapped GovBox::Message IDs: #{unmapped_govbox_message_ids}" if unmapped_govbox_message_ids.any?
+      raise "Unmapped GovBox::Message IDs: #{unmapped_govbox_messages.pluck("id")}" if unmapped_govbox_messages.any?
     end
   end
 end
