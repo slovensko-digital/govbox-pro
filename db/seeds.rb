@@ -268,7 +268,7 @@ Upvs::MessageTemplate.find_or_create_by!(
         <Phone>{{ Telefón*:text_field:"+4190000000" }}</Phone>
 			</ContactPerson>
 			<TechnicalAccountData>
-				<DateFrom>{{ Zrušenie technického účtu k dátumu a času*:datetime_local_field }}</DateFrom>
+				<DateFrom>{{ Zrušenie technického účtu k dátumu a času*:datetime_local_field }}:00</DateFrom>
         <TechnicalAccountName>{{ Názov technického účtu*:text_field }}</TechnicalAccountName>
 			</TechnicalAccountData>
 		</TechnicalAccountTermination>',
@@ -299,7 +299,7 @@ Upvs::MessageTemplate.find_or_create_by!(
         <Phone>{{ Telefón*:text_field }}</Phone>
 			</ContactPerson>
 			<TechnicalAccountData>
-				<DateFrom>{{ Zrušenie technického účtu k dátumu a času*:datetime_local_field }}</DateFrom>
+				<DateFrom>{{ Zrušenie technického účtu k dátumu a času*:datetime_local_field }}:00</DateFrom>
         <TechnicalAccountName>{{ Názov technického účtu*:text_field }}</TechnicalAccountName>
 			</TechnicalAccountData>
 		</TechnicalAccountTermination>',
