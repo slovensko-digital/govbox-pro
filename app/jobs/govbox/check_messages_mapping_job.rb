@@ -5,7 +5,8 @@ module Govbox
     def perform
       unmapped_govbox_messages_sql =
       "SELECT gm.id FROM govbox_messages gm JOIN govbox_folders gf ON gm.folder_id = gf.id
-       WHERE NOT EXISTS (
+        WHERE gm.delivered_at > '#{1.months.ago}'
+        AND NOT EXISTS (
         SELECT 1 FROM messages m
         JOIN message_threads mt ON m.message_thread_id = mt.id
         WHERE m.uuid = gm.message_id
