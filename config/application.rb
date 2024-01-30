@@ -47,6 +47,12 @@ module GovboxPro
       class: "Archivation::ArchiveAllArchivedMessageThreadsJob",
       description: "Regular job to archive message_threads"
     }
+    
+    # Set static files server
+    config.public_file_server.headers = {}
+    config.public_file_server.headers['Access-Control-Allow-Origin'] = '*'
+    config.public_file_server.headers['Content-Type'] = 'text/plain; charset=utf-8'
+
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files

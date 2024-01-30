@@ -5,6 +5,8 @@ class Drafts::ParseImportJob < ApplicationJob
     delegate :uuid, to: SecureRandom
   end
 
+  DEFAULT_SKTALK_CLASS = 'EGOV_APPLICATION'
+
   def perform(import, author:, jobs_batch: GoodJob::Batch.new, load_content_job: Drafts::LoadContentJob, on_success_job: Drafts::FinishImportJob)
     extracted_import_path = unzip_import(import)
 
@@ -64,6 +66,15 @@ class Drafts::ParseImportJob < ApplicationJob
     CSV.parse(File.read(csv_path), **csv_options) do |row|
       message_draft = create_draft_with_thread(import, message_subject: row['message_subject'], author: author)
       load_message_draft_metadata(message_draft, row)
+
+      tags = JSON.parse(row["tags"]) if row["tags"]
+      tags&.each do |tag_name|
+        message_draft.add_cascading_tag(
+          import.box.tenant.tags.find_or_create_by!(name: tag_name) do |tag|
+            tag.type = SimpleTag.to_s
+          end
+        )
+      end
     end
   end
 
