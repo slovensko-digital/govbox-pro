@@ -12,6 +12,10 @@ sk:
       messages:
         record_invalid: "Validácia neúspešná: %{errors}"
       models:
+        api_connection:
+          attributes:
+            tenant_id:
+              present: 'Tenant nesmie byť zvolený'
         tag:
           attributes:
             base:

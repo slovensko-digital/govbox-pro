@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_12_29_100057) do
+ActiveRecord::Schema[7.1].define(version: 2024_01_31_112405) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -160,6 +160,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_29_100057) do
     t.enum "color", enum_type: "color"
     t.bigint "api_connection_id"
     t.jsonb "settings"
+    t.index "tenant_id, api_connection_id, ((settings ->> 'obo'::text))", name: "api_connection_box_settings_obo", unique: true
     t.index ["api_connection_id"], name: "index_boxes_on_api_connection_id"
     t.index ["tenant_id", "short_name"], name: "index_boxes_on_tenant_id_and_short_name", unique: true
     t.index ["tenant_id"], name: "index_boxes_on_tenant_id"

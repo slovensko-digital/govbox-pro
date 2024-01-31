@@ -12,7 +12,7 @@
 #  tenant_id             :bigint
 #
 class Govbox::ApiConnection < ::ApiConnection
-  validates :tenant_id, presence: false
+  validates :tenant_id, absence: true
 
   def box_obo(box)
     raise "OBO not allowed!" if invalid_obo?(box)

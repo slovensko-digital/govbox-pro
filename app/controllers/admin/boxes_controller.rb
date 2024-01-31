@@ -28,6 +28,8 @@ class Admin::BoxesController < ApplicationController
     else
       render :new, status: :unprocessable_entity
     end
+  rescue ActiveRecord::RecordNotUnique
+    redirect_to admin_tenant_boxes_url(Current.tenant), alert: "Schránku s danými údajmi nie je možné vytvoriť."
   end
 
   def update

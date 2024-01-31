@@ -26,8 +26,5 @@ class Govbox::ApiConnectionWithOboSupport < ::ApiConnection
 
   def validate_box(box)
     box.errors.add(:obo, :not_allowed) if obo.present?
-    if tenant
-      box.errors.add(:settings_obo, :blank) if box.settings_obo.blank?
-    end
   end
 end
