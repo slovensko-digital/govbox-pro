@@ -5,6 +5,8 @@ class Drafts::ParseImportJob < ApplicationJob
     delegate :uuid, to: SecureRandom
   end
 
+  DEFAULT_SKTALK_CLASS = 'EGOV_APPLICATION'
+
   def perform(import, author: , jobs_batch: GoodJob::Batch.new, load_content_job: Drafts::LoadContentJob, on_success_job: Drafts::FinishImportJob)
     extracted_import_path = unzip_import(import)
 
@@ -83,7 +85,7 @@ class Drafts::ParseImportJob < ApplicationJob
         last_message_delivered_at: Time.now
       )
 
-      MessageDraft.create!(
+      message_draft = MessageDraft.create!(
         uuid: uuid,
         thread: message_thread,
         title: row['message_subject'],
@@ -97,6 +99,7 @@ class Drafts::ParseImportJob < ApplicationJob
           "posp_id": row['posp_id'],
           "posp_version": row['posp_version'],
           "message_type": row['message_type'],
+          "sktalk_class": row['sktalk_class'] || DEFAULT_SKTALK_CLASS,
           "correlation_id": uuid,
           "sender_business_reference": row['sender_business_reference'],
           "recipient_business_reference": row['recipient_business_reference'],
@@ -104,6 +107,15 @@ class Drafts::ParseImportJob < ApplicationJob
           "status": "being_loaded"
         }
       )
+
+      tags = JSON.parse(row["tags"]) if row["tags"]
+      tags&.each do |tag_name|
+        message_draft.add_cascading_tag(
+          import.box.tenant.tags.find_or_create_by!(name: tag_name) do |tag|
+            tag.type = SimpleTag.to_s
+          end
+        )
+      end
     end
   end
 
