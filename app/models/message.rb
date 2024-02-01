@@ -64,6 +64,10 @@ class Message < ApplicationRecord
     objects.select { |o| o.form? }&.first
   end
 
+  def submittable?
+    false
+  end
+
   def collapsible?
     true
   end

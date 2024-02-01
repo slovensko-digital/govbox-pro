@@ -71,6 +71,8 @@ Rails.application.routes.draw do
         post :new
         post :start
       end
+
+      resource :submit_drafts, only: [:update]
     end
   end
 
