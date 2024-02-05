@@ -17,3 +17,7 @@
 :target {
     // TODO
 }
+
+input[type="submit"] {
+    cursor: pointer;
+}
