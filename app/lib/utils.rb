@@ -19,7 +19,7 @@ module Utils
   end
 
   def file_mime_type_by_name(entry_name:, is_form: false)
-    case File.extname(entry_name).downcase
+    case File.extname(entry_name.to_s).downcase
     when '.pdf'
       'application/pdf'
     when '.xml'
@@ -44,6 +44,8 @@ module Utils
       'image/png'
     when '.tiff', '.tif'
       'image/tiff'
+    else
+      'application/octet-stream'
     end
   end
 
