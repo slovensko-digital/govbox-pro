@@ -2,7 +2,8 @@
   <%= hidden_field_tag "assignments[init][#{tag_id}]", value %>
 <% end %>
 
-<% @signers_changes.signer_users.each do |signer_user| %>
+<% if @signers_changes.signer_users.count > 0 %>
+  <% @signers_changes.signer_users.each do |signer_user| %>
   <div class="flex px-2 py-4 border-b border-gray-200 items-center">
     <div class="mx-1 flex h-6 items-center">
       <%= hidden_field_tag "assignments[new][#{signer_user.id}]", RelationChanges::REMOVE_SIGN, id: nil %>
@@ -33,4 +34,7 @@
       </div>
     <% end %>
   </div>
+<% end %>
+<% else %>
+  <p>Neboj nájdený žiadny používateľ s rolou podpisujúceho, kontaktuje Vášho administrátora.</p>
 <% end %>
