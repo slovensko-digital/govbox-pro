@@ -1,6 +1,6 @@
 class Box
   module MessageThreadsExtensions
-    def find_or_create_by_merge_uuid!(box:, merge_uuid:, title:, delivered_at:)
+    def find_or_create_by_merge_uuid!(box:, merge_uuid:, title:, delivered_at:, save: true)
       thread = MessageThread.joins(:merge_identifiers)
                             .where("message_thread_merge_identifiers.uuid = ?", merge_uuid)
                             .where(box: box).take
@@ -25,8 +25,7 @@ class Box
         thread.merge_identifiers.build(uuid: merge_uuid, box: box)
       end
 
-      thread.save!
-
+      thread.save! if save
       thread
     end
   end

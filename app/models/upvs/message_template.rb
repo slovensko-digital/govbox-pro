@@ -52,12 +52,12 @@ class Upvs::MessageTemplate < ::MessageTemplate
       box: box,
       merge_uuid: message.metadata['correlation_id'],
       title: self.name,
-      delivered_at: message.delivered_at
+      delivered_at: message.delivered_at,
+      save: false
     )
 
-    message.save
-
     if message.valid?(:create_from_template)
+      message.save
       message.add_cascading_tag(author.draft_tag)
 
       create_form_object(message)
