@@ -34,8 +34,10 @@ class MessageDraft < Message
     if self.thread.messages.reload.none?
       self.thread.destroy!
     elsif self.thread.message_drafts.reload.none?
-      drafts_tag = self.thread.tags.find_by(type: DraftTag.to_s)
-      self.remove_cascading_tag(drafts_tag)
+      drafts_tags = self.thread.tags.where(type: DraftTag.to_s)
+      drafts_tags.each do |drafts_tag|
+        self.remove_cascading_tag(drafts_tag)
+      end
     end
   end
 

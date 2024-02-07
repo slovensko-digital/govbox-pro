@@ -106,7 +106,7 @@ class MessageDraftsController < ApplicationController
 
     @message.destroy
 
-    redirect_to redirect_path, notice: "Draft bol zahodený"
+    redirect_to redirect_path, notice: "Správa bola zahodená"
   end
 
   def unlock
