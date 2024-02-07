@@ -5,7 +5,7 @@
 
 <%= turbo_stream.update "recipients_list" do %>
   <div>
-    <label for="recipient" class="block mb-2 text-base font-medium text-gray-900">Príjímateľ</label>
+    <label for="recipient" class="block mb-2 text-base font-medium text-gray-900">Komu</label>
   </div>
 
   <%= button_to message_template_recipient_selector_path, method: :get, data: { turbo_frame: "modal" }, class: "text-gray-500 hover:text-gray-900 w-full" do %>
