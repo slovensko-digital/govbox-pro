@@ -1,1 +1,5 @@
-<%= render Filters::FiltersListComponent.new(@filters) %>
+<% if @filters.any? %>
+  <%= render Filters::FiltersListComponent.new(@filters) %>
+<% else %>
+  <%= render Common::BlankResultsComponent.new(:empty) %>
+<% end %>
