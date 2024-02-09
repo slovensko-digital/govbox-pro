@@ -245,7 +245,7 @@ sk:
   recipient_uri: "URI prijímateľa"
   box: "Schránka správy"
   boxes:
-    sync_all_running: "Synchronizácia správ bola spustená a prebieha na pozadí"
+    sync_all_requested: "Sťahovanie nových správ bolo spustené."
   message_created: "Nová správa"
   "Automation::ContainsCondition": "obsahuje"
   "Automation::MetadataValueCondition": "v metadátach obsahuje"
