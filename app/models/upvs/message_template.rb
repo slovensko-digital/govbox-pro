@@ -48,12 +48,11 @@ class Upvs::MessageTemplate < ::MessageTemplate
       status: 'created'
     }
 
-    message.thread = box&.message_threads&.find_or_create_by_merge_uuid!(
+    message.thread = box&.message_threads&.find_or_build_by_merge_uuid(
       box: box,
       merge_uuid: message.metadata['correlation_id'],
       title: self.name,
-      delivered_at: message.delivered_at,
-      save: false
+      delivered_at: message.delivered_at
     )
 
     if message.valid?(:create_from_template)

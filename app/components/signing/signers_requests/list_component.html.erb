@@ -2,7 +2,7 @@
   <%= hidden_field_tag "assignments[init][#{tag_id}]", value %>
 <% end %>
 
-<% if @signers_changes.signer_users.count > 0 %>
+<% if @signers_changes.signer_users.exists? %>
   <% @signers_changes.signer_users.each do |signer_user| %>
   <div class="flex px-2 py-4 border-b border-gray-200 items-center">
     <div class="mx-1 flex h-6 items-center">

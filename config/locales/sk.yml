@@ -136,7 +136,7 @@ sk:
     format: "%{attribute} %{message}"
     messages:
       accepted: musí byť potvrdené
-      blank: je povinná položka
+      blank: "%{attribute} je povinná položka"
       confirmation: nebolo potvrdené
       empty: nesmie byť prázdny/e
       equal_to: sa musí rovnať %{count}

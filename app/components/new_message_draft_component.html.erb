@@ -18,7 +18,7 @@
               <%= select_tag(sender_element_id, options_for_select(@boxes, @selected_box), class: "text-sm rounded-lg block w-full p-2.5 #{@message.errors[:sender_name].any? && !@selected_box ? ERROR_CLASSES : DEFAULT_CLASSES}") %>
               <% if @message.errors[:sender_name].any? && !@selected_box %>
                 <p class="mt-2 text-sm text-red-600 dark:text-red-500">
-                  <span class="font-medium"><%= @message.errors.full_messages_for(:sender_name).to_sentence %></span>
+                  <span class="font-medium"><%= @message.errors[:sender_name].to_sentence %></span>
                 </p>
               <% end %>
             <% else %>
@@ -55,7 +55,7 @@
               </div>
               <% if @message.errors[:recipient_name].any? %>
                 <p class="mt-2 text-left text-sm text-red-600 dark:text-red-500">
-                  <span class="font-medium"><%= @message.errors.full_messages_for(:recipient_name).to_sentence %></span>
+                  <span class="font-medium"><%= @message.errors[:recipient_name].to_sentence %></span>
                 </p>
               <% end %>
             <% end %>
