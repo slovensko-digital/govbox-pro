@@ -1,7 +1,7 @@
 module MessageThreads
   module Bulk
-    class SubmitDraftsController < ::ApplicationController
-      def update
+    class MessageDraftsController < ::ApplicationController
+      def submit
         authorize ::MessageDraft, :submit?
 
         ids = params[:message_thread_ids] || []
