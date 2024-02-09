@@ -26,6 +26,6 @@ class Govbox::ApiConnectionWithOboSupport < ::ApiConnection
 
   def validate_box(box)
     box.errors.add(:settings_obo, :not_allowed) if obo.present?
-    box.errors.add(:settings_obo, :invalid) if boxes.where.not(id: box.id).where("settings ->> 'obo' = ?", box.settings_obo).any?
+    box.errors.add(:settings_obo, :invalid) if boxes.where.not(id: box.id).where("settings ->> 'obo' = ?", box.settings_obo).exists?
   end
 end
