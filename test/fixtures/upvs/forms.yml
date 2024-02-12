@@ -1,0 +1,6 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+general_agenda:
+  identifier: App.GeneralAgenda
+  message_type: App.GeneralAgenda
+  version: 1.9

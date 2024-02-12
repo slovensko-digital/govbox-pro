@@ -1,6 +1,9 @@
 sk:
   activerecord:
     attributes:
+      message:
+        sender_name: 'Odosielateľ'
+        recipient_name: 'Prijímateľ'
       message_thread:
         title: "Názov"
       box:
@@ -11,6 +14,7 @@ sk:
     errors:
       messages:
         record_invalid: "Validácia neúspešná: %{errors}"
+        invalid_form: "Formulár nie je validný voči XSD"
       models:
         api_connection:
           attributes:
@@ -21,6 +25,10 @@ sk:
             base:
               restrict_dependent_destroy:
                 has_many: "Štítok je použitý v automatizačných pravidlách, nie je ho možné vymazať. Upravte najskôr pravidlá"
+        message_draft:
+          attributes:
+            metadata:
+              no_template: "Typ správy je povinná položka"
   date:
     abbr_day_names:
       - Ne

@@ -7,8 +7,7 @@ module Govbox
     retry_on ::ApplicationRecord::FailedToAcquireLockError, wait: :polynomially_longer, attempts: Float::INFINITY
 
     def perform(govbox_message)
-      processed_message = ::Message.where(uuid: govbox_message.message_id).joins(:thread).where(thread: { box_id: govbox_message.box.id }).take
-      return if processed_message
+      processed_message = ::Message.where(type: nil).or(::Message.where.not(type: 'MessageDraft')).where(uuid: govbox_message.message_id).joins(:thread).where(thread: { box_id: govbox_message.box.id }).take
 
       ActiveRecord::Base.transaction do
         message = Govbox::Message.create_message_with_thread!(govbox_message)
@@ -18,7 +17,7 @@ module Govbox
         mark_associated_delivery_notification_authorized(govbox_message)
         collapse_referenced_outbox_message(message)
         create_message_relations(message)
-      end
+      end unless processed_message
     end
 
     def destroy_associated_message_draft(govbox_message)

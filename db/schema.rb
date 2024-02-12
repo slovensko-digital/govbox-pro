@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_02_05_182620) do
+ActiveRecord::Schema[7.1].define(version: 2024_02_12_151445) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -377,6 +377,18 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_05_182620) do
     t.index ["related_message_id"], name: "index_message_relations_on_related_message_id"
   end
 
+  create_table "message_templates", force: :cascade do |t|
+    t.bigint "tenant_id"
+    t.string "name", null: false
+    t.text "content", null: false
+    t.string "type"
+    t.jsonb "metadata"
+    t.boolean "system", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tenant_id"], name: "index_message_templates_on_tenant_id"
+  end
+
   create_table "message_thread_merge_identifiers", force: :cascade do |t|
     t.bigint "message_thread_id", null: false
     t.uuid "uuid", null: false
@@ -403,7 +415,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_05_182620) do
     t.datetime "delivered_at", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.datetime "last_message_delivered_at", precision: nil, null: false
+    t.datetime "last_message_delivered_at", null: false
     t.bigint "box_id", null: false
     t.index ["folder_id"], name: "index_message_threads_on_folder_id"
   end
@@ -528,23 +540,34 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_05_182620) do
     t.string "api_token_public_key"
   end
 
-  create_table "upvs_form_template_related_documents", force: :cascade do |t|
-    t.bigint "upvs_form_template_id", null: false
+  create_table "upvs_form_related_documents", force: :cascade do |t|
+    t.bigint "upvs_form_id", null: false
     t.string "data", null: false
     t.string "language", null: false
     t.string "document_type", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["upvs_form_template_id", "language", "document_type"], name: "index_related_documents_on_template_id_and_language_and_type", unique: true
-    t.index ["upvs_form_template_id"], name: "index_upvs_form_template_related_documents_on_form_template_id"
+    t.index ["upvs_form_id", "language", "document_type"], name: "index_related_documents_on_form_id_and_language_and_type", unique: true
+    t.index ["upvs_form_id"], name: "index_upvs_form_related_documents_on_form_id"
   end
 
-  create_table "upvs_form_templates", force: :cascade do |t|
+  create_table "upvs_forms", force: :cascade do |t|
     t.string "identifier", null: false
     t.string "version", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["identifier", "version"], name: "index_form_templates_on_identifier_and_version", unique: true
+    t.string "message_type", null: false
+    t.index ["identifier", "version", "message_type"], name: "index_forms_on_identifier_version_message_type", unique: true
+  end
+
+  create_table "upvs_service_with_form_allow_rules", force: :cascade do |t|
+    t.string "name"
+    t.string "institution_uri", null: false
+    t.string "institution_name"
+    t.string "schema_url"
+    t.string "type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "users", force: :cascade do |t|
@@ -591,6 +614,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_05_182620) do
   add_foreign_key "message_objects_tags", "tags"
   add_foreign_key "message_relations", "messages"
   add_foreign_key "message_relations", "messages", column: "related_message_id"
+  add_foreign_key "message_templates", "tenants"
   add_foreign_key "message_thread_merge_identifiers", "message_threads"
   add_foreign_key "message_thread_notes", "message_threads"
   add_foreign_key "message_threads", "boxes"
@@ -612,6 +636,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_05_182620) do
   add_foreign_key "tag_groups", "tags"
   add_foreign_key "tags", "tenants"
   add_foreign_key "tags", "users", column: "owner_id"
-  add_foreign_key "upvs_form_template_related_documents", "upvs_form_templates"
+  add_foreign_key "upvs_form_related_documents", "upvs_forms"
   add_foreign_key "users", "tenants"
 end

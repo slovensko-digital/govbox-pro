@@ -7,7 +7,7 @@ class Drafts::ParseImportJob < ApplicationJob
 
   DEFAULT_SKTALK_CLASS = 'EGOV_APPLICATION'
 
-  def perform(import, author: , jobs_batch: GoodJob::Batch.new, load_content_job: Drafts::LoadContentJob, on_success_job: Drafts::FinishImportJob)
+  def perform(import, author:, jobs_batch: GoodJob::Batch.new, load_content_job: Drafts::LoadContentJob, on_success_job: Drafts::FinishImportJob)
     extracted_import_path = unzip_import(import)
 
     raise "Invalid import" unless import.valid?
@@ -19,24 +19,10 @@ class Drafts::ParseImportJob < ApplicationJob
 
       Dir.each_child(extracted_import_path) do |entry_name|
         if File.directory?(File.join(extracted_import_path, entry_name))
-
           message_draft = MessageDraft.where(import: import).where("metadata ->> 'import_subfolder' = ?", File.basename(entry_name)).take
 
           unless message_draft
-            MessageDraft.create(
-              uuid: uuid,
-              thread: thread,
-              title: File.basename(entry_name),
-              replyable: false,
-              read: true,
-              delivered_at: Time.now,
-              import: import,
-              author: author,
-              metadata: {
-                "import_subfolder": File.basename(entry_name),
-                "status": "being_loaded"
-              }
-            )
+            message_draft = create_draft_with_thread(import, message_subject: File.basename(entry_name), author: author)
           end
 
           jobs_batch.add do
@@ -78,35 +64,8 @@ class Drafts::ParseImportJob < ApplicationJob
     }
     
     CSV.parse(File.read(csv_path), **csv_options) do |row|
-      message_thread = import.box.message_threads.create(
-        title: row['message_subject'],
-        original_title: row['message_subject'],
-        delivered_at: Time.now,
-        last_message_delivered_at: Time.now
-      )
-
-      message_draft = MessageDraft.create!(
-        uuid: uuid,
-        thread: message_thread,
-        title: row['message_subject'],
-        replyable: false,
-        read: false,
-        delivered_at: Time.now,
-        import: import,
-        author: author,
-        metadata: {
-          "recipient_uri": row['recipient_uri'],
-          "posp_id": row['posp_id'],
-          "posp_version": row['posp_version'],
-          "message_type": row['message_type'],
-          "sktalk_class": row['sktalk_class'] || DEFAULT_SKTALK_CLASS,
-          "correlation_id": uuid,
-          "sender_business_reference": row['sender_business_reference'],
-          "recipient_business_reference": row['recipient_business_reference'],
-          "import_subfolder": row['subfolder'],
-          "status": "being_loaded"
-        }
-      )
+      message_draft = create_draft_with_thread(import, message_subject: row['message_subject'], author: author)
+      load_message_draft_metadata(message_draft, row)
 
       tags = JSON.parse(row["tags"]) if row["tags"]
       tags&.each do |tag_name|
@@ -117,6 +76,46 @@ class Drafts::ParseImportJob < ApplicationJob
         )
       end
     end
+  end
+
+  def create_draft_with_thread(import, message_subject:, author:)
+    message_thread = import.box.message_threads.create(
+      title: message_subject,
+      original_title: message_subject,
+      delivered_at: Time.now,
+      last_message_delivered_at: Time.now
+    )
+
+    MessageDraft.create(
+      uuid: uuid,
+      thread: message_thread,
+      title: message_subject,
+      replyable: false,
+      sender_name: import.box.name,
+      outbox: true,
+      read: false,
+      delivered_at: Time.now,
+      import: import,
+      author: author,
+      metadata: {
+        "correlation_id": uuid,
+        "status": "being_loaded"
+      }
+    )
+  end
+
+  def load_message_draft_metadata(message_draft, row)
+    message_draft.metadata.merge!({
+        "recipient_uri": row['recipient_uri'],
+        "posp_id": row['posp_id'],
+        "posp_version": row['posp_version'],
+        "message_type": row['message_type'],
+        "sender_business_reference": row['sender_business_reference'],
+        "recipient_business_reference": row['recipient_business_reference'],
+        "import_subfolder": row['subfolder'],
+      }
+    )
+    message_draft.save
   end
 
   delegate :uuid, to: self

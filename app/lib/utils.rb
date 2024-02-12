@@ -36,6 +36,8 @@ module Utils
       'text/plain'
     when '.doc'
       'application/msword'
+    when '.cer'
+      'application/pkix-cert'
     when '.docx'
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
     when '.jpg', '.jpeg'

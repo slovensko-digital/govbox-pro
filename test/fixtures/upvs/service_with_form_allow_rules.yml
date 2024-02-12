@@ -1,0 +1,7 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+general_agenda:
+  institution_name: Test OVM identity
+  institution_uri: ico://sk/12345678
+  name: message_reply
+  schema_url: schemas.gov.sk/eform/App.GeneralAgenda/1.9

@@ -18,7 +18,7 @@ class Tenant < ApplicationRecord
   has_many :groups, dependent: :destroy
   has_many :custom_groups
 
-  has_one :draft_tag
+  has_one :draft_tag, -> { where(owner_id: nil) }
   has_one :everything_tag
   has_one :signature_requested_tag
   has_one :signed_tag
@@ -41,7 +41,7 @@ class Tenant < ApplicationRecord
 
   validates_presence_of :name
 
-  AVAILABLE_FEATURE_FLAGS = [:audit_log, :archive, :api, :message_draft_import]
+  AVAILABLE_FEATURE_FLAGS = [:audit_log, :archive, :api, :message_draft_import, :template_messages]
 
   def draft_tag!
     draft_tag || raise(ActiveRecord::RecordNotFound, "`DraftTag` not found in tenant: #{id}")

@@ -40,10 +40,6 @@ class MessageThread < ApplicationRecord
     message_thread_note || build_message_thread_note
   end
 
-  def messages_visible_to_user(user)
-    messages.where(author_id: [nil, user.id])
-  end
-
   def automation_rules_for_event(event)
     tenant.automation_rules.where(trigger_event: event)
   end

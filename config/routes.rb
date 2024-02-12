@@ -98,6 +98,7 @@ Rails.application.routes.draw do
 
   resources :messages do
     member do
+      post 'reply'
       post 'authorize_delivery_notification'
     end
 
@@ -125,7 +126,7 @@ Rails.application.routes.draw do
       post :submit
     end
 
-    post 'submit_all', on: :collection
+    post :submit_all, on: :collection
 
     scope module: 'message_drafts' do
       resource :document_selections, only: [:new, :update] do
@@ -157,8 +158,19 @@ Rails.application.routes.draw do
 
   resource :settings
 
+  resources :message_templates do
+    get :recipient_selector
+    get :recipients_list
+    post :search_recipients_list
+    post :recipient_selected
+  end
+
   resources :message_drafts_imports, only: :create do
     get :upload_new, path: 'novy', on: :collection
+  end
+
+  namespace :upvs do
+    get :allowed_recipient_services
   end
 
   resources :sessions do
