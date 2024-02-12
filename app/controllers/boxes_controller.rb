@@ -13,6 +13,7 @@ class BoxesController < ApplicationController
     EventBus.publish(:box_sync_all_requested)
 
     Current.tenant.boxes.sync_all
+    redirect_back_or_to message_threads_path, notice: t("boxes.sync_all_requested")
   end
 
   def select
