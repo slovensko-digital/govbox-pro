@@ -42,7 +42,8 @@ ssd_main_general_draft_one:
   html_visualization: Reply to something
   delivered_at: 2023-05-18 16:18:26
   thread: ssd_main_general
-  metadata: {}
+  metadata:
+    status: created
   author: basic
 
 ssd_main_general_draft_two:
@@ -52,7 +53,8 @@ ssd_main_general_draft_two:
   html_visualization: MyString
   delivered_at: 2023-05-18 16:18:26
   thread: ssd_main_general
-  metadata: {}
+  metadata:
+    status: created
   author: basic
 
 ssd_main_delivery_draft:
@@ -62,7 +64,8 @@ ssd_main_delivery_draft:
   html_visualization: MyString
   delivered_at: 2023-05-18 16:19:26
   thread: ssd_main_delivery
-  metadata: {}
+  metadata:
+    status: created
   author: basic
 
 ssd_main_issue_one:
@@ -81,7 +84,9 @@ ssd_main_issue_two:
   html_visualization: MyString
   delivered_at: 2023-05-18 16:20:26
   thread: ssd_main_issue
-  metadata: {}
+  metadata:
+    sender_uri: ico://sk/12345678
+    correlation_id: <%= SecureRandom.uuid %>
 
 ssd_main_collapsed_one:
   uuid: <%= SecureRandom.uuid %>

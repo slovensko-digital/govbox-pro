@@ -166,9 +166,7 @@ class MessageThreadsTest < ApplicationSystemTestCase
           assert_text "Reply to something"
         end
 
-        within("#submission_message_draft_#{draft_one.id}") do
-          assert_button "Odoslať"
-        end
+        assert_button "Odoslať"
       end
     end
   end
@@ -183,8 +181,8 @@ class MessageThreadsTest < ApplicationSystemTestCase
     end
 
     within '#new_drafts' do
-      fill_in "Text", with: "Testovacie telo"
-      fill_in "Predmet", with: "Testovaci predmet"
+      fill_in "message_draft_Text", with: "Testovacie telo"
+      fill_in "message_draft_Predmet", with: "Testovaci predmet"
       click_button "Odoslať"
     end
 
