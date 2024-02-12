@@ -14,7 +14,7 @@ gem 'turbo-rails'
 
 # Styles
 gem 'sprockets-rails'
-gem 'importmap-rails', '~> 1.2.3'
+gem 'importmap-rails'
 gem 'tailwindcss-rails'
 gem 'view_component'
 
