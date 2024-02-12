@@ -17,7 +17,7 @@ class SkApi::ApiConnectionWithOboSupport < ::ApiConnection
   def box_obo(box)
     raise "OBO not allowed!" if invalid_obo?(box)
 
-    box.settings["obo"] if box.settings
+    box.settings_obo.presence
   end
 
   def destroy_with_box?
@@ -25,7 +25,8 @@ class SkApi::ApiConnectionWithOboSupport < ::ApiConnection
   end
 
   def validate_box(box)
-    box.errors.add(:obo, :not_allowed) if invalid_obo?(box)
+    box.errors.add(:settings_obo, :not_allowed) if invalid_obo?(box)
+    box.errors.add(:settings_obo, :invalid) if boxes.where.not(id: box.id).where("settings ->> 'obo' = ?", box.settings_obo).exists?
   end
 
   private
