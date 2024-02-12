@@ -1,8 +1,8 @@
 module UpvsEnvironment
   extend self
 
-  def upvs_client
-    @upvs_client ||= Upvs::GovboxApiClient.new
+  def upvs_api(box)
+    @upvs_api ||= box.api_connection.upvs_api(box)
   end
 
   def sso_settings

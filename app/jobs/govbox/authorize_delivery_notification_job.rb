@@ -1,6 +1,6 @@
 class Govbox::AuthorizeDeliveryNotificationJob < ApplicationJob
-  def perform(message, upvs_client: UpvsEnvironment.upvs_client)
-    edesk_api = upvs_client.api(message.thread.box).edesk
+  def perform(message)
+    edesk_api = UpvsEnvironment.upvs_api(message.thread.box).edesk
 
     success, target_message_id = edesk_api.authorize_delivery_notification(message.metadata["delivery_notification"]["authorize_url"], mode: :sync)
 

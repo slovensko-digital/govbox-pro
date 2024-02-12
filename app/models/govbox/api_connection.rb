@@ -14,6 +14,10 @@
 class Govbox::ApiConnection < ::ApiConnection
   validates :tenant_id, presence: false
 
+  def upvs_api(box)
+    Upvs::GovboxApiClient.new.api(box)
+  end
+
   def box_obo(box)
     raise "OBO not allowed!" if invalid_obo?(box)
     obo

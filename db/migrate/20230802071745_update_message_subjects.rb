@@ -1,11 +1,9 @@
 class UpdateMessageSubjects < ActiveRecord::Migration[7.0]
   def up
-    upvs_client = UpvsEnvironment.upvs_client
-
     Message.find_each do |message|
       govbox_message = Govbox::Message.find_by(message_id: message.uuid)
 
-      edesk_api = upvs_client.api(govbox_message.folder.box).edesk
+      edesk_api = UpvsEnvironment.upvs_api(govbox_message.folder.box).edesk
       _, raw_message = edesk_api.fetch_message(govbox_message.edesk_message_id)
 
       govbox_message.update(

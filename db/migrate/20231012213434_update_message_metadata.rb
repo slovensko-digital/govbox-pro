@@ -1,9 +1,7 @@
 class UpdateMessageMetadata < ActiveRecord::Migration[7.0]
   def change
-    upvs_client = UpvsEnvironment.upvs_client
-
     Govbox::Message.find_each do |govbox_message|
-      edesk_api = upvs_client.api(govbox_message.box).edesk
+      edesk_api = UpvsEnvironment.upvs_api(govbox_message.box).edesk
       response_status, raw_message = edesk_api.fetch_message(govbox_message.edesk_message_id)
 
       raise "Unable to fetch message" if response_status != 200

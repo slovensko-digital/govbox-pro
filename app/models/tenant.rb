@@ -18,6 +18,8 @@ class Tenant < ApplicationRecord
   has_many :groups, dependent: :destroy
   has_many :custom_groups
 
+  has_many :signing_options, dependent: :destroy
+
   has_one :draft_tag
   has_one :everything_tag
   has_one :signature_requested_tag
@@ -107,5 +109,13 @@ class Tenant < ApplicationRecord
     create_signed_externally_tag!(name: "Externe podpísané", visible: false, color: "purple", icon: "shield-check")
 
     make_admins_see_everything!
+
+    create_default_signing_options!
+  end
+
+  def create_default_signing_options!
+    signing_options.create!(
+      type: 'AutogramSigningOption',
+    )
   end
 end

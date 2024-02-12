@@ -14,10 +14,15 @@
 class SkApi::ApiConnectionWithOboSupport < ::ApiConnection
   validates :tenant_id, presence: true
 
-  def box_obo(box)
-    raise "OBO not allowed!" if invalid_obo?(box)
+  def upvs_api(box)
+    Upvs::SkApiClient.new.api(box: box)
+  end
 
-    box.settings["obo"] if box.settings
+  def box_obo(box)
+    raise "OBO not allowed!" if box && invalid_obo?(box)
+
+    box.settings["obo"] if box&.settings
+    obo
   end
 
   def destroy_with_box?

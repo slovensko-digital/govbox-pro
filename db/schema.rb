@@ -492,6 +492,15 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_05_182620) do
     t.index ["message_thread_id"], name: "index_searchable_message_threads_on_message_thread_id", unique: true
   end
 
+  create_table "signing_options", force: :cascade do |t|
+    t.bigint "tenant_id", null: false
+    t.string "type"
+    t.jsonb "settings"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tenant_id"], name: "index_signing_options_on_tenant_id"
+  end
+
   create_table "tag_groups", force: :cascade do |t|
     t.bigint "group_id", null: false
     t.bigint "tag_id", null: false

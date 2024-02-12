@@ -2,10 +2,10 @@ module Govbox
   class SyncBoxJob < ApplicationJob
     queue_as :default
 
-    def perform(box, upvs_client: UpvsEnvironment.upvs_client)
+    def perform(box)
       return unless box.syncable?
 
-      edesk_api = upvs_client.api(box).edesk
+      edesk_api = UpvsEnvironment.upvs_api(box).edesk
       response_status, raw_folders = edesk_api.fetch_folders
 
       raise "Unable to fetch folders" if response_status != 200
