@@ -160,6 +160,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_05_182620) do
     t.enum "color", enum_type: "color"
     t.bigint "api_connection_id"
     t.jsonb "settings"
+    t.index "tenant_id, api_connection_id, ((settings ->> 'obo'::text))", name: "api_connection_box_settings_obo", unique: true
     t.index ["api_connection_id"], name: "index_boxes_on_api_connection_id"
     t.index ["tenant_id", "short_name"], name: "index_boxes_on_tenant_id_and_short_name", unique: true
     t.index ["tenant_id"], name: "index_boxes_on_tenant_id"

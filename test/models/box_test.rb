@@ -10,15 +10,6 @@ class BoxTest < ActiveSupport::TestCase
     assert_not box.valid?
   end
 
-  test "should not be valid if obo value present in settings when api_connection is a Govbox::ApiConnection with tenant" do
-    box = boxes(:google_box_with_govbox_api_connection_with_obo_support)
-    assert box.valid?
-
-    box.settings_obo = SecureRandom.uuid
-
-    assert box.valid?
-  end
-
   test "should not be valid if obo value present in Govbox::ApiConnectionWithOboSupport" do
     box = boxes(:google_box_with_govbox_api_connection_with_obo_support)
     assert box.valid?
