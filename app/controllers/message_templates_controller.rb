@@ -20,7 +20,7 @@ class MessageTemplatesController < ApplicationController
   def search_recipients_list
     authorize(@message_template, policy_class: MessageTemplatePolicy)
 
-    @recipients_list = @message_template.recipients
+    @recipients_list = @message_template.recipients.first(10)
                                         .where('unaccent(institution_name) ILIKE unaccent(?) OR institution_uri ILIKE ?', "%#{params[:search]}%", "%#{params[:search]}%")
                                         .pluck(:institution_name, :institution_uri)
                                         .map { |name, uri| { uri: uri, name: name }}
