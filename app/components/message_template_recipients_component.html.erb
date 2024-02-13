@@ -19,9 +19,9 @@
       <%= tag.turbo_frame id: "recipients-list", class: "flex-col self-stretch mt-2" do %>
         <% @recipients_list.each do |recipient| %>
           <%= button_to message_template_recipient_selected_path, method: 'post', params: { recipient_uri: recipient[:uri], recipient_name: recipient[:name] },
-                        class: "flex justify-between items-center self-stretch flex-grow-0 flex-shrink-0 py-2", data: { turbo_frame: "_top" } do %>
-            <div class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative gap-3">
-              <span class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-gray-900"><%= recipient[:name] %></span>
+                        class: "py-2", data: { turbo_frame: "_top" } do %>
+            <div>
+              <span class="flex text-base font-medium text-left text-gray-900"><%= recipient[:name] %></span>
             </div>
           <% end %>
         <% end %>
