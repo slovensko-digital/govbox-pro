@@ -4,7 +4,7 @@ class MessageTemplatesController < ApplicationController
   def recipient_selector
     authorize(@message_template, policy_class: MessageTemplatePolicy)
 
-    @recipients_list = @message_template.recipients
+    @recipients_list = @message_template.recipients.first(10)
                                         .pluck(:institution_name, :institution_uri)
                                         .map { |name, uri| { uri: uri, name: name }}
   end
@@ -12,7 +12,7 @@ class MessageTemplatesController < ApplicationController
   def recipients_list
     authorize(@message_template, policy_class: MessageTemplatePolicy)
 
-    @recipients_list = @message_template.recipients
+    @recipients_list = @message_template.recipients.first(10)
                                         .pluck(:institution_name, :institution_uri)
                                         .map { |name, uri| { uri: uri, name: name }}
   end
