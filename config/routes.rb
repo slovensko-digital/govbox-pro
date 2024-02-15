@@ -64,6 +64,12 @@ Rails.application.routes.draw do
         end
       end
 
+      resource :message_drafts, only: [:update] do
+        collection do
+          post :submit
+        end
+      end
+
       resource :authorize_deliveries, only: [:update]
       resource :archive, only: [:update]
 
