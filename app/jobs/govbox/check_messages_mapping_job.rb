@@ -3,19 +3,14 @@ module Govbox
     queue_as :default
 
     def perform
-      unmapped_govbox_messages = Govbox::Message.find_by_sql(
-        ["SELECT gm.id FROM govbox_messages gm JOIN govbox_folders gf ON gm.folder_id = gf.id
-          WHERE gm.delivered_at > ?
-          AND NOT EXISTS (
-          SELECT 1 FROM messages m
-          JOIN message_threads mt ON m.message_thread_id = mt.id
-          WHERE m.uuid = gm.message_id
-          AND mt.box_id = gf.box_id
-          LIMIT 1
-         )", 1.months.ago]
-      )
+      unmapped_govbox_message_ids = ::Govbox::Message.joins(:folder).where.not(
+        ::Message.select(1).joins(:thread)
+                 .where('messages.uuid = govbox_messages.message_id')
+                 .where('message_threads.box_id = govbox_folders.box_id')
+                 .arel.exists
+      ).pluck(:id)
 
-      raise "Unmapped GovBox::Message IDs: #{unmapped_govbox_messages.pluck("id")}" if unmapped_govbox_messages.any?
+      raise "Unmapped GovBox::Message IDs: #{unmapped_govbox_message_ids}" if unmapped_govbox_message_ids.any?
     end
   end
 end
