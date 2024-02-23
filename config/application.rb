@@ -42,6 +42,14 @@ module GovboxPro
       }
     end
 
+    config.good_job.cron = {
+      check_messages_mapping: {
+        cron: "30 7 * * *",  # run every day at 7:30 am
+        class: "Govbox::CheckMessagesMappingJob",
+        description: "Regular job to check messages mapping"
+      }
+    }
+
     config.good_job.cron['check_archived_documents'] = {
       cron: "30 3 * * *",  # run every day at 3:30 am
       class: "Archivation::ArchiveAllArchivedMessageThreadsJob",
