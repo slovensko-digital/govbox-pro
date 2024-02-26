@@ -42,7 +42,7 @@ module GovboxPro
       }
     end
 
-    config.good_job.cron = {
+    config.good_job.cron['check_messages_mapping'] = {
       check_messages_mapping: {
         cron: "30 7 * * *",  # run every day at 7:30 am
         class: "Govbox::CheckMessagesMappingJob",
