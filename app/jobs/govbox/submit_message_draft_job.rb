@@ -10,11 +10,7 @@ class Govbox::SubmitMessageDraftJob < ApplicationJob
   def perform(message_draft, schedule_sync: true, upvs_client: UpvsEnvironment.upvs_client)
     raise "Invalid message!" unless message_draft.valid?(:validate_data)
 
-    all_message_metadata = if message_draft.template&.metadata
-       message_draft.metadata.merge(message_draft.template&.metadata)
-     else
-         message_draft.metadata
-     end
+    all_message_metadata = message_draft.metadata.merge(message_draft.template&.metadata || {})
 
     message_draft_data = {
       sktalk_class: all_message_metadata["sktalk_class"],
