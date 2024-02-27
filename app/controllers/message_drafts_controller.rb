@@ -1,11 +1,11 @@
 class MessageDraftsController < ApplicationController
   before_action :ensure_drafts_import_enabled, only: :index
   before_action :ensure_template_messages_enabled, only: :new
-  before_action :load_message_drafts, only: %i[index submit_all]
+  before_action :load_message_drafts, only: :index
   before_action :load_original_message, only: :create
   before_action :load_box, only: :create
   before_action :load_message_template, only: :create
-  before_action :load_message_draft, except: [:new, :index, :create, :submit_all]
+  before_action :load_message_draft, except: [:new, :index, :create]
 
   include ActionView::RecordIdentifier
   include MessagesConcern
@@ -82,20 +82,6 @@ class MessageDraftsController < ApplicationController
       # TODO: prisposobit chybovu hlasku aj importovanym draftom
       redirect_to message_thread_path(@message.thread), alert: "Vyplňte text správy"
     end
-  end
-
-  def submit_all
-    jobs_batch = GoodJob::Batch.new
-
-    @messages.each do |message_draft|
-      next unless message_draft.submittable?
-
-      jobs_batch.add { Govbox::SubmitMessageDraftJob.perform_later(message_draft, schedule_sync: false) }
-      message_draft.being_submitted!
-    end
-
-    boxes_to_sync = Current.tenant.boxes.joins(message_threads: :messages).where(messages: { id: @messages.map(&:id) }).uniq
-    jobs_batch.enqueue(on_finish: Govbox::ScheduleDelayedSyncBoxJob, boxes: boxes_to_sync)
   end
 
   def destroy

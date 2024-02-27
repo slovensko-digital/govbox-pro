@@ -132,8 +132,6 @@ Rails.application.routes.draw do
       post :submit
     end
 
-    post :submit_all, on: :collection
-
     scope module: 'message_drafts' do
       resource :document_selections, only: [:new, :update] do
         collection do
