@@ -1,1 +1,46 @@
-<%= render Admin::Boxes::BoxesListComponent.new(@boxes) %>
+<div class="mx-auto w-full py-6 sm:px-6 lg:px-8">
+  <div class="mx-auto max-w-none">
+    <div class="overflow-hidden bg-white sm:rounded-lg sm:shadow">
+
+      <div class="border-b border-gray-200 bg-white px-4 py-5 sm:px-6">
+        <div class="-ml-4 -mt-2 flex flex-wrap items-center justify-between sm:flex-nowrap">
+          <div class="ml-4 mt-2">
+            <h3 class="text-base font-semibold leading-6 text-gray-900">Pripojené schránky</h3>
+          </div>
+          <% if Current.tenant.api_connections.any? %>
+            <div class="ml-4 mt-2 flex-shrink-0">
+              <%= link_to "Pripojiť novú schránku", new_admin_tenant_box_path, data: { turbo_frame: "modal" }, class: "relative inline-flex items-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="flex-col justify-start items-start flex">
+        <% @boxes.each do |box| %>
+          <div class="self-stretch p-6 border-b border-gray-200 justify-start items-center gap-4 inline-flex">
+            <div class="grow basis-0 flex-col justify-start items-start gap-1 inline-flex">
+              <div class="text-center text-gray-900 text-lg font-medium leading-loose">
+                <%= render Common::BoxLabelComponent.new(box, "items-start justify-start gap-0") %>
+              </div>
+              <div class="text-center text-gray-500 text-base font-normal leading-normal">
+                <%= box.name %>, <%= box.uri %>
+              </div>
+            </div>
+
+            <div class="justify-start items-start gap-2 flex">
+              <%= link_to edit_admin_tenant_box_path(box.tenant, box), data: { turbo_frame: "modal" } do %>
+                <%= render Common::EditButtonComponent.new %>
+              <% end %>
+              <%= button_to admin_tenant_box_path(box.tenant, box),
+                            method: :delete,
+                            data: { turbo_confirm: "Naozaj odstrániť schránku \"#{box.name}\"?" } do %>
+                <%= render Common::DeleteButtonComponent.new %>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+
+    </div>
+  </div>
+</div>

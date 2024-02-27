@@ -1,6 +1,7 @@
 <%= tag.turbo_frame id: "bulk_actions" do %>
   <div class="flex justify-stretch items-center gap-4 px-4 lg:py-4 border-t-0 border-r-0 border-b border-l-0 border-gray-200 min-h-[3rem] sm:min-h-[5rem]">
     <%= check_box_tag("", nil, false, { class: "hidden sm:block h-4 w-4 rounded border-gray-300 text-blue-500 focus:ring-0", type: "checkbox", id: "checkbox-all", data: { action: "all-checkboxes#toggle", "all-checkboxes-target": "checkbox" } }) %>
+
     <span class="grow sm:text-xl text-base font-semibold text-left text-gray-900"><%= @ids.present? ? t(:selected_message, count: @ids.count) : "Správy v schránke" %>
       <% if @filter %>
         <% if @filter_subscription %>
@@ -36,7 +37,7 @@
                aria-labelledby="menu-button"
                tabindex="-1">
             <div class="py-1" role="none">
-              <%= button_tag "change_tags", type: "submit", id: "menu-item-0",
+              <%= button_tag "change_tags", type: "submit",
                                             formaction: edit_message_threads_bulk_tags_path,
                                             formmethod: :post, data: { turbo_frame: "modal" },
                                             class: "w-full text-gray-700 group flex items-center px-4 py-2 text-sm hover:bg-gray-100 hover:text-gray-900", role: "menuitem" do %>
@@ -45,7 +46,7 @@
               <% end %>
             </div>
             <div class="py-1" role="none">
-              <%= button_tag "merge", type: "submit", id: "menu-item-1",
+              <%= button_tag "merge", type: "submit",
                                       title: (@ids.length < 2 ? "Označte aspoň dve vlákna" : "Spojiť označené vlákna do jedného"),
                                       disabled: @ids.length < 2, data: { turbo_confirm: "Naozaj chcete spojiť označené vlákna do jedného?" },
                                       class: "w-full group flex items-center px-4 py-2 text-sm #{@ids.length < 2 ? 'text-gray-300' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'}",
@@ -56,7 +57,7 @@
             </div>
             <% if Current.tenant.feature_enabled?(:archive) %>
               <div class="py-1" role="none">
-                <%= button_tag "archive", type: "submit", id: "menu-item-0",
+                <%= button_tag "archive", type: "submit",
                                                      formaction: message_threads_bulk_archive_path(archived: true),
                                                      formmethod: :patch, data: { turbo_confirm: "Naozaj chcete archivovať označené vlákna?" },
                                                      class: "w-full text-gray-700 group flex items-center px-4 py-2 text-sm hover:bg-gray-100 hover:text-gray-900", role: "menuitem" do %>
@@ -65,7 +66,7 @@
                 <% end %>
               </div>
               <div class="py-1" role="none">
-                <%= button_tag "unarchive", type: "submit", id: "menu-item-0",
+                <%= button_tag "unarchive", type: "submit",
                                                      formaction: message_threads_bulk_archive_path(archived: false),
                                                      formmethod: :patch, data: { turbo_confirm: "Naozaj chcete zrušiť archiváciu označených vlákien?" },
                                                      class: "w-full text-gray-700 group flex items-center px-4 py-2 text-sm hover:bg-gray-100 hover:text-gray-900", role: "menuitem" do %>
@@ -75,7 +76,7 @@
               </div>
             <% end %>
             <div class="py-1" role="none">
-              <%= button_tag "authorize_delivery", type: "submit", id: "menu-item-0",
+              <%= button_tag "authorize_delivery", type: "submit",
                                                    formaction: message_threads_bulk_authorize_deliveries_path,
                                                    formmethod: :patch, data: { turbo_confirm: "Naozaj chcete prevziať správy v označených vláknach?" },
                                                    class: "w-full text-gray-700 group flex items-center px-4 py-2 text-sm hover:bg-gray-100 hover:text-gray-900", role: "menuitem" do %>
@@ -83,9 +84,38 @@
                 Prevziať
               <% end %>
             </div>
+
+            <% if @signable %>
+              <div class="py-1" role="none">
+                <%= button_tag "sign", type: "submit",
+                               formaction: message_threads_bulk_signing_path,
+                               formmethod: :post,
+                               data: { turbo_frame: "modal" },
+                               class: "w-full text-gray-700 group flex items-center px-4 py-2 text-sm hover:bg-gray-100 hover:text-gray-900", role: "menuitem" do %>
+                  <%= render Common::IconComponent.new("fingerprint", classes: "mr-2 sm:mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500") %>
+                  Podpísať
+                <% end %>
+              </div>
+            <% end %>
+
+            <div class="py-1" role="none">
+              <%= button_tag "submit_drafts", type: "submit",
+                             formaction: submit_message_threads_bulk_message_drafts_path,
+                             formmethod: :post, data: { turbo_confirm: "Naozaj chcete odoslať rozpracované správy v označených vláknach?" },
+                             class: "w-full text-gray-700 group flex items-center px-4 py-2 text-sm hover:bg-gray-100 hover:text-gray-900", role: "menuitem" do %>
+                <%= render Common::IconComponent.new("paper-airplane", classes: "mr-2 sm:mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500") %>
+                Odoslať
+              <% end %>
+            </div>
           </div>
         </div>
       <% end %>
+    <% end %>
+
+    <% if Current.box && Current.tenant.feature_enabled?(:template_messages) %>
+      <div class="relative hidden sm:inline-block text-left">
+        <%= link_to "Napísať novú správu", new_message_draft_path, class: "rounded-md bg-blue-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600", data: { turbo: false } %>
+      </div>
     <% end %>
   </div>
 <% end %>

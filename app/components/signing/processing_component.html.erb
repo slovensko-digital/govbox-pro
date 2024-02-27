@@ -33,14 +33,14 @@
         </div>
 
         <%= button_to "Úspešne podpísané",
-                      message_draft_signing_path(@message_draft),
+                      @after_singing_path,
                       method: :patch,
                       params: { result: "ok" },
                       data: { "new-autogram-target": "doneOk" },
                       class: "hidden" %>
 
         <%= button_to "Podpisovanie zlyhalo",
-                      message_draft_signing_path(@message_draft),
+                      @after_singing_path,
                       method: :patch,
                       params: { result: "error" },
                       data: { "new-autogram-target": "doneError" },

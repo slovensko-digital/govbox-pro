@@ -1,6 +1,7 @@
 class MessageThreadsBulkActionsComponent < ViewComponent::Base
-  def initialize(ids:, filter: nil, filter_subscription: nil)
+  def initialize(ids:, signable:, filter: nil, filter_subscription: nil)
     @ids = ids
+    @signable = signable
     @filter = filter
     @filter_subscription = filter_subscription
   end

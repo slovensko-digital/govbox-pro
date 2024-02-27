@@ -1,10 +1,22 @@
 class Box
   module MessageThreadsExtensions
     def find_or_create_by_merge_uuid!(box:, merge_uuid:, title:, delivered_at:)
+      thread =  find_or_build_thread(box: box, merge_uuid: merge_uuid, title: title, delivered_at: delivered_at)
+      thread.save!
+      thread
+    end
+
+    def find_or_build_by_merge_uuid(box:, merge_uuid:, title:, delivered_at:)
+      find_or_build_thread(box: box, merge_uuid: merge_uuid, title: title, delivered_at: delivered_at)
+    end
+
+    private
+
+    def find_or_build_thread(box:, merge_uuid:, title:, delivered_at:)
       thread = MessageThread.joins(:merge_identifiers)
                             .where("message_thread_merge_identifiers.uuid = ?", merge_uuid)
                             .where(box: box).take
-      
+
       if thread
         if thread.delivered_at > delivered_at
           # out-of-order processing
@@ -24,8 +36,6 @@ class Box
         )
         thread.merge_identifiers.build(uuid: merge_uuid, box: box)
       end
-
-      thread.save!
 
       thread
     end

@@ -1,15 +1,13 @@
 require "test_helper"
 
 class BoxTest < ActiveSupport::TestCase
-  test "should not be valid if obo value present in settings when api_connection is a Govbox::ApiConnection" do
+  test "should not be valid if obo value present in settings when api_connection is a Govbox::ApiConnection without tenant" do
     box = boxes(:google_box_with_govbox_api_connection)
     assert box.valid?
 
-    box.settings = {
-      "obo": SecureRandom.uuid
-    }
+    box.settings_obo = SecureRandom.uuid
 
-    assert_equal box.valid?, false
+    assert_not box.valid?
   end
 
   test "should not be valid if obo value present in Govbox::ApiConnectionWithOboSupport" do
@@ -18,7 +16,7 @@ class BoxTest < ActiveSupport::TestCase
 
     box.api_connection.update(obo: SecureRandom.uuid)
 
-    assert_equal box.valid?, false
+    assert_not box.valid?
   end
 
   test "should not be valid if obo value present in SkApi::ApiConnectionWithOboSupport" do
@@ -27,7 +25,7 @@ class BoxTest < ActiveSupport::TestCase
 
     box.api_connection.update(obo: SecureRandom.uuid)
 
-    assert_equal box.valid?, false
+    assert_not box.valid?
   end
 
   test "after_destroy callback destroys api_connection if Govbox::ApiConnection without any boxes" do
@@ -45,7 +43,7 @@ class BoxTest < ActiveSupport::TestCase
 
     box.destroy
 
-    assert_equal api_connection.destroyed?, false
+    assert_not api_connection.destroyed?
   end
 
   test "after_destroy callback does not destroy api_connection if SkApi::ApiConnectionWithOboSupport" do
@@ -54,6 +52,6 @@ class BoxTest < ActiveSupport::TestCase
 
     box.destroy
 
-    assert_equal api_connection.destroyed?, false
+    assert_not api_connection.destroyed?
   end
 end

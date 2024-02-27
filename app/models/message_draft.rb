@@ -30,60 +30,36 @@ class MessageDraft < Message
 
   after_destroy do
     EventBus.publish(:message_draft_destroyed, self)
-    # TODO: has to use `reload` because of `inverse_of` messages are in memory and deleting already deleted record fails
-    if thread.messages.reload.none?
-      thread.destroy!
-    elsif thread.message_drafts.reload.none?
-      drafts_tag = thread.tags.find_by(type: DraftTag.to_s)
-      thread.tags.delete(drafts_tag)
+    # TODO has to use `reload` because of `inverse_of` messages are in memory and deleting already deleted record fails
+    if self.thread.messages.reload.none?
+      self.thread.destroy!
+    elsif self.thread.message_drafts.reload.none?
+      drafts_tags = self.thread.tags.where(type: DraftTag.to_s)
+      drafts_tags.each do |drafts_tag|
+        self.remove_cascading_tag(drafts_tag)
+      end
     end
   end
 
-  GENERAL_AGENDA_POSP_ID = "App.GeneralAgenda"
-  GENERAL_AGENDA_POSP_VERSION = "1.9"
-  GENERAL_AGENDA_MESSAGE_TYPE = "App.GeneralAgenda"
-
-  with_options on: :validate_data do
-    validates :uuid, format: { with: Utils::UUID_PATTERN }, allow_blank: false
-    validate :validate_metadata
-    validate :validate_form
-    validate :validate_objects
+  with_options on: :create_from_template do |message_draft|
+    message_draft.validates :sender_name, presence: true
+    message_draft.validates :recipient_name, presence: true
+    message_draft.validate :validate_metadata_with_template
   end
 
-  def self.create_message_reply(original_message:, author:)
-    message_draft = original_message.thread.message_drafts.create!(
-      uuid: SecureRandom.uuid,
-      sender_name: original_message.recipient_name,
-      recipient_name: original_message.sender_name,
-      title: "Odpoveď: #{original_message.title}",
-      read: true,
-      delivered_at: Time.now,
-      author: author,
-      outbox: true,
-      replyable: false,
-      metadata: {
-        "recipient_uri": original_message.metadata["sender_uri"],
-        "posp_id": GENERAL_AGENDA_POSP_ID,
-        "posp_version": GENERAL_AGENDA_POSP_VERSION,
-        "message_type": GENERAL_AGENDA_MESSAGE_TYPE,
-        "correlation_id": original_message.metadata["correlation_id"],
-        "reference_id": original_message.uuid,
-        "original_message_id": original_message.id,
-        "status": "created"
-      }
-    )
-    message_draft.create_form_object
-
-    message_draft
+  with_options on: :validate_data do |message_draft|
+    message_draft.validates :uuid, format: { with: Utils::UUID_PATTERN }, allow_blank: false
+    message_draft.validate :validate_metadata
+    message_draft.validate :validate_form
+    message_draft.validate :validate_objects
+    message_draft.validate :validate_with_message_template
   end
 
-  def update_content(title:, body:)
-    self.title = title
-    metadata["message_body"] = body
+  def update_content(parameters)
+    metadata["data"] = parameters.to_h
     save!
-    return unless title.present? && body.present?
 
-    update_form_object
+    template.build_message_from_template(self)
     reload
   end
 
@@ -96,17 +72,17 @@ class MessageDraft < Message
   end
 
   def editable?
-    metadata["posp_id"] == GENERAL_AGENDA_POSP_ID && !form&.is_signed? && not_yet_submitted?
+    custom_visualization? && !form&.is_signed? && not_yet_submitted?
   end
 
   def reason_for_readonly
-    return :read_only_agenda unless metadata["posp_id"] == GENERAL_AGENDA_POSP_ID
+    return :read_only_agenda unless template.present?
     return :form_submitted if submitted? || being_submitted?
     return :form_signed if form.is_signed?
   end
 
   def custom_visualization?
-    metadata["posp_id"] == GENERAL_AGENDA_POSP_ID
+    template.present?
   end
 
   def submittable?
@@ -114,7 +90,7 @@ class MessageDraft < Message
   end
 
   def not_yet_submitted?
-    !%w[being_submitted submitted].include? metadata["status"]
+    metadata["status"] == "created"
   end
 
   def being_submitted?
@@ -123,6 +99,10 @@ class MessageDraft < Message
 
   def submitted?
     metadata["status"] == "submitted"
+  end
+
+  def submit_failed?
+    metadata["status"] == "submit_fail"
   end
 
   def being_submitted!
@@ -138,11 +118,19 @@ class MessageDraft < Message
   end
 
   def invalid?
-    metadata["status"] == "invalid"
+    metadata["status"] == "invalid" || !valid?(:validate_data)
   end
 
   def original_message
     Message.find(metadata["original_message_id"]) if metadata["original_message_id"]
+  end
+
+  def template
+    MessageTemplate.find(metadata["template_id"]) if metadata["template_id"]
+  end
+
+  def template_validation_errors
+    template&.message_data_validation_errors(self)
   end
 
   def remove_form_signature
@@ -150,9 +138,9 @@ class MessageDraft < Message
     return false unless form.is_signed?
 
     form.destroy
-    create_form_object
     reload
-    update_form_object
+    template&.create_form_object(self)
+    reload
   end
 
   def create_form_object
@@ -167,13 +155,27 @@ class MessageDraft < Message
 
   private
 
+  def validate_with_message_template
+    template&.validate_message(self)
+  end
+
   def validate_metadata
-    errors.add(:metadata, "No recipient URI") unless metadata["recipient_uri"].present?
-    errors.add(:metadata, "No posp ID") unless metadata["posp_id"].present?
-    errors.add(:metadata, "No posp version") unless metadata["posp_version"].present?
-    errors.add(:metadata, "No message type") unless metadata["message_type"].present?
-    errors.add(:metadata, "No correlation ID") unless metadata["correlation_id"].present?
-    errors.add(:metadata, "Correlation ID must be UUID") unless metadata["correlation_id"]&.match?(Utils::UUID_PATTERN)
+    all_message_metadata = if template&.metadata.present?
+     metadata.merge(template.metadata)
+    else
+     metadata
+    end
+
+    errors.add(:metadata, "No recipient URI") unless all_message_metadata["recipient_uri"].present?
+    errors.add(:metadata, "No posp ID") unless all_message_metadata["posp_id"].present?
+    errors.add(:metadata, "No posp version") unless all_message_metadata["posp_version"].present?
+    errors.add(:metadata, "No message type") unless all_message_metadata["message_type"].present?
+    errors.add(:metadata, "No correlation ID") unless all_message_metadata["correlation_id"].present?
+    errors.add(:metadata, "Correlation ID must be UUID") unless all_message_metadata["correlation_id"]&.match?(Utils::UUID_PATTERN)
+  end
+
+  def validate_metadata_with_template
+    errors.add(:metadata, :no_template) unless metadata&.dig("template_id").present?
   end
 
   def validate_form
@@ -190,20 +192,6 @@ class MessageDraft < Message
     objects.each do |object|
       object.valid?(:validate_data)
       errors.merge!(object.errors)
-    end
-  end
-
-  def update_form_object
-    # TODO: clean the domain (no UPVS stuff)
-    if form.message_object_datum
-      form.message_object_datum.update(
-        blob: Upvs::FormBuilder.build_general_agenda_xml(subject: title, body: metadata["message_body"])
-      )
-    else
-      form.message_object_datum = MessageObjectDatum.create(
-        message_object: form,
-        blob: Upvs::FormBuilder.build_general_agenda_xml(subject: title, body: metadata["message_body"])
-      )
     end
   end
 end

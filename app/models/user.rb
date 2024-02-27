@@ -17,6 +17,7 @@ class User < ApplicationRecord
 
   belongs_to :tenant
 
+  has_one :draft_tag, foreign_key: :owner_id
   has_many :group_memberships, dependent: :destroy
   has_many :groups, through: :group_memberships
   has_many :own_tags, class_name: 'Tag', inverse_of: :owner, foreign_key: :owner_id, dependent: :nullify
@@ -30,7 +31,7 @@ class User < ApplicationRecord
   validates_uniqueness_of :name, :email, scope: :tenant_id, case_sensitive: false
 
   before_destroy :delete_user_group, prepend: true
-  after_create :handle_default_groups
+  after_create :handle_default_settings
 
   def site_admin?
     ENV['SITE_ADMIN_EMAILS'].to_s.split(',').include?(email)
@@ -83,8 +84,16 @@ class User < ApplicationRecord
     user_group.destroy
   end
 
-  def handle_default_groups
-    groups.create!(name: name, type: "UserGroup", tenant_id: tenant_id)
+  def handle_default_settings
+    user_group = groups.create!(name: name, type: "UserGroup", tenant_id: tenant_id)
     group_memberships.create!(group: tenant.all_group)
+
+    draft_tag = tenant.tags.create(
+      owner: self,
+      name: "Drafts-#{name}",
+      type: "DraftTag",
+      visible: false
+    )
+    draft_tag.mark_readable_by_groups([user_group])
   end
 end

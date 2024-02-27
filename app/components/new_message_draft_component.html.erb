@@ -1,0 +1,77 @@
+<div id="new_message" is="turbo-frame" class="w-full">
+  <div class="w-full p-4 flex-col justify-start items-start gap-4 inline-flex">
+    <div class="self-stretch bg-white rounded-md border border-gray-200 flex-col justify-start items-start flex">
+      <div class="self-stretch p-6 border-b border-gray-200 justify-start items-center gap-4 inline-flex">
+        <div class="grow shrink basis-0 text-gray-900 text-xl font-semibold leading-[35px]">Nová správa</div>
+      </div>
+      <%
+        form_id = "create_draft"
+        sender_element_id = "sender_id"
+        template_element_id = "message_template_id"
+      %>
+
+      <%= form_with url: message_drafts_path, id: form_id, class: 'w-full' do |f| %>
+        <div class="self-stretch px-6 pt-6 flex-col justify-start items-start flex">
+          <div class="mb-4 w-full">
+            <% if @boxes.count > 1 %>
+              <label for="<%= sender_element_id %>" class="block mb-2 text-base font-medium text-gray-900">Od</label>
+              <%= select_tag(sender_element_id, options_for_select(@boxes, @selected_box), class: "text-sm rounded-lg block w-full p-2.5 #{@message.errors[:sender_name].any? && !@selected_box ? ERROR_CLASSES : DEFAULT_CLASSES}") %>
+              <% if @message.errors[:sender_name].any? && !@selected_box %>
+                <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+                  <span class="font-medium"><%= @message.errors[:sender_name].to_sentence %></span>
+                </p>
+              <% end %>
+            <% else %>
+              <%= hidden_field_tag sender_element_id, @boxes.first[1] %>
+            <% end %>
+          </div>
+
+          <%= content_tag(:div, { "data-controller": "message-drafts", class: "mb-4 w-full" }) do %>
+            <label for="<%= template_element_id %>" class="block mb-2 text-base font-medium text-gray-900">Typ správy</label>
+            <%= select_tag(template_element_id, options_for_select(@templates_list, [@selected_message_template&.name, @selected_message_template&.id]), "data-action": "change->message-drafts#loadTemplateRecipients", class: "text-sm rounded-lg block w-full p-2.5 #{@message.errors[:metadata].any? ? ERROR_CLASSES : DEFAULT_CLASSES}") %>
+            <% if @message.errors[:metadata].any? %>
+              <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+                <span class="font-medium"><%= @message.errors[:metadata].to_sentence %></span>
+              </p>
+            <% end %>
+          <% end %>
+
+          <div id="selected_recipient" is="turbo-frame">
+            <%= hidden_field_tag 'recipient_name', params[:recipient_name] %>
+            <%= hidden_field_tag 'recipient_uri', params[:recipient_uri] %>
+          </div>
+        </div>
+      <% end %>
+
+      <div class="self-stretch px-6 pb-6 flex-col justify-start items-start flex">
+        <div id="recipients_list" is="turbo-frame" class="w-full">
+          <% if @recipients_list && @recipients_list.count > 1 %>
+            <div>
+              <label for="recipient" class="block mb-2 text-base font-medium text-gray-900">Komu</label>
+            </div>
+            <%= button_to message_template_recipient_selector_path(@selected_message_template), method: 'get', data: { turbo_frame: "modal" }, class: "text-gray-500 hover:text-gray-900 w-full" do %>
+              <div id="recipient" class="text-sm rounded-lg block w-full p-2.5 <%= @message.errors[:recipient_name].any? ? ERROR_CLASSES : DEFAULT_CLASSES %>">
+                <p class="text-left"><%= params[:recipient_name].presence || 'Zvoľte prijímateľa' %></p>
+              </div>
+              <% if @message.errors[:recipient_name].any? %>
+                <p class="mt-2 text-left text-sm text-red-600 dark:text-red-500">
+                  <span class="font-medium"><%= @message.errors[:recipient_name].to_sentence %></span>
+                </p>
+              <% end %>
+            <% end %>
+          <% end %>
+        </div>
+
+        <%= content_tag(:div, {
+          "data-controller": "message-drafts",
+          "data-message-drafts-form-id": form_id,
+          class: "mt-6"
+        }) do %>
+          <button data-action="click->message-drafts#create" class="rounded-md bg-blue-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">
+            Vytvoriť správu
+          </button>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
