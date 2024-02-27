@@ -49,6 +49,6 @@ workers:
       path: "/status/started"
     resources:
       requests:
-        memory: 1Gi
+        memory: 3Gi
       limits:
-        memory: 1Gi
+        memory: 3Gi
