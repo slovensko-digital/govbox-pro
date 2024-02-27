@@ -74,13 +74,11 @@ class MessageDraftsController < ApplicationController
 
     render :update_body and return unless @message.valid?(:validate_data)
 
-    if @message.submittable?
-      Govbox::SubmitMessageDraftJob.perform_later(@message)
-      @message.being_submitted!
+    if Govbox::SubmitMessageDraftAction.run(@message)
       redirect_to message_thread_path(@message.thread), notice: "Správa bola zaradená na odoslanie"
     else
       # TODO: prisposobit chybovu hlasku aj importovanym draftom
-      redirect_to message_thread_path(@message.thread), alert: "Vyplňte text správy"
+      redirect_to message_thread_path(@message.thread), alert: "Vyplňte obsah správy"
     end
   end
 
