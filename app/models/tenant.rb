@@ -18,7 +18,7 @@ class Tenant < ApplicationRecord
   has_many :groups, dependent: :destroy
   has_many :custom_groups
 
-  has_one :draft_tag
+  has_one :draft_tag, -> { where(owner_id: nil) }
   has_one :everything_tag
   has_one :signature_requested_tag
   has_one :signed_tag
@@ -30,6 +30,7 @@ class Tenant < ApplicationRecord
   has_many :simple_tags
 
   has_many :boxes, dependent: :destroy
+  has_many :api_connections, dependent: :destroy
   has_many :automation_rules, class_name: "Automation::Rule", dependent: :destroy
   has_many :filters
   has_many :filter_subscriptions
@@ -40,18 +41,10 @@ class Tenant < ApplicationRecord
 
   validates_presence_of :name
 
-  AVAILABLE_FEATURE_FLAGS = [:audit_log, :archive, :api]
+  AVAILABLE_FEATURE_FLAGS = [:audit_log, :archive, :api, :message_draft_import, :template_messages]
 
   def draft_tag!
     draft_tag || raise(ActiveRecord::RecordNotFound, "`DraftTag` not found in tenant: #{id}")
-  end
-
-  def signature_requested_tag!
-    signature_requested_tag || raise(ActiveRecord::RecordNotFound, "`SignatureRequestedTag` not found in tenant: #{id}")
-  end
-
-  def signed_tag!
-    signed_tag || raise(ActiveRecord::RecordNotFound, "`SignedTag` not found in tenant: #{self.id}")
   end
 
   def signed_externally_tag!

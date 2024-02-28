@@ -1,4 +1,4 @@
-<% if @user_is_signer %>
+<% if @signable %>
   <div class="inline-flex rounded-lg shadow-sm">
     <%= link_to "Podpísať",
                 new_message_draft_document_selections_path(@message, next_step: "sign"),

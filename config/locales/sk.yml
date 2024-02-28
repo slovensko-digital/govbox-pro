@@ -1,17 +1,34 @@
 sk:
   activerecord:
     attributes:
+      message:
+        sender_name: 'Odosielateľ'
+        recipient_name: 'Prijímateľ'
       message_thread:
         title: "Názov"
+      box:
+        name: Názov
+        short_name: Krátky názov
+        uri: URI
+        settings_obo: ID identity
     errors:
       messages:
         record_invalid: "Validácia neúspešná: %{errors}"
+        invalid_form: "Formulár nie je validný voči XSD"
       models:
+        api_connection:
+          attributes:
+            tenant_id:
+              present: 'Tenant nesmie byť zvolený'
         tag:
           attributes:
             base:
               restrict_dependent_destroy:
                 has_many: "Štítok je použitý v automatizačných pravidlách, nie je ho možné vymazať. Upravte najskôr pravidlá"
+        message_draft:
+          attributes:
+            metadata:
+              no_template: "Typ správy je povinná položka"
   date:
     abbr_day_names:
       - Ne
@@ -123,7 +140,7 @@ sk:
     format: "%{attribute} %{message}"
     messages:
       accepted: musí byť potvrdené
-      blank: je povinná položka
+      blank: "%{attribute} je povinná položka"
       confirmation: nebolo potvrdené
       empty: nesmie byť prázdny/e
       equal_to: sa musí rovnať %{count}
@@ -132,7 +149,7 @@ sk:
       greater_than: musí byť väčšie ako %{count}
       greater_than_or_equal_to: musí byť väčšie alebo rovné %{count}
       inclusion: nie je v zozname povolených hodnôt
-      invalid: nie je platná hodnota
+      invalid: "%{attribute} nie je platná hodnota"
       less_than: musí byť menšie ako %{count}
       less_than_or_equal_to: musí byť menšie alebo rovné %{count}
       not_allowed: nie je povolené
@@ -140,7 +157,7 @@ sk:
       not_an_integer: musí byť celé číslo
       odd: musí byť nepárne číslo
       required: musí existovať
-      taken: ste už použili
+      taken: "%{attribute} ste už použili"
       too_long: je príliš dlhá/ý (max. %{count} znakov)
       too_short: je príliš krátky/a (min. %{count} znakov)
       wrong_length: nemá správnu dĺžku (očakáva sa %{count} znakov)
@@ -239,6 +256,8 @@ sk:
   sender_uri: "URI odosielateľa"
   recipient_uri: "URI prijímateľa"
   box: "Schránka správy"
+  boxes:
+    sync_all_requested: "Sťahovanie nových správ bolo spustené."
   message_created: "Nová správa"
   "Automation::ContainsCondition": "obsahuje"
   "Automation::MetadataValueCondition": "v metadátach obsahuje"
@@ -273,3 +292,13 @@ sk:
       create: "Notifikácie boli nastavené!"
       update: "Notifikacie boli zmenené!"
       destroy: "Notifikácie boli zrušené!"
+  signing:
+    processed: "Dokumenty boli úspešne podpísané"
+    failed: "Pri podpisovaní dokumentov sa vyskytla chyba"
+    documents:
+      one: "1 dokument"
+      few: "%{count} dokumenty"
+      other: "%{count} dokumentov"
+  bulk:
+    signing:
+      nothing_to_sign: "Vo vybraných vláknach sa nenašli žiadne dokumenty so žiadosťou na podpis"

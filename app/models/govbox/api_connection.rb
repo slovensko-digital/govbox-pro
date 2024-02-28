@@ -9,11 +9,14 @@
 #  type                  :string
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
+#  tenant_id             :bigint
 #
 class Govbox::ApiConnection < ::ApiConnection
+  validates :tenant_id, absence: true
+
   def box_obo(box)
     raise "OBO not allowed!" if invalid_obo?(box)
-    obo
+    obo.presence
   end
 
   def destroy_with_box?
@@ -21,7 +24,7 @@ class Govbox::ApiConnection < ::ApiConnection
   end
 
   def validate_box(box)
-    box.errors.add(:obo, :not_allowed) if invalid_obo?(box)
+    box.errors.add(:settings_obo, :not_allowed) if invalid_obo?(box)
   end
 
   private

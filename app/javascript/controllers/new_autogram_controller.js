@@ -14,9 +14,12 @@ export default class extends Controller {
       return
     }
 
+    let batchId = null
+
     try {
-      const usingBatch = files.length > 1
-      const batchId = usingBatch ? await startBatch(files.length) : null
+      if (files.length > 1) {
+        batchId = await startBatch(files.length)
+      }
 
       for await (const file of files) {
         await signMessageObject(file.path, batchId, token)

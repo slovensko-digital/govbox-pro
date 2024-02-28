@@ -40,7 +40,8 @@ class MessageTest < ActiveSupport::TestCase
     message = messages(:ssd_main_general_one)
     user = users(:basic)
 
-    reply = MessageDraft.create_message_reply(original_message: message, author: user)
+    reply = MessageDraft.new
+    MessageTemplate.reply_template.create_message_reply(reply, original_message: message, author: user)
 
     assert_equal reply.sender_name, message.recipient_name
     assert_equal reply.recipient_name, message.sender_name

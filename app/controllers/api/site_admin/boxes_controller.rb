@@ -15,6 +15,6 @@ class Api::SiteAdmin::BoxesController < Api::SiteAdminController
 
   def box_params
     params.require(:box).permit(:name, :short_name, :uri, :color, :api_connection_id,
-                                settings: :obo, api_connection: [:sub, :api_token_private_key])
+                                :settings_obo, api_connection: [:sub, :api_token_private_key])
   end
 end

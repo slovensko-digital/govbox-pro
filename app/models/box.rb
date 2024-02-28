@@ -32,7 +32,11 @@ class Box < ApplicationRecord
 
   before_create { self.color = Box.colors.keys[name.hash % Box.colors.size] if color.blank? }
 
+  validates_presence_of :name, :short_name, :uri
+  validates_uniqueness_of :name, :short_name, :uri, scope: :tenant_id
   validate :validate_box_with_api_connection
+
+  store_accessor :settings, :obo, prefix: true # TODO: move to Govbox::Box superclass?
 
   def self.create_with_api_connection!(params)
     if params[:api_connection]
@@ -46,9 +50,19 @@ class Box < ApplicationRecord
     api_connection.boxes.create!(params.except(:api_connection))
   end
 
+  def sync
+    Govbox::SyncBoxJob.perform_later(self)
+  end
+
+  def self.sync_all
+    find_each(&:sync)
+  end
+
   private
 
   def validate_box_with_api_connection
+    errors.add(:api_connection, :invalid) if api_connection.tenant && (api_connection.tenant != tenant)
+
     api_connection.validate_box(self)
   end
 end

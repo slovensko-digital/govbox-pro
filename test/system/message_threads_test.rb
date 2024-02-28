@@ -181,8 +181,8 @@ class MessageThreadsTest < ApplicationSystemTestCase
     end
 
     within '#new_drafts' do
-      fill_in "Text", with: "Testovacie telo"
-      fill_in "Predmet", with: "Testovaci predmet"
+      fill_in "message_draft_Text", with: "Testovacie telo"
+      fill_in "message_draft_Predmet", with: "Testovaci predmet"
       click_button "Odoslať"
     end
 
