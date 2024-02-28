@@ -528,9 +528,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_12_151445) do
     t.bigint "owner_id"
     t.string "external_name"
     t.string "type", null: false
-    t.enum "color", enum_type: "color"
-    t.integer "tag_groups_count", default: 0, null: false
     t.string "icon"
+    t.integer "tag_groups_count", default: 0, null: false
+    t.enum "color", enum_type: "color"
     t.index "tenant_id, type, lower((name)::text)", name: "index_tags_on_tenant_id_and_type_and_lowercase_name", unique: true
     t.index ["owner_id"], name: "index_tags_on_owner_id"
     t.index ["tenant_id", "type"], name: "signings_tags", unique: true, where: "((type)::text = ANY ((ARRAY['SignatureRequestedTag'::character varying, 'SignedTag'::character varying])::text[]))"
@@ -573,6 +573,15 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_12_151445) do
     t.string "type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "user_hidden_items", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "user_hideable_type", null: false
+    t.bigint "user_hideable_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_user_hidden_items_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -643,5 +652,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_12_151445) do
   add_foreign_key "tags", "tenants"
   add_foreign_key "tags", "users", column: "owner_id"
   add_foreign_key "upvs_form_related_documents", "upvs_forms"
+  add_foreign_key "user_hidden_items", "users"
   add_foreign_key "users", "tenants"
 end
