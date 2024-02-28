@@ -1,9 +1,10 @@
 class SidebarMenu
   include Rails.application.routes.url_helpers
 
-  def initialize(controller, _action, parameters = nil, filters: [])
+  def initialize(controller, _action, parameters = nil, filters: [], tags: [])
     @parameters = parameters
     @filters = filters
+    @tags = tags
     @menu = current_menu(controller)
   end
 
