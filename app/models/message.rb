@@ -87,4 +87,34 @@ class Message < ApplicationRecord
   def authorized?
     metadata["delivery_notification"] && metadata["authorized"] == true
   end
+
+  # TODO remove UPVS stuff from core domain
+  def upvs_form
+    Upvs::Form.find_by(
+      identifier: metadata['posp_id'],
+      version: metadata['posp_version'],
+      message_type: metadata['message_type']
+    )
+  end
+
+  def visualization
+    return self.html_visualization if self.html_visualization.present?
+
+    if upvs_form&.xslt_html
+      form_object = objects.find_by(object_type: 'FORM')
+      form_content = if form_object.is_signed
+                       form_object.nested_message_objects&.find_by(mimetype: 'application/xml')&.content
+                     else
+                       form_object.content
+                     end
+
+      if form_content
+        document = Nokogiri::XML(form_content)
+        document = Nokogiri::XML(document.children.first.children.first.children.first.to_xml) if document.children.first.name == "XMLDataContainer"
+        template = Nokogiri::XSLT(upvs_form.xslt_html)
+
+        return template.transform(document)
+      end
+    end
+  end
 end
