@@ -45,6 +45,7 @@ class MessageDraft < Message
     message_draft.validates :sender_name, presence: true
     message_draft.validates :recipient_name, presence: true
     message_draft.validate :validate_metadata_with_template
+    message_draft.validate :validate_form_against_xsd
   end
 
   with_options on: :validate_data do |message_draft|
@@ -185,6 +186,24 @@ class MessageDraft < Message
       errors.add(:objects, "No objects found for draft")
     elsif forms.size != 1
       errors.add(:objects, "Draft has to contain exactly one form")
+    else
+      validate_form_against_xsd
+    end
+  end
+
+  def validate_form_against_xsd
+    raise "No XSD schema found for draft" unless upvs_form&.xsd_schema
+
+    form_content = form.unsigned_content
+
+    if form_content
+      document = Nokogiri::XML(form_content)
+      document = Nokogiri::XML(document.children.first.children.first.children.first.to_xml) if document.children.first.name == "XMLDataContainer"
+      schema = Nokogiri::XML::Schema(upvs_form.xsd_schema)
+
+      errors = schema.validate(document)
+
+      message.errors.add(:base, :invalid_form) if errors.any?
     end
   end
 

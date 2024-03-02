@@ -78,6 +78,14 @@ class MessageObject < ApplicationRecord
     message_object_datum&.blob
   end
 
+  def unsigned_content(mimetype: 'application/xml')
+    if is_signed
+      nested_message_objects&.find_by(mimetype: mimetype)&.content
+    else
+      content
+    end
+  end
+
   def form?
     object_type == "FORM"
   end

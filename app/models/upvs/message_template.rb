@@ -132,10 +132,8 @@ class Upvs::MessageTemplate < ::MessageTemplate
 
     raise "Missing XSD schema: #{self.name}" unless xsd_schema
 
-    return if message.form.is_signed?
-
     schema = Nokogiri::XML::Schema(xsd_schema)
-    document = Nokogiri::XML(message.form.content)
+    document = Nokogiri::XML(message.form.unsigned_content)
     errors = schema.validate(document)
 
     message.errors.add(:base, :invalid_form) if errors.any?
