@@ -90,10 +90,12 @@ class Message < ApplicationRecord
 
   # TODO remove UPVS stuff from core domain
   def upvs_form
-    Upvs::Form.find_by(
-      identifier: metadata['posp_id'],
-      version: metadata['posp_version'],
-      message_type: metadata['message_type']
+    all_message_metadata = metadata.merge(template&.metadata || {})
+
+    ::Upvs::Form.find_by(
+      identifier: all_message_metadata['posp_id'],
+      version: all_message_metadata['posp_version'],
+      message_type: all_message_metadata['message_type']
     )
   end
 
@@ -111,5 +113,9 @@ class Message < ApplicationRecord
         return template.transform(document)
       end
     end
+  end
+
+  def template
+    MessageTemplate.find(metadata["template_id"]) if metadata["template_id"]
   end
 end

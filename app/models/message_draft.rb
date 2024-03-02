@@ -90,8 +90,12 @@ class MessageDraft < Message
     form.content.present? && objects.to_be_signed.all? { |o| o.is_signed? } && !invalid? && not_yet_submitted?
   end
 
-  def not_yet_submitted?
+  def correctly_created?
     metadata["status"] == "created"
+  end
+
+  def not_yet_submitted?
+    metadata["status"] == "created" || metadata["status"] == "invalid"
   end
 
   def being_submitted?
@@ -124,10 +128,6 @@ class MessageDraft < Message
 
   def original_message
     Message.find(metadata["original_message_id"]) if metadata["original_message_id"]
-  end
-
-  def template
-    MessageTemplate.find(metadata["template_id"]) if metadata["template_id"]
   end
 
   def template_validation_errors
@@ -194,16 +194,17 @@ class MessageDraft < Message
   def validate_form_against_xsd
     raise "No XSD schema found for draft" unless upvs_form&.xsd_schema
 
-    form_content = form.unsigned_content
+    form_content = form&.unsigned_content
 
     if form_content
       document = Nokogiri::XML(form_content)
-      document = Nokogiri::XML(document.children.first.children.first.children.first.to_xml) if document.children.first.name == "XMLDataContainer"
+      document = Nokogiri::XML(document.children.first.children.first.children.first.to_xml) if document.children.first.name == 'XMLDataContainer'
+      form_errors = document.errors
+
       schema = Nokogiri::XML::Schema(upvs_form.xsd_schema)
+      form_errors += schema.validate(document)
 
-      errors = schema.validate(document)
-
-      message.errors.add(:base, :invalid_form) if errors.any?
+      errors.add(:base, :invalid_form) if form_errors.any?
     end
   end
 
