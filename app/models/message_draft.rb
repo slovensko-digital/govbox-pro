@@ -45,7 +45,7 @@ class MessageDraft < Message
     message_draft.validates :sender_name, presence: true
     message_draft.validates :recipient_name, presence: true
     message_draft.validate :validate_metadata_with_template
-    message_draft.validate :validate_form_against_xsd
+    message_draft.validate :validate_form
   end
 
   with_options on: :validate_data do |message_draft|
@@ -154,52 +154,19 @@ class MessageDraft < Message
     )
   end
 
-  private
-
-  def validate_with_message_template
-    template&.validate_message(self)
-  end
-
-  def validate_metadata
-    all_message_metadata = if template&.metadata.present?
-     metadata.merge(template.metadata)
-    else
-     metadata
-    end
-
-    errors.add(:metadata, "No recipient URI") unless all_message_metadata["recipient_uri"].present?
-    errors.add(:metadata, "No posp ID") unless all_message_metadata["posp_id"].present?
-    errors.add(:metadata, "No posp version") unless all_message_metadata["posp_version"].present?
-    errors.add(:metadata, "No message type") unless all_message_metadata["message_type"].present?
-    errors.add(:metadata, "No correlation ID") unless all_message_metadata["correlation_id"].present?
-    errors.add(:metadata, "Correlation ID must be UUID") unless all_message_metadata["correlation_id"]&.match?(Utils::UUID_PATTERN)
-  end
-
-  def validate_metadata_with_template
-    errors.add(:metadata, :no_template) unless metadata&.dig("template_id").present?
-  end
-
+  # TODO remove UPVS stuff from core domain
   def validate_form
-    forms = objects.select { |o| o.form? }
+    raise "Disallowed form" unless ::Upvs::ServiceWithFormAllowRule.form_services(all_metadata).any?
 
-    if objects.size == 0
-      errors.add(:objects, "No objects found for draft")
-    elsif forms.size != 1
-      errors.add(:objects, "Draft has to contain exactly one form")
-    else
-      validate_form_against_xsd
-    end
-  end
-
-  def validate_form_against_xsd
-    raise "No XSD schema found for draft" unless upvs_form&.xsd_schema
+    raise "Missing XSD schema" unless upvs_form&.xsd_schema
 
     form_content = form&.unsigned_content
 
     if form_content
       document = Nokogiri::XML(form_content)
-      document = Nokogiri::XML(document.children.first.children.first.children.first.to_xml) if document.children.first.name == 'XMLDataContainer'
       form_errors = document.errors
+
+      document = Nokogiri::XML(document.children.first.children.first.children.first.to_xml) if document.children.first.name == 'XMLDataContainer'
 
       schema = Nokogiri::XML::Schema(upvs_form.xsd_schema)
       form_errors += schema.validate(document)
@@ -208,10 +175,33 @@ class MessageDraft < Message
     end
   end
 
+  private
   def validate_objects
+    errors.add(:objects, "No objects found for draft") if objects.size == 0
+
     objects.each do |object|
       object.valid?(:validate_data)
       errors.merge!(object.errors)
     end
+
+    forms = objects.select { |o| o.form? }
+    errors.add(:objects, "Draft has to contain exactly one form") if forms.size != 1
+  end
+
+  def validate_metadata
+    errors.add(:metadata, "No recipient URI") unless all_metadata["recipient_uri"].present?
+    errors.add(:metadata, "No posp ID") unless all_metadata["posp_id"].present?
+    errors.add(:metadata, "No posp version") unless all_metadata["posp_version"].present?
+    errors.add(:metadata, "No message type") unless all_metadata["message_type"].present?
+    errors.add(:metadata, "No correlation ID") unless all_metadata["correlation_id"].present?
+    errors.add(:metadata, "Correlation ID must be UUID") unless all_metadata["correlation_id"]&.match?(Utils::UUID_PATTERN)
+  end
+
+  def validate_with_message_template
+    template&.validate_message(self)
+  end
+
+  def validate_metadata_with_template
+    errors.add(:metadata, :no_template) unless metadata&.dig("template_id").present?
   end
 end

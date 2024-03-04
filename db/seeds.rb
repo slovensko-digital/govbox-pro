@@ -88,6 +88,12 @@ Upvs::ServiceWithForm.find_or_create_by!(
   name: "Žiadosť o zrušenie prístupových oprávnení technického účtu (zrušenie technického účtu)",
   schema_url: 'http://schemas.gov.sk/form/42156424.IAM_Zrusenie_TU.sk/1.5'
 )
+Upvs::ServiceWithForm.find_or_create_by!(
+  institution_uri: 'ico://sk/83369723',
+  institution_name: 'Test OVM 83369723',
+  name: "Exekučné konanie - Návrh na vykonanie exekúcie",
+  schema_url: 'http://schemas.gov.sk/form/00166073.RESS_Exekucne_konanie_Navrh_na_vykonanie_exekucie.sk/1.24'
+)
 
 Upvs::MessageTemplate.find_or_create_by!(
   name: 'Všeobecná agenda',

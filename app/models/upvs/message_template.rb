@@ -123,20 +123,6 @@ class Upvs::MessageTemplate < ::MessageTemplate
     required_template_items.each do |template_item|
       message.errors.add(:metadata, :blank, attribute: template_item) unless message.metadata["data"][template_item].present?
     end
-
-    return if message.errors[:metadata].any?
-
-    raise "Disallowed form: #{self.name}" unless Upvs::ServiceWithFormAllowRule.form_services(self).any?
-
-    xsd_schema = upvs_form&.xsd_schema
-
-    raise "Missing XSD schema: #{self.name}" unless xsd_schema
-
-    schema = Nokogiri::XML::Schema(xsd_schema)
-    document = Nokogiri::XML(message.form.unsigned_content)
-    errors = schema.validate(document)
-
-    message.errors.add(:base, :invalid_form) if errors.any?
   end
 
   def create_form_object(message)
@@ -151,19 +137,11 @@ class Upvs::MessageTemplate < ::MessageTemplate
 
   private
 
-  def upvs_form
-    Upvs::Form.find_by(
-      identifier: metadata['posp_id'],
-      version: metadata['posp_version'],
-      message_type: metadata['message_type']
-    )
-  end
-
   def form_services
-    Upvs::ServiceWithFormAllowRule.where("schema_url LIKE ?", "%#{metadata['posp_id']/metadata['posp_version']}")
+    ::Upvs::ServiceWithFormAllowRule.form_services(metadata)
   end
 
   def validate_allow_rules_presence
-    errors.add(:base, "Disallowed form") unless Upvs::ServiceWithFormAllowRule.form_services(self).any?
+    errors.add(:base, "Disallowed form") unless ::Upvs::ServiceWithFormAllowRule.form_services(metadata).any?
   end
 end
