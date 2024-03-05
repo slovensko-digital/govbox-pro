@@ -201,6 +201,10 @@ Rails.application.routes.draw do
       end
     end
 
+    namespace :upvs do
+      resources :messages, only: [:create]
+    end
+
     resources :message_threads, only: [:show]
     resources :messages, only: [:show]
   end
