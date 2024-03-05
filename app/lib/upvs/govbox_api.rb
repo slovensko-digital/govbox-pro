@@ -20,8 +20,8 @@ module Upvs
         @api.request(:get, "#{@api.url}/api/edesk/folders", {}, header)
       end
 
-      def fetch_messages(folder_id, offset: 0, count: 5000)
-        @api.request(:get, "#{@api.url}/api/edesk/folders/#{folder_id}/messages?page=#{offset}&per_page=#{count}", {}, header)
+      def fetch_messages(folder_id, page: 1, count: 5000)
+        @api.request(:get, "#{@api.url}/api/edesk/folders/#{folder_id}/messages?page=#{page}&per_page=#{count}", {}, header)
       end
 
       def fetch_message(message_id)
