@@ -14,7 +14,6 @@ class NestedMessageObject < ApplicationRecord
   belongs_to :message_object, inverse_of: :nested_message_objects
 
   validates :name, presence: true, on: :validate_data
-  validate :allowed_mime_type?, on: :validate_data
 
   def self.create_from_message_object(message_object)
     return unless message_object.asice?
