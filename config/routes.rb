@@ -22,6 +22,7 @@ Rails.application.routes.draw do
     end
     resources :tags
     resource :profile
+    resources :user_hidden_items
   end
 
   namespace :admin do
@@ -122,6 +123,15 @@ Rails.application.routes.draw do
   end
 
   resources :filters do
+    member do
+      patch :pin
+      patch :unpin
+    end
+
+    collection do
+      patch :sort
+    end
+
     resources :filter_subscriptions
   end
 

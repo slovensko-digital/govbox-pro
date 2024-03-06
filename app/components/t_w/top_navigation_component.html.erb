@@ -10,10 +10,10 @@
 <div class="flex justify-start items-stretch grow relative gap-3 rounded-md bg-white">
   <%= form_with url: message_threads_path, method: :get, html: { class: 'relative flex flex-1' } do |f| %>
     <%= render Icons::MagnifyingGlassComponent.gray %>
-    <%= f.search_field :q, id: "search", value: params[:q], placeholder: 'Vyhľadaj správu', class: 'block h-full w-full border-0 py-0 pr-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-base' %>
+    <%= f.search_field :q, id: "search", value: query, placeholder: 'Vyhľadaj správu', class: 'block h-full w-full border-0 py-0 pr-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-base' %>
   <% end %>
-  <% if params[:q].present? %>
-    <%= link_to new_filter_path(query: params[:q]), data: { turbo_frame: "modal" }, class: "flex items-center gap-2 text-gray-500 hover:text-gray-900", title: "Pridať filter" do %>
+  <% if query.present? %>
+    <%= link_to new_filter_path(query:), data: { turbo_frame: "modal" }, class: "flex items-center gap-2 text-gray-500 hover:text-gray-900", title: "Pridať filter" do %>
       <%= render Icons::BookmarkComponent.new %>
     <% end %>
   <% end %>

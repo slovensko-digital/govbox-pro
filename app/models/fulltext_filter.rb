@@ -14,24 +14,10 @@
 #  tag_id     :bigint
 #  tenant_id  :bigint           not null
 #
-class Filter < ApplicationRecord
-  include AuditableEvents
+class FulltextFilter < Filter
+  validates :query, presence: true
 
-  belongs_to :author, class_name: 'User'
-  belongs_to :tenant
-
-  validates :tenant_id, :author_id, :name, presence: true
-
-  before_create :fill_position
-
-  scope :pinned, -> { where(is_pinned: true) }
-  scope :not_pinned, -> { where(is_pinned: false) }
-
-  def fill_position
-    return if position.present?
-
-    max_position = Filter.where(tenant_id: tenant_id).maximum(:position)
-
-    self.position = (max_position || 0) + 1
+  def self.model_name
+    Filter.model_name
   end
 end

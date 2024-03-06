@@ -48,6 +48,18 @@ class FilterPolicy < ApplicationPolicy
     @user.admin? || is_author_current_user?
   end
 
+  def pin?
+    is_author_current_user?
+  end
+
+  def unpin?
+    pin?
+  end
+
+  def sort?
+    is_author_current_user?
+  end
+
   private
 
   def is_author_current_user?
