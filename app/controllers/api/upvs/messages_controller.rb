@@ -41,7 +41,7 @@ class Api::Upvs::MessagesController < ApiController
   private
 
   def set_box
-    @box = Box.find_by(uri: permitted_params[:sender_uri])
+    @box = @tenant.boxes.find_by(uri: permitted_params[:sender_uri])
   end
 
   def message_params
