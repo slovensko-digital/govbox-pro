@@ -232,6 +232,7 @@ paths:
                         description: Obsah objektu zakódovaný podľa Base64
                         type: string
                     required:
+                      - name
                       - mimetype
                       - is_signed
                       - object_type

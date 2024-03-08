@@ -25,7 +25,7 @@ class MessageObject < ApplicationRecord
   scope :to_be_signed, -> { where(to_be_signed: true) }
   scope :should_be_signed, -> { where(to_be_signed: true, is_signed: false) }
 
-  validates :name, presence: true, on: :validate_data
+  validates :name, presence: { message: "Name can't be blank" }, on: :validate_data
   validate :allowed_mime_type?, on: :validate_data
 
   after_update ->(message_object) { EventBus.publish(:message_object_changed, message_object) }
@@ -110,7 +110,11 @@ class MessageObject < ApplicationRecord
   private
 
   def allowed_mime_type?
-    errors.add(:mime_type, "of #{name} object is disallowed, allowed_mime_types: #{Utils::EXTENSIONS_ALLOW_LIST.join(", ")}") unless mimetype
+    if mimetype
+      errors.add(:mime_type, "MimeType of #{name} object is disallowed, allowed mimetypes: #{Utils::MIMETYPES_ALLOW_LIST.join(", ")}") unless Utils::MIMETYPES_ALLOW_LIST.include?(mimetype)
+    else
+      errors.add(:mime_type, "MimeType of #{name} object is disallowed, allowed file types: #{Utils::EXTENSIONS_ALLOW_LIST.join(", ")}")
+    end
   end
 
   def has_tag?(tag)

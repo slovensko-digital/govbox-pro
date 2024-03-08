@@ -92,4 +92,8 @@ class ApiController < ActionController::API
   def render_unprocessable_entity(message)
     render status: :unprocessable_entity, json: { message: message }
   end
+
+  def set_en_locale
+    I18n.locale = :en
+  end
 end

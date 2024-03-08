@@ -12,6 +12,8 @@ ssd_main_general_one:
   replyable: false
   metadata:
     authorized: true
+    sender_uri: SenderURI
+    correlation_id: <%= SecureRandom.uuid %>
     delivery_notification:
       delivery_period_end_at: <%= DateTime.current - 1.day %>
 

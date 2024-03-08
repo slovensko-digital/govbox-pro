@@ -1,7 +1,10 @@
 class Api::Upvs::MessagesController < ApiController
   before_action :set_box
+  before_action :set_en_locale
 
   def create
+    render_unprocessable_entity('Invalid Sender Uri') and return unless @box
+
     @message = MessageDraft.create(message_params)
     @message.thread = @box&.message_threads&.find_or_build_by_merge_uuid(
       box: @box,
@@ -9,6 +12,8 @@ class Api::Upvs::MessagesController < ApiController
       title: @message.title,
       delivered_at: @message.delivered_at
     )
+
+    render_unprocessable_entity(@message.errors.messages.values.join(', ')) and return unless @message.valid?
     @message.save
 
     permitted_params[:objects].each do |object_params|
@@ -22,15 +27,15 @@ class Api::Upvs::MessagesController < ApiController
 
     if @message.valid?(:validate_data)
       @message.metadata['status'] = 'created'
-      @message.save
 
       head :created
     else
       @message.metadata['status'] = 'invalid'
-      @message.save
 
       render_unprocessable_entity(@message.errors.messages.values.join(', '))
     end
+
+    @message.save
   end
 
   private

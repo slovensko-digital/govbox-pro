@@ -24,6 +24,12 @@
 class MessageDraft < Message
   belongs_to :import, class_name: 'MessageDraftsImport', optional: true
 
+  validates :uuid, presence: { message: "Message ID can't be blank" }
+  validates :uuid, format: { with: Utils::UUID_PATTERN, message: 'Message ID must be UUID' }
+  validates :title, presence: { message: "Title can't be blank" }
+  validates :delivered_at, presence: true
+  validate :validate_correlation_id
+
   after_create do
     add_cascading_tag(thread.box.tenant.draft_tag!)
   end
@@ -49,7 +55,6 @@ class MessageDraft < Message
   end
 
   with_options on: :validate_data do |message_draft|
-    message_draft.validates :uuid, format: { with: Utils::UUID_PATTERN }, allow_blank: false
     message_draft.validate :validate_metadata
     message_draft.validate :validate_form
     message_draft.validate :validate_objects
@@ -156,7 +161,12 @@ class MessageDraft < Message
 
   # TODO remove UPVS stuff from core domain
   def validate_form
-    raise "Disallowed form" unless ::Upvs::ServiceWithFormAllowRule.form_services(all_metadata).any?
+    return if errors[:metadata].any?
+
+    unless ::Upvs::ServiceWithFormAllowRule.form_services(all_metadata).where(institution_uri: metadata['recipient_uri']).any?
+      errors.add(:base, :disallowed_form_for_recipient)
+      return
+    end
 
     raise "Missing XSD schema" unless upvs_form&.xsd_schema
 
@@ -168,7 +178,7 @@ class MessageDraft < Message
 
       document = Nokogiri::XML(document.children.first.children.first.children.first.to_xml) if document.children.first.name == 'XMLDataContainer'
 
-      schema = Nokogiri::XML::Schema(upvs_form.xsd_schema)
+      schema = Nokogiri::XML::Schema(upvs_form&.xsd_schema)
       form_errors += schema.validate(document)
 
       errors.add(:base, :invalid_form) if form_errors.any?
@@ -177,7 +187,10 @@ class MessageDraft < Message
 
   private
   def validate_objects
-    errors.add(:objects, "No objects found for draft") if objects.size == 0
+    if objects.size == 0
+      errors.add(:objects, "Message contains no objects")
+      return
+    end
 
     objects.each do |object|
       object.valid?(:validate_data)
@@ -185,16 +198,25 @@ class MessageDraft < Message
     end
 
     forms = objects.select { |o| o.form? }
-    errors.add(:objects, "Draft has to contain exactly one form") if forms.size != 1
+    errors.add(:objects, "Message has to contain exactly one form object") if forms.size != 1
+  end
+
+  # TODO remove UPVS stuff from core domain
+  def validate_correlation_id
+    if all_metadata&.dig("correlation_id")
+      errors.add(:metadata, "Correlation ID must be UUID") unless all_metadata.dig("correlation_id").match?(Utils::UUID_PATTERN)
+    else
+      errors.add(:metadata, "No correlation ID")
+    end
   end
 
   def validate_metadata
-    errors.add(:metadata, "No recipient URI") unless all_metadata["recipient_uri"].present?
-    errors.add(:metadata, "No posp ID") unless all_metadata["posp_id"].present?
-    errors.add(:metadata, "No posp version") unless all_metadata["posp_version"].present?
-    errors.add(:metadata, "No message type") unless all_metadata["message_type"].present?
-    errors.add(:metadata, "No correlation ID") unless all_metadata["correlation_id"].present?
-    errors.add(:metadata, "Correlation ID must be UUID") unless all_metadata["correlation_id"]&.match?(Utils::UUID_PATTERN)
+    errors.add(:metadata, "No recipient URI") unless all_metadata&.dig("recipient_uri")
+    errors.add(:metadata, "No posp ID") unless all_metadata&.dig("posp_id")
+    errors.add(:metadata, "No posp version") unless all_metadata&.dig("posp_version")
+    errors.add(:metadata, "No message type") unless all_metadata&.dig("message_type")
+
+    errors.add(:metadata, "Reference ID must be UUID") if all_metadata&.dig("reference_id") && !all_metadata&.dig("reference_id")&.match?(Utils::UUID_PATTERN)
   end
 
   def validate_with_message_template
