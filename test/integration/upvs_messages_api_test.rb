@@ -351,42 +351,8 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
 
     json_response = JSON.parse(response.body)
 
-    assert_equal "Message ID can't be blank, Message ID must be UUID", json_response['message']
+    assert_equal "Message ID can't be blank", json_response['message']
 
-  end
-
-  test 'marks message invalid unless Message ID in valid format' do
-    message_params = {
-      posp_id: 'App.GeneralAgenda',
-      posp_version: '1.9',
-      message_type: 'App.GeneralAgenda',
-      message_id: '123',
-      correlation_id: SecureRandom.uuid,
-      sender_uri: 'SSDMainURI',
-      recipient_uri: 'ico://sk/12345678',
-      title: 'Všeobecná agenda',
-      objects: [
-        {
-          name: 'Form.xml',
-          is_signed: false,
-          to_be_signed: true,
-          mimetype: 'application/x-eform-xml',
-          object_type: 'FORM',
-          content: Base64.encode64('<?xml version="1.0" encoding="utf-8"?>
-<GeneralAgenda xmlns="http://schemas.gov.sk/form/App.GeneralAgenda/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <subject>Všeobecný predmet</subject>
-  <text>Všeobecný text</text>
-</GeneralAgenda>')
-        }
-      ]
-    }
-
-    post '/api/upvs/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
-
-    assert_response :unprocessable_entity
-
-    json_response = JSON.parse(response.body)
-    assert_equal "Message ID can't be blank, Message ID must be UUID", json_response['message']
   end
 
   test 'marks message invalid unless Correlation ID present' do
@@ -419,7 +385,7 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
 
     json_response = JSON.parse(response.body)
-    assert_equal "No correlation ID", json_response['message']
+    assert_equal "Correlation ID can't be blank", json_response['message']
   end
 
   test 'marks message invalid unless Recipient URI present' do

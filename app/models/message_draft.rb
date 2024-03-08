@@ -24,11 +24,9 @@
 class MessageDraft < Message
   belongs_to :import, class_name: 'MessageDraftsImport', optional: true
 
-  validates :uuid, presence: { message: "Message ID can't be blank" }
-  validates :uuid, format: { with: Utils::UUID_PATTERN, message: 'Message ID must be UUID' }
+  validate :validate_uuid
   validates :title, presence: { message: "Title can't be blank" }
   validates :delivered_at, presence: true
-  validate :validate_correlation_id
 
   after_create do
     add_cascading_tag(thread.box.tenant.draft_tag!)
@@ -186,6 +184,15 @@ class MessageDraft < Message
   end
 
   private
+
+  def validate_uuid
+    if uuid
+      errors.add(:metadata, "UUID must be in UUID format") unless uuid.match?(Utils::UUID_PATTERN)
+    else
+      errors.add(:metadata, "UUID can't be blank")
+    end
+  end
+
   def validate_objects
     if objects.size == 0
       errors.add(:objects, "Message contains no objects")
@@ -199,15 +206,6 @@ class MessageDraft < Message
 
     forms = objects.select { |o| o.form? }
     errors.add(:objects, "Message has to contain exactly one form object") if forms.size != 1
-  end
-
-  # TODO remove UPVS stuff from core domain
-  def validate_correlation_id
-    if all_metadata&.dig("correlation_id")
-      errors.add(:metadata, "Correlation ID must be UUID") unless all_metadata.dig("correlation_id").match?(Utils::UUID_PATTERN)
-    else
-      errors.add(:metadata, "No correlation ID")
-    end
   end
 
   def validate_metadata

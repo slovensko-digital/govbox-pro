@@ -5,7 +5,7 @@ class Api::Upvs::MessagesController < ApiController
   def create
     render_unprocessable_entity('Invalid Sender Uri') and return unless @box
 
-    @message = MessageDraft.create(message_params)
+    @message = ::Upvs::MessageDraft.create(message_params)
     @message.thread = @box&.message_threads&.find_or_build_by_merge_uuid(
       box: @box,
       merge_uuid: @message.metadata['correlation_id'],
