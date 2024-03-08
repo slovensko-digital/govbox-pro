@@ -1,5 +1,6 @@
 class ApiController < ActionController::API
   before_action :authenticate_user
+  before_action :set_sk_locale
   around_action :wrap_in_request_logger
 
   rescue_from JWT::DecodeError do |error|
@@ -95,5 +96,9 @@ class ApiController < ActionController::API
 
   def set_en_locale
     I18n.locale = :en
+  end
+
+  def set_sk_locale
+    I18n.locale = :sk
   end
 end
