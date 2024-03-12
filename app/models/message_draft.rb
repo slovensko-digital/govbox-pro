@@ -87,7 +87,7 @@ class MessageDraft < Message
   end
 
   def submittable?
-    form.content.present? && objects.to_be_signed.all? { |o| o.is_signed? } && !invalid? && valid?(:validate_data) && not_yet_submitted?
+    form.content.present? && objects.to_be_signed.all? { |o| o.is_signed? } && correctly_created? && valid?(:validate_data)
   end
 
   def correctly_created?
