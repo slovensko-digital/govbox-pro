@@ -7,7 +7,6 @@ one:
   delivered_at: <%= DateTime.current %>
   edesk_class: TEST
   folder: ssd_one
-  body: general text
   payload:
     message_id: <%= SecureRandom.uuid %>
     subject: MySubject
@@ -30,7 +29,6 @@ two:
   delivered_at: <%= DateTime.current %>
   edesk_class: TEST
   folder: ssd_one
-  body: MyText
   payload:
     message_id: <%= SecureRandom.uuid %>
     subject: MySubject
@@ -53,7 +51,6 @@ three:
   delivered_at: <%= DateTime.current %>
   edesk_class: TEST
   folder: ssd_one
-  body: MyText
   payload:
     message_id: <%= SecureRandom.uuid %>
     subject: MySubject
@@ -76,7 +73,6 @@ ssd_general_agenda:
   delivered_at: <%= DateTime.current %>
   edesk_class: TEST
   folder: ssd_one
-  body: MyText
   payload:
     message_id: <%= SecureRandom.uuid %>
     subject: Všeobecná Agenda
@@ -101,7 +97,6 @@ ssd_outbox:
   delivered_at: <%= DateTime.current %>
   edesk_class: TEST
   folder: ssd_sent
-  body: MyText
   payload:
     message_id: 04087b78-3e70-43a7-88da-fa37ffa6aabf
     subject: Všeobecná Agenda
@@ -126,7 +121,6 @@ ssd_referring_to_outbox_message:
   delivered_at: <%= DateTime.current %>
   edesk_class: TEST
   folder: ssd_one
-  body: MyText
   payload:
     message_id: 903e4578-e5eb-4547-a995-edc09c9d62b9
     reference_id: 04087b78-3e70-43a7-88da-fa37ffa6aabf
@@ -152,7 +146,6 @@ ssd_without_recipient_name:
   delivered_at: <%= DateTime.current %>
   edesk_class: TEST
   folder: ssd_one
-  body: MyText
   payload:
     message_id: <%= SecureRandom.uuid %>
     subject: Všeobecná Agenda
@@ -177,7 +170,6 @@ solver_authorized_delivery_notification:
   delivered_at: <%= DateTime.current %>
   edesk_class: TEST
   folder: solver_one
-  body: MyText
   payload:
     message_id: bbff2617-3430-44c6-b827-519059ff1e90
     subject: MySubject
@@ -206,7 +198,6 @@ solver_delivery_notification:
   delivered_at: <%= DateTime.current %>
   edesk_class: TEST
   folder: solver_one
-  body: Delivery notification
   payload:
     message_id: cdd45d69-f917-4fca-b296-0b3759a0936a
     subject: MySubject
