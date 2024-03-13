@@ -100,19 +100,16 @@ class Message < ApplicationRecord
   def visualization
     return self.html_visualization if self.html_visualization.present?
 
-    if upvs_form&.xslt_html
-      form_content = form.unsigned_content
+    return unless upvs_form&.xslt_html
+    return unless form&.unsigned_content
 
-      if form_content
-        document = Nokogiri::XML(form_content) do |config|
-          config.noblanks
-        end
-        document = Nokogiri::XML(document.children.first.children.first.children.first.to_xml) if document.children.first.name == 'XMLDataContainer'
-        template = Nokogiri::XSLT(upvs_form.xslt_html)
-
-        return template.transform(document)
-      end
+    document = Nokogiri::XML(form.unsigned_content) do |config|
+      config.noblanks
     end
+    document = Nokogiri::XML(document.xpath('*:XMLDataContainer/*:XMLData/*').to_xml) if document.xpath('*:XMLDataContainer/*:XMLData').any?
+
+    template = Nokogiri::XSLT(upvs_form.xslt_html)
+    template.transform(document)
   end
 
   def all_metadata

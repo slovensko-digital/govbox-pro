@@ -165,7 +165,7 @@ class MessageDraft < Message
     document = Nokogiri::XML(form.unsigned_content)
     form_errors = document.errors
 
-    document = Nokogiri::XML(document.children.first.children.first.children.first.to_xml) if document.children.first.name == 'XMLDataContainer'
+    document = Nokogiri::XML(document.xpath('*:XMLDataContainer/*:XMLData/*').to_xml) if document.xpath('*:XMLDataContainer/*:XMLData').any?
 
     schema = Nokogiri::XML::Schema(upvs_form.xsd_schema)
     form_errors += schema.validate(document)
