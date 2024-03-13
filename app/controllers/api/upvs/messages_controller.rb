@@ -5,37 +5,39 @@ class Api::Upvs::MessagesController < ApiController
   def create
     render_unprocessable_entity('Invalid Sender Uri') and return unless @box
 
-    @message = ::Upvs::MessageDraft.create(message_params)
-    @message.thread = @box&.message_threads&.find_or_build_by_merge_uuid(
-      box: @box,
-      merge_uuid: @message.metadata['correlation_id'],
-      title: @message.title,
-      delivered_at: @message.delivered_at
-    )
-
-    render_unprocessable_entity(@message.errors.messages.values.join(', ')) and return unless @message.valid?
-    @message.save
-
-    permitted_params[:objects].each do |object_params|
-      message_object = @message.objects.create(object_params.except(:content))
-
-      MessageObjectDatum.create(
-        message_object: message_object,
-        blob: Base64.decode64(object_params[:content])
+    ::Upvs::MessageDraft.transaction do
+      @message = ::Upvs::MessageDraft.create(message_params)
+      @message.thread = @box&.message_threads&.find_or_build_by_merge_uuid(
+        box: @box,
+        merge_uuid: @message.metadata['correlation_id'],
+        title: @message.title,
+        delivered_at: @message.delivered_at
       )
+
+      render_unprocessable_entity(@message.errors.messages.values.join(', ')) and return unless @message.valid?
+      @message.save
+
+      permitted_params[:objects].each do |object_params|
+        message_object = @message.objects.create(object_params.except(:content))
+
+        MessageObjectDatum.create(
+          message_object: message_object,
+          blob: Base64.decode64(object_params[:content])
+        )
+      end
+
+      if @message.valid?(:validate_data)
+        @message.metadata['status'] = 'created'
+
+        head :created
+      else
+        @message.metadata['status'] = 'invalid'
+
+        render_unprocessable_entity(@message.errors.messages.values.join(', '))
+      end
+
+      @message.save
     end
-
-    if @message.valid?(:validate_data)
-      @message.metadata['status'] = 'created'
-
-      head :created
-    else
-      @message.metadata['status'] = 'invalid'
-
-      render_unprocessable_entity(@message.errors.messages.values.join(', '))
-    end
-
-    @message.save
   end
 
   private
