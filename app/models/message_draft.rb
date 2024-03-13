@@ -90,11 +90,15 @@ class MessageDraft < Message
   end
 
   def submittable?
-    form.content.present? && objects.to_be_signed.all? { |o| o.is_signed? } && !invalid? && not_yet_submitted?
+    form.content.present? && objects.to_be_signed.all? { |o| o.is_signed? } && correctly_created? && valid?(:validate_data)
   end
 
   def correctly_created?
     metadata["status"] == "created"
+  end
+
+  def invalid?
+    metadata["status"] == "invalid"
   end
 
   def not_yet_submitted?
@@ -123,10 +127,6 @@ class MessageDraft < Message
     metadata["status"] = "submitted"
     save!
     EventBus.publish(:message_draft_submitted, self)
-  end
-
-  def invalid?
-    metadata["status"] == "invalid" || !valid?(:validate_data)
   end
 
   def original_message
@@ -168,19 +168,17 @@ class MessageDraft < Message
 
     raise "Missing XSD schema" unless upvs_form&.xsd_schema
 
-    form_content = form&.unsigned_content
+    return unless form&.unsigned_content
 
-    if form_content
-      document = Nokogiri::XML(form_content)
-      form_errors = document.errors
+    document = Nokogiri::XML(form.unsigned_content)
+    form_errors = document.errors
 
-      document = Nokogiri::XML(document.children.first.children.first.children.first.to_xml) if document.children.first.name == 'XMLDataContainer'
+    document = Nokogiri::XML(document.xpath('*:XMLDataContainer/*:XMLData/*').to_xml) if document.xpath('*:XMLDataContainer/*:XMLData').any?
 
-      schema = Nokogiri::XML::Schema(upvs_form&.xsd_schema)
-      form_errors += schema.validate(document)
+    schema = Nokogiri::XML::Schema(upvs_form.xsd_schema)
+    form_errors += schema.validate(document)
 
-      errors.add(:base, :invalid_form) if form_errors.any?
-    end
+    errors.add(:base, :invalid_form) if form_errors.any?
   end
 
   private
