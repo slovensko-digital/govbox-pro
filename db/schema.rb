@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_02_12_151445) do
+ActiveRecord::Schema[7.1].define(version: 2024_03_13_111201) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -295,7 +295,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_12_151445) do
   create_table "govbox_messages", force: :cascade do |t|
     t.uuid "message_id", null: false
     t.uuid "correlation_id", null: false
-    t.text "body", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "edesk_message_id", null: false
