@@ -15,7 +15,6 @@ module Govbox
         govbox_message.correlation_id = raw_message["correlation_id"]
         govbox_message.delivered_at = Time.parse(raw_message["delivered_at"])
         govbox_message.edesk_class = raw_message["class"]
-        govbox_message.body = raw_message["original_xml"]
         govbox_message.payload = raw_message
       end
 
