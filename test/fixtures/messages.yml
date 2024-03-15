@@ -25,6 +25,8 @@ ssd_main_general_two:
     authorized: false
     delivery_notification:
       delivery_period_end_at: <%= DateTime.current + 1.day %>
+      consignment:
+        type: Doc.GeneralAgendaReport
 
 ssd_main_general_three:
   uuid: <%= SecureRandom.uuid %>
