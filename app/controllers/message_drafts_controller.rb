@@ -44,7 +44,7 @@ class MessageDraftsController < ApplicationController
       @templates_list = MessageTemplate.tenant_templates_list(Current.tenant)
       @message_template ||= MessageTemplate.default_template
       @boxes = Current.tenant.boxes.pluck(:name, :id)
-      @box = @box&.slice(:name, :id).values.to_a
+      @box = @box&.slice(:name, :id)&.values.to_a
 
       @recipients_list = @message_template&.recipients&.pluck(:institution_name, :institution_uri)&.map { |name, uri| { uri: uri, name: name }}
 
