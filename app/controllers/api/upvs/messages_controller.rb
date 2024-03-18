@@ -17,7 +17,7 @@ class Api::Upvs::MessagesController < ApiController
       render_unprocessable_entity(@message.errors.messages.values.join(', ')) and return unless @message.valid?
       @message.save
 
-      permitted_params[:objects].each do |object_params|
+      permitted_params[:objects]&.each do |object_params|
         message_object = @message.objects.create(object_params.except(:content))
 
         MessageObjectDatum.create(
@@ -32,11 +32,10 @@ class Api::Upvs::MessagesController < ApiController
         head :created
       else
         @message.metadata['status'] = 'invalid'
+        @message.destroy
 
         render_unprocessable_entity(@message.errors.messages.values.join(', '))
       end
-
-      @message.save
     end
   end
 
