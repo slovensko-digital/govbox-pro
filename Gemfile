@@ -5,7 +5,7 @@ ruby '3.3.0'
 gem 'rails', '~> 7.1'
 gem 'rails-i18n'
 
-gem 'pg', '~> 1.0'
+gem 'pg', '~> 1.5'
 gem 'with_advisory_lock'
 
 gem 'puma', '~> 6.4'
