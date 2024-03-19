@@ -76,6 +76,8 @@ class MessageThread < ApplicationRecord
   end
 
   def self.merge_threads
+    return unless all.map(&:box).uniq.count == 1
+
     EventBus.publish(:message_threads_merged, all)
     transaction do
       target_thread = first
