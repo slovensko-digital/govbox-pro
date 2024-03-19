@@ -50,6 +50,9 @@ class MessageThreadsController < ApplicationController
     message_thread = merge_threads(@ids)
     if message_thread
       redirect_to message_thread_path(message_thread), notice: 'Vlákna boli úspešne spojené'
+    elsif message_thread == false
+      flash[:alert] = 'Nie je možné spojiť vlákna z rôznych schránok'
+      redirect_back fallback_location: message_threads_path
     else
       flash[:alert] = 'Označte zaškrtávacími políčkami minimálne 2 vlákna, ktoré chcete spojiť'
       redirect_back fallback_location: message_threads_path
@@ -59,6 +62,7 @@ class MessageThreadsController < ApplicationController
   def merge_threads(message_thread_ids)
     selected_message_threads = message_thread_policy_scope.where(id: message_thread_ids).order(:last_message_delivered_at)
     return nil if !selected_message_threads || selected_message_threads.size < 2
+    return false unless selected_message_threads.map(&:box).uniq.count == 1
 
     selected_message_threads.merge_threads
 
