@@ -35,7 +35,7 @@ class MessageDraftPolicy < ApplicationPolicy
   end
 
   def reply?
-    false
+    true
   end
 
   def show?
