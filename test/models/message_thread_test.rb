@@ -73,6 +73,19 @@ class MessageThreadTest < ActiveSupport::TestCase
     assert_equal last_message_delivered_at, thread.last_message_delivered_at
   end
 
+  test "should not merge threads from different boxes" do
+    thread1 = message_threads(:ssd_main_general)
+    thread2 = message_threads(:solver_main_delivery_notification)
+    threads = MessageThread.where(id: [thread1.id, thread2.id])
+
+    message_from_thread1 = thread1.messages.first
+    message_from_thread2 = thread2.messages.first
+
+    threads.merge_threads
+
+    assert_not_equal message_from_thread1.reload.thread, message_from_thread2.reload.thread
+  end
+
   test "should merge threads with correct last_message_delivered_at" do
     threads = boxes(:ssd_main).message_threads
     target_last_message_delivered_at = message_threads(:ssd_main_delivery).last_message_delivered_at
