@@ -1,4 +1,5 @@
 class ApiController < ActionController::API
+  include LocaleConcern
   before_action :authenticate_user
   before_action :set_sk_locale
   around_action :wrap_in_request_logger
@@ -92,13 +93,5 @@ class ApiController < ActionController::API
 
   def render_unprocessable_entity(message)
     render status: :unprocessable_entity, json: { message: message }
-  end
-
-  def set_en_locale
-    I18n.locale = :en
-  end
-
-  def set_sk_locale
-    I18n.locale = :sk
   end
 end
