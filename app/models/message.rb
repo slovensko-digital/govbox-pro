@@ -106,7 +106,9 @@ class Message < ApplicationRecord
     document = Nokogiri::XML(form.unsigned_content) do |config|
       config.noblanks
     end
-    document = Nokogiri::XML(document.xpath('*:XMLDataContainer/*:XMLData/*').to_xml) if document.xpath('*:XMLDataContainer/*:XMLData').any?
+    document = Nokogiri::XML(document.xpath('*:XMLDataContainer/*:XMLData/*').to_xml) do |config|
+      config.noblanks
+    end if document.xpath('*:XMLDataContainer/*:XMLData').any?
 
     template = Nokogiri::XSLT(upvs_form.xslt_html)
     template.transform(document)

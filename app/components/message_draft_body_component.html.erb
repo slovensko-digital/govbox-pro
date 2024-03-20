@@ -17,14 +17,20 @@
             <% end %>
           </div>
         <% end %>
-        <% unless @message.not_yet_submitted? %>
-          <div class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-1.5 px-1.5 py-0.5 rounded-md bg-purple-50 border border-purple-300">
-            <% if @message.being_submitted? %>
-              <p class="flex-grow-0 flex-shrink-0 text-sm text-left text-purple-600">Správa sa odosiela</p>
-            <% elsif @message.submitted? %>
-              <p class="flex-grow-0 flex-shrink-0 text-sm text-left text-purple-600">Správa bola odoslaná</p>
+        <% if @message.invalid? || @message.submit_failed? %>
+          <div class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-1.5 px-1.5 py-0.5 rounded-md bg-red-50 border border-red-300">
+            <% if @message.invalid? %>
+              <p class="flex-grow-0 flex-shrink-0 text-sm text-left text-red-600">Správa nie je validná</p>
             <% elsif @message.submit_failed? %>
-              <p class="flex-grow-0 flex-shrink-0 text-sm text-left text-purple-600">Správu sa nepodarilo odoslať</p>
+              <p class="flex-grow-0 flex-shrink-0 text-sm text-left text-red-600">Správu sa nepodarilo odoslať</p>
+            <% end %>
+          </div>
+        <% elsif @message.being_submitted? || @message.submitted? %>
+          <div class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-1.5 px-1.5 py-0.5 rounded-md bg-purple-50 border border-purple-300">
+            <% if @message.submitted? %>
+              <p class="flex-grow-0 flex-shrink-0 text-sm text-left text-purple-600">Správa bola odoslaná</p>
+            <% elsif @message.being_submitted? %>
+              <p class="flex-grow-0 flex-shrink-0 text-sm text-left text-purple-600">Správu sa odosiela</p>
             <% end %>
           </div>
         <% end %>
