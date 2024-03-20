@@ -19,6 +19,9 @@ class Api::Upvs::MessagesController < ApiController
 
       permitted_params[:objects]&.each do |object_params|
         message_object = @message.objects.create(object_params.except(:content))
+        tags = message_object.is_signed ? [@message.thread.box.tenant.signed_externally_tag!] : []
+
+        message_object.tags += tags
 
         MessageObjectDatum.create(
           message_object: message_object,
@@ -28,6 +31,7 @@ class Api::Upvs::MessagesController < ApiController
 
       if @message.valid?(:validate_data)
         @message.metadata['status'] = 'created'
+        @message.save
 
         head :created
       else
