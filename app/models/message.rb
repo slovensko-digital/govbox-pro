@@ -81,19 +81,19 @@ class Message < ApplicationRecord
   end
 
   def can_be_authorized?
-    metadata&.dig("delivery_notification") && !metadata&.dig("authorized") && Time.parse(metadata.dig("delivery_notification").dig("delivery_period_end_at")) > Time.now
+    metadata&.dig("delivery_notification") && !metadata&.dig("authorized") && Time.parse(metadata.dig("delivery_notification", "delivery_period_end_at")) > Time.now
   end
 
   def authorized?
-    metadata["delivery_notification"] && metadata["authorized"] == true
+    metadata.dig("delivery_notification") && metadata.dig("authorized") == true
   end
 
   # TODO remove UPVS stuff from core domain
   def upvs_form
     Upvs::Form.find_by(
-      identifier: metadata['posp_id'],
-      version: metadata['posp_version'],
-      message_type: metadata['message_type']
+      identifier: metadata.dig('posp_id'),
+      version: metadata.dig('posp_version'),
+      message_type: metadata.dig('message_type')
     )
   end
 
