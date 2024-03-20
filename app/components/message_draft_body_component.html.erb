@@ -17,7 +17,7 @@
             <% end %>
           </div>
         <% end %>
-        <% unless @message.correctly_created? %>
+        <% unless @message.not_yet_submitted? %>
           <div class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-1.5 px-1.5 py-0.5 rounded-md bg-purple-50 border border-purple-300">
             <% if @message.being_submitted? %>
               <p class="flex-grow-0 flex-shrink-0 text-sm text-left text-purple-600">Správa sa odosiela</p>
