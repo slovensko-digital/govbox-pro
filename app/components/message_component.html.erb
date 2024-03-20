@@ -37,9 +37,9 @@
     <% if @message.visualizable_body? %>
       <div class="flex flex-col justify-stretch items-start relative gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
       <% if @message.metadata&.dig('delivery_notification', 'consignment', 'type') == 'Doc.GeneralAgendaReport' %>
-            <%= render DeliveryNotificationMessageBodyComponent.new(message: @message) %>
+            <%= render Upvs::DeliveryNotificationMessageBodyComponent.new(message: @message) %>
       <% elsif @message.metadata&.dig('delivery_notification', 'consignment', 'type') == 'Doc.GeneralAgendaFiction' %>
-            <%= render DeliveryNotificationFictionMessageBodyComponent.new(message: @message) %>
+            <%= render Upvs::DeliveryNotificationFictionMessageBodyComponent.new(message: @message) %>
       <% elsif @message.html_visualization %>
           <div class="w-full invisible h-[150px] transition-all">
             <%= tag.iframe class: "relative border-none overflow-hidden h-full w-full", scrolling: "no", srcdoc: @message.html_visualization, onload: "(
