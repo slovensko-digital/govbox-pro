@@ -250,6 +250,11 @@ paths:
                       mimetype: application/vnd.etsi.asic-e+zip
                       form: false
                       content: base64 asice content
+                tags:
+                  description: Štítky, ktorými majú byť správy označené
+                  type: array
+                  items:
+                    type: string
               required:
                 - message_id
                 - correlation_id

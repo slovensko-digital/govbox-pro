@@ -19,14 +19,25 @@ class Api::Upvs::MessagesController < ApiController
 
       permitted_params[:objects]&.each do |object_params|
         message_object = @message.objects.create(object_params.except(:content))
-        tags = message_object.is_signed ? [@message.thread.box.tenant.signed_externally_tag!] : []
+        object_tags = message_object.is_signed ? [@message.thread.box.tenant.signed_externally_tag!] : []
 
-        message_object.tags += tags
+        message_object.tags += object_tags
 
         MessageObjectDatum.create(
           message_object: message_object,
           blob: Base64.decode64(object_params[:content])
         )
+      end
+
+      permitted_params[:tags]&.each do |tag_name|
+        tag = @tenant.tags.find_by(name: tag_name)
+
+        unless tag
+          @message.destroy
+          render_unprocessable_entity("Tag with name #{tag_name} does not exist") and return
+        end
+
+        @message.add_cascading_tag(tag)
       end
 
       if @message.valid?(:validate_data)
@@ -35,7 +46,6 @@ class Api::Upvs::MessagesController < ApiController
 
         head :created
       else
-        @message.metadata['status'] = 'invalid'
         @message.destroy
 
         render_unprocessable_entity(@message.errors.messages.values.join(', '))
@@ -94,7 +104,8 @@ class Api::Upvs::MessagesController < ApiController
         :mimetype,
         :object_type,
         :content,
-      ]
+      ],
+      tags: []
     )
   end
 

@@ -7,6 +7,7 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
     @before_request_messages_count = Message.count
   end
 
+
   test 'can upload valid message' do
     message_params = {
       posp_id: 'App.GeneralAgenda',
@@ -37,6 +38,42 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
 
     assert_response :created
     assert_not_equal Message.count, @before_request_messages_count
+  end
+
+  test 'can upload valid message with tags if they exist' do
+    message_params = {
+      posp_id: 'App.GeneralAgenda',
+      posp_version: '1.9',
+      message_type: 'App.GeneralAgenda',
+      message_id: SecureRandom.uuid,
+      correlation_id: SecureRandom.uuid,
+      sender_uri: 'SSDMainURI',
+      recipient_uri: 'ico://sk/12345678',
+      title: 'Všeobecná agenda',
+      objects: [
+        {
+          name: 'Form.xml',
+          is_signed: false,
+          to_be_signed: true,
+          mimetype: 'application/x-eform-xml',
+          object_type: 'FORM',
+          content: Base64.encode64('<?xml version="1.0" encoding="utf-8"?>
+<GeneralAgenda xmlns="http://schemas.gov.sk/form/App.GeneralAgenda/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <subject>Všeobecný predmet</subject>
+  <text>Všeobecný text</text>
+</GeneralAgenda>')
+        }
+      ],
+      tags: ['Legal', 'Other']
+    }
+
+    post '/api/upvs/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
+
+    assert_response :created
+    assert_not_equal Message.count, @before_request_messages_count
+
+    assert Upvs::MessageDraft.last.tags.map(&:name).include?('Legal')
+    assert Upvs::MessageDraft.last.tags.map(&:name).include?('Other')
   end
 
   test 'marks message invalid unless title present' do
@@ -798,6 +835,43 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
 
     json_response = JSON.parse(response.body)
     assert_equal 'Objects is not valid, MimeType of Attachment.txt object is disallowed, allowed mimetypes: application/x-eform-xml, application/xml, application/msword, application/pdf, application/vnd.etsi.asic-e+zip, application/vnd.etsi.asic-s+zip, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/x-xades_zep, application/x-zip-compressed, image/jpg, image/jpeg, image/png, image/tiff', json_response['message']
+
+    assert_equal Message.count, @before_request_messages_count
+  end
+
+  test 'marks message invalid unless tags with given names exist' do
+    message_params = {
+      posp_id: 'App.GeneralAgenda',
+      posp_version: '1.9',
+      message_type: 'App.GeneralAgenda',
+      message_id: SecureRandom.uuid,
+      correlation_id: SecureRandom.uuid,
+      sender_uri: 'SSDMainURI',
+      recipient_uri: 'ico://sk/12345678',
+      title: 'Všeobecná agenda',
+      objects: [
+        {
+          name: 'Form.xml',
+          is_signed: false,
+          to_be_signed: true,
+          mimetype: 'application/x-eform-xml',
+          object_type: 'FORM',
+          content: Base64.encode64('<?xml version="1.0" encoding="utf-8"?>
+<GeneralAgenda xmlns="http://schemas.gov.sk/form/App.GeneralAgenda/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <subject>Všeobecný predmet</subject>
+  <text>Všeobecný text</text>
+</GeneralAgenda>')
+        }
+      ],
+      tags: ['Special']
+    }
+
+    post '/api/upvs/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
+
+    assert_response :unprocessable_entity
+
+    json_response = JSON.parse(response.body)
+    assert_equal 'Tag with name Special does not exist', json_response['message']
 
     assert_equal Message.count, @before_request_messages_count
   end
