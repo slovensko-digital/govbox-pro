@@ -15,8 +15,8 @@
           <div class="mb-4 w-full">
             <% if @boxes.count > 1 %>
               <label for="<%= sender_element_id %>" class="block mb-2 text-base font-medium text-gray-900">Od</label>
-              <%= select_tag(sender_element_id, options_for_select(@boxes, @selected_box_params), class: "text-sm rounded-lg block w-full p-2.5 #{@message.errors[:sender_name].any? && !@selected_box_params ? ERROR_CLASSES : DEFAULT_CLASSES}") %>
-              <% if @message.errors[:sender_name].any? && !@selected_box_params %>
+              <%= select_tag(sender_element_id, options_for_select(@boxes, @selected_box&.slice(:name, :id)&.values.to_a), class: "text-sm rounded-lg block w-full p-2.5 #{@message.errors[:sender_name].any? && !@selected_box&.slice(:name, :id)&.values.to_a ? ERROR_CLASSES : DEFAULT_CLASSES}") %>
+              <% if @message.errors[:sender_name].any? && !@selected_box&.slice(:name, :id)&.values.to_a %>
                 <p class="mt-2 text-sm text-red-600 dark:text-red-500">
                   <span class="font-medium"><%= @message.errors[:sender_name].to_sentence %></span>
                 </p>
