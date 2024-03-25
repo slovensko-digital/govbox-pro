@@ -152,9 +152,7 @@ class MessageThreadsTest < ApplicationSystemTestCase
 
         assert_button "Prevziať správu"
 
-        within_frame(find("iframe")) do
-          assert_text "Visualization 2"
-        end
+        assert_text "Do Vašej elektronickej schránky bola odoslaná správa určená do vlastných rúk. Pre jej zobrazenie kliknite na tlačidlo „Prevziať správu“ najneskôr dňa"
       end
 
       within("#message_#{message_three.id}") do
