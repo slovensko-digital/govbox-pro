@@ -58,6 +58,7 @@ class Govbox::SubmitMessageDraftJob < ApplicationJob
   end
 
   def handle_submit_fail(message_draft, response_status, response_message)
+    # TODO notification
     message_draft.add_cascading_tag(message_draft.tenant.submission_error_tag)
 
     case response_status
