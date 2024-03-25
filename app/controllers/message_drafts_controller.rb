@@ -16,7 +16,7 @@ class MessageDraftsController < ApplicationController
     @message_template = MessageTemplate.default_template
     @message = MessageDraft.new
     @boxes = Current.tenant&.boxes.pluck(:name, :id)
-    @box = (Current.box if Current.box || @boxes.first)&.slice(:name, :id)&.values.to_a
+    @box_params = (Current.box if Current.box || @boxes.first)&.slice(:name, :id)&.values.to_a
     @recipients_list = @message_template&.recipients&.pluck(:institution_name, :institution_uri)&.map { |name, uri| { uri: uri, name: name }}
 
     authorize @message
