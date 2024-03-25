@@ -102,7 +102,7 @@ class MessageDraft < Message
   end
 
   def not_yet_submitted?
-    metadata["status"] == "created" || metadata["status"] == "invalid"
+    %w[created invalid].include?(metadata["status"])
   end
 
   def being_submitted?
@@ -114,7 +114,7 @@ class MessageDraft < Message
   end
 
   def submit_failed?
-    metadata["status"] == "submit_fail"
+    %w[submit_fail temporary_submit_fail].include?(metadata["status"])
   end
 
   def being_submitted!
