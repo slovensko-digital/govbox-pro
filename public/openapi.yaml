@@ -132,7 +132,7 @@ paths:
       security:
         - "Tenant_Token": []
 
-  /api/upvs/messages:
+  /api/messages:
     post:
       tags: [ Správy ]
       summary: Vytvorí novú správu vrátane jej objektov
@@ -140,7 +140,7 @@ paths:
         Vytvorí novú správu vrátane jej objektov.
       requestBody:
         content:
-          application/json:
+          application/json;type=upvs:
             schema:
               type: object
               properties:
