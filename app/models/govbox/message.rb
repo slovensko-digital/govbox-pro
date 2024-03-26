@@ -3,7 +3,6 @@
 # Table name: govbox_messages
 #
 #  id               :bigint           not null, primary key
-#  body             :text             not null
 #  delivered_at     :datetime         not null
 #  edesk_class      :string           not null
 #  payload          :json             not null
