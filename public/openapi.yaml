@@ -132,7 +132,7 @@ paths:
       security:
         - "Tenant_Token": []
 
-  /api/upvs/messages:
+  /api/messages:
     post:
       tags: [ Správy ]
       summary: Vytvorí novú správu vrátane jej objektov
@@ -140,7 +140,7 @@ paths:
         Vytvorí novú správu vrátane jej objektov.
       requestBody:
         content:
-          application/json:
+          application/json;type=upvs:
             schema:
               type: object
               properties:
@@ -250,6 +250,11 @@ paths:
                       mimetype: application/vnd.etsi.asic-e+zip
                       form: false
                       content: base64 asice content
+                tags:
+                  description: Štítky, ktorými majú byť správy označené
+                  type: array
+                  items:
+                    type: string
               required:
                 - message_id
                 - correlation_id

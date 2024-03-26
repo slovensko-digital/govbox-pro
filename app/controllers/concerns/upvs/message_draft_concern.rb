@@ -1,8 +1,6 @@
-class Api::Upvs::MessagesController < ApiController
-  before_action :set_box
-  before_action :set_en_locale
-
-  def create
+module Upvs::MessageDraftConcern
+  def create_upvs_message_draft
+    set_box
     render_unprocessable_entity('Invalid Sender Uri') and return unless @box
 
     ::Upvs::MessageDraft.transaction do
@@ -17,16 +15,27 @@ class Api::Upvs::MessagesController < ApiController
       render_unprocessable_entity(@message.errors.messages.values.join(', ')) and return unless @message.valid?
       @message.save
 
-      permitted_params[:objects]&.each do |object_params|
+      permitted_params.fetch(:objects, []).each do |object_params|
         message_object = @message.objects.create(object_params.except(:content))
-        tags = message_object.is_signed ? [@message.thread.box.tenant.signed_externally_tag!] : []
+        object_tags = message_object.is_signed ? [@message.thread.box.tenant.signed_externally_tag!] : []
 
-        message_object.tags += tags
+        message_object.tags += object_tags
 
         MessageObjectDatum.create(
           message_object: message_object,
           blob: Base64.decode64(object_params[:content])
         )
+      end
+
+      permitted_params.fetch(:tags, []).each do |tag_name|
+        tag = @tenant.tags.find_by(name: tag_name)
+
+        unless tag
+          @message.destroy
+          render_unprocessable_entity("Tag with name #{tag_name} does not exist") and return
+        end
+
+        @message.add_cascading_tag(tag)
       end
 
       if @message.valid?(:validate_data)
@@ -35,7 +44,6 @@ class Api::Upvs::MessagesController < ApiController
 
         head :created
       else
-        @message.metadata['status'] = 'invalid'
         @message.destroy
 
         render_unprocessable_entity(@message.errors.messages.values.join(', '))
@@ -76,6 +84,7 @@ class Api::Upvs::MessagesController < ApiController
 
   def permitted_params
     params.permit(
+      :type,
       :message_id,
       :correlation_id,
       :reference_id,
@@ -94,11 +103,8 @@ class Api::Upvs::MessagesController < ApiController
         :mimetype,
         :object_type,
         :content,
-      ]
+      ],
+      tags: []
     )
-  end
-
-  def authenticate_user
-    @tenant = ApiEnvironment.tenant_token_authenticator.verify_token(authenticity_token)
   end
 end

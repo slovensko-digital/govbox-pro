@@ -33,13 +33,49 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/upvs/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
+    post '/api/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
 
     assert_response :created
     assert_not_equal Message.count, @before_request_messages_count
   end
 
-  test 'marks message invalid unless title present' do
+  test 'can upload valid message with tags if they exist' do
+    message_params = {
+      posp_id: 'App.GeneralAgenda',
+      posp_version: '1.9',
+      message_type: 'App.GeneralAgenda',
+      message_id: SecureRandom.uuid,
+      correlation_id: SecureRandom.uuid,
+      sender_uri: 'SSDMainURI',
+      recipient_uri: 'ico://sk/12345678',
+      title: 'Všeobecná agenda',
+      objects: [
+        {
+          name: 'Form.xml',
+          is_signed: false,
+          to_be_signed: true,
+          mimetype: 'application/x-eform-xml',
+          object_type: 'FORM',
+          content: Base64.encode64('<?xml version="1.0" encoding="utf-8"?>
+<GeneralAgenda xmlns="http://schemas.gov.sk/form/App.GeneralAgenda/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <subject>Všeobecný predmet</subject>
+  <text>Všeobecný text</text>
+</GeneralAgenda>')
+        }
+      ],
+      tags: ['Legal', 'Other']
+    }
+
+    post '/api/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
+
+    assert_response :created
+    assert_not_equal Message.count, @before_request_messages_count
+
+    assert Upvs::MessageDraft.last.tags.map(&:name).include?('Legal')
+    assert Upvs::MessageDraft.last.tags.map(&:name).include?('Other')
+  end
+
+  test 'does not create message unless valid ContentType' do
     message_params = {
       posp_id: 'App.GeneralAgenda',
       posp_version: '1.9',
@@ -64,7 +100,42 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/upvs/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
+    post '/api/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=Draft" }
+
+    assert_response :bad_request
+
+    json_response = JSON.parse(response.body)
+    assert_equal "Disallowed Content-Type: application/json;type=Draft", json_response['message']
+
+    assert_equal Message.count, @before_request_messages_count
+  end
+
+  test 'does not create message unless title present' do
+    message_params = {
+      posp_id: 'App.GeneralAgenda',
+      posp_version: '1.9',
+      message_type: 'App.GeneralAgenda',
+      message_id: SecureRandom.uuid,
+      correlation_id: SecureRandom.uuid,
+      sender_uri: 'SSDMainURI',
+      recipient_uri: 'ico://sk/12345678',
+      objects: [
+        {
+          name: 'Form.xml',
+          is_signed: false,
+          to_be_signed: true,
+          mimetype: 'application/x-eform-xml',
+          object_type: 'FORM',
+          content: Base64.encode64('<?xml version="1.0" encoding="utf-8"?>
+<GeneralAgenda xmlns="http://schemas.gov.sk/form/App.GeneralAgenda/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <subject>Všeobecný predmet</subject>
+  <text>Všeobecný text</text>
+</GeneralAgenda>')
+        }
+      ]
+    }
+
+    post '/api/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
 
     assert_response :unprocessable_entity
 
@@ -74,7 +145,7 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
     assert_equal Message.count, @before_request_messages_count
   end
 
-  test 'marks message invalid unless no box for given sender URI present' do
+  test 'does not create message unless no box for given sender URI present' do
     message_params = {
       posp_id: 'App.GeneralAgenda',
       posp_version: '1.9',
@@ -99,7 +170,7 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/upvs/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
+    post '/api/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
 
     assert_response :unprocessable_entity
 
@@ -109,7 +180,7 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
     assert_equal Message.count, @before_request_messages_count
   end
 
-  test 'marks message invalid if given sender URI for box in another tenant' do
+  test 'does not create message if given sender URI for box in another tenant' do
     message_params = {
       posp_id: 'App.GeneralAgenda',
       posp_version: '1.9',
@@ -134,7 +205,7 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/upvs/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
+    post '/api/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
 
     assert_response :unprocessable_entity
 
@@ -144,7 +215,7 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
     assert_equal Message.count, @before_request_messages_count
   end
 
-  test 'marks message invalid unless recipient in white list' do
+  test 'does not create message unless recipient in white list' do
     message_params = {
       posp_id: 'App.GeneralAgenda',
       posp_version: '1.9',
@@ -170,7 +241,7 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/upvs/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
+    post '/api/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
 
     assert_response :unprocessable_entity
 
@@ -180,7 +251,7 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
     assert_equal Message.count, @before_request_messages_count
   end
 
-  test 'marks message invalid unless form type in white list' do
+  test 'does not create message unless form type in white list' do
     message_params = {
       posp_id: '00166073.MSSR_ORSR_Poziadanie_o_vyhotovenie_kopie_listiny_ulozenej_v_zbierke_listin.sk',
       posp_version: '1.53',
@@ -253,7 +324,7 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/upvs/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
+    post '/api/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
 
     assert_response :unprocessable_entity
 
@@ -263,7 +334,7 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
     assert_equal Message.count, @before_request_messages_count
   end
 
-  test 'marks message invalid unless message type in white list' do
+  test 'does not create message unless message type in white list' do
     message_params = {
       posp_id: 'App.GeneralAgenda',
       posp_version: '1.9',
@@ -289,7 +360,7 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/upvs/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
+    post '/api/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
 
     assert_response :unprocessable_entity
 
@@ -299,7 +370,7 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
     assert_equal Message.count, @before_request_messages_count
   end
 
-  test 'marks message invalid unless form is valid XML' do
+  test 'does not create message unless form is valid XML' do
     message_params = {
       posp_id: 'App.GeneralAgenda',
       posp_version: '1.9',
@@ -325,7 +396,7 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/upvs/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
+    post '/api/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }) .to_json, headers: { "Content-Type": "application/json;type=upvs" }
 
     assert_response :unprocessable_entity
 
@@ -335,7 +406,7 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
     assert_equal Message.count, @before_request_messages_count
   end
 
-  test 'marks message invalid unless form valid against XSD' do
+  test 'does not create message unless form valid against XSD' do
     message_params = {
       posp_id: 'App.GeneralAgenda',
       posp_version: '1.9',
@@ -362,7 +433,7 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/upvs/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
+    post '/api/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
 
     assert_response :unprocessable_entity
 
@@ -372,7 +443,7 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
     assert_equal Message.count, @before_request_messages_count
   end
 
-  test 'marks message invalid unless Message ID present' do
+  test 'does not create message unless Message ID present' do
     message_params = {
       posp_id: 'App.GeneralAgenda',
       posp_version: '1.9',
@@ -397,7 +468,7 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/upvs/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
+    post '/api/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
 
     assert_response :unprocessable_entity
 
@@ -408,7 +479,7 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
     assert_equal Message.count, @before_request_messages_count
   end
 
-  test 'marks message invalid unless Correlation ID present' do
+  test 'does not create message unless Correlation ID present' do
     message_params = {
       posp_id: 'App.GeneralAgenda',
       posp_version: '1.9',
@@ -433,7 +504,7 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/upvs/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
+    post '/api/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
 
     assert_response :unprocessable_entity
 
@@ -443,7 +514,7 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
     assert_equal Message.count, @before_request_messages_count
   end
 
-  test 'marks message invalid unless Recipient URI present' do
+  test 'does not create message unless Recipient URI present' do
     message_params = {
       posp_id: 'App.GeneralAgenda',
       posp_version: '1.9',
@@ -468,7 +539,7 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/upvs/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
+    post '/api/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
 
     assert_response :unprocessable_entity
 
@@ -478,7 +549,7 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
     assert_equal Message.count, @before_request_messages_count
   end
 
-  test 'marks message invalid unless Posp ID present' do
+  test 'does not create message unless Posp ID present' do
     message_params = {
       posp_version: '1.9',
       message_type: 'App.GeneralAgenda',
@@ -503,7 +574,7 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/upvs/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
+    post '/api/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
 
     assert_response :unprocessable_entity
 
@@ -513,7 +584,7 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
     assert_equal Message.count, @before_request_messages_count
   end
 
-  test 'marks message invalid unless Posp version present' do
+  test 'does not create message unless Posp version present' do
     message_params = {
       posp_id: 'App.GeneralAgenda',
       message_type: 'App.GeneralAgenda',
@@ -538,7 +609,7 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/upvs/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
+    post '/api/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
 
     assert_response :unprocessable_entity
 
@@ -548,7 +619,7 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
     assert_equal Message.count, @before_request_messages_count
   end
 
-  test 'marks message invalid unless Message Type present' do
+  test 'does not create message unless Message Type present' do
     message_params = {
       posp_id: 'App.GeneralAgenda',
       posp_version: '1.9',
@@ -573,7 +644,7 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/upvs/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
+    post '/api/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
 
     assert_response :unprocessable_entity
 
@@ -583,7 +654,7 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
     assert_equal Message.count, @before_request_messages_count
   end
 
-  test 'marks message invalid unless Reference ID in valid format' do
+  test 'does not create message unless Reference ID in valid format' do
     message_params = {
       posp_id: 'App.GeneralAgenda',
       posp_version: '1.9',
@@ -610,7 +681,7 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/upvs/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
+    post '/api/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
 
     assert_response :unprocessable_entity
 
@@ -620,7 +691,7 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
     assert_equal Message.count, @before_request_messages_count
   end
 
-  test 'marks message invalid unless at least one message object present' do
+  test 'does not create message unless at least one message object present' do
     message_params = {
       posp_id: 'App.GeneralAgenda',
       posp_version: '1.9',
@@ -633,7 +704,7 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
       objects: []
     }
 
-    post '/api/upvs/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
+    post '/api/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
 
     assert_response :unprocessable_entity
 
@@ -643,7 +714,7 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
     assert_equal Message.count, @before_request_messages_count
   end
 
-  test 'marks message invalid unless form object present' do
+  test 'does not create message unless form object present' do
     message_params = {
       posp_id: 'App.GeneralAgenda',
       posp_version: '1.9',
@@ -664,7 +735,7 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/upvs/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
+    post '/api/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
 
     assert_response :unprocessable_entity
 
@@ -674,7 +745,7 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
     assert_equal Message.count, @before_request_messages_count
   end
 
-  test 'marks message invalid unless exactly one form object present' do
+  test 'does not create message unless exactly one form object present' do
     message_params = {
       posp_id: 'App.GeneralAgenda',
       posp_version: '1.9',
@@ -707,7 +778,7 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/upvs/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
+    post '/api/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
 
     assert_response :unprocessable_entity
 
@@ -717,7 +788,7 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
     assert_equal Message.count, @before_request_messages_count
   end
 
-  test 'marks message invalid unless object name present' do
+  test 'does not create message unless object name present' do
     message_params = {
       posp_id: 'App.GeneralAgenda',
       posp_version: '1.9',
@@ -749,7 +820,7 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/upvs/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
+    post '/api/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
 
     assert_response :unprocessable_entity
 
@@ -759,7 +830,7 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
     assert_equal Message.count, @before_request_messages_count
   end
   
-  test 'marks message invalid unless object mimetype in white list' do
+  test 'does not create message unless object mimetype in white list' do
     message_params = {
       posp_id: 'App.GeneralAgenda',
       posp_version: '1.9',
@@ -792,12 +863,49 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/upvs/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
+    post '/api/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
 
     assert_response :unprocessable_entity
 
     json_response = JSON.parse(response.body)
     assert_equal 'Objects is not valid, MimeType of Attachment.txt object is disallowed, allowed mimetypes: application/x-eform-xml, application/xml, application/msword, application/pdf, application/vnd.etsi.asic-e+zip, application/vnd.etsi.asic-s+zip, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/x-xades_zep, application/x-zip-compressed, image/jpg, image/jpeg, image/png, image/tiff', json_response['message']
+
+    assert_equal Message.count, @before_request_messages_count
+  end
+
+  test 'does not create message unless tags with given names exist' do
+    message_params = {
+      posp_id: 'App.GeneralAgenda',
+      posp_version: '1.9',
+      message_type: 'App.GeneralAgenda',
+      message_id: SecureRandom.uuid,
+      correlation_id: SecureRandom.uuid,
+      sender_uri: 'SSDMainURI',
+      recipient_uri: 'ico://sk/12345678',
+      title: 'Všeobecná agenda',
+      objects: [
+        {
+          name: 'Form.xml',
+          is_signed: false,
+          to_be_signed: true,
+          mimetype: 'application/x-eform-xml',
+          object_type: 'FORM',
+          content: Base64.encode64('<?xml version="1.0" encoding="utf-8"?>
+<GeneralAgenda xmlns="http://schemas.gov.sk/form/App.GeneralAgenda/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <subject>Všeobecný predmet</subject>
+  <text>Všeobecný text</text>
+</GeneralAgenda>')
+        }
+      ],
+      tags: ['Special']
+    }
+
+    post '/api/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
+
+    assert_response :unprocessable_entity
+
+    json_response = JSON.parse(response.body)
+    assert_equal 'Tag with name Special does not exist', json_response['message']
 
     assert_equal Message.count, @before_request_messages_count
   end
