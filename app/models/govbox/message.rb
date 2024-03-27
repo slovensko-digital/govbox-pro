@@ -30,16 +30,10 @@ class Govbox::Message < ApplicationRecord
     MessageThread.with_advisory_lock!(govbox_message.correlation_id, transaction: true, timeout_seconds: 10) do
       message = create_message(govbox_message)
 
-      thread_title = if message.metadata["delivery_notification"].present?
-                       message.metadata["delivery_notification"]["consignment"]["subject"]
-                     else
-                       message.title
-                     end
-
       message.thread = govbox_message.box.message_threads.find_or_create_by_merge_uuid!(
         box: govbox_message.box,
         merge_uuid: govbox_message.correlation_id,
-        title: thread_title,
+        title: message.metadata.dig("delivery_notification", "consignment", "subject").presence || message.title,
         delivered_at: govbox_message.delivered_at
       )
 
@@ -73,8 +67,6 @@ class Govbox::Message < ApplicationRecord
   def self.create_message(govbox_message)
     raw_message = govbox_message.payload
 
-    message_title = [raw_message["subject"], raw_message.dig("general_agenda", "subject")].compact.join(' - ')
-
     sender_name = raw_message["sender_name"]
     recipient_name = raw_message["recipient_name"]
 
@@ -86,7 +78,7 @@ class Govbox::Message < ApplicationRecord
 
     ::Message.create(
       uuid: raw_message["message_id"],
-      title: message_title,
+      title: [raw_message["subject"], raw_message.dig("general_agenda", "subject")].compact.join(' - '),
       sender_name: sender_name,
       recipient_name: recipient_name,
       delivered_at: Time.parse(raw_message["delivered_at"]),
