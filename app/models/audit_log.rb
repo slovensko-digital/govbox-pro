@@ -89,7 +89,7 @@ class AuditLog < ApplicationRecord
         tenant: user.tenant,
         actor: user,
         actor_name: user.name
-      )
+      ) if user
     end
   end
 
