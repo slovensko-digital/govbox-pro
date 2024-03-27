@@ -753,7 +753,7 @@ crac_tu_registration_form_related_docs = [
   </xs:simpleType>
   <xs:simpleType name="suffix">
     <xs:restriction base="xs:string">
-      <xs:pattern value="\d{4,5}" />
+      <xs:pattern value="\\d{4,5}" />
       <xs:minLength value="4" />
       <xs:maxLength value="5" />
     </xs:restriction>
@@ -1931,7 +1931,7 @@ crac_cert_registration_form_related_docs = [
 	</xs:simpleType>
 	<xs:simpleType name="suffix">
 		<xs:restriction base="xs:string">
-			<xs:pattern value="\d{4,5}" />
+			<xs:pattern value="\\d{4,5}" />
 			<xs:minLength value="4" />
 			<xs:maxLength value="5" />
 		</xs:restriction>
@@ -2917,7 +2917,7 @@ crac_tu_termination_form_related_docs = [
 	</xs:simpleType>
 	<xs:simpleType name="suffix">
 		<xs:restriction base="xs:string">
-			<xs:pattern value="\d{4,5}" />
+			<xs:pattern value="\\d{4,5}" />
 			<xs:minLength value="4" />
 			<xs:maxLength value="5" />
 		</xs:restriction>

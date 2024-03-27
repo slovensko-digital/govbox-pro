@@ -77,6 +77,7 @@ module Upvs::MessageDraftConcern
         posp_id: permitted_message_params['posp_id'],
         posp_version: permitted_message_params['posp_version'],
         message_type: permitted_message_params['message_type'],
+        sktalk_class: permitted_message_params['sktalk_class'],
         status: 'being_loaded'
       }
     }
@@ -95,6 +96,7 @@ module Upvs::MessageDraftConcern
       :posp_id,
       :posp_version,
       :message_type,
+      :sktalk_class,
       :title,
       objects: [
         :name,
