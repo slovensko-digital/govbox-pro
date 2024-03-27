@@ -1,11 +1,10 @@
 class Api::MessagesController < Api::TenantController
   before_action :set_en_locale
+  before_action :check_content_type, only: :create
 
   include Upvs::MessageDraftConcern
 
   ALLOWED_CONTENT_TYPES = ['application/json;type=upvs']
-
-  before_action :check_content_type, only: :create
 
   def create
     case message_type(raw_content_type)
