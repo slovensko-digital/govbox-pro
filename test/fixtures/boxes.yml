@@ -16,7 +16,7 @@ ssd_other:
 
 solver_main:
   name: Solver main
-  uri: MyString2
+  uri: SolverMainURI
   tenant: solver
   short_name: MY1
   api_connection: govbox_api_api_connection1

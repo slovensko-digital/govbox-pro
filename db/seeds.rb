@@ -94,6 +94,12 @@ Upvs::ServiceWithForm.find_or_create_by!(
   name: "Exekučné konanie - Návrh na vykonanie exekúcie",
   schema_url: 'http://schemas.gov.sk/form/00166073.RESS_Exekucne_konanie_Navrh_na_vykonanie_exekucie.sk/1.24'
 )
+Upvs::ServiceWithForm.find_or_create_by!(
+  institution_uri: 'ico://sk/83369722',
+  institution_name: 'Test OVM 83369722 - firmaren',
+  name: "Ohlasovanie voľnej, remeselnej a viazanej živnosti - fyzická osoba",
+  schema_url: 'http://schemas.gov.sk/form/JKM_ZROHLAS_FO/1.5'
+)
 
 Upvs::MessageTemplate.find_or_create_by!(
   name: 'Všeobecná agenda',
@@ -747,7 +753,7 @@ crac_tu_registration_form_related_docs = [
   </xs:simpleType>
   <xs:simpleType name="suffix">
     <xs:restriction base="xs:string">
-      <xs:pattern value="\d{4,5}" />
+      <xs:pattern value="\\d{4,5}" />
       <xs:minLength value="4" />
       <xs:maxLength value="5" />
     </xs:restriction>
@@ -1925,7 +1931,7 @@ crac_cert_registration_form_related_docs = [
 	</xs:simpleType>
 	<xs:simpleType name="suffix">
 		<xs:restriction base="xs:string">
-			<xs:pattern value="\d{4,5}" />
+			<xs:pattern value="\\d{4,5}" />
 			<xs:minLength value="4" />
 			<xs:maxLength value="5" />
 		</xs:restriction>
@@ -2911,7 +2917,7 @@ crac_tu_termination_form_related_docs = [
 	</xs:simpleType>
 	<xs:simpleType name="suffix">
 		<xs:restriction base="xs:string">
-			<xs:pattern value="\d{4,5}" />
+			<xs:pattern value="\\d{4,5}" />
 			<xs:minLength value="4" />
 			<xs:maxLength value="5" />
 		</xs:restriction>
@@ -36693,6 +36699,3423 @@ font-size:13pt;
 exe_related_docs.each do |related_document|
   Upvs::FormRelatedDocument.find_or_create_by!(
     form: exe_form,
+    data: related_document[:data],
+    language: related_document[:language],
+    document_type: related_document[:document_type]
+  )
+end
+
+szco_registration_form = Upvs::Form.find_or_create_by!(
+  identifier: "JKM_ZROHLAS_FO",
+  version: "1.5",
+  message_type: "sluzba_egov_1097"
+)
+szco_registration_form_related_docs = [
+  {
+    language: "sk",
+    document_type: "CLS_F_XSD_EDOC",
+    data: <<~XSD
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema elementFormDefault="qualified" attributeFormDefault="unqualified"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://schemas.gov.sk/form/JKM_ZROHLAS_FO/1.5"
+	xmlns="http://schemas.gov.sk/form/JKM_ZROHLAS_FO/1.5">
+	<xs:simpleType name="datum">
+		<xs:restriction base="xs:string"></xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="urad">
+		<xs:restriction base="xs:string"></xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ico">
+		<xs:restriction base="xs:string"></xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="string10">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="10" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="string200">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="200" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="obchodne_meno">
+		<xs:restriction base="xs:string"></xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TypeAfixPrefix">
+		<xs:restriction base="xs:string"></xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="priezvisko">
+		<xs:restriction base="xs:string"></xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="meno">
+		<xs:restriction base="xs:string"></xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TypeAfixPostfix">
+		<xs:restriction base="xs:string"></xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="kod">
+		<xs:restriction base="xs:string"></xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="statnaPrislusnost">
+		<xs:restriction base="xs:string"></xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="check">
+		<xs:restriction base="xs:boolean"></xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ulica">
+		<xs:restriction base="xs:string"></xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="stat">
+		<xs:restriction base="xs:string"></xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="obec">
+		<xs:restriction base="xs:string"></xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="telefon">
+		<xs:restriction base="xs:string"></xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="email">
+		<xs:restriction base="xs:string"></xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="predmet">
+		<xs:restriction base="xs:string"></xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="sluzbaRozsah">
+		<xs:restriction base="xs:string"></xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="typPrevadzkarne">
+		<xs:restriction base="xs:string"></xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="obchodneMenoZP">
+		<xs:restriction base="xs:string"></xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="stringTextBox">
+		<xs:restriction base="xs:string"></xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="orgJednotkaOznacenie">
+		<xs:restriction base="xs:string"></xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="psc">
+		<xs:restriction base="xs:string"></xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="cislo">
+		<xs:restriction base="xs:string"></xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="typeOfString128">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="128" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="typeOfString128Req">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1" />
+			<xs:maxLength value="128" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="typeOfString255">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="255" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="typeOfString255Req">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1" />
+			<xs:maxLength value="255" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="typeOfString2048">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="2048" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="typeOfString2048Req">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1" />
+			<xs:maxLength value="2048" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="PropertyRegistrationNumberType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="10" />
+			<xs:pattern value="|\\d{1,10}" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="BuildingNumberType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="20" />
+			<xs:pattern value="|.{1,20}" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="typeOfPostalCode">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="10" />
+			<xs:pattern value="|.{1,10}" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="typeOfPhone">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="20" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="typeOfInternetAddress">
+		<xs:restriction base="xs:anyURI">
+			<xs:maxLength value="256" />
+			<xs:pattern value="|@^(http\:\/\/|https\:\/\/)?([a-z0-9][a-z0-9\-]*\.)+[a-z0-9][a-z0-9\-]*$@i" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="typeOfEmailAddress">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="256" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="CodelistItemType">
+		<xs:sequence>
+			<xs:element name="Codelist" type="CodelistType" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CodelistItemOptType">
+		<xs:sequence>
+			<xs:element name="Codelist" type="CodelistOptType" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CodelistOptType">
+		<xs:sequence>
+			<xs:element name="CodelistCode" type="typeOfString128" />
+			<xs:element name="CodelistItem" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="ItemCode" type="typeOfString255" />
+						<xs:element name="ItemName">
+							<xs:complexType>
+								<xs:simpleContent>
+									<xs:extension base="typeOfString2048">
+										<xs:attribute name="Language" type="typeOfString255" fixed="sk" />
+									</xs:extension>
+								</xs:simpleContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CodelistType">
+		<xs:sequence>
+			<xs:element name="CodelistCode" type="typeOfString128" />
+			<xs:element name="CodelistItem" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="ItemCode" type="typeOfString255" />
+						<xs:element name="ItemName">
+							<xs:complexType>
+								<xs:simpleContent>
+									<xs:extension base="typeOfString2048">
+										<xs:attribute name="Language" type="typeOfString255Req" fixed="sk" />
+									</xs:extension>
+								</xs:simpleContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CodelistHybridType">
+		<xs:sequence>
+			<xs:element name="NonCodelistData" type="typeOfString2048" minOccurs="0" />
+			<xs:element name="Codelist" type="CodelistType" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CodelistItemHybridType">
+		<xs:sequence>
+			<xs:element name="NonCodelistData" type="typeOfString2048" minOccurs="0" />
+			<xs:element name="Codelist" type="CodelistOptType" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="TelephoneAddressType">
+		<xs:sequence>
+			<xs:element name="TelephoneType" type="CodelistItemType" minOccurs="0" />
+			<xs:element name="Number" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="FormattedNumber" type="typeOfPhone" minOccurs="0" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ElectronicAddressType">
+		<xs:sequence>
+			<xs:element name="InternetAddress" type="typeOfInternetAddress" minOccurs="0" />
+			<xs:element name="EmailAddress" type="typeOfEmailAddress" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PhysicalAddressTypeWithoutCountry">
+		<xs:sequence>
+			<xs:element name="County" type="CodelistItemType" minOccurs="0" />
+			<xs:element name="Municipality" type="CodelistItemType" minOccurs="0" />
+			<xs:element name="StreetName" type="typeOfString128" minOccurs="0" />
+			<xs:element name="BuildingNumber" type="BuildingNumberType" minOccurs="0" />
+			<xs:element name="PropertyRegistrationNumber" type="PropertyRegistrationNumberType" minOccurs="0" />
+			<xs:element name="DeliveryAddress" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="PostalCode" type="typeOfPostalCode" minOccurs="0" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="TelephoneAddress" type="TelephoneAddressType" minOccurs="0" />
+			<xs:element name="FaxAddress" type="TelephoneAddressType" minOccurs="0" />
+			<xs:element name="ElectronicAddress" type="ElectronicAddressType" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PhysicalAddressType">
+		<xs:sequence>
+			<xs:element name="Country" type="CodelistHybridType" minOccurs="0" />
+			<xs:element name="County" type="CodelistHybridType" minOccurs="0" />
+			<xs:element name="Municipality" type="CodelistHybridType" minOccurs="0" />
+			<xs:element name="StreetName" type="typeOfString128" minOccurs="0" />
+			<xs:element name="BuildingNumber" type="BuildingNumberType" minOccurs="0" />
+			<xs:element name="PropertyRegistrationNumber" type="PropertyRegistrationNumberType" minOccurs="0" />
+			<xs:element name="DeliveryAddress" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="PostalCode" type="typeOfPostalCode" minOccurs="0" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="IDCType">
+		<xs:sequence>
+			<xs:element name="IdentifierValue" type="ico" minOccurs="0" nillable="true" />
+			<xs:element name="IdentifierType" type="CodelistItemType" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AffixXsdPrefixType">
+		<xs:complexContent>
+			<xs:extension base="CodelistItemHybridType">
+				<xs:attribute name="type" type="AffixType" fixed="qualification" />
+				<xs:attribute name="position" type="AffixPosition" fixed="prefix" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AffixXsdPostfixType">
+		<xs:complexContent>
+			<xs:extension base="CodelistItemHybridType">
+				<xs:attribute name="type" type="AffixType" fixed="qualification" />
+				<xs:attribute name="position" type="AffixPosition" fixed="postfix" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:simpleType name="AffixType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="aristocraticTitle" />
+			<xs:enumeration value="formOfAddress" />
+			<xs:enumeration value="generation" />
+			<xs:enumeration value="qualification" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="AffixPosition">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="prefix" />
+			<xs:enumeration value="postfix" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="PhysicalPersonOptType">
+		<xs:sequence>
+			<xs:element name="PersonName" type="PersonNameType" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PhysicalPersonType">
+		<xs:sequence>
+			<xs:element name="PersonName" type="PersonNameType" minOccurs="0" />
+			<xs:element name="ID" type="IDCType" minOccurs="0" />
+			<xs:element name="DateOfBirth" type="datum" minOccurs="0" />
+			<xs:element name="Citizenship" type="CodelistItemType" minOccurs="0" />
+			<xs:element name="ResidentialDateTo" type="datum" minOccurs="0" nillable="true" />
+			<xs:element name="ID2" type="IDCType" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PersonNameType">
+		<xs:sequence>
+			<xs:element name="Prefix" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Affix" type="AffixXsdPrefixType" minOccurs="0" maxOccurs="1" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="GivenName" type="typeOfString255" minOccurs="0" maxOccurs="1" />
+			<xs:element name="FamilyName" type="typeOfString255" minOccurs="0" maxOccurs="1" />
+			<xs:element name="GivenFamilyName" type="typeOfString255" minOccurs="0" maxOccurs="1" />
+			<xs:element name="Postfix" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Affix" type="AffixXsdPostfixType" minOccurs="0" maxOccurs="1" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="ZROHLASENIE_FO">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="PersonDataApplicant">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="PhysicalPerson" type="PhysicalPersonOptType" minOccurs="0" />
+							<xs:element name="CorporateBody">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="CorporateBodyFullName" type="obchodne_meno" minOccurs="0" nillable="true" />
+										<xs:element name="ID" type="IDCType" />
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="TelephoneAddress" type="TelephoneAddressType" />
+							<xs:element name="ElectronicAddress" type="ElectronicAddressType" minOccurs="0" />
+							<xs:element name="PhysicalAddress" type="PhysicalAddressType" minOccurs="0" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="CorporateBody">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="StatutoryBody">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="PhysicalPerson" type="PhysicalPersonType" minOccurs="0" />
+										<xs:element name="PhysicalAddress" type="PhysicalAddressType" minOccurs="0" />
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="CorporateBodyFullName" type="obchodne_meno" minOccurs="1" />
+							<xs:element name="ID" type="IDCType" />
+							<xs:element name="TelephoneAddress" type="TelephoneAddressType" minOccurs="0" />
+							<xs:element name="FaxAddress" type="TelephoneAddressType" minOccurs="0" />
+							<xs:element name="ElectronicAddress" type="ElectronicAddressType" minOccurs="0" />
+							<xs:element name="InHealthInsurance" type="obchodneMenoZP" minOccurs="1" />
+							<xs:element name="InHealthInsuranceText" type="typeOfString255" minOccurs="0" nillable="true" />
+							<xs:element name="PhysicalAddress" type="PhysicalAddressType" minOccurs="0" />
+							<xs:element name="PhysicalAddressDelivery" type="PhysicalAddressType" minOccurs="0" maxOccurs="1" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="StakeholderMandataryNP" minOccurs="0" maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="PhysicalPerson" type="PhysicalPersonOptType" minOccurs="0" />
+							<xs:element name="PhysicalAddress" type="PhysicalAddressType" minOccurs="0" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="StakeholderMandataryLP" minOccurs="0" maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="CorporateBody">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="CorporateBodyFullName" type="meno" minOccurs="1" />
+										<xs:element name="ID" type="IDCType" />
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="PhysicalAddress" type="PhysicalAddressType" minOccurs="0" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="DataOfForeignPerson" minOccurs="0" maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="BusinessFP" type="check" minOccurs="0" nillable="true" />
+							<xs:element name="OrgUnitFP" type="check" minOccurs="0" nillable="true" />
+							<xs:element name="NameBusinessOrgUnit" type="telefon" minOccurs="0" />
+							<xs:element name="OtherRegisterName" type="meno" minOccurs="0" nillable="true" />
+							<xs:element name="OtherRegisterNumber" type="meno" minOccurs="0" nillable="true" />
+							<xs:element name="PhysicalAddressResidentialSR" type="PhysicalAddressTypeWithoutCountry" minOccurs="0" />
+							<xs:element name="PhysicalAddressForeignPerson" type="PhysicalAddressTypeWithoutCountry" minOccurs="0" />
+							<xs:element name="StakeholderForeignPerson" minOccurs="1" maxOccurs="50">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="PhysicalPerson" type="PhysicalPersonType" minOccurs="0" />
+										<xs:element name="DatumFrom" type="datum" minOccurs="0" nillable="true" />
+										<xs:element name="DatumTo" type="datum" minOccurs="0" nillable="true" />
+										<xs:element name="PhysicalAddress" type="PhysicalAddressType" minOccurs="0" />
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="OtherDataA3">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Qualification" type="predmet" minOccurs="0" nillable="true" />
+							<xs:element name="RealEstate" type="predmet" minOccurs="0" nillable="true" />
+							<xs:element name="JKMOR" type="check" minOccurs="0" nillable="true" />
+							<xs:element name="LegalFormCodeJKM" type="kod" minOccurs="1" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="ActivitiesRV" minOccurs="0" maxOccurs="50">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="EconomicActivityClassification" type="CodelistHybridType" minOccurs="1" />
+							<xs:element name="EconomicActivityScope" type="sluzbaRozsah" minOccurs="0" nillable="true" />
+							<xs:element name="EffectiveFrom" type="datum" minOccurs="0" nillable="true" />
+							<xs:element name="EffectiveTo" type="datum" minOccurs="0" nillable="true" />
+							<xs:element name="StakeholderAuthorised">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="PhysicalPerson" type="PhysicalPersonType" minOccurs="0" />
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="OrganizationUnitServiceRV" minOccurs="0" maxOccurs="50">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="OrganizationUnitType" type="typPrevadzkarne" minOccurs="1" />
+										<xs:element name="OrganizationUnitTypeText" type="typeOfString255" minOccurs="0" nillable="true" />
+										<xs:element name="PhysicalAddress" type="PhysicalAddressTypeWithoutCountry" minOccurs="0" />
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="ActivitiesVo" minOccurs="0" maxOccurs="150">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="EconomicActivityClassification" type="CodelistHybridType" minOccurs="1" />
+							<xs:element name="EffectiveFrom" type="datum" minOccurs="0" nillable="true" />
+							<xs:element name="EffectiveTo" type="datum" minOccurs="0" nillable="true" />
+							<xs:element name="OrganizationUnitServiceVo" minOccurs="0" maxOccurs="50">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="OrganizationUnitType" type="typPrevadzkarne" minOccurs="1" />
+										<xs:element name="OrganizationUnitTypeText" type="typeOfString255" minOccurs="0" nillable="true" />
+										<xs:element name="PhysicalAddress" type="PhysicalAddressTypeWithoutCountry" minOccurs="0" />
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="HealtInsurance">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="ApplicationToHealtInsurance" type="obchodneMenoZP" minOccurs="1" />
+							<xs:element name="ApplicationToHealtInsuranceText" type="typeOfString255" minOccurs="0" nillable="true" />
+							<xs:element name="ApplicationDate" type="datum" minOccurs="1" />
+							<xs:element name="ApplicationTime" type="stringTextBox" minOccurs="1" />
+							<xs:element name="CardID" type="stringTextBox" minOccurs="0" nillable="true" />
+							<xs:element name="WithOutResidentialAddressSR" type="check" minOccurs="0" nillable="true" />
+							<xs:element name="WithResidentialAddressSR" type="check" minOccurs="0" nillable="true" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="BankConnectionDomestic" minOccurs="0" maxOccurs="100">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="IBAN" type="stringTextBox" minOccurs="1" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="BankConnectionExternal" minOccurs="0" maxOccurs="100">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="IBAN" type="stringTextBox" minOccurs="1" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="OrganizationUnit" minOccurs="0" maxOccurs="100">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="OrganizationUnitType" type="orgJednotkaOznacenie" minOccurs="1" />
+							<xs:element name="OrganizationUnitTypeText" type="typeOfString255" minOccurs="0" nillable="true" />
+							<xs:element name="PhysicalAddress" type="PhysicalAddressTypeWithoutCountry" minOccurs="0" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="SubmittedDocuments">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="AuthorisedLetter" type="check" minOccurs="0" nillable="true" />
+							<xs:element name="CertifiedCopy" type="check" minOccurs="0" nillable="true" />
+							<xs:element name="ConsentAuthorised" type="check" minOccurs="0" nillable="true" />
+							<xs:element name="ExtractCR" type="check" minOccurs="0" nillable="true" />
+							<xs:element name="RealEstate" type="check" minOccurs="0" nillable="true" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Declaration" type="check" minOccurs="1" />
+				<xs:element name="Others">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Date" type="datum" minOccurs="0" nillable="true" />
+							<xs:element name="CheckDeliveryAdr" type="check" minOccurs="0" nillable="true" />
+							<xs:element name="CheckMandataryLP" type="check" minOccurs="0" nillable="true" />
+							<xs:element name="CheckMandataryNP" type="check" minOccurs="0" nillable="true" />
+							<xs:element name="CheckRegistrationDU" type="check" minOccurs="0" nillable="true" />
+							<xs:element name="CheckRegistrationZP" type="check" minOccurs="0" nillable="true" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
+    XSD
+  },
+  {
+    language: "sk",
+    document_type: "CLS_F_XSLT_TXT_SGN",
+    data: <<~XSLT
+<?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet version="1.0"
+	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+	xmlns:egonp="http://schemas.gov.sk/form/JKM_ZROHLAS_FO/1.5">
+	<xsl:output method="text" indent="yes" omit-xml-declaration="yes"/>
+	<xsl:strip-space elements="*" />
+	<xsl:template match="egonp:ZROHLASENIE_FO">
+		<xsl:text>Ohlásenie/žiadosť o vydanie osvedčenia o živnostenskom oprávnení - formulár pre fyzickú osobu / Notification/request for issuing of Trade authorisation - form for natural person</xsl:text>
+		<xsl:apply-templates/>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:PersonDataApplicant">
+		<xsl:text>&#xA;</xsl:text>
+		<xsl:text>Žiadateľ / Applicant</xsl:text>
+		<xsl:apply-templates select="./egonp:PhysicalPerson"/>
+		<xsl:apply-templates select="./egonp:CorporateBody"/>
+		<xsl:apply-templates select="./egonp:TelephoneAddress"/>
+		<xsl:apply-templates select="./egonp:ElectronicAddress"/>
+		<xsl:apply-templates select="./egonp:PhysicalAddress"/>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:PersonDataApplicant/egonp:CorporateBody">
+		<xsl:apply-templates select="./egonp:CorporateBodyFullName"/>
+		<xsl:apply-templates select="./egonp:ID"/>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:PersonDataApplicant/egonp:CorporateBody/egonp:CorporateBodyFullName">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Obchodné meno / Business name: </xsl:text>
+			<xsl:value-of select="."/>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:PersonDataApplicant/egonp:CorporateBody/egonp:ID">
+		<xsl:if test="./egonp:IdentifierValue!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>IČO / Company identification number: : </xsl:text>
+			<xsl:value-of select="./egonp:IdentifierValue"/>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:PersonDataApplicant/egonp:TelephoneAddress">
+		<xsl:if test="./egonp:Number/egonp:FormattedNumber!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Telefón / Telephone: </xsl:text>
+			<xsl:value-of select="./egonp:Number/egonp:FormattedNumber"/>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:PersonDataApplicant/egonp:ElectronicAddress">
+		<xsl:if test="./egonp:EmailAddress!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>E-mail / E-mail: </xsl:text>
+			<xsl:value-of select="./egonp:EmailAddress"/>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:CorporateBody">
+		<xsl:text>&#xA;</xsl:text>
+		<xsl:text>Podnikateľ / Entrepreneur</xsl:text>
+		<xsl:apply-templates select="./egonp:CorporateBodyFullName"/>
+		<xsl:apply-templates select="./egonp:ID"/>
+		<xsl:apply-templates select="./egonp:StatutoryBody"/>
+		<xsl:apply-templates select="./egonp:InHealthInsuranceText"/>
+		<xsl:apply-templates select="./egonp:TelephoneAddress"/>
+		<xsl:apply-templates select="./egonp:FaxAddress"/>
+		<xsl:apply-templates select="./egonp:ElectronicAddress"/>
+		<xsl:apply-templates select="./egonp:PhysicalAddressDelivery"/>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:CorporateBody/egonp:StatutoryBody">
+		<xsl:apply-templates select="./egonp:PhysicalPerson"/>
+		<xsl:text>&#xA;</xsl:text>
+		<xsl:text>&#09;</xsl:text>
+		<xsl:text>Bydlisko podnikateľa / Residential address of businessman</xsl:text>
+		<xsl:apply-templates select="./egonp:PhysicalAddress"/>
+		<xsl:text>&#xA;</xsl:text>
+		<xsl:text>&#09;</xsl:text>
+		<xsl:text>Miesto podnikania / Place of business</xsl:text>
+		<xsl:apply-templates select="../egonp:PhysicalAddress"/>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:CorporateBody/egonp:CorporateBodyFullName">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Obchodné meno / Business name: </xsl:text>
+			<xsl:value-of select="."/>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:CorporateBody/egonp:ID">
+		<xsl:if test="./egonp:IdentifierValue!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>IČO / Company identification number: : </xsl:text>
+			<xsl:value-of select="./egonp:IdentifierValue"/>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:CorporateBody/egonp:InHealthInsuranceText">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Poisťovňa, v ktorej je fyzická osoba prihlásená na povinné zdravotné poistenie / where a natural person is registered in the system of mandatory health insurance: </xsl:text>
+			<xsl:value-of select="."/>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:CorporateBody/egonp:TelephoneAddress">
+		<xsl:if test="./egonp:Number/egonp:FormattedNumber!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Telefón / Telephone: </xsl:text>
+			<xsl:value-of select="./egonp:Number/egonp:FormattedNumber"/>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:CorporateBody/egonp:FaxAddress">
+		<xsl:if test="./egonp:Number/egonp:FormattedNumber!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Fax / Fax: </xsl:text>
+			<xsl:value-of select="./egonp:Number/egonp:FormattedNumber"/>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:CorporateBody/egonp:ElectronicAddress">
+		<xsl:if test="./egonp:EmailAddress!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>E-mail / E-mail: </xsl:text>
+			<xsl:value-of select="./egonp:EmailAddress"/>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:CorporateBody/egonp:PhysicalAddressDelivery">
+		<xsl:text>&#xA;</xsl:text>
+		<xsl:text>&#09;</xsl:text>
+		<xsl:text>Adresa pre doručovanie písomností / Adress for deliveries of documents</xsl:text>
+		<xsl:if test="./egonp:Country/egonp:NonCodelistData!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Štát / State: </xsl:text>
+			<xsl:value-of select="./egonp:Country/egonp:NonCodelistData"/>
+		</xsl:if>
+		<xsl:if test="./egonp:Country/egonp:Codelist/egonp:CodelistItem/egonp:ItemName!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Štát / State: </xsl:text>
+			<xsl:value-of select="./egonp:Country/egonp:Codelist/egonp:CodelistItem/egonp:ItemName"/>
+		</xsl:if>
+		<xsl:if test="./egonp:County/egonp:NonCodelistData!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Okres / County: </xsl:text>
+			<xsl:value-of select="./egonp:County/egonp:NonCodelistData"/>
+		</xsl:if>
+		<xsl:if test="./egonp:County/egonp:Codelist/egonp:CodelistItem/egonp:ItemName!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Okres / County: </xsl:text>
+			<xsl:value-of select="./egonp:County/egonp:Codelist/egonp:CodelistItem/egonp:ItemName"/>
+		</xsl:if>
+		<xsl:if test="./egonp:Municipality/egonp:NonCodelistData!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Obec / City: </xsl:text>
+			<xsl:value-of select="./egonp:Municipality/egonp:NonCodelistData"/>
+		</xsl:if>
+		<xsl:if test="./egonp:Municipality/egonp:Codelist/egonp:CodelistItem/egonp:ItemName!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Obec / City: </xsl:text>
+			<xsl:value-of select="./egonp:Municipality/egonp:Codelist/egonp:CodelistItem/egonp:ItemName"/>
+		</xsl:if>
+		<xsl:if test="./egonp:StreetName!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Ulica / Street: </xsl:text>
+			<xsl:value-of select="./egonp:StreetName"/>
+		</xsl:if>
+		<xsl:if test="./egonp:PropertyRegistrationNumber!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Súpisné číslo / Number: </xsl:text>
+			<xsl:value-of select="./egonp:PropertyRegistrationNumber"/>
+		</xsl:if>
+		<xsl:if test="./egonp:BuildingNumber!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Orientačné číslo / Number: </xsl:text>
+			<xsl:value-of select="./egonp:BuildingNumber"/>
+		</xsl:if>
+		<xsl:if test="./egonp:DeliveryAddress/egonp:PostalCode!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>PSČ / Postcode: </xsl:text>
+			<xsl:value-of select="./egonp:DeliveryAddress/egonp:PostalCode"/>
+		</xsl:if>
+		<xsl:if test="./egonp:TelephoneAddress/egonp:Number/egonp:FormattedNumber!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Telefón / Telephone: </xsl:text>
+			<xsl:value-of select="./egonp:TelephoneAddress/egonp:Number/egonp:FormattedNumber"/>
+		</xsl:if>
+		<xsl:if test="./egonp:FaxAddress/egonp:Number/egonp:FormattedNumber!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Fax / Fax: </xsl:text>
+			<xsl:value-of select="./egonp:FaxAddress/egonp:Number/egonp:FormattedNumber"/>
+		</xsl:if>
+		<xsl:if test="./egonp:ElectronicAddress/egonp:EmailAddress!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>E-mail / E-mail: </xsl:text>
+			<xsl:value-of select="./egonp:ElectronicAddress/egonp:EmailAddress"/>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:StakeholderMandataryNP">
+		<xsl:text>&#xA;</xsl:text>
+		<xsl:text>Splnomocnenec FO / Authorised representative - natural person</xsl:text>
+		<xsl:apply-templates select="./egonp:PhysicalPerson"/>
+		<xsl:apply-templates select="./egonp:PhysicalAddress"/>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:StakeholderMandataryLP">
+		<xsl:text>&#xA;</xsl:text>
+		<xsl:text>Splnomocnenec PO / Authorised representative - legal person</xsl:text>
+		<xsl:apply-templates select="./egonp:CorporateBody"/>
+		<xsl:apply-templates select="./egonp:PhysicalAddress"/>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:StakeholderMandataryLP/egonp:CorporateBody">
+		<xsl:apply-templates/>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:StakeholderMandataryLP/egonp:CorporateBody/egonp:ID">
+		<xsl:if test="./egonp:IdentifierValue!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>IČO / Company identification number: : </xsl:text>
+			<xsl:value-of select="./egonp:IdentifierValue"/>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:StakeholderMandataryLP/egonp:CorporateBody/egonp:CorporateBodyFullName">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Obchodné meno / Business name: </xsl:text>
+			<xsl:value-of select="."/>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:DataOfForeignPerson">
+		<xsl:text>&#xA;</xsl:text>
+		<xsl:text>Zahraničná osoba / Foreign person</xsl:text>
+		<xsl:apply-templates select="./egonp:BusinessFP"/>
+		<xsl:apply-templates select="./egonp:OrgUnitFP"/>
+		<xsl:apply-templates select="./egonp:NameBusinessOrgUnit"/>
+		<xsl:apply-templates select="./egonp:OtherRegisterName"/>
+		<xsl:apply-templates select="./egonp:OtherRegisterNumber"/>
+		<xsl:apply-templates select="./egonp:PhysicalAddressResidentialSR"/>
+		<xsl:apply-templates select="./egonp:PhysicalAddressForeignPerson"/>
+		<xsl:apply-templates select="./egonp:StakeholderForeignPerson"/>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:DataOfForeignPerson/egonp:BusinessFP">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Podnik zahraničnej osoby / business of the foreign person: </xsl:text>
+			<xsl:call-template name="booleanCheckboxToString">
+				<xsl:with-param name="boolValue" select="." />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:DataOfForeignPerson/egonp:OrgUnitFP">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Organizačná zložka podniku zahraničnej osoby / organisational unit of the foreign person: </xsl:text>
+			<xsl:call-template name="booleanCheckboxToString">
+				<xsl:with-param name="boolValue" select="." />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:DataOfForeignPerson/egonp:NameBusinessOrgUnit">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Označenie / Name: </xsl:text>
+			<xsl:value-of select="."/>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:DataOfForeignPerson/egonp:PhysicalAddressResidentialSR">
+		<xsl:text>&#xA;</xsl:text>
+		<xsl:text>&#09;</xsl:text>
+		<xsl:text>Adresa pobytu na území Slovenskej republiky / Residential address within the territory of the Slovak Republic</xsl:text>
+		<xsl:if test="./egonp:Country/egonp:NonCodelistData!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Štát / State: </xsl:text>
+			<xsl:value-of select="./egonp:Country/egonp:NonCodelistData"/>
+		</xsl:if>
+		<xsl:if test="./egonp:Country/egonp:Codelist/egonp:CodelistItem/egonp:ItemName!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Štát / State: </xsl:text>
+			<xsl:value-of select="./egonp:Country/egonp:Codelist/egonp:CodelistItem/egonp:ItemName"/>
+		</xsl:if>
+		<xsl:if test="./egonp:County/egonp:NonCodelistData!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Okres / County: </xsl:text>
+			<xsl:value-of select="./egonp:County/egonp:NonCodelistData"/>
+		</xsl:if>
+		<xsl:if test="./egonp:County/egonp:Codelist/egonp:CodelistItem/egonp:ItemName!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Okres / County: </xsl:text>
+			<xsl:value-of select="./egonp:County/egonp:Codelist/egonp:CodelistItem/egonp:ItemName"/>
+		</xsl:if>
+		<xsl:if test="./egonp:Municipality/egonp:NonCodelistData!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Obec / City: </xsl:text>
+			<xsl:value-of select="./egonp:Municipality/egonp:NonCodelistData"/>
+		</xsl:if>
+		<xsl:if test="./egonp:Municipality/egonp:Codelist/egonp:CodelistItem/egonp:ItemName!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Obec / City: </xsl:text>
+			<xsl:value-of select="./egonp:Municipality/egonp:Codelist/egonp:CodelistItem/egonp:ItemName"/>
+		</xsl:if>
+		<xsl:if test="./egonp:StreetName!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Ulica / Street: </xsl:text>
+			<xsl:value-of select="./egonp:StreetName"/>
+		</xsl:if>
+		<xsl:if test="./egonp:PropertyRegistrationNumber!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Súpisné číslo / Number: </xsl:text>
+			<xsl:value-of select="./egonp:PropertyRegistrationNumber"/>
+		</xsl:if>
+		<xsl:if test="./egonp:BuildingNumber!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Orientačné číslo / Number: </xsl:text>
+			<xsl:value-of select="./egonp:BuildingNumber"/>
+		</xsl:if>
+		<xsl:if test="./egonp:DeliveryAddress/egonp:PostalCode!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>PSČ / Postcode: </xsl:text>
+			<xsl:value-of select="./egonp:DeliveryAddress/egonp:PostalCode"/>
+		</xsl:if>
+		<xsl:if test="./egonp:TelephoneAddress/egonp:Number/egonp:FormattedNumber!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Telefón / Telephone: </xsl:text>
+			<xsl:value-of select="./egonp:TelephoneAddress/egonp:Number/egonp:FormattedNumber"/>
+		</xsl:if>
+		<xsl:if test="./egonp:FaxAddress/egonp:Number/egonp:FormattedNumber!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Fax / Fax: </xsl:text>
+			<xsl:value-of select="./egonp:FaxAddress/egonp:Number/egonp:FormattedNumber"/>
+		</xsl:if>
+		<xsl:if test="./egonp:ElectronicAddress/egonp:EmailAddress!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>E-mail / E-mail: </xsl:text>
+			<xsl:value-of select="./egonp:ElectronicAddress/egonp:EmailAddress"/>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:DataOfForeignPerson/egonp:PhysicalAddressForeignPerson">
+		<xsl:text>&#xA;</xsl:text>
+		<xsl:text>&#09;</xsl:text>
+		<xsl:text>Adresa miesta činnosti podniku zahraničnej osoby alebo miesta činnosti organizačnej zložky podniku zahraničnej osoby na území Slovenskej republiky (povinný údaj) / Address of place of business of the foreign person or address of place of business of the organisational unit of the foreign person within the territory of the Slovak Republic (obligatory data)</xsl:text>
+		<xsl:if test="./egonp:Country/egonp:NonCodelistData!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Štát / State: </xsl:text>
+			<xsl:value-of select="./egonp:Country/egonp:NonCodelistData"/>
+		</xsl:if>
+		<xsl:if test="./egonp:Country/egonp:Codelist/egonp:CodelistItem/egonp:ItemName!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Štát / State: </xsl:text>
+			<xsl:value-of select="./egonp:Country/egonp:Codelist/egonp:CodelistItem/egonp:ItemName"/>
+		</xsl:if>
+		<xsl:if test="./egonp:County/egonp:NonCodelistData!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Okres / County: </xsl:text>
+			<xsl:value-of select="./egonp:County/egonp:NonCodelistData"/>
+		</xsl:if>
+		<xsl:if test="./egonp:County/egonp:Codelist/egonp:CodelistItem/egonp:ItemName!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Okres / County: </xsl:text>
+			<xsl:value-of select="./egonp:County/egonp:Codelist/egonp:CodelistItem/egonp:ItemName"/>
+		</xsl:if>
+		<xsl:if test="./egonp:Municipality/egonp:NonCodelistData!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Obec / City: </xsl:text>
+			<xsl:value-of select="./egonp:Municipality/egonp:NonCodelistData"/>
+		</xsl:if>
+		<xsl:if test="./egonp:Municipality/egonp:Codelist/egonp:CodelistItem/egonp:ItemName!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Obec / City: </xsl:text>
+			<xsl:value-of select="./egonp:Municipality/egonp:Codelist/egonp:CodelistItem/egonp:ItemName"/>
+		</xsl:if>
+		<xsl:if test="./egonp:StreetName!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Ulica / Street: </xsl:text>
+			<xsl:value-of select="./egonp:StreetName"/>
+		</xsl:if>
+		<xsl:if test="./egonp:PropertyRegistrationNumber!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Súpisné číslo / Number: </xsl:text>
+			<xsl:value-of select="./egonp:PropertyRegistrationNumber"/>
+		</xsl:if>
+		<xsl:if test="./egonp:BuildingNumber!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Orientačné číslo / Number: </xsl:text>
+			<xsl:value-of select="./egonp:BuildingNumber"/>
+		</xsl:if>
+		<xsl:if test="./egonp:DeliveryAddress/egonp:PostalCode!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>PSČ / Postcode: </xsl:text>
+			<xsl:value-of select="./egonp:DeliveryAddress/egonp:PostalCode"/>
+		</xsl:if>
+		<xsl:if test="./egonp:TelephoneAddress/egonp:Number/egonp:FormattedNumber!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Telefón / Telephone: </xsl:text>
+			<xsl:value-of select="./egonp:TelephoneAddress/egonp:Number/egonp:FormattedNumber"/>
+		</xsl:if>
+		<xsl:if test="./egonp:FaxAddress/egonp:Number/egonp:FormattedNumber!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Fax / Fax: </xsl:text>
+			<xsl:value-of select="./egonp:FaxAddress/egonp:Number/egonp:FormattedNumber"/>
+		</xsl:if>
+		<xsl:if test="./egonp:ElectronicAddress/egonp:EmailAddress!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>E-mail / E-mail: </xsl:text>
+			<xsl:value-of select="./egonp:ElectronicAddress/egonp:EmailAddress"/>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:DataOfForeignPerson/egonp:StakeholderForeignPerson">
+		<xsl:text>&#xA;</xsl:text>
+		<xsl:text>&#09;</xsl:text>
+		<xsl:text>Údaje o vedúcom podniku zahraničnej osoby/organizačnej zložky podniku zahraničnej osoby v SR / Data about a manager of the foreign person/the organisational unit of the foreign person in the Slovak Republic</xsl:text>
+		<xsl:apply-templates select="./egonp:PhysicalPerson"/>
+		<xsl:apply-templates select="./egonp:DatumFrom"/>
+		<xsl:apply-templates select="./egonp:DatumTo"/>
+		<xsl:apply-templates select="./egonp:PhysicalAddress"/>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:OtherDataA3">
+		<xsl:text>&#xA;</xsl:text>
+		<xsl:text>Ostatné údaje / Other data</xsl:text>
+		<xsl:apply-templates/>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:OtherDataA3/egonp:Qualification">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Odbornú spôsobilosť preukazujem nasledovnými dokladmi / I prove professional qualification by following documents: </xsl:text>
+			<xsl:value-of select="."/>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:OtherDataA3/egonp:RealEstate">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Oprávnenie užívať nehnuteľnosť (miesto podnikania, miesto činnosti podniku zahraničnej osoby, alebo miesto činnosti organizačnej zložky podniku zahraničnej osoby) preukazujem / I prove my beneficial ownership of the estate (place of business, place of business of the foreign person or place of business of the organisational unit of the foreign person) by: </xsl:text>
+			<xsl:value-of select="."/>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:OtherDataA3/egonp:JKMOR">
+		<xsl:if test="false">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Predkladám návrh na prvý zápis do obchodného registra prostredníctvom JKM / I file the first petition for entry into the Company Register via Point of Single Contact: </xsl:text>
+			<xsl:call-template name="booleanCheckboxToString">
+				<xsl:with-param name="boolValue" select="." />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:OtherDataA3/egonp:LegalFormCodeJKM">
+		<xsl:if test="false">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>LegalFormCodeJKM: </xsl:text>
+			<xsl:value-of select="."/>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:ActivitiesRV">
+		<xsl:text>&#xA;</xsl:text>
+		<xsl:text>Remeselné a viazané živnosti / Crafts and regulated trades</xsl:text>
+		<xsl:apply-templates select="./egonp:EconomicActivityClassification"/>
+		<xsl:apply-templates select="./egonp:EconomicActivityScope"/>
+		<xsl:apply-templates select="./egonp:EffectiveFrom"/>
+		<xsl:apply-templates select="./egonp:EffectiveTo"/>
+		<xsl:apply-templates select="./egonp:StakeholderAuthorised"/>
+		<xsl:apply-templates select="./egonp:OrganizationUnitServiceRV"/>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:ActivitiesRV/egonp:EconomicActivityClassification">
+		<xsl:if test="./egonp:NonCodelistData!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Predmet podnikania / Line of business: </xsl:text>
+			<xsl:value-of select="./egonp:NonCodelistData"/>
+		</xsl:if>
+		<xsl:if test="./egonp:Codelist/egonp:CodelistItem/egonp:ItemName!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Predmet podnikania / Line of business: </xsl:text>
+			<xsl:value-of select="./egonp:Codelist/egonp:CodelistItem/egonp:ItemName"/>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:ActivitiesRV/egonp:EconomicActivityScope">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Rozsah poskytovanej služby podľa dokladu o odbornej kvalifikácií / The scope of service provided according to certificate of professional qualification: </xsl:text>
+			<xsl:value-of select="."/>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:ActivitiesRV/egonp:EffectiveFrom">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Deň začatia živnosti / Day of commencement of the trade: </xsl:text>
+			<xsl:call-template name="formatToSkDate">
+				<xsl:with-param name="date" select="." />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:ActivitiesRV/egonp:EffectiveTo">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Deň ukončenia podnikania / Day of termination of the trade: </xsl:text>
+			<xsl:call-template name="formatToSkDate">
+				<xsl:with-param name="date" select="." />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:ActivitiesRV/egonp:StakeholderAuthorised">
+		<xsl:text>&#xA;</xsl:text>
+		<xsl:text>&#09;</xsl:text>
+		<xsl:text>Zodpovedný zástupca / Authorised representative</xsl:text>
+		<xsl:apply-templates select="./egonp:PhysicalPerson"/>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:ActivitiesRV/egonp:OrganizationUnitServiceRV">
+		<xsl:text>&#xA;</xsl:text>
+		<xsl:text>&#09;</xsl:text>
+		<xsl:text>Prevádzkareň / Establishment</xsl:text>
+		<xsl:apply-templates select="./egonp:OrganizationUnitTypeText"/>
+		<xsl:apply-templates select="./egonp:PhysicalAddress"/>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:ActivitiesRV/egonp:OrganizationUnitServiceRV/egonp:OrganizationUnitTypeText">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Typ prevádzkarne / Type establishment: </xsl:text>
+			<xsl:value-of select="."/>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:ActivitiesVo">
+		<xsl:text>&#xA;</xsl:text>
+		<xsl:text>Voľné živnosti / Unregulated trade</xsl:text>
+		<xsl:apply-templates select="./egonp:EconomicActivityClassification"/>
+		<xsl:apply-templates select="./egonp:EffectiveFrom"/>
+		<xsl:apply-templates select="./egonp:EffectiveTo"/>
+		<xsl:apply-templates select="./egonp:OrganizationUnitServiceVo"/>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:ActivitiesVo/egonp:EconomicActivityClassification">
+		<xsl:if test="./egonp:NonCodelistData!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Predmet podnikania / Line of business: </xsl:text>
+			<xsl:value-of select="./egonp:NonCodelistData"/>
+		</xsl:if>
+		<xsl:if test="./egonp:Codelist/egonp:CodelistItem/egonp:ItemName!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Predmet podnikania / Line of business: </xsl:text>
+			<xsl:value-of select="./egonp:Codelist/egonp:CodelistItem/egonp:ItemName"/>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:ActivitiesVo/egonp:EffectiveFrom">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Deň začatia živnosti / Day of commencement of the trade: </xsl:text>
+			<xsl:call-template name="formatToSkDate">
+				<xsl:with-param name="date" select="." />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:ActivitiesVo/egonp:EffectiveTo">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Deň ukončenia podnikania / Day of termination of the trade: </xsl:text>
+			<xsl:call-template name="formatToSkDate">
+				<xsl:with-param name="date" select="." />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:ActivitiesVo/egonp:OrganizationUnitServiceVo">
+		<xsl:text>&#xA;</xsl:text>
+		<xsl:text>&#09;</xsl:text>
+		<xsl:text>Prevádzkareň / Establishment</xsl:text>
+		<xsl:apply-templates select="./egonp:OrganizationUnitTypeText"/>
+		<xsl:apply-templates select="./egonp:PhysicalAddress"/>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:ActivitiesVo/egonp:OrganizationUnitServiceVo/egonp:OrganizationUnitTypeText">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Typ prevádzkarne / Type establishment: </xsl:text>
+			<xsl:value-of select="."/>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:HealtInsurance">
+		<xsl:text>&#xA;</xsl:text>
+		<xsl:text>Prihláška na verejné povinné zdravotné poistenie / Application for public mandatory health insurance</xsl:text>
+		<xsl:apply-templates select="./egonp:ApplicationToHealtInsuranceText"/>
+		<xsl:apply-templates select="./egonp:ApplicationDate"/>
+		<xsl:apply-templates select="./egonp:ApplicationTime"/>
+		<xsl:apply-templates select="./egonp:CardID"/>
+		<xsl:apply-templates select="./egonp:WithResidentialAddressSR"/>
+		<xsl:apply-templates select="./egonp:WithOutResidentialAddressSR"/>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:HealtInsurance/egonp:ApplicationToHealtInsuranceText">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Obchodné meno zdravotnej poisťovne, do ktorej sa prihláška podáva / The business name of the health insurance company, to which application is submitted: </xsl:text>
+			<xsl:value-of select="."/>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:HealtInsurance/egonp:ApplicationDate">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Dátum podania prihlášky / Date of submission of application: </xsl:text>
+			<xsl:call-template name="formatToSkDate">
+				<xsl:with-param name="date" select="." />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:HealtInsurance/egonp:ApplicationTime">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Čas podania prihlášky / Time of submission of application: </xsl:text>
+			<xsl:value-of select="."/>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:HealtInsurance/egonp:CardID">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Číslo identifikačnej karty, alebo číslo pasu cudzinca / Number of identification card or number of passport of the foreign person: </xsl:text>
+			<xsl:value-of select="."/>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:HealtInsurance/egonp:WithResidentialAddressSR">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>S trvalým pobytom na území Slovenskej republiky / with residential address within the territory of the Slovak Republic: </xsl:text>
+			<xsl:call-template name="booleanCheckboxToString">
+				<xsl:with-param name="boolValue" select="." />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:HealtInsurance/egonp:WithOutResidentialAddressSR">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Bez trvalého pobytu na území Slovenskej republiky, vykonávajúca na území Slovenskej republiky samostatnú zárobkovú činnosť / without residential address within the territory of the Slovak Republic acting as self-employed within the territory of the Slovak Republic: </xsl:text>
+			<xsl:call-template name="booleanCheckboxToString">
+				<xsl:with-param name="boolValue" select="." />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:BankConnectionDomestic">
+		<xsl:text>&#xA;</xsl:text>
+		<xsl:text>Tuzemský účet / Domestic account</xsl:text>
+		<xsl:apply-templates/>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:BankConnectionDomestic/egonp:IBAN">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>IBAN: </xsl:text>
+			<xsl:value-of select="."/>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:BankConnectionExternal">
+		<xsl:text>&#xA;</xsl:text>
+		<xsl:text>Zahraničný účet / External account</xsl:text>
+		<xsl:apply-templates/>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:BankConnectionExternal/egonp:IBAN">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>IBAN: </xsl:text>
+			<xsl:value-of select="."/>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:OrganizationUnit">
+		<xsl:text>&#xA;</xsl:text>
+		<xsl:text>Iná organizačná jednotka ako prevádzkareň / Organizational unit different from establishment</xsl:text>
+		<xsl:apply-templates select="./egonp:OrganizationUnitTypeText"/>
+		<xsl:apply-templates select="./egonp:PhysicalAddress"/>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:OrganizationUnit/egonp:OrganizationUnitTypeText">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Označenie / Type: </xsl:text>
+			<xsl:value-of select="."/>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:SubmittedDocuments">
+		<xsl:text>&#xA;</xsl:text>
+		<xsl:text>Predložené doklady / Submitted documents</xsl:text>
+		<xsl:apply-templates/>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:SubmittedDocuments/egonp:CertifiedCopy">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Doklad preukazujúci odbornú spôsobilosť / Document proving professional qualification: </xsl:text>
+			<xsl:call-template name="booleanCheckboxToString">
+				<xsl:with-param name="boolValue" select="." />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:SubmittedDocuments/egonp:RealEstate">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Oprávnenie užívať nehnuteľnosť / Document proving the beneficial ownership of the real estate: </xsl:text>
+			<xsl:call-template name="booleanCheckboxToString">
+				<xsl:with-param name="boolValue" select="." />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:SubmittedDocuments/egonp:ExtractCR">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Výpis z registra trestov osôb, ktoré nie sú štátnymi občanmi Slovenskej republiky / Extract from the criminal records of persons who are not citizens of the Slovak Republic: </xsl:text>
+			<xsl:call-template name="booleanCheckboxToString">
+				<xsl:with-param name="boolValue" select="." />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:SubmittedDocuments/egonp:ConsentAuthorised">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Súhlas zodpovedného zástupcu / Consent of an authorised representative: </xsl:text>
+			<xsl:call-template name="booleanCheckboxToString">
+				<xsl:with-param name="boolValue" select="." />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:SubmittedDocuments/egonp:AuthorisedLetter">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Splnomocnenie na zastupovanie / Authorised letter for representation of the natural person: </xsl:text>
+			<xsl:call-template name="booleanCheckboxToString">
+				<xsl:with-param name="boolValue" select="." />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:Declaration">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>Vyhlasujem, že všetky údaje uvedené v tomto ohlásení a všetky prílohy priložené k ohláseniu živnosti sú pravdivé, že žiadny osobitný zákon mi neobmedzuje alebo nevylučuje prevádzkovať živnosť, a že na môj majetok nebol zrušený konkurz a ani nebol návrh na konkurz zamietnutý pre nedostatok majetku, že mi súdom ani správnym orgánom nebol uložený zákaz činnosti týkajúci sa vykonávania živnosti / I declare that all information provided in this declaration and all annexes attached to the trade declaration are true, that no special law restricts or excludes me from carrying on trade and that my assets are not subject to cancelled bankruptcy proceedings and no bankruptcy petition filed against me has been rejected due to lack of assets, and that I have not been prohibited by a court or an administrative authority to pursue a trade: </xsl:text>
+			<xsl:call-template name="booleanCheckboxToString">
+				<xsl:with-param name="boolValue" select="." />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:Others">
+		<xsl:text>&#xA;</xsl:text>
+		<xsl:text>Ostatné / Others</xsl:text>
+		<xsl:apply-templates select="./egonp:Date"/>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:Others/egonp:Date">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Dňa / Date: </xsl:text>
+			<xsl:call-template name="formatToSkDate">
+				<xsl:with-param name="date" select="." />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:PhysicalPerson">
+		<xsl:if test="./egonp:PersonName/egonp:Prefix/egonp:Affix/egonp:NonCodelistData!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Titul pred / Title (in front of name): </xsl:text>
+			<xsl:value-of select="./egonp:PersonName/egonp:Prefix/egonp:Affix/egonp:NonCodelistData"/>
+		</xsl:if>
+		<xsl:if test="./egonp:PersonName/egonp:Prefix/egonp:Affix/egonp:Codelist/egonp:CodelistItem/egonp:ItemName!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Titul pred / Title (in front of name): </xsl:text>
+			<xsl:value-of select="./egonp:PersonName/egonp:Prefix/egonp:Affix/egonp:Codelist/egonp:CodelistItem/egonp:ItemName"/>
+		</xsl:if>
+		<xsl:if test="./egonp:PersonName/egonp:GivenName!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Meno / Name: </xsl:text>
+			<xsl:value-of select="./egonp:PersonName/egonp:GivenName"/>
+		</xsl:if>
+		<xsl:if test="./egonp:PersonName/egonp:FamilyName!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Priezvisko / Surname: </xsl:text>
+			<xsl:value-of select="./egonp:PersonName/egonp:FamilyName"/>
+		</xsl:if>
+		<xsl:if test="./egonp:PersonName/egonp:GivenFamilyName!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Rodné priezvisko / Maiden surname: </xsl:text>
+			<xsl:value-of select="./egonp:PersonName/egonp:GivenFamilyName"/>
+		</xsl:if>
+		<xsl:if test="./egonp:PersonName/egonp:Postfix/egonp:Affix/egonp:NonCodelistData!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Titul za / Title (after name): </xsl:text>
+			<xsl:value-of select="./egonp:PersonName/egonp:Postfix/egonp:Affix/egonp:NonCodelistData"/>
+		</xsl:if>
+		<xsl:if test="./egonp:PersonName/egonp:Postfix/egonp:Affix/egonp:Codelist/egonp:CodelistItem/egonp:ItemName!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Titul za / Title (after name): </xsl:text>
+			<xsl:value-of select="./egonp:PersonName/egonp:Postfix/egonp:Affix/egonp:Codelist/egonp:CodelistItem/egonp:ItemName"/>
+		</xsl:if>
+		<xsl:if test="./egonp:ID/egonp:IdentifierValue!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Rodné číslo / Birth identification number: </xsl:text>
+			<xsl:value-of select="./egonp:ID/egonp:IdentifierValue"/>
+		</xsl:if>
+		<xsl:if test="./egonp:DateOfBirth!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Dátum narodenia / Date of birth: </xsl:text>
+			<xsl:call-template name="formatToSkDate">
+				<xsl:with-param name="date" select="./egonp:DateOfBirth" />
+			</xsl:call-template>
+		</xsl:if>
+		<xsl:if test="./egonp:Citizenship/egonp:Codelist/egonp:CodelistItem/egonp:ItemName!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Štátna príslušnosť / Nationality: </xsl:text>
+			<xsl:value-of select="./egonp:Citizenship/egonp:Codelist/egonp:CodelistItem/egonp:ItemName"/>
+		</xsl:if>
+		<xsl:if test="./egonp:ResidentialDateTo!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Pobyt na území SR do / Residential status in SK until: </xsl:text>
+			<xsl:call-template name="formatToSkDate">
+				<xsl:with-param name="date" select="./egonp:ResidentialDateTo" />
+			</xsl:call-template>
+		</xsl:if>
+		<xsl:if test="./egonp:ID2/egonp:IdentifierValue!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Iný identifikačný údaj, ak rodné číslo v SR nie je pridelené / Other identification data, if the birth number in the Slovak Republic is not assigned : </xsl:text>
+			<xsl:value-of select="./egonp:ID2/egonp:IdentifierType/egonp:Codelist/egonp:CodelistItem/egonp:ItemName"/>
+			<xsl:text>: </xsl:text>
+			<xsl:value-of select="./egonp:ID2/egonp:IdentifierValue"/>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:PhysicalAddress">
+		<xsl:if test="./egonp:Country/egonp:NonCodelistData!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Štát / State: </xsl:text>
+			<xsl:value-of select="./egonp:Country/egonp:NonCodelistData"/>
+		</xsl:if>
+		<xsl:if test="./egonp:Country/egonp:Codelist/egonp:CodelistItem/egonp:ItemName!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Štát / State: </xsl:text>
+			<xsl:value-of select="./egonp:Country/egonp:Codelist/egonp:CodelistItem/egonp:ItemName"/>
+		</xsl:if>
+		<xsl:if test="./egonp:County/egonp:NonCodelistData!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Okres / County: </xsl:text>
+			<xsl:value-of select="./egonp:County/egonp:NonCodelistData"/>
+		</xsl:if>
+		<xsl:if test="./egonp:County/egonp:Codelist/egonp:CodelistItem/egonp:ItemName!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Okres / County: </xsl:text>
+			<xsl:value-of select="./egonp:County/egonp:Codelist/egonp:CodelistItem/egonp:ItemName"/>
+		</xsl:if>
+		<xsl:if test="./egonp:Municipality/egonp:NonCodelistData!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Obec / City: </xsl:text>
+			<xsl:value-of select="./egonp:Municipality/egonp:NonCodelistData"/>
+		</xsl:if>
+		<xsl:if test="./egonp:Municipality/egonp:Codelist/egonp:CodelistItem/egonp:ItemName!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Obec / City: </xsl:text>
+			<xsl:value-of select="./egonp:Municipality/egonp:Codelist/egonp:CodelistItem/egonp:ItemName"/>
+		</xsl:if>
+		<xsl:if test="./egonp:StreetName!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Ulica / Street: </xsl:text>
+			<xsl:value-of select="./egonp:StreetName"/>
+		</xsl:if>
+		<xsl:if test="./egonp:PropertyRegistrationNumber!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Súpisné číslo / Number: </xsl:text>
+			<xsl:value-of select="./egonp:PropertyRegistrationNumber"/>
+		</xsl:if>
+		<xsl:if test="./egonp:BuildingNumber!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Orientačné číslo / Number: </xsl:text>
+			<xsl:value-of select="./egonp:BuildingNumber"/>
+		</xsl:if>
+		<xsl:if test="./egonp:DeliveryAddress/egonp:PostalCode!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>PSČ / Postcode: </xsl:text>
+			<xsl:value-of select="./egonp:DeliveryAddress/egonp:PostalCode"/>
+		</xsl:if>
+		<xsl:if test="./egonp:TelephoneAddress/egonp:Number/egonp:FormattedNumber!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Telefón / Telephone: </xsl:text>
+			<xsl:value-of select="./egonp:TelephoneAddress/egonp:Number/egonp:FormattedNumber"/>
+		</xsl:if>
+		<xsl:if test="./egonp:FaxAddress/egonp:Number/egonp:FormattedNumber!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Fax / Fax: </xsl:text>
+			<xsl:value-of select="./egonp:FaxAddress/egonp:Number/egonp:FormattedNumber"/>
+		</xsl:if>
+		<xsl:if test="./egonp:ElectronicAddress/egonp:EmailAddress!=''">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>E-mail / E-mail: </xsl:text>
+			<xsl:value-of select="./egonp:ElectronicAddress/egonp:EmailAddress"/>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:DataOfForeignPerson/egonp:OtherRegisterName">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Register (iná evidencia) v ktorom je zahraničná právnická osoba zapísaná / Register (other record) in which the foreign legal person is registered : </xsl:text>
+			<xsl:value-of select="."/>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:DataOfForeignPerson/egonp:OtherRegisterNumber">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Číslo zápisu / Registration number : </xsl:text>
+			<xsl:value-of select="."/>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:DataOfForeignPerson/egonp:StakeholderForeignPerson/egonp:DatumFrom">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Deň vzniku funkcie / Day of appointment: </xsl:text>
+			<xsl:call-template name="formatToSkDate">
+				<xsl:with-param name="date" select="." />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:DataOfForeignPerson/egonp:StakeholderForeignPerson/egonp:DatumTo">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Deň zániku funkcie a jeho oprávnenia / The date of termination of function and its authorization: </xsl:text>
+			<xsl:call-template name="formatToSkDate">
+				<xsl:with-param name="date" select="." />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template name="formatToSkDate">
+		<xsl:param name="date" />
+		<xsl:variable name="dateString" select="string($date)" />
+		<xsl:choose>
+			<xsl:when test="$dateString != '' and string-length($dateString)=10 and string(number(substring($dateString, 1, 4))) != 'NaN' ">
+				<xsl:value-of select="concat(substring($dateString, 9, 2), '.', substring($dateString, 6, 2), '.', substring($dateString, 1, 4))" />
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$dateString"></xsl:value-of>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template name="booleanCheckboxToString">
+		<xsl:param name="boolValue" />
+		<xsl:variable name="boolValueString" select="string($boolValue)" />
+		<xsl:choose>
+			<xsl:when test="$boolValueString = 'true' ">
+				<xsl:text>Áno</xsl:text>
+			</xsl:when>
+			<xsl:when test="$boolValueString = 'false' ">
+				<xsl:text>Nie</xsl:text>
+			</xsl:when>
+			<xsl:when test="$boolValueString = '1' ">
+				<xsl:text>Áno</xsl:text>
+			</xsl:when>
+			<xsl:when test="$boolValueString = '0' ">
+				<xsl:text>Nie</xsl:text>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$boolValueString"></xsl:value-of>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template name="formatTimeTrimSeconds">
+		<xsl:param name="time" />
+		<xsl:variable name="timeString" select="string($time)" />
+		<xsl:if test="$timeString != ''">
+			<xsl:value-of select="substring($timeString, 1, 5)" />
+		</xsl:if>
+	</xsl:template>
+	<xsl:template name="formatTime">
+		<xsl:param name="time" />
+		<xsl:variable name="timeString" select="string($time)" />
+		<xsl:if test="$timeString != ''">
+			<xsl:value-of select="substring($timeString, 1, 8)" />
+		</xsl:if>
+	</xsl:template>
+	<xsl:template name="string-replace-all">
+		<xsl:param name="text"/>
+		<xsl:param name="replace"/>
+		<xsl:param name="by"/>
+		<xsl:choose>
+			<xsl:when test="contains($text, $replace)">
+				<xsl:value-of select="substring-before($text,$replace)"/>
+				<xsl:value-of select="$by"/>
+				<xsl:call-template name="string-replace-all">
+					<xsl:with-param name="text" select="substring-after($text,$replace)"/>
+					<xsl:with-param name="replace" select="$replace"/>
+					<xsl:with-param name="by" select="$by" />
+				</xsl:call-template>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$text"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template name="formatToSkDateTime">
+		<xsl:param name="dateTime" />
+		<xsl:variable name="dateTimeString" select="string($dateTime)" />
+		<xsl:choose>
+			<xsl:when test="$dateTimeString!= '' and string-length($dateTimeString)>18 and string(number(substring($dateTimeString, 1, 4))) != 'NaN' ">
+				<xsl:value-of select="concat(substring($dateTimeString, 9, 2), '.', substring($dateTimeString, 6, 2), '.', substring($dateTimeString, 1, 4),' ', substring($dateTimeString, 12, 2),':', substring($dateTimeString, 15, 2))" />
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$dateTimeString"></xsl:value-of>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template name="formatToSkDateTimeSecond">
+		<xsl:param name="dateTime" />
+		<xsl:variable name="dateTimeString" select="string($dateTime)" />
+		<xsl:choose>
+			<xsl:when test="$dateTimeString!= '' and string-length($dateTimeString)>18 and string(number(substring($dateTimeString, 1, 4))) != 'NaN' ">
+				<xsl:value-of select="concat(substring($dateTimeString, 9, 2), '.', substring($dateTimeString, 6, 2), '.', substring($dateTimeString, 1, 4),' ', substring($dateTimeString, 12, 2),':', substring($dateTimeString, 15, 2),':', substring($dateTimeString, 18, 2))" />
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$dateTimeString"></xsl:value-of>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+</xsl:stylesheet>
+    XSLT
+  },
+  {
+    language: "sk",
+    document_type: "CLS_F_XSLT_HTML",
+    data: <<~XSLT
+  <?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet version="1.0"
+	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+	xmlns:egonp="http://schemas.gov.sk/form/JKM_ZROHLAS_FO/1.5" exclude-result-prefixes="egonp">
+	<xsl:output method="html" doctype-system="http://www.w3.org/TR/html4/loose.dtd" doctype-public="-//W3C//DTD HTML 4.01 Transitional//EN" indent="no" omit-xml-declaration="yes"/>
+	<xsl:template match="/">
+		<html>
+			<head>
+				<meta http-equiv="X-UA-Compatible" content="IE=8" />
+				<title>JKM - OHLASENIE FO</title>
+				<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+				<meta name="language" content="sk-SK"/>
+				<style type="text/css">
+body { 
+	font-family: 'Open Sans', 'Segoe UI', 'Trebuchet MS', 'Geneva CE', lucida, sans-serif;
+	background : #ffffff !important ;
+}
+.ui-tabs {
+	padding: .2em;
+	position: relative;
+	zoom: 1;
+}								
+.clear { clear: both; height: 0;}
+.layoutMain {
+	margin: 0px auto;
+	padding: 5px 5px 5px 5px;	
+}				
+.layoutRow { margin-bottom: 5px; }				
+.caption { /*width: 100%; border-bottom: solid 1px black;*/ }
+.nocaption &gt; .caption { border: 0px !important; }
+.nocaption &gt; .caption span {
+	background: none !important;
+	display: none;
+} 
+.caption .title { padding-left: 5px; }
+.headercorrection {	
+	margin: 0px;
+    font-size : 1em;
+    font-weight: bold;
+}				
+.labelVis {
+	float: left;
+	font-weight: bold;
+	font-family: 'Open Sans', 'Segoe UI', 'Trebuchet MS', 'Geneva CE', lucida, sans-serif;
+	line-height: 25px;
+	margin: 0px 18px 0px 0px;
+	padding-left: 3px;
+	width: 420px;
+	word-wrap: break-word;
+    font-size: 0.8em;
+}
+.labelVis2 {
+	float: left;
+	font-weight: bold;
+	font-family: 'Open Sans', 'Segoe UI', 'Trebuchet MS', 'Geneva CE', lucida, sans-serif;
+	line-height: 25px;
+	margin: 0px 18px 0px 0px;
+	padding-left: 3px;
+	width: 80%;
+	word-wrap: break-word;
+    font-size: 0.8em;
+}
+.contentVis {    	     
+	float: left;	
+	line-height: 25px;
+	margin: 0px;
+	padding: 0px;
+	vertical-align: top;
+    font-size: 0.75em;			
+}
+.wordwrap { 
+    white-space: pre-wrap;      
+    white-space: -moz-pre-wrap; 
+    white-space: -pre-wrap;     
+    white-space: -o-pre-wrap;   
+    word-wrap: break-word;      
+}	
+.ui-widget-content {
+	background : 50% 50% repeat-x #ffffff;
+	border : #d4d4d4 solid 2px;
+	color : #4f4e4e;
+	border-radius : 3px;
+}
+.ui-widget-header {
+	cursor : pointer;
+	font-size : 0.8em;
+	color : #494949;
+	padding-left : 2px;
+	border : #eae9e8 solid 1px;
+	background-color : #eae9e8;
+	margin-bottom: 3px;
+	border-radius : 3px;
+}			
+</style>
+			</head>
+			<body>
+				<div id="main" class="layoutMain">
+					<xsl:apply-templates/>
+				</div>
+			</body>
+		</html>
+	</xsl:template>
+	<xsl:template match="/egonp:ZROHLASENIE_FO">
+		<div class="layoutRow ui-tabs ui-widget-content" >
+			<div class="caption ui-widget-header">
+				<div class="headercorrection">Ohlásenie/žiadosť o vydanie osvedčenia o živnostenskom oprávnení - formulár pre fyzickú osobu / Notification/request for issuing of Trade authorisation - form for natural person</div>
+			</div>
+			<xsl:apply-templates select="./egonp:PersonDataApplicant"/>
+			<xsl:apply-templates select="./egonp:CorporateBody"/>
+			<xsl:apply-templates select="./egonp:StakeholderMandataryNP"/>
+			<xsl:apply-templates select="./egonp:StakeholderMandataryLP"/>
+			<xsl:apply-templates select="./egonp:DataOfForeignPerson"/>
+			<xsl:apply-templates select="./egonp:OtherDataA3"/>
+			<xsl:apply-templates select="./egonp:ActivitiesRV"/>
+			<xsl:apply-templates select="./egonp:ActivitiesVo"/>
+			<xsl:apply-templates select="./egonp:HealtInsurance"/>
+			<xsl:apply-templates select="./egonp:BankConnectionDomestic"/>
+			<xsl:apply-templates select="./egonp:BankConnectionExternal"/>
+			<xsl:apply-templates select="./egonp:OrganizationUnit"/>
+			<xsl:apply-templates select="./egonp:SubmittedDocuments"/>
+			<xsl:apply-templates select="./egonp:Declaration"/>
+			<xsl:apply-templates select="./egonp:Others"/>
+		</div>
+	</xsl:template>
+	<xsl:template match="/egonp:ZROHLASENIE_FO/egonp:BankConnectionDomestic">
+		<div class="layoutRow ui-tabs ui-widget-content" >
+			<xsl:if test="position()=1">
+				<div class="caption ui-widget-header">
+					<div class="headercorrection">Tuzemský účet / Domestic account</div>
+				</div>
+			</xsl:if>
+			<xsl:apply-templates select="./egonp:IBAN"/>
+		</div>
+	</xsl:template>
+	<xsl:template match="/egonp:ZROHLASENIE_FO/egonp:BankConnectionExternal">
+		<div class="layoutRow ui-tabs ui-widget-content" >
+			<xsl:if test="position()=1">
+				<div class="caption ui-widget-header">
+					<div class="headercorrection">Zahraničný účet / External account</div>
+				</div>
+			</xsl:if>
+			<xsl:apply-templates select="./egonp:IBAN"/>
+		</div>
+	</xsl:template>
+	<xsl:template match="/egonp:ZROHLASENIE_FO/egonp:StakeholderMandataryNP">
+		<div class="layoutRow ui-tabs ui-widget-content" >
+			<div class="caption ui-widget-header">
+				<div class="headercorrection">Splnomocnenec FO / Authorised representative - natural person</div>
+			</div>
+			<xsl:apply-templates select="./egonp:PhysicalPerson"/>
+			<xsl:apply-templates select="./egonp:PhysicalAddress" />
+		</div>
+	</xsl:template>
+	<xsl:template match="/egonp:ZROHLASENIE_FO/egonp:StakeholderMandataryLP">
+		<div class="layoutRow ui-tabs ui-widget-content" >
+			<div class="caption ui-widget-header">
+				<div class="headercorrection">Splnomocnenec PO / Authorised representative - legal person</div>
+			</div>
+			<xsl:apply-templates select="./egonp:CorporateBody"/>
+			<xsl:apply-templates select="./egonp:PhysicalAddress"/>
+		</div>
+	</xsl:template>
+	<xsl:template match="/egonp:ZROHLASENIE_FO/egonp:StakeholderMandataryLP/egonp:CorporateBody">
+		<div class="layoutRow ui-tabs ui-widget-content" >
+			<xsl:if test="./egonp:ID/egonp:IdentifierValue!=''">
+				<div>
+					<label class="labelVis">IČO / Company identification number: : </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:ID/egonp:IdentifierValue"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:apply-templates select="./egonp:CorporateBodyFullName"/>
+		</div>
+	</xsl:template>
+	<xsl:template match="/egonp:ZROHLASENIE_FO/egonp:OrganizationUnit">
+		<div class="layoutRow ui-tabs ui-widget-content" >
+			<div class="caption ui-widget-header">
+				<div class="headercorrection">Iná organizačná jednotka ako prevádzkareň / Organizational unit different from establishment</div>
+			</div>
+			<xsl:apply-templates select="./egonp:OrganizationUnitTypeText"/>
+			<xsl:apply-templates select="./egonp:PhysicalAddress"/>
+		</div>
+	</xsl:template>
+	<xsl:template match="/egonp:ZROHLASENIE_FO/egonp:PersonDataApplicant">
+		<div class="layoutRow ui-tabs ui-widget-content" >
+			<div class="caption ui-widget-header">
+				<div class="headercorrection">Žiadateľ / Applicant</div>
+			</div>
+			<xsl:apply-templates select="./egonp:PhysicalPerson"/>
+			<xsl:apply-templates select="./egonp:CorporateBody"/>
+			<xsl:apply-templates select="./egonp:PhysicalAddress" />
+			<div class="layoutRow ui-tabs ui-widget-content" >
+				<xsl:if test="./egonp:TelephoneAddress/egonp:Number/egonp:FormattedNumber!=''">
+					<div>
+						<label class="labelVis">Telefón / Telephone: </label>
+						<span class="contentVis wordwrap">
+							<xsl:value-of select="./egonp:TelephoneAddress/egonp:Number/egonp:FormattedNumber"/>
+						</span>
+					</div>
+					<div class="clear">&#xa0;</div>
+				</xsl:if>
+				<xsl:if test="./egonp:ElectronicAddress/egonp:EmailAddress!=''">
+					<div>
+						<label class="labelVis">E-mail / E-mail: </label>
+						<span class="contentVis wordwrap">
+							<xsl:value-of select="./egonp:ElectronicAddress/egonp:EmailAddress"/>
+						</span>
+					</div>
+					<div class="clear">&#xa0;</div>
+				</xsl:if>
+			</div>
+		</div>
+	</xsl:template>
+	<xsl:template match="/egonp:ZROHLASENIE_FO/egonp:PersonDataApplicant/egonp:CorporateBody">
+		<div class="layoutRow ui-tabs ui-widget-content" >
+			<xsl:apply-templates select="./egonp:CorporateBodyFullName"/>
+			<xsl:if test="./egonp:ID/egonp:IdentifierValue!=''">
+				<div>
+					<label class="labelVis">IČO / Company identification number: : </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:ID/egonp:IdentifierValue"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+		</div>
+	</xsl:template>
+	<xsl:template match="/egonp:ZROHLASENIE_FO/egonp:OtherDataA3">
+		<div class="layoutRow ui-tabs ui-widget-content" >
+			<div class="caption ui-widget-header">
+				<div class="headercorrection">Ostatné údaje / Other data</div>
+			</div>
+			<xsl:apply-templates select="./egonp:Qualification"/>
+			<xsl:apply-templates select="./egonp:RealEstate"/>
+			<xsl:apply-templates select="./egonp:JKMOR"/>
+			<xsl:apply-templates select="./egonp:LegalFormCodeJKM"/>
+		</div>
+	</xsl:template>
+	<xsl:template match="/egonp:ZROHLASENIE_FO/egonp:ActivitiesVo">
+		<div class="layoutRow ui-tabs ui-widget-content" >
+			<div class="caption ui-widget-header">
+				<div class="headercorrection">Voľné živnosti / Unregulated trade</div>
+			</div>
+			<xsl:if test="./egonp:EconomicActivityClassification/egonp:NonCodelistData!=''">
+				<div>
+					<label class="labelVis">Predmet podnikania / Line of business: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:EconomicActivityClassification/egonp:NonCodelistData"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:EconomicActivityClassification/egonp:Codelist/egonp:CodelistItem/egonp:ItemName!=''">
+				<div>
+					<label class="labelVis">Predmet podnikania / Line of business: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:EconomicActivityClassification/egonp:Codelist/egonp:CodelistItem/egonp:ItemName"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:apply-templates select="./egonp:EffectiveFrom"/>
+			<xsl:apply-templates select="./egonp:EffectiveTo"/>
+			<xsl:apply-templates select="./egonp:OrganizationUnitServiceVo"/>
+		</div>
+	</xsl:template>
+	<xsl:template match="/egonp:ZROHLASENIE_FO/egonp:ActivitiesVo/egonp:OrganizationUnitServiceVo">
+		<div class="layoutRow ui-tabs ui-widget-content" >
+			<div class="caption ui-widget-header">
+				<div class="headercorrection">Prevádzkareň / Establishment</div>
+			</div>
+			<xsl:apply-templates select="./egonp:OrganizationUnitTypeText"/>
+			<xsl:apply-templates select="./egonp:PhysicalAddress"/>
+		</div>
+	</xsl:template>
+	<xsl:template match="/egonp:ZROHLASENIE_FO/egonp:SubmittedDocuments">
+		<div class="layoutRow ui-tabs ui-widget-content" >
+			<div class="caption ui-widget-header">
+				<div class="headercorrection">Predložené doklady / Submitted documents</div>
+			</div>
+			<xsl:apply-templates select="./egonp:CertifiedCopy"/>
+			<xsl:apply-templates select="./egonp:RealEstate"/>
+			<xsl:apply-templates select="./egonp:ExtractCR"/>
+			<xsl:apply-templates select="./egonp:ConsentAuthorised"/>
+			<xsl:apply-templates select="./egonp:AuthorisedLetter"/>
+		</div>
+	</xsl:template>
+	<xsl:template match="/egonp:ZROHLASENIE_FO/egonp:DataOfForeignPerson">
+		<div class="layoutRow ui-tabs ui-widget-content" >
+			<div class="caption ui-widget-header">
+				<div class="headercorrection">Zahraničná osoba / Foreign person</div>
+			</div>
+			<xsl:apply-templates select="./egonp:BusinessFP"/>
+			<xsl:apply-templates select="./egonp:OrgUnitFP"/>
+			<xsl:apply-templates select="./egonp:NameBusinessOrgUnit"/>
+			<xsl:apply-templates select="./egonp:OtherRegisterName"/>
+			<xsl:apply-templates select="./egonp:OtherRegisterNumber"/>
+			<xsl:apply-templates select="./egonp:PhysicalAddressResidentialSR"/>
+			<xsl:apply-templates select="./egonp:PhysicalAddressForeignPerson"/>
+			<xsl:apply-templates select="./egonp:StakeholderForeignPerson"/>
+		</div>
+	</xsl:template>
+	<xsl:template match="/egonp:ZROHLASENIE_FO/egonp:DataOfForeignPerson/egonp:StakeholderForeignPerson">
+		<div class="layoutRow ui-tabs ui-widget-content" >
+			<div class="caption ui-widget-header">
+				<div class="headercorrection">Údaje o vedúcom podniku zahraničnej osoby/organizačnej zložky podniku zahraničnej osoby v SR / Data about a manager of the foreign person/the organisational unit of the foreign person in the Slovak Republic</div>
+			</div>
+			<xsl:apply-templates select="./egonp:PhysicalPerson"/>
+			<xsl:apply-templates select="./egonp:DatumFrom"/>
+			<xsl:apply-templates select="./egonp:DatumTo"/>
+			<xsl:apply-templates select="./egonp:PhysicalAddress"/>
+		</div>
+	</xsl:template>
+	<xsl:template match="/egonp:ZROHLASENIE_FO/egonp:HealtInsurance">
+		<div class="layoutRow ui-tabs ui-widget-content" >
+			<div class="caption ui-widget-header">
+				<div class="headercorrection">Prihláška na verejné povinné zdravotné poistenie / Application for public mandatory health insurance</div>
+			</div>
+			<xsl:apply-templates select="./egonp:ApplicationToHealtInsuranceText"/>
+			<xsl:apply-templates select="./egonp:ApplicationDate"/>
+			<xsl:apply-templates select="./egonp:ApplicationTime"/>
+			<xsl:apply-templates select="./egonp:CardID"/>
+			<xsl:apply-templates select="./egonp:WithResidentialAddressSR"/>
+			<xsl:apply-templates select="./egonp:WithOutResidentialAddressSR"/>
+		</div>
+	</xsl:template>
+	<xsl:template match="/egonp:ZROHLASENIE_FO/egonp:ActivitiesRV">
+		<div class="layoutRow ui-tabs ui-widget-content" >
+			<div class="caption ui-widget-header">
+				<div class="headercorrection">Remeselné a viazané živnosti / Crafts and regulated trades</div>
+			</div>
+			<xsl:if test="./egonp:EconomicActivityClassification/egonp:NonCodelistData!=''">
+				<div>
+					<label class="labelVis">Predmet podnikania / Line of business: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:EconomicActivityClassification/egonp:NonCodelistData"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:EconomicActivityClassification/egonp:Codelist/egonp:CodelistItem/egonp:ItemName!=''">
+				<div>
+					<label class="labelVis">Predmet podnikania / Line of business: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:EconomicActivityClassification/egonp:Codelist/egonp:CodelistItem/egonp:ItemName"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:apply-templates select="./egonp:EconomicActivityCode"/>
+			<xsl:apply-templates select="./egonp:EconomicActivityScope"/>
+			<xsl:apply-templates select="./egonp:EffectiveFrom"/>
+			<xsl:apply-templates select="./egonp:EffectiveTo"/>
+			<xsl:apply-templates select="./egonp:StakeholderAuthorised"/>
+			<xsl:apply-templates select="./egonp:OrganizationUnitServiceRV"/>
+		</div>
+	</xsl:template>
+	<xsl:template match="/egonp:ZROHLASENIE_FO/egonp:ActivitiesRV/egonp:StakeholderAuthorised">
+		<div class="layoutRow ui-tabs ui-widget-content" >
+			<div class="caption ui-widget-header">
+				<div class="headercorrection">Zodpovedný zástupca / Authorised representative</div>
+			</div>
+			<xsl:apply-templates select="./egonp:PhysicalPerson"/>
+		</div>
+	</xsl:template>
+	<xsl:template match="/egonp:ZROHLASENIE_FO/egonp:ActivitiesRV/egonp:OrganizationUnitServiceRV">
+		<div class="layoutRow ui-tabs ui-widget-content" >
+			<div class="caption ui-widget-header">
+				<div class="headercorrection">Prevádzkareň / Establishment</div>
+			</div>
+			<xsl:apply-templates select="./egonp:OrganizationUnitTypeText"/>
+			<xsl:apply-templates select="./egonp:PhysicalAddress"/>
+		</div>
+	</xsl:template>
+	<xsl:template match="/egonp:ZROHLASENIE_FO/egonp:Others">
+		<div class="layoutRow ui-tabs ui-widget-content" >
+			<div class="caption ui-widget-header">
+				<div class="headercorrection">Ostatné / Others</div>
+			</div>
+			<xsl:apply-templates select="./egonp:Date"/>
+		</div>
+	</xsl:template>
+	<xsl:template match="/egonp:ZROHLASENIE_FO/egonp:CorporateBody">
+		<div class="layoutRow ui-tabs ui-widget-content" >
+			<div class="caption ui-widget-header">
+				<div class="headercorrection">Podnikateľ / Entrepreneur</div>
+			</div>
+			<xsl:if test="./egonp:CorporateBodyFullName!=''">
+				<div>
+					<label class="labelVis">Obchodné meno / Business name: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:CorporateBodyFullName"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:ID/egonp:IdentifierValue!=''">
+				<div>
+					<label class="labelVis">IČO / Company identification number: : </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:ID/egonp:IdentifierValue"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:TelephoneAddress/egonp:Number/egonp:FormattedNumber!=''">
+				<div>
+					<label class="labelVis">Telefón / Telephone: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:TelephoneAddress/egonp:Number/egonp:FormattedNumber"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:FaxAddress/egonp:Number/egonp:FormattedNumber!=''">
+				<div>
+					<label class="labelVis">Fax / Fax: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:FaxAddress/egonp:Number/egonp:FormattedNumber"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:ElectronicAddress/egonp:EmailAddress!=''">
+				<div>
+					<label class="labelVis">E-mail / E-mail: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:ElectronicAddress/egonp:EmailAddress"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:apply-templates select="./egonp:StatutoryBody"/>
+			<div class="layoutRow ui-tabs ui-widget-content" >
+				<div class="caption ui-widget-header">
+					<div class="headercorrection">Miesto podnikania / Place of business</div>
+				</div>
+				<xsl:apply-templates select="./egonp:PhysicalAddress" />
+			</div>
+			<xsl:apply-templates select="//egonp:ZROHLASENIE_FO/egonp:CorporateBody/egonp:PhysicalAddressDelivery"/>
+			<xsl:if test="./egonp:InHealthInsuranceText!=''">
+				<div>
+					<label class="labelVis">Poisťovňa, v ktorej je fyzická osoba prihlásená na povinné zdravotné poistenie / where a natural person is registered in the system of mandatory health insurance: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:InHealthInsuranceText"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+		</div>
+	</xsl:template>
+	<xsl:template match="/egonp:ZROHLASENIE_FO/egonp:CorporateBody/egonp:StatutoryBody">
+		<xsl:apply-templates select="./egonp:PhysicalPerson"/>
+		<div class="layoutRow ui-tabs ui-widget-content" >
+			<div class="caption ui-widget-header">
+				<div class="headercorrection">Bydlisko podnikateľa / Residential address of businessman</div>
+			</div>
+			<xsl:apply-templates select="./egonp:PhysicalAddress"/>
+		</div>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:Declaration">
+		<xsl:if test="./text()">
+			<div>
+				<label class="labelVis2">Vyhlasujem, že všetky údaje uvedené v tomto ohlásení a všetky prílohy priložené k ohláseniu živnosti sú pravdivé, že žiadny osobitný zákon mi neobmedzuje alebo nevylučuje prevádzkovať živnosť, a že na môj majetok nebol zrušený konkurz a ani nebol návrh na konkurz zamietnutý pre nedostatok majetku, že mi súdom ani správnym orgánom nebol uložený zákaz činnosti týkajúci sa vykonávania živnosti / I declare that all information provided in this declaration and all annexes attached to the trade declaration are true, that no special law restricts or excludes me from carrying on trade and that my assets are not subject to cancelled bankruptcy proceedings and no bankruptcy petition filed against me has been rejected due to lack of assets, and that I have not been prohibited by a court or an administrative authority to pursue a trade.: </label>
+				<span class="contentVis wordwrap">
+					<xsl:call-template name="booleanCheckboxToString">
+						<xsl:with-param name="boolValue" select="." />
+					</xsl:call-template>
+				</span>
+			</div>
+			<div class="clear">&#xa0;</div>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:PhysicalAddress">
+		<div class="layoutRow ui-tabs ui-widget-content" >
+			<xsl:if test="./egonp:Country/egonp:NonCodelistData!=''">
+				<div>
+					<label class="labelVis">Štát / State: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:Country/egonp:NonCodelistData"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:Country/egonp:Codelist/egonp:CodelistItem/egonp:ItemName!=''">
+				<div>
+					<label class="labelVis">Štát / State: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:Country/egonp:Codelist/egonp:CodelistItem/egonp:ItemName"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:County/egonp:NonCodelistData!=''">
+				<div>
+					<label class="labelVis">Okres / County: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:County/egonp:NonCodelistData"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:County/egonp:Codelist/egonp:CodelistItem/egonp:ItemName!=''">
+				<div>
+					<label class="labelVis">Okres / County: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:County/egonp:Codelist/egonp:CodelistItem/egonp:ItemName"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:Municipality/egonp:NonCodelistData!=''">
+				<div>
+					<label class="labelVis">Obec / City: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:Municipality/egonp:NonCodelistData"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:Municipality/egonp:Codelist/egonp:CodelistItem/egonp:ItemName!=''">
+				<div>
+					<label class="labelVis">Obec / City: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:Municipality/egonp:Codelist/egonp:CodelistItem/egonp:ItemName"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:StreetName!=''">
+				<div>
+					<label class="labelVis">Ulica / Street: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:StreetName"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:PropertyRegistrationNumber!=''">
+				<div>
+					<label class="labelVis">Súpisné číslo / Number: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:PropertyRegistrationNumber"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:BuildingNumber!=''">
+				<div>
+					<label class="labelVis">Orientačné číslo / Number: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:BuildingNumber"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:DeliveryAddress/egonp:PostalCode!=''">
+				<div>
+					<label class="labelVis">PSČ / Postcode: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:DeliveryAddress/egonp:PostalCode"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:TelephoneAddress/egonp:Number/egonp:FormattedNumber!=''">
+				<div>
+					<label class="labelVis">Telefón / Telephone: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:TelephoneAddress/egonp:Number/egonp:FormattedNumber"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:FaxAddress/egonp:Number/egonp:FormattedNumber!=''">
+				<div>
+					<label class="labelVis">Fax / Fax: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:FaxAddress/egonp:Number/egonp:FormattedNumber"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:ElectronicAddress/egonp:EmailAddress!=''">
+				<div>
+					<label class="labelVis">E-mail / E-mail: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:ElectronicAddress/egonp:EmailAddress"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+		</div>
+	</xsl:template>
+	<xsl:template match="egonp:PhysicalAddressDelivery">
+		<div class="layoutRow ui-tabs ui-widget-content" >
+			<div class="caption ui-widget-header">
+				<div class="headercorrection">Adresa pre doručovanie písomností / Adress for deliveries of documents</div>
+			</div>
+			<xsl:if test="./egonp:Country/egonp:NonCodelistData!=''">
+				<div>
+					<label class="labelVis">Štát / State: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:Country/egonp:NonCodelistData"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:Country/egonp:Codelist/egonp:CodelistItem/egonp:ItemName!=''">
+				<div>
+					<label class="labelVis">Štát / State: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:Country/egonp:Codelist/egonp:CodelistItem/egonp:ItemName"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:County/egonp:NonCodelistData!=''">
+				<div>
+					<label class="labelVis">Okres / County: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:County/egonp:NonCodelistData"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:County/egonp:Codelist/egonp:CodelistItem/egonp:ItemName!=''">
+				<div>
+					<label class="labelVis">Okres / County: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:County/egonp:Codelist/egonp:CodelistItem/egonp:ItemName"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:Municipality/egonp:NonCodelistData!=''">
+				<div>
+					<label class="labelVis">Obec / City: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:Municipality/egonp:NonCodelistData"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:Municipality/egonp:Codelist/egonp:CodelistItem/egonp:ItemName!=''">
+				<div>
+					<label class="labelVis">Obec / City: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:Municipality/egonp:Codelist/egonp:CodelistItem/egonp:ItemName"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:StreetName!=''">
+				<div>
+					<label class="labelVis">Ulica / Street: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:StreetName"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:PropertyRegistrationNumber!=''">
+				<div>
+					<label class="labelVis">Súpisné číslo / Number: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:PropertyRegistrationNumber"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:BuildingNumber!=''">
+				<div>
+					<label class="labelVis">Orientačné číslo / Number: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:BuildingNumber"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:DeliveryAddress/egonp:PostalCode!=''">
+				<div>
+					<label class="labelVis">PSČ / Postcode: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:DeliveryAddress/egonp:PostalCode"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:TelephoneAddress/egonp:Number/egonp:FormattedNumber!=''">
+				<div>
+					<label class="labelVis">Telefón / Telephone: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:TelephoneAddress/egonp:Number/egonp:FormattedNumber"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:FaxAddress/egonp:Number/egonp:FormattedNumber!=''">
+				<div>
+					<label class="labelVis">Fax / Fax: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:FaxAddress/egonp:Number/egonp:FormattedNumber"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:ElectronicAddress/egonp:EmailAddress!=''">
+				<div>
+					<label class="labelVis">E-mail / E-mail: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:ElectronicAddress/egonp:EmailAddress"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+		</div>
+	</xsl:template>
+	<xsl:template match="egonp:PhysicalAddressResidentialSR">
+		<div class="layoutRow ui-tabs ui-widget-content" >
+			<div class="caption ui-widget-header">
+				<div class="headercorrection">Adresa pobytu na území Slovenskej republiky / Residential address within the territory of the Slovak Republic</div>
+			</div>
+			<xsl:if test="./egonp:Country/egonp:NonCodelistData!=''">
+				<div>
+					<label class="labelVis">Štát / State: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:Country/egonp:NonCodelistData"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:Country/egonp:Codelist/egonp:CodelistItem/egonp:ItemName!=''">
+				<div>
+					<label class="labelVis">Štát / State: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:Country/egonp:Codelist/egonp:CodelistItem/egonp:ItemName"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:County/egonp:NonCodelistData!=''">
+				<div>
+					<label class="labelVis">Okres / County: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:County/egonp:NonCodelistData"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:County/egonp:Codelist/egonp:CodelistItem/egonp:ItemName!=''">
+				<div>
+					<label class="labelVis">Okres / County: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:County/egonp:Codelist/egonp:CodelistItem/egonp:ItemName"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:Municipality/egonp:NonCodelistData!=''">
+				<div>
+					<label class="labelVis">Obec / City: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:Municipality/egonp:NonCodelistData"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:Municipality/egonp:Codelist/egonp:CodelistItem/egonp:ItemName!=''">
+				<div>
+					<label class="labelVis">Obec / City: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:Municipality/egonp:Codelist/egonp:CodelistItem/egonp:ItemName"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:StreetName!=''">
+				<div>
+					<label class="labelVis">Ulica / Street: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:StreetName"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:PropertyRegistrationNumber!=''">
+				<div>
+					<label class="labelVis">Súpisné číslo / Number: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:PropertyRegistrationNumber"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:BuildingNumber!=''">
+				<div>
+					<label class="labelVis">Orientačné číslo / Number: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:BuildingNumber"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:DeliveryAddress/egonp:PostalCode!=''">
+				<div>
+					<label class="labelVis">PSČ / Postcode: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:DeliveryAddress/egonp:PostalCode"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:TelephoneAddress/egonp:Number/egonp:FormattedNumber!=''">
+				<div>
+					<label class="labelVis">Telefón / Telephone: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:TelephoneAddress/egonp:Number/egonp:FormattedNumber"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:FaxAddress/egonp:Number/egonp:FormattedNumber!=''">
+				<div>
+					<label class="labelVis">Fax / Fax: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:FaxAddress/egonp:Number/egonp:FormattedNumber"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:ElectronicAddress/egonp:EmailAddress!=''">
+				<div>
+					<label class="labelVis">E-mail / E-mail: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:ElectronicAddress/egonp:EmailAddress"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+		</div>
+	</xsl:template>
+	<xsl:template match="egonp:PhysicalAddressForeignPerson">
+		<div class="layoutRow ui-tabs ui-widget-content" >
+			<div class="caption ui-widget-header">
+				<div class="headercorrection">Adresa miesta činnosti podniku zahraničnej osoby alebo miesta činnosti organizačnej zložky podniku zahraničnej osoby na území Slovenskej republiky (povinný údaj) / Address of place of business of the foreign person or address of place of business of the organisational unit of the foreign person within the territory of the Slovak Republic (obligatory data)</div>
+			</div>
+			<xsl:if test="./egonp:Country/egonp:NonCodelistData!=''">
+				<div>
+					<label class="labelVis">Štát / State: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:Country/egonp:NonCodelistData"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:Country/egonp:Codelist/egonp:CodelistItem/egonp:ItemName!=''">
+				<div>
+					<label class="labelVis">Štát / State: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:Country/egonp:Codelist/egonp:CodelistItem/egonp:ItemName"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:County/egonp:NonCodelistData!=''">
+				<div>
+					<label class="labelVis">Okres / County: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:County/egonp:NonCodelistData"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:County/egonp:Codelist/egonp:CodelistItem/egonp:ItemName!=''">
+				<div>
+					<label class="labelVis">Okres / County: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:County/egonp:Codelist/egonp:CodelistItem/egonp:ItemName"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:Municipality/egonp:NonCodelistData!=''">
+				<div>
+					<label class="labelVis">Obec / City: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:Municipality/egonp:NonCodelistData"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:Municipality/egonp:Codelist/egonp:CodelistItem/egonp:ItemName!=''">
+				<div>
+					<label class="labelVis">Obec / City: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:Municipality/egonp:Codelist/egonp:CodelistItem/egonp:ItemName"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:StreetName!=''">
+				<div>
+					<label class="labelVis">Ulica / Street: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:StreetName"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:PropertyRegistrationNumber!=''">
+				<div>
+					<label class="labelVis">Súpisné číslo / Number: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:PropertyRegistrationNumber"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:BuildingNumber!=''">
+				<div>
+					<label class="labelVis">Orientačné číslo / Number: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:BuildingNumber"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:DeliveryAddress/egonp:PostalCode!=''">
+				<div>
+					<label class="labelVis">PSČ / Postcode: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:DeliveryAddress/egonp:PostalCode"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:TelephoneAddress/egonp:Number/egonp:FormattedNumber!=''">
+				<div>
+					<label class="labelVis">Telefón / Telephone: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:TelephoneAddress/egonp:Number/egonp:FormattedNumber"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:FaxAddress/egonp:Number/egonp:FormattedNumber!=''">
+				<div>
+					<label class="labelVis">Fax / Fax: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:FaxAddress/egonp:Number/egonp:FormattedNumber"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:ElectronicAddress/egonp:EmailAddress!=''">
+				<div>
+					<label class="labelVis">E-mail / E-mail: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:ElectronicAddress/egonp:EmailAddress"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+		</div>
+	</xsl:template>
+	<xsl:template match="egonp:PhysicalPerson">
+		<div class="layoutRow ui-tabs ui-widget-content" >
+			<xsl:if test="./egonp:PersonName/egonp:Prefix/egonp:Affix/egonp:NonCodelistData!=''">
+				<div>
+					<label class="labelVis">Titul pred / Title (in front of name): </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:PersonName/egonp:Prefix/egonp:Affix/egonp:NonCodelistData"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:PersonName/egonp:Prefix/egonp:Affix/egonp:Codelist/egonp:CodelistItem/egonp:ItemName!=''">
+				<div>
+					<label class="labelVis">Titul pred / Title (in front of name): </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:PersonName/egonp:Prefix/egonp:Affix/egonp:Codelist/egonp:CodelistItem/egonp:ItemName"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:PersonName/egonp:GivenName!=''">
+				<div>
+					<label class="labelVis">Meno / Name: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:PersonName/egonp:GivenName"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:PersonName/egonp:FamilyName!=''">
+				<div>
+					<label class="labelVis">Priezvisko / Surname: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:PersonName/egonp:FamilyName"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:PersonName/egonp:GivenFamilyName!=''">
+				<div>
+					<label class="labelVis">Rodné priezvisko / Maiden surname: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:PersonName/egonp:GivenFamilyName"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:PersonName/egonp:Postfix/egonp:Affix/egonp:NonCodelistData!=''">
+				<div>
+					<label class="labelVis">Titul za / Title (after name): </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:PersonName/egonp:Postfix/egonp:Affix/egonp:NonCodelistData"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:PersonName/egonp:Postfix/egonp:Affix/egonp:Codelist/egonp:CodelistItem/egonp:ItemName!=''">
+				<div>
+					<label class="labelVis">Titul za / Title (after name): </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:PersonName/egonp:Postfix/egonp:Affix/egonp:Codelist/egonp:CodelistItem/egonp:ItemName"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:ID/egonp:IdentifierValue!=''">
+				<div>
+					<label class="labelVis">Rodné číslo / Birth identification number: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:ID/egonp:IdentifierValue"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:DateOfBirth!=''">
+				<div>
+					<label class="labelVis">Dátum narodenia / Date of birth: </label>
+					<span class="contentVis wordwrap">
+						<xsl:call-template name="formatToSkDate">
+							<xsl:with-param name="date" select="./egonp:DateOfBirth" />
+						</xsl:call-template>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:Citizenship/egonp:Codelist/egonp:CodelistItem/egonp:ItemName!=''">
+				<div>
+					<label class="labelVis">Štátna príslušnosť / Nationality: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:Citizenship/egonp:Codelist/egonp:CodelistItem/egonp:ItemName"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:ResidentialDateTo!=''">
+				<div>
+					<label class="labelVis">Pobyt na území SR do / Residential status in SK until: </label>
+					<span class="contentVis wordwrap">
+						<xsl:call-template name="formatToSkDate">
+							<xsl:with-param name="date" select="./egonp:ResidentialDateTo" />
+						</xsl:call-template>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+			<xsl:if test="./egonp:ID2/egonp:IdentifierValue!=''">
+				<div>
+					<label class="labelVis">Iný identifikačný údaj, ak r.č. v SR nie je pridelené / Other identifi- cation data, if the birth number in the Slovak Rep. is not assigned: </label>
+					<span class="contentVis wordwrap">
+						<xsl:value-of select="./egonp:ID2/egonp:IdentifierType/egonp:Codelist/egonp:CodelistItem/egonp:ItemName"/>
+						<xsl:text>: </xsl:text>
+						<xsl:value-of select="./egonp:ID2/egonp:IdentifierValue"/>
+					</span>
+				</div>
+				<div class="clear">&#xa0;</div>
+			</xsl:if>
+		</div>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:BankConnectionDomestic/egonp:IBAN">
+		<xsl:if test="./text()">
+			<div>
+				<label class="labelVis">IBAN: </label>
+				<span class="contentVis wordwrap">
+					<xsl:value-of select="."/>
+				</span>
+			</div>
+			<div class="clear">&#xa0;</div>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:BankConnectionExternal/egonp:IBAN">
+		<xsl:if test="./text()">
+			<div>
+				<label class="labelVis">IBAN: </label>
+				<span class="contentVis wordwrap">
+					<xsl:value-of select="."/>
+				</span>
+			</div>
+			<div class="clear">&#xa0;</div>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:StakeholderMandataryLP/egonp:CorporateBody/egonp:CorporateBodyFullName">
+		<xsl:if test="./text()">
+			<div>
+				<label class="labelVis">Obchodné meno / Business name: </label>
+				<span class="contentVis wordwrap">
+					<xsl:value-of select="."/>
+				</span>
+			</div>
+			<div class="clear">&#xa0;</div>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:OrganizationUnit/egonp:OrganizationUnitTypeText">
+		<xsl:if test="./text()">
+			<div>
+				<label class="labelVis">Označenie / Type: </label>
+				<span class="contentVis wordwrap">
+					<xsl:value-of select="."/>
+				</span>
+			</div>
+			<div class="clear">&#xa0;</div>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:PersonDataApplicant/egonp:CorporateBody/egonp:CorporateBodyFullName">
+		<xsl:if test="./text()">
+			<div>
+				<label class="labelVis">Obchodné meno / Business name: </label>
+				<span class="contentVis wordwrap">
+					<xsl:value-of select="."/>
+				</span>
+			</div>
+			<div class="clear">&#xa0;</div>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:OtherDataA3/egonp:Qualification">
+		<xsl:if test="./text()">
+			<div>
+				<label class="labelVis">Odbornú spôsobilosť preukazujem nasledovnými dokladmi / I prove professional qualification by following documents: </label>
+				<span class="contentVis wordwrap">
+					<xsl:value-of select="."/>
+				</span>
+			</div>
+			<div class="clear">&#xa0;</div>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:OtherDataA3/egonp:RealEstate">
+		<xsl:if test="./text()">
+			<div>
+				<label class="labelVis">
+  Oprávnenie užívať nehnuteľnosť (miesto podnikania, miesto činnosti podniku zahraničnej osoby, alebo miesto činnosti organizačnej zložky podniku zahraničnej osoby) preukazujem / I prove my beneficial ownership of the estate (place of business, place of business of the foreign person or place of business of the organisational unit of the foreign person) by:
+</label>
+				<span class="contentVis wordwrap">
+					<xsl:value-of select="."/>
+				</span>
+			</div>
+			<div class="clear">&#xa0;</div>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:OtherDataA3/egonp:JKMOR">
+		<xsl:if test="false">
+			<div>
+				<label class="labelVis">Predkladám návrh na prvý zápis do obchodného registra prostredníctvom JKM / I file the first petition for entry into the Company Register via Point of Single Contact: </label>
+				<span class="contentVis wordwrap">
+					<xsl:call-template name="booleanCheckboxToString">
+						<xsl:with-param name="boolValue" select="." />
+					</xsl:call-template>
+				</span>
+			</div>
+			<div class="clear">&#xa0;</div>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:OtherDataA3/egonp:LegalFormCodeJKM">
+		<xsl:if test="false">
+			<div>
+				<label class="labelVis">LegalFormCodeJKM: </label>
+				<span class="contentVis wordwrap">
+					<xsl:value-of select="."/>
+				</span>
+			</div>
+			<div class="clear">&#xa0;</div>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:ActivitiesVo/egonp:EffectiveFrom">
+		<xsl:if test="./text()">
+			<div>
+				<label class="labelVis">Deň začatia živnosti / Day of commencement of the trade: </label>
+				<span class="contentVis wordwrap">
+					<xsl:call-template name="formatToSkDate">
+						<xsl:with-param name="date" select="." />
+					</xsl:call-template>
+				</span>
+			</div>
+			<div class="clear">&#xa0;</div>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:ActivitiesVo/egonp:EffectiveTo">
+		<xsl:if test="./text()">
+			<div>
+				<label class="labelVis">Deň ukončenia podnikania / Day of termination of the trade: </label>
+				<span class="contentVis wordwrap">
+					<xsl:call-template name="formatToSkDate">
+						<xsl:with-param name="date" select="." />
+					</xsl:call-template>
+				</span>
+			</div>
+			<div class="clear">&#xa0;</div>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:ActivitiesVo/egonp:OrganizationUnitServiceVo/egonp:OrganizationUnitTypeText">
+		<xsl:if test="./text()">
+			<div>
+				<label class="labelVis">Typ prevádzkarne / Type establishment: </label>
+				<span class="contentVis wordwrap">
+					<xsl:value-of select="."/>
+				</span>
+			</div>
+			<div class="clear">&#xa0;</div>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:SubmittedDocuments/egonp:CertifiedCopy">
+		<xsl:if test="./text()">
+			<div>
+				<label class="labelVis2">Doklad preukazujúci odbornú spôsobilosť / Document proving professional qualification: </label>
+				<span class="contentVis wordwrap">
+					<xsl:call-template name="booleanCheckboxToString">
+						<xsl:with-param name="boolValue" select="." />
+					</xsl:call-template>
+				</span>
+			</div>
+			<div class="clear">&#xa0;</div>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:SubmittedDocuments/egonp:RealEstate">
+		<xsl:if test="./text()">
+			<div>
+				<label class="labelVis2">Oprávnenie užívať nehnuteľnosť / Document proving the beneficial ownership of the real estate: </label>
+				<span class="contentVis wordwrap">
+					<xsl:call-template name="booleanCheckboxToString">
+						<xsl:with-param name="boolValue" select="." />
+					</xsl:call-template>
+				</span>
+			</div>
+			<div class="clear">&#xa0;</div>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:SubmittedDocuments/egonp:ExtractCR">
+		<xsl:if test="./text()">
+			<div>
+				<label class="labelVis2">Výpis z registra trestov osôb, ktoré nie sú štátnymi občanmi Slovenskej republiky / Extract from the criminal records of persons who are not citizens of the Slovak Republic: </label>
+				<span class="contentVis wordwrap">
+					<xsl:call-template name="booleanCheckboxToString">
+						<xsl:with-param name="boolValue" select="." />
+					</xsl:call-template>
+				</span>
+			</div>
+			<div class="clear">&#xa0;</div>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:SubmittedDocuments/egonp:ConsentAuthorised">
+		<xsl:if test="./text()">
+			<div>
+				<label class="labelVis2">Súhlas zodpovedného zástupcu / Consent of an authorised representative: </label>
+				<span class="contentVis wordwrap">
+					<xsl:call-template name="booleanCheckboxToString">
+						<xsl:with-param name="boolValue" select="." />
+					</xsl:call-template>
+				</span>
+			</div>
+			<div class="clear">&#xa0;</div>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:SubmittedDocuments/egonp:AuthorisedLetter">
+		<xsl:if test="./text()">
+			<div>
+				<label class="labelVis2">Splnomocnenie na zastupovanie / Authorised letter for representation of the natural person: </label>
+				<span class="contentVis wordwrap">
+					<xsl:call-template name="booleanCheckboxToString">
+						<xsl:with-param name="boolValue" select="." />
+					</xsl:call-template>
+				</span>
+			</div>
+			<div class="clear">&#xa0;</div>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:DataOfForeignPerson/egonp:BusinessFP">
+		<xsl:if test="./text()">
+			<div>
+				<label class="labelVis">Podnik zahraničnej osoby / business of the foreign person: </label>
+				<span class="contentVis wordwrap">
+					<xsl:call-template name="booleanCheckboxToString">
+						<xsl:with-param name="boolValue" select="." />
+					</xsl:call-template>
+				</span>
+			</div>
+			<div class="clear">&#xa0;</div>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:DataOfForeignPerson/egonp:OrgUnitFP">
+		<xsl:if test="./text()">
+			<div>
+				<label class="labelVis">Organizačná zložka podniku zahraničnej osoby / organisational unit of the foreign person: </label>
+				<span class="contentVis wordwrap">
+					<xsl:call-template name="booleanCheckboxToString">
+						<xsl:with-param name="boolValue" select="." />
+					</xsl:call-template>
+				</span>
+			</div>
+			<div class="clear">&#xa0;</div>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:DataOfForeignPerson/egonp:NameBusinessOrgUnit">
+		<xsl:if test="./text()">
+			<div>
+				<label class="labelVis">Označenie / Name: </label>
+				<span class="contentVis wordwrap">
+					<xsl:value-of select="."/>
+				</span>
+			</div>
+			<div class="clear">&#xa0;</div>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:HealtInsurance/egonp:ApplicationToHealtInsuranceText">
+		<xsl:if test="./text()">
+			<div>
+				<label class="labelVis">Obchodné meno zdravotnej poisťovne, do ktorej sa prihláška podáva / The business name of the health insurance company, to which application is submitted: </label>
+				<span class="contentVis wordwrap">
+					<xsl:value-of select="."/>
+				</span>
+			</div>
+			<div class="clear">&#xa0;</div>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:HealtInsurance/egonp:ApplicationDate">
+		<xsl:if test="./text()">
+			<div>
+				<label class="labelVis">Dátum podania prihlášky / Date of submission of application: </label>
+				<span class="contentVis wordwrap">
+					<xsl:call-template name="formatToSkDate">
+						<xsl:with-param name="date" select="." />
+					</xsl:call-template>
+				</span>
+			</div>
+			<div class="clear">&#xa0;</div>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:HealtInsurance/egonp:ApplicationTime">
+		<xsl:if test="./text()">
+			<div>
+				<label class="labelVis">Čas podania prihlášky / Time of submission of application: </label>
+				<span class="contentVis wordwrap">
+					<xsl:value-of select="."/>
+				</span>
+			</div>
+			<div class="clear">&#xa0;</div>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:HealtInsurance/egonp:CardID">
+		<xsl:if test="./text()">
+			<div>
+				<label class="labelVis">Číslo identifikačnej karty, alebo číslo pasu cudzinca / Number of identification card or number of passport of the foreign person: </label>
+				<span class="contentVis wordwrap">
+					<xsl:value-of select="."/>
+				</span>
+			</div>
+			<div class="clear">&#xa0;</div>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:HealtInsurance/egonp:WithResidentialAddressSR">
+		<xsl:if test="./text()">
+			<div>
+				<label class="labelVis2">S trvalým pobytom na území Slovenskej republiky / with residential address within the territory of the Slovak Republic: </label>
+				<span class="contentVis wordwrap">
+					<xsl:call-template name="booleanCheckboxToString">
+						<xsl:with-param name="boolValue" select="." />
+					</xsl:call-template>
+				</span>
+			</div>
+			<div class="clear">&#xa0;</div>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:HealtInsurance/egonp:WithOutResidentialAddressSR">
+		<xsl:if test="./text()">
+			<div>
+				<label class="labelVis2">Bez trvalého pobytu na území Slovenskej republiky, vykonávajúca na území Slovenskej republiky samostatnú zárobkovú činnosť / without residential address within the territory of the Slovak Republic acting as self-employed within the territory of the Slovak Republic: </label>
+				<span class="contentVis wordwrap">
+					<xsl:call-template name="booleanCheckboxToString">
+						<xsl:with-param name="boolValue" select="." />
+					</xsl:call-template>
+				</span>
+			</div>
+			<div class="clear">&#xa0;</div>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:ActivitiesRV/egonp:EconomicActivityScope">
+		<xsl:if test="./text()">
+			<div>
+				<label class="labelVis">Rozsah poskytovanej služby podľa dokladu o odbornej kvalifikácií / The scope of service provided according to certificate of professional qualification: </label>
+				<span class="contentVis wordwrap">
+					<xsl:value-of select="."/>
+				</span>
+			</div>
+			<div class="clear">&#xa0;</div>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:ActivitiesRV/egonp:EffectiveFrom">
+		<xsl:if test="./text()">
+			<div>
+				<label class="labelVis">Deň začatia živnosti / Day of commencement of the trade: </label>
+				<span class="contentVis wordwrap">
+					<xsl:call-template name="formatToSkDate">
+						<xsl:with-param name="date" select="." />
+					</xsl:call-template>
+				</span>
+			</div>
+			<div class="clear">&#xa0;</div>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:ActivitiesRV/egonp:EffectiveTo">
+		<xsl:if test="./text()">
+			<div>
+				<label class="labelVis">Deň ukončenia podnikania / Day of termination of the trade: </label>
+				<span class="contentVis wordwrap">
+					<xsl:call-template name="formatToSkDate">
+						<xsl:with-param name="date" select="." />
+					</xsl:call-template>
+				</span>
+			</div>
+			<div class="clear">&#xa0;</div>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:ActivitiesRV/egonp:OrganizationUnitServiceRV/egonp:OrganizationUnitTypeText">
+		<xsl:if test="./text()">
+			<div>
+				<label class="labelVis">Typ prevádzkarne / Type establishment: </label>
+				<span class="contentVis wordwrap">
+					<xsl:value-of select="."/>
+				</span>
+			</div>
+			<div class="clear">&#xa0;</div>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:Others/egonp:Date">
+		<xsl:if test="./text()">
+			<div>
+				<label class="labelVis">Dňa / Date: </label>
+				<span class="contentVis wordwrap">
+					<xsl:call-template name="formatToSkDate">
+						<xsl:with-param name="date" select="." />
+					</xsl:call-template>
+				</span>
+			</div>
+			<div class="clear">&#xa0;</div>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:Others/egonp:CheckDeliveryAdr">
+		<xsl:if test="./text()">
+			<div>
+				<label class="labelVis">CheckDeliveryAdr: </label>
+				<span class="contentVis wordwrap">
+					<xsl:value-of select="."/>
+				</span>
+			</div>
+			<div class="clear">&#xa0;</div>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:Others/egonp:CheckMandataryNP">
+		<xsl:if test="./text()">
+			<div>
+				<label class="labelVis">CheckMandataryNP: </label>
+				<span class="contentVis wordwrap">
+					<xsl:value-of select="."/>
+				</span>
+			</div>
+			<div class="clear">&#xa0;</div>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:Others/egonp:CheckMandataryLP">
+		<xsl:if test="./text()">
+			<div>
+				<label class="labelVis">CheckMandataryLP: </label>
+				<span class="contentVis wordwrap">
+					<xsl:value-of select="."/>
+				</span>
+			</div>
+			<div class="clear">&#xa0;</div>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:Others/egonp:CheckRegistrationZP">
+		<xsl:if test="./text()">
+			<div>
+				<label class="labelVis">CheckRegistrationZP: </label>
+				<span class="contentVis wordwrap">
+					<xsl:value-of select="."/>
+				</span>
+			</div>
+			<div class="clear">&#xa0;</div>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:Others/egonp:CheckRegistrationDU">
+		<xsl:if test="./text()">
+			<div>
+				<label class="labelVis">CheckRegistrationDU: </label>
+				<span class="contentVis wordwrap">
+					<xsl:value-of select="."/>
+				</span>
+			</div>
+			<div class="clear">&#xa0;</div>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:DataOfForeignPerson/egonp:OtherRegisterName">
+		<xsl:if test="./text()">
+			<div>
+				<label class="labelVis">Register (iná evid.) v ktorom je zahr. PO zapísaná / Register (other record) in which the foreign legal person is registered: </label>
+				<span class="contentVis wordwrap">
+					<xsl:value-of select="."/>
+				</span>
+			</div>
+			<div class="clear">&#xa0;</div>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:DataOfForeignPerson/egonp:OtherRegisterNumber">
+		<xsl:if test="./text()">
+			<div>
+				<label class="labelVis">Číslo zápisu / Registration number: </label>
+				<span class="contentVis wordwrap">
+					<xsl:value-of select="."/>
+				</span>
+			</div>
+			<div class="clear">&#xa0;</div>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:DataOfForeignPerson/egonp:StakeholderForeignPerson/egonp:DatumFrom">
+		<xsl:if test="./text()">
+			<div>
+				<label class="labelVis">Deň vzniku funkcie / Day of appointment: </label>
+				<span class="contentVis wordwrap">
+					<xsl:call-template name="formatToSkDate">
+						<xsl:with-param name="date" select="." />
+					</xsl:call-template>
+				</span>
+			</div>
+			<div class="clear">&#xa0;</div>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:ZROHLASENIE_FO/egonp:DataOfForeignPerson/egonp:StakeholderForeignPerson/egonp:DatumTo">
+		<xsl:if test="./text()">
+			<div>
+				<label class="labelVis">Deň zániku funkcie a jeho oprávnenia / The date of termination of function and its authorization: </label>
+				<span class="contentVis wordwrap">
+					<xsl:call-template name="formatToSkDate">
+						<xsl:with-param name="date" select="." />
+					</xsl:call-template>
+				</span>
+			</div>
+			<div class="clear">&#xa0;</div>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template name="formatToSkDate">
+		<xsl:param name="date" />
+		<xsl:variable name="dateString" select="string($date)" />
+		<xsl:choose>
+			<xsl:when test="$dateString != '' and string-length($dateString)=10 and string(number(substring($dateString, 1, 4))) != 'NaN' ">
+				<xsl:value-of select="concat(substring($dateString, 9, 2), '.', substring($dateString, 6, 2), '.', substring($dateString, 1, 4))" />
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$dateString"></xsl:value-of>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template name="booleanCheckboxToString">
+		<xsl:param name="boolValue" />
+		<xsl:variable name="boolValueString" select="string($boolValue)" />
+		<xsl:choose>
+			<xsl:when test="$boolValueString = 'true' ">
+				<xsl:text>Áno</xsl:text>
+			</xsl:when>
+			<xsl:when test="$boolValueString = 'false' ">
+				<xsl:text>Nie</xsl:text>
+			</xsl:when>
+			<xsl:when test="$boolValueString = '1' ">
+				<xsl:text>Áno</xsl:text>
+			</xsl:when>
+			<xsl:when test="$boolValueString = '0' ">
+				<xsl:text>Nie</xsl:text>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$boolValueString"></xsl:value-of>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template name="formatTimeTrimSeconds">
+		<xsl:param name="time" />
+		<xsl:variable name="timeString" select="string($time)" />
+		<xsl:if test="$timeString != ''">
+			<xsl:value-of select="substring($timeString, 1, 5)" />
+		</xsl:if>
+	</xsl:template>
+	<xsl:template name="formatTime">
+		<xsl:param name="time" />
+		<xsl:variable name="timeString" select="string($time)" />
+		<xsl:if test="$timeString != ''">
+			<xsl:value-of select="substring($timeString, 1, 8)" />
+		</xsl:if>
+	</xsl:template>
+	<xsl:template name="string-replace-all">
+		<xsl:param name="text"/>
+		<xsl:param name="replace"/>
+		<xsl:param name="by"/>
+		<xsl:choose>
+			<xsl:when test="contains($text, $replace)">
+				<xsl:value-of select="substring-before($text,$replace)"/>
+				<xsl:value-of select="$by"/>
+				<xsl:call-template name="string-replace-all">
+					<xsl:with-param name="text" select="substring-after($text,$replace)"/>
+					<xsl:with-param name="replace" select="$replace"/>
+					<xsl:with-param name="by" select="$by" />
+				</xsl:call-template>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$text"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template name="formatToSkDateTime">
+		<xsl:param name="dateTime" />
+		<xsl:variable name="dateTimeString" select="string($dateTime)" />
+		<xsl:choose>
+			<xsl:when test="$dateTimeString!= '' and string-length($dateTimeString)>18 and string(number(substring($dateTimeString, 1, 4))) != 'NaN' ">
+				<xsl:value-of select="concat(substring($dateTimeString, 9, 2), '.', substring($dateTimeString, 6, 2), '.', substring($dateTimeString, 1, 4),' ', substring($dateTimeString, 12, 2),':', substring($dateTimeString, 15, 2))" />
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$dateTimeString"></xsl:value-of>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template name="formatToSkDateTimeSecond">
+		<xsl:param name="dateTime" />
+		<xsl:variable name="dateTimeString" select="string($dateTime)" />
+		<xsl:choose>
+			<xsl:when test="$dateTimeString!= '' and string-length($dateTimeString)>18 and string(number(substring($dateTimeString, 1, 4))) != 'NaN' ">
+				<xsl:value-of select="concat(substring($dateTimeString, 9, 2), '.', substring($dateTimeString, 6, 2), '.', substring($dateTimeString, 1, 4),' ', substring($dateTimeString, 12, 2),':', substring($dateTimeString, 15, 2),':', substring($dateTimeString, 18, 2))" />
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$dateTimeString"></xsl:value-of>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+</xsl:stylesheet>
+    XSLT
+  }
+]
+szco_registration_form_related_docs.each do |related_document|
+  Upvs::FormRelatedDocument.find_or_create_by!(
+    form: szco_registration_form,
     data: related_document[:data],
     language: related_document[:language],
     document_type: related_document[:document_type]

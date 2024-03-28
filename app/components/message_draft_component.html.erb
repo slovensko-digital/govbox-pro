@@ -18,11 +18,13 @@
             </div>
           </div>
           <% end %>
-          <div class="gap-2 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
-            <%= button_to message_draft_path(@message), method: :delete, class: "flex justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6 rounded-lg border border-gray-300 px-3.5 py-2.5 hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 rounded-lg", data: { turbo_frame: "_top" }, title: "Zahodiť draft" do %>
-              <%= render Icons::TrashComponent.new(css_classes: "w-5 h-5 text-red-600") %>
-            <% end %>
-          </div>
+          <% if @message.not_yet_submitted? %>
+            <div class="gap-2 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
+              <%= button_to message_draft_path(@message), method: :delete, class: "flex justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6 rounded-lg border border-gray-300 px-3.5 py-2.5 hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 rounded-lg", data: { turbo_frame: "_top" }, title: "Zahodiť draft" do %>
+                <%= render Icons::TrashComponent.new(css_classes: "w-5 h-5 text-red-600") %>
+              <% end %>
+            </div>
+          <% end %>
         </div>
     </div>
   </div>

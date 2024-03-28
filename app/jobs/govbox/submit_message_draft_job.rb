@@ -30,6 +30,7 @@ class Govbox::SubmitMessageDraftJob < ApplicationJob
     success, response_status, response_body = sktalk_api.receive_and_save_to_outbox(message_draft_data)
 
     if success
+      message_draft.remove_cascading_tag(message_draft.tenant.submission_error_tag)
       message_draft.submitted!
       Govbox::SyncBoxJob.set(wait: 3.minutes).perform_later(message_draft.thread.box) if schedule_sync
     else
@@ -57,6 +58,9 @@ class Govbox::SubmitMessageDraftJob < ApplicationJob
   end
 
   def handle_submit_fail(message_draft, response_status, response_message)
+    # TODO notification
+    message_draft.add_cascading_tag(message_draft.tenant.submission_error_tag)
+
     case response_status
     when 408, 503
       message_draft.metadata["status"] = "temporary_submit_fail"

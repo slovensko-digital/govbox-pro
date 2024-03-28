@@ -202,7 +202,7 @@ Rails.application.routes.draw do
     end
 
     resources :message_threads, only: [:show]
-    resources :messages, only: [:show]
+    resources :messages, only: [:create, :show]
   end
 
   if UpvsEnvironment.sso_support?

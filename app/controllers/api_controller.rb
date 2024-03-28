@@ -1,5 +1,7 @@
 class ApiController < ActionController::API
+  include LocaleConcern
   before_action :authenticate_user
+  before_action :set_sk_locale
   around_action :wrap_in_request_logger
 
   rescue_from JWT::DecodeError do |error|
@@ -89,7 +91,7 @@ class ApiController < ActionController::API
     render status: :service_unavailable, json: { message: "Service unavailable" }
   end
 
-  def render_unprocessable_entity(exception)
-    render status: :unprocessable_entity, json: { message: exception.message }
+  def render_unprocessable_entity(message)
+    render status: :unprocessable_entity, json: { message: message }
   end
 end

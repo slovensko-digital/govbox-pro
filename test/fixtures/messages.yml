@@ -12,6 +12,8 @@ ssd_main_general_one:
   replyable: false
   metadata:
     authorized: true
+    sender_uri: SenderURI
+    correlation_id: <%= SecureRandom.uuid %>
     delivery_notification:
       delivery_period_end_at: <%= DateTime.current - 1.day %>
 
@@ -44,6 +46,7 @@ ssd_main_general_draft_one:
   html_visualization: Reply to something
   delivered_at: 2023-05-18 16:18:26
   thread: ssd_main_general
+  replyable: false
   metadata:
     status: created
   author: basic
@@ -55,6 +58,7 @@ ssd_main_general_draft_two:
   html_visualization: MyString
   delivered_at: 2023-05-18 16:18:26
   thread: ssd_main_general
+  replyable: false
   metadata:
     status: created
   author: basic
@@ -66,6 +70,7 @@ ssd_main_delivery_draft:
   html_visualization: MyString
   delivered_at: 2023-05-18 16:19:26
   thread: ssd_main_delivery
+  replyable: false
   metadata:
     status: created
   author: basic
