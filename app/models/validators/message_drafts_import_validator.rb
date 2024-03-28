@@ -17,11 +17,15 @@ class MessageDraftsImportValidator < ActiveModel::Validator
             else
               record.errors.add(:drafts, "Disallowed draft subfolder")
             end
+          elsif draft_subfolder_name.start_with?('.')
+            # noop
           else
             record.errors.add(:drafts, "Unknown signature status, files must be inside a folder.")
           end
         end
       elsif Utils.csv?(import_entry_name)
+        # noop
+      elsif import_entry_name.start_with?('.')
         # noop
       else
         record.errors.add(:drafts, "Import contains extra file")

@@ -45,6 +45,7 @@ class MessageDraft < Message
     message_draft.validates :sender_name, presence: true
     message_draft.validates :recipient_name, presence: true
     message_draft.validate :validate_metadata_with_template
+    message_draft.validate :validate_form
   end
 
   with_options on: :validate_data do |message_draft|
@@ -86,11 +87,19 @@ class MessageDraft < Message
   end
 
   def submittable?
-    form.content.present? && objects.to_be_signed.all? { |o| o.is_signed? } && !invalid? && not_yet_submitted?
+    form.content.present? && objects.to_be_signed.all? { |o| o.is_signed? } && correctly_created? && valid?(:validate_data)
+  end
+
+  def correctly_created?
+    metadata["status"] == "created"
+  end
+
+  def invalid?
+    metadata["status"] == "invalid"
   end
 
   def not_yet_submitted?
-    metadata["status"] == "created"
+    metadata["status"] == "created" || metadata["status"] == "invalid"
   end
 
   def being_submitted?
@@ -117,16 +126,8 @@ class MessageDraft < Message
     EventBus.publish(:message_draft_submitted, self)
   end
 
-  def invalid?
-    metadata["status"] == "invalid" || !valid?(:validate_data)
-  end
-
   def original_message
     Message.find(metadata["original_message_id"]) if metadata["original_message_id"]
-  end
-
-  def template
-    MessageTemplate.find(metadata["template_id"]) if metadata["template_id"]
   end
 
   def template_validation_errors
@@ -153,45 +154,56 @@ class MessageDraft < Message
     )
   end
 
+  # TODO remove UPVS stuff from core domain
+  def validate_form
+    raise "Disallowed form" unless ::Upvs::ServiceWithFormAllowRule.form_services(all_metadata).any?
+
+    raise "Missing XSD schema" unless upvs_form&.xsd_schema
+
+    return unless form&.unsigned_content
+
+    document = Nokogiri::XML(form.unsigned_content) do |config|
+      config.noblanks
+    end
+    form_errors = document.errors
+
+    document = Nokogiri::XML(document.xpath('*:XMLDataContainer/*:XMLData/*').to_xml) do |config|
+      config.noblanks
+    end if document.xpath('*:XMLDataContainer/*:XMLData').any?
+
+    schema = Nokogiri::XML::Schema(upvs_form.xsd_schema)
+    form_errors += schema.validate(document)
+
+    errors.add(:base, :invalid_form) if form_errors.any?
+  end
+
   private
+  def validate_objects
+    errors.add(:objects, "No objects found for draft") if objects.size == 0
+
+    objects.each do |object|
+      object.valid?(:validate_data)
+      errors.merge!(object.errors)
+    end
+
+    forms = objects.select { |o| o.form? }
+    errors.add(:objects, "Draft has to contain exactly one form") if forms.size != 1
+  end
+
+  def validate_metadata
+    errors.add(:metadata, "No recipient URI") unless all_metadata["recipient_uri"].present?
+    errors.add(:metadata, "No posp ID") unless all_metadata["posp_id"].present?
+    errors.add(:metadata, "No posp version") unless all_metadata["posp_version"].present?
+    errors.add(:metadata, "No message type") unless all_metadata["message_type"].present?
+    errors.add(:metadata, "No correlation ID") unless all_metadata["correlation_id"].present?
+    errors.add(:metadata, "Correlation ID must be UUID") unless all_metadata["correlation_id"]&.match?(Utils::UUID_PATTERN)
+  end
 
   def validate_with_message_template
     template&.validate_message(self)
   end
 
-  def validate_metadata
-    all_message_metadata = if template&.metadata.present?
-     metadata.merge(template.metadata)
-    else
-     metadata
-    end
-
-    errors.add(:metadata, "No recipient URI") unless all_message_metadata["recipient_uri"].present?
-    errors.add(:metadata, "No posp ID") unless all_message_metadata["posp_id"].present?
-    errors.add(:metadata, "No posp version") unless all_message_metadata["posp_version"].present?
-    errors.add(:metadata, "No message type") unless all_message_metadata["message_type"].present?
-    errors.add(:metadata, "No correlation ID") unless all_message_metadata["correlation_id"].present?
-    errors.add(:metadata, "Correlation ID must be UUID") unless all_message_metadata["correlation_id"]&.match?(Utils::UUID_PATTERN)
-  end
-
   def validate_metadata_with_template
     errors.add(:metadata, :no_template) unless metadata&.dig("template_id").present?
-  end
-
-  def validate_form
-    forms = objects.select { |o| o.form? }
-
-    if objects.size == 0
-      errors.add(:objects, "No objects found for draft")
-    elsif forms.size != 1
-      errors.add(:objects, "Draft has to contain exactly one form")
-    end
-  end
-
-  def validate_objects
-    objects.each do |object|
-      object.valid?(:validate_data)
-      errors.merge!(object.errors)
-    end
   end
 end

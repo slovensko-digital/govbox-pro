@@ -31,7 +31,7 @@ class MessageTemplateBuilder < ActionView::Helpers::FormBuilder
       (
         @template.content_tag(:p, nil, class: 'mt-2 text-sm text-red-600 dark:text-red-500') do
           @template.content_tag(:span, errors[name], class: 'font-medium')
-        end if errors.present?
+        end if errors[name].present?
       )
     end
   end
@@ -48,7 +48,7 @@ class MessageTemplateBuilder < ActionView::Helpers::FormBuilder
       (
         @template.content_tag(:p, nil, class: 'mt-2 text-sm text-red-300 dark:text-red-500') do
           @template.content_tag(:span, errors[name], class: 'font-medium')
-        end if errors.present?
+        end if errors[name].present?
       )
     end
   end
@@ -67,7 +67,7 @@ class MessageTemplateBuilder < ActionView::Helpers::FormBuilder
       (
         @template.content_tag(:p, nil, class: 'mt-2 text-sm text-red-600 dark:text-red-500') do
           @template.content_tag(:span, errors[name], class: 'font-medium')
-        end if errors.present?
+        end if errors[name].present?
       )
     end
   end
@@ -85,7 +85,7 @@ class MessageTemplateBuilder < ActionView::Helpers::FormBuilder
       (
         @template.content_tag(:p, nil, class: 'mt-2 text-sm text-red-600 dark:text-red-500') do
           @template.content_tag(:span, errors[name], class: 'font-medium')
-        end if errors.present?
+        end if errors[name].present?
       )
     end
   end
@@ -103,7 +103,7 @@ class MessageTemplateBuilder < ActionView::Helpers::FormBuilder
       (
         @template.content_tag(:p, nil, class: 'mt-2 text-sm text-red-600 dark:text-red-500') do
           @template.content_tag(:span, errors[name], class: 'font-medium')
-        end if errors.present?
+        end if errors[name].present?
       )
     end
   end
