@@ -36,7 +36,7 @@ Rails.application.routes.draw do
         end
       end
       resources :users
-      resources :boxes
+      resources :boxes, except: :destroy
       resources :tags
       resources :tag_groups
     end
