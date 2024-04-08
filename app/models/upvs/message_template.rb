@@ -126,7 +126,7 @@ class Upvs::MessageTemplate < ::MessageTemplate
 
     return if message.errors[:metadata].any?
 
-    raise "Disallowed form: #{self.name}" unless Upvs::ServiceWithFormAllowRule.form_services(self).any?
+    raise "Disallowed form: #{self.name}" unless Upvs::ServiceWithFormAllowRule.matching_metadata(self).any?
 
     xsd_schema = upvs_form&.xsd_schema
 
@@ -161,11 +161,7 @@ class Upvs::MessageTemplate < ::MessageTemplate
     )
   end
 
-  def form_services
-    Upvs::ServiceWithFormAllowRule.where("schema_url LIKE ?", "%#{metadata['posp_id']/metadata['posp_version']}")
-  end
-
   def validate_allow_rules_presence
-    errors.add(:base, "Disallowed form") unless Upvs::ServiceWithFormAllowRule.form_services(self).any?
+    errors.add(:base, "Disallowed form") unless Upvs::ServiceWithFormAllowRule.matching_metadata(self).any?
   end
 end
