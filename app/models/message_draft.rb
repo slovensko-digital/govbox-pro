@@ -156,7 +156,7 @@ class MessageDraft < Message
 
   # TODO remove UPVS stuff from core domain
   def validate_form
-    raise "Disallowed form" unless ::Upvs::ServiceWithFormAllowRule.form_services(all_metadata).any?
+    raise "Disallowed form" unless ::Upvs::ServiceWithFormAllowRule.matching_metadata(all_metadata).any?
 
     raise "Missing XSD schema" unless upvs_form&.xsd_schema
 
