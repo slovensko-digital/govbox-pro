@@ -8,7 +8,7 @@ class Admin::GroupMembershipsController < ApplicationController
 
     if @group_membership.save
       @group = @group_membership.group
-      flash[:notice] = 'Group was membership was successfully created'
+      flash[:notice] = 'Group membership was successfully created'
     else
       render :new, status: :unprocessable_entity
     end
