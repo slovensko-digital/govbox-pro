@@ -137,11 +137,7 @@ class Upvs::MessageTemplate < ::MessageTemplate
 
   private
 
-  def form_services
-    ::Upvs::ServiceWithFormAllowRule.form_services(metadata)
-  end
-
   def validate_allow_rules_presence
-    errors.add(:base, "Disallowed form") unless ::Upvs::ServiceWithFormAllowRule.form_services(metadata).any?
+    errors.add(:base, "Disallowed form") unless ::Upvs::ServiceWithFormAllowRule.matching_metadata(metadata).any?
   end
 end
