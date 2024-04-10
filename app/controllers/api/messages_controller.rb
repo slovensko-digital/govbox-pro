@@ -13,22 +13,8 @@ class Api::MessagesController < Api::TenantController
     render_unprocessable_entity('Invalid sender') and return unless @box
 
     ::Message.transaction do
-      @message = ::Message.create(permitted_params.except(:objects, :tags).merge({
-        sender_name: @box.name,
-        # recipient_name: TODO search name in UPVS dataset,
-        outbox: true,
-        replyable: false,
-        delivered_at: Time.now
-      }))
-      @message.thread = @box&.message_threads&.find_or_build_by_merge_uuid(
-        box: @box,
-        merge_uuid: @message.metadata['correlation_id'],
-        title: @message.title,
-        delivered_at: @message.delivered_at
-      )
-
+      @message = permitted_params[:type].classify.safe_constantize.load_and_validate(permitted_params, box: @box)
       render_unprocessable_entity(@message.errors.messages.values.join(', ')) and return unless @message.valid?
-      @message.save
 
       permitted_params.fetch(:objects, []).each do |object_params|
         message_object = @message.objects.create(object_params.except(:content))
