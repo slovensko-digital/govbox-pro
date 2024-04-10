@@ -82,8 +82,8 @@ class Upvs::MessageTemplate < ::MessageTemplate
       data: {
         Predmet: message_title
       },
-      recipient_uri: original_message.metadata&.dig("sender_uri"),
-      correlation_id: original_message.metadata&.dig("correlation_id"),
+      recipient_uri: original_message.metadata.dig("sender_uri"),
+      correlation_id: original_message.metadata.dig("correlation_id"),
       reference_id: original_message.uuid,
       original_message_id: original_message.id,
       status: 'created'
