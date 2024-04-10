@@ -1,7 +1,6 @@
 class ApiController < ActionController::API
-  include LocaleConcern
+  include Localization
   before_action :authenticate_user
-  before_action :set_sk_locale
   around_action :wrap_in_request_logger
 
   rescue_from JWT::DecodeError do |error|
