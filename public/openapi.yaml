@@ -132,69 +132,78 @@ paths:
       security:
         - "Tenant_Token": []
 
-  /api/messages:
+  /api/messages/message_drafts:
     post:
       tags: [ Správy ]
-      summary: Vytvorí novú správu vrátane jej objektov
+      summary: Vytvorí novú rozpracovanú správu vrátane jej objektov
       description: |
-        Vytvorí novú správu vrátane jej objektov.
+        Vytvorí novú rozpracovanú správu vrátane jej objektov.
       requestBody:
         content:
-          application/json;type=upvs:
+          application/json:
             schema:
               type: object
               properties:
-                message_id:
-                  description: Identifikátor správy
-                  type: string
-                  format: uuid
-                correlation_id:
-                  description: Identifikátor vlákna správ
-                  type: string
-                  format: uuid
-                reference_id:
-                  description: Identifikátor správy, na ktorú sa správa (odpoveď) viaže
-                  type: string
-                  format: uuid
-                recipient_uri:
-                  description: Identifikátor prijímateľa správy
-                  type: string
-                  format: uri
-                  example: ico://sk/83369510
-                sender_uri:
-                  description: Identifikátor odosielateľa správy
-                  type: string
-                  format: uri
-                  example: ico://sk/83369526
-                posp_id:
-                  description: Identifikátor formulára
-                  type: string
-                  example: 00166073.RESS_EZA_Zaloba_doplnenie_ine.sk
-                posp_version:
-                  description: Verzia formulára
-                  type: string
-                  example: "1.11"
-                message_type:
-                  description: Typ správy
-                  type: string
-                  example: 00166073.RESS_EZA_Zaloba_doplnenie_ine.sk
-                sktalk_class:
-                  description: Trieda SkTalk správy
-                  type: string
-                  example: IAM_FORM_ZNEPLATNENIE_TU_REQ_01
-                  default: EGOV_APPLICATION
-                sender_business_reference:
-                  description: Spisová značka odosielateľa elektronickej správy
-                  type: string
-                  example: "1234567"
-                recipient_business_reference:
-                  description: Spisová značka prijímateľa elektronickej správy
-                  type: string
-                  example: EX1234/2000
                 title:
                   description: Predmet správy
                   type: string
                   example: Žaloba
+                uuid:
+                  description: Identifikátor správy
+                  type: string
+                  format: uuid
+                type:
+                  description: Typ správy
+                  type: string
+                  enum:
+                    - Upvs::MessageDraft
+                metadata:
+                  description: Metaúdaje správy
+                  type: object
+                  properties:
+                    correlation_id:
+                      description: Identifikátor vlákna správ
+                      type: string
+                      format: uuid
+                    reference_id:
+                      description: Identifikátor správy, na ktorú sa správa (odpoveď) viaže
+                      type: string
+                      format: uuid
+                    recipient_uri:
+                      description: Identifikátor prijímateľa správy
+                      type: string
+                      format: uri
+                      example: ico://sk/83369510
+                    sender_uri:
+                      description: Identifikátor odosielateľa správy
+                      type: string
+                      format: uri
+                      example: ico://sk/83369526
+                    posp_id:
+                      description: Identifikátor formulára
+                      type: string
+                      example: 00166073.RESS_EZA_Zaloba_doplnenie_ine.sk
+                    posp_version:
+                      description: Verzia formulára
+                      type: string
+                      example: "1.11"
+                    message_type:
+                      description: Typ správy
+                      type: string
+                      example: 00166073.RESS_EZA_Zaloba_doplnenie_ine.sk
+                    sktalk_class:
+                      description: Trieda SkTalk správy
+                      type: string
+                      example: IAM_FORM_ZNEPLATNENIE_TU_REQ_01
+                      default: EGOV_APPLICATION
+                    sender_business_reference:
+                      description: Spisová značka odosielateľa elektronickej správy
+                      type: string
+                      example: "1234567"
+                    recipient_business_reference:
+                      description: Spisová značka prijímateľa elektronickej správy
+                      type: string
+                      example: EX1234/2000
                 objects:
                   description: Objekty správy
                   type: array
