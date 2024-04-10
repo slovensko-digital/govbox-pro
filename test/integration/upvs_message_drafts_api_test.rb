@@ -33,7 +33,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
 
     assert_response :created
     assert_not_equal Message.count, @before_request_messages_count
@@ -66,7 +66,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
       tags: ['Legal', 'Other']
     }
 
-    post '/api/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
 
     assert_response :created
     assert_not_equal Message.count, @before_request_messages_count
@@ -100,7 +100,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=Draft" }
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=Draft" }
 
     assert_response :bad_request
 
@@ -135,7 +135,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
 
     assert_response :unprocessable_entity
 
@@ -170,7 +170,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
 
     assert_response :unprocessable_entity
 
@@ -205,7 +205,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
 
     assert_response :unprocessable_entity
 
@@ -241,7 +241,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
 
     assert_response :unprocessable_entity
 
@@ -324,7 +324,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
 
     assert_response :unprocessable_entity
 
@@ -360,7 +360,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
 
     assert_response :unprocessable_entity
 
@@ -396,7 +396,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }) .to_json, headers: { "Content-Type": "application/json;type=upvs" }
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }) .to_json, headers: { "Content-Type": "application/json;type=upvs" }
 
     assert_response :unprocessable_entity
 
@@ -433,7 +433,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
 
     assert_response :unprocessable_entity
 
@@ -468,7 +468,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
 
     assert_response :unprocessable_entity
 
@@ -504,7 +504,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
 
     assert_response :unprocessable_entity
 
@@ -539,7 +539,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
 
     assert_response :unprocessable_entity
 
@@ -574,7 +574,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
 
     assert_response :unprocessable_entity
 
@@ -609,7 +609,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
 
     assert_response :unprocessable_entity
 
@@ -644,7 +644,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
 
     assert_response :unprocessable_entity
 
@@ -681,7 +681,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
 
     assert_response :unprocessable_entity
 
@@ -704,7 +704,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
       objects: []
     }
 
-    post '/api/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
 
     assert_response :unprocessable_entity
 
@@ -735,7 +735,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
 
     assert_response :unprocessable_entity
 
@@ -778,7 +778,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
 
     assert_response :unprocessable_entity
 
@@ -820,7 +820,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
 
     assert_response :unprocessable_entity
 
@@ -863,7 +863,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
 
     assert_response :unprocessable_entity
 
@@ -900,7 +900,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
       tags: ['Special']
     }
 
-    post '/api/messages', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
 
     assert_response :unprocessable_entity
 

@@ -161,7 +161,7 @@ class MessageDraft < Message
   def validate_form
     return if errors[:metadata].any?
 
-    unless ::Upvs::ServiceWithFormAllowRule.form_services(all_metadata).where(institution_uri: metadata['recipient_uri']).any?
+    unless ::Upvs::ServiceWithFormAllowRule.matching_metadata(all_metadata).where(institution_uri: metadata['recipient_uri']).any?
       errors.add(:base, :disallowed_form_for_recipient)
       return
     end

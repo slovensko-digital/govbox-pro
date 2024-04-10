@@ -1,20 +1,20 @@
 class Api::MessagesController < Api::TenantController
   before_action :set_en_locale
-  before_action :check_content_type, only: :create
+  before_action :check_content_type, only: :message_drafts
 
   include Upvs::MessageDraftConcern
 
   ALLOWED_CONTENT_TYPES = ['application/json;type=upvs']
 
-  def create
+  def show
+    @message = @tenant.messages.find(params[:id])
+  end
+
+  def message_drafts
     case message_type(raw_content_type)
     when 'upvs'
       create_upvs_message_draft
     end
-  end
-
-  def show
-    @message = @tenant.messages.find(params[:id])
   end
 
   private
