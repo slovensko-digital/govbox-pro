@@ -9,14 +9,17 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
 
   test 'can upload valid message' do
     message_params = {
-      posp_id: 'App.GeneralAgenda',
-      posp_version: '1.9',
-      message_type: 'App.GeneralAgenda',
-      message_id: SecureRandom.uuid,
-      correlation_id: SecureRandom.uuid,
-      sender_uri: 'SSDMainURI',
-      recipient_uri: 'ico://sk/12345678',
+      type: 'Upvs::MessageDraft',
       title: 'Všeobecná agenda',
+      uuid: SecureRandom.uuid,
+      metadata: {
+        posp_id: 'App.GeneralAgenda',
+        posp_version: '1.9',
+        message_type: 'App.GeneralAgenda',
+        correlation_id: SecureRandom.uuid,
+        sender_uri: 'SSDMainURI',
+        recipient_uri: 'ico://sk/12345678',
+      },
       objects: [
         {
           name: 'Form.xml',
@@ -33,7 +36,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair)} ), as: :json
 
     assert_response :created
     assert_not_equal Message.count, @before_request_messages_count
@@ -41,14 +44,17 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
 
   test 'can upload valid message with tags if they exist' do
     message_params = {
-      posp_id: 'App.GeneralAgenda',
-      posp_version: '1.9',
-      message_type: 'App.GeneralAgenda',
-      message_id: SecureRandom.uuid,
-      correlation_id: SecureRandom.uuid,
-      sender_uri: 'SSDMainURI',
-      recipient_uri: 'ico://sk/12345678',
+      type: 'Upvs::MessageDraft',
       title: 'Všeobecná agenda',
+      uuid: SecureRandom.uuid,
+      metadata: {
+        posp_id: 'App.GeneralAgenda',
+        posp_version: '1.9',
+        message_type: 'App.GeneralAgenda',
+        correlation_id: SecureRandom.uuid,
+        sender_uri: 'SSDMainURI',
+        recipient_uri: 'ico://sk/12345678',
+      },
       objects: [
         {
           name: 'Form.xml',
@@ -66,7 +72,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
       tags: ['Legal', 'Other']
     }
 
-    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
     assert_response :created
     assert_not_equal Message.count, @before_request_messages_count
@@ -77,13 +83,17 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
 
   test 'does not create message unless valid ContentType' do
     message_params = {
-      posp_id: 'App.GeneralAgenda',
-      posp_version: '1.9',
-      message_type: 'App.GeneralAgenda',
-      message_id: SecureRandom.uuid,
-      correlation_id: SecureRandom.uuid,
-      sender_uri: 'SSDMainURI',
-      recipient_uri: 'ico://sk/12345678',
+      type: 'Vszp::MessageDraft',
+      title: 'Všeobecná agenda',
+      uuid: SecureRandom.uuid,
+      metadata: {
+        posp_id: 'App.GeneralAgenda',
+        posp_version: '1.9',
+        message_type: 'App.GeneralAgenda',
+        correlation_id: SecureRandom.uuid,
+        sender_uri: 'SSDMainURI',
+        recipient_uri: 'ico://sk/12345678',
+      },
       objects: [
         {
           name: 'Form.xml',
@@ -100,25 +110,28 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=Draft" }
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
     assert_response :bad_request
 
     json_response = JSON.parse(response.body)
-    assert_equal "Disallowed Content-Type: application/json;type=Draft", json_response['message']
+    assert_equal "Disallowed message type: Vszp::MessageDraft", json_response['message']
 
     assert_equal Message.count, @before_request_messages_count
   end
 
   test 'does not create message unless title present' do
     message_params = {
-      posp_id: 'App.GeneralAgenda',
-      posp_version: '1.9',
-      message_type: 'App.GeneralAgenda',
-      message_id: SecureRandom.uuid,
-      correlation_id: SecureRandom.uuid,
-      sender_uri: 'SSDMainURI',
-      recipient_uri: 'ico://sk/12345678',
+      type: 'Upvs::MessageDraft',
+      uuid: SecureRandom.uuid,
+      metadata: {
+        posp_id: 'App.GeneralAgenda',
+        posp_version: '1.9',
+        message_type: 'App.GeneralAgenda',
+        correlation_id: SecureRandom.uuid,
+        sender_uri: 'SSDMainURI',
+        recipient_uri: 'ico://sk/12345678',
+      },
       objects: [
         {
           name: 'Form.xml',
@@ -135,7 +148,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
     assert_response :unprocessable_entity
 
@@ -147,13 +160,17 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
 
   test 'does not create message unless no box for given sender URI present' do
     message_params = {
-      posp_id: 'App.GeneralAgenda',
-      posp_version: '1.9',
-      message_type: 'App.GeneralAgenda',
-      message_id: SecureRandom.uuid,
-      correlation_id: SecureRandom.uuid,
-      sender_uri: 'NonExistentURI',
-      recipient_uri: 'ico://sk/12345678',
+      type: 'Upvs::MessageDraft',
+      title: 'Všeobecná agenda',
+      uuid: SecureRandom.uuid,
+      metadata: {
+        posp_id: 'App.GeneralAgenda',
+        posp_version: '1.9',
+        message_type: 'App.GeneralAgenda',
+        correlation_id: SecureRandom.uuid,
+        sender_uri: 'NonExistentURI',
+        recipient_uri: 'ico://sk/12345678'
+      },
       objects: [
         {
           name: 'Form.xml',
@@ -170,25 +187,29 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
     assert_response :unprocessable_entity
 
     json_response = JSON.parse(response.body)
-    assert_equal 'Invalid Sender Uri', json_response['message']
+    assert_equal 'Invalid sender', json_response['message']
 
     assert_equal Message.count, @before_request_messages_count
   end
 
   test 'does not create message if given sender URI for box in another tenant' do
     message_params = {
-      posp_id: 'App.GeneralAgenda',
-      posp_version: '1.9',
-      message_type: 'App.GeneralAgenda',
-      message_id: SecureRandom.uuid,
-      correlation_id: SecureRandom.uuid,
-      sender_uri: 'SolverMainURI',
-      recipient_uri: 'ico://sk/12345678',
+      type: 'Upvs::MessageDraft',
+      title: 'Všeobecná agenda',
+      uuid: SecureRandom.uuid,
+      metadata: {
+        posp_id: 'App.GeneralAgenda',
+        posp_version: '1.9',
+        message_type: 'App.GeneralAgenda',
+        correlation_id: SecureRandom.uuid,
+        sender_uri: 'SolverMainURI',
+        recipient_uri: 'ico://sk/12345678'
+      },
       objects: [
         {
           name: 'Form.xml',
@@ -205,26 +226,29 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
     assert_response :unprocessable_entity
 
     json_response = JSON.parse(response.body)
-    assert_equal 'Invalid Sender Uri', json_response['message']
+    assert_equal 'Invalid sender', json_response['message']
 
     assert_equal Message.count, @before_request_messages_count
   end
 
   test 'does not create message unless recipient in white list' do
     message_params = {
-      posp_id: 'App.GeneralAgenda',
-      posp_version: '1.9',
-      message_type: 'App.GeneralAgenda',
-      message_id: SecureRandom.uuid,
-      correlation_id: SecureRandom.uuid,
-      sender_uri: 'SSDMainURI',
-      recipient_uri: 'ico://sk/87654321',
+      type: 'Upvs::MessageDraft',
       title: 'Všeobecná agenda',
+      uuid: SecureRandom.uuid,
+      metadata: {
+        posp_id: 'App.GeneralAgenda',
+        posp_version: '1.9',
+        message_type: 'App.GeneralAgenda',
+        correlation_id: SecureRandom.uuid,
+        sender_uri: 'SSDMainURI',
+        recipient_uri: 'ico://sk/87654321'
+      },
       objects: [
         {
           name: 'Form.xml',
@@ -241,7 +265,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
     assert_response :unprocessable_entity
 
@@ -253,14 +277,17 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
 
   test 'does not create message unless form type in white list' do
     message_params = {
-      posp_id: '00166073.MSSR_ORSR_Poziadanie_o_vyhotovenie_kopie_listiny_ulozenej_v_zbierke_listin.sk',
-      posp_version: '1.53',
-      message_type: 'ks_340702',
-      message_id: SecureRandom.uuid,
-      correlation_id: SecureRandom.uuid,
-      sender_uri: 'SSDMainURI',
-      recipient_uri: 'ico://sk/87654321',
+      type: 'Upvs::MessageDraft',
       title: 'Požiadanie o vyhotovenie kópie listiny uloženej v zbierke zákonom ustanovených listín obchodného registra',
+      uuid: SecureRandom.uuid,
+      metadata: {
+        posp_id: '00166073.MSSR_ORSR_Poziadanie_o_vyhotovenie_kopie_listiny_ulozenej_v_zbierke_listin.sk',
+        posp_version: '1.53',
+        message_type: 'ks_340702',
+        correlation_id: SecureRandom.uuid,
+        sender_uri: 'SSDMainURI',
+        recipient_uri: 'ico://sk/87654321'
+      },
       objects: [
         {
           name: 'Form.xml',
@@ -324,7 +351,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
     assert_response :unprocessable_entity
 
@@ -336,14 +363,16 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
 
   test 'does not create message unless message type in white list' do
     message_params = {
-      posp_id: 'App.GeneralAgenda',
-      posp_version: '1.9',
-      message_type: 'ks_340702',
-      message_id: SecureRandom.uuid,
-      correlation_id: SecureRandom.uuid,
-      sender_uri: 'SSDMainURI',
-      recipient_uri: 'ico://sk/87654321',
+      type: 'Upvs::MessageDraft',
       title: 'Požiadanie o vyhotovenie kópie listiny uloženej v zbierke zákonom ustanovených listín obchodného registra',
+      uuid: SecureRandom.uuid,      metadata: {
+        posp_id: 'App.GeneralAgenda',
+        posp_version: '1.9',
+        message_type: 'ks_340702',
+        correlation_id: SecureRandom.uuid,
+        sender_uri: 'SSDMainURI',
+        recipient_uri: 'ico://sk/87654321'
+      },
       objects: [
         {
           name: 'Form.xml',
@@ -360,7 +389,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
     assert_response :unprocessable_entity
 
@@ -372,14 +401,17 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
 
   test 'does not create message unless form is valid XML' do
     message_params = {
-      posp_id: 'App.GeneralAgenda',
-      posp_version: '1.9',
-      message_type: 'App.GeneralAgenda',
-      message_id: SecureRandom.uuid,
-      correlation_id: SecureRandom.uuid,
-      sender_uri: 'SSDMainURI',
-      recipient_uri: 'ico://sk/12345678',
+      type: 'Upvs::MessageDraft',
       title: 'Všeobecná agenda',
+      uuid: SecureRandom.uuid,
+      metadata: {
+        posp_id: 'App.GeneralAgenda',
+        posp_version: '1.9',
+        message_type: 'App.GeneralAgenda',
+        correlation_id: SecureRandom.uuid,
+        sender_uri: 'SSDMainURI',
+        recipient_uri: 'ico://sk/12345678'
+      },
       objects: [
         {
           name: 'Form.xml',
@@ -396,7 +428,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }) .to_json, headers: { "Content-Type": "application/json;type=upvs" }
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }) , as: :json
 
     assert_response :unprocessable_entity
 
@@ -408,14 +440,17 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
 
   test 'does not create message unless form valid against XSD' do
     message_params = {
-      posp_id: 'App.GeneralAgenda',
-      posp_version: '1.9',
-      message_type: 'App.GeneralAgenda',
-      message_id: SecureRandom.uuid,
-      correlation_id: SecureRandom.uuid,
-      sender_uri: 'SSDMainURI',
-      recipient_uri: 'ico://sk/12345678',
+      type: 'Upvs::MessageDraft',
       title: 'Všeobecná agenda',
+      uuid: SecureRandom.uuid,
+      metadata: {
+        posp_id: 'App.GeneralAgenda',
+        posp_version: '1.9',
+        message_type: 'App.GeneralAgenda',
+        correlation_id: SecureRandom.uuid,
+        sender_uri: 'SSDMainURI',
+        recipient_uri: 'ico://sk/12345678'
+      },
       objects: [
         {
           name: 'Form.xml',
@@ -433,7 +468,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
     assert_response :unprocessable_entity
 
@@ -445,13 +480,16 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
 
   test 'does not create message unless Message ID present' do
     message_params = {
-      posp_id: 'App.GeneralAgenda',
-      posp_version: '1.9',
-      message_type: 'App.GeneralAgenda',
-      correlation_id: SecureRandom.uuid,
-      sender_uri: 'SSDMainURI',
-      recipient_uri: 'ico://sk/12345678',
+      type: 'Upvs::MessageDraft',
       title: 'Všeobecná agenda',
+      metadata: {
+        posp_id: 'App.GeneralAgenda',
+        posp_version: '1.9',
+        message_type: 'App.GeneralAgenda',
+        correlation_id: SecureRandom.uuid,
+        sender_uri: 'SSDMainURI',
+        recipient_uri: 'ico://sk/12345678'
+      },
       objects: [
         {
           name: 'Form.xml',
@@ -468,7 +506,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
     assert_response :unprocessable_entity
 
@@ -481,13 +519,16 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
 
   test 'does not create message unless Correlation ID present' do
     message_params = {
-      posp_id: 'App.GeneralAgenda',
-      posp_version: '1.9',
-      message_type: 'App.GeneralAgenda',
-      message_id: SecureRandom.uuid,
-      sender_uri: 'SSDMainURI',
-      recipient_uri: 'ico://sk/12345678',
+      type: 'Upvs::MessageDraft',
       title: 'Všeobecná agenda',
+      uuid: SecureRandom.uuid,
+      metadata: {
+        posp_id: 'App.GeneralAgenda',
+        posp_version: '1.9',
+        message_type: 'App.GeneralAgenda',
+        sender_uri: 'SSDMainURI',
+        recipient_uri: 'ico://sk/12345678'
+      },
       objects: [
         {
           name: 'Form.xml',
@@ -504,7 +545,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
     assert_response :unprocessable_entity
 
@@ -516,13 +557,16 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
 
   test 'does not create message unless Recipient URI present' do
     message_params = {
-      posp_id: 'App.GeneralAgenda',
-      posp_version: '1.9',
-      message_type: 'App.GeneralAgenda',
-      message_id: SecureRandom.uuid,
-      correlation_id: SecureRandom.uuid,
-      sender_uri: 'SSDMainURI',
+      type: 'Upvs::MessageDraft',
       title: 'Všeobecná agenda',
+      uuid: SecureRandom.uuid,
+      metadata: {
+        posp_id: 'App.GeneralAgenda',
+        posp_version: '1.9',
+        message_type: 'App.GeneralAgenda',
+        correlation_id: SecureRandom.uuid,
+        sender_uri: 'SSDMainURI'
+      },
       objects: [
         {
           name: 'Form.xml',
@@ -539,7 +583,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
     assert_response :unprocessable_entity
 
@@ -551,13 +595,16 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
 
   test 'does not create message unless Posp ID present' do
     message_params = {
-      posp_version: '1.9',
-      message_type: 'App.GeneralAgenda',
-      message_id: SecureRandom.uuid,
-      correlation_id: SecureRandom.uuid,
-      sender_uri: 'SSDMainURI',
-      recipient_uri: 'ico://sk/12345678',
+      type: 'Upvs::MessageDraft',
       title: 'Všeobecná agenda',
+      uuid: SecureRandom.uuid,
+      metadata: {
+        posp_version: '1.9',
+        message_type: 'App.GeneralAgenda',
+        correlation_id: SecureRandom.uuid,
+        sender_uri: 'SSDMainURI',
+        recipient_uri: 'ico://sk/12345678'
+      },
       objects: [
         {
           name: 'Form.xml',
@@ -574,7 +621,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
     assert_response :unprocessable_entity
 
@@ -586,13 +633,16 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
 
   test 'does not create message unless Posp version present' do
     message_params = {
-      posp_id: 'App.GeneralAgenda',
-      message_type: 'App.GeneralAgenda',
-      message_id: SecureRandom.uuid,
-      correlation_id: SecureRandom.uuid,
-      sender_uri: 'SSDMainURI',
-      recipient_uri: 'ico://sk/12345678',
+      type: 'Upvs::MessageDraft',
       title: 'Všeobecná agenda',
+      uuid: SecureRandom.uuid,
+      metadata: {
+        posp_id: 'App.GeneralAgenda',
+        message_type: 'App.GeneralAgenda',
+        correlation_id: SecureRandom.uuid,
+        sender_uri: 'SSDMainURI',
+        recipient_uri: 'ico://sk/12345678'
+      },
       objects: [
         {
           name: 'Form.xml',
@@ -609,7 +659,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
     assert_response :unprocessable_entity
 
@@ -621,13 +671,16 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
 
   test 'does not create message unless Message Type present' do
     message_params = {
-      posp_id: 'App.GeneralAgenda',
-      posp_version: '1.9',
-      message_id: SecureRandom.uuid,
-      correlation_id: SecureRandom.uuid,
-      sender_uri: 'SSDMainURI',
-      recipient_uri: 'ico://sk/12345678',
+      type: 'Upvs::MessageDraft',
       title: 'Všeobecná agenda',
+      uuid: SecureRandom.uuid,
+      metadata: {
+        posp_id: 'App.GeneralAgenda',
+        posp_version: '1.9',
+        correlation_id: SecureRandom.uuid,
+        sender_uri: 'SSDMainURI',
+        recipient_uri: 'ico://sk/12345678'
+      },
       objects: [
         {
           name: 'Form.xml',
@@ -644,7 +697,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
     assert_response :unprocessable_entity
 
@@ -656,15 +709,18 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
 
   test 'does not create message unless Reference ID in valid format' do
     message_params = {
-      posp_id: 'App.GeneralAgenda',
-      posp_version: '1.9',
-      message_type: 'App.GeneralAgenda',
-      message_id: SecureRandom.uuid,
-      correlation_id: SecureRandom.uuid,
-      reference_id: '12345',
-      sender_uri: 'SSDMainURI',
-      recipient_uri: 'ico://sk/12345678',
+      type: 'Upvs::MessageDraft',
       title: 'Všeobecná agenda',
+      uuid: SecureRandom.uuid,
+      metadata: {
+        posp_id: 'App.GeneralAgenda',
+        posp_version: '1.9',
+        message_type: 'App.GeneralAgenda',
+        correlation_id: SecureRandom.uuid,
+        reference_id: '12345',
+        sender_uri: 'SSDMainURI',
+        recipient_uri: 'ico://sk/12345678'
+      },
       objects: [
         {
           name: 'Form.xml',
@@ -681,7 +737,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
     assert_response :unprocessable_entity
 
@@ -693,18 +749,22 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
 
   test 'does not create message unless at least one message object present' do
     message_params = {
-      posp_id: 'App.GeneralAgenda',
-      posp_version: '1.9',
-      message_type: 'App.GeneralAgenda',
-      message_id: SecureRandom.uuid,
-      correlation_id: SecureRandom.uuid,
-      sender_uri: 'SSDMainURI',
-      recipient_uri: 'ico://sk/12345678',
+      type: 'Upvs::MessageDraft',
       title: 'Všeobecná agenda',
+      uuid: SecureRandom.uuid,
+      metadata: {
+        posp_id: 'App.GeneralAgenda',
+        posp_version: '1.9',
+        message_type: 'App.GeneralAgenda',
+        message_id: SecureRandom.uuid,
+        correlation_id: SecureRandom.uuid,
+        sender_uri: 'SSDMainURI',
+        recipient_uri: 'ico://sk/12345678'
+      },
       objects: []
     }
 
-    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
     assert_response :unprocessable_entity
 
@@ -716,14 +776,17 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
 
   test 'does not create message unless form object present' do
     message_params = {
-      posp_id: 'App.GeneralAgenda',
-      posp_version: '1.9',
-      message_type: 'App.GeneralAgenda',
-      message_id: SecureRandom.uuid,
-      correlation_id: SecureRandom.uuid,
-      sender_uri: 'SSDMainURI',
-      recipient_uri: 'ico://sk/12345678',
+      type: 'Upvs::MessageDraft',
       title: 'Všeobecná agenda',
+      uuid: SecureRandom.uuid,
+      metadata: {
+        posp_id: 'App.GeneralAgenda',
+        posp_version: '1.9',
+        message_type: 'App.GeneralAgenda',
+        correlation_id: SecureRandom.uuid,
+        sender_uri: 'SSDMainURI',
+        recipient_uri: 'ico://sk/12345678'
+      },
       objects: [
         {
           name: 'Attachment.xml',
@@ -735,7 +798,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
     assert_response :unprocessable_entity
 
@@ -747,14 +810,17 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
 
   test 'does not create message unless exactly one form object present' do
     message_params = {
-      posp_id: 'App.GeneralAgenda',
-      posp_version: '1.9',
-      message_type: 'App.GeneralAgenda',
-      message_id: SecureRandom.uuid,
-      correlation_id: SecureRandom.uuid,
-      sender_uri: 'SSDMainURI',
-      recipient_uri: 'ico://sk/12345678',
+      type: 'Upvs::MessageDraft',
       title: 'Všeobecná agenda',
+      uuid: SecureRandom.uuid,
+      metadata: {
+        posp_id: 'App.GeneralAgenda',
+        posp_version: '1.9',
+        message_type: 'App.GeneralAgenda',
+        correlation_id: SecureRandom.uuid,
+        sender_uri: 'SSDMainURI',
+        recipient_uri: 'ico://sk/12345678'
+      },
       objects: [
         {
           name: 'Form.xml',
@@ -778,7 +844,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
     assert_response :unprocessable_entity
 
@@ -790,14 +856,17 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
 
   test 'does not create message unless object name present' do
     message_params = {
-      posp_id: 'App.GeneralAgenda',
-      posp_version: '1.9',
-      message_type: 'App.GeneralAgenda',
-      message_id: SecureRandom.uuid,
-      correlation_id: SecureRandom.uuid,
-      sender_uri: 'SSDMainURI',
-      recipient_uri: 'ico://sk/12345678',
+      type: 'Upvs::MessageDraft',
       title: 'Všeobecná agenda',
+      uuid: SecureRandom.uuid,
+      metadata: {
+        posp_id: 'App.GeneralAgenda',
+        posp_version: '1.9',
+        message_type: 'App.GeneralAgenda',
+        correlation_id: SecureRandom.uuid,
+        sender_uri: 'SSDMainURI',
+        recipient_uri: 'ico://sk/12345678'
+      },
       objects: [
         {
           name: 'Form.xml',
@@ -820,7 +889,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
     assert_response :unprocessable_entity
 
@@ -832,14 +901,17 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
   
   test 'does not create message unless object mimetype in white list' do
     message_params = {
-      posp_id: 'App.GeneralAgenda',
-      posp_version: '1.9',
-      message_type: 'App.GeneralAgenda',
-      message_id: SecureRandom.uuid,
-      correlation_id: SecureRandom.uuid,
-      sender_uri: 'SSDMainURI',
-      recipient_uri: 'ico://sk/12345678',
+      type: 'Upvs::MessageDraft',
       title: 'Všeobecná agenda',
+      uuid: SecureRandom.uuid,
+      metadata: {
+        posp_id: 'App.GeneralAgenda',
+        posp_version: '1.9',
+        message_type: 'App.GeneralAgenda',
+        correlation_id: SecureRandom.uuid,
+        sender_uri: 'SSDMainURI',
+        recipient_uri: 'ico://sk/12345678'
+      },
       objects: [
         {
           name: 'Form.xml',
@@ -863,7 +935,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
       ]
     }
 
-    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
     assert_response :unprocessable_entity
 
@@ -875,14 +947,17 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
 
   test 'does not create message unless tags with given names exist' do
     message_params = {
-      posp_id: 'App.GeneralAgenda',
-      posp_version: '1.9',
-      message_type: 'App.GeneralAgenda',
-      message_id: SecureRandom.uuid,
-      correlation_id: SecureRandom.uuid,
-      sender_uri: 'SSDMainURI',
-      recipient_uri: 'ico://sk/12345678',
+      type: 'Upvs::MessageDraft',
       title: 'Všeobecná agenda',
+      uuid: SecureRandom.uuid,
+      metadata: {
+        posp_id: 'App.GeneralAgenda',
+        posp_version: '1.9',
+        message_type: 'App.GeneralAgenda',
+        correlation_id: SecureRandom.uuid,
+        sender_uri: 'SSDMainURI',
+        recipient_uri: 'ico://sk/12345678'
+      },
       objects: [
         {
           name: 'Form.xml',
@@ -900,7 +975,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
       tags: ['Special']
     }
 
-    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }).to_json, headers: { "Content-Type": "application/json;type=upvs" }
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
     assert_response :unprocessable_entity
 
