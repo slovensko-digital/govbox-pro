@@ -115,7 +115,7 @@ class Message < ApplicationRecord
   end
 
   def all_metadata
-    metadata&.merge(template&.metadata || {})
+    metadata.merge(template&.metadata)
   end
 
   def template

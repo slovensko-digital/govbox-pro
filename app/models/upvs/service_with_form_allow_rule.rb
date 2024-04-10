@@ -13,9 +13,9 @@
 #
 
 class Upvs::ServiceWithFormAllowRule < ApplicationRecord
-  scope :form_services, ->(metadata) { where("schema_url LIKE ?", "%#{metadata['posp_id']}/#{metadata['posp_version']}") }
+  scope :matching_metadata, ->(metadata) { where("schema_url LIKE ?", "%#{metadata['posp_id']}/#{metadata['posp_version']}") }
 
   def self.all_institutions_with_template_support(template)
-    ::Upvs::ServiceWithFormAllowRule.form_services(template.metadata)
+    ::Upvs::ServiceWithFormAllowRule.matching_metadata(template.metadata)
   end
 end

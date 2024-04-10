@@ -170,10 +170,14 @@ class MessageDraft < Message
 
     return unless form&.unsigned_content
 
-    document = Nokogiri::XML(form.unsigned_content)
+    document = Nokogiri::XML(form.unsigned_content) do |config|
+      config.noblanks
+    end
     form_errors = document.errors
 
-    document = Nokogiri::XML(document.xpath('*:XMLDataContainer/*:XMLData/*').to_xml) if document.xpath('*:XMLDataContainer/*:XMLData').any?
+    document = Nokogiri::XML(document.xpath('*:XMLDataContainer/*:XMLData/*').to_xml) do |config|
+      config.noblanks
+    end if document.xpath('*:XMLDataContainer/*:XMLData').any?
 
     schema = Nokogiri::XML::Schema(upvs_form.xsd_schema)
     form_errors += schema.validate(document)

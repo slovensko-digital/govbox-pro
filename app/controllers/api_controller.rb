@@ -6,7 +6,7 @@ class ApiController < ActionController::API
 
   rescue_from JWT::DecodeError do |error|
     if error.message == 'Nil JSON web token'
-      render_bad_request(:no_credentials)
+      render_bad_request(RuntimeError.new(:no_credentials))
     else
       # key = error.message == 'obo' ? "obo : :credentials
       render_unauthorized(error.message)
