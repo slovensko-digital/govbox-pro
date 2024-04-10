@@ -1,6 +1,6 @@
 require "test_helper"
 
-class ThreadsApiTest < ActionDispatch::IntegrationTest
+class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
   setup do
     @key_pair = OpenSSL::PKey::RSA.new File.read 'test/fixtures/tenant_test_cert.pem'
     @tenant = tenants(:ssd)
