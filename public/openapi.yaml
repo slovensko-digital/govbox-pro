@@ -245,6 +245,11 @@ paths:
                       content:
                         description: Obsah objektu zakódovaný podľa Base64
                         type: string
+                      tags:
+                        description: Štítky, ktorými má byť objekt označený
+                        type: array
+                        items:
+                          type: string
                     required:
                       - name
                       - mimetype

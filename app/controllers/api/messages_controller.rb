@@ -17,10 +17,15 @@ class Api::MessagesController < Api::TenantController
       render_unprocessable_entity(@message.errors.messages.values.join(', ')) and return unless @message.valid?
 
       permitted_params.fetch(:objects, []).each do |object_params|
-        message_object = @message.objects.create(object_params.except(:content))
-        object_tags = message_object.is_signed ? [@message.thread.box.tenant.signed_externally_tag!] : []
+        message_object = @message.objects.create(object_params.except(:content, :tags))
+        message_object.tags += message_object.is_signed ? [@message.thread.box.tenant.signed_externally_tag!] : []
 
-        message_object.tags += object_tags
+        object_params.fetch(:tags, []).each do |tag_name|
+          tag = find_tenant_tag_by_name(tag_name)
+          render_unprocessable_entity("Tag with name #{tag_name} does not exist") and return unless tag
+
+          message_object.add_tag(tag)
+        end
 
         MessageObjectDatum.create(
           message_object: message_object,
@@ -29,12 +34,8 @@ class Api::MessagesController < Api::TenantController
       end
 
       permitted_params.fetch(:tags, []).each do |tag_name|
-        tag = @tenant.tags.find_by(name: tag_name)
-
-        unless tag
-          @message.destroy
-          render_unprocessable_entity("Tag with name #{tag_name} does not exist") and return
-        end
+        tag = find_tenant_tag_by_name(tag_name)
+        render_unprocessable_entity("Tag with name #{tag_name} does not exist") and return unless tag
 
         @message.add_cascading_tag(tag)
       end
@@ -53,6 +54,13 @@ class Api::MessagesController < Api::TenantController
   end
 
   private
+
+  def find_tenant_tag_by_name(tag_name)
+    tag = @tenant.tags.find_by(name: tag_name)
+    @message.destroy unless tag
+
+    tag
+  end
 
   def permitted_params
     params.permit(
@@ -78,6 +86,7 @@ class Api::MessagesController < Api::TenantController
         :mimetype,
         :object_type,
         :content,
+        tags: []
       ],
       tags: []
     )

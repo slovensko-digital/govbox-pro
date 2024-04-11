@@ -53,6 +53,19 @@ class MessageObject < ApplicationRecord
     end
   end
 
+  def add_tag(tag)
+    assign_tag(tag)
+    thread.assign_tag(tag)
+
+    if tag.is_a?(SignatureRequestedFromTag)
+      assign_tag(tag.tenant.signature_requested_tag)
+      thread.assign_tag(tag.tenant.signature_requested_tag)
+    elsif tag.is_a?(SignedByTag)
+      assign_tag(tag.tenant.signed_tag)
+      thread.assign_tag(tag.tenant.signed_tag)
+    end
+  end
+
   def mark_signed_by_user(user)
     assign_tag(user.signed_by_tag)
     unassign_tag(user.signature_requested_from_tag)
