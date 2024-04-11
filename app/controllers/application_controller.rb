@@ -5,7 +5,6 @@ class ApplicationController < ActionController::Base
   after_action :verify_authorized
   after_action :verify_policy_scoped, only: :index if respond_to?(:index)
   before_action :set_menu_context
-  before_action :set_sk_locale
 
   def pundit_user
     Current.user
