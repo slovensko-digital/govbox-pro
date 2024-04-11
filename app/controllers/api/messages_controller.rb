@@ -17,13 +17,13 @@ class Api::MessagesController < Api::TenantController
 
       permitted_params.fetch(:objects, []).each do |object_params|
         message_object = @message.objects.create(object_params.except(:content, :tags))
-        message_object.tags += message_object.is_signed ? [@message.thread.box.tenant.signed_externally_tag!] : []
 
         object_params.fetch(:tags, []).each do |tag_name|
           tag = @tenant.tags.find_by(name: tag_name)
           tag.assign_to_message_object(message_object)
           tag.assign_to_thread(@message.thread)
         end
+        @message.thread.box.tenant.signed_externally_tag!.assign_to_message_object(message_object) if message_object.is_signed
 
         MessageObjectDatum.create(
           message_object: message_object,
