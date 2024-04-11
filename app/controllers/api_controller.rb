@@ -1,4 +1,5 @@
 class ApiController < ActionController::API
+  include Localization
   before_action :authenticate_user
   around_action :wrap_in_request_logger
 
@@ -89,7 +90,7 @@ class ApiController < ActionController::API
     render status: :service_unavailable, json: { message: "Service unavailable" }
   end
 
-  def render_unprocessable_entity(exception)
-    render status: :unprocessable_entity, json: { message: exception.message }
+  def render_unprocessable_entity(message)
+    render status: :unprocessable_entity, json: { message: message }
   end
 end

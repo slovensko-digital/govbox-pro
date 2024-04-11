@@ -201,8 +201,10 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :message_threads, only: [:show]
-    resources :messages, only: [:show]
+    resources :message_threads, only: :show
+    resources :messages, only: :show do
+      post :message_drafts, on: :collection
+    end
   end
 
   if UpvsEnvironment.sso_support?

@@ -24,6 +24,10 @@
 class MessageDraft < Message
   belongs_to :import, class_name: 'MessageDraftsImport', optional: true
 
+  validate :validate_uuid
+  validates :title, presence: { message: "Title can't be blank" }
+  validates :delivered_at, presence: true
+
   after_create do
     add_cascading_tag(thread.box.tenant.draft_tag!)
   end
@@ -49,7 +53,6 @@ class MessageDraft < Message
   end
 
   with_options on: :validate_data do |message_draft|
-    message_draft.validates :uuid, format: { with: Utils::UUID_PATTERN }, allow_blank: false
     message_draft.validate :validate_metadata
     message_draft.validate :validate_form
     message_draft.validate :validate_objects
@@ -99,7 +102,7 @@ class MessageDraft < Message
   end
 
   def not_yet_submitted?
-    metadata["status"] == "created" || metadata["status"] == "invalid"
+    metadata["status"].in?(%w[created invalid])
   end
 
   def being_submitted?
@@ -111,7 +114,7 @@ class MessageDraft < Message
   end
 
   def submit_failed?
-    metadata["status"] == "submit_fail"
+    metadata["status"].in?(%w[submit_fail temporary_submit_fail])
   end
 
   def being_submitted!
@@ -156,7 +159,12 @@ class MessageDraft < Message
 
   # TODO remove UPVS stuff from core domain
   def validate_form
-    raise "Disallowed form" unless ::Upvs::ServiceWithFormAllowRule.matching_metadata(all_metadata).any?
+    return if errors[:metadata].any?
+
+    unless ::Upvs::ServiceWithFormAllowRule.matching_metadata(all_metadata).where(institution_uri: metadata['recipient_uri']).any?
+      errors.add(:base, :disallowed_form_for_recipient)
+      return
+    end
 
     raise "Missing XSD schema" unless upvs_form&.xsd_schema
 
@@ -178,8 +186,20 @@ class MessageDraft < Message
   end
 
   private
+
+  def validate_uuid
+    if uuid
+      errors.add(:metadata, "UUID must be in UUID format") unless uuid.match?(Utils::UUID_PATTERN)
+    else
+      errors.add(:metadata, "UUID can't be blank")
+    end
+  end
+
   def validate_objects
-    errors.add(:objects, "No objects found for draft") if objects.size == 0
+    if objects.size == 0
+      errors.add(:objects, "Message contains no objects")
+      return
+    end
 
     objects.each do |object|
       object.valid?(:validate_data)
@@ -187,16 +207,16 @@ class MessageDraft < Message
     end
 
     forms = objects.select { |o| o.form? }
-    errors.add(:objects, "Draft has to contain exactly one form") if forms.size != 1
+    errors.add(:objects, "Message has to contain exactly one form object") if forms.size != 1
   end
 
   def validate_metadata
-    errors.add(:metadata, "No recipient URI") unless all_metadata["recipient_uri"].present?
-    errors.add(:metadata, "No posp ID") unless all_metadata["posp_id"].present?
-    errors.add(:metadata, "No posp version") unless all_metadata["posp_version"].present?
-    errors.add(:metadata, "No message type") unless all_metadata["message_type"].present?
-    errors.add(:metadata, "No correlation ID") unless all_metadata["correlation_id"].present?
-    errors.add(:metadata, "Correlation ID must be UUID") unless all_metadata["correlation_id"]&.match?(Utils::UUID_PATTERN)
+    errors.add(:metadata, "No recipient URI") unless all_metadata&.dig("recipient_uri")
+    errors.add(:metadata, "No posp ID") unless all_metadata&.dig("posp_id")
+    errors.add(:metadata, "No posp version") unless all_metadata&.dig("posp_version")
+    errors.add(:metadata, "No message type") unless all_metadata&.dig("message_type")
+
+    errors.add(:metadata, "Reference ID must be UUID") if all_metadata&.dig("reference_id") && !all_metadata&.dig("reference_id")&.match?(Utils::UUID_PATTERN)
   end
 
   def validate_with_message_template

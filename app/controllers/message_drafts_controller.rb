@@ -78,6 +78,7 @@ class MessageDraftsController < ApplicationController
       redirect_to message_thread_path(@message.thread), notice: "Správa bola zaradená na odoslanie"
     else
       # TODO: prisposobit chybovu hlasku aj importovanym draftom
+      # TODO FIX: Tato hlaska sa zobrazuje aj ked je object oznaceny ako to_be_signed, ale nebol este podpisany
       redirect_to message_thread_path(@message.thread), alert: "Vyplňte obsah správy"
     end
   end
