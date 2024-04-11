@@ -53,19 +53,6 @@ class MessageObject < ApplicationRecord
     end
   end
 
-  def add_tag(tag)
-    assign_tag(tag)
-    thread.assign_tag(tag)
-
-    if tag.is_a?(SignatureRequestedFromTag)
-      assign_tag(tag.tenant.signature_requested_tag)
-      thread.assign_tag(tag.tenant.signature_requested_tag)
-    elsif tag.is_a?(SignedByTag)
-      assign_tag(tag.tenant.signed_tag)
-      thread.assign_tag(tag.tenant.signed_tag)
-    end
-  end
-
   def mark_signed_by_user(user)
     assign_tag(user.signed_by_tag)
     unassign_tag(user.signature_requested_from_tag)
@@ -120,6 +107,10 @@ class MessageObject < ApplicationRecord
     archived_object&.archived?
   end
 
+  def assign_tag(tag)
+    message_objects_tags.find_or_create_by!(tag: tag)
+  end
+
   private
 
   def allowed_mime_type?
@@ -132,10 +123,6 @@ class MessageObject < ApplicationRecord
 
   def has_tag?(tag)
     message_objects_tags.joins(:tag).where(tag: tag).exists?
-  end
-
-  def assign_tag(tag)
-    message_objects_tags.find_or_create_by!(tag: tag)
   end
 
   def unassign_tag(tag)

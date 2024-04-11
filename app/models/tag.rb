@@ -41,6 +41,14 @@ class Tag < ApplicationRecord
 
   after_update_commit ->(tag) { EventBus.publish(:tag_renamed, tag) if previous_changes.key?("name") }
 
+  def assign_to_message_object(message_object)
+    message_object.assign_tag(self)
+  end
+
+  def assign_to_thread(thread)
+    thread.assign_tag(self)
+  end
+
   def mark_readable_by_groups(groups)
     self.groups += groups
   end

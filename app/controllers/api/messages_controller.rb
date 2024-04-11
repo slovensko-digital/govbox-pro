@@ -21,7 +21,8 @@ class Api::MessagesController < Api::TenantController
 
         object_params.fetch(:tags, []).each do |tag_name|
           tag = @tenant.tags.find_by(name: tag_name)
-          message_object.add_tag(tag)
+          tag.assign_to_message_object(message_object)
+          tag.assign_to_thread(@message.thread)
         end
 
         MessageObjectDatum.create(
