@@ -107,6 +107,10 @@ class MessageObject < ApplicationRecord
     archived_object&.archived?
   end
 
+  def assign_tag(tag)
+    message_objects_tags.find_or_create_by!(tag: tag)
+  end
+
   private
 
   def allowed_mime_type?
@@ -119,10 +123,6 @@ class MessageObject < ApplicationRecord
 
   def has_tag?(tag)
     message_objects_tags.joins(:tag).where(tag: tag).exists?
-  end
-
-  def assign_tag(tag)
-    message_objects_tags.find_or_create_by!(tag: tag)
   end
 
   def unassign_tag(tag)

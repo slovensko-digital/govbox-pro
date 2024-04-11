@@ -82,9 +82,25 @@ ssd_signature_requested:
   icon: pencil
   color: yellow
 
+ssd_basic_user_signature_requested:
+  name: 'Na podpis: Another user'
+  type: SignatureRequestedFromTag
+  visible: true
+  tenant: ssd
+  icon: pencil
+  color: yellow
+
 ssd_signed:
   name: Podpisane
   type: SignedTag
+  visible: true
+  tenant: ssd
+  icon: fingerprint
+  color: green
+
+ssd_basic_user_signed:
+  name: 'Podpisane: Another user'
+  type: SignedByTag
   visible: true
   tenant: ssd
   icon: fingerprint

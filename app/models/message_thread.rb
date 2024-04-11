@@ -158,6 +158,10 @@ class MessageThread < ApplicationRecord
     end
   end
 
+  def assign_tag(tag)
+    message_threads_tags.find_or_create_by!(tag: tag)
+  end
+
   private
 
   def has_tag?(tag)
@@ -166,10 +170,6 @@ class MessageThread < ApplicationRecord
 
   def has_tag_in_message_objects?(tag)
     objects.joins(:tags).where(tags: tag).exists?
-  end
-
-  def assign_tag(tag)
-    message_threads_tags.find_or_create_by!(tag: tag)
   end
 
   def unassign_tag(tag)
