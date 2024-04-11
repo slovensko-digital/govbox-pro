@@ -13,8 +13,9 @@ class Api::MessagesController < Api::TenantController
     render_unprocessable_entity('Invalid sender') and return unless @box
 
     ::Message.transaction do
-      @message = permitted_params[:type].classify.safe_constantize.load_and_validate(permitted_params, box: @box)
+      @message = permitted_params[:type].classify.safe_constantize.load_from_params(permitted_params, box: @box)
       render_unprocessable_entity(@message.errors.messages.values.join(', ')) and return unless @message.valid?
+      @message.save
 
       permitted_params.fetch(:objects, []).each do |object_params|
         message_object = @message.objects.create(object_params.except(:content))

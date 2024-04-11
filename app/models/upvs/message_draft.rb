@@ -24,7 +24,7 @@
 class Upvs::MessageDraft < MessageDraft
   validate :validate_correlation_id
 
-  def self.load_and_validate(message_params, box:)
+  def self.load_from_params(message_params, box:)
     message_params = message_params.permit(
       :type,
       :uuid,
@@ -61,9 +61,6 @@ class Upvs::MessageDraft < MessageDraft
       delivered_at: message.delivered_at
     )
 
-    return message unless message.valid?
-
-    message.save
     message
   end
 
