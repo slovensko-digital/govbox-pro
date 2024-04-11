@@ -14,15 +14,17 @@
         <div class="self-stretch px-6 pt-6 flex-col justify-start items-start flex">
           <div class="mb-4 w-full">
             <% if @boxes.count > 1 %>
+              <% selected_box_attributes = @selected_box&.values_at(:name, :id) %>
+              <% @boxes_attributes = @boxes.pluck(:name, :id) %>
               <label for="<%= sender_element_id %>" class="block mb-2 text-base font-medium text-gray-900">Od</label>
-              <%= select_tag(sender_element_id, options_for_select(@boxes, @selected_box), class: "text-sm rounded-lg block w-full p-2.5 #{@message.errors[:sender_name].any? && !@selected_box ? ERROR_CLASSES : DEFAULT_CLASSES}") %>
-              <% if @message.errors[:sender_name].any? && !@selected_box %>
+              <%= select_tag(sender_element_id, options_for_select(@boxes_attributes, selected_box_attributes), class: "text-sm rounded-lg block w-full p-2.5 #{@message.errors[:sender_name].any? && !selected_box_attributes ? ERROR_CLASSES : DEFAULT_CLASSES}") %>
+              <% if @message.errors[:sender_name].any? && !selected_box_attributes %>
                 <p class="mt-2 text-sm text-red-600 dark:text-red-500">
                   <span class="font-medium"><%= @message.errors[:sender_name].to_sentence %></span>
                 </p>
               <% end %>
             <% else %>
-              <%= hidden_field_tag sender_element_id, @boxes.first[1] %>
+              <%= hidden_field_tag sender_element_id, @boxes_attributes.first[1] %>
             <% end %>
           </div>
 
