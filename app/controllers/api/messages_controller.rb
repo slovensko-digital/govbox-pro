@@ -20,7 +20,7 @@ class Api::MessagesController < Api::TenantController
         message_object = @message.objects.create(object_params.except(:content, :tags))
 
         object_params.fetch(:tags, []).each do |tag_name|
-          tag = @tenant.tags.find_by(name: tag_name)
+          tag = @tenant.user_signature_tags.find_by(name: tag_name)
           tag.assign_to_message_object(message_object)
           tag.assign_to_thread(@message.thread)
         end
@@ -87,12 +87,18 @@ class Api::MessagesController < Api::TenantController
   end
 
   def check_tags
-    tag_names = permitted_params.fetch(:tags, []) + permitted_params.fetch(:objects, []).map {|o| o['tags'] }.compact
-
+    tag_names = permitted_params.fetch(:tags, [])
     tag_names.each do |tag_name|
       @tenant.tags.find_by!(name: tag_name)
     rescue ActiveRecord::RecordNotFound
       render_unprocessable_entity("Tag with name #{tag_name} does not exist") and return
+    end
+
+    message_object_tag_names = permitted_params.fetch(:objects, []).map {|o| o['tags'] }.compact.flatten
+    message_object_tag_names.each do |tag_name|
+      @tenant.user_signature_tags.find_by!(name: tag_name)
+    rescue ActiveRecord::RecordNotFound
+      render_unprocessable_entity("Signature tag with name #{tag_name} does not exist") and return
     end
   end
 

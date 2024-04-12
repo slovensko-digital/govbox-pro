@@ -60,6 +60,10 @@ class Tenant < ApplicationRecord
     signed_tag || raise(ActiveRecord::RecordNotFound, "`SignatureRequestedTag` not found in tenant: #{id}")
   end
 
+  def user_signature_tags
+    tags.where(type: %w[SignatureRequestedFromTag SignedByTag])
+  end
+
   def feature_enabled?(feature)
     raise "Unknown feature #{feature}" unless feature.in? AVAILABLE_FEATURE_FLAGS
 

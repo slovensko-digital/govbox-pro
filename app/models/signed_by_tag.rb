@@ -16,11 +16,6 @@
 #  tenant_id        :bigint           not null
 #
 class SignedByTag < Tag
-  def assign_to_message_object(message_object)
-    super
-    tenant.signed_tag.assign_to_message_object(message_object)
-  end
-
   def assign_to_thread(thread)
     super
     tenant.signed_tag.assign_to_thread(thread)
