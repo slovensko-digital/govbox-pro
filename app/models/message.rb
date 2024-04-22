@@ -39,6 +39,7 @@ class Message < ApplicationRecord
   scope :outbox, -> { where(outbox: true) }
   scope :inbox, -> { where.not(outbox: true).where(type: nil).or(self.where.not(type: "MessageDraft")) }
 
+  after_update_commit ->(message) { EventBus.publish(:message_changed, message) }
   after_destroy_commit ->(message) { EventBus.publish(:message_destroyed, message) }
 
   def automation_rules_for_event(event)
