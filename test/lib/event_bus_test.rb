@@ -5,8 +5,8 @@ require "test_helper"
 class EventBusTest < ActiveSupport::TestCase
   include ActiveJob::TestHelper
 
-  test ":message_changed event schedules Searchable::ReindexMessageThreadJob" do
-    message = messages(:ssd_main_general_one)
+  test ":message_draft_changed event schedules Searchable::ReindexMessageThreadJob" do
+    message = messages(:ssd_main_general_draft_one)
 
     assert_enqueued_with(job: Searchable::ReindexMessageThreadJob) do
       message.update(html_visualization: '<html><head>some junk</head><body id="test">text</body>')
