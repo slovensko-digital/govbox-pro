@@ -37,6 +37,10 @@ EventBus.subscribe :message_thread_changed, ->(thread) {
 }
 
 # reindexing on removals
+EventBus.subscribe :message_changed, ->(message) {
+  Searchable::ReindexMessageThreadJob.perform_later(message.thread.id)
+}
+
 EventBus.subscribe :tag_renamed, ->(tag) do
   ReindexAndNotifyFilterSubscriptionsJob.perform_later_for_tag_id(tag.id)
 end
