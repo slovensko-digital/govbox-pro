@@ -31,6 +31,7 @@ class MessageDraft < Message
   after_create do
     add_cascading_tag(thread.box.tenant.draft_tag!)
   end
+  after_update_commit ->(message) { EventBus.publish(:message_draft_changed, message) }
 
   after_destroy do
     EventBus.publish(:message_draft_destroyed, self)
