@@ -64,6 +64,7 @@ EventBus.subscribe :message_draft_destroyed, ->(message) { AuditLog::MessageDraf
 EventBus.subscribe :message_thread_renamed, ->(message_thread) { AuditLog::MessageThreadRenamed.create_audit_record(message_thread) }
 EventBus.subscribe :message_threads_merged, ->(message_threads_collection) { AuditLog::MessageThreadsMerged.create_audit_record(message_threads_collection) }
 EventBus.subscribe :message_object_updated, ->(message_object) { AuditLog::MessageObjectUpdated.create_audit_record(message_object) }
+EventBus.subscribe :message_form_data_created, ->(message) { message.set_html_visualization }
 
 EventBus.subscribe :user_logged_in, ->(user) { AuditLog::UserLoggedIn.create_audit_record(user) }
 EventBus.subscribe :user_logged_out, ->(user) { AuditLog::UserLoggedOut.create_audit_record(user) }

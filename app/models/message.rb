@@ -97,6 +97,16 @@ class Message < ApplicationRecord
     )
   end
 
+  def set_html_visualization
+    self.update(
+      html_visualization: visualization
+    )
+
+    form.update(
+      visualizable: html_visualization.present?
+    )
+  end
+
   def visualization
     return self.html_visualization if self.html_visualization.present?
 
