@@ -37,7 +37,7 @@ class Message < ApplicationRecord
   delegate :tenant, to: :thread
 
   scope :outbox, -> { where(outbox: true) }
-  scope :inbox, -> { where.not(outbox: true).where(type: nil).or(self.where.not(type: "MessageDraft")) }
+  scope :inbox, -> { where.not(outbox: true).where(type: [nil, 'Message']) }
 
   after_update_commit ->(message) { EventBus.publish(:message_changed, message) }
   after_destroy_commit ->(message) { EventBus.publish(:message_destroyed, message) }

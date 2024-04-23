@@ -15,7 +15,7 @@ class MessageObjectsController < ApplicationController
 
     mark_message_object_as_signed(@message_object)
     
-    last_thread_message_draft = @message.thread.messages.where(type: 'MessageDraft').includes(objects: :nested_message_objects, attachments: :nested_message_objects).order(delivered_at: :asc)&.last
+    last_thread_message_draft = @message.thread.message_drafts.includes(objects: :nested_message_objects, attachments: :nested_message_objects).order(delivered_at: :asc)&.last
     @is_last = @message == last_thread_message_draft
   end
 
