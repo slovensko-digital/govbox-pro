@@ -118,6 +118,13 @@ class MessageDraft < Message
     metadata["status"].in?(%w[submit_fail temporary_submit_fail])
   end
 
+  def created!
+    metadata["status"] = "created"
+    save!
+    EventBus.publish(:message_thread_created, thread)
+    EventBus.publish(:message_created, self)
+  end
+
   def being_submitted!
     metadata["status"] = "being_submitted"
     save!
