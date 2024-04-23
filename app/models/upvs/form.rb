@@ -16,6 +16,10 @@ class Upvs::Form < ApplicationRecord
     related_document('CLS_F_XSLT_HTML')
   end
 
+  def xsl_fo
+    related_document('CLS_F_XSL_FO')
+  end
+
   def xsd_schema
     related_document('CLS_F_XSD_EDOC')
   end

@@ -11,7 +11,11 @@
 #  message_object_id :bigint           not null
 #
 class NestedMessageObject < ApplicationRecord
+  include XmlMessageObject
+
   belongs_to :message_object, inverse_of: :nested_message_objects
+
+  delegate :message, to: :message_object
 
   validates :name, presence: true, on: :validate_data
 
@@ -32,5 +36,9 @@ class NestedMessageObject < ApplicationRecord
 
   def xml?
     mimetype == 'application/xml'
+  end
+
+  def unsigned_content
+    content
   end
 end

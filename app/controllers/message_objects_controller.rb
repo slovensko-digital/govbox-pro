@@ -29,6 +29,17 @@ class MessageObjectsController < ApplicationController
     send_data @message_object.content, filename: MessageObjectHelper.displayable_name(@message_object), type: @message_object.mimetype, disposition: :download
   end
 
+  def download_pdf
+    authorize @message_object
+
+    pdf_content = @message_object.pdf_transformation
+    if pdf_content
+      send_data pdf_content, filename: MessageObjectHelper.pdf_name(@message_object), type: 'application/pdf', disposition: :download
+    else
+      head :no_content
+    end
+  end
+
   def download_archived
     authorize @message_object
     send_data @message_object.archived_object.content, filename: MessageObjectHelper.displayable_name(@message_object), type: @message_object.mimetype, disposition: :download

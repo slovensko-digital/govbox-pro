@@ -11,9 +11,20 @@ class NestedMessageObjectsController < ApplicationController
     send_data @nested_message_object.content, filename: MessageObjectHelper.displayable_name(@nested_message_object), type: @nested_message_object.mimetype, disposition: :download
   end
 
+  def download_pdf
+    authorize @nested_message_object
+
+    pdf_content = @nested_message_object.pdf_transformation
+    if pdf_content
+      send_data pdf_content, filename: MessageObjectHelper.pdf_name(@nested_message_object), type: 'application/pdf', disposition: :download
+    else
+      head :no_content
+    end
+  end
+
   private
 
   def set_nested_message_object
-    @nested_message_object = policy_scope(NestedMessageObject).find(params[:id])
+    @nested_message_object = policy_scope(NestedMessageObject).find(params[:id] || params[:nested_message_object_id])
   end
 end

@@ -33,6 +33,10 @@ class MessageObjectPolicy < ApplicationPolicy
     show?
   end
 
+  def download_pdf?
+    show?
+  end
+
   def download_archived?
     show?
   end

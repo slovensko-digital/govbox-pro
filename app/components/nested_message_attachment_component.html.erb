@@ -15,6 +15,12 @@
         <%= render Icons::ArrowDownTrayComponent.new(css_classes: "h-5 w-5") %>
         Stiahnuť
       <% end %>
+      <% if @nested_message_attachment.xml? %>
+        <%= link_to message_message_object_nested_message_object_download_pdf_path(@message, @message_object, @nested_message_attachment), class: "flex gap-3", role: "menuitem", tabindex: "-1", data: { turbo_frame: "_top" } do %>
+          <%= render Icons::ArrowDownTrayComponent.new(css_classes: "h-5 w-5") %>
+          Stiahnuť ako PDF
+        <% end %>
+      <% end %>
     <% end %>
   <% end %>
 </div>
