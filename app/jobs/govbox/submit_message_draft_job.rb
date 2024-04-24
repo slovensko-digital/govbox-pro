@@ -10,6 +10,7 @@ class Govbox::SubmitMessageDraftJob < ApplicationJob
   def perform(message_draft, schedule_sync: true, upvs_client: UpvsEnvironment.upvs_client)
     raise "Invalid message!" unless message_draft.valid?(:validate_data)
 
+    box = message_draft.thread.box
     all_message_metadata = message_draft.all_metadata
 
     message_draft_data = {
@@ -26,13 +27,18 @@ class Govbox::SubmitMessageDraftJob < ApplicationJob
       objects: build_objects(message_draft)
     }.compact
 
-    sktalk_api = upvs_client.api(message_draft.thread.box).sktalk
+    sktalk_api = upvs_client.api(box).sktalk
     success, response_status, response_body = sktalk_api.receive_and_save_to_outbox(message_draft_data)
+
+    box.message_submission_requests.create(
+      request_url: sktalk_api.receive_and_save_to_outbox_url,
+      response_status: response_status
+    )
 
     if success
       message_draft.remove_cascading_tag(message_draft.tenant.submission_error_tag)
       message_draft.submitted!
-      Govbox::SyncBoxJob.set(wait: 3.minutes).perform_later(message_draft.thread.box) if schedule_sync
+      Govbox::SyncBoxJob.set(wait: 3.minutes).perform_later(box) if schedule_sync
     else
       handle_submit_fail(message_draft, response_status, response_body.dig("message"))
     end

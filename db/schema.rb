@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_08_100351) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_24_084932) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -376,6 +376,15 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_08_100351) do
     t.index ["related_message_id"], name: "index_message_relations_on_related_message_id"
   end
 
+  create_table "message_submission_requests", force: :cascade do |t|
+    t.bigint "box_id", null: false
+    t.string "request_url"
+    t.integer "response_status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["box_id"], name: "index_message_submission_requests_on_box_id"
+  end
+
   create_table "message_templates", force: :cascade do |t|
     t.bigint "tenant_id"
     t.string "name", null: false
@@ -613,6 +622,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_08_100351) do
   add_foreign_key "message_objects_tags", "tags"
   add_foreign_key "message_relations", "messages"
   add_foreign_key "message_relations", "messages", column: "related_message_id"
+  add_foreign_key "message_submission_requests", "boxes"
   add_foreign_key "message_templates", "tenants"
   add_foreign_key "message_thread_merge_identifiers", "message_threads"
   add_foreign_key "message_thread_notes", "message_threads"
