@@ -6,13 +6,13 @@ ssd_main_general_one_attachment:
   mimetype: MyString
   object_type: ATTACHMENT
 
-ssd_main_general_two_from:
+ssd_main_general_two_form:
   message: ssd_main_general_two
   name: MyString
   mimetype: MyString
   object_type: FORM
 
-ssd_main_general_draft_one_from:
+ssd_main_general_draft_one_form:
   message: ssd_main_general_draft_one
   name: MyString
   mimetype: MyString
@@ -24,10 +24,10 @@ ssd_main_general_draft_one_attachment:
   mimetype: MyString
   object_type: ATTACHMENT
 
-ssd_main_general_draft_two_from:
+ssd_main_general_draft_two_form:
   message: ssd_main_general_draft_two
   name: MyString
-  mimetype: MyString
+  mimetype: application/x-eform-xml
   object_type: FORM
 
 ssd_main_delivery_draft_form:
