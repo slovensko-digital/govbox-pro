@@ -3,29 +3,16 @@
 module XmlMessageObject
   extend ActiveSupport::Concern
 
-  included do
-    def xml?
-      if try(:is_signed)
-        nested_message_objects&.where(mimetype: Utils::XML_MIMETYPES)&.any?
-      else
-        mimetype.in?(Utils::XML_MIMETYPES)
-      end
-    end
+  FORM_IDENTIFIER_PATTERN = /([^\/]+)\/(\d+\.\d+)\z/
 
+  included do
     def pdf_transformation
-      return unless message.upvs_form&.xsl_fo
+      return unless upvs_form&.xsl_fo
       return unless unsigned_content
       return unless xml?
 
-      document = Nokogiri::XML(unsigned_content) do |config|
-        config.noblanks
-      end
-      document = Nokogiri::XML(document.xpath('*:XMLDataContainer/*:XMLData/*').to_xml) do |config|
-        config.noblanks
-      end if document.xpath('*:XMLDataContainer/*:XMLData').any?
-
-      template = Nokogiri::XSLT(message.upvs_form.xsl_fo)
-      fo_xml = template.transform(document)
+      template = Nokogiri::XSLT(upvs_form.xsl_fo)
+      fo_xml = template.transform(xml_unsigned_content)
       fo_xml.encoding = 'UTF-8'
 
       begin
@@ -37,15 +24,41 @@ module XmlMessageObject
         system "fop -fo #{fo_xml_file.path} -pdf #{pdf_file.path}"
 
         pdf_file.rewind
-
-        binding.pry
-
         pdf_file.read
       ensure
         fo_xml_file.close
         pdf_file.close
         fo_xml_file.unlink
         pdf_file.unlink
+      end
+    end
+
+    def xml_unsigned_content
+      document = Nokogiri::XML(unsigned_content) do |config|
+        config.noblanks
+      end
+      document = Nokogiri::XML(document.xpath('*:XMLDataContainer/*:XMLData/*').to_xml) do |config|
+        config.noblanks
+      end if document.xpath('*:XMLDataContainer/*:XMLData').any?
+
+      document
+    end
+
+    def upvs_form
+      xml_document = xml_unsigned_content
+      posp_id, posp_version = xml_document.root.namespace&.href&.match(FORM_IDENTIFIER_PATTERN).captures
+
+      ::Upvs::Form.find_by(
+        identifier: posp_id,
+        version: posp_version
+      )
+    end
+
+    def xml?
+      if try(:is_signed)
+        nested_message_objects&.where(mimetype: Utils::XML_MIMETYPES)&.any?
+      else
+        mimetype.in?(Utils::XML_MIMETYPES)
       end
     end
   end
