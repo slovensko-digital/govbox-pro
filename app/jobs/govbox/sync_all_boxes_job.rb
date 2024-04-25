@@ -6,6 +6,8 @@ module Govbox
       Box.where(syncable: true).find_each do |box|
         SyncBoxJob.perform_later(box)
       end
+
+      BetterUptimeApi.ping_heartbeat('GBPRO_BOX_SYNC')
     end
   end
 end
