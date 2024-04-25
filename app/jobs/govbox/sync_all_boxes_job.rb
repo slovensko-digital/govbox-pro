@@ -7,7 +7,7 @@ module Govbox
         SyncBoxJob.perform_later(box)
       end
 
-      BetterUptimeApi.ping_heartbeat('GBPRO_BOX_SYNC')
+      BetterUptimeApi.ping_heartbeat('GOVBOX_SYNC')
     end
   end
 end

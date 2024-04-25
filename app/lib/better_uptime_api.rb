@@ -1,7 +1,7 @@
 module BetterUptimeApi
   extend self
 
-  BETTER_UPTIME_URL = 'https://betteruptime.com/api/v1/heartbeat/'
+  BETTER_UPTIME_URL = 'https://uptime.betterstack.com/api/v1/heartbeat/'
   BETTER_UPTIME_ENV_PREFIX = 'BETTER_UPTIME_TOKEN_'
 
   def ping_heartbeat(heartbeat_name)
@@ -9,4 +9,3 @@ module BetterUptimeApi
     Faraday.get("#{BETTER_UPTIME_URL}#{ENV.fetch(env_token)}") if ENV.key?(env_token)
   end
 end
-
