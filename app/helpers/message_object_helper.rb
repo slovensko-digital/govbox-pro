@@ -4,7 +4,7 @@ module MessageObjectHelper
   end
 
   def self.pdf_name(message_object)
-    (message_object.name.present? ? File.basename(message_object.name, File.extname(message_object.name)) : I18n.t('no_message_object_name')) + '.pdf'
+    self.base_name(message_object) + '.pdf'
   end
 
   def self.base_name(message_object)

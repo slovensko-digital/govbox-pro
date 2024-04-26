@@ -91,10 +91,7 @@ class Govbox::Message < ApplicationRecord
         "reference_id": govbox_message.payload["reference_id"],
         "sender_uri": govbox_message.payload["sender_uri"],
         "edesk_class": govbox_message.payload["class"],
-        "delivery_notification": govbox_message.delivery_notification,
-        "posp_id": govbox_message.payload["posp_id"],
-        "posp_version": govbox_message.payload["posp_version"],
-        "message_type": govbox_message.payload["message_type"]
+        "delivery_notification": govbox_message.delivery_notification
       }
     )
   end
