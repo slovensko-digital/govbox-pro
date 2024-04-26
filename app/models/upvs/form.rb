@@ -13,15 +13,15 @@ class Upvs::Form < ApplicationRecord
   has_many :related_documents, class_name: 'Upvs::FormRelatedDocument', foreign_key: 'upvs_form_id'
 
   def xslt_html
-    related_document('CLS_F_XSLT_HTML') || ::Upvs::FormRelatedDocumentsDownloader.new(self).download_related_document_by_type(:xslt_html)
+    related_document('CLS_F_XSLT_HTML') || ::Upvs::FormRelatedDocumentsDownloader.new(self).download_related_document_by_type(:xslt_html)&.data
   end
 
   def xsl_fo
-    related_document('CLS_F_XSL_FO') || ::Upvs::FormRelatedDocumentsDownloader.new(self).download_related_document_by_type(:xsl_fo)
+    related_document('CLS_F_XSL_FO') || ::Upvs::FormRelatedDocumentsDownloader.new(self).download_related_document_by_type(:xsl_fo)&.data
   end
 
   def xsd_schema
-    related_document('CLS_F_XSD_EDOC') || ::Upvs::FormRelatedDocumentsDownloader.new(self).download_related_document_by_type(:xsd)
+    related_document('CLS_F_XSD_EDOC') || ::Upvs::FormRelatedDocumentsDownloader.new(self).download_related_document_by_type(:xsd)&.data
   end
 
   def related_document(type)
