@@ -1,0 +1,44 @@
+module Upvs
+  class FormRelatedDocumentsDownloader < ::Utils::Downloader
+
+    SOURCE_URL = 'https://forms-slovensko-digital.s3.eu-central-1.amazonaws.com/upvs/'
+
+    attr_reader :upvs_form, :xml_manifest
+
+    def initialize(upvs_form)
+      @upvs_form = upvs_form
+      @xml_manifest = download_xml_manifest
+    end
+
+    def download_related_document_by_type(type)
+      case type
+      when :xsd
+        related_document_path = 'schema.xsd'
+        related_document_type = 'CLS_F_XSD_EDOC'
+      when :xslt_html
+        related_document_path = @xml_manifest.xpath('//manifest:file-entry[@media-destination="screen"]')&.first['full-path']
+        related_document_path&.gsub!(/\\/, '/')
+        related_document_type = 'CLS_F_XSLT_HTML'
+      when :xsl_fo
+        related_document_path = @xml_manifest.xpath('//manifest:file-entry[@media-destination="print"]')&.first['full-path']
+        related_document_path&.gsub!(/\\/, '/')
+        related_document_type = 'CLS_F_XSL_FO'
+      end
+
+      download_related_document(path: related_document_path, type: related_document_type)
+    end
+
+    def download_related_document(path:, type:)
+      upvs_form.related_documents.find_or_create_by(
+        document_type: type,
+        language: 'sk',
+        data: download(SOURCE_URL + "#{upvs_form.identifier}/#{upvs_form.version}/#{path}")
+      )
+    end
+
+    def download_xml_manifest
+      manifest_content = download(SOURCE_URL + "#{@upvs_form.identifier}/#{@upvs_form.version}/META-INF/manifest.xml")
+      Nokogiri::XML(manifest_content)
+    end
+  end
+end
