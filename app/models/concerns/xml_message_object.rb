@@ -16,19 +16,27 @@ module XmlMessageObject
       fo_xml.encoding = 'UTF-8'
 
       begin
-        fo_xml_file = Tempfile.new("#{id}.fo.xml")
-        fo_xml_file.write(fo_xml.to_s)
-        fo_xml_file.rewind
-        pdf_file = Tempfile.new("#{id}.pdf", encoding: 'UTF-8')
+        xml_file = Tempfile.new("#{id}.xml")
+        xml_file.write(xml_unsigned_content)
+        xml_file.rewind
 
-        system "fop -fo #{fo_xml_file.path} -pdf #{pdf_file.path}"
+        xsl_file = Tempfile.new("#{id}.fo.xsl")
+        xsl_file.write(upvs_form.xsl_fo.to_s)
+        xsl_file.rewind
+
+        pdf_file = Tempfile.new("#{id}.pdf")
+
+        system "fop -xml #{xml_file.path} -c #{Rails.root + 'config/fop.xconf'} -xsl #{xsl_file.path} -pdf #{pdf_file.path}"
 
         pdf_file.rewind
         pdf_file.read
       ensure
-        fo_xml_file.close
+        xml_file.close
+        xsl_file.close
         pdf_file.close
-        fo_xml_file.unlink
+
+        xml_file.unlink
+        xsl_file.unlink
         pdf_file.unlink
       end
     end
@@ -46,7 +54,7 @@ module XmlMessageObject
 
     def upvs_form
       xml_document = xml_unsigned_content
-      posp_id, posp_version = xml_document.root.namespace&.href&.match(FORM_IDENTIFIER_PATTERN).captures
+      posp_id, posp_version = xml_document.root.namespace&.href&.match(FORM_IDENTIFIER_PATTERN)&.captures
 
       ::Upvs::Form.find_by(
         identifier: posp_id,
