@@ -31,9 +31,12 @@ module Upvs
     def download_related_document(path:, type:)
       upvs_form.related_documents.find_or_create_by(
         document_type: type,
-        language: 'sk',
-        data: download(SOURCE_URL + "#{upvs_form.identifier}/#{upvs_form.version}/#{path}")
-      )
+        language: 'sk'
+      ).tap do |form_related_document|
+        form_related_document.data = download(SOURCE_URL + "#{upvs_form.identifier}/#{upvs_form.version}/#{path}")
+        form_related_document.touch
+        form_related_document.save!
+      end
     end
 
     def download_xml_manifest

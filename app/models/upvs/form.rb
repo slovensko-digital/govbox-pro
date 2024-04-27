@@ -25,6 +25,6 @@ class Upvs::Form < ApplicationRecord
   end
 
   def related_document(type)
-    related_documents.where(document_type: type).where("lower(language) = 'sk'")&.first&.data
+    related_documents.where(document_type: type).where("lower(language) = 'sk'").where("updated_at > '#{Time.now - 12.hours}'")&.first&.data
   end
 end
