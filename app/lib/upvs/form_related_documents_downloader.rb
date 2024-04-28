@@ -2,6 +2,7 @@ module Upvs
   class FormRelatedDocumentsDownloader < ::Utils::Downloader
 
     SOURCE_URL = 'https://forms-slovensko-digital.s3.eu-central-1.amazonaws.com/upvs/'
+    XSD_PATH = 'schema.xsd'
 
     attr_reader :upvs_form, :xml_manifest
 
@@ -13,7 +14,7 @@ module Upvs
     def download_related_document_by_type(type)
       case type
       when :xsd
-        related_document_path = 'schema.xsd'
+        related_document_path = XSD_PATH
         related_document_type = 'CLS_F_XSD_EDOC'
       when :xslt_html
         related_document_path = @xml_manifest.xpath('//manifest:file-entry[@media-destination="screen"]')&.first['full-path']

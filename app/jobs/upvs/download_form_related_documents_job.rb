@@ -2,8 +2,6 @@ module Upvs
   class DownloadFormRelatedDocumentsJob < ApplicationJob
     queue_as :default
 
-    XSD_PATH = 'schema.xsd'
-
     def perform(upvs_form)
       downloader = ::Upvs::FormRelatedDocumentsDownloader.new(upvs_form)
 
