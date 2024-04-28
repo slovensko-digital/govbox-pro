@@ -11,6 +11,6 @@
 class MessageObjectDatum < ApplicationRecord
   belongs_to :message_object
 
-  after_create_commit { message_object.message.set_html_visualization if message_object.form? }
+  after_create_commit { message_object.message.update_html_visualization if message_object.form? }
   after_save_commit { NestedMessageObject.create_from_message_object(message_object) }
 end

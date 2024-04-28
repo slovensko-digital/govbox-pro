@@ -97,7 +97,7 @@ class Message < ApplicationRecord
     )
   end
 
-  def set_html_visualization
+  def update_html_visualization
     self.update(
       html_visualization: visualization
     )
