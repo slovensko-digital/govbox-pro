@@ -10,6 +10,5 @@
 #  box_id          :bigint           not null
 #
 class MessageSubmissionRequest < ApplicationRecord
-  scope :billable, -> { where(response_status: 200) }
   scope :requested_between, -> (from, to) { where(created_at: from..to) }
 end
