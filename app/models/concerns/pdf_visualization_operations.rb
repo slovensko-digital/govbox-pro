@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module PDFVisualizationOperations
+module PdfVisualizationOperations
   extend ActiveSupport::Concern
 
   FORM_IDENTIFIER_PATTERN = /([^\/]+)\/(\d+\.\d+)\z/
@@ -63,7 +63,7 @@ module PDFVisualizationOperations
     end
 
     def xml?
-      if try(:is_signed)
+      if is_signed?
         nested_message_objects&.where(mimetype: Utils::XML_MIMETYPES)&.any?
       else
         mimetype.in?(Utils::XML_MIMETYPES)
