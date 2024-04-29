@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_08_100351) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_29_113005) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -555,8 +555,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_08_100351) do
     t.string "version", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "message_type", null: false
-    t.index ["identifier", "version", "message_type"], name: "index_forms_on_identifier_version_message_type", unique: true
+    t.index ["identifier", "version"], name: "index_forms_on_identifier_version", unique: true
   end
 
   create_table "upvs_service_with_form_allow_rules", force: :cascade do |t|

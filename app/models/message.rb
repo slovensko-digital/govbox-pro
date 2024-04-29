@@ -92,8 +92,7 @@ class Message < ApplicationRecord
   def upvs_form
     ::Upvs::Form.find_by(
       identifier: all_metadata['posp_id'],
-      version: all_metadata['posp_version'],
-      message_type: all_metadata['message_type']
+      version: all_metadata['posp_version']
     )
   end
 

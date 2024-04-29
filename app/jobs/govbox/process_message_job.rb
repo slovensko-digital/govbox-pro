@@ -17,8 +17,11 @@ module Govbox
         mark_associated_delivery_notification_authorized(govbox_message)
         collapse_referenced_outbox_message(message)
         create_message_relations(message)
+        download_upvs_form_related_documents(message)
       end unless processed_message
     end
+
+    private
 
     def destroy_associated_message_draft(govbox_message)
       message_draft = MessageDraft.where(uuid: govbox_message.message_id).joins(:thread).where(thread: { box_id: govbox_message.box.id }).take
@@ -84,14 +87,19 @@ module Govbox
       end
     end
 
-    private
-
     def mark_delivery_notificiation_message_authorized(delivery_notification_message)
       delivery_notification_message.collapsed = true
       delivery_notification_message.metadata['authorized'] = true
       delivery_notification_message.save!
 
       Govbox::Message.remove_delivery_notification_tag(delivery_notification_message)
+    end
+
+    def download_upvs_form_related_documents(message)
+      message.objects.each do |message_object|
+        upvs_form = message_object.find_or_create_upvs_form
+        ::Upvs::DownloadFormRelatedDocumentsJob.perform_later(upvs_form) if upvs_form
+      end
     end
   end
 end

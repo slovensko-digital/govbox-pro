@@ -53,6 +53,8 @@ module PdfVisualizationOperations
     end
 
     def upvs_form
+      return  unless xml?
+
       xml_document = xml_unsigned_content
       posp_id, posp_version = xml_document.root.namespace&.href&.match(FORM_IDENTIFIER_PATTERN)&.captures
 
@@ -60,6 +62,18 @@ module PdfVisualizationOperations
         identifier: posp_id,
         version: posp_version
       )
+    end
+
+    def find_or_create_upvs_form
+      return  unless xml?
+
+      xml_document = xml_unsigned_content
+      posp_id, posp_version = xml_document.root.namespace&.href&.match(FORM_IDENTIFIER_PATTERN)&.captures
+
+      ::Upvs::Form.find_or_create_by(
+        identifier: posp_id,
+        version: posp_version
+      ) if posp_id && posp_version
     end
 
     def xml?

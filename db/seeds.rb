@@ -327,8 +327,7 @@ Upvs::MessageTemplate.find_or_create_by!(
 
 ga_form = Upvs::Form.find_or_create_by!(
   identifier: "App.GeneralAgenda",
-  version: "1.9",
-  message_type: "App.GeneralAgenda"
+  version: "1.9"
 )
 ga_related_docs = [
   {
@@ -887,8 +886,7 @@ end
 
 crac_tu_registration_form = Upvs::Form.find_or_create_by!(
   identifier: "42156424.IAM_Zapis_autentifikacneho_certifikatu_s_vytvorenim_TU.sk",
-  version: "1.5",
-  message_type: "42156424.IAM_Zapis_autentifikacneho_certifikatu_s_vytvorenim_TU.sk"
+  version: "1.5"
 )
 crac_tu_registration_form_related_docs = [
   {
@@ -3096,8 +3094,7 @@ end
 
 crac_cert_registration_form = Upvs::Form.find_or_create_by!(
   identifier: "42156424.IAM_Zmena_zapisu_autentifikacneho_certifikatu.sk",
-  version: "1.5",
-  message_type: "42156424.IAM_Zmena_zapisu_autentifikacneho_certifikatu.sk"
+  version: "1.5"
 )
 crac_cert_registration_form_related_docs = [
   {
@@ -4508,8 +4505,7 @@ end
 
 crac_tu_termination_form = Upvs::Form.find_or_create_by!(
   identifier: "42156424.IAM_Zrusenie_TU.sk",
-  version: "1.5",
-  message_type: "42156424.IAM_Zrusenie_TU.sk"
+  version: "1.5"
 )
 crac_tu_termination_form_related_docs = [
   {
@@ -5854,8 +5850,7 @@ end
 
 exe_form = Upvs::Form.find_or_create_by!(
   identifier: "00166073.RESS_Exekucne_konanie_Navrh_na_vykonanie_exekucie.sk",
-  version: "1.24",
-  message_type: "00166073.RESS_Exekucne_konanie_Navrh_na_vykonanie_exekucie.sk"
+  version: "1.24"
 )
 exe_related_docs = [
   {
@@ -58244,8 +58239,7 @@ end
 
 szco_registration_form = Upvs::Form.find_or_create_by!(
   identifier: "JKM_ZROHLAS_FO",
-  version: "1.5",
-  message_type: "sluzba_egov_1097"
+  version: "1.5"
 )
 szco_registration_form_related_docs = [
   {

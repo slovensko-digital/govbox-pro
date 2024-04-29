@@ -54,6 +54,12 @@ module GovboxPro
       description: "Regular job to archive message_threads"
     }
 
+    config.good_job.cron['fetch_upvs_forms_related_documents'] = {
+      cron: "0 */12 * * *",  # run every 12 hours
+      class: "Upvs::FetchFormRelatedDocumentsJob",
+      description: "Regular job to fetch upvs_form_related_documents"
+    }
+
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files
