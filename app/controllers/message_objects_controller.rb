@@ -32,11 +32,11 @@ class MessageObjectsController < ApplicationController
   def download_pdf
     authorize @message_object
 
-    pdf_content = @message_object.pdf_transformation
+    pdf_content = @message_object.prepare_pdf_transformation
     if pdf_content
       send_data pdf_content, filename: MessageObjectHelper.pdf_name(@message_object), type: 'application/pdf', disposition: :download
     else
-      head :no_content
+      redirect_back fallback_location: message_thread_path(@message_object.message.thread), alert: "Obsah nie je možné stiahnuť."
     end
   end
 

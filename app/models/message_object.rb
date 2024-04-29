@@ -14,7 +14,7 @@
 #  message_id   :bigint           not null
 #
 class MessageObject < ApplicationRecord
-  include XmlMessageObject
+  include PdfVisualizationOperations
 
   belongs_to :message, inverse_of: :objects
   has_one :message_object_datum, dependent: :destroy

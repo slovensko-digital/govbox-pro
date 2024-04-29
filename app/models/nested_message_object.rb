@@ -11,7 +11,7 @@
 #  message_object_id :bigint           not null
 #
 class NestedMessageObject < ApplicationRecord
-  include XmlMessageObject
+  include PdfVisualizationOperations
 
   belongs_to :message_object, inverse_of: :nested_message_objects
 
@@ -32,6 +32,10 @@ class NestedMessageObject < ApplicationRecord
         content: nested_message_object.content
       )
     end
+  end
+
+  def is_signed?
+    false
   end
 
   def xml?

@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-module XmlMessageObject
+module PdfVisualizationOperations
   extend ActiveSupport::Concern
 
   FORM_IDENTIFIER_PATTERN = /([^\/]+)\/(\d+\.\d+)\z/
 
   included do
-    def pdf_transformation
+    def prepare_pdf_transformation
       return unless upvs_form&.xsl_fo
       return unless unsigned_content
       return unless xml?
@@ -63,7 +63,7 @@ module XmlMessageObject
     end
 
     def xml?
-      if try(:is_signed)
+      if is_signed?
         nested_message_objects&.where(mimetype: Utils::XML_MIMETYPES)&.any?
       else
         mimetype.in?(Utils::XML_MIMETYPES)
