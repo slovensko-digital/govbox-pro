@@ -11,7 +11,7 @@
 #  message_object_id :bigint           not null
 #
 class NestedMessageObject < ApplicationRecord
-  include XmlMessageObject
+  include PDFVisualizationOperations
 
   belongs_to :message_object, inverse_of: :nested_message_objects
 

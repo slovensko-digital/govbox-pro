@@ -14,7 +14,7 @@ class NestedMessageObjectsController < ApplicationController
   def download_pdf
     authorize @nested_message_object
 
-    pdf_content = @nested_message_object.pdf_transformation
+    pdf_content = @nested_message_object.prepare_pdf_transformation
     if pdf_content
       send_data pdf_content, filename: MessageObjectHelper.pdf_name(@nested_message_object), type: 'application/pdf', disposition: :download
     else
