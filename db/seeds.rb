@@ -14,6 +14,10 @@ end
 api_connection = Govbox::ApiConnection.find_or_create_by!(sub: "SPL_Irvin_83300252_KK_24022023", api_token_private_key: File.read(Rails.root + "security/govbox_api_fix.pem"))
 tenant.boxes.find_or_create_by!(name: "Dev box", uri: "ico://sk/83300252", short_name: 'DEV', api_connection: api_connection)
 
+# TODO change to Fs::ApiConnection
+fs_api_connection = ApiConnection.find_or_create_by!(sub: "fs_sub", api_token_private_key: File.read(Rails.root + "security/govbox_api_fix.pem"))
+tenant.boxes.find_or_create_by!(name: 'FS Box', uri: 'ico://sk/83300252_fs', short_name: 'FS', type: 'Fs::Box', api_connection: fs_api_connection)
+
 tenant.tags.find_or_create_by!(type: 'SimpleTag', name: 'NASES', owner_id: tenant.users.first.id)
 
 if tenant.users.first

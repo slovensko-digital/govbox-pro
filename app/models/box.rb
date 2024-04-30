@@ -8,6 +8,7 @@
 #  settings          :jsonb
 #  short_name        :string
 #  syncable          :boolean          default(TRUE), not null
+#  type              :string
 #  uri               :string           not null
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
