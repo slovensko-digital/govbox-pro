@@ -1,5 +1,5 @@
 <%= turbo_stream.replace "new_message" do %>
-  <%= render NewMessageDraftComponent.new(
+  <%= render Upvs::NewMessageDraftComponent.new(
     message: @message,
     templates_list: @templates_list,
     boxes: @boxes,

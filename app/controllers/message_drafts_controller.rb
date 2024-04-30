@@ -12,14 +12,18 @@ class MessageDraftsController < ApplicationController
   include MessageThreadsConcern
 
   def new
-    @templates_list = MessageTemplate.tenant_templates_list(Current.tenant)
-    @message_template = MessageTemplate.default_template
-    @message = MessageDraft.new
-    @boxes = Current.tenant&.boxes
-    @box = Current.box || @boxes.first
-    @recipients_list = @message_template&.recipients&.pluck(:institution_name, :institution_uri)&.map { |name, uri| { uri: uri, name: name }}
+    @box = Current.box
 
-    authorize @message
+    if @box.is_a? Fs::Box
+    else
+      load_upvs_message_draft_data
+
+      @message = MessageDraft.new
+      authorize @message
+
+      render 'message_drafts/upvs/new'
+    end
+
   end
 
   def index
@@ -32,23 +36,20 @@ class MessageDraftsController < ApplicationController
 
     @user_is_signer = Current.user.signer?
 
-    @message_template&.create_message(
-      @message,
-      author: Current.user,
-      box: @box,
-      recipient_name: new_message_draft_params[:recipient_name],
-      recipient_uri: new_message_draft_params[:recipient_uri]
-    )
+    if Box.is_a? Fs::Box
+    else
+      @message_template&.create_message(
+        @message,
+        author: Current.user,
+        box: @box,
+        recipient_name: new_message_draft_params[:recipient_name],
+        recipient_uri: new_message_draft_params[:recipient_uri]
+      )
 
-    unless @message.valid?(:create_from_template)
-      @templates_list = MessageTemplate.tenant_templates_list(Current.tenant)
-      @message_template ||= MessageTemplate.default_template
-      @boxes = Current.tenant&.boxes
-      @box = Current.box if Current.box || @boxes.first
-
-      @recipients_list = @message_template&.recipients&.pluck(:institution_name, :institution_uri)&.map { |name, uri| { uri: uri, name: name }}
-
-      render :update_new and return
+      unless @message.valid?(:create_from_template)
+        load_upvs_message_draft_data
+        render 'message_drafts/upvs/update_new' and return
+      end
     end
 
     redirect_to message_thread_path(@message.thread)
@@ -137,6 +138,15 @@ class MessageDraftsController < ApplicationController
 
   def load_message_draft
     @message = policy_scope(MessageDraft).find(params[:id])
+  end
+
+  def load_upvs_message_draft_data
+    @templates_list = MessageTemplate.tenant_templates_list(Current.tenant)
+    @message_template ||= MessageTemplate.default_template
+    @boxes = Current.tenant&.boxes
+    @box = Current.box if Current.box || @boxes.first
+
+    @recipients_list = @message_template&.recipients&.pluck(:institution_name, :institution_uri)&.map { |name, uri| { uri: uri, name: name }}
   end
 
   def message_draft_params
