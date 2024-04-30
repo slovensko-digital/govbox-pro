@@ -16,4 +16,7 @@
 #  tenant_id         :bigint           not null
 #
 class Fs::Box < Box
+  def self.policy_class
+    BoxPolicy
+  end
 end
