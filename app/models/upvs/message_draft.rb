@@ -22,6 +22,10 @@
 #  message_thread_id  :bigint           not null
 #
 class Upvs::MessageDraft < MessageDraft
+  def self.policy_class
+    MessageDraftPolicy
+  end
+
   validate :validate_correlation_id
 
   def self.load_from_params(message_params, box:)

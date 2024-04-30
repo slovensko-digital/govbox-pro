@@ -22,4 +22,7 @@
 #  message_thread_id  :bigint           not null
 #
 class Fs::MessageDraft < MessageDraft
+  def self.policy_class
+    MessageDraftPolicy
+  end
 end
