@@ -131,6 +131,13 @@ Rails.application.routes.draw do
 
   namespace :fs do
     resources :message_drafts
+
+    namespace :forms do
+      get :form_selector
+      get :forms_list
+      post :search_forms_list
+      post :form_selected
+    end
   end
 
   resources :message_drafts, only: [:update, :destroy] do

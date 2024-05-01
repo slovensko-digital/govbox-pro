@@ -1,0 +1,66 @@
+<div id="new_message" is="turbo-frame" class="w-full">
+  <div class="w-full p-4 flex-col justify-start items-start gap-4 inline-flex">
+    <div class="self-stretch bg-white rounded-md border border-gray-200 flex-col justify-start items-start flex">
+      <div class="self-stretch p-6 border-b border-gray-200 justify-start items-center gap-4 inline-flex">
+        <div class="grow shrink basis-0 text-gray-900 text-xl font-semibold leading-[35px]">Nová správa</div>
+      </div>
+      <%
+        form_id = "create_draft"
+        sender_element_id = "sender_id"
+      %>
+
+      <%= form_with url: fs_message_drafts_path, id: form_id, class: 'w-full' do |f| %>
+        <div class="self-stretch px-6 pt-6 flex-col justify-start items-start flex">
+          <div class="mb-4 w-full">
+            <% selected_box_attributes = @selected_box&.values_at(:name, :id) %>
+            <% boxes_attributes = @boxes.pluck(:name, :id) %>
+            
+            <% if @boxes.count > 1 %>
+              <label for="<%= sender_element_id %>" class="block mb-2 text-base font-medium text-gray-900">Od</label>
+              <%= select_tag(sender_element_id, options_for_select(boxes_attributes, selected_box_attributes), class: "text-sm rounded-lg block w-full p-2.5 #{@message.errors[:sender_name].any? && !selected_box_attributes ? ERROR_CLASSES : DEFAULT_CLASSES}") %>
+              <% if @message.errors[:sender_name].any? && !selected_box_attributes %>
+                <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+                  <span class="font-medium"><%= @message.errors[:sender_name].to_sentence %></span>
+                </p>
+              <% end %>
+            <% else %>
+              <%= hidden_field_tag sender_element_id, boxes_attributes.first[1] %>
+            <% end %>
+
+            <div id="selected_form" is="turbo-frame">
+              <%= hidden_field_tag 'form_id', params[:form_id] %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+
+      <div class="self-stretch px-6 pb-6 flex-col justify-start items-start flex">
+        <div id="forms_list" is="turbo-frame" class="w-full">
+          <div>
+            <label for="form" class="block mb-2 text-base font-medium text-gray-900">Typ správy</label>
+          </div>
+          <%= button_to fs_forms_form_selector_path, method: 'get', data: { turbo_frame: "modal" }, class: "text-gray-500 hover:text-gray-900 w-full" do %>
+            <div id="form" class="text-sm rounded-lg block w-full p-2.5 <%= @message.errors[:metadata].any? ? ERROR_CLASSES : DEFAULT_CLASSES %>">
+              <p class="text-left"><%= params[:form_name].presence || 'Zvoľte typ správy' %></p>
+            </div>
+            <% if @message.errors[:form_name].any? %>
+              <p class="mt-2 text-left text-sm text-red-600 dark:text-red-500">
+                <span class="font-medium"><%= @message.errors[:metadata].to_sentence %></span>
+              </p>
+            <% end %>
+          <% end %>
+        </div>
+
+        <%= content_tag(:div, {
+          "data-controller": "message-drafts",
+          "data-message-drafts-form-id": form_id,
+          class: "mt-6"
+        }) do %>
+          <button data-action="click->message-drafts#create" class="rounded-md bg-blue-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">
+            Vytvoriť správu
+          </button>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

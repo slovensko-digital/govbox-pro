@@ -1,0 +1,10 @@
+<%= turbo_stream.update 'forms-list' do %>
+  <% @forms_list.each do |form| %>
+    <%= button_to fs_forms_form_selected_path, method: 'post', params: { form_id: form[:id], form_name: form[:name] },
+                  class: "py-2", data: { turbo_frame: "_top" } do %>
+      <div>
+        <span class="flex text-base font-medium text-left text-gray-900"><%= form[:name] %></span>
+      </div>
+    <% end %>
+  <% end %>
+<% end %>
