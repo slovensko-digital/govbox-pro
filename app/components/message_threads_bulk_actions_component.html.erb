@@ -113,8 +113,9 @@
     <% end %>
 
     <% if Current.box && Current.tenant.feature_enabled?(:template_messages) %>
+      <% path = Current.box.is_a?(Fs::Box) ? new_fs_message_draft_path : new_upvs_message_draft_path %>
       <div class="relative hidden sm:inline-block text-left">
-        <%= link_to "Napísať novú správu", new_message_draft_path, class: "rounded-md bg-blue-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600", data: { turbo: false } %>
+        <%= link_to "Napísať novú správu", path, class: "rounded-md bg-blue-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600", data: { turbo: false } %>
       </div>
     <% end %>
   </div>

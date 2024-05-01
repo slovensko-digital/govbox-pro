@@ -1,87 +1,28 @@
 class MessageDraftsController < ApplicationController
-  before_action :ensure_drafts_import_enabled, only: :index
-  before_action :ensure_template_messages_enabled, only: :new
-  before_action :load_message_drafts, only: :index
-  before_action :load_original_message, only: :create
-  before_action :load_box, only: :create
-  before_action :load_message_template, only: :create
-  before_action :load_message_draft, except: [:new, :index, :create]
+  before_action :load_message_draft
 
   include ActionView::RecordIdentifier
   include MessagesConcern
   include MessageThreadsConcern
-
-  def new
-    @box = Current.box
-
-    if @box.is_a? Fs::Box
-    else
-      load_upvs_message_draft_data
-
-      @message = MessageDraft.new
-      authorize @message
-
-      render 'message_drafts/upvs/new'
-    end
-
-  end
-
-  def index
-    @messages = @messages.order(created_at: :desc)
-  end
-
-  def create
-    @message = MessageDraft.new
-    authorize @message
-
-    @user_is_signer = Current.user.signer?
-
-    if Box.is_a? Fs::Box
-    else
-      @message_template&.create_message(
-        @message,
-        author: Current.user,
-        box: @box,
-        recipient_name: new_message_draft_params[:recipient_name],
-        recipient_uri: new_message_draft_params[:recipient_uri]
-      )
-
-      unless @message.valid?(:create_from_template)
-        load_upvs_message_draft_data
-        render 'message_drafts/upvs/update_new' and return
-      end
-    end
-
-    redirect_to message_thread_path(@message.thread)
-  end
-
-  def show
-    authorize @message
-
-    @message_thread = @message.thread
-
-    set_thread_messages
-    set_visible_tags_for_thread
-  end
-
-  def update
-    authorize @message
-
-    @message.update_content(message_draft_params)
-  end
 
   def submit
     authorize @message
 
     render :update_body and return unless @message.valid?(:validate_data)
 
-    if Govbox::SubmitMessageDraftAction.run(@message)
+    if @message.submit
       redirect_to message_thread_path(@message.thread), notice: "Správa bola zaradená na odoslanie"
     else
       # TODO: prisposobit chybovu hlasku aj importovanym draftom
       # TODO FIX: Tato hlaska sa zobrazuje aj ked je object oznaceny ako to_be_signed, ale nebol este podpisany
       redirect_to message_thread_path(@message.thread), alert: "Vyplňte obsah správy"
     end
+  end
+
+  def update
+    authorize @message
+
+    @message.update_content(message_draft_params)
   end
 
   def destroy
@@ -111,50 +52,12 @@ class MessageDraftsController < ApplicationController
 
   private
 
-  def ensure_drafts_import_enabled
-    redirect_to message_threads_path(q: "label:(#{Current.tenant.draft_tag.name})") unless Current.tenant.feature_enabled?(:message_draft_import)
-  end
-
-  def ensure_template_messages_enabled
-    redirect_to message_threads_path unless Current.tenant.feature_enabled?(:template_messages)
-  end
-
-  def load_message_drafts
-    authorize MessageDraft
-    @messages = policy_scope(MessageDraft)
-  end
-
-  def load_original_message
-    @original_message = policy_scope(Message).find(params[:original_message_id]) if params[:original_message_id]
-  end
-
-  def load_box
-    @box = Box.find(new_message_draft_params[:sender_id]) if new_message_draft_params[:sender_id].present?
-  end
-
-  def load_message_template
-    @message_template = policy_scope(MessageTemplate).find(new_message_draft_params[:message_template_id]) if new_message_draft_params[:message_template_id].present?
-  end
-
   def load_message_draft
     @message = policy_scope(MessageDraft).find(params[:id])
-  end
-
-  def load_upvs_message_draft_data
-    @templates_list = MessageTemplate.tenant_templates_list(Current.tenant)
-    @message_template ||= MessageTemplate.default_template
-    @boxes = Current.tenant&.boxes
-    @box = Current.box if Current.box || @boxes.first
-
-    @recipients_list = @message_template&.recipients&.pluck(:institution_name, :institution_uri)&.map { |name, uri| { uri: uri, name: name }}
   end
 
   def message_draft_params
     attributes = MessageTemplateParser.parse_template_placeholders(@message.template).map{|item| item[:name]}
     params[:message_draft].permit(attributes)
-  end
-
-  def new_message_draft_params
-    params.permit(:message_template_id, :sender_id, :recipient_name, :recipient_uri)
   end
 end

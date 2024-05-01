@@ -68,6 +68,10 @@ class MessageDraft < Message
     reload
   end
 
+  def submit
+    Govbox::SubmitMessageDraftAction.run(self)
+  end
+
   def draft?
     true
   end

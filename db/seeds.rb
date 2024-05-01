@@ -40125,3 +40125,42 @@ szco_registration_form_related_docs.each do |related_document|
     document_type: related_document[:document_type]
   )
 end
+
+Fs::Form.find_or_create_by!(
+  form_template_id: "792_772",
+  name: "Test",
+  subtype_name: "Riadne",
+  submission_type_id: 792,
+  object_type_id: 772,
+  xdc_identifier: "https://ekr.financnasprava.sk/Formulare/xsd/dpfo_b2023.xsd",
+  signature_required: true,
+  ez_signature: true,
+  group_slug: "DPFOBv23",
+  group_number_id: 572
+)
+
+Fs::Form.find_or_create_by!(
+  form_template_id: "792_773",
+  name: "Daňové priznanie k dani z príjmov FO (typ A) za obdobie 2023 (platné od 1.1.2024)",
+  subtype_name: "Riadne",
+  submission_type_id: 792,
+  object_type_id: 772,
+  xdc_identifier: "https://ekr.financnasprava.sk/Formulare/xsd/dpfo_a2023.xsd",
+  signature_required: true,
+  ez_signature: true,
+  group_slug: "DPFOAv23",
+  group_number_id: 572
+)
+
+Fs::Form.find_or_create_by!(
+  form_template_id: "792_774",
+  name: "Daňové priznanie k dani z príjmov FO (typ C) za obdobie 2023 (platné od 1.1.2024)",
+  subtype_name: "Riadne",
+  submission_type_id: 792,
+  object_type_id: 772,
+  xdc_identifier: "https://ekr.financnasprava.sk/Formulare/xsd/dpfo_c2023.xsd",
+  signature_required: true,
+  ez_signature: true,
+  group_slug: "DPFOCv23",
+  group_number_id: 572
+)

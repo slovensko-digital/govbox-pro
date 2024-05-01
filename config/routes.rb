@@ -125,7 +125,15 @@ Rails.application.routes.draw do
     resources :filter_subscriptions
   end
 
-  resources :message_drafts do
+  namespace :upvs do
+    resources :message_drafts
+  end
+
+  namespace :fs do
+    resources :message_drafts
+  end
+
+  resources :message_drafts, only: [:update, :destroy] do
     member do
       post :confirm_unlock
       post :unlock

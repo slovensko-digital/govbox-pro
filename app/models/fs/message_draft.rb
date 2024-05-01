@@ -25,4 +25,8 @@ class Fs::MessageDraft < MessageDraft
   def self.policy_class
     MessageDraftPolicy
   end
+
+  def submit
+    raise NotImplementedError
+  end
 end
