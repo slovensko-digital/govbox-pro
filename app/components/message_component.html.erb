@@ -87,13 +87,13 @@
           </div>
       <% end %>
 
-      <% if @message.form && @message.form.nested_message_objects.present? %>
+      <% if @message.form_object && @message.form_object.nested_message_objects.present? %>
         <div class="flex flex-col justify-stretch items-stretch divide-y relative px-4 bg-white border border-gray-200 w-full">
-          <% @message.form.nested_message_objects.each do |message_attachment| %>
+          <% @message.form_object.nested_message_objects.each do |message_attachment| %>
             <!-- TODO lepsia podmienka (ma sa zobrazit vsetko okrem formulara) -->
             <% unless message_attachment.xml? %>
               <div class="flex justify-between items-center p-2 overflow-clip">
-                <%= link_to message_message_object_nested_message_object_path(@message, @message.form, message_attachment), data: { turbo_frame: "_top" }, class: "flex justify-start items-center gap-4 overflow-clip" do %>
+                <%= link_to message_message_object_nested_message_object_path(@message, @message.form_object, message_attachment), data: { turbo_frame: "_top" }, class: "flex justify-start items-center gap-4 overflow-clip" do %>
                   <div class="flex flex-col justify-start items-start overflow-clip">
                     <div class="flex justify-start items-start gap-4 w-full">
                       <span class="truncate text-base font-semibold text-left text-gray-900"><%= MessageObjectHelper.displayable_name(message_attachment) %></span>
@@ -101,7 +101,7 @@
                   </div>
                 <% end %>
                 <div class="flex justify-end items-center gap-4">
-                  <%= link_to message_message_object_nested_message_object_path(@message, @message.form, message_attachment), data: { turbo_frame: "_top" }, class: "flex justify-end items-center md:px-3.5 md:py-2.5 md:rounded-md md:bg-white md:border md:border-gray-300 hover:bg-gray-100" do %>
+                  <%= link_to message_message_object_nested_message_object_path(@message, @message.form_object, message_attachment), data: { turbo_frame: "_top" }, class: "flex justify-end items-center md:px-3.5 md:py-2.5 md:rounded-md md:bg-white md:border md:border-gray-300 hover:bg-gray-100" do %>
                     <%= render Icons::ArrowDownTrayComponent.new(css_classes: "w-5 h-5") %>
                   <% end %>
                 </div>

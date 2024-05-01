@@ -81,13 +81,13 @@ class MessageDraft < Message
   end
 
   def editable?
-    custom_visualization? && !form&.is_signed? && not_yet_submitted?
+    custom_visualization? && !form_object&.is_signed? && not_yet_submitted?
   end
 
   def reason_for_readonly
     return :read_only_agenda unless template.present?
     return :form_submitted if submitted? || being_submitted?
-    return :form_signed if form.is_signed?
+    return :form_signed if form_object.is_signed?
   end
 
   def custom_visualization?
@@ -95,7 +95,7 @@ class MessageDraft < Message
   end
 
   def submittable?
-    form.content.present? && objects.to_be_signed.all? { |o| o.is_signed? } && correctly_created? && valid?(:validate_data)
+    form_object.content.present? && objects.to_be_signed.all? { |o| o.is_signed? } && correctly_created? && valid?(:validate_data)
   end
 
   def correctly_created?
@@ -150,10 +150,10 @@ class MessageDraft < Message
   end
 
   def remove_form_signature
-    return false unless form
-    return false unless form.is_signed?
+    return false unless form_object
+    return false unless form_object.is_signed?
 
-    form.destroy
+    form_object.destroy
     reload
     template&.create_form_object(self)
     reload
@@ -180,9 +180,9 @@ class MessageDraft < Message
 
     raise "Missing XSD schema" unless upvs_form&.xsd_schema
 
-    return unless form&.unsigned_content
+    return unless form_object&.unsigned_content
 
-    document = Nokogiri::XML(form.unsigned_content) do |config|
+    document = Nokogiri::XML(form_object.unsigned_content) do |config|
       config.noblanks
     end
     form_errors = document.errors

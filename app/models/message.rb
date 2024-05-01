@@ -60,7 +60,7 @@ class Message < ApplicationRecord
     false
   end
 
-  def form
+  def form_object
     objects.select { |o| o.form? }&.first
   end
 
@@ -77,7 +77,7 @@ class Message < ApplicationRecord
   end
 
   def visualizable_body?
-    html_visualization.present? || (form && form.nested_message_objects.count > 1)
+    html_visualization.present? || (form_object && form_object.nested_message_objects.count > 1)
   end
 
   def can_be_authorized?
@@ -101,9 +101,9 @@ class Message < ApplicationRecord
     return self.html_visualization if self.html_visualization.present?
 
     return unless upvs_form&.xslt_html
-    return unless form&.unsigned_content
+    return unless form_object&.unsigned_content
 
-    document = Nokogiri::XML(form.unsigned_content) do |config|
+    document = Nokogiri::XML(form_object.unsigned_content) do |config|
       config.noblanks
     end
     document = Nokogiri::XML(document.xpath('*:XMLDataContainer/*:XMLData/*').to_xml) do |config|

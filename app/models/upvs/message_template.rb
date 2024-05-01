@@ -104,13 +104,13 @@ class Upvs::MessageTemplate < ::MessageTemplate
       filled_content.gsub!(template_item[:placeholder], message.metadata['data'][template_item[:name]].to_s)
     end
 
-    if message.form.message_object_datum
-      message.form.message_object_datum.update(
+    if message.form_object.message_object_datum
+      message.form_object.message_object_datum.update(
         blob: filled_content
       )
     else
-      message.form.message_object_datum = MessageObjectDatum.create(
-        message_object: message.form,
+      message.form_object.message_object_datum = MessageObjectDatum.create(
+        message_object: message.form_object,
         blob: filled_content
       )
     end

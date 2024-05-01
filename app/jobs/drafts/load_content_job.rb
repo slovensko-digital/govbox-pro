@@ -65,11 +65,11 @@ class Drafts::LoadContentJob < ApplicationJob
       )
 
       if message_draft.custom_visualization?
-        message_draft.metadata["message_body"] = Upvs::FormBuilder.parse_general_agenda_text(message_draft.form.content)
+        message_draft.metadata["message_body"] = Upvs::FormBuilder.parse_general_agenda_text(message_draft.form_object.content)
         message_draft.save!
       end
 
-      message_draft.form.update(
+      message_draft.form_object.update(
         visualizable: true
       ) if message_draft.html_visualization
   end

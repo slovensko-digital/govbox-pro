@@ -15,6 +15,6 @@ class Upvs::MessageTemplateTest < ActiveSupport::TestCase
 
     message_template.build_message_from_template(message_draft)
 
-    assert_equal '<GeneralAgenda xmlns="http://schemas.gov.sk/form/App.GeneralAgenda/1.9"> <subject>Odpoved</subject> <text>Odpoved k rozhodnutiu...</text> </GeneralAgenda>', message_draft.form.content
+    assert_equal '<GeneralAgenda xmlns="http://schemas.gov.sk/form/App.GeneralAgenda/1.9"> <subject>Odpoved</subject> <text>Odpoved k rozhodnutiu...</text> </GeneralAgenda>', message_draft.form_object.content
   end
 end
