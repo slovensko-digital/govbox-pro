@@ -9,7 +9,7 @@
         sender_element_id = "sender_id"
       %>
 
-      <%= form_with url: fs_message_drafts_path, id: form_id, class: 'w-full' do |f| %>
+      <%= form_with url: fs_message_drafts_path, id: form_id, multipart: true, class: 'w-full' do |f| %>
         <div class="self-stretch px-6 pt-6 flex-col justify-start items-start flex">
           <div class="mb-4 w-full">
             <% selected_box_attributes = @selected_box&.values_at(:name, :id) %>
@@ -29,6 +29,11 @@
 
             <div id="selected_form" is="turbo-frame">
               <%= hidden_field_tag 'form_id', params[:form_id] %>
+            </div>
+
+            <div>
+              <label for="content" class="block mb-2 text-base font-medium text-gray-900">XML obsah správy</label>
+              <%= file_field_tag :content %>
             </div>
           </div>
         </div>

@@ -1,0 +1,7 @@
+<%= turbo_stream.replace "new_message" do %>
+  <%= render Fs::NewMessageDraftComponent.new(
+    message: @message,
+    boxes: @boxes,
+    selected_box: @box
+  )%>
+<% end %>
