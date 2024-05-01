@@ -99,7 +99,7 @@ class Message < ApplicationRecord
 
   def update_html_visualization
     self.update(
-      html_visualization: visualization
+      html_visualization: build_visualization
     )
 
     form.update(
@@ -107,7 +107,7 @@ class Message < ApplicationRecord
     )
   end
 
-  def visualization
+  def build_visualization
     return self.html_visualization if self.html_visualization.present?
 
     return unless upvs_form&.xslt_html
