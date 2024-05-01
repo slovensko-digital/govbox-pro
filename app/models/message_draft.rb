@@ -178,7 +178,7 @@ class MessageDraft < Message
       return
     end
 
-    raise "Missing XSD schema" unless upvs_form&.xsd_schema
+    raise "Missing XSD schema" unless form&.xsd_schema
 
     return unless form_object&.unsigned_content
 
@@ -191,7 +191,7 @@ class MessageDraft < Message
       config.noblanks
     end if document.xpath('*:XMLDataContainer/*:XMLData').any?
 
-    schema = Nokogiri::XML::Schema(upvs_form.xsd_schema)
+    schema = Nokogiri::XML::Schema(form.xsd_schema)
     form_errors += schema.validate(document)
 
     errors.add(:base, :invalid_form) if form_errors.any?

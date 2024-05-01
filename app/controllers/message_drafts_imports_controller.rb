@@ -16,7 +16,7 @@ class MessageDraftsImportsController < ApplicationController
 
     Drafts::ParseImportJob.perform_later(import, author: Current.user)
 
-    redirect_to message_drafts_path
+    redirect_to upvs_message_drafts_path
   end
 
   def upload_new

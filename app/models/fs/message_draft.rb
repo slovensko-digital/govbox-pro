@@ -69,7 +69,7 @@ class Fs::MessageDraft < MessageDraft
 
   private
 
-  def fs_form
+  def form
     Fs::Form.find(metadata['fs_form_id'])
   end
 end

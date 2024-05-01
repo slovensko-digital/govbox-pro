@@ -89,7 +89,7 @@ class Message < ApplicationRecord
   end
 
   # TODO remove UPVS stuff from core domain
-  def upvs_form
+  def form
     ::Upvs::Form.find_by(
       identifier: all_metadata['posp_id'],
       version: all_metadata['posp_version'],
@@ -100,7 +100,7 @@ class Message < ApplicationRecord
   def visualization
     return self.html_visualization if self.html_visualization.present?
 
-    return unless upvs_form&.xslt_html
+    return unless form&.xslt_html
     return unless form_object&.unsigned_content
 
     document = Nokogiri::XML(form_object.unsigned_content) do |config|
@@ -110,7 +110,7 @@ class Message < ApplicationRecord
       config.noblanks
     end if document.xpath('*:XMLDataContainer/*:XMLData').any?
 
-    template = Nokogiri::XSLT(upvs_form.xslt_html)
+    template = Nokogiri::XSLT(form.xslt_html)
     template.transform(document)
   end
 
