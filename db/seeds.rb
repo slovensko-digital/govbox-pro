@@ -46580,37 +46580,35 @@ fs_form2_related_documents = [
     language: 'sk',
     data: <<~XSLT
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE xsl:stylesheet [
-<!ENTITY nbsp "&#xa0;">]>
-<xsl:stylesheet version="2.0"
-	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" >
-	<xsl:output method="xhtml" xpath-default-namespace="http://www.w3.org/1999/xhtml" omit-xml-declaration="yes"/>
-	<xsl:template match="/">
-		<xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"&gt;</xsl:text>
-		<html
-			xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
-			<head>
-				<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-				<title>V2Pv21 - Vyhlásenie o poukázaní sumy do výšky 2% (3%) zaplatenej dane za zdaňovacie obdobie 2021</title>
-				<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-				<meta name="language" content="sk-SK" />
-				<script src="Scripts/jquery.min.js" type="text/javascript"></script>
-				<script src="Scripts/jquery-ui.min.js" type="text/javascript"></script>
-				<script src="Scripts/ego.statusDialog.js" type="text/javascript"></script>
-				<script src="Scripts/jquery-ui-timepicker-addon.js" type="text/javascript"></script>
-				<script src="Scripts/jquery.dataTables.min.js" type="text/javascript"></script>
-				<script src="Scripts/p_pfs.js" type="text/javascript"></script>
-				<script src="Scripts/PFS_ego.js" type="text/javascript"></script>
-				<script src="Scripts/PFS_jquery.form.plugins.js" type="text/javascript"></script>
-				<script src="Scripts/PFS_jquery.validate.js" type="text/javascript"></script>
-				<script src="Scripts/wrapper.js" type="text/javascript"></script>
-				<script src="Scripts/jquery.maskedinput.min.js" type="text/javascript"></script>
-				<script src="Scripts/form.527.xmlfdf.js" type="text/javascript"></script>
-				<link href="Styles/base.css" rel="stylesheet" type="text/css"/>
-				<link href="Styles/ego.css" rel="stylesheet" type="text/css"/>
-				<link href="Styles/jquery-ui.css" rel="stylesheet" type="text/css"/>
-				<link href="Styles/p_pfs.css" rel="stylesheet" type="text/css"/>
-				<script type="text/javascript">
+<!DOCTYPE xsl:stylesheet [ <!ENTITY nbsp "&#xa0;">]>
+<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" >
+<xsl:output method="xhtml" xpath-default-namespace="http://www.w3.org/1999/xhtml" omit-xml-declaration="yes"/>
+<xsl:template match="/">
+<xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"&gt;</xsl:text>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<title>V2Pv21 - Vyhlásenie o poukázaní sumy do výšky 2% (3%) zaplatenej dane za zdaňovacie obdobie 2021</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta name="language" content="sk-SK" />
+		<script src="Scripts/jquery.min.js" type="text/javascript"></script>
+<script src="Scripts/jquery-ui.min.js" type="text/javascript"></script>
+<script src="Scripts/ego.statusDialog.js" type="text/javascript"></script>
+<script src="Scripts/jquery-ui-timepicker-addon.js" type="text/javascript"></script>
+<script src="Scripts/jquery.dataTables.min.js" type="text/javascript"></script>
+<script src="Scripts/p_pfs.js" type="text/javascript"></script>
+<script src="Scripts/PFS_ego.js" type="text/javascript"></script>
+<script src="Scripts/PFS_jquery.form.plugins.js" type="text/javascript"></script>
+<script src="Scripts/PFS_jquery.validate.js" type="text/javascript"></script>
+<script src="Scripts/wrapper.js" type="text/javascript"></script>
+<script src="Scripts/jquery.maskedinput.min.js" type="text/javascript"></script>
+<script src="Scripts/form.527.xmlfdf.js" type="text/javascript"></script>
+<link href="Styles/base.css" rel="stylesheet" type="text/css"/>
+<link href="Styles/ego.css" rel="stylesheet" type="text/css"/>
+<link href="Styles/jquery-ui.css" rel="stylesheet" type="text/css"/>
+<link href="Styles/p_pfs.css" rel="stylesheet" type="text/css"/>
+
+		<script type="text/javascript">
 		(function($, undefined) {
 			if (!$.validator) {
 				throw '$.validator is missing.';
@@ -46638,10 +46636,8 @@ fs_form2_related_documents = [
 			});
 		}(jQuery));
 
-
-					<xsl:text disable-output-escaping="yes">
-			/*
-						<![CDATA[ */
+				<xsl:text disable-output-escaping="yes">
+			/* <![CDATA[ */
 		$.validator.addMethod
 (
 "r12SumaRegEx",
@@ -46668,7 +46664,7 @@ $.validator.addMethod
 function(value, element)
 {
 if ($(element).hasClass('disableValidators')) { return true; }
-return value.match(new RegExp(/^$|^\\d{8}$|^\\d{12}$/));
+return value.match(new RegExp(/^$|^\d{8}$|^\d{12}$/));
 }
 );
 
@@ -46678,7 +46674,7 @@ $.validator.addMethod
 function(value, element)
 {
 if ($(element).hasClass('disableValidators')) { return true; }
-return value.match(new RegExp(/^$|^\\d{6}$/));
+return value.match(new RegExp(/^$|^\d{6}$/));
 }
 );
 
@@ -46688,7 +46684,7 @@ $.validator.addMethod
 function(value, element)
 {
 if ($(element).hasClass('disableValidators')) { return true; }
-return value.match(new RegExp(/^$|^\\d{3,4}$/));
+return value.match(new RegExp(/^$|^\d{3,4}$/));
 }
 );
 
@@ -46698,7 +46694,7 @@ $.validator.addMethod
 function(value, element)
 {
 if ($(element).hasClass('disableValidators')) { return true; }
-return value.match(new RegExp(/^$|^(([0][1-9])|([12][0-9])|(3[01])).([0][1-9]|[1][0-2]).\\d{4}$/));
+return value.match(new RegExp(/^$|^(([0][1-9])|([12][0-9])|(3[01])).([0][1-9]|[1][0-2]).\d{4}$/));
 }
 );
 
@@ -46708,7 +46704,7 @@ $.validator.addMethod
 function(value, element)
 {
 if ($(element).hasClass('disableValidators')) { return true; }
-return value.match(new RegExp(/^$|^(([0][1-9])|([12][0-9])|(3[01])).([0][1-9]|[1][0-2]).\\d{4}$/));
+return value.match(new RegExp(/^$|^(([0][1-9])|([12][0-9])|(3[01])).([0][1-9]|[1][0-2]).\d{4}$/));
 }
 );
 
@@ -46728,7 +46724,7 @@ $.validator.addMethod
 function(value, element)
 {
 if ($(element).hasClass('disableValidators')) { return true; }
-return value.match(new RegExp(/^$|^\\d{6}$/));
+return value.match(new RegExp(/^$|^\d{6}$/));
 }
 );
 
@@ -46738,7 +46734,7 @@ $.validator.addMethod
 function(value, element)
 {
 if ($(element).hasClass('disableValidators')) { return true; }
-return value.match(new RegExp(/^$|^\\d{3,4}$/));
+return value.match(new RegExp(/^$|^\d{3,4}$/));
 }
 );
 
@@ -46808,7 +46804,7 @@ $.validator.addMethod
 function(value, element)
 {
 if ($(element).hasClass('disableValidators')) { return true; }
-return value.match(new RegExp(/^$|^\\d{10}$/));
+return value.match(new RegExp(/^$|^\d{10}$/));
 }
 );
 
@@ -46981,7 +46977,7 @@ var psc_aut_val = $("[name='psc']").val();;
 
 if (psc_aut_val != "")
 {
-return (stat_aut_val == "Slovensko"||stat_aut_val == "slovensko"||stat_aut_val == "SVK"||stat_aut_val == "SK"||stat_aut_val == "SR"||stat_aut_val == "Slovenská republika"||stat_aut_val == "Slovenská Republika"||stat_aut_val == "slovenská republika"||stat_aut_val == "Slovakia"||stat_aut_val == "Slovak Republic"||stat_aut_val == "sk"||stat_aut_val == "SLOVENSKO"||stat_aut_val == "SLOVENSKÁ REPUBLIKA"||stat_aut_val == "svk") && (!(/^\\d+$/).test(psc_aut_val) || psc_aut_val.length != 5) ? 0 : 1;
+return (stat_aut_val == "Slovensko"||stat_aut_val == "slovensko"||stat_aut_val == "SVK"||stat_aut_val == "SK"||stat_aut_val == "SR"||stat_aut_val == "Slovenská republika"||stat_aut_val == "Slovenská Republika"||stat_aut_val == "slovenská republika"||stat_aut_val == "Slovakia"||stat_aut_val == "Slovak Republic"||stat_aut_val == "sk"||stat_aut_val == "SLOVENSKO"||stat_aut_val == "SLOVENSKÁ REPUBLIKA"||stat_aut_val == "svk") && (!(/^\d+$/).test(psc_aut_val) || psc_aut_val.length != 5) ? 0 : 1;
 }else
 return 1
 }
@@ -47135,7 +47131,7 @@ var psc_aut_val = $("[name='PSC08']").val();;
 
 if (psc_aut_val != "")
 {
-return (stat_aut_val == "Slovensko"||stat_aut_val == "slovensko"||stat_aut_val == "SVK"||stat_aut_val == "SK"||stat_aut_val == "SR"||stat_aut_val == "Slovenská republika"||stat_aut_val == "Slovenská Republika"||stat_aut_val == "slovenská republika"||stat_aut_val == "Slovakia"||stat_aut_val == "Slovak Republic"||stat_aut_val == "sk"||stat_aut_val == "SLOVENSKO"||stat_aut_val == "SLOVENSKÁ REPUBLIKA"||stat_aut_val == "svk") && (!(/^\\d+$/).test(psc_aut_val) || psc_aut_val.length != 5) ? 0 : 1;
+return (stat_aut_val == "Slovensko"||stat_aut_val == "slovensko"||stat_aut_val == "SVK"||stat_aut_val == "SK"||stat_aut_val == "SR"||stat_aut_val == "Slovenská republika"||stat_aut_val == "Slovenská Republika"||stat_aut_val == "slovenská republika"||stat_aut_val == "Slovakia"||stat_aut_val == "Slovak Republic"||stat_aut_val == "sk"||stat_aut_val == "SLOVENSKO"||stat_aut_val == "SLOVENSKÁ REPUBLIKA"||stat_aut_val == "svk") && (!(/^\d+$/).test(psc_aut_val) || psc_aut_val.length != 5) ? 0 : 1;
 }else
 return 1
 }
@@ -47148,7 +47144,7 @@ var psc_aut_val = $("[name='PSC18']").val();;
 
 if (psc_aut_val != "")
 {
-return (stat_aut_val == "Slovensko"||stat_aut_val == "slovensko"||stat_aut_val == "SVK"||stat_aut_val == "SK"||stat_aut_val == "SR"||stat_aut_val == "Slovenská republika"||stat_aut_val == "Slovenská Republika"||stat_aut_val == "slovenská republika"||stat_aut_val == "Slovakia"||stat_aut_val == "Slovak Republic"||stat_aut_val == "sk"||stat_aut_val == "SLOVENSKO"||stat_aut_val == "SLOVENSKÁ REPUBLIKA"||stat_aut_val == "svk") && (!(/^\\d+$/).test(psc_aut_val) || psc_aut_val.length != 5) ? 0 : 1;
+return (stat_aut_val == "Slovensko"||stat_aut_val == "slovensko"||stat_aut_val == "SVK"||stat_aut_val == "SK"||stat_aut_val == "SR"||stat_aut_val == "Slovenská republika"||stat_aut_val == "Slovenská Republika"||stat_aut_val == "slovenská republika"||stat_aut_val == "Slovakia"||stat_aut_val == "Slovak Republic"||stat_aut_val == "sk"||stat_aut_val == "SLOVENSKO"||stat_aut_val == "SLOVENSKÁ REPUBLIKA"||stat_aut_val == "svk") && (!(/^\d+$/).test(psc_aut_val) || psc_aut_val.length != 5) ? 0 : 1;
 }else
 return 1
 }
@@ -47321,7 +47317,7 @@ if (dolnaHranica <= datumVyhlasenia && datumVyhlasenia <= hornaHranica) {
   return inliner14_korona(element,sid);
 }
 */
-
+/*
 var datumZaplateniaVal = $("[id='datumZaplatenia']").val();
 var datumZaplateniaDatum = new Date(datumZaplateniaVal.split('.')[2], datumZaplateniaVal.split('.')[1]-1, datumZaplateniaVal.split('.')[0]);
 var r25Val = $("#t25").val();
@@ -47365,10 +47361,48 @@ if(Number(r25Val) > 5 && r26dDatum > new Date(rok, 4 - 1, 30))
 }
 
 return 1;
+
+*/
+
+var datumZaplateniaVal = $("[id='datumZaplatenia']").val();
+var datumZaplateniaDatum = new Date(datumZaplateniaVal.split('.')[2], datumZaplateniaVal.split('.')[1]-1, datumZaplateniaVal.split('.')[0]);
+var r25Val = $("#t25").val();
+var r26Val = $("#t26").val();
+var r26dVal = $("#t26_D").val();
+var r26dDatum = new Date(r26dVal.split('.')[2], r26dVal.split('.')[1]-1, r26dVal.split('.')[0]);
+var rok = parseInt($("#rok").val()) + 1;
+
+if (r25Val != "" && r26dVal != "" )
+{
+  if(datumZaplateniaVal != r26dVal )
+    return "Pole '14 - Dátum zaplatenia dane' vo Vyhlásení sa nezhoduje s polom 'Dňa' v Potvrdení (Ak je 'r25P' a 'r26P-dátum' vyplnený, potom 'r14V'='r26P-dátum').";
+}
+
+if(datumZaplateniaVal == "" && (r25Val != "" || (r26dVal != "" && r26dDatum > new Date(rok, 2, 31))))
+{
+    return "Dátum zaplatenia dane na r.14 Vyhlásenia musí byť vyplnený, ak je vyplnený r.25 a r.26 dňa Potvrdenia";
+}
+
+if(Number(r25Val) > 5 && r26dVal == "")
+{
+   if((datumZaplateniaDatum > new Date(rok, 4 - 1, 30)) && datumZaplateniaVal != "")
+     return "Riadok '14 - Dátum zaplatenia dane' - Vyplňte dátum úhrady nedoplatku z RZ na OÚD daňovníka u správcu dane (Ak je 'r25P'>5 a 'r26P-dátum' prázdny, potom 'r14V'<=30.4.XXXX+1). (Vyhlásenie)"
+}
+if(Number(r25Val) <= 5 && r26dVal == "")
+{
+   if((datumZaplateniaDatum > new Date(rok, 4 - 1, 30)) && datumZaplateniaVal != "")
+     return "Riadok '14 - Dátum zaplatenia dane' - Nedoplatok z RZ nepresahuje 5 €, podmienky budú splnené ak daňovník nemá iné nedoplatky na dani z príjmov (Ak je 'r25P'<=5 a 'r26P-dátum' prázdny, potom 'r14V'<=30.4.XXXX+1). (Vyhlásenie)"
+}
+if(Number(r25Val) > 5 && r26dDatum > new Date(rok, 4 - 1, 30))
+{
+     return " Riadok '14 - Dátum zaplatenia dane' - Nedoplatok z ročného zúčtovania nebol uhradený v lehote (Ak je 'r25P'>5 a 'r26P-dátum'>30.4.XXXX+1). (Vyhlásenie)"
+}
+
+return 1;
 }
 
 function inlinetelcislo(element,sid) {
-return /^$|^\+\\d{12}|0\\d{3}\/?\\d{6}$/.test($("#TelCislo").val())
+return /^$|^\+\d{12}|0\d{3}\/?\d{6}$/.test($("#TelCislo").val())
 }
 
 function inliner14_korona(element,sid) {
@@ -47531,7 +47565,7 @@ else
       return 'V2Pv21-poucenie';
       break;
     case 13:
-      return 'form.527.prijimatelia_2024.html'+'|form.527.prijimatelia_2023.html'+'|form.414.info.pdf';
+      return 'form.527.prijimatelia_2024.html'+'|form.414.info.pdf';
       break;
     default:
       return null;
@@ -47554,7 +47588,6 @@ function GetExternalResource(resourcetype, index) {
       break;
     case 13:
       if (index == null || index =='form.527.prijimatelia_2024.html') return 'form.527.prijimatelia_2024.html';
-      if (index == null || index =='form.527.prijimatelia_2023.html') return 'form.527.prijimatelia_2023.html';
       if (index == null || index =='form.414.info.pdf') return 'form.414.info.pdf';
       break;
     default:
@@ -51701,10 +51734,9 @@ Dic11RegEx: "Položka '[11] - Daňové identifikačné číslo' má neplatný fo
 			});
 	  	}
 	/* ]]> */
-
 					</xsl:text>
-				</script>
-				<style type="text/css">
+			</script>
+	<style type="text/css">
 		.bezOkrajaBezPozadiaHlavicky {border:0px;background:none;}
 .bezOkrajaBezPozadiaHlavicky > .caption {border:0px;background:none !important;}
 .dolava9px {position:relative;left:-9px;}
@@ -51763,2172 +51795,2872 @@ Dic11RegEx: "Položka '[11] - Daňové identifikačné číslo' má neplatný fo
 .kratkyTextBox75px TEXTAREA { width:75px; height: 16px; }
 
 	</style>
-			</head>
-			<body>
-				<noscript>
-					<p class="noscript">Pre kompletnú funkčnosť aplikácie je potrebné povoliť JavaScript</p>
-				</noscript>
-				<div id="errorsContainerDiv" class="errorsContainerDiv">
-					<ul id="errorsContainer" class="errorsContainer">
-						<li/>
-					</ul>
+</head>
+<body>
+	<noscript><p class="noscript">Pre kompletnú funkčnosť aplikácie je potrebné povoliť JavaScript</p></noscript>
+	<div id="errorsContainerDiv" class="errorsContainerDiv"> <ul id="errorsContainer" class="errorsContainer"><li/></ul> </div>
+	<form id="V2Pv21" action="">
+		<div id="main" class="layoutMain ui-widget-content">
+
+			<xsl:for-each select="/V2Pv21/Nazov">
+		<div id="layoutRow34786" class="layoutRow ui-tabs ui-widget-content  nocaption "   title="" >
+						<input type="hidden" name="Nazov"  />
+					<div class="caption ui-widget-header">
+				<span class="arrow ui-icon ui-icon-carat-1-n"></span></div>
+		<div id="layoutRowContentlayoutRow34786" class="columns">
+
+				<div id="layoutColumn86498" class="column first" >
+
+<div id="layoutCell139963" class="cell " >
+
+		<span class="fieldContent"><a href="#r910a" id="r910" onClick="window.open('form.414.info.pdf', '_blank','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=580,height=400')" taget="_blank"><b><u>INFORMÁCIA K VYPLNENIU VYHLÁSENIA</u></b></a></span>
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell139960" class="cell  NadpisTucnyCentrovanyText" >
+
+		<span class="fieldLabel" title=""   style="width:880px;"><xsl:text disable-output-escaping="yes">VYHLÁSENIE </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell139961" class="cell  tucnyCentrovanyTextNormal_1em" >
+
+		<span class="fieldLabel" title=""   style="width:880px;"><xsl:text disable-output-escaping="yes">o poukázaní podielu zaplatenej dane z príjmov fyzickej osoby </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell139962" class="cell  centrovanyTextPodnadpis" >
+
+		<span class="fieldLabel" title=""   style="width:880px;"><xsl:text disable-output-escaping="yes">podľa § 50 zákona č. 595/2003 Z. z. o dani z príjmov v znení neskorších predpisov (ďalej len „zákon“),&lt;br/&gt; ktorej bolo za zdaňovacie obdobie vykonané ročné zúčtovanie preddavkov na daň z príjmov zo závislej činnosti </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
 				</div>
-				<form id="V2Pv21" action="">
-					<div id="main" class="layoutMain ui-widget-content">
-						<xsl:for-each select="/V2Pv21/Nazov">
-							<div id="layoutRow34786" class="layoutRow ui-tabs ui-widget-content  nocaption "   title="" >
-								<input type="hidden" name="Nazov"  />
-								<div class="caption ui-widget-header">
-									<span class="arrow ui-icon ui-icon-carat-1-n"></span>
-								</div>
-								<div id="layoutRowContentlayoutRow34786" class="columns">
-									<div id="layoutColumn86498" class="column first" >
-										<div id="layoutCell139963" class="cell " >
-											<span class="fieldContent">
-												<a href="#r910a" id="r910" onClick="window.open('form.414.info.pdf', '_blank','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=580,height=400')" taget="_blank">
-													<b>
-														<u>INFORMÁCIA K VYPLNENIU VYHLÁSENIA</u>
-													</b>
-												</a>
-											</span>
-											<div class="clear"></div>
-										</div>
-										<div id="layoutCell139960" class="cell  NadpisTucnyCentrovanyText" >
-											<span class="fieldLabel" title=""   style="width:880px;">
-												<xsl:text disable-output-escaping="yes">VYHLÁSENIE </xsl:text>
-											</span>
-											<div class="clear"></div>
-										</div>
-										<div id="layoutCell139961" class="cell  tucnyCentrovanyTextNormal_1em" >
-											<span class="fieldLabel" title=""   style="width:880px;">
-												<xsl:text disable-output-escaping="yes">o poukázaní podielu zaplatenej dane z príjmov fyzickej osoby </xsl:text>
-											</span>
-											<div class="clear"></div>
-										</div>
-										<div id="layoutCell139962" class="cell  centrovanyTextPodnadpis" >
-											<span class="fieldLabel" title=""   style="width:880px;">
-												<xsl:text disable-output-escaping="yes">podľa § 50 zákona č. 595/2003 Z. z. o dani z príjmov v znení neskorších predpisov (ďalej len „zákon“),&lt;br/&gt; ktorej bolo za zdaňovacie obdobie vykonané ročné zúčtovanie preddavkov na daň z príjmov zo závislej činnosti </xsl:text>
-											</span>
-											<div class="clear"></div>
-										</div>
-									</div>
-									<div class="clear"></div>
-								</div>
-							</div>
-						</xsl:for-each>
-						<xsl:if test="/V2Pv21/Nazov/@notInFormData">
-							<script type="text/javascript">$(document).ready(function () { initRepetitionSection(1, 1, 'layoutRow34786') })</script>
-						</xsl:if>
-						<xsl:for-each select="/V2Pv21/udaje">
-							<div id="layoutRow34808" class="layoutRow ui-tabs ui-widget-content  nocaption "   title="" >
-								<input type="hidden" name="udaje"  />
-								<div class="caption ui-widget-header">
-									<span class="arrow ui-icon ui-icon-carat-1-n"></span>
-								</div>
-								<div id="layoutRowContentlayoutRow34808" class="columns">
-									<div id="layoutColumn86537" class="column first"  style="width:516px;">
-										<div id="layoutCell140024" class="cell " >
-											<xsl:for-each select="/V2Pv21/udaje/rodneCislo">
-												<div id="layoutRow34807" class="layoutRow ui-tabs ui-widget-content  dolava9px bezOkrajaBezPozadiaHlavicky nocaption "   title="" >
-													<input type="hidden" name="rodneCislo"  />
-													<div class="caption ui-widget-header">
-														<span class="arrow ui-icon ui-icon-carat-1-n"></span>
-													</div>
-													<div id="layoutRowContentlayoutRow34807" class="columns">
-														<div id="layoutColumn86536" class="column first"  style="width:223px;">
-															<div id="layoutCell140022" class="cell " >
-																<span class="fieldLabel" title=""   style="width:210px;">
-																	<xsl:text disable-output-escaping="yes">[01] - Rodné číslo </xsl:text>
-																</span>
-																<div class="clear"></div>
-															</div>
-														</div>
-														<div id="layoutColumn86533" class="column "  style="width:104px;">
-															<div id="layoutCell140019" class="cell  kratkyTextBox95px" >
-																<label class="fieldLabel" title="" for="rodneCislo1" style="display: none">[01] - Rodné číslo - prvá časť </label>
-																<span class="fieldContent">
-																	<input  id="rodneCislo1" name="rodneCislo1" title="Musí byť povinne vyplnené RČ na r.1 alebo Dátum narodenia na r. 2, ak daňovník nemá rodné číslo. RČ vo Vyhlásení (V) r. 1 musí sedieť s RČ v Potvrdení (P) r.1." type="text" class="textBox" maxlength="6" size="190" disabled="disabled" alt="Musí byť povinne vyplnené RČ na r.1 alebo Dátum narodenia na r. 2, ak daňovník nemá rodné číslo. RČ vo Vyhlásení (V) r. 1 musí sedieť s RČ v Potvrdení (P) r.1." value=""  >
-																		<xsl:if test="boolean(./*[name() = 'rodneCislo1']/@isReadOnly = 'true')">
-																			<xsl:attribute name="disabled">disabled</xsl:attribute>
-																		</xsl:if>
-																		<xsl:if test="./*[name() = 'rodneCislo1']/text()">
-																			<xsl:attribute name="value">
-																				<xsl:value-of select="./*[name() = 'rodneCislo1']"/>
-																			</xsl:attribute>
-																		</xsl:if>
-																	</input>
-																</span>
-																<div class="clear"></div>
-															</div>
-														</div>
-														<div id="layoutColumn86534" class="column "  style="width:16px;">
-															<div id="layoutCell140020" class="cell " >
-																<span class="fieldLabel" title=""  >
-																	<xsl:text disable-output-escaping="yes">/ </xsl:text>
-																</span>
-																<div class="clear"></div>
-															</div>
-														</div>
-														<div id="layoutColumn86535" class="column "  style="width:60px;">
-															<div id="layoutCell140021" class="cell  kratkyTextBox40px" >
-																<label class="fieldLabel" title="" for="rodneCislo2" style="display: none">[01] - Rodné číslo - druhá časť </label>
-																<span class="fieldContent">
-																	<input  id="rodneCislo2" name="rodneCislo2" title="Musí byť povinne vyplnené RČ na r.1 alebo Dátum narodenia na r. 2, ak daňovník nemá rodné číslo. RČ vo Vyhlásení (V) r. 1 musí sedieť s RČ v Potvrdení (P) r.1." type="text" class="textBox" maxlength="4" size="190" disabled="disabled" alt="Musí byť povinne vyplnené RČ na r.1 alebo Dátum narodenia na r. 2, ak daňovník nemá rodné číslo. RČ vo Vyhlásení (V) r. 1 musí sedieť s RČ v Potvrdení (P) r.1." value=""  >
-																		<xsl:if test="boolean(./*[name() = 'rodneCislo2']/@isReadOnly = 'true')">
-																			<xsl:attribute name="disabled">disabled</xsl:attribute>
-																		</xsl:if>
-																		<xsl:if test="./*[name() = 'rodneCislo2']/text()">
-																			<xsl:attribute name="value">
-																				<xsl:value-of select="./*[name() = 'rodneCislo2']"/>
-																			</xsl:attribute>
-																		</xsl:if>
-																	</input>
-																</span>
-																<div class="clear"></div>
-															</div>
-														</div>
-														<div class="clear"></div>
-													</div>
-												</div>
-											</xsl:for-each>
-											<xsl:if test="/V2Pv21/udaje/rodneCislo/@notInFormData">
-												<script type="text/javascript">$(document).ready(function () { initRepetitionSection(1, 1, 'layoutRow34807') })</script>
-											</xsl:if>
-											<div class="clear"></div>
-										</div>
-										<div id="layoutCell140025" class="cell " >
-											<label class="fieldLabel" title="" for="datNarodenia"  style="width:199px;">
-												<xsl:text disable-output-escaping="yes">[02] - Dátum narodenia </xsl:text>
-											</label>
-											<span class="fieldContent">
-												<input alt="Musí byť povinne vyplnené RČ na r.1 alebo Dátum narodenia na r. 2, ak daňovník nemá rodné číslo. Ak nie je vyplnené RČ vo V, potom Dátum narodenia vo Vyhlásení (V) r. 2 musí sedieť s Dátumom narodenia v Potvrdení (P) r.2. Ak je RČ vo Vyhlásení vyplnené, potom sa dátum narodenia nekontroluje. " id="datNarodenia" name="datNarodenia" title="Musí byť povinne vyplnené RČ na r.1 alebo Dátum narodenia na r. 2, ak daňovník nemá rodné číslo. Ak nie je vyplnené RČ vo V, potom Dátum narodenia vo Vyhlásení (V) r. 2 musí sedieť s Dátumom narodenia v Potvrdení (P) r.2. Ak je RČ vo Vyhlásení vyplnené, potom sa dátum narodenia nekontroluje. " type="text" class="date datepicker" maxlength="10" size="190" disabled="disabled" >
-													<xsl:if test="boolean(./*[name() = 'datNarodenia']/@isReadOnly = 'true')">
-														<xsl:attribute name="disabled">disabled</xsl:attribute>
-													</xsl:if>
-													<xsl:attribute name="value">
-														<xsl:value-of select="./*[name() = 'datNarodenia']"/>
-													</xsl:attribute>
-												</input>
-											</span>
-											<div class="clear"></div>
-										</div>
-										<div id="layoutCell140026" class="cell " >
-											<h3 class="headercorrection">
-												<span class="fieldLabel" title=""   style="width:800px;">
-													<xsl:text disable-output-escaping="yes">Riadok 02 sa vypĺňa, len ak ide o daňovníka, ktorý nemá rodné číslo </xsl:text>
-												</span>
-											</h3>
-											<div class="clear"></div>
-										</div>
-									</div>
-									<div id="layoutColumn86538" class="column "  style="width:370px;">
-										<div id="layoutCell140027" class="cell  kratkyTextBox95pxR" >
-											<label class="fieldLabel" title="" for="rok"  style="width:200px;">
-												<xsl:text disable-output-escaping="yes">Rok &lt;em&gt;*&lt;/em&gt; </xsl:text>
-											</label>
-											<span class="fieldContent">
-												<input  id="rok" name="rok" title="" type="text" class="textBox" maxlength="4" size="190" disabled="disabled" alt="" value="2023"  >
-													<xsl:if test="boolean(./*[name() = 'rok']/@isReadOnly = 'true')">
-														<xsl:attribute name="disabled">disabled</xsl:attribute>
-													</xsl:if>
-													<xsl:if test="./*[name() = 'rok']/text()">
-														<xsl:attribute name="value">
-															<xsl:value-of select="./*[name() = 'rok']"/>
-														</xsl:attribute>
-													</xsl:if>
-												</input>
-											</span>
-											<div class="clear"></div>
-										</div>
-										<div id="layoutCell140028" class="cell " >
-											<h2 class="headercorrection">
-												<span class="fieldLabel" title=""   style="width:800px;">
-													<xsl:text disable-output-escaping="yes">Uvádza sa zdaňovacie obdobie, za ktoré sa platí daň </xsl:text>
-												</span>
-											</h2>
-											<div class="clear"></div>
-										</div>
-									</div>
-									<div class="clear"></div>
-								</div>
-							</div>
-						</xsl:for-each>
-						<xsl:if test="/V2Pv21/udaje/@notInFormData">
-							<script type="text/javascript">$(document).ready(function () { initRepetitionSection(1, 1, 'layoutRow34808') })</script>
-						</xsl:if>
-						<xsl:for-each select="/V2Pv21/oddiel1">
-							<div id="layoutRow34791" class="layoutRow ui-tabs ui-widget-content  "   title="" >
-								<input type="hidden" name="oddiel1"  />
-								<div class="caption ui-widget-header">
-									<h1 class="headercorrection" title="I. ODDIEL - ÚDAJE O DAŇOVNÍKOVI">I. ODDIEL - ÚDAJE O DAŇOVNÍKOVI</h1>
-									<span class="arrow ui-icon ui-icon-carat-1-n"></span>
-								</div>
-								<div id="layoutRowContentlayoutRow34791" class="columns">
-									<div id="layoutColumn86509" class="column first" >
-										<div id="layoutCell139976" class="cell " >
-											<xsl:for-each select="/V2Pv21/oddiel1/danovnik">
-												<div id="layoutRow34789" class="layoutRow ui-tabs ui-widget-content  nocaption "   title="" >
-													<input type="hidden" name="danovnik"  />
-													<div class="caption ui-widget-header">
-														<span class="arrow ui-icon ui-icon-carat-1-n"></span>
-													</div>
-													<div id="layoutRowContentlayoutRow34789" class="columns">
-														<div id="layoutColumn86505" class="column first" >
-															<div id="layoutCell139971" class="cell " >
-																<xsl:for-each select="/V2Pv21/oddiel1/danovnik/pomtTitulSekcia1">
-																	<div id="layoutRow34790" class="layoutRow ui-tabs ui-widget-content  bezOkrajaBezPozadiaHlavicky nocaption "   title="" >
-																		<input type="hidden" name="pomtTitulSekcia1"  />
-																		<div class="caption ui-widget-header">
-																			<span class="arrow ui-icon ui-icon-carat-1-n"></span>
-																		</div>
-																		<div id="layoutRowContentlayoutRow34790" class="columns">
-																			<div id="layoutColumn86507" class="column first"  style="width:297px;">
-																				<div id="layoutCell139973" class="cell " >
-																					<span class="fieldLabel" title=""  >
-																						<xsl:text disable-output-escaping="yes">[03] - Priezvisko </xsl:text>
-																					</span>
-																					<div class="clear"></div>
-																				</div>
-																				<div id="layoutCell139965" class="cell  sirokyTextBox260pxPriezvisko" >
-																					<label class="fieldLabel" title="" for="priezvisko" style="display: none">[03] - Priezvisko </label>
-																					<span class="fieldContent">
-																						<input  id="priezvisko" name="priezvisko" title="Priezvisko vo V r. 3 musí sedieť s priezviskom v P r. 3" type="text" class="textBox" maxlength="40" size="190" disabled="disabled" alt="Priezvisko vo V r. 3 musí sedieť s priezviskom v P r. 3" value=""  >
-																							<xsl:if test="boolean(./*[name() = 'priezvisko']/@isReadOnly = 'true')">
-																								<xsl:attribute name="disabled">disabled</xsl:attribute>
-																							</xsl:if>
-																							<xsl:if test="./*[name() = 'priezvisko']/text()">
-																								<xsl:attribute name="value">
-																									<xsl:value-of select="./*[name() = 'priezvisko']"/>
-																								</xsl:attribute>
-																							</xsl:if>
-																						</input>
-																					</span>
-																					<div class="clear"></div>
-																				</div>
-																			</div>
-																			<div id="layoutColumn86508" class="column "  style="width:253px;">
-																				<div id="layoutCell139974" class="cell " >
-																					<span class="fieldLabel" title=""  >
-																						<xsl:text disable-output-escaping="yes">[04] - Meno </xsl:text>
-																					</span>
-																					<div class="clear"></div>
-																				</div>
-																				<div id="layoutCell139966" class="cell  sirokyTextBox210pxx" >
-																					<label class="fieldLabel" title="" for="meno" style="display: none">[04] - Meno </label>
-																					<span class="fieldContent">
-																						<input  id="meno" name="meno" title="Meno vo V r. 4 musí sedieť s menom v P r. 4" type="text" class="textBox" maxlength="40" size="190" disabled="disabled" alt="Meno vo V r. 4 musí sedieť s menom v P r. 4" value=""  >
-																							<xsl:if test="boolean(./*[name() = 'meno']/@isReadOnly = 'true')">
-																								<xsl:attribute name="disabled">disabled</xsl:attribute>
-																							</xsl:if>
-																							<xsl:if test="./*[name() = 'meno']/text()">
-																								<xsl:attribute name="value">
-																									<xsl:value-of select="./*[name() = 'meno']"/>
-																								</xsl:attribute>
-																							</xsl:if>
-																						</input>
-																					</span>
-																					<div class="clear"></div>
-																				</div>
-																			</div>
-																			<div id="layoutColumn86506" class="column "  style="width:132px;">
-																				<div id="layoutCell139972" class="cell " >
-																					<span class="fieldLabel" title=""   style="width:280px;">
-																						<xsl:text disable-output-escaping="yes">[05] - Titul pred menom / za priezviskom </xsl:text>
-																					</span>
-																					<div class="clear"></div>
-																				</div>
-																				<div id="layoutCell139969" class="cell  kratkyTextBox120pxTitul" >
-																					<label class="fieldLabel" title="" for="titul" style="display: none">[05] - Titul pred menom </label>
-																					<span class="fieldContent">
-																						<input  id="titul" name="titul" title="" type="text" class="textBox" maxlength="20" size="190" disabled="disabled" alt="" value=""  >
-																							<xsl:if test="boolean(./*[name() = 'titul']/@isReadOnly = 'true')">
-																								<xsl:attribute name="disabled">disabled</xsl:attribute>
-																							</xsl:if>
-																							<xsl:if test="./*[name() = 'titul']/text()">
-																								<xsl:attribute name="value">
-																									<xsl:value-of select="./*[name() = 'titul']"/>
-																								</xsl:attribute>
-																							</xsl:if>
-																						</input>
-																					</span>
-																					<div class="clear"></div>
-																				</div>
-																			</div>
-																			<div id="layoutColumn86999" class="column "  style="width:10px;">
-																				<div id="layoutCell140968" class="cell " >
-																					<span class="fieldLabel" title=""  >
-																						<xsl:text disable-output-escaping="yes">&#xa0; </xsl:text>
-																					</span>
-																					<div class="clear"></div>
-																				</div>
-																				<div id="layoutCell139968" class="cell " >
-																					<span class="fieldLabel" title=""  >
-																						<xsl:text disable-output-escaping="yes">/ </xsl:text>
-																					</span>
-																					<div class="clear"></div>
-																				</div>
-																			</div>
-																			<div id="layoutColumn87000" class="column "  style="width:160px;">
-																				<div id="layoutCell140971" class="cell " >
-																					<span class="fieldLabel" title=""  >
-																						<xsl:text disable-output-escaping="yes">&#xa0; </xsl:text>
-																					</span>
-																					<div class="clear"></div>
-																				</div>
-																				<div id="layoutCell140970" class="cell  kratkyTextBox120pxTitul" >
-																					<label class="fieldLabel" title="" for="titulZA" style="display: none">Titul za menom </label>
-																					<span class="fieldContent">
-																						<input  id="titulZA" name="titulZA" title="" type="text" class="textBox" maxlength="20" size="190" disabled="disabled" alt="" value=""  >
-																							<xsl:if test="boolean(./*[name() = 'titulZA']/@isReadOnly = 'true')">
-																								<xsl:attribute name="disabled">disabled</xsl:attribute>
-																							</xsl:if>
-																							<xsl:if test="./*[name() = 'titulZA']/text()">
-																								<xsl:attribute name="value">
-																									<xsl:value-of select="./*[name() = 'titulZA']"/>
-																								</xsl:attribute>
-																							</xsl:if>
-																						</input>
-																					</span>
-																					<div class="clear"></div>
-																				</div>
-																			</div>
-																			<div class="clear"></div>
-																		</div>
-																	</div>
-																</xsl:for-each>
-																<div class="clear"></div>
-															</div>
-														</div>
-														<div class="clear"></div>
-													</div>
-												</div>
-											</xsl:for-each>
-											<xsl:if test="/V2Pv21/oddiel1/danovnik/@notInFormData">
-												<script type="text/javascript">$(document).ready(function () { initRepetitionSection(1, 1, 'layoutRow34789') })</script>
-											</xsl:if>
-											<div class="clear"></div>
-										</div>
-										<div id="layoutCell139979" class="cell " >
-											<xsl:for-each select="/V2Pv21/oddiel1/adresa">
-												<div id="layoutRow34793" class="layoutRow ui-tabs ui-widget-content  "   title="" >
-													<input type="hidden" name="adresa"  />
-													<div class="caption ui-widget-header">
-														<h2 class="headercorrection" title="Adresa trvalého pobytu">Adresa trvalého pobytu</h2>
-														<span class="arrow ui-icon ui-icon-carat-1-n"></span>
-													</div>
-													<div id="layoutRowContentlayoutRow34793" class="columns">
-														<div id="layoutColumn86512" class="column first" >
-															<div id="layoutCell139980" class="cell " >
-																<xsl:for-each select="/V2Pv21/oddiel1/adresa/ulicaCisloAdresaDanovnika_abc894">
-																	<div id="layoutRow34792" class="layoutRow ui-tabs ui-widget-content  bezOkrajaBezPozadiaHlavicky nocaption "   title="" >
-																		<input type="hidden" name="ulicaCisloAdresaDanovnika_abc894"  />
-																		<div class="caption ui-widget-header">
-																			<span class="arrow ui-icon ui-icon-carat-1-n"></span>
-																		</div>
-																		<div id="layoutRowContentlayoutRow34792" class="columns">
-																			<div id="layoutColumn86510" class="column first"  style="width:651px;">
-																				<div id="layoutCell139977" class="cell  sirokyTextBox600px" >
-																					<label class="fieldLabel" title="" for="ulica" >
-																						<xsl:text disable-output-escaping="yes">[06] - Ulica </xsl:text>
-																					</label>
-																					<span class="fieldContent">
-																						<input  id="ulica" name="ulica" title="" type="text" class="textBox" maxlength="60" size="190" disabled="disabled" alt="" value=""  >
-																							<xsl:if test="boolean(./*[name() = 'ulica']/@isReadOnly = 'true')">
-																								<xsl:attribute name="disabled">disabled</xsl:attribute>
-																							</xsl:if>
-																							<xsl:if test="./*[name() = 'ulica']/text()">
-																								<xsl:attribute name="value">
-																									<xsl:value-of select="./*[name() = 'ulica']"/>
-																								</xsl:attribute>
-																							</xsl:if>
-																						</input>
-																					</span>
-																					<div class="clear"></div>
-																				</div>
-																			</div>
-																			<div id="layoutColumn86511" class="column "  style="width:185px;">
-																				<div id="layoutCell139978" class="cell " >
-																					<label class="fieldLabel" title="" for="SupOrienCislo"  style="width:192px;">
-																						<xsl:text disable-output-escaping="yes">[07] - Súpisné / orientačné číslo </xsl:text>
-																					</label>
-																					<span class="fieldContent">
-																						<input  id="SupOrienCislo" name="SupOrienCislo" title="" type="text" class="textBox" maxlength="20" size="190" disabled="disabled" alt="" value=""  >
-																							<xsl:if test="boolean(./*[name() = 'SupOrienCislo']/@isReadOnly = 'true')">
-																								<xsl:attribute name="disabled">disabled</xsl:attribute>
-																							</xsl:if>
-																							<xsl:if test="./*[name() = 'SupOrienCislo']/text()">
-																								<xsl:attribute name="value">
-																									<xsl:value-of select="./*[name() = 'SupOrienCislo']"/>
-																								</xsl:attribute>
-																							</xsl:if>
-																						</input>
-																					</span>
-																					<div class="clear"></div>
-																				</div>
-																			</div>
-																			<div class="clear"></div>
-																		</div>
-																	</div>
-																</xsl:for-each>
-																<xsl:if test="/V2Pv21/oddiel1/adresa/ulicaCisloAdresaDanovnika_abc894/@notInFormData">
-																	<script type="text/javascript">$(document).ready(function () { initRepetitionSection(1, 1, 'layoutRow34792') })</script>
-																</xsl:if>
-																<div class="clear"></div>
-															</div>
-															<div id="layoutCell139984" class="cell " >
-																<xsl:for-each select="/V2Pv21/oddiel1/adresa/daresa2_adresaDanovnik">
-																	<div id="layoutRow34795" class="layoutRow ui-tabs ui-widget-content  bezOkrajaBezPozadiaHlavicky nocaption "   title="" >
-																		<input type="hidden" name="daresa2_adresaDanovnik"  />
-																		<div class="caption ui-widget-header">
-																			<span class="arrow ui-icon ui-icon-carat-1-n"></span>
-																		</div>
-																		<div id="layoutRowContentlayoutRow34795" class="columns">
-																			<div id="layoutColumn86514" class="column first"  style="width:98px;">
-																				<div id="layoutCell139985" class="cell  kratkyTextBox75pxPSC" >
-																					<label class="fieldLabel" title="" for="psc" >
-																						<xsl:text disable-output-escaping="yes">[08] - PSČ </xsl:text>
-																					</label>
-																					<span class="fieldContent">
-																						<input  id="psc" name="psc" title="" type="text" class="textBox" maxlength="15" size="190" disabled="disabled" alt="" value=""  >
-																							<xsl:if test="boolean(./*[name() = 'psc']/@isReadOnly = 'true')">
-																								<xsl:attribute name="disabled">disabled</xsl:attribute>
-																							</xsl:if>
-																							<xsl:if test="./*[name() = 'psc']/text()">
-																								<xsl:attribute name="value">
-																									<xsl:value-of select="./*[name() = 'psc']"/>
-																								</xsl:attribute>
-																							</xsl:if>
-																						</input>
-																					</span>
-																					<div class="clear"></div>
-																				</div>
-																			</div>
-																			<div id="layoutColumn86515" class="column "  style="width:499px;">
-																				<div id="layoutCell139986" class="cell  sirokyTextBox450px" >
-																					<label class="fieldLabel" title="" for="obec" >
-																						<xsl:text disable-output-escaping="yes">[09] - Obec </xsl:text>
-																					</label>
-																					<span class="fieldContent">
-																						<input  id="obec" name="obec" title="" type="text" class="textBox" maxlength="40" size="190" disabled="disabled" alt="" value=""  >
-																							<xsl:if test="boolean(./*[name() = 'obec']/@isReadOnly = 'true')">
-																								<xsl:attribute name="disabled">disabled</xsl:attribute>
-																							</xsl:if>
-																							<xsl:if test="./*[name() = 'obec']/text()">
-																								<xsl:attribute name="value">
-																									<xsl:value-of select="./*[name() = 'obec']"/>
-																								</xsl:attribute>
-																							</xsl:if>
-																						</input>
-																					</span>
-																					<div class="clear"></div>
-																				</div>
-																			</div>
-																			<div id="layoutColumn86516" class="column "  style="width:215px;">
-																				<div id="layoutCell139987" class="cell  sirokyTextBox215pxx" >
-																					<label class="fieldLabel" title="" for="stat" >
-																						<xsl:text disable-output-escaping="yes">[10] - Štát </xsl:text>
-																					</label>
-																					<span class="fieldContent">
-																						<input  id="stat" name="stat" title="" type="text" class="textBox" maxlength="37" size="190" disabled="disabled" alt="" value=""  >
-																							<xsl:if test="boolean(./*[name() = 'stat']/@isReadOnly = 'true')">
-																								<xsl:attribute name="disabled">disabled</xsl:attribute>
-																							</xsl:if>
-																							<xsl:if test="./*[name() = 'stat']/text()">
-																								<xsl:attribute name="value">
-																									<xsl:value-of select="./*[name() = 'stat']"/>
-																								</xsl:attribute>
-																							</xsl:if>
-																						</input>
-																					</span>
-																					<div class="clear"></div>
-																				</div>
-																			</div>
-																			<div class="clear"></div>
-																		</div>
-																	</div>
-																</xsl:for-each>
-																<div class="clear"></div>
-															</div>
-															<div id="layoutCell139981" class="cell " >
-																<xsl:for-each select="/V2Pv21/oddiel1/adresa/telD">
-																	<div id="layoutRow34794" class="layoutRow ui-tabs ui-widget-content  bezOkrajaBezPozadiaHlavicky nocaption "   title="" >
-																		<input type="hidden" name="telD"  />
-																		<div class="caption ui-widget-header">
-																			<span class="arrow ui-icon ui-icon-carat-1-n"></span>
-																		</div>
-																		<div id="layoutRowContentlayoutRow34794" class="columns">
-																			<div id="layoutColumn86513" class="column first"  style="width:500px;">
-																				<div id="layoutCell139983" class="cell " >
-																					<span class="fieldLabel" title=""  >
-																						<xsl:text disable-output-escaping="yes">[11] - Telefónne číslo </xsl:text>
-																					</span>
-																					<div class="clear"></div>
-																				</div>
-																				<div id="layoutCell139982" class="cell  sirokyTextBox260px" >
-																					<label class="fieldLabel" title="" for="TelCislo" style="display: none">[11] - Telefónne číslo </label>
-																					<span class="fieldContent">
-																						<input  id="TelCislo" name="TelCislo" title="Telefónne číslo v medzinárodnom tvare (+421XXX123456) alebo predvoľba/číslo (0XXX/123456) alebo iba čísla spolu (0XXX123456)" type="text" class="textBox" maxlength="13" size="190" disabled="disabled" alt="Telefónne číslo v medzinárodnom tvare (+421XXX123456) alebo predvoľba/číslo (0XXX/123456) alebo iba čísla spolu (0XXX123456)" value=""  >
-																							<xsl:if test="boolean(./*[name() = 'TelCislo']/@isReadOnly = 'true')">
-																								<xsl:attribute name="disabled">disabled</xsl:attribute>
-																							</xsl:if>
-																							<xsl:if test="./*[name() = 'TelCislo']/text()">
-																								<xsl:attribute name="value">
-																									<xsl:value-of select="./*[name() = 'TelCislo']"/>
-																								</xsl:attribute>
-																							</xsl:if>
-																						</input>
-																					</span>
-																					<div class="clear"></div>
-																				</div>
-																			</div>
-																			<div class="clear"></div>
-																		</div>
-																	</div>
-																</xsl:for-each>
-																<xsl:if test="/V2Pv21/oddiel1/adresa/telD/@notInFormData">
-																	<script type="text/javascript">$(document).ready(function () { initRepetitionSection(1, 1, 'layoutRow34794') })</script>
-																</xsl:if>
-																<div class="clear"></div>
-															</div>
-														</div>
-														<div class="clear"></div>
-													</div>
-												</div>
-											</xsl:for-each>
-											<xsl:if test="/V2Pv21/oddiel1/adresa/@notInFormData">
-												<script type="text/javascript">$(document).ready(function () { initRepetitionSection(1, 1, 'layoutRow34793') })</script>
-											</xsl:if>
-											<div class="clear"></div>
-										</div>
-										<div id="layoutCell139990" class="cell " >
-											<xsl:for-each select="/V2Pv21/oddiel1/suma">
-												<div id="layoutRow34797" class="layoutRow ui-tabs ui-widget-content  "   title="" >
-													<input type="hidden" name="suma"  />
-													<div class="caption ui-widget-header">
-														<h2 class="headercorrection" title="Suma do výšky 2%, resp. 3% 1) zaplatenej dane">Suma do výšky 2%, resp. 3%
-															<sup>1)</sup> zaplatenej dane
-														</h2>
-														<span class="arrow ui-icon ui-icon-carat-1-n"></span>
-													</div>
-													<div id="layoutRowContentlayoutRow34797" class="columns">
-														<div id="layoutColumn86519" class="column first" >
-															<div id="layoutCell139992" class="cell " >
-																<h3 class="headercorrection">
-																	<span class="fieldLabel" title=""   style="width:800px;">
-																		<xsl:text disable-output-escaping="yes">1) Podiel do výšky 3 % zaplatenej dane možno prijímateľovi poukázať, ak fyzická osoba v zdaňovacom období vykonávala dobrovoľnícku činnosť podľa zákona č. 406/2011 Z.z. v znení neskorších predpisov počas najmenej 40 hodín a predloží o tom písomné potvrdenie, ktoré je prílohou tohto vyhlásenia. </xsl:text>
-																	</span>
-																</h3>
-																<div class="clear"></div>
-															</div>
-															<div id="layoutCell142777" class="cell " >
-																<h3 class="headercorrection">
-																	<span class="fieldLabel" title=""   style="width:800px;">
-																		<xsl:text disable-output-escaping="yes">2) IČO sa zarovnáva sprava a ak obsahuje menej ako 12 čísiel, nepoužité polia ostávajú prázdne. </xsl:text>
-																	</span>
-																</h3>
-																<div class="clear"></div>
-															</div>
-															<div id="layoutCell139991" class="cell " >
-																<xsl:for-each select="/V2Pv21/oddiel1/suma/r12">
-																	<div id="layoutRow34796" class="layoutRow ui-tabs ui-widget-content  nocaption "   title="" >
-																		<input type="hidden" name="r12"  />
-																		<div class="caption ui-widget-header">
-																			<span class="arrow ui-icon ui-icon-carat-1-n"></span>
-																		</div>
-																		<div id="layoutRowContentlayoutRow34796" class="columns">
-																			<div id="layoutColumn86517" class="column first"  style="width:532px;">
-																				<div id="layoutCell139988" class="cell " >
-																					<span class="fieldLabel" title=""   style="width:500px;">
-																						<xsl:text disable-output-escaping="yes">Zaplatená daň, z ktorej sa vypočíta suma do výšky 2 %, resp. 3 % &lt;sup&gt;1)&lt;/sup&gt; zaplatenej dane </xsl:text>
-																					</span>
-																					<div class="clear"></div>
-																				</div>
-																			</div>
-																			<div id="layoutColumn86518" class="column "  style="width:300px;">
-																				<div id="layoutCell139989" class="cell  textNapravo" >
-																					<label class="fieldLabel" title="" for="r12Suma"  style="width:100px;">
-																						<xsl:text disable-output-escaping="yes">[12] </xsl:text>
-																					</label>
-																					<span class="fieldContent">
-																						<input  id="r12Suma" name="r12Suma" title="" type="text" class="textBox" maxlength="11" size="190" disabled="disabled" alt="" value=""  >
-																							<xsl:if test="boolean(./*[name() = 'r12Suma']/@isReadOnly = 'true')">
-																								<xsl:attribute name="disabled">disabled</xsl:attribute>
-																							</xsl:if>
-																							<xsl:if test="./*[name() = 'r12Suma']/text()">
-																								<xsl:attribute name="value">
-																									<xsl:value-of select="./*[name() = 'r12Suma']"/>
-																								</xsl:attribute>
-																							</xsl:if>
-																						</input>
-																					</span>
-																					<div class="clear"></div>
-																				</div>
-																			</div>
-																			<div class="clear"></div>
-																		</div>
-																	</div>
-																</xsl:for-each>
-																<xsl:if test="/V2Pv21/oddiel1/suma/r12/@notInFormData">
-																	<script type="text/javascript">$(document).ready(function () { initRepetitionSection(1, 1, 'layoutRow34796') })</script>
-																</xsl:if>
-																<div class="clear"></div>
-															</div>
-															<div id="layoutCell139994" class="cell " >
-																<xsl:for-each select="/V2Pv21/oddiel1/suma/r13">
-																	<div id="layoutRow34798" class="layoutRow ui-tabs ui-widget-content  nocaption "   title="" >
-																		<input type="hidden" name="r13"  />
-																		<div class="caption ui-widget-header">
-																			<span class="arrow ui-icon ui-icon-carat-1-n"></span>
-																		</div>
-																		<div id="layoutRowContentlayoutRow34798" class="columns">
-																			<div id="layoutColumn86520" class="column first"  style="width:532px;">
-																				<div id="layoutCell139995" class="cell " >
-																					<span class="fieldLabel" title=""   style="width:500px;">
-																						<xsl:text disable-output-escaping="yes">Suma do výšky 2 %, resp. 3 % &lt;sup&gt;1)&lt;/sup&gt; zo zaplatenej dane z r. 12 (minimálne 3 eurá) </xsl:text>
-																					</span>
-																					<div class="clear"></div>
-																				</div>
-																			</div>
-																			<div id="layoutColumn86521" class="column "  style="width:300px;">
-																				<div id="layoutCell139996" class="cell  textNapravo" >
-																					<label class="fieldLabel" title="" for="r13Suma"  style="width:100px;">
-																						<xsl:text disable-output-escaping="yes">[13] </xsl:text>
-																					</label>
-																					<span class="fieldContent">
-																						<input  id="r13Suma" name="r13Suma" title="Suma % podielu nemôže byť menšia ako 3 €. Suma nemôže byť vyššia ako 3% z r. 12 vyhlásenia. Ak daňovník poukazuje 3% je povinný priložiť potvrdenie o dobrovoľníckej činnosti, doložte sken Potvrdenia do prílohy. Suma výpočtu % podielu sa zaok.  matematicky s presnosťou na dve desatinné miesta" type="text" class="textBox" maxlength="9" size="190" disabled="disabled" alt="Suma % podielu nemôže byť menšia ako 3 €. Suma nemôže byť vyššia ako 3% z r. 12 vyhlásenia. Ak daňovník poukazuje 3% je povinný priložiť potvrdenie o dobrovoľníckej činnosti, doložte sken Potvrdenia do prílohy. Suma výpočtu % podielu sa zaok.  matematicky s presnosťou na dve desatinné miesta" value=""  >
-																							<xsl:if test="boolean(./*[name() = 'r13Suma']/@isReadOnly = 'true')">
-																								<xsl:attribute name="disabled">disabled</xsl:attribute>
-																							</xsl:if>
-																							<xsl:if test="./*[name() = 'r13Suma']/text()">
-																								<xsl:attribute name="value">
-																									<xsl:value-of select="./*[name() = 'r13Suma']"/>
-																								</xsl:attribute>
-																							</xsl:if>
-																						</input>
-																					</span>
-																					<div class="clear"></div>
-																				</div>
-																			</div>
-																			<div class="clear"></div>
-																		</div>
-																	</div>
-																</xsl:for-each>
-																<xsl:if test="/V2Pv21/oddiel1/suma/r13/@notInFormData">
-																	<script type="text/javascript">$(document).ready(function () { initRepetitionSection(1, 1, 'layoutRow34798') })</script>
-																</xsl:if>
-																<div class="clear"></div>
-															</div>
-															<div id="layoutCell140000" class="cell " >
-																<xsl:for-each select="/V2Pv21/oddiel1/suma/SekSplnam">
-																	<div id="layoutRow34800" class="layoutRow ui-tabs ui-widget-content  nocaption "   title="" >
-																		<input type="hidden" name="SekSplnam"  />
-																		<div class="caption ui-widget-header">
-																			<span class="arrow ui-icon ui-icon-carat-1-n"></span>
-																		</div>
-																		<div id="layoutRowContentlayoutRow34800" class="columns">
-																			<div id="layoutColumn86523" class="column first" >
-																				<div id="layoutCell140001" class="cell " >
-																					<input id="chbSplnam3per" name="chbSplnam3per" title="Ak je toto pole zaškrtnuté, kontroluje sa r. 13 V do výšky 3% zo sumy na r. 12 V" type="checkbox" class="checkBox" value="spĺňam podmienky 1) na poukázanie 3% z dane" alt="Ak je toto pole zaškrtnuté, kontroluje sa r. 13 V do výšky 3% zo sumy na r. 12 V" disabled="disabled" >
-																						<xsl:if test="boolean(./*[name() = 'chbSplnam3per']/@isReadOnly = 'true')">
-																							<xsl:attribute name="disabled">disabled</xsl:attribute>
-																						</xsl:if>
-																						<xsl:if test="./*[name() = 'chbSplnam3per']='1'">
-																							<xsl:attribute name="checked">checked</xsl:attribute>
-																						</xsl:if>
-																					</input>
-																					<label for="chbSplnam3per" class="checkBoxLabel">spĺňam podmienky
-																						<sup>1)</sup> na poukázanie 3% z dane
-																					</label>
-																					<br />
-																					<div class="clear"></div>
-																				</div>
-																			</div>
-																			<div class="clear"></div>
-																		</div>
-																	</div>
-																</xsl:for-each>
-																<div class="clear"></div>
-															</div>
-															<div id="layoutCell139993" class="cell " >
-																<h2 class="headercorrection">
-																	<span class="fieldLabel" title=""   style="width:800px;">
-																		<xsl:text disable-output-escaping="yes">V r. 12 sa uvádza daň daňovníka znížená o daňový bonus podľa § 33 zákona a daňový bonus na zaplatené úroky podľa § 33a zákona, vypočítaná v roku, v ktorom sa podáva toto vyhlásenie; uvádza sa suma z r. 24 z potvrdenia o zaplatení dane, ktoré je súčasťou tohto vyhlásenia. &lt;br/&gt; V r. 13 suma nesmie byť nižšia ako 3 eurá. </xsl:text>
-																	</span>
-																</h2>
-																<div class="clear"></div>
-															</div>
-															<div id="layoutCell139997" class="cell " >
-																<xsl:for-each select="/V2Pv21/oddiel1/suma/r14">
-																	<div id="layoutRow34799" class="layoutRow ui-tabs ui-widget-content  nocaption "   title="" >
-																		<input type="hidden" name="r14"  />
-																		<div class="caption ui-widget-header">
-																			<span class="arrow ui-icon ui-icon-carat-1-n"></span>
-																		</div>
-																		<div id="layoutRowContentlayoutRow34799" class="columns">
-																			<div id="layoutColumn86522" class="column first" >
-																				<div id="layoutCell139998" class="cell " >
-																					<label class="fieldLabel" title="" for="datumZaplatenia"  style="width:243px;">
-																						<xsl:text disable-output-escaping="yes">[14] - Dátum zaplatenia dane </xsl:text>
-																					</label>
-																					<span class="fieldContent">
-																						<input alt="" id="datumZaplatenia" name="datumZaplatenia" title="" type="text" class="date datepicker" maxlength="14" size="190" disabled="disabled" >
-																							<xsl:if test="boolean(./*[name() = 'datumZaplatenia']/@isReadOnly = 'true')">
-																								<xsl:attribute name="disabled">disabled</xsl:attribute>
-																							</xsl:if>
-																							<xsl:attribute name="value">
-																								<xsl:value-of select="./*[name() = 'datumZaplatenia']"/>
-																							</xsl:attribute>
-																						</input>
-																					</span>
-																					<div class="clear"></div>
-																				</div>
-																				<div id="layoutCell139999" class="cell " >
-																					<h2 class="headercorrection">
-																						<span class="fieldLabel" title=""   style="width:800px;">
-																							<xsl:text disable-output-escaping="yes">Z riadku 26 potvrdenia o zaplatení dane, ktoré je súčasťou vyhlásenia. V prípade daňového preplatku z ročného zúčtovania preddavkov na daň sa uvedie dátum 31. marec zdaňovacieho obdobia, v ktorom sa toto vyhlásenie podáva. </xsl:text>
-																						</span>
-																					</h2>
-																					<div class="clear"></div>
-																				</div>
-																			</div>
-																			<div class="clear"></div>
-																		</div>
-																	</div>
-																</xsl:for-each>
-																<div class="clear"></div>
-															</div>
-														</div>
-														<div class="clear"></div>
-													</div>
-												</div>
-											</xsl:for-each>
-											<xsl:if test="/V2Pv21/oddiel1/suma/@notInFormData">
-												<script type="text/javascript">$(document).ready(function () { initRepetitionSection(1, 1, 'layoutRow34797') })</script>
-											</xsl:if>
-											<div class="clear"></div>
-										</div>
-									</div>
-									<div class="clear"></div>
-								</div>
-							</div>
-						</xsl:for-each>
-						<xsl:if test="/V2Pv21/oddiel1/@notInFormData">
-							<script type="text/javascript">$(document).ready(function () { initRepetitionSection(1, 1, 'layoutRow34791') })</script>
-						</xsl:if>
-						<xsl:for-each select="/V2Pv21/oddiel2">
-							<div id="layoutRow34801" class="layoutRow ui-tabs ui-widget-content  "   title="" >
-								<input type="hidden" name="oddiel2"  />
-								<div class="caption ui-widget-header">
-									<h1 class="headercorrection" title="II. ODDIEL - ÚDAJE O PRIJÍMATEĽOVI">II. ODDIEL - ÚDAJE O PRIJÍMATEĽOVI</h1>
-									<span class="arrow ui-icon ui-icon-carat-1-n"></span>
-								</div>
-								<div id="layoutRowContentlayoutRow34801" class="columns">
-									<div id="layoutColumn86524" class="column first" >
-										<div id="layoutCell140005" class="cell " >
-											<xsl:for-each select="/V2Pv21/oddiel2/icoSid">
-												<div id="layoutRow34802" class="layoutRow ui-tabs ui-widget-content  dolava9px bezOkrajaBezPozadiaHlavicky nocaption "   title="" >
-													<input type="hidden" name="icoSid"  />
-													<div class="caption ui-widget-header">
-														<span class="arrow ui-icon ui-icon-carat-1-n"></span>
-													</div>
-													<div id="layoutRowContentlayoutRow34802" class="columns">
-														<div id="layoutColumn86525" class="column first"  style="width:218px;">
-															<div id="layoutCell140006" class="cell " >
-																<span class="fieldLabel" title=""   style="width:260px;">
-																	<xsl:text disable-output-escaping="yes">[15] - IČO &lt;sup&gt;2)&lt;/sup&gt;&lt;em&gt;*&lt;/em&gt; </xsl:text>
-																</span>
-																<div class="clear"></div>
-															</div>
-														</div>
-														<div id="layoutColumn86526" class="column "  style="width:185px;">
-															<div id="layoutCell140007" class="cell  textNapravo" >
-																<label class="fieldLabel" title="" for="ico" style="display: none">IČO </label>
-																<span class="fieldContent">
-																	<input  id="ico" name="ico" title="IČO môže byť 8 alebo 12 miestne, uvádzajú sa aj nuly na začiatku." type="text" class="textBox" maxlength="12" size="190" disabled="disabled" alt="IČO môže byť 8 alebo 12 miestne, uvádzajú sa aj nuly na začiatku." value=""  >
-																		<xsl:if test="boolean(./*[name() = 'ico']/@isReadOnly = 'true')">
-																			<xsl:attribute name="disabled">disabled</xsl:attribute>
-																		</xsl:if>
-																		<xsl:if test="./*[name() = 'ico']/text()">
-																			<xsl:attribute name="value">
-																				<xsl:value-of select="./*[name() = 'ico']"/>
-																			</xsl:attribute>
-																		</xsl:if>
-																	</input>
-																</span>
-																<div class="clear"></div>
-															</div>
-														</div>
-														<div id="layoutColumn96096" class="column "  style="width:200px;">
-															<div id="layoutCell155942" class="cell " >
-																<span class="fieldLabel" title=""  >
-																	<xsl:text disable-output-escaping="yes">&lt;b&gt;&lt;u&gt;&lt;a href="form.527.prijimatelia_2024.html" target="_blank"&gt;(prehľad prijímateľov)&lt;/a&gt;&lt;/u&gt;&lt;/b&gt; </xsl:text>
-																</span>
-																<div class="clear"></div>
-															</div>
-														</div>
-														<div class="clear"></div>
-													</div>
-												</div>
-											</xsl:for-each>
-											<xsl:if test="/V2Pv21/oddiel2/icoSid/@notInFormData">
-												<script type="text/javascript">$(document).ready(function () { initRepetitionSection(1, 1, 'layoutRow34802') })</script>
-											</xsl:if>
-											<div class="clear"></div>
-										</div>
-										<div id="layoutCell140003" class="cell  TextArea833x70px" >
-											<label class="fieldLabel" title="" for="obchodneMeno"  style="width:200px;">
-												<xsl:text disable-output-escaping="yes">[16] - Obchodné meno (názov) </xsl:text>
-											</label>
-											<span class="fieldContent">
-												<textarea  id="obchodneMeno" name="obchodneMeno" title="" class="textArea" cols="100" rows="2"  disabled="disabled" >
-													<xsl:if test="boolean(./*[name() = 'obchodneMeno']/@isReadOnly = 'true')">
-														<xsl:attribute name="disabled">disabled</xsl:attribute>
-													</xsl:if>
-													<xsl:choose>
-														<xsl:when test="./*[name() = 'obchodneMeno']/text()">
-															<xsl:value-of select="./*[name() = 'obchodneMeno']"/>
-														</xsl:when>
-														<xsl:otherwise>
-															<xsl:text></xsl:text>
-														</xsl:otherwise>
-													</xsl:choose>
-												</textarea>
-											</span>
-											<div class="clear"></div>
-										</div>
-									</div>
-									<div class="clear"></div>
-								</div>
-							</div>
-						</xsl:for-each>
-						<xsl:if test="/V2Pv21/oddiel2/@notInFormData">
-							<script type="text/javascript">$(document).ready(function () { initRepetitionSection(1, 1, 'layoutRow34801') })</script>
-						</xsl:if>
-						<xsl:for-each select="/V2Pv21/vyhlasenie_sec_6854">
-							<div id="layoutRow34805" class="layoutRow ui-tabs ui-widget-content  nocaption "   title="" >
-								<input type="hidden" name="vyhlasenie_sec_6854"  />
-								<div class="caption ui-widget-header">
-									<span class="arrow ui-icon ui-icon-carat-1-n"></span>
-								</div>
-								<div id="layoutRowContentlayoutRow34805" class="columns">
-									<div id="layoutColumn86531" class="column first" >
-										<div id="layoutCell140017" class="cell " >
-											<xsl:for-each select="/V2Pv21/vyhlasenie_sec_6854/SekciaSuhlas">
-												<div id="layoutRow34806" class="layoutRow ui-tabs ui-widget-content  nocaption "   title="" >
-													<input type="hidden" name="SekciaSuhlas"  />
-													<div class="caption ui-widget-header">
-														<span class="arrow ui-icon ui-icon-carat-1-n"></span>
-													</div>
-													<div id="layoutRowContentlayoutRow34806" class="columns">
-														<div id="layoutColumn86532" class="column first" >
-															<div id="layoutCell140018" class="cell " >
-																<input id="PoleSuhlas" name="PoleSuhlas" title="Toto pole je možné zaškrtnúť, len ak je vyplnený r. 15 V IČO." type="checkbox" class="checkBox" value="súhlasím so zaslaním údajov (meno, priezvisko a trvalý pobyt) mnou určenému prijímateľovi podielu zaplatenej dane uvedenému v II. oddiele podľa § 50 ods. 8 zákona" alt="Toto pole je možné zaškrtnúť, len ak je vyplnený r. 15 V IČO." disabled="disabled" >
-																	<xsl:if test="boolean(./*[name() = 'PoleSuhlas']/@isReadOnly = 'true')">
-																		<xsl:attribute name="disabled">disabled</xsl:attribute>
-																	</xsl:if>
-																	<xsl:if test="./*[name() = 'PoleSuhlas']='1'">
-																		<xsl:attribute name="checked">checked</xsl:attribute>
-																	</xsl:if>
-																</input>
-																<label for="PoleSuhlas" class="checkBoxLabel">súhlasím so zaslaním údajov (meno, priezvisko a trvalý pobyt) mnou určenému prijímateľovi podielu zaplatenej dane uvedenému v II. oddiele podľa § 50
-																	<br/>ods. 8 zákona
-																</label>
-																<br />
-																<div class="clear"></div>
-															</div>
-														</div>
-														<div class="clear"></div>
-													</div>
-												</div>
-											</xsl:for-each>
-											<div class="clear"></div>
-										</div>
-										<div id="layoutCell140015" class="cell  tucnyText" >
-											<span class="fieldLabel" title=""   style="width:800px;">
-												<xsl:text disable-output-escaping="yes">Vyhlasujem, že uvedené údaje v tomto vyhlásení sú pravdivé. </xsl:text>
-											</span>
-											<div class="clear"></div>
-										</div>
-										<div id="layoutCell140016" class="cell " >
-											<label class="fieldLabel" title="" for="datumVyhlasenia"  style="width:257px;">
-												<xsl:text disable-output-escaping="yes">Dátum </xsl:text>
-											</label>
-											<span class="fieldContent">
-												<input alt="Do lehoty na podanie vyhlásenie (30.4. roku za ktoré sa podáva vyhlásenie +1 alebo nasledujúci pracovný deň, ak posledný deň lehoty pripadne na deň pracovného pokoja)" id="datumVyhlasenia" name="datumVyhlasenia" title="Do lehoty na podanie vyhlásenie (30.4. roku za ktoré sa podáva vyhlásenie +1 alebo nasledujúci pracovný deň, ak posledný deň lehoty pripadne na deň pracovného pokoja)" type="text" class="date datepicker" maxlength="14" size="190" disabled="disabled" >
-													<xsl:if test="boolean(./*[name() = 'datumVyhlasenia']/@isReadOnly = 'true')">
-														<xsl:attribute name="disabled">disabled</xsl:attribute>
-													</xsl:if>
-													<xsl:attribute name="value">
-														<xsl:value-of select="./*[name() = 'datumVyhlasenia']"/>
-													</xsl:attribute>
-												</input>
-											</span>
-											<div class="clear"></div>
-										</div>
-									</div>
-									<div class="clear"></div>
-								</div>
-							</div>
-						</xsl:for-each>
-						<xsl:if test="/V2Pv21/vyhlasenie_sec_6854/@notInFormData">
-							<script type="text/javascript">$(document).ready(function () { initRepetitionSection(1, 1, 'layoutRow34805') })</script>
-						</xsl:if>
-						<xsl:for-each select="/V2Pv21/nazov_P">
-							<div id="layoutRow35030" class="layoutRow ui-tabs ui-widget-content  nocaption "   title="" >
-								<input type="hidden" name="nazov_P"  />
-								<div class="caption ui-widget-header">
-									<span class="arrow ui-icon ui-icon-carat-1-n"></span>
-								</div>
-								<div id="layoutRowContentlayoutRow35030" class="columns">
-									<div id="layoutColumn86976" class="column first" >
-										<div id="layoutCell140919" class="cell  NadpisTucnyCentrovanyText" >
-											<span class="fieldLabel" title=""   style="width:880px;">
-												<xsl:text disable-output-escaping="yes">POTVRDENIE </xsl:text>
-											</span>
-											<div class="clear"></div>
-										</div>
-										<div id="layoutCell140920" class="cell  tucnyCentrovanyTextNormal_1em" >
-											<span class="fieldLabel" title=""   style="width:880px;">
-												<xsl:text disable-output-escaping="yes">O ZAPLATENÍ DANE Z PRÍJMOV ZÁVISLEJ ČINNOSTI </xsl:text>
-											</span>
-											<div class="clear"></div>
-										</div>
-										<div id="layoutCell140921" class="cell  centrovanyTextPodnadpis" >
-											<span class="fieldLabel" title=""   style="width:880px;">
-												<xsl:text disable-output-escaping="yes">na účely vyhlásenia o poukázaní sumy do výšky 2 % alebo 3 % zaplatenej dane fyzickej osoby&lt;br/&gt;podľa zákona č. 595/2003 Z. z. o dani z príjmov v znení neskorších predpisov (ďalej len „zákon“) </xsl:text>
-											</span>
-											<div class="clear"></div>
-										</div>
-									</div>
-									<div class="clear"></div>
-								</div>
-							</div>
-						</xsl:for-each>
-						<xsl:if test="/V2Pv21/nazov_P/@notInFormData">
-							<script type="text/javascript">$(document).ready(function () { initRepetitionSection(1, 1, 'layoutRow35030') })</script>
-						</xsl:if>
-						<xsl:for-each select="/V2Pv21/udaje_P">
-							<div id="layoutRow35031" class="layoutRow ui-tabs ui-widget-content  nocaption "   title="" >
-								<input type="hidden" name="udaje_P"  />
-								<div class="caption ui-widget-header">
-									<span class="arrow ui-icon ui-icon-carat-1-n"></span>
-								</div>
-								<div id="layoutRowContentlayoutRow35031" class="columns">
-									<div id="layoutColumn86977" class="column first"  style="width:512px;">
-										<div id="layoutCell140923" class="cell " >
-											<xsl:for-each select="/V2Pv21/udaje_P/rodneCislo_P">
-												<div id="layoutRow35032" class="layoutRow ui-tabs ui-widget-content  bezOkrajaBezPozadiaHlavicky dolava9px nocaption "   title="" >
-													<input type="hidden" name="rodneCislo_P"  />
-													<div class="caption ui-widget-header">
-														<span class="arrow ui-icon ui-icon-carat-1-n"></span>
-													</div>
-													<div id="layoutRowContentlayoutRow35032" class="columns">
-														<div id="layoutColumn86978" class="column first"  style="width:223px;">
-															<div id="layoutCell140924" class="cell " >
-																<span class="fieldLabel" title=""   style="width:210px;">
-																	<xsl:text disable-output-escaping="yes">[01] - Rodné číslo </xsl:text>
-																</span>
-																<div class="clear"></div>
-															</div>
-														</div>
-														<div id="layoutColumn86979" class="column "  style="width:104px;">
-															<div id="layoutCell140925" class="cell  kratkyTextBox95px" >
-																<label class="fieldLabel" title="" for="rodneCislo1_P" style="display: none">[01] - Rodné číslo - prvá časť </label>
-																<span class="fieldContent">
-																	<input  id="rodneCislo1_P" name="rodneCislo1_P" title="Musí byť povinne vyplnené RČ na r.1 alebo Dátum narodenia na r. 2, ak daňovník nemá rodné číslo. RČ vo Vyhlásení (V) r. 1 musí sedieť s RČ v Potvrdení (P) r.1." type="text" class="textBox" maxlength="6" size="190" disabled="disabled" alt="Musí byť povinne vyplnené RČ na r.1 alebo Dátum narodenia na r. 2, ak daňovník nemá rodné číslo. RČ vo Vyhlásení (V) r. 1 musí sedieť s RČ v Potvrdení (P) r.1." value=""  >
-																		<xsl:if test="boolean(./*[name() = 'rodneCislo1_P']/@isReadOnly = 'true')">
-																			<xsl:attribute name="disabled">disabled</xsl:attribute>
-																		</xsl:if>
-																		<xsl:if test="./*[name() = 'rodneCislo1_P']/text()">
-																			<xsl:attribute name="value">
-																				<xsl:value-of select="./*[name() = 'rodneCislo1_P']"/>
-																			</xsl:attribute>
-																		</xsl:if>
-																	</input>
-																</span>
-																<div class="clear"></div>
-															</div>
-														</div>
-														<div id="layoutColumn86980" class="column "  style="width:16px;">
-															<div id="layoutCell140926" class="cell " >
-																<span class="fieldLabel" title=""  >
-																	<xsl:text disable-output-escaping="yes">/ </xsl:text>
-																</span>
-																<div class="clear"></div>
-															</div>
-														</div>
-														<div id="layoutColumn86981" class="column "  style="width:60px;">
-															<div id="layoutCell140927" class="cell  kratkyTextBox40px" >
-																<label class="fieldLabel" title="" for="rodneCislo2_P" style="display: none">[01] - Rodné číslo - druhá časť </label>
-																<span class="fieldContent">
-																	<input  id="rodneCislo2_P" name="rodneCislo2_P" title="Musí byť povinne vyplnené RČ na r.1 alebo Dátum narodenia na r. 2, ak daňovník nemá rodné číslo. RČ vo Vyhlásení (V) r. 1 musí sedieť s RČ v Potvrdení (P) r.1." type="text" class="textBox" maxlength="4" size="190" disabled="disabled" alt="Musí byť povinne vyplnené RČ na r.1 alebo Dátum narodenia na r. 2, ak daňovník nemá rodné číslo. RČ vo Vyhlásení (V) r. 1 musí sedieť s RČ v Potvrdení (P) r.1." value=""  >
-																		<xsl:if test="boolean(./*[name() = 'rodneCislo2_P']/@isReadOnly = 'true')">
-																			<xsl:attribute name="disabled">disabled</xsl:attribute>
-																		</xsl:if>
-																		<xsl:if test="./*[name() = 'rodneCislo2_P']/text()">
-																			<xsl:attribute name="value">
-																				<xsl:value-of select="./*[name() = 'rodneCislo2_P']"/>
-																			</xsl:attribute>
-																		</xsl:if>
-																	</input>
-																</span>
-																<div class="clear"></div>
-															</div>
-														</div>
-														<div class="clear"></div>
-													</div>
-												</div>
-											</xsl:for-each>
-											<xsl:if test="/V2Pv21/udaje_P/rodneCislo_P/@notInFormData">
-												<script type="text/javascript">$(document).ready(function () { initRepetitionSection(1, 1, 'layoutRow35032') })</script>
-											</xsl:if>
-											<div class="clear"></div>
-										</div>
-										<div id="layoutCell140928" class="cell " >
-											<label class="fieldLabel" title="" for="datNarodenia02_P"  style="width:199px;">
-												<xsl:text disable-output-escaping="yes">[02] - Dátum narodenia </xsl:text>
-											</label>
-											<span class="fieldContent">
-												<input alt="Musí byť povinne vyplnené RČ na r.1 alebo Dátum narodenia na r. 2, ak daňovník nemá rodné číslo. Ak nie je vyplnené RČ vo V, potom Dátum narodenia vo Vyhlásení (V) r. 2 musí sedieť s Dátumom narodenia v Potvrdení (P) r.2. Ak je RČ vo Vyhlásení vyplnené, potom sa dátum narodenia nekontroluje." id="datNarodenia02_P" name="datNarodenia02_P" title="Musí byť povinne vyplnené RČ na r.1 alebo Dátum narodenia na r. 2, ak daňovník nemá rodné číslo. Ak nie je vyplnené RČ vo V, potom Dátum narodenia vo Vyhlásení (V) r. 2 musí sedieť s Dátumom narodenia v Potvrdení (P) r.2. Ak je RČ vo Vyhlásení vyplnené, potom sa dátum narodenia nekontroluje." type="text" class="date datepicker" maxlength="10" size="190" disabled="disabled" >
-													<xsl:if test="boolean(./*[name() = 'datNarodenia02_P']/@isReadOnly = 'true')">
-														<xsl:attribute name="disabled">disabled</xsl:attribute>
-													</xsl:if>
-													<xsl:attribute name="value">
-														<xsl:value-of select="./*[name() = 'datNarodenia02_P']"/>
-													</xsl:attribute>
-												</input>
-											</span>
-											<div class="clear"></div>
-										</div>
-										<div id="layoutCell140929" class="cell " >
-											<h3 class="headercorrection">
-												<span class="fieldLabel" title=""   style="width:800px;">
-													<xsl:text disable-output-escaping="yes">Riadok 02 sa vypĺňa, len ak ide o zamestnanca, ktorý nemá rodné číslo </xsl:text>
-												</span>
-											</h3>
-											<div class="clear"></div>
-										</div>
-									</div>
-									<div id="layoutColumn86982" class="column "  style="width:370px;">
-										<div id="layoutCell140930" class="cell  kratkyTextBox95pxR" >
-											<label class="fieldLabel" title="" for="rok_P"  style="width:200px;">
-												<xsl:text disable-output-escaping="yes">Rok &lt;em&gt;*&lt;/em&gt; </xsl:text>
-											</label>
-											<span class="fieldContent">
-												<input  id="rok_P" name="rok_P" title="Obdobie nemôže byť menšie ako rok 2018. Obdobie nemôže byť väčšie ako rok 2018. Rok vo V musí sedieť s rokom v P." type="text" class="textBox" maxlength="4" size="190" disabled="disabled" alt="Obdobie nemôže byť menšie ako rok 2018. Obdobie nemôže byť väčšie ako rok 2018. Rok vo V musí sedieť s rokom v P." value="2023"  >
-													<xsl:if test="boolean(./*[name() = 'rok_P']/@isReadOnly = 'true')">
-														<xsl:attribute name="disabled">disabled</xsl:attribute>
-													</xsl:if>
-													<xsl:if test="./*[name() = 'rok_P']/text()">
-														<xsl:attribute name="value">
-															<xsl:value-of select="./*[name() = 'rok_P']"/>
-														</xsl:attribute>
-													</xsl:if>
-												</input>
-											</span>
-											<div class="clear"></div>
-										</div>
-										<div id="layoutCell140931" class="cell " >
-											<h2 class="headercorrection">
-												<span class="fieldLabel" title=""   style="width:800px;">
-													<xsl:text disable-output-escaping="yes">Uvádza sa zdaňovacie obdobie, za ktoré sa platí daň </xsl:text>
-												</span>
-											</h2>
-											<div class="clear"></div>
-										</div>
-									</div>
-									<div class="clear"></div>
-								</div>
-							</div>
-						</xsl:for-each>
-						<xsl:if test="/V2Pv21/udaje_P/@notInFormData">
-							<script type="text/javascript">$(document).ready(function () { initRepetitionSection(1, 1, 'layoutRow35031') })</script>
-						</xsl:if>
-						<xsl:for-each select="/V2Pv21/UdajeZamSekcia">
-							<div id="layoutRow35033" class="layoutRow ui-tabs ui-widget-content  "   title="" >
-								<input type="hidden" name="UdajeZamSekcia"  />
-								<div class="caption ui-widget-header">
-									<h1 class="headercorrection" title="I. ODDIEL - ÚDAJE O ZAMESTNANCOVI">I. ODDIEL - ÚDAJE O ZAMESTNANCOVI</h1>
-									<span class="arrow ui-icon ui-icon-carat-1-n"></span>
-								</div>
-								<div id="layoutRowContentlayoutRow35033" class="columns">
-									<div id="layoutColumn86984" class="column first" >
-										<div id="layoutCell140939" class="cell " >
-											<xsl:for-each select="/V2Pv21/UdajeZamSekcia/FoSekcia">
-												<div id="layoutRow35037" class="layoutRow ui-tabs ui-widget-content  nocaption "   title="" >
-													<input type="hidden" name="FoSekcia"  />
-													<div class="caption ui-widget-header">
-														<span class="arrow ui-icon ui-icon-carat-1-n"></span>
-													</div>
-													<div id="layoutRowContentlayoutRow35037" class="columns">
-														<div id="layoutColumn86985" class="column first"  style="width:297px;">
-															<div id="layoutCell140941" class="cell " >
-																<span class="fieldLabel" title=""  >
-																	<xsl:text disable-output-escaping="yes">[03] - Priezvisko </xsl:text>
-																</span>
-																<div class="clear"></div>
-															</div>
-															<div id="layoutCell140942" class="cell  sirokyTextBox260pxPriezvisko" >
-																<label class="fieldLabel" title="" for="Priezvisko03" style="display: none">[03] - Priezvisko </label>
-																<span class="fieldContent">
-																	<input  id="Priezvisko03" name="Priezvisko03" title="Priezvisko vo V musí sedieť s priezviskom v P." type="text" class="textBox" maxlength="40" size="190" disabled="disabled" alt="Priezvisko vo V musí sedieť s priezviskom v P." value=""  >
-																		<xsl:if test="boolean(./*[name() = 'Priezvisko03']/@isReadOnly = 'true')">
-																			<xsl:attribute name="disabled">disabled</xsl:attribute>
-																		</xsl:if>
-																		<xsl:if test="./*[name() = 'Priezvisko03']/text()">
-																			<xsl:attribute name="value">
-																				<xsl:value-of select="./*[name() = 'Priezvisko03']"/>
-																			</xsl:attribute>
-																		</xsl:if>
-																	</input>
-																</span>
-																<div class="clear"></div>
-															</div>
-														</div>
-														<div id="layoutColumn86986" class="column "  style="width:254px;">
-															<div id="layoutCell140943" class="cell " >
-																<span class="fieldLabel" title=""  >
-																	<xsl:text disable-output-escaping="yes">[04] - Meno </xsl:text>
-																</span>
-																<div class="clear"></div>
-															</div>
-															<div id="layoutCell140944" class="cell  sirokyTextBox210pxx" >
-																<label class="fieldLabel" title="" for="Meno04" style="display: none">[04] - Meno </label>
-																<span class="fieldContent">
-																	<input  id="Meno04" name="Meno04" title="Meno vo V musí sedieť s menom v P." type="text" class="textBox" maxlength="40" size="190" disabled="disabled" alt="Meno vo V musí sedieť s menom v P." value=""  >
-																		<xsl:if test="boolean(./*[name() = 'Meno04']/@isReadOnly = 'true')">
-																			<xsl:attribute name="disabled">disabled</xsl:attribute>
-																		</xsl:if>
-																		<xsl:if test="./*[name() = 'Meno04']/text()">
-																			<xsl:attribute name="value">
-																				<xsl:value-of select="./*[name() = 'Meno04']"/>
-																			</xsl:attribute>
-																		</xsl:if>
-																	</input>
-																</span>
-																<div class="clear"></div>
-															</div>
-														</div>
-														<div id="layoutColumn86987" class="column "  style="width:132px;">
-															<div id="layoutCell140945" class="cell " >
-																<span class="fieldLabel" title=""   style="width:280px;">
-																	<xsl:text disable-output-escaping="yes">[05] - Titul pred menom / za priezviskom </xsl:text>
-																</span>
-																<div class="clear"></div>
-															</div>
-															<div id="layoutCell140946" class="cell  kratkyTextBox120pxTitul" >
-																<label class="fieldLabel" title="" for="Titul05" style="display: none">[05] - Titul pred menom </label>
-																<span class="fieldContent">
-																	<input  id="Titul05" name="Titul05" title="" type="text" class="textBox" maxlength="20" size="190" disabled="disabled" alt="" value=""  >
-																		<xsl:if test="boolean(./*[name() = 'Titul05']/@isReadOnly = 'true')">
-																			<xsl:attribute name="disabled">disabled</xsl:attribute>
-																		</xsl:if>
-																		<xsl:if test="./*[name() = 'Titul05']/text()">
-																			<xsl:attribute name="value">
-																				<xsl:value-of select="./*[name() = 'Titul05']"/>
-																			</xsl:attribute>
-																		</xsl:if>
-																	</input>
-																</span>
-																<div class="clear"></div>
-															</div>
-														</div>
-														<div id="layoutColumn86988" class="column "  style="width:10px;">
-															<div id="layoutCell140947" class="cell " >
-																<span class="fieldLabel" title=""  >
-																	<xsl:text disable-output-escaping="yes">&#xa0; </xsl:text>
-																</span>
-																<div class="clear"></div>
-															</div>
-															<div id="layoutCell140948" class="cell " >
-																<span class="fieldLabel" title=""  >
-																	<xsl:text disable-output-escaping="yes">/ </xsl:text>
-																</span>
-																<div class="clear"></div>
-															</div>
-														</div>
-														<div id="layoutColumn86989" class="column "  style="width:185px;">
-															<div id="layoutCell140950" class="cell " >
-																<span class="fieldLabel" title=""  >
-																	<xsl:text disable-output-escaping="yes">&#xa0; </xsl:text>
-																</span>
-																<div class="clear"></div>
-															</div>
-															<div id="layoutCell140949" class="cell  kratkyTextBox120pxTitul" >
-																<label class="fieldLabel" title="" for="Titul05_2" style="display: none">Titul za menom </label>
-																<span class="fieldContent">
-																	<input  id="Titul05_2" name="Titul05_2" title="" type="text" class="textBox" maxlength="20" size="190" disabled="disabled" alt="" value=""  >
-																		<xsl:if test="boolean(./*[name() = 'Titul05_2']/@isReadOnly = 'true')">
-																			<xsl:attribute name="disabled">disabled</xsl:attribute>
-																		</xsl:if>
-																		<xsl:if test="./*[name() = 'Titul05_2']/text()">
-																			<xsl:attribute name="value">
-																				<xsl:value-of select="./*[name() = 'Titul05_2']"/>
-																			</xsl:attribute>
-																		</xsl:if>
-																	</input>
-																</span>
-																<div class="clear"></div>
-															</div>
-														</div>
-														<div class="clear"></div>
-													</div>
-												</div>
-											</xsl:for-each>
-											<div class="clear"></div>
-										</div>
-										<div id="layoutCell140940" class="cell " >
-											<xsl:for-each select="/V2Pv21/UdajeZamSekcia/AdresaTPPSekcia_P">
-												<div id="layoutRow35038" class="layoutRow ui-tabs ui-widget-content  "   title="" >
-													<input type="hidden" name="AdresaTPPSekcia_P"  />
-													<div class="caption ui-widget-header">
-														<div class="headercorrection" title="Adresa trvalého pobytu">Adresa trvalého pobytu</div>
-														<span class="arrow ui-icon ui-icon-carat-1-n"></span>
-													</div>
-													<div id="layoutRowContentlayoutRow35038" class="columns">
-														<div id="layoutColumn86990" class="column first" >
-															<div id="layoutCell140951" class="cell " >
-																<xsl:for-each select="/V2Pv21/UdajeZamSekcia/AdresaTPPSekcia_P/adresa1Sekcia_P">
-																	<div id="layoutRow35039" class="layoutRow ui-tabs ui-widget-content  bezOkrajaBezPozadiaHlavicky dolava8px nocaption "   title="" >
-																		<input type="hidden" name="adresa1Sekcia_P"  />
-																		<div class="caption ui-widget-header">
-																			<span class="arrow ui-icon ui-icon-carat-1-n"></span>
-																		</div>
-																		<div id="layoutRowContentlayoutRow35039" class="columns">
-																			<div id="layoutColumn86991" class="column first"  style="width:652px;">
-																				<div id="layoutCell140953" class="cell " >
-																					<span class="fieldLabel" title=""   style="width:291px;">
-																						<xsl:text disable-output-escaping="yes">[06] - Ulica </xsl:text>
-																					</span>
-																					<div class="clear"></div>
-																				</div>
-																				<div id="layoutCell140954" class="cell  sirokyTextBox600px" >
-																					<label class="fieldLabel" title="" for="Ulica06" style="display: none">[06] - Ulica </label>
-																					<span class="fieldContent">
-																						<input  id="Ulica06" name="Ulica06" title="" type="text" class="textBox" maxlength="60" size="190" disabled="disabled" alt="" value=""  >
-																							<xsl:if test="boolean(./*[name() = 'Ulica06']/@isReadOnly = 'true')">
-																								<xsl:attribute name="disabled">disabled</xsl:attribute>
-																							</xsl:if>
-																							<xsl:if test="./*[name() = 'Ulica06']/text()">
-																								<xsl:attribute name="value">
-																									<xsl:value-of select="./*[name() = 'Ulica06']"/>
-																								</xsl:attribute>
-																							</xsl:if>
-																						</input>
-																					</span>
-																					<div class="clear"></div>
-																				</div>
-																			</div>
-																			<div id="layoutColumn86992" class="column "  style="width:185px;">
-																				<div id="layoutCell140955" class="cell " >
-																					<span class="fieldLabel" title=""  >
-																						<xsl:text disable-output-escaping="yes">[07] - Súpisné / orientačné číslo </xsl:text>
-																					</span>
-																					<div class="clear"></div>
-																				</div>
-																				<div id="layoutCell140956" class="cell " >
-																					<label class="fieldLabel" title="" for="CisloDomu07" style="display: none">[07] - Súpisné / orientačné číslo </label>
-																					<span class="fieldContent">
-																						<input  id="CisloDomu07" name="CisloDomu07" title="" type="text" class="textBox" maxlength="20" size="190" disabled="disabled" alt="" value=""  >
-																							<xsl:if test="boolean(./*[name() = 'CisloDomu07']/@isReadOnly = 'true')">
-																								<xsl:attribute name="disabled">disabled</xsl:attribute>
-																							</xsl:if>
-																							<xsl:if test="./*[name() = 'CisloDomu07']/text()">
-																								<xsl:attribute name="value">
-																									<xsl:value-of select="./*[name() = 'CisloDomu07']"/>
-																								</xsl:attribute>
-																							</xsl:if>
-																						</input>
-																					</span>
-																					<div class="clear"></div>
-																				</div>
-																			</div>
-																			<div class="clear"></div>
-																		</div>
-																	</div>
-																</xsl:for-each>
-																<div class="clear"></div>
-															</div>
-															<div id="layoutCell140952" class="cell " >
-																<xsl:for-each select="/V2Pv21/UdajeZamSekcia/AdresaTPPSekcia_P/adresa2Sekcia_P">
-																	<div id="layoutRow35040" class="layoutRow ui-tabs ui-widget-content  bezOkrajaBezPozadiaHlavicky dolava8px nocaption "   title="" >
-																		<input type="hidden" name="adresa2Sekcia_P"  />
-																		<div class="caption ui-widget-header">
-																			<span class="arrow ui-icon ui-icon-carat-1-n"></span>
-																		</div>
-																		<div id="layoutRowContentlayoutRow35040" class="columns">
-																			<div id="layoutColumn86993" class="column first"  style="width:98px;">
-																				<div id="layoutCell140957" class="cell " >
-																					<span class="fieldLabel" title=""   style="width:291px;">
-																						<xsl:text disable-output-escaping="yes">[08] - PSČ </xsl:text>
-																					</span>
-																					<div class="clear"></div>
-																				</div>
-																				<div id="layoutCell140958" class="cell  kratkyTextBox75pxPSC" >
-																					<label class="fieldLabel" title="" for="PSC08" style="display: none">[08] - PSČ </label>
-																					<span class="fieldContent">
-																						<input  id="PSC08" name="PSC08" title="" type="text" class="textBox" maxlength="15" size="190" disabled="disabled" alt="" value=""  >
-																							<xsl:if test="boolean(./*[name() = 'PSC08']/@isReadOnly = 'true')">
-																								<xsl:attribute name="disabled">disabled</xsl:attribute>
-																							</xsl:if>
-																							<xsl:if test="./*[name() = 'PSC08']/text()">
-																								<xsl:attribute name="value">
-																									<xsl:value-of select="./*[name() = 'PSC08']"/>
-																								</xsl:attribute>
-																							</xsl:if>
-																						</input>
-																					</span>
-																					<div class="clear"></div>
-																				</div>
-																			</div>
-																			<div id="layoutColumn86994" class="column "  style="width:500px;">
-																				<div id="layoutCell140959" class="cell " >
-																					<span class="fieldLabel" title=""   style="width:291px;">
-																						<xsl:text disable-output-escaping="yes">[09] - Obec </xsl:text>
-																					</span>
-																					<div class="clear"></div>
-																				</div>
-																				<div id="layoutCell140960" class="cell  sirokyTextBox450px" >
-																					<label class="fieldLabel" title="" for="Obec09" style="display: none">[09] - Obec </label>
-																					<span class="fieldContent">
-																						<input  id="Obec09" name="Obec09" title="" type="text" class="textBox" maxlength="40" size="190" disabled="disabled" alt="" value=""  >
-																							<xsl:if test="boolean(./*[name() = 'Obec09']/@isReadOnly = 'true')">
-																								<xsl:attribute name="disabled">disabled</xsl:attribute>
-																							</xsl:if>
-																							<xsl:if test="./*[name() = 'Obec09']/text()">
-																								<xsl:attribute name="value">
-																									<xsl:value-of select="./*[name() = 'Obec09']"/>
-																								</xsl:attribute>
-																							</xsl:if>
-																						</input>
-																					</span>
-																					<div class="clear"></div>
-																				</div>
-																			</div>
-																			<div id="layoutColumn86995" class="column "  style="width:120px;">
-																				<div id="layoutCell140961" class="cell " >
-																					<span class="fieldLabel" title=""   style="width:291px;">
-																						<xsl:text disable-output-escaping="yes">[10] - Štát </xsl:text>
-																					</span>
-																					<div class="clear"></div>
-																				</div>
-																				<div id="layoutCell140962" class="cell  sirokyTextBox215pxx" >
-																					<label class="fieldLabel" title="" for="Stat10" style="display: none">[10] - Štát </label>
-																					<span class="fieldContent">
-																						<input  id="Stat10" name="Stat10" title="" type="text" class="textBox" maxlength="37" size="190" disabled="disabled" alt="" value=""  >
-																							<xsl:if test="boolean(./*[name() = 'Stat10']/@isReadOnly = 'true')">
-																								<xsl:attribute name="disabled">disabled</xsl:attribute>
-																							</xsl:if>
-																							<xsl:if test="./*[name() = 'Stat10']/text()">
-																								<xsl:attribute name="value">
-																									<xsl:value-of select="./*[name() = 'Stat10']"/>
-																								</xsl:attribute>
-																							</xsl:if>
-																						</input>
-																					</span>
-																					<div class="clear"></div>
-																				</div>
-																			</div>
-																			<div class="clear"></div>
-																		</div>
-																	</div>
-																</xsl:for-each>
-																<div class="clear"></div>
-															</div>
-														</div>
-														<div class="clear"></div>
-													</div>
-												</div>
-											</xsl:for-each>
-											<div class="clear"></div>
-										</div>
-									</div>
-									<div class="clear"></div>
-								</div>
-							</div>
-						</xsl:for-each>
-						<xsl:if test="/V2Pv21/UdajeZamSekcia/@notInFormData">
-							<script type="text/javascript">$(document).ready(function () { initRepetitionSection(1, 1, 'layoutRow35033') })</script>
-						</xsl:if>
-						<xsl:for-each select="/V2Pv21/UdajeDrzitelaSekcia">
-							<div id="layoutRow35034" class="layoutRow ui-tabs ui-widget-content  "   title="" >
-								<input type="hidden" name="UdajeDrzitelaSekcia"  />
-								<div class="caption ui-widget-header">
-									<h1 class="headercorrection" title="II. ODDIEL - ÚDAJE O ZAMESTNÁVATEĽOVI, KTORÝ JE PLATITEĽOM DANE, ktorý toto potvrdenie vydáva">II. ODDIEL - ÚDAJE O ZAMESTNÁVATEĽOVI, KTORÝ JE PLATITEĽOM DANE, ktorý toto potvrdenie vydáva</h1>
-									<span class="arrow ui-icon ui-icon-carat-1-n"></span>
-								</div>
-								<div id="layoutRowContentlayoutRow35034" class="columns">
-									<div id="layoutColumn86996" class="column first" >
-										<div id="layoutCell141019" class="cell " >
-											<xsl:for-each select="/V2Pv21/UdajeDrzitelaSekcia/DICSekcia">
-												<div id="layoutRow35052" class="layoutRow ui-tabs ui-widget-content  nocaption "   title="" >
-													<input type="hidden" name="DICSekcia"  />
-													<div class="caption ui-widget-header">
-														<span class="arrow ui-icon ui-icon-carat-1-n"></span>
-													</div>
-													<div id="layoutRowContentlayoutRow35052" class="columns">
-														<div id="layoutColumn87030" class="column first" >
-															<div id="layoutCell140963" class="cell " >
-																<label class="fieldLabel" title="" for="Dic11"  style="width:280px;">
-																	<xsl:text disable-output-escaping="yes">[11] - Daňové identifikačné číslo </xsl:text>
-																</label>
-																<span class="fieldContent">
-																	<input  id="Dic11" name="Dic11" title="Musí byť vyplnené DIČ platiteľa na r. 11 P." type="text" class="textBox" maxlength="10" size="190" disabled="disabled" alt="Musí byť vyplnené DIČ platiteľa na r. 11 P." value=""  >
-																		<xsl:if test="boolean(./*[name() = 'Dic11']/@isReadOnly = 'true')">
-																			<xsl:attribute name="disabled">disabled</xsl:attribute>
-																		</xsl:if>
-																		<xsl:if test="./*[name() = 'Dic11']/text()">
-																			<xsl:attribute name="value">
-																				<xsl:value-of select="./*[name() = 'Dic11']"/>
-																			</xsl:attribute>
-																		</xsl:if>
-																	</input>
-																</span>
-																<div class="clear"></div>
-															</div>
-														</div>
-														<div class="clear"></div>
-													</div>
-												</div>
-											</xsl:for-each>
-											<div class="clear"></div>
-										</div>
-										<div id="layoutCell140964" class="cell " >
-											<xsl:for-each select="/V2Pv21/UdajeDrzitelaSekcia/FoSekcia_P">
-												<div id="layoutRow35041" class="layoutRow ui-tabs ui-widget-content  "   title="" >
-													<input type="hidden" name="FoSekcia_P"  />
-													<div class="caption ui-widget-header">
-														<div class="headercorrection" title="Fyzická osoba">Fyzická osoba</div>
-														<span class="arrow ui-icon ui-icon-carat-1-n"></span>
-													</div>
-													<div id="layoutRowContentlayoutRow35041" class="columns">
-														<div id="layoutColumn86997" class="column first"  style="width:297px;">
-															<div id="layoutCell140965" class="cell " >
-																<span class="fieldLabel" title=""  >
-																	<xsl:text disable-output-escaping="yes">[12] - Priezvisko </xsl:text>
-																</span>
-																<div class="clear"></div>
-															</div>
-															<div id="layoutCell140966" class="cell  sirokyTextBox260pxPriezvisko" >
-																<label class="fieldLabel" title="" for="Priezvisko12" style="display: none">[12] - Priezvisko </label>
-																<span class="fieldContent">
-																	<input  id="Priezvisko12" name="Priezvisko12" title="Nemôže byť súčasne vyplnené meno, priezvisko FO a názov PO v potvrdení." type="text" class="textBox" maxlength="40" size="190" disabled="disabled" alt="Nemôže byť súčasne vyplnené meno, priezvisko FO a názov PO v potvrdení." value=""  >
-																		<xsl:if test="boolean(./*[name() = 'Priezvisko12']/@isReadOnly = 'true')">
-																			<xsl:attribute name="disabled">disabled</xsl:attribute>
-																		</xsl:if>
-																		<xsl:if test="./*[name() = 'Priezvisko12']/text()">
-																			<xsl:attribute name="value">
-																				<xsl:value-of select="./*[name() = 'Priezvisko12']"/>
-																			</xsl:attribute>
-																		</xsl:if>
-																	</input>
-																</span>
-																<div class="clear"></div>
-															</div>
-														</div>
-														<div id="layoutColumn86998" class="column "  style="width:250px;">
-															<div id="layoutCell140967" class="cell " >
-																<span class="fieldLabel" title=""  >
-																	<xsl:text disable-output-escaping="yes">[13] - Meno </xsl:text>
-																</span>
-																<div class="clear"></div>
-															</div>
-															<div id="layoutCell140972" class="cell  sirokyTextBox210pxx" >
-																<label class="fieldLabel" title="" for="Meno13" style="display: none">[13] - Meno </label>
-																<span class="fieldContent">
-																	<input  id="Meno13" name="Meno13" title="Nemôže byť súčasne vyplnené meno, priezvisko FO a názov PO v potvrdení." type="text" class="textBox" maxlength="40" size="190" disabled="disabled" alt="Nemôže byť súčasne vyplnené meno, priezvisko FO a názov PO v potvrdení." value=""  >
-																		<xsl:if test="boolean(./*[name() = 'Meno13']/@isReadOnly = 'true')">
-																			<xsl:attribute name="disabled">disabled</xsl:attribute>
-																		</xsl:if>
-																		<xsl:if test="./*[name() = 'Meno13']/text()">
-																			<xsl:attribute name="value">
-																				<xsl:value-of select="./*[name() = 'Meno13']"/>
-																			</xsl:attribute>
-																		</xsl:if>
-																	</input>
-																</span>
-																<div class="clear"></div>
-															</div>
-														</div>
-														<div id="layoutColumn87001" class="column "  style="width:132px;">
-															<div id="layoutCell140973" class="cell " >
-																<span class="fieldLabel" title=""   style="width:280px;">
-																	<xsl:text disable-output-escaping="yes">[14] - Titul pred menom / za priezviskom </xsl:text>
-																</span>
-																<div class="clear"></div>
-															</div>
-															<div id="layoutCell140974" class="cell  kratkyTextBox120pxTitul" >
-																<label class="fieldLabel" title="" for="Titul14" style="display: none">[14] - Titul pred menom </label>
-																<span class="fieldContent">
-																	<input  id="Titul14" name="Titul14" title="" type="text" class="textBox" maxlength="20" size="190" disabled="disabled" alt="" value=""  >
-																		<xsl:if test="boolean(./*[name() = 'Titul14']/@isReadOnly = 'true')">
-																			<xsl:attribute name="disabled">disabled</xsl:attribute>
-																		</xsl:if>
-																		<xsl:if test="./*[name() = 'Titul14']/text()">
-																			<xsl:attribute name="value">
-																				<xsl:value-of select="./*[name() = 'Titul14']"/>
-																			</xsl:attribute>
-																		</xsl:if>
-																	</input>
-																</span>
-																<div class="clear"></div>
-															</div>
-														</div>
-														<div id="layoutColumn87002" class="column "  style="width:10px;">
-															<div id="layoutCell140975" class="cell " >
-																<span class="fieldLabel" title=""  >
-																	<xsl:text disable-output-escaping="yes">&#xa0; </xsl:text>
-																</span>
-																<div class="clear"></div>
-															</div>
-															<div id="layoutCell140976" class="cell " >
-																<span class="fieldLabel" title=""  >
-																	<xsl:text disable-output-escaping="yes">/ </xsl:text>
-																</span>
-																<div class="clear"></div>
-															</div>
-														</div>
-														<div id="layoutColumn87003" class="column "  style="width:185px;">
-															<div id="layoutCell140977" class="cell " >
-																<span class="fieldLabel" title=""  >
-																	<xsl:text disable-output-escaping="yes">&#xa0; </xsl:text>
-																</span>
-																<div class="clear"></div>
-															</div>
-															<div id="layoutCell140978" class="cell  kratkyTextBox120pxTitul" >
-																<label class="fieldLabel" title="" for="Titul14_2" style="display: none">Titul za menom </label>
-																<span class="fieldContent">
-																	<input  id="Titul14_2" name="Titul14_2" title="" type="text" class="textBox" maxlength="20" size="190" disabled="disabled" alt="" value=""  >
-																		<xsl:if test="boolean(./*[name() = 'Titul14_2']/@isReadOnly = 'true')">
-																			<xsl:attribute name="disabled">disabled</xsl:attribute>
-																		</xsl:if>
-																		<xsl:if test="./*[name() = 'Titul14_2']/text()">
-																			<xsl:attribute name="value">
-																				<xsl:value-of select="./*[name() = 'Titul14_2']"/>
-																			</xsl:attribute>
-																		</xsl:if>
-																	</input>
-																</span>
-																<div class="clear"></div>
-															</div>
-														</div>
-														<div class="clear"></div>
-													</div>
-												</div>
-											</xsl:for-each>
-											<div class="clear"></div>
-										</div>
-										<div id="layoutCell140979" class="cell " >
-											<xsl:for-each select="/V2Pv21/UdajeDrzitelaSekcia/PoSekcia">
-												<div id="layoutRow35042" class="layoutRow ui-tabs ui-widget-content  "   title="" >
-													<input type="hidden" name="PoSekcia"  />
-													<div class="caption ui-widget-header">
-														<div class="headercorrection" title="Právnická osoba">Právnická osoba</div>
-														<span class="arrow ui-icon ui-icon-carat-1-n"></span>
-													</div>
-													<div id="layoutRowContentlayoutRow35042" class="columns">
-														<div id="layoutColumn87004" class="column first" >
-															<div id="layoutCell140980" class="cell  sirokyTextBox810px" >
-																<label class="fieldLabel" title="" for="Nazov15" >
-																	<xsl:text disable-output-escaping="yes">[15] - Obchodné meno alebo názov </xsl:text>
-																</label>
-																<span class="fieldContent">
-																	<input  id="Nazov15" name="Nazov15" title="Nemôže byť súčasne vyplnené meno, priezvisko FO a názov PO v potvrdení." type="text" class="textBox" maxlength="60" size="190" disabled="disabled" alt="Nemôže byť súčasne vyplnené meno, priezvisko FO a názov PO v potvrdení." value=""  >
-																		<xsl:if test="boolean(./*[name() = 'Nazov15']/@isReadOnly = 'true')">
-																			<xsl:attribute name="disabled">disabled</xsl:attribute>
-																		</xsl:if>
-																		<xsl:if test="./*[name() = 'Nazov15']/text()">
-																			<xsl:attribute name="value">
-																				<xsl:value-of select="./*[name() = 'Nazov15']"/>
-																			</xsl:attribute>
-																		</xsl:if>
-																	</input>
-																</span>
-																<div class="clear"></div>
-															</div>
-														</div>
-														<div class="clear"></div>
-													</div>
-												</div>
-											</xsl:for-each>
-											<div class="clear"></div>
-										</div>
-										<div id="layoutCell140981" class="cell " >
-											<xsl:for-each select="/V2Pv21/UdajeDrzitelaSekcia/AdresaTPPSekcia">
-												<div id="layoutRow35043" class="layoutRow ui-tabs ui-widget-content  "   title="" >
-													<input type="hidden" name="AdresaTPPSekcia"  />
-													<div class="caption ui-widget-header">
-														<div class="headercorrection" title="Trvalý pobyt (fyzická osoba) alebo sídlo (právnická osoba)">Trvalý pobyt (fyzická osoba) alebo sídlo (právnická osoba)</div>
-														<span class="arrow ui-icon ui-icon-carat-1-n"></span>
-													</div>
-													<div id="layoutRowContentlayoutRow35043" class="columns">
-														<div id="layoutColumn87005" class="column first" >
-															<div id="layoutCell140982" class="cell " >
-																<xsl:for-each select="/V2Pv21/UdajeDrzitelaSekcia/AdresaTPPSekcia/adresa1Sekcia">
-																	<div id="layoutRow35044" class="layoutRow ui-tabs ui-widget-content  bezOkrajaBezPozadiaHlavicky dolava8px nocaption "   title="" >
-																		<input type="hidden" name="adresa1Sekcia"  />
-																		<div class="caption ui-widget-header">
-																			<span class="arrow ui-icon ui-icon-carat-1-n"></span>
-																		</div>
-																		<div id="layoutRowContentlayoutRow35044" class="columns">
-																			<div id="layoutColumn87006" class="column first"  style="width:649px;">
-																				<div id="layoutCell140984" class="cell " >
-																					<span class="fieldLabel" title=""  >
-																						<xsl:text disable-output-escaping="yes">[16] - Ulica </xsl:text>
-																					</span>
-																					<div class="clear"></div>
-																				</div>
-																				<div id="layoutCell140985" class="cell  sirokyTextBox600px" >
-																					<label class="fieldLabel" title="" for="Ulica16" style="display: none">[16] - Ulica </label>
-																					<span class="fieldContent">
-																						<input  id="Ulica16" name="Ulica16" title="" type="text" class="textBox" maxlength="60" size="190" disabled="disabled" alt="" value=""  >
-																							<xsl:if test="boolean(./*[name() = 'Ulica16']/@isReadOnly = 'true')">
-																								<xsl:attribute name="disabled">disabled</xsl:attribute>
-																							</xsl:if>
-																							<xsl:if test="./*[name() = 'Ulica16']/text()">
-																								<xsl:attribute name="value">
-																									<xsl:value-of select="./*[name() = 'Ulica16']"/>
-																								</xsl:attribute>
-																							</xsl:if>
-																						</input>
-																					</span>
-																					<div class="clear"></div>
-																				</div>
-																			</div>
-																			<div id="layoutColumn87007" class="column "  style="width:185px;">
-																				<div id="layoutCell140986" class="cell " >
-																					<span class="fieldLabel" title=""  >
-																						<xsl:text disable-output-escaping="yes">[17] - Súpisné / orientačné číslo </xsl:text>
-																					</span>
-																					<div class="clear"></div>
-																				</div>
-																				<div id="layoutCell140987" class="cell " >
-																					<label class="fieldLabel" title="" for="CisloDomu17" style="display: none">[17] - Súpisné / orientačné číslo </label>
-																					<span class="fieldContent">
-																						<input  id="CisloDomu17" name="CisloDomu17" title="" type="text" class="textBox" maxlength="20" size="190" disabled="disabled" alt="" value=""  >
-																							<xsl:if test="boolean(./*[name() = 'CisloDomu17']/@isReadOnly = 'true')">
-																								<xsl:attribute name="disabled">disabled</xsl:attribute>
-																							</xsl:if>
-																							<xsl:if test="./*[name() = 'CisloDomu17']/text()">
-																								<xsl:attribute name="value">
-																									<xsl:value-of select="./*[name() = 'CisloDomu17']"/>
-																								</xsl:attribute>
-																							</xsl:if>
-																						</input>
-																					</span>
-																					<div class="clear"></div>
-																				</div>
-																			</div>
-																			<div class="clear"></div>
-																		</div>
-																	</div>
-																</xsl:for-each>
-																<div class="clear"></div>
-															</div>
-															<div id="layoutCell140983" class="cell " >
-																<xsl:for-each select="/V2Pv21/UdajeDrzitelaSekcia/AdresaTPPSekcia/adresa2Sekcia">
-																	<div id="layoutRow35045" class="layoutRow ui-tabs ui-widget-content  bezOkrajaBezPozadiaHlavicky dolava2px  nocaption "   title="" >
-																		<input type="hidden" name="adresa2Sekcia"  />
-																		<div class="caption ui-widget-header">
-																			<span class="arrow ui-icon ui-icon-carat-1-n"></span>
-																		</div>
-																		<div id="layoutRowContentlayoutRow35045" class="columns">
-																			<div id="layoutColumn87008" class="column first"  style="width:125px;">
-																				<div id="layoutCell140988" class="cell  dolava4px" >
-																					<span class="fieldLabel" title=""  >
-																						<xsl:text disable-output-escaping="yes">[18] - PSČ </xsl:text>
-																					</span>
-																					<div class="clear"></div>
-																				</div>
-																				<div id="layoutCell140989" class="cell  kratkyTextBox87px" >
-																					<label class="fieldLabel" title="" for="PSC18" style="display: none">[18] - PSČ </label>
-																					<span class="fieldContent">
-																						<input  id="PSC18" name="PSC18" title="" type="text" class="textBox" maxlength="15" size="190" disabled="disabled" alt="" value=""  >
-																							<xsl:if test="boolean(./*[name() = 'PSC18']/@isReadOnly = 'true')">
-																								<xsl:attribute name="disabled">disabled</xsl:attribute>
-																							</xsl:if>
-																							<xsl:if test="./*[name() = 'PSC18']/text()">
-																								<xsl:attribute name="value">
-																									<xsl:value-of select="./*[name() = 'PSC18']"/>
-																								</xsl:attribute>
-																							</xsl:if>
-																						</input>
-																					</span>
-																					<div class="clear"></div>
-																				</div>
-																			</div>
-																			<div id="layoutColumn87009" class="column "  style="width:518px;">
-																				<div id="layoutCell140990" class="cell " >
-																					<span class="fieldLabel" title=""  >
-																						<xsl:text disable-output-escaping="yes">[19] - Obec </xsl:text>
-																					</span>
-																					<div class="clear"></div>
-																				</div>
-																				<div id="layoutCell140991" class="cell  sirokyTextBox450px" >
-																					<label class="fieldLabel" title="" for="Obec19" style="display: none">[19] - Obec </label>
-																					<span class="fieldContent">
-																						<input  id="Obec19" name="Obec19" title="" type="text" class="textBox" maxlength="40" size="190" disabled="disabled" alt="" value=""  >
-																							<xsl:if test="boolean(./*[name() = 'Obec19']/@isReadOnly = 'true')">
-																								<xsl:attribute name="disabled">disabled</xsl:attribute>
-																							</xsl:if>
-																							<xsl:if test="./*[name() = 'Obec19']/text()">
-																								<xsl:attribute name="value">
-																									<xsl:value-of select="./*[name() = 'Obec19']"/>
-																								</xsl:attribute>
-																							</xsl:if>
-																						</input>
-																					</span>
-																					<div class="clear"></div>
-																				</div>
-																			</div>
-																			<div id="layoutColumn87010" class="column "  style="width:120px;">
-																				<div id="layoutCell140992" class="cell " >
-																					<span class="fieldLabel" title=""  >
-																						<xsl:text disable-output-escaping="yes">[20] - Štát </xsl:text>
-																					</span>
-																					<div class="clear"></div>
-																				</div>
-																				<div id="layoutCell140993" class="cell " >
-																					<label class="fieldLabel" title="" for="Stat20" style="display: none">[20] - Štát </label>
-																					<span class="fieldContent">
-																						<input  id="Stat20" name="Stat20" title="" type="text" class="textBox" maxlength="37" size="190" disabled="disabled" alt="" value=""  >
-																							<xsl:if test="boolean(./*[name() = 'Stat20']/@isReadOnly = 'true')">
-																								<xsl:attribute name="disabled">disabled</xsl:attribute>
-																							</xsl:if>
-																							<xsl:if test="./*[name() = 'Stat20']/text()">
-																								<xsl:attribute name="value">
-																									<xsl:value-of select="./*[name() = 'Stat20']"/>
-																								</xsl:attribute>
-																							</xsl:if>
-																						</input>
-																					</span>
-																					<div class="clear"></div>
-																				</div>
-																			</div>
-																			<div class="clear"></div>
-																		</div>
-																	</div>
-																</xsl:for-each>
-																<div class="clear"></div>
-															</div>
-														</div>
-														<div class="clear"></div>
-													</div>
-												</div>
-											</xsl:for-each>
-											<div class="clear"></div>
-										</div>
-									</div>
-									<div class="clear"></div>
-								</div>
-							</div>
-						</xsl:for-each>
-						<xsl:if test="/V2Pv21/UdajeDrzitelaSekcia/@notInFormData">
-							<script type="text/javascript">$(document).ready(function () { initRepetitionSection(1, 1, 'layoutRow35034') })</script>
-						</xsl:if>
-						<xsl:for-each select="/V2Pv21/UdajeZapDaneSekcia">
-							<div id="layoutRow35035" class="layoutRow ui-tabs ui-widget-content  "   title="" >
-								<input type="hidden" name="UdajeZapDaneSekcia"  />
-								<div class="caption ui-widget-header">
-									<h1 class="headercorrection" title="III. ODDIEL - ÚDAJE O ZAPLATENÍ DANE Z PRÍJMOV ZO ZÁVISLEJ ČINNOSTI - v eurách">III. ODDIEL - ÚDAJE O ZAPLATENÍ DANE Z PRÍJMOV ZO ZÁVISLEJ ČINNOSTI - v eurách</h1>
-									<span class="arrow ui-icon ui-icon-carat-1-n"></span>
-								</div>
-								<div id="layoutRowContentlayoutRow35035" class="columns">
-									<div id="layoutColumn87011" class="column first" >
-										<div id="layoutCell140994" class="cell " >
-											<xsl:for-each select="/V2Pv21/UdajeZapDaneSekcia/Riadok21">
-												<div id="layoutRow35046" class="layoutRow ui-tabs ui-widget-content  nocaption "   title="" >
-													<input type="hidden" name="Riadok21"  />
-													<div class="caption ui-widget-header">
-														<span class="arrow ui-icon ui-icon-carat-1-n"></span>
-													</div>
-													<div id="layoutRowContentlayoutRow35046" class="columns">
-														<div id="layoutColumn87012" class="column first"  style="width:610px;">
-															<div id="layoutCell140995" class="cell " >
-																<span class="fieldLabel" title=""   style="width:620px;">
-																	<xsl:text disable-output-escaping="yes">Daň – podľa § 15 zákona (z r. 06 ročného zúčtovania preddavkov na daň) </xsl:text>
-																</span>
-																<div class="clear"></div>
-															</div>
-														</div>
-														<div id="layoutColumn87013" class="column "  style="width:40px;">
-															<div id="layoutCell140996" class="cell " >
-																<span class="fieldLabel" title=""  >
-																	<xsl:text disable-output-escaping="yes">21 </xsl:text>
-																</span>
-																<div class="clear"></div>
-															</div>
-														</div>
-														<div id="layoutColumn87014" class="column "  style="width:160px;">
-															<div id="layoutCell140997" class="cell  textNapravo" >
-																<label class="fieldLabel" title="" for="t21" style="display: none">riadok 21 </label>
-																<span class="fieldContent">
-																	<input  id="t21" name="t21" title="Nezáporné numerické číslo s 2 des. miestami." type="text" class="textBox" maxlength="11" size="190" disabled="disabled" alt="Nezáporné numerické číslo s 2 des. miestami." value=""  >
-																		<xsl:if test="boolean(./*[name() = 't21']/@isReadOnly = 'true')">
-																			<xsl:attribute name="disabled">disabled</xsl:attribute>
-																		</xsl:if>
-																		<xsl:if test="./*[name() = 't21']/text()">
-																			<xsl:attribute name="value">
-																				<xsl:value-of select="./*[name() = 't21']"/>
-																			</xsl:attribute>
-																		</xsl:if>
-																	</input>
-																</span>
-																<div class="clear"></div>
-															</div>
-														</div>
-														<div class="clear"></div>
-													</div>
-												</div>
-											</xsl:for-each>
-											<div class="clear"></div>
-										</div>
-										<div id="layoutCell140998" class="cell " >
-											<xsl:for-each select="/V2Pv21/UdajeZapDaneSekcia/Riadok22">
-												<div id="layoutRow35047" class="layoutRow ui-tabs ui-widget-content  nocaption "   title="" >
-													<input type="hidden" name="Riadok22"  />
-													<div class="caption ui-widget-header">
-														<span class="arrow ui-icon ui-icon-carat-1-n"></span>
-													</div>
-													<div id="layoutRowContentlayoutRow35047" class="columns">
-														<div id="layoutColumn87015" class="column first"  style="width:610px;">
-															<div id="layoutCell140999" class="cell " >
-																<span class="fieldLabel" title=""   style="width:620px;">
-																	<xsl:text disable-output-escaping="yes">Nárok na daňový bonus podľa § 33 zákona (z r. 09 ročného zúčtovania preddavkov na daň) </xsl:text>
-																</span>
-																<div class="clear"></div>
-															</div>
-														</div>
-														<div id="layoutColumn87016" class="column "  style="width:40px;">
-															<div id="layoutCell141000" class="cell " >
-																<span class="fieldLabel" title=""  >
-																	<xsl:text disable-output-escaping="yes">22 </xsl:text>
-																</span>
-																<div class="clear"></div>
-															</div>
-														</div>
-														<div id="layoutColumn87017" class="column "  style="width:160px;">
-															<div id="layoutCell141001" class="cell  textNapravo" >
-																<label class="fieldLabel" title="" for="t22" style="display: none">riadok 22 </label>
-																<span class="fieldContent">
-																	<input  id="t22" name="t22" title="Nezáporné numerické číslo s 2 des. miestami." type="text" class="textBox" maxlength="7" size="190" disabled="disabled" alt="Nezáporné numerické číslo s 2 des. miestami." value=""  >
-																		<xsl:if test="boolean(./*[name() = 't22']/@isReadOnly = 'true')">
-																			<xsl:attribute name="disabled">disabled</xsl:attribute>
-																		</xsl:if>
-																		<xsl:if test="./*[name() = 't22']/text()">
-																			<xsl:attribute name="value">
-																				<xsl:value-of select="./*[name() = 't22']"/>
-																			</xsl:attribute>
-																		</xsl:if>
-																	</input>
-																</span>
-																<div class="clear"></div>
-															</div>
-														</div>
-														<div class="clear"></div>
-													</div>
-												</div>
-											</xsl:for-each>
-											<div class="clear"></div>
-										</div>
-										<div id="layoutCell141002" class="cell " >
-											<xsl:for-each select="/V2Pv21/UdajeZapDaneSekcia/Riadok23">
-												<div id="layoutRow35048" class="layoutRow ui-tabs ui-widget-content  nocaption "   title="" >
-													<input type="hidden" name="Riadok23"  />
-													<div class="caption ui-widget-header">
-														<span class="arrow ui-icon ui-icon-carat-1-n"></span>
-													</div>
-													<div id="layoutRowContentlayoutRow35048" class="columns">
-														<div id="layoutColumn87018" class="column first"  style="width:610px;">
-															<div id="layoutCell141003" class="cell " >
-																<span class="fieldLabel" title=""   style="width:620px;">
-																	<xsl:text disable-output-escaping="yes">Nárok na daňový bonus na zaplatené úroky podľa § 33a zákona (z r. 15 ročného zúčtovania preddavkov na daň) </xsl:text>
-																</span>
-																<div class="clear"></div>
-															</div>
-														</div>
-														<div id="layoutColumn87019" class="column "  style="width:40px;">
-															<div id="layoutCell141004" class="cell " >
-																<span class="fieldLabel" title=""  >
-																	<xsl:text disable-output-escaping="yes">23 </xsl:text>
-																</span>
-																<div class="clear"></div>
-															</div>
-														</div>
-														<div id="layoutColumn87020" class="column "  style="width:160px;">
-															<div id="layoutCell141005" class="cell  textNapravo" >
-																<label class="fieldLabel" title="" for="t23" style="display: none">riadok 23 </label>
-																<span class="fieldContent">
-																	<input  id="t23" name="t23" title="Nezáporné numerické číslo s 2 des. miestami. Daňovník si môže uplatniť DB na zaplatené úroky max. do sumy 400 €." type="text" class="textBox" maxlength="7" size="190" disabled="disabled" alt="Nezáporné numerické číslo s 2 des. miestami. Daňovník si môže uplatniť DB na zaplatené úroky max. do sumy 400 €." value=""  >
-																		<xsl:if test="boolean(./*[name() = 't23']/@isReadOnly = 'true')">
-																			<xsl:attribute name="disabled">disabled</xsl:attribute>
-																		</xsl:if>
-																		<xsl:if test="./*[name() = 't23']/text()">
-																			<xsl:attribute name="value">
-																				<xsl:value-of select="./*[name() = 't23']"/>
-																			</xsl:attribute>
-																		</xsl:if>
-																	</input>
-																</span>
-																<div class="clear"></div>
-															</div>
-														</div>
-														<div class="clear"></div>
-													</div>
-												</div>
-											</xsl:for-each>
-											<div class="clear"></div>
-										</div>
-										<div id="layoutCell141006" class="cell " >
-											<xsl:for-each select="/V2Pv21/UdajeZapDaneSekcia/Riadok24">
-												<div id="layoutRow35049" class="layoutRow ui-tabs ui-widget-content  nocaption "   title="" >
-													<input type="hidden" name="Riadok24"  />
-													<div class="caption ui-widget-header">
-														<span class="arrow ui-icon ui-icon-carat-1-n"></span>
-													</div>
-													<div id="layoutRowContentlayoutRow35049" class="columns">
-														<div id="layoutColumn87021" class="column first"  style="width:610px;">
-															<div id="layoutCell141007" class="cell " >
-																<span class="fieldLabel" title=""   style="width:620px;">
-																	<xsl:text disable-output-escaping="yes">Daň znížená o daňový bonus (§ 33 zákona) a daňový bonus na zaplatené úroky (§ 33a zákona)&lt;br/&gt; (r. 21 - r. 22 - r. 23 ) &gt; 0 </xsl:text>
-																</span>
-																<div class="clear"></div>
-															</div>
-														</div>
-														<div id="layoutColumn87022" class="column "  style="width:40px;">
-															<div id="layoutCell141008" class="cell " >
-																<span class="fieldLabel" title=""  >
-																	<xsl:text disable-output-escaping="yes">24 </xsl:text>
-																</span>
-																<div class="clear"></div>
-															</div>
-														</div>
-														<div id="layoutColumn87023" class="column "  style="width:160px;">
-															<div id="layoutCell141009" class="cell  textNapravo" >
-																<label class="fieldLabel" title="" for="t24" style="display: none">riadok 24 </label>
-																<span class="fieldContent">
-																	<input  id="t24" name="t24" title="0 &lt; r.24 = r. 21 - r. 22 - r.23 Nezáporné numerické číslo s 2 des. miestami." type="text" class="textBox" maxlength="11" size="190" disabled="disabled" alt="0 &lt; r.24 = r. 21 - r. 22 - r.23 Nezáporné numerické číslo s 2 des. miestami." value=""  >
-																		<xsl:if test="boolean(./*[name() = 't24']/@isReadOnly = 'true')">
-																			<xsl:attribute name="disabled">disabled</xsl:attribute>
-																		</xsl:if>
-																		<xsl:if test="./*[name() = 't24']/text()">
-																			<xsl:attribute name="value">
-																				<xsl:value-of select="./*[name() = 't24']"/>
-																			</xsl:attribute>
-																		</xsl:if>
-																	</input>
-																</span>
-																<div class="clear"></div>
-															</div>
-														</div>
-														<div class="clear"></div>
-													</div>
-												</div>
-											</xsl:for-each>
-											<div class="clear"></div>
-										</div>
-										<div id="layoutCell141010" class="cell " >
-											<xsl:for-each select="/V2Pv21/UdajeZapDaneSekcia/Riadok25">
-												<div id="layoutRow35050" class="layoutRow ui-tabs ui-widget-content  nocaption "   title="" >
-													<input type="hidden" name="Riadok25"  />
-													<div class="caption ui-widget-header">
-														<span class="arrow ui-icon ui-icon-carat-1-n"></span>
-													</div>
-													<div id="layoutRowContentlayoutRow35050" class="columns">
-														<div id="layoutColumn87024" class="column first"  style="width:610px;">
-															<div id="layoutCell141011" class="cell " >
-																<span class="fieldLabel" title=""   style="width:620px;">
-																	<xsl:text disable-output-escaping="yes">Daň na úhradu (z r. 21 ročného zúčtovania preddavkov na daň) </xsl:text>
-																</span>
-																<div class="clear"></div>
-															</div>
-														</div>
-														<div id="layoutColumn87025" class="column "  style="width:40px;">
-															<div id="layoutCell141012" class="cell " >
-																<span class="fieldLabel" title=""  >
-																	<xsl:text disable-output-escaping="yes">25 </xsl:text>
-																</span>
-																<div class="clear"></div>
-															</div>
-														</div>
-														<div id="layoutColumn87026" class="column "  style="width:160px;">
-															<div id="layoutCell141013" class="cell  textNapravo" >
-																<label class="fieldLabel" title="" for="t25" style="display: none">riadok 25 </label>
-																<span class="fieldContent">
-																	<input  id="t25" name="t25" title="Nezáporné numerické číslo s 2 des. miestami." type="text" class="textBox" maxlength="11" size="190" disabled="disabled" alt="Nezáporné numerické číslo s 2 des. miestami." value=""  >
-																		<xsl:if test="boolean(./*[name() = 't25']/@isReadOnly = 'true')">
-																			<xsl:attribute name="disabled">disabled</xsl:attribute>
-																		</xsl:if>
-																		<xsl:if test="./*[name() = 't25']/text()">
-																			<xsl:attribute name="value">
-																				<xsl:value-of select="./*[name() = 't25']"/>
-																			</xsl:attribute>
-																		</xsl:if>
-																	</input>
-																</span>
-																<div class="clear"></div>
-															</div>
-														</div>
-														<div class="clear"></div>
-													</div>
-												</div>
-											</xsl:for-each>
-											<div class="clear"></div>
-										</div>
-										<div id="layoutCell141014" class="cell " >
-											<xsl:for-each select="/V2Pv21/UdajeZapDaneSekcia/Riadok26">
-												<div id="layoutRow35051" class="layoutRow ui-tabs ui-widget-content  nocaption "   title="" >
-													<input type="hidden" name="Riadok26"  />
-													<div class="caption ui-widget-header">
-														<span class="arrow ui-icon ui-icon-carat-1-n"></span>
-													</div>
-													<div id="layoutRowContentlayoutRow35051" class="columns">
-														<div id="layoutColumn87027" class="column first"  style="width:610px;">
-															<div id="layoutCell141015" class="cell " >
-																<span class="fieldLabel" title=""   style="width:620px;">
-																	<xsl:text disable-output-escaping="yes">Daň na úhradu (z r. 25 tohto potvrdenia), zrazená zamestnancovi alebo zaplatená zamestnancom v lehote&lt;br/&gt; do podania vyhlásenia o poukázaní podielu zaplatenej dane z príjmov fyzickej osoby v úhrnnej sume </xsl:text>
-																</span>
-																<div class="clear"></div>
-															</div>
-														</div>
-														<div id="layoutColumn87028" class="column "  style="width:40px;">
-															<div id="layoutCell141016" class="cell " >
-																<span class="fieldLabel" title=""  >
-																	<xsl:text disable-output-escaping="yes">26 </xsl:text>
-																</span>
-																<div class="clear"></div>
-															</div>
-														</div>
-														<div id="layoutColumn87029" class="column "  style="width:205px;">
-															<div id="layoutCell141017" class="cell  textNapravo" >
-																<label class="fieldLabel" title="" for="t26" style="display: none">riadok 26 </label>
-																<span class="fieldContent">
-																	<input  id="t26" name="t26" title="Suma na r. 26 potvrdenia nemôže byť vyššia ako na r. 25. Ak je r. 25 prázdne, alebo sa rovná 0, potom aj r. 26 musí byť prázdne, alebo sa rovnať 0." type="text" class="textBox" maxlength="11" size="190" disabled="disabled" alt="Suma na r. 26 potvrdenia nemôže byť vyššia ako na r. 25. Ak je r. 25 prázdne, alebo sa rovná 0, potom aj r. 26 musí byť prázdne, alebo sa rovnať 0." value=""  >
-																		<xsl:if test="boolean(./*[name() = 't26']/@isReadOnly = 'true')">
-																			<xsl:attribute name="disabled">disabled</xsl:attribute>
-																		</xsl:if>
-																		<xsl:if test="./*[name() = 't26']/text()">
-																			<xsl:attribute name="value">
-																				<xsl:value-of select="./*[name() = 't26']"/>
-																			</xsl:attribute>
-																		</xsl:if>
-																	</input>
-																</span>
-																<div class="clear"></div>
-															</div>
-															<div id="layoutCell141018" class="cell  kratkyTextBox75px" >
-																<label class="fieldLabel" title="" for="t26_D"  style="width:72px;">
-																	<xsl:text disable-output-escaping="yes">Dňa </xsl:text>
-																</label>
-																<span class="fieldContent">
-																	<input alt="Ak r.25 je > 5€ a súčasne r.26 dátum je vyšší ako 30.4.XXXX rok zdaňovacie obdobie +1. Nedoplatok z RZ uhradený neskoro, nie sú splnené podmienky. Ak suma dane na úhradu na r.25 je >5 € a súčasne dátum v r. 26 nie je vyplnený. Nedoplatok na dani vyšší ako 5 € nebol zrazený pri RZ, uveďte dátum úhrady správcovi dane." id="t26_D" name="t26_D" title="Ak r.25 je > 5€ a súčasne r.26 dátum je vyšší ako 30.4.XXXX rok zdaňovacie obdobie +1. Nedoplatok z RZ uhradený neskoro, nie sú splnené podmienky. Ak suma dane na úhradu na r.25 je >5 € a súčasne dátum v r. 26 nie je vyplnený. Nedoplatok na dani vyšší ako 5 € nebol zrazený pri RZ, uveďte dátum úhrady správcovi dane." type="text" class="date datepicker" maxlength="14" size="190" disabled="disabled" >
-																		<xsl:if test="boolean(./*[name() = 't26_D']/@isReadOnly = 'true')">
-																			<xsl:attribute name="disabled">disabled</xsl:attribute>
-																		</xsl:if>
-																		<xsl:attribute name="value">
-																			<xsl:value-of select="./*[name() = 't26_D']"/>
-																		</xsl:attribute>
-																	</input>
-																</span>
-																<div class="clear"></div>
-															</div>
-														</div>
-														<div class="clear"></div>
-													</div>
-												</div>
-											</xsl:for-each>
-											<div class="clear"></div>
-										</div>
-									</div>
-									<div class="clear"></div>
-								</div>
-							</div>
-						</xsl:for-each>
-						<xsl:if test="/V2Pv21/UdajeZapDaneSekcia/@notInFormData">
-							<script type="text/javascript">$(document).ready(function () { initRepetitionSection(1, 1, 'layoutRow35035') })</script>
-						</xsl:if>
-						<xsl:for-each select="/V2Pv21/SekciaVypracoval_P">
-							<div id="layoutRow35036" class="layoutRow ui-tabs ui-widget-content  nocaption "   title="" >
-								<input type="hidden" name="SekciaVypracoval_P"  />
-								<div class="caption ui-widget-header">
-									<span class="arrow ui-icon ui-icon-carat-1-n"></span>
-								</div>
-								<div id="layoutRowContentlayoutRow35036" class="columns">
-									<div id="layoutColumn86983" class="column first" >
-										<div id="layoutCell140936" class="cell  sirokyTextBox818px" >
-											<label class="fieldLabel" title="" for="Vypracoval_P"  style="width:250px;">
-												<xsl:text disable-output-escaping="yes">Potvrdenie vypracoval (a) </xsl:text>
-											</label>
-											<span class="fieldContent">
-												<input  id="Vypracoval_P" name="Vypracoval_P" title="" type="text" class="textBox" maxlength="60" size="190" disabled="disabled" alt="" value=""  >
-													<xsl:if test="boolean(./*[name() = 'Vypracoval_P']/@isReadOnly = 'true')">
-														<xsl:attribute name="disabled">disabled</xsl:attribute>
-													</xsl:if>
-													<xsl:if test="./*[name() = 'Vypracoval_P']/text()">
-														<xsl:attribute name="value">
-															<xsl:value-of select="./*[name() = 'Vypracoval_P']"/>
-														</xsl:attribute>
-													</xsl:if>
-												</input>
-											</span>
-											<div class="clear"></div>
-										</div>
-										<div id="layoutCell140937" class="cell  tucnyText" >
-											<span class="fieldLabel" title=""   style="width:800px;">
-												<xsl:text disable-output-escaping="yes">Potvrdzujeme týmto, že údaje uvedené v potvrdení sú pravdivé. </xsl:text>
-											</span>
-											<div class="clear"></div>
-										</div>
-										<div id="layoutCell140938" class="cell " >
-											<label class="fieldLabel" title="" for="VyhlasenieDatum_P" >
-												<xsl:text disable-output-escaping="yes">Dátum </xsl:text>
-											</label>
-											<span class="fieldContent">
-												<input alt="Dátum, musí byť &lt;= lehota na podanie vyhlásenia v hlavičke FB." id="VyhlasenieDatum_P" name="VyhlasenieDatum_P" title="Dátum, musí byť &lt;= lehota na podanie vyhlásenia v hlavičke FB." type="text" class="date datepicker" maxlength="14" size="190" disabled="disabled" >
-													<xsl:if test="boolean(./*[name() = 'VyhlasenieDatum_P']/@isReadOnly = 'true')">
-														<xsl:attribute name="disabled">disabled</xsl:attribute>
-													</xsl:if>
-													<xsl:attribute name="value">
-														<xsl:value-of select="./*[name() = 'VyhlasenieDatum_P']"/>
-													</xsl:attribute>
-												</input>
-											</span>
-											<div class="clear"></div>
-										</div>
-									</div>
-									<div class="clear"></div>
-								</div>
-							</div>
-						</xsl:for-each>
-						<xsl:if test="/V2Pv21/SekciaVypracoval_P/@notInFormData">
-							<script type="text/javascript">$(document).ready(function () { initRepetitionSection(1, 1, 'layoutRow35036') })</script>
-						</xsl:if>
-						<div id="buttonsPlaceholder">
-							<input id="cancelForm" type="button" class="button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" value="Zrušiť"  alt="Zrušiť" accesskey="Z" />
-						</div>
-					</div>
-					<div id="statusDialog" title="Status">
-						<img id="statusLoader" src="Images/ajax-loader.png" alt="Čakajte prosím" />
-						<p id="statusMessage" class="statusMessage"></p>
-					</div>
-					<div id="savedFormsContainer" class="layoutMain ui-widget-content" style="display:none">
-						<div id="savedFormsContainerRow" class="layoutRow ui-tabs ui-widget-content"  title="" >
-							<input type="hidden" name="Basic" />
-							<div class="caption ui-widget-header">
-								<div class="headercorrection" title="Uložené formuláre">Uložené formuláre</div>
-								<span class="arrow ui-icon ui-icon-carat-1-n"></span>
-							</div>
-							<div id="layoutRowSavedForms" class="columns">
-								<div id="lcolumnSavedForms" class="column first" >
-									<div id="lcellSavedForms" class="cell"></div>
-								</div>
-								<div class="clear"></div>
-							</div>
-						</div>
-					</div>
-				</form>
-			</body>
-		</html>
+
+			<div class="clear"></div>
+		</div>
+			</div>
+			</xsl:for-each>
+							<xsl:if test="/V2Pv21/Nazov/@notInFormData">
+				<script type="text/javascript">$(document).ready(function () { initRepetitionSection(1, 1, 'layoutRow34786') })</script>
+					</xsl:if>
+							<xsl:for-each select="/V2Pv21/udaje">
+		<div id="layoutRow34808" class="layoutRow ui-tabs ui-widget-content  nocaption "   title="" >
+						<input type="hidden" name="udaje"  />
+					<div class="caption ui-widget-header">
+				<span class="arrow ui-icon ui-icon-carat-1-n"></span></div>
+		<div id="layoutRowContentlayoutRow34808" class="columns">
+
+				<div id="layoutColumn86537" class="column first"  style="width:516px;">
+
+<div id="layoutCell140024" class="cell " >
+
+			<xsl:for-each select="/V2Pv21/udaje/rodneCislo">
+		<div id="layoutRow34807" class="layoutRow ui-tabs ui-widget-content  dolava9px bezOkrajaBezPozadiaHlavicky nocaption "   title="" >
+						<input type="hidden" name="rodneCislo"  />
+					<div class="caption ui-widget-header">
+				<span class="arrow ui-icon ui-icon-carat-1-n"></span></div>
+		<div id="layoutRowContentlayoutRow34807" class="columns">
+
+				<div id="layoutColumn86536" class="column first"  style="width:223px;">
+
+<div id="layoutCell140022" class="cell " >
+
+		<span class="fieldLabel" title=""   style="width:210px;"><xsl:text disable-output-escaping="yes">[01] - Rodné číslo </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+				<div id="layoutColumn86533" class="column "  style="width:104px;">
+
+<div id="layoutCell140019" class="cell  kratkyTextBox95px" >
+
+		<label class="fieldLabel" title="" for="rodneCislo1" style="display: none">[01] - Rodné číslo - prvá časť </label><span class="fieldContent"><input  id="rodneCislo1" name="rodneCislo1" title="Musí byť povinne vyplnené RČ na r.1 alebo Dátum narodenia na r. 2, ak daňovník nemá rodné číslo. RČ vo Vyhlásení (V) r. 1 musí sedieť s RČ v Potvrdení (P) r.1." type="text" class="textBox" maxlength="6" size="190"  alt="Musí byť povinne vyplnené RČ na r.1 alebo Dátum narodenia na r. 2, ak daňovník nemá rodné číslo. RČ vo Vyhlásení (V) r. 1 musí sedieť s RČ v Potvrdení (P) r.1." value=""  ><xsl:if test="boolean(./*[name() = 'rodneCislo1']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:if test="./*[name() = 'rodneCislo1']/text()"><xsl:attribute name="value"><xsl:value-of select="./*[name() = 'rodneCislo1']"/></xsl:attribute></xsl:if></input></span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+				<div id="layoutColumn86534" class="column "  style="width:16px;">
+
+<div id="layoutCell140020" class="cell " >
+
+		<span class="fieldLabel" title=""  ><xsl:text disable-output-escaping="yes">/ </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+				<div id="layoutColumn86535" class="column "  style="width:60px;">
+
+<div id="layoutCell140021" class="cell  kratkyTextBox40px" >
+
+		<label class="fieldLabel" title="" for="rodneCislo2" style="display: none">[01] - Rodné číslo - druhá časť </label><span class="fieldContent"><input  id="rodneCislo2" name="rodneCislo2" title="Musí byť povinne vyplnené RČ na r.1 alebo Dátum narodenia na r. 2, ak daňovník nemá rodné číslo. RČ vo Vyhlásení (V) r. 1 musí sedieť s RČ v Potvrdení (P) r.1." type="text" class="textBox" maxlength="4" size="190"  alt="Musí byť povinne vyplnené RČ na r.1 alebo Dátum narodenia na r. 2, ak daňovník nemá rodné číslo. RČ vo Vyhlásení (V) r. 1 musí sedieť s RČ v Potvrdení (P) r.1." value=""  ><xsl:if test="boolean(./*[name() = 'rodneCislo2']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:if test="./*[name() = 'rodneCislo2']/text()"><xsl:attribute name="value"><xsl:value-of select="./*[name() = 'rodneCislo2']"/></xsl:attribute></xsl:if></input></span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+			<div class="clear"></div>
+		</div>
+			</div>
+			</xsl:for-each>
+							<xsl:if test="/V2Pv21/udaje/rodneCislo/@notInFormData">
+				<script type="text/javascript">$(document).ready(function () { initRepetitionSection(1, 1, 'layoutRow34807') })</script>
+					</xsl:if>
+
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell140025" class="cell " >
+
+		<label class="fieldLabel" title="" for="datNarodenia"  style="width:199px;"><xsl:text disable-output-escaping="yes">[02] - Dátum narodenia </xsl:text> </label><span class="fieldContent"><input alt="Musí byť povinne vyplnené RČ na r.1 alebo Dátum narodenia na r. 2, ak daňovník nemá rodné číslo. Ak nie je vyplnené RČ vo V, potom Dátum narodenia vo Vyhlásení (V) r. 2 musí sedieť s Dátumom narodenia v Potvrdení (P) r.2. Ak je RČ vo Vyhlásení vyplnené, potom sa dátum narodenia nekontroluje. " id="datNarodenia" name="datNarodenia" title="Musí byť povinne vyplnené RČ na r.1 alebo Dátum narodenia na r. 2, ak daňovník nemá rodné číslo. Ak nie je vyplnené RČ vo V, potom Dátum narodenia vo Vyhlásení (V) r. 2 musí sedieť s Dátumom narodenia v Potvrdení (P) r.2. Ak je RČ vo Vyhlásení vyplnené, potom sa dátum narodenia nekontroluje. " type="text" class="date datepicker" maxlength="10" size="190"  ><xsl:if test="boolean(./*[name() = 'datNarodenia']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:attribute name="value"><xsl:value-of select="./*[name() = 'datNarodenia']"/></xsl:attribute></input></span>
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell140026" class="cell " >
+
+		<h3 class="headercorrection"><span class="fieldLabel" title=""   style="width:800px;"><xsl:text disable-output-escaping="yes">Riadok 02 sa vypĺňa, len ak ide o daňovníka, ktorý nemá rodné číslo </xsl:text> </span></h3>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+				<div id="layoutColumn86538" class="column "  style="width:370px;">
+
+<div id="layoutCell140027" class="cell  kratkyTextBox95pxR" >
+
+		<label class="fieldLabel" title="" for="rok"  style="width:200px;"><xsl:text disable-output-escaping="yes">Rok &lt;em&gt;*&lt;/em&gt; </xsl:text> </label><span class="fieldContent"><input  id="rok" name="rok" title="" type="text" class="textBox" maxlength="4" size="190"  alt="" value="2023"  ><xsl:if test="boolean(./*[name() = 'rok']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:if test="./*[name() = 'rok']/text()"><xsl:attribute name="value"><xsl:value-of select="./*[name() = 'rok']"/></xsl:attribute></xsl:if></input></span>
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell140028" class="cell " >
+
+		<h2 class="headercorrection"><span class="fieldLabel" title=""   style="width:800px;"><xsl:text disable-output-escaping="yes">Uvádza sa zdaňovacie obdobie, za ktoré sa platí daň </xsl:text> </span></h2>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+			<div class="clear"></div>
+		</div>
+			</div>
+			</xsl:for-each>
+							<xsl:if test="/V2Pv21/udaje/@notInFormData">
+				<script type="text/javascript">$(document).ready(function () { initRepetitionSection(1, 1, 'layoutRow34808') })</script>
+					</xsl:if>
+							<xsl:for-each select="/V2Pv21/oddiel1">
+		<div id="layoutRow34791" class="layoutRow ui-tabs ui-widget-content  "   title="" >
+						<input type="hidden" name="oddiel1"  />
+					<div class="caption ui-widget-header">
+				<h1 class="headercorrection" title="I. ODDIEL - ÚDAJE O DAŇOVNÍKOVI">I. ODDIEL - ÚDAJE O DAŇOVNÍKOVI</h1><span class="arrow ui-icon ui-icon-carat-1-n"></span></div>
+		<div id="layoutRowContentlayoutRow34791" class="columns">
+
+				<div id="layoutColumn86509" class="column first" >
+
+<div id="layoutCell139976" class="cell " >
+
+			<xsl:for-each select="/V2Pv21/oddiel1/danovnik">
+		<div id="layoutRow34789" class="layoutRow ui-tabs ui-widget-content  nocaption "   title="" >
+						<input type="hidden" name="danovnik"  />
+					<div class="caption ui-widget-header">
+				<span class="arrow ui-icon ui-icon-carat-1-n"></span></div>
+		<div id="layoutRowContentlayoutRow34789" class="columns">
+
+				<div id="layoutColumn86505" class="column first" >
+
+<div id="layoutCell139971" class="cell " >
+
+			<xsl:for-each select="/V2Pv21/oddiel1/danovnik/pomtTitulSekcia1">
+		<div id="layoutRow34790" class="layoutRow ui-tabs ui-widget-content  bezOkrajaBezPozadiaHlavicky nocaption "   title="" >
+						<input type="hidden" name="pomtTitulSekcia1"  />
+					<div class="caption ui-widget-header">
+				<span class="arrow ui-icon ui-icon-carat-1-n"></span></div>
+		<div id="layoutRowContentlayoutRow34790" class="columns">
+
+				<div id="layoutColumn86507" class="column first"  style="width:297px;">
+
+<div id="layoutCell139973" class="cell " >
+
+		<span class="fieldLabel" title=""  ><xsl:text disable-output-escaping="yes">[03] - Priezvisko </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell139965" class="cell  sirokyTextBox260pxPriezvisko" >
+
+		<label class="fieldLabel" title="" for="priezvisko" style="display: none">[03] - Priezvisko </label><span class="fieldContent"><input  id="priezvisko" name="priezvisko" title="Priezvisko vo V r. 3 musí sedieť s priezviskom v P r. 3" type="text" class="textBox" maxlength="40" size="190"  alt="Priezvisko vo V r. 3 musí sedieť s priezviskom v P r. 3" value=""  ><xsl:if test="boolean(./*[name() = 'priezvisko']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:if test="./*[name() = 'priezvisko']/text()"><xsl:attribute name="value"><xsl:value-of select="./*[name() = 'priezvisko']"/></xsl:attribute></xsl:if></input></span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+				<div id="layoutColumn86508" class="column "  style="width:253px;">
+
+<div id="layoutCell139974" class="cell " >
+
+		<span class="fieldLabel" title=""  ><xsl:text disable-output-escaping="yes">[04] - Meno </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell139966" class="cell  sirokyTextBox210pxx" >
+
+		<label class="fieldLabel" title="" for="meno" style="display: none">[04] - Meno </label><span class="fieldContent"><input  id="meno" name="meno" title="Meno vo V r. 4 musí sedieť s menom v P r. 4" type="text" class="textBox" maxlength="40" size="190"  alt="Meno vo V r. 4 musí sedieť s menom v P r. 4" value=""  ><xsl:if test="boolean(./*[name() = 'meno']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:if test="./*[name() = 'meno']/text()"><xsl:attribute name="value"><xsl:value-of select="./*[name() = 'meno']"/></xsl:attribute></xsl:if></input></span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+				<div id="layoutColumn86506" class="column "  style="width:132px;">
+
+<div id="layoutCell139972" class="cell " >
+
+		<span class="fieldLabel" title=""   style="width:280px;"><xsl:text disable-output-escaping="yes">[05] - Titul pred menom / za priezviskom </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell139969" class="cell  kratkyTextBox120pxTitul" >
+
+		<label class="fieldLabel" title="" for="titul" style="display: none">[05] - Titul pred menom </label><span class="fieldContent"><input  id="titul" name="titul" title="" type="text" class="textBox" maxlength="20" size="190"  alt="" value=""  ><xsl:if test="boolean(./*[name() = 'titul']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:if test="./*[name() = 'titul']/text()"><xsl:attribute name="value"><xsl:value-of select="./*[name() = 'titul']"/></xsl:attribute></xsl:if></input></span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+				<div id="layoutColumn86999" class="column "  style="width:10px;">
+
+<div id="layoutCell140968" class="cell " >
+
+		<span class="fieldLabel" title=""  ><xsl:text disable-output-escaping="yes">&#xa0; </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell139968" class="cell " >
+
+		<span class="fieldLabel" title=""  ><xsl:text disable-output-escaping="yes">/ </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+				<div id="layoutColumn87000" class="column "  style="width:160px;">
+
+<div id="layoutCell140971" class="cell " >
+
+		<span class="fieldLabel" title=""  ><xsl:text disable-output-escaping="yes">&#xa0; </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell140970" class="cell  kratkyTextBox120pxTitul" >
+
+		<label class="fieldLabel" title="" for="titulZA" style="display: none">Titul za menom </label><span class="fieldContent"><input  id="titulZA" name="titulZA" title="" type="text" class="textBox" maxlength="20" size="190"  alt="" value=""  ><xsl:if test="boolean(./*[name() = 'titulZA']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:if test="./*[name() = 'titulZA']/text()"><xsl:attribute name="value"><xsl:value-of select="./*[name() = 'titulZA']"/></xsl:attribute></xsl:if></input></span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+			<div class="clear"></div>
+		</div>
+			</div>
+			</xsl:for-each>
+
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+			<div class="clear"></div>
+		</div>
+			</div>
+			</xsl:for-each>
+							<xsl:if test="/V2Pv21/oddiel1/danovnik/@notInFormData">
+				<script type="text/javascript">$(document).ready(function () { initRepetitionSection(1, 1, 'layoutRow34789') })</script>
+					</xsl:if>
+
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell139979" class="cell " >
+
+			<xsl:for-each select="/V2Pv21/oddiel1/adresa">
+		<div id="layoutRow34793" class="layoutRow ui-tabs ui-widget-content  "   title="" >
+						<input type="hidden" name="adresa"  />
+					<div class="caption ui-widget-header">
+				<h2 class="headercorrection" title="Adresa trvalého pobytu">Adresa trvalého pobytu</h2><span class="arrow ui-icon ui-icon-carat-1-n"></span></div>
+		<div id="layoutRowContentlayoutRow34793" class="columns">
+
+				<div id="layoutColumn86512" class="column first" >
+
+<div id="layoutCell139980" class="cell " >
+
+			<xsl:for-each select="/V2Pv21/oddiel1/adresa/ulicaCisloAdresaDanovnika_abc894">
+		<div id="layoutRow34792" class="layoutRow ui-tabs ui-widget-content  bezOkrajaBezPozadiaHlavicky nocaption "   title="" >
+						<input type="hidden" name="ulicaCisloAdresaDanovnika_abc894"  />
+					<div class="caption ui-widget-header">
+				<span class="arrow ui-icon ui-icon-carat-1-n"></span></div>
+		<div id="layoutRowContentlayoutRow34792" class="columns">
+
+				<div id="layoutColumn86510" class="column first"  style="width:651px;">
+
+<div id="layoutCell139977" class="cell  sirokyTextBox600px" >
+
+		<label class="fieldLabel" title="" for="ulica" ><xsl:text disable-output-escaping="yes">[06] - Ulica </xsl:text> </label><span class="fieldContent"><input  id="ulica" name="ulica" title="" type="text" class="textBox" maxlength="60" size="190"  alt="" value=""  ><xsl:if test="boolean(./*[name() = 'ulica']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:if test="./*[name() = 'ulica']/text()"><xsl:attribute name="value"><xsl:value-of select="./*[name() = 'ulica']"/></xsl:attribute></xsl:if></input></span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+				<div id="layoutColumn86511" class="column "  style="width:185px;">
+
+<div id="layoutCell139978" class="cell " >
+
+		<label class="fieldLabel" title="" for="SupOrienCislo"  style="width:192px;"><xsl:text disable-output-escaping="yes">[07] - Súpisné / orientačné číslo </xsl:text> </label><span class="fieldContent"><input  id="SupOrienCislo" name="SupOrienCislo" title="" type="text" class="textBox" maxlength="20" size="190"  alt="" value=""  ><xsl:if test="boolean(./*[name() = 'SupOrienCislo']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:if test="./*[name() = 'SupOrienCislo']/text()"><xsl:attribute name="value"><xsl:value-of select="./*[name() = 'SupOrienCislo']"/></xsl:attribute></xsl:if></input></span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+			<div class="clear"></div>
+		</div>
+			</div>
+			</xsl:for-each>
+							<xsl:if test="/V2Pv21/oddiel1/adresa/ulicaCisloAdresaDanovnika_abc894/@notInFormData">
+				<script type="text/javascript">$(document).ready(function () { initRepetitionSection(1, 1, 'layoutRow34792') })</script>
+					</xsl:if>
+
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell139984" class="cell " >
+
+			<xsl:for-each select="/V2Pv21/oddiel1/adresa/daresa2_adresaDanovnik">
+		<div id="layoutRow34795" class="layoutRow ui-tabs ui-widget-content  bezOkrajaBezPozadiaHlavicky nocaption "   title="" >
+						<input type="hidden" name="daresa2_adresaDanovnik"  />
+					<div class="caption ui-widget-header">
+				<span class="arrow ui-icon ui-icon-carat-1-n"></span></div>
+		<div id="layoutRowContentlayoutRow34795" class="columns">
+
+				<div id="layoutColumn86514" class="column first"  style="width:98px;">
+
+<div id="layoutCell139985" class="cell  kratkyTextBox75pxPSC" >
+
+		<label class="fieldLabel" title="" for="psc" ><xsl:text disable-output-escaping="yes">[08] - PSČ </xsl:text> </label><span class="fieldContent"><input  id="psc" name="psc" title="" type="text" class="textBox" maxlength="15" size="190"  alt="" value=""  ><xsl:if test="boolean(./*[name() = 'psc']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:if test="./*[name() = 'psc']/text()"><xsl:attribute name="value"><xsl:value-of select="./*[name() = 'psc']"/></xsl:attribute></xsl:if></input></span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+				<div id="layoutColumn86515" class="column "  style="width:499px;">
+
+<div id="layoutCell139986" class="cell  sirokyTextBox450px" >
+
+		<label class="fieldLabel" title="" for="obec" ><xsl:text disable-output-escaping="yes">[09] - Obec </xsl:text> </label><span class="fieldContent"><input  id="obec" name="obec" title="" type="text" class="textBox" maxlength="40" size="190"  alt="" value=""  ><xsl:if test="boolean(./*[name() = 'obec']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:if test="./*[name() = 'obec']/text()"><xsl:attribute name="value"><xsl:value-of select="./*[name() = 'obec']"/></xsl:attribute></xsl:if></input></span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+				<div id="layoutColumn86516" class="column "  style="width:215px;">
+
+<div id="layoutCell139987" class="cell  sirokyTextBox215pxx" >
+
+		<label class="fieldLabel" title="" for="stat" ><xsl:text disable-output-escaping="yes">[10] - Štát </xsl:text> </label><span class="fieldContent"><input  id="stat" name="stat" title="" type="text" class="textBox" maxlength="37" size="190"  alt="" value=""  ><xsl:if test="boolean(./*[name() = 'stat']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:if test="./*[name() = 'stat']/text()"><xsl:attribute name="value"><xsl:value-of select="./*[name() = 'stat']"/></xsl:attribute></xsl:if></input></span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+			<div class="clear"></div>
+		</div>
+			</div>
+			</xsl:for-each>
+
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell139981" class="cell " >
+
+			<xsl:for-each select="/V2Pv21/oddiel1/adresa/telD">
+		<div id="layoutRow34794" class="layoutRow ui-tabs ui-widget-content  bezOkrajaBezPozadiaHlavicky nocaption "   title="" >
+						<input type="hidden" name="telD"  />
+					<div class="caption ui-widget-header">
+				<span class="arrow ui-icon ui-icon-carat-1-n"></span></div>
+		<div id="layoutRowContentlayoutRow34794" class="columns">
+
+				<div id="layoutColumn86513" class="column first"  style="width:500px;">
+
+<div id="layoutCell139983" class="cell " >
+
+		<span class="fieldLabel" title=""  ><xsl:text disable-output-escaping="yes">[11] - Telefónne číslo </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell139982" class="cell  sirokyTextBox260px" >
+
+		<label class="fieldLabel" title="" for="TelCislo" style="display: none">[11] - Telefónne číslo </label><span class="fieldContent"><input  id="TelCislo" name="TelCislo" title="Telefónne číslo v medzinárodnom tvare (+421XXX123456) alebo predvoľba/číslo (0XXX/123456) alebo iba čísla spolu (0XXX123456)" type="text" class="textBox" maxlength="13" size="190"  alt="Telefónne číslo v medzinárodnom tvare (+421XXX123456) alebo predvoľba/číslo (0XXX/123456) alebo iba čísla spolu (0XXX123456)" value=""  ><xsl:if test="boolean(./*[name() = 'TelCislo']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:if test="./*[name() = 'TelCislo']/text()"><xsl:attribute name="value"><xsl:value-of select="./*[name() = 'TelCislo']"/></xsl:attribute></xsl:if></input></span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+			<div class="clear"></div>
+		</div>
+			</div>
+			</xsl:for-each>
+							<xsl:if test="/V2Pv21/oddiel1/adresa/telD/@notInFormData">
+				<script type="text/javascript">$(document).ready(function () { initRepetitionSection(1, 1, 'layoutRow34794') })</script>
+					</xsl:if>
+
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+			<div class="clear"></div>
+		</div>
+			</div>
+			</xsl:for-each>
+							<xsl:if test="/V2Pv21/oddiel1/adresa/@notInFormData">
+				<script type="text/javascript">$(document).ready(function () { initRepetitionSection(1, 1, 'layoutRow34793') })</script>
+					</xsl:if>
+
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell139990" class="cell " >
+
+			<xsl:for-each select="/V2Pv21/oddiel1/suma">
+		<div id="layoutRow34797" class="layoutRow ui-tabs ui-widget-content  "   title="" >
+						<input type="hidden" name="suma"  />
+					<div class="caption ui-widget-header">
+				<h2 class="headercorrection" title="Suma do výšky 2%, resp. 3% 1) zaplatenej dane">Suma do výšky 2%, resp. 3% <sup>1)</sup> zaplatenej dane</h2><span class="arrow ui-icon ui-icon-carat-1-n"></span></div>
+		<div id="layoutRowContentlayoutRow34797" class="columns">
+
+				<div id="layoutColumn86519" class="column first" >
+
+<div id="layoutCell139992" class="cell " >
+
+		<h3 class="headercorrection"><span class="fieldLabel" title=""   style="width:800px;"><xsl:text disable-output-escaping="yes">1) Podiel do výšky 3 % zaplatenej dane možno prijímateľovi poukázať, ak fyzická osoba v zdaňovacom období vykonávala dobrovoľnícku činnosť podľa zákona č. 406/2011 Z.z. v znení neskorších predpisov počas najmenej 40 hodín a predloží o tom písomné potvrdenie, ktoré je prílohou tohto vyhlásenia. </xsl:text> </span></h3>
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell142777" class="cell " >
+
+		<h3 class="headercorrection"><span class="fieldLabel" title=""   style="width:800px;"><xsl:text disable-output-escaping="yes">2) IČO sa zarovnáva sprava a ak obsahuje menej ako 12 čísiel, nepoužité polia ostávajú prázdne. </xsl:text> </span></h3>
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell139991" class="cell " >
+
+			<xsl:for-each select="/V2Pv21/oddiel1/suma/r12">
+		<div id="layoutRow34796" class="layoutRow ui-tabs ui-widget-content  nocaption "   title="" >
+						<input type="hidden" name="r12"  />
+					<div class="caption ui-widget-header">
+				<span class="arrow ui-icon ui-icon-carat-1-n"></span></div>
+		<div id="layoutRowContentlayoutRow34796" class="columns">
+
+				<div id="layoutColumn86517" class="column first"  style="width:532px;">
+
+<div id="layoutCell139988" class="cell " >
+
+		<span class="fieldLabel" title=""   style="width:500px;"><xsl:text disable-output-escaping="yes">Zaplatená daň, z ktorej sa vypočíta suma do výšky 2 %, resp. 3 % &lt;sup&gt;1)&lt;/sup&gt; zaplatenej dane </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+				<div id="layoutColumn86518" class="column "  style="width:300px;">
+
+<div id="layoutCell139989" class="cell  textNapravo" >
+
+		<label class="fieldLabel" title="" for="r12Suma"  style="width:100px;"><xsl:text disable-output-escaping="yes">[12] </xsl:text> </label><span class="fieldContent"><input  id="r12Suma" name="r12Suma" title="" type="text" class="textBox" maxlength="11" size="190"  alt="" value=""  ><xsl:if test="boolean(./*[name() = 'r12Suma']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:if test="./*[name() = 'r12Suma']/text()"><xsl:attribute name="value"><xsl:value-of select="./*[name() = 'r12Suma']"/></xsl:attribute></xsl:if></input></span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+			<div class="clear"></div>
+		</div>
+			</div>
+			</xsl:for-each>
+							<xsl:if test="/V2Pv21/oddiel1/suma/r12/@notInFormData">
+				<script type="text/javascript">$(document).ready(function () { initRepetitionSection(1, 1, 'layoutRow34796') })</script>
+					</xsl:if>
+
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell139994" class="cell " >
+
+			<xsl:for-each select="/V2Pv21/oddiel1/suma/r13">
+		<div id="layoutRow34798" class="layoutRow ui-tabs ui-widget-content  nocaption "   title="" >
+						<input type="hidden" name="r13"  />
+					<div class="caption ui-widget-header">
+				<span class="arrow ui-icon ui-icon-carat-1-n"></span></div>
+		<div id="layoutRowContentlayoutRow34798" class="columns">
+
+				<div id="layoutColumn86520" class="column first"  style="width:532px;">
+
+<div id="layoutCell139995" class="cell " >
+
+		<span class="fieldLabel" title=""   style="width:500px;"><xsl:text disable-output-escaping="yes">Suma do výšky 2 %, resp. 3 % &lt;sup&gt;1)&lt;/sup&gt; zo zaplatenej dane z r. 12 (minimálne 3 eurá) </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+				<div id="layoutColumn86521" class="column "  style="width:300px;">
+
+<div id="layoutCell139996" class="cell  textNapravo" >
+
+		<label class="fieldLabel" title="" for="r13Suma"  style="width:100px;"><xsl:text disable-output-escaping="yes">[13] </xsl:text> </label><span class="fieldContent"><input  id="r13Suma" name="r13Suma" title="Suma % podielu nemôže byť menšia ako 3 €. Suma nemôže byť vyššia ako 3% z r. 12 vyhlásenia. Ak daňovník poukazuje 3% je povinný priložiť potvrdenie o dobrovoľníckej činnosti, doložte sken Potvrdenia do prílohy. Suma výpočtu % podielu sa zaok.  matematicky s presnosťou na dve desatinné miesta" type="text" class="textBox" maxlength="9" size="190"  alt="Suma % podielu nemôže byť menšia ako 3 €. Suma nemôže byť vyššia ako 3% z r. 12 vyhlásenia. Ak daňovník poukazuje 3% je povinný priložiť potvrdenie o dobrovoľníckej činnosti, doložte sken Potvrdenia do prílohy. Suma výpočtu % podielu sa zaok.  matematicky s presnosťou na dve desatinné miesta" value=""  ><xsl:if test="boolean(./*[name() = 'r13Suma']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:if test="./*[name() = 'r13Suma']/text()"><xsl:attribute name="value"><xsl:value-of select="./*[name() = 'r13Suma']"/></xsl:attribute></xsl:if></input></span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+			<div class="clear"></div>
+		</div>
+			</div>
+			</xsl:for-each>
+							<xsl:if test="/V2Pv21/oddiel1/suma/r13/@notInFormData">
+				<script type="text/javascript">$(document).ready(function () { initRepetitionSection(1, 1, 'layoutRow34798') })</script>
+					</xsl:if>
+
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell140000" class="cell " >
+
+			<xsl:for-each select="/V2Pv21/oddiel1/suma/SekSplnam">
+		<div id="layoutRow34800" class="layoutRow ui-tabs ui-widget-content  nocaption "   title="" >
+						<input type="hidden" name="SekSplnam"  />
+					<div class="caption ui-widget-header">
+				<span class="arrow ui-icon ui-icon-carat-1-n"></span></div>
+		<div id="layoutRowContentlayoutRow34800" class="columns">
+
+				<div id="layoutColumn86523" class="column first" >
+
+<div id="layoutCell140001" class="cell " >
+
+		<input id="chbSplnam3per" name="chbSplnam3per" title="Ak je toto pole zaškrtnuté, kontroluje sa r. 13 V do výšky 3% zo sumy na r. 12 V" type="checkbox" class="checkBox" value="spĺňam podmienky 1) na poukázanie 3% z dane" alt="Ak je toto pole zaškrtnuté, kontroluje sa r. 13 V do výšky 3% zo sumy na r. 12 V"  ><xsl:if test="boolean(./*[name() = 'chbSplnam3per']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:if test="./*[name() = 'chbSplnam3per']='1'"><xsl:attribute name="checked">checked</xsl:attribute></xsl:if></input><label for="chbSplnam3per" class="checkBoxLabel">spĺňam podmienky <sup>1)</sup> na poukázanie 3% z dane</label><br />
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+			<div class="clear"></div>
+		</div>
+			</div>
+			</xsl:for-each>
+
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell139993" class="cell " >
+
+		<h2 class="headercorrection"><span class="fieldLabel" title=""   style="width:800px;"><xsl:text disable-output-escaping="yes">V r. 12 sa uvádza daň daňovníka znížená o daňový bonus podľa § 33 zákona a daňový bonus na zaplatené úroky podľa § 33a zákona, vypočítaná v roku, v ktorom sa podáva toto vyhlásenie; uvádza sa suma z r. 24 z potvrdenia o zaplatení dane, ktoré je súčasťou tohto vyhlásenia. &lt;br/&gt; V r. 13 suma nesmie byť nižšia ako 3 eurá. </xsl:text> </span></h2>
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell139997" class="cell " >
+
+			<xsl:for-each select="/V2Pv21/oddiel1/suma/r14">
+		<div id="layoutRow34799" class="layoutRow ui-tabs ui-widget-content  nocaption "   title="" >
+						<input type="hidden" name="r14"  />
+					<div class="caption ui-widget-header">
+				<span class="arrow ui-icon ui-icon-carat-1-n"></span></div>
+		<div id="layoutRowContentlayoutRow34799" class="columns">
+
+				<div id="layoutColumn86522" class="column first" >
+
+<div id="layoutCell139998" class="cell " >
+
+		<label class="fieldLabel" title="" for="datumZaplatenia"  style="width:243px;"><xsl:text disable-output-escaping="yes">[14] - Dátum zaplatenia dane </xsl:text> </label><span class="fieldContent"><input alt="" id="datumZaplatenia" name="datumZaplatenia" title="" type="text" class="date datepicker" maxlength="14" size="190"  ><xsl:if test="boolean(./*[name() = 'datumZaplatenia']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:attribute name="value"><xsl:value-of select="./*[name() = 'datumZaplatenia']"/></xsl:attribute></input></span>
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell139999" class="cell " >
+
+		<h2 class="headercorrection"><span class="fieldLabel" title=""   style="width:800px;"><xsl:text disable-output-escaping="yes">Z riadku 26 potvrdenia o zaplatení dane, ktoré je súčasťou vyhlásenia. V prípade daňového preplatku z ročného zúčtovania preddavkov na daň sa uvedie dátum 31. marec zdaňovacieho obdobia, v ktorom sa toto vyhlásenie podáva. </xsl:text> </span></h2>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+			<div class="clear"></div>
+		</div>
+			</div>
+			</xsl:for-each>
+
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+			<div class="clear"></div>
+		</div>
+			</div>
+			</xsl:for-each>
+							<xsl:if test="/V2Pv21/oddiel1/suma/@notInFormData">
+				<script type="text/javascript">$(document).ready(function () { initRepetitionSection(1, 1, 'layoutRow34797') })</script>
+					</xsl:if>
+
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+			<div class="clear"></div>
+		</div>
+			</div>
+			</xsl:for-each>
+							<xsl:if test="/V2Pv21/oddiel1/@notInFormData">
+				<script type="text/javascript">$(document).ready(function () { initRepetitionSection(1, 1, 'layoutRow34791') })</script>
+					</xsl:if>
+							<xsl:for-each select="/V2Pv21/oddiel2">
+		<div id="layoutRow34801" class="layoutRow ui-tabs ui-widget-content  "   title="" >
+						<input type="hidden" name="oddiel2"  />
+					<div class="caption ui-widget-header">
+				<h1 class="headercorrection" title="II. ODDIEL - ÚDAJE O PRIJÍMATEĽOVI">II. ODDIEL - ÚDAJE O PRIJÍMATEĽOVI</h1><span class="arrow ui-icon ui-icon-carat-1-n"></span></div>
+		<div id="layoutRowContentlayoutRow34801" class="columns">
+
+				<div id="layoutColumn86524" class="column first" >
+
+<div id="layoutCell140005" class="cell " >
+
+			<xsl:for-each select="/V2Pv21/oddiel2/icoSid">
+		<div id="layoutRow34802" class="layoutRow ui-tabs ui-widget-content  dolava9px bezOkrajaBezPozadiaHlavicky nocaption "   title="" >
+						<input type="hidden" name="icoSid"  />
+					<div class="caption ui-widget-header">
+				<span class="arrow ui-icon ui-icon-carat-1-n"></span></div>
+		<div id="layoutRowContentlayoutRow34802" class="columns">
+
+				<div id="layoutColumn86525" class="column first"  style="width:218px;">
+
+<div id="layoutCell140006" class="cell " >
+
+		<span class="fieldLabel" title=""   style="width:260px;"><xsl:text disable-output-escaping="yes">[15] - IČO &lt;sup&gt;2)&lt;/sup&gt;&lt;em&gt;*&lt;/em&gt; </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+				<div id="layoutColumn86526" class="column "  style="width:185px;">
+
+<div id="layoutCell140007" class="cell  textNapravo" >
+
+		<label class="fieldLabel" title="" for="ico" style="display: none">IČO </label><span class="fieldContent"><input  id="ico" name="ico" title="IČO môže byť 8 alebo 12 miestne, uvádzajú sa aj nuly na začiatku." type="text" class="textBox" maxlength="12" size="190"  alt="IČO môže byť 8 alebo 12 miestne, uvádzajú sa aj nuly na začiatku." value=""  ><xsl:if test="boolean(./*[name() = 'ico']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:if test="./*[name() = 'ico']/text()"><xsl:attribute name="value"><xsl:value-of select="./*[name() = 'ico']"/></xsl:attribute></xsl:if></input></span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+				<div id="layoutColumn96096" class="column "  style="width:200px;">
+
+<div id="layoutCell155942" class="cell " >
+
+		<span class="fieldLabel" title=""  ><xsl:text disable-output-escaping="yes">&lt;b&gt;&lt;u&gt;&lt;a href="form.527.prijimatelia_2024.html" target="_blank"&gt;(prehľad prijímateľov)&lt;/a&gt;&lt;/u&gt;&lt;/b&gt; </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+			<div class="clear"></div>
+		</div>
+			</div>
+			</xsl:for-each>
+							<xsl:if test="/V2Pv21/oddiel2/icoSid/@notInFormData">
+				<script type="text/javascript">$(document).ready(function () { initRepetitionSection(1, 1, 'layoutRow34802') })</script>
+					</xsl:if>
+
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell140003" class="cell  TextArea833x70px" >
+
+		<label class="fieldLabel" title="" for="obchodneMeno"  style="width:200px;"><xsl:text disable-output-escaping="yes">[16] - Obchodné meno (názov) </xsl:text> </label><span class="fieldContent"><textarea  id="obchodneMeno" name="obchodneMeno" title="" class="textArea" cols="100" rows="2"   ><xsl:if test="boolean(./*[name() = 'obchodneMeno']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:choose><xsl:when test="./*[name() = 'obchodneMeno']/text()"><xsl:value-of select="./*[name() = 'obchodneMeno']"/></xsl:when><xsl:otherwise><xsl:text></xsl:text></xsl:otherwise></xsl:choose></textarea></span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+			<div class="clear"></div>
+		</div>
+			</div>
+			</xsl:for-each>
+							<xsl:if test="/V2Pv21/oddiel2/@notInFormData">
+				<script type="text/javascript">$(document).ready(function () { initRepetitionSection(1, 1, 'layoutRow34801') })</script>
+					</xsl:if>
+							<xsl:for-each select="/V2Pv21/vyhlasenie_sec_6854">
+		<div id="layoutRow34805" class="layoutRow ui-tabs ui-widget-content  nocaption "   title="" >
+						<input type="hidden" name="vyhlasenie_sec_6854"  />
+					<div class="caption ui-widget-header">
+				<span class="arrow ui-icon ui-icon-carat-1-n"></span></div>
+		<div id="layoutRowContentlayoutRow34805" class="columns">
+
+				<div id="layoutColumn86531" class="column first" >
+
+<div id="layoutCell140017" class="cell " >
+
+			<xsl:for-each select="/V2Pv21/vyhlasenie_sec_6854/SekciaSuhlas">
+		<div id="layoutRow34806" class="layoutRow ui-tabs ui-widget-content  nocaption "   title="" >
+						<input type="hidden" name="SekciaSuhlas"  />
+					<div class="caption ui-widget-header">
+				<span class="arrow ui-icon ui-icon-carat-1-n"></span></div>
+		<div id="layoutRowContentlayoutRow34806" class="columns">
+
+				<div id="layoutColumn86532" class="column first" >
+
+<div id="layoutCell140018" class="cell " >
+
+		<input id="PoleSuhlas" name="PoleSuhlas" title="Toto pole je možné zaškrtnúť, len ak je vyplnený r. 15 V IČO." type="checkbox" class="checkBox" value="súhlasím so zaslaním údajov (meno, priezvisko a trvalý pobyt) mnou určenému prijímateľovi podielu zaplatenej dane uvedenému v II. oddiele podľa § 50 ods. 8 zákona" alt="Toto pole je možné zaškrtnúť, len ak je vyplnený r. 15 V IČO."  ><xsl:if test="boolean(./*[name() = 'PoleSuhlas']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:if test="./*[name() = 'PoleSuhlas']='1'"><xsl:attribute name="checked">checked</xsl:attribute></xsl:if></input><label for="PoleSuhlas" class="checkBoxLabel">súhlasím so zaslaním údajov (meno, priezvisko a trvalý pobyt) mnou určenému prijímateľovi podielu zaplatenej dane uvedenému v II. oddiele podľa § 50 <br/>ods. 8 zákona</label><br />
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+			<div class="clear"></div>
+		</div>
+			</div>
+			</xsl:for-each>
+
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell140015" class="cell  tucnyText" >
+
+		<span class="fieldLabel" title=""   style="width:800px;"><xsl:text disable-output-escaping="yes">Vyhlasujem, že uvedené údaje v tomto vyhlásení sú pravdivé. </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell140016" class="cell " >
+
+		<label class="fieldLabel" title="" for="datumVyhlasenia"  style="width:257px;"><xsl:text disable-output-escaping="yes">Dátum </xsl:text> </label><span class="fieldContent"><input alt="Do lehoty na podanie vyhlásenie (30.4. roku za ktoré sa podáva vyhlásenie +1 alebo nasledujúci pracovný deň, ak posledný deň lehoty pripadne na deň pracovného pokoja)" id="datumVyhlasenia" name="datumVyhlasenia" title="Do lehoty na podanie vyhlásenie (30.4. roku za ktoré sa podáva vyhlásenie +1 alebo nasledujúci pracovný deň, ak posledný deň lehoty pripadne na deň pracovného pokoja)" type="text" class="date datepicker" maxlength="14" size="190"  ><xsl:if test="boolean(./*[name() = 'datumVyhlasenia']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:attribute name="value"><xsl:value-of select="./*[name() = 'datumVyhlasenia']"/></xsl:attribute></input></span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+			<div class="clear"></div>
+		</div>
+			</div>
+			</xsl:for-each>
+							<xsl:if test="/V2Pv21/vyhlasenie_sec_6854/@notInFormData">
+				<script type="text/javascript">$(document).ready(function () { initRepetitionSection(1, 1, 'layoutRow34805') })</script>
+					</xsl:if>
+							<xsl:for-each select="/V2Pv21/nazov_P">
+		<div id="layoutRow35030" class="layoutRow ui-tabs ui-widget-content  nocaption "   title="" >
+						<input type="hidden" name="nazov_P"  />
+					<div class="caption ui-widget-header">
+				<span class="arrow ui-icon ui-icon-carat-1-n"></span></div>
+		<div id="layoutRowContentlayoutRow35030" class="columns">
+
+				<div id="layoutColumn86976" class="column first" >
+
+<div id="layoutCell140919" class="cell  NadpisTucnyCentrovanyText" >
+
+		<span class="fieldLabel" title=""   style="width:880px;"><xsl:text disable-output-escaping="yes">POTVRDENIE </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell140920" class="cell  tucnyCentrovanyTextNormal_1em" >
+
+		<span class="fieldLabel" title=""   style="width:880px;"><xsl:text disable-output-escaping="yes">O ZAPLATENÍ DANE Z PRÍJMOV ZÁVISLEJ ČINNOSTI </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell140921" class="cell  centrovanyTextPodnadpis" >
+
+		<span class="fieldLabel" title=""   style="width:880px;"><xsl:text disable-output-escaping="yes">na účely vyhlásenia o poukázaní sumy do výšky 2 % alebo 3 % zaplatenej dane fyzickej osoby&lt;br/&gt;podľa zákona č. 595/2003 Z. z. o dani z príjmov v znení neskorších predpisov (ďalej len „zákon“) </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+			<div class="clear"></div>
+		</div>
+			</div>
+			</xsl:for-each>
+							<xsl:if test="/V2Pv21/nazov_P/@notInFormData">
+				<script type="text/javascript">$(document).ready(function () { initRepetitionSection(1, 1, 'layoutRow35030') })</script>
+					</xsl:if>
+							<xsl:for-each select="/V2Pv21/udaje_P">
+		<div id="layoutRow35031" class="layoutRow ui-tabs ui-widget-content  nocaption "   title="" >
+						<input type="hidden" name="udaje_P"  />
+					<div class="caption ui-widget-header">
+				<span class="arrow ui-icon ui-icon-carat-1-n"></span></div>
+		<div id="layoutRowContentlayoutRow35031" class="columns">
+
+				<div id="layoutColumn86977" class="column first"  style="width:512px;">
+
+<div id="layoutCell140923" class="cell " >
+
+			<xsl:for-each select="/V2Pv21/udaje_P/rodneCislo_P">
+		<div id="layoutRow35032" class="layoutRow ui-tabs ui-widget-content  bezOkrajaBezPozadiaHlavicky dolava9px nocaption "   title="" >
+						<input type="hidden" name="rodneCislo_P"  />
+					<div class="caption ui-widget-header">
+				<span class="arrow ui-icon ui-icon-carat-1-n"></span></div>
+		<div id="layoutRowContentlayoutRow35032" class="columns">
+
+				<div id="layoutColumn86978" class="column first"  style="width:223px;">
+
+<div id="layoutCell140924" class="cell " >
+
+		<span class="fieldLabel" title=""   style="width:210px;"><xsl:text disable-output-escaping="yes">[01] - Rodné číslo </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+				<div id="layoutColumn86979" class="column "  style="width:104px;">
+
+<div id="layoutCell140925" class="cell  kratkyTextBox95px" >
+
+		<label class="fieldLabel" title="" for="rodneCislo1_P" style="display: none">[01] - Rodné číslo - prvá časť </label><span class="fieldContent"><input  id="rodneCislo1_P" name="rodneCislo1_P" title="Musí byť povinne vyplnené RČ na r.1 alebo Dátum narodenia na r. 2, ak daňovník nemá rodné číslo. RČ vo Vyhlásení (V) r. 1 musí sedieť s RČ v Potvrdení (P) r.1." type="text" class="textBox" maxlength="6" size="190"  alt="Musí byť povinne vyplnené RČ na r.1 alebo Dátum narodenia na r. 2, ak daňovník nemá rodné číslo. RČ vo Vyhlásení (V) r. 1 musí sedieť s RČ v Potvrdení (P) r.1." value=""  ><xsl:if test="boolean(./*[name() = 'rodneCislo1_P']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:if test="./*[name() = 'rodneCislo1_P']/text()"><xsl:attribute name="value"><xsl:value-of select="./*[name() = 'rodneCislo1_P']"/></xsl:attribute></xsl:if></input></span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+				<div id="layoutColumn86980" class="column "  style="width:16px;">
+
+<div id="layoutCell140926" class="cell " >
+
+		<span class="fieldLabel" title=""  ><xsl:text disable-output-escaping="yes">/ </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+				<div id="layoutColumn86981" class="column "  style="width:60px;">
+
+<div id="layoutCell140927" class="cell  kratkyTextBox40px" >
+
+		<label class="fieldLabel" title="" for="rodneCislo2_P" style="display: none">[01] - Rodné číslo - druhá časť </label><span class="fieldContent"><input  id="rodneCislo2_P" name="rodneCislo2_P" title="Musí byť povinne vyplnené RČ na r.1 alebo Dátum narodenia na r. 2, ak daňovník nemá rodné číslo. RČ vo Vyhlásení (V) r. 1 musí sedieť s RČ v Potvrdení (P) r.1." type="text" class="textBox" maxlength="4" size="190"  alt="Musí byť povinne vyplnené RČ na r.1 alebo Dátum narodenia na r. 2, ak daňovník nemá rodné číslo. RČ vo Vyhlásení (V) r. 1 musí sedieť s RČ v Potvrdení (P) r.1." value=""  ><xsl:if test="boolean(./*[name() = 'rodneCislo2_P']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:if test="./*[name() = 'rodneCislo2_P']/text()"><xsl:attribute name="value"><xsl:value-of select="./*[name() = 'rodneCislo2_P']"/></xsl:attribute></xsl:if></input></span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+			<div class="clear"></div>
+		</div>
+			</div>
+			</xsl:for-each>
+							<xsl:if test="/V2Pv21/udaje_P/rodneCislo_P/@notInFormData">
+				<script type="text/javascript">$(document).ready(function () { initRepetitionSection(1, 1, 'layoutRow35032') })</script>
+					</xsl:if>
+
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell140928" class="cell " >
+
+		<label class="fieldLabel" title="" for="datNarodenia02_P"  style="width:199px;"><xsl:text disable-output-escaping="yes">[02] - Dátum narodenia </xsl:text> </label><span class="fieldContent"><input alt="Musí byť povinne vyplnené RČ na r.1 alebo Dátum narodenia na r. 2, ak daňovník nemá rodné číslo. Ak nie je vyplnené RČ vo V, potom Dátum narodenia vo Vyhlásení (V) r. 2 musí sedieť s Dátumom narodenia v Potvrdení (P) r.2. Ak je RČ vo Vyhlásení vyplnené, potom sa dátum narodenia nekontroluje." id="datNarodenia02_P" name="datNarodenia02_P" title="Musí byť povinne vyplnené RČ na r.1 alebo Dátum narodenia na r. 2, ak daňovník nemá rodné číslo. Ak nie je vyplnené RČ vo V, potom Dátum narodenia vo Vyhlásení (V) r. 2 musí sedieť s Dátumom narodenia v Potvrdení (P) r.2. Ak je RČ vo Vyhlásení vyplnené, potom sa dátum narodenia nekontroluje." type="text" class="date datepicker" maxlength="10" size="190"  ><xsl:if test="boolean(./*[name() = 'datNarodenia02_P']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:attribute name="value"><xsl:value-of select="./*[name() = 'datNarodenia02_P']"/></xsl:attribute></input></span>
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell140929" class="cell " >
+
+		<h3 class="headercorrection"><span class="fieldLabel" title=""   style="width:800px;"><xsl:text disable-output-escaping="yes">Riadok 02 sa vypĺňa, len ak ide o zamestnanca, ktorý nemá rodné číslo </xsl:text> </span></h3>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+				<div id="layoutColumn86982" class="column "  style="width:370px;">
+
+<div id="layoutCell140930" class="cell  kratkyTextBox95pxR" >
+
+		<label class="fieldLabel" title="" for="rok_P"  style="width:200px;"><xsl:text disable-output-escaping="yes">Rok &lt;em&gt;*&lt;/em&gt; </xsl:text> </label><span class="fieldContent"><input  id="rok_P" name="rok_P" title="Obdobie nemôže byť menšie ako rok 2018. Obdobie nemôže byť väčšie ako rok 2018. Rok vo V musí sedieť s rokom v P." type="text" class="textBox" maxlength="4" size="190"  alt="Obdobie nemôže byť menšie ako rok 2018. Obdobie nemôže byť väčšie ako rok 2018. Rok vo V musí sedieť s rokom v P." value="2023"  ><xsl:if test="boolean(./*[name() = 'rok_P']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:if test="./*[name() = 'rok_P']/text()"><xsl:attribute name="value"><xsl:value-of select="./*[name() = 'rok_P']"/></xsl:attribute></xsl:if></input></span>
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell140931" class="cell " >
+
+		<h2 class="headercorrection"><span class="fieldLabel" title=""   style="width:800px;"><xsl:text disable-output-escaping="yes">Uvádza sa zdaňovacie obdobie, za ktoré sa platí daň </xsl:text> </span></h2>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+			<div class="clear"></div>
+		</div>
+			</div>
+			</xsl:for-each>
+							<xsl:if test="/V2Pv21/udaje_P/@notInFormData">
+				<script type="text/javascript">$(document).ready(function () { initRepetitionSection(1, 1, 'layoutRow35031') })</script>
+					</xsl:if>
+							<xsl:for-each select="/V2Pv21/UdajeZamSekcia">
+		<div id="layoutRow35033" class="layoutRow ui-tabs ui-widget-content  "   title="" >
+						<input type="hidden" name="UdajeZamSekcia"  />
+					<div class="caption ui-widget-header">
+				<h1 class="headercorrection" title="I. ODDIEL - ÚDAJE O ZAMESTNANCOVI">I. ODDIEL - ÚDAJE O ZAMESTNANCOVI</h1><span class="arrow ui-icon ui-icon-carat-1-n"></span></div>
+		<div id="layoutRowContentlayoutRow35033" class="columns">
+
+				<div id="layoutColumn86984" class="column first" >
+
+<div id="layoutCell140939" class="cell " >
+
+			<xsl:for-each select="/V2Pv21/UdajeZamSekcia/FoSekcia">
+		<div id="layoutRow35037" class="layoutRow ui-tabs ui-widget-content  nocaption "   title="" >
+						<input type="hidden" name="FoSekcia"  />
+					<div class="caption ui-widget-header">
+				<span class="arrow ui-icon ui-icon-carat-1-n"></span></div>
+		<div id="layoutRowContentlayoutRow35037" class="columns">
+
+				<div id="layoutColumn86985" class="column first"  style="width:297px;">
+
+<div id="layoutCell140941" class="cell " >
+
+		<span class="fieldLabel" title=""  ><xsl:text disable-output-escaping="yes">[03] - Priezvisko </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell140942" class="cell  sirokyTextBox260pxPriezvisko" >
+
+		<label class="fieldLabel" title="" for="Priezvisko03" style="display: none">[03] - Priezvisko </label><span class="fieldContent"><input  id="Priezvisko03" name="Priezvisko03" title="Priezvisko vo V musí sedieť s priezviskom v P." type="text" class="textBox" maxlength="40" size="190"  alt="Priezvisko vo V musí sedieť s priezviskom v P." value=""  ><xsl:if test="boolean(./*[name() = 'Priezvisko03']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:if test="./*[name() = 'Priezvisko03']/text()"><xsl:attribute name="value"><xsl:value-of select="./*[name() = 'Priezvisko03']"/></xsl:attribute></xsl:if></input></span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+				<div id="layoutColumn86986" class="column "  style="width:254px;">
+
+<div id="layoutCell140943" class="cell " >
+
+		<span class="fieldLabel" title=""  ><xsl:text disable-output-escaping="yes">[04] - Meno </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell140944" class="cell  sirokyTextBox210pxx" >
+
+		<label class="fieldLabel" title="" for="Meno04" style="display: none">[04] - Meno </label><span class="fieldContent"><input  id="Meno04" name="Meno04" title="Meno vo V musí sedieť s menom v P." type="text" class="textBox" maxlength="40" size="190"  alt="Meno vo V musí sedieť s menom v P." value=""  ><xsl:if test="boolean(./*[name() = 'Meno04']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:if test="./*[name() = 'Meno04']/text()"><xsl:attribute name="value"><xsl:value-of select="./*[name() = 'Meno04']"/></xsl:attribute></xsl:if></input></span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+				<div id="layoutColumn86987" class="column "  style="width:132px;">
+
+<div id="layoutCell140945" class="cell " >
+
+		<span class="fieldLabel" title=""   style="width:280px;"><xsl:text disable-output-escaping="yes">[05] - Titul pred menom / za priezviskom </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell140946" class="cell  kratkyTextBox120pxTitul" >
+
+		<label class="fieldLabel" title="" for="Titul05" style="display: none">[05] - Titul pred menom </label><span class="fieldContent"><input  id="Titul05" name="Titul05" title="" type="text" class="textBox" maxlength="20" size="190"  alt="" value=""  ><xsl:if test="boolean(./*[name() = 'Titul05']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:if test="./*[name() = 'Titul05']/text()"><xsl:attribute name="value"><xsl:value-of select="./*[name() = 'Titul05']"/></xsl:attribute></xsl:if></input></span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+				<div id="layoutColumn86988" class="column "  style="width:10px;">
+
+<div id="layoutCell140947" class="cell " >
+
+		<span class="fieldLabel" title=""  ><xsl:text disable-output-escaping="yes">&#xa0; </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell140948" class="cell " >
+
+		<span class="fieldLabel" title=""  ><xsl:text disable-output-escaping="yes">/ </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+				<div id="layoutColumn86989" class="column "  style="width:185px;">
+
+<div id="layoutCell140950" class="cell " >
+
+		<span class="fieldLabel" title=""  ><xsl:text disable-output-escaping="yes">&#xa0; </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell140949" class="cell  kratkyTextBox120pxTitul" >
+
+		<label class="fieldLabel" title="" for="Titul05_2" style="display: none">Titul za menom </label><span class="fieldContent"><input  id="Titul05_2" name="Titul05_2" title="" type="text" class="textBox" maxlength="20" size="190"  alt="" value=""  ><xsl:if test="boolean(./*[name() = 'Titul05_2']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:if test="./*[name() = 'Titul05_2']/text()"><xsl:attribute name="value"><xsl:value-of select="./*[name() = 'Titul05_2']"/></xsl:attribute></xsl:if></input></span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+			<div class="clear"></div>
+		</div>
+			</div>
+			</xsl:for-each>
+
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell140940" class="cell " >
+
+			<xsl:for-each select="/V2Pv21/UdajeZamSekcia/AdresaTPPSekcia_P">
+		<div id="layoutRow35038" class="layoutRow ui-tabs ui-widget-content  "   title="" >
+						<input type="hidden" name="AdresaTPPSekcia_P"  />
+					<div class="caption ui-widget-header">
+				<div class="headercorrection" title="Adresa trvalého pobytu">Adresa trvalého pobytu</div><span class="arrow ui-icon ui-icon-carat-1-n"></span></div>
+		<div id="layoutRowContentlayoutRow35038" class="columns">
+
+				<div id="layoutColumn86990" class="column first" >
+
+<div id="layoutCell140951" class="cell " >
+
+			<xsl:for-each select="/V2Pv21/UdajeZamSekcia/AdresaTPPSekcia_P/adresa1Sekcia_P">
+		<div id="layoutRow35039" class="layoutRow ui-tabs ui-widget-content  bezOkrajaBezPozadiaHlavicky dolava8px nocaption "   title="" >
+						<input type="hidden" name="adresa1Sekcia_P"  />
+					<div class="caption ui-widget-header">
+				<span class="arrow ui-icon ui-icon-carat-1-n"></span></div>
+		<div id="layoutRowContentlayoutRow35039" class="columns">
+
+				<div id="layoutColumn86991" class="column first"  style="width:652px;">
+
+<div id="layoutCell140953" class="cell " >
+
+		<span class="fieldLabel" title=""   style="width:291px;"><xsl:text disable-output-escaping="yes">[06] - Ulica </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell140954" class="cell  sirokyTextBox600px" >
+
+		<label class="fieldLabel" title="" for="Ulica06" style="display: none">[06] - Ulica </label><span class="fieldContent"><input  id="Ulica06" name="Ulica06" title="" type="text" class="textBox" maxlength="60" size="190"  alt="" value=""  ><xsl:if test="boolean(./*[name() = 'Ulica06']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:if test="./*[name() = 'Ulica06']/text()"><xsl:attribute name="value"><xsl:value-of select="./*[name() = 'Ulica06']"/></xsl:attribute></xsl:if></input></span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+				<div id="layoutColumn86992" class="column "  style="width:185px;">
+
+<div id="layoutCell140955" class="cell " >
+
+		<span class="fieldLabel" title=""  ><xsl:text disable-output-escaping="yes">[07] - Súpisné / orientačné číslo </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell140956" class="cell " >
+
+		<label class="fieldLabel" title="" for="CisloDomu07" style="display: none">[07] - Súpisné / orientačné číslo </label><span class="fieldContent"><input  id="CisloDomu07" name="CisloDomu07" title="" type="text" class="textBox" maxlength="20" size="190"  alt="" value=""  ><xsl:if test="boolean(./*[name() = 'CisloDomu07']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:if test="./*[name() = 'CisloDomu07']/text()"><xsl:attribute name="value"><xsl:value-of select="./*[name() = 'CisloDomu07']"/></xsl:attribute></xsl:if></input></span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+			<div class="clear"></div>
+		</div>
+			</div>
+			</xsl:for-each>
+
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell140952" class="cell " >
+
+			<xsl:for-each select="/V2Pv21/UdajeZamSekcia/AdresaTPPSekcia_P/adresa2Sekcia_P">
+		<div id="layoutRow35040" class="layoutRow ui-tabs ui-widget-content  bezOkrajaBezPozadiaHlavicky dolava8px nocaption "   title="" >
+						<input type="hidden" name="adresa2Sekcia_P"  />
+					<div class="caption ui-widget-header">
+				<span class="arrow ui-icon ui-icon-carat-1-n"></span></div>
+		<div id="layoutRowContentlayoutRow35040" class="columns">
+
+				<div id="layoutColumn86993" class="column first"  style="width:98px;">
+
+<div id="layoutCell140957" class="cell " >
+
+		<span class="fieldLabel" title=""   style="width:291px;"><xsl:text disable-output-escaping="yes">[08] - PSČ </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell140958" class="cell  kratkyTextBox75pxPSC" >
+
+		<label class="fieldLabel" title="" for="PSC08" style="display: none">[08] - PSČ </label><span class="fieldContent"><input  id="PSC08" name="PSC08" title="" type="text" class="textBox" maxlength="15" size="190"  alt="" value=""  ><xsl:if test="boolean(./*[name() = 'PSC08']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:if test="./*[name() = 'PSC08']/text()"><xsl:attribute name="value"><xsl:value-of select="./*[name() = 'PSC08']"/></xsl:attribute></xsl:if></input></span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+				<div id="layoutColumn86994" class="column "  style="width:500px;">
+
+<div id="layoutCell140959" class="cell " >
+
+		<span class="fieldLabel" title=""   style="width:291px;"><xsl:text disable-output-escaping="yes">[09] - Obec </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell140960" class="cell  sirokyTextBox450px" >
+
+		<label class="fieldLabel" title="" for="Obec09" style="display: none">[09] - Obec </label><span class="fieldContent"><input  id="Obec09" name="Obec09" title="" type="text" class="textBox" maxlength="40" size="190"  alt="" value=""  ><xsl:if test="boolean(./*[name() = 'Obec09']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:if test="./*[name() = 'Obec09']/text()"><xsl:attribute name="value"><xsl:value-of select="./*[name() = 'Obec09']"/></xsl:attribute></xsl:if></input></span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+				<div id="layoutColumn86995" class="column "  style="width:120px;">
+
+<div id="layoutCell140961" class="cell " >
+
+		<span class="fieldLabel" title=""   style="width:291px;"><xsl:text disable-output-escaping="yes">[10] - Štát </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell140962" class="cell  sirokyTextBox215pxx" >
+
+		<label class="fieldLabel" title="" for="Stat10" style="display: none">[10] - Štát </label><span class="fieldContent"><input  id="Stat10" name="Stat10" title="" type="text" class="textBox" maxlength="37" size="190"  alt="" value=""  ><xsl:if test="boolean(./*[name() = 'Stat10']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:if test="./*[name() = 'Stat10']/text()"><xsl:attribute name="value"><xsl:value-of select="./*[name() = 'Stat10']"/></xsl:attribute></xsl:if></input></span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+			<div class="clear"></div>
+		</div>
+			</div>
+			</xsl:for-each>
+
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+			<div class="clear"></div>
+		</div>
+			</div>
+			</xsl:for-each>
+
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+			<div class="clear"></div>
+		</div>
+			</div>
+			</xsl:for-each>
+							<xsl:if test="/V2Pv21/UdajeZamSekcia/@notInFormData">
+				<script type="text/javascript">$(document).ready(function () { initRepetitionSection(1, 1, 'layoutRow35033') })</script>
+					</xsl:if>
+							<xsl:for-each select="/V2Pv21/UdajeDrzitelaSekcia">
+		<div id="layoutRow35034" class="layoutRow ui-tabs ui-widget-content  "   title="" >
+						<input type="hidden" name="UdajeDrzitelaSekcia"  />
+					<div class="caption ui-widget-header">
+				<h1 class="headercorrection" title="II. ODDIEL - ÚDAJE O ZAMESTNÁVATEĽOVI, KTORÝ JE PLATITEĽOM DANE, ktorý toto potvrdenie vydáva">II. ODDIEL - ÚDAJE O ZAMESTNÁVATEĽOVI, KTORÝ JE PLATITEĽOM DANE, ktorý toto potvrdenie vydáva</h1><span class="arrow ui-icon ui-icon-carat-1-n"></span></div>
+		<div id="layoutRowContentlayoutRow35034" class="columns">
+
+				<div id="layoutColumn86996" class="column first" >
+
+<div id="layoutCell141019" class="cell " >
+
+			<xsl:for-each select="/V2Pv21/UdajeDrzitelaSekcia/DICSekcia">
+		<div id="layoutRow35052" class="layoutRow ui-tabs ui-widget-content  nocaption "   title="" >
+						<input type="hidden" name="DICSekcia"  />
+					<div class="caption ui-widget-header">
+				<span class="arrow ui-icon ui-icon-carat-1-n"></span></div>
+		<div id="layoutRowContentlayoutRow35052" class="columns">
+
+				<div id="layoutColumn87030" class="column first" >
+
+<div id="layoutCell140963" class="cell " >
+
+		<label class="fieldLabel" title="" for="Dic11"  style="width:280px;"><xsl:text disable-output-escaping="yes">[11] - Daňové identifikačné číslo </xsl:text> </label><span class="fieldContent"><input  id="Dic11" name="Dic11" title="Musí byť vyplnené DIČ platiteľa na r. 11 P." type="text" class="textBox" maxlength="10" size="190"  alt="Musí byť vyplnené DIČ platiteľa na r. 11 P." value=""  ><xsl:if test="boolean(./*[name() = 'Dic11']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:if test="./*[name() = 'Dic11']/text()"><xsl:attribute name="value"><xsl:value-of select="./*[name() = 'Dic11']"/></xsl:attribute></xsl:if></input></span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+			<div class="clear"></div>
+		</div>
+			</div>
+			</xsl:for-each>
+
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell140964" class="cell " >
+
+			<xsl:for-each select="/V2Pv21/UdajeDrzitelaSekcia/FoSekcia_P">
+		<div id="layoutRow35041" class="layoutRow ui-tabs ui-widget-content  "   title="" >
+						<input type="hidden" name="FoSekcia_P"  />
+					<div class="caption ui-widget-header">
+				<div class="headercorrection" title="Fyzická osoba">Fyzická osoba</div><span class="arrow ui-icon ui-icon-carat-1-n"></span></div>
+		<div id="layoutRowContentlayoutRow35041" class="columns">
+
+				<div id="layoutColumn86997" class="column first"  style="width:297px;">
+
+<div id="layoutCell140965" class="cell " >
+
+		<span class="fieldLabel" title=""  ><xsl:text disable-output-escaping="yes">[12] - Priezvisko </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell140966" class="cell  sirokyTextBox260pxPriezvisko" >
+
+		<label class="fieldLabel" title="" for="Priezvisko12" style="display: none">[12] - Priezvisko </label><span class="fieldContent"><input  id="Priezvisko12" name="Priezvisko12" title="Nemôže byť súčasne vyplnené meno, priezvisko FO a názov PO v potvrdení." type="text" class="textBox" maxlength="40" size="190"  alt="Nemôže byť súčasne vyplnené meno, priezvisko FO a názov PO v potvrdení." value=""  ><xsl:if test="boolean(./*[name() = 'Priezvisko12']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:if test="./*[name() = 'Priezvisko12']/text()"><xsl:attribute name="value"><xsl:value-of select="./*[name() = 'Priezvisko12']"/></xsl:attribute></xsl:if></input></span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+				<div id="layoutColumn86998" class="column "  style="width:250px;">
+
+<div id="layoutCell140967" class="cell " >
+
+		<span class="fieldLabel" title=""  ><xsl:text disable-output-escaping="yes">[13] - Meno </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell140972" class="cell  sirokyTextBox210pxx" >
+
+		<label class="fieldLabel" title="" for="Meno13" style="display: none">[13] - Meno </label><span class="fieldContent"><input  id="Meno13" name="Meno13" title="Nemôže byť súčasne vyplnené meno, priezvisko FO a názov PO v potvrdení." type="text" class="textBox" maxlength="40" size="190"  alt="Nemôže byť súčasne vyplnené meno, priezvisko FO a názov PO v potvrdení." value=""  ><xsl:if test="boolean(./*[name() = 'Meno13']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:if test="./*[name() = 'Meno13']/text()"><xsl:attribute name="value"><xsl:value-of select="./*[name() = 'Meno13']"/></xsl:attribute></xsl:if></input></span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+				<div id="layoutColumn87001" class="column "  style="width:132px;">
+
+<div id="layoutCell140973" class="cell " >
+
+		<span class="fieldLabel" title=""   style="width:280px;"><xsl:text disable-output-escaping="yes">[14] - Titul pred menom / za priezviskom </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell140974" class="cell  kratkyTextBox120pxTitul" >
+
+		<label class="fieldLabel" title="" for="Titul14" style="display: none">[14] - Titul pred menom </label><span class="fieldContent"><input  id="Titul14" name="Titul14" title="" type="text" class="textBox" maxlength="20" size="190"  alt="" value=""  ><xsl:if test="boolean(./*[name() = 'Titul14']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:if test="./*[name() = 'Titul14']/text()"><xsl:attribute name="value"><xsl:value-of select="./*[name() = 'Titul14']"/></xsl:attribute></xsl:if></input></span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+				<div id="layoutColumn87002" class="column "  style="width:10px;">
+
+<div id="layoutCell140975" class="cell " >
+
+		<span class="fieldLabel" title=""  ><xsl:text disable-output-escaping="yes">&#xa0; </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell140976" class="cell " >
+
+		<span class="fieldLabel" title=""  ><xsl:text disable-output-escaping="yes">/ </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+				<div id="layoutColumn87003" class="column "  style="width:185px;">
+
+<div id="layoutCell140977" class="cell " >
+
+		<span class="fieldLabel" title=""  ><xsl:text disable-output-escaping="yes">&#xa0; </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell140978" class="cell  kratkyTextBox120pxTitul" >
+
+		<label class="fieldLabel" title="" for="Titul14_2" style="display: none">Titul za menom </label><span class="fieldContent"><input  id="Titul14_2" name="Titul14_2" title="" type="text" class="textBox" maxlength="20" size="190"  alt="" value=""  ><xsl:if test="boolean(./*[name() = 'Titul14_2']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:if test="./*[name() = 'Titul14_2']/text()"><xsl:attribute name="value"><xsl:value-of select="./*[name() = 'Titul14_2']"/></xsl:attribute></xsl:if></input></span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+			<div class="clear"></div>
+		</div>
+			</div>
+			</xsl:for-each>
+
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell140979" class="cell " >
+
+			<xsl:for-each select="/V2Pv21/UdajeDrzitelaSekcia/PoSekcia">
+		<div id="layoutRow35042" class="layoutRow ui-tabs ui-widget-content  "   title="" >
+						<input type="hidden" name="PoSekcia"  />
+					<div class="caption ui-widget-header">
+				<div class="headercorrection" title="Právnická osoba">Právnická osoba</div><span class="arrow ui-icon ui-icon-carat-1-n"></span></div>
+		<div id="layoutRowContentlayoutRow35042" class="columns">
+
+				<div id="layoutColumn87004" class="column first" >
+
+<div id="layoutCell140980" class="cell  sirokyTextBox810px" >
+
+		<label class="fieldLabel" title="" for="Nazov15" ><xsl:text disable-output-escaping="yes">[15] - Obchodné meno alebo názov </xsl:text> </label><span class="fieldContent"><input  id="Nazov15" name="Nazov15" title="Nemôže byť súčasne vyplnené meno, priezvisko FO a názov PO v potvrdení." type="text" class="textBox" maxlength="60" size="190"  alt="Nemôže byť súčasne vyplnené meno, priezvisko FO a názov PO v potvrdení." value=""  ><xsl:if test="boolean(./*[name() = 'Nazov15']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:if test="./*[name() = 'Nazov15']/text()"><xsl:attribute name="value"><xsl:value-of select="./*[name() = 'Nazov15']"/></xsl:attribute></xsl:if></input></span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+			<div class="clear"></div>
+		</div>
+			</div>
+			</xsl:for-each>
+
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell140981" class="cell " >
+
+			<xsl:for-each select="/V2Pv21/UdajeDrzitelaSekcia/AdresaTPPSekcia">
+		<div id="layoutRow35043" class="layoutRow ui-tabs ui-widget-content  "   title="" >
+						<input type="hidden" name="AdresaTPPSekcia"  />
+					<div class="caption ui-widget-header">
+				<div class="headercorrection" title="Trvalý pobyt (fyzická osoba) alebo sídlo (právnická osoba)">Trvalý pobyt (fyzická osoba) alebo sídlo (právnická osoba)</div><span class="arrow ui-icon ui-icon-carat-1-n"></span></div>
+		<div id="layoutRowContentlayoutRow35043" class="columns">
+
+				<div id="layoutColumn87005" class="column first" >
+
+<div id="layoutCell140982" class="cell " >
+
+			<xsl:for-each select="/V2Pv21/UdajeDrzitelaSekcia/AdresaTPPSekcia/adresa1Sekcia">
+		<div id="layoutRow35044" class="layoutRow ui-tabs ui-widget-content  bezOkrajaBezPozadiaHlavicky dolava8px nocaption "   title="" >
+						<input type="hidden" name="adresa1Sekcia"  />
+					<div class="caption ui-widget-header">
+				<span class="arrow ui-icon ui-icon-carat-1-n"></span></div>
+		<div id="layoutRowContentlayoutRow35044" class="columns">
+
+				<div id="layoutColumn87006" class="column first"  style="width:649px;">
+
+<div id="layoutCell140984" class="cell " >
+
+		<span class="fieldLabel" title=""  ><xsl:text disable-output-escaping="yes">[16] - Ulica </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell140985" class="cell  sirokyTextBox600px" >
+
+		<label class="fieldLabel" title="" for="Ulica16" style="display: none">[16] - Ulica </label><span class="fieldContent"><input  id="Ulica16" name="Ulica16" title="" type="text" class="textBox" maxlength="60" size="190"  alt="" value=""  ><xsl:if test="boolean(./*[name() = 'Ulica16']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:if test="./*[name() = 'Ulica16']/text()"><xsl:attribute name="value"><xsl:value-of select="./*[name() = 'Ulica16']"/></xsl:attribute></xsl:if></input></span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+				<div id="layoutColumn87007" class="column "  style="width:185px;">
+
+<div id="layoutCell140986" class="cell " >
+
+		<span class="fieldLabel" title=""  ><xsl:text disable-output-escaping="yes">[17] - Súpisné / orientačné číslo </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell140987" class="cell " >
+
+		<label class="fieldLabel" title="" for="CisloDomu17" style="display: none">[17] - Súpisné / orientačné číslo </label><span class="fieldContent"><input  id="CisloDomu17" name="CisloDomu17" title="" type="text" class="textBox" maxlength="20" size="190"  alt="" value=""  ><xsl:if test="boolean(./*[name() = 'CisloDomu17']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:if test="./*[name() = 'CisloDomu17']/text()"><xsl:attribute name="value"><xsl:value-of select="./*[name() = 'CisloDomu17']"/></xsl:attribute></xsl:if></input></span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+			<div class="clear"></div>
+		</div>
+			</div>
+			</xsl:for-each>
+
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell140983" class="cell " >
+
+			<xsl:for-each select="/V2Pv21/UdajeDrzitelaSekcia/AdresaTPPSekcia/adresa2Sekcia">
+		<div id="layoutRow35045" class="layoutRow ui-tabs ui-widget-content  bezOkrajaBezPozadiaHlavicky dolava2px  nocaption "   title="" >
+						<input type="hidden" name="adresa2Sekcia"  />
+					<div class="caption ui-widget-header">
+				<span class="arrow ui-icon ui-icon-carat-1-n"></span></div>
+		<div id="layoutRowContentlayoutRow35045" class="columns">
+
+				<div id="layoutColumn87008" class="column first"  style="width:125px;">
+
+<div id="layoutCell140988" class="cell  dolava4px" >
+
+		<span class="fieldLabel" title=""  ><xsl:text disable-output-escaping="yes">[18] - PSČ </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell140989" class="cell  kratkyTextBox87px" >
+
+		<label class="fieldLabel" title="" for="PSC18" style="display: none">[18] - PSČ </label><span class="fieldContent"><input  id="PSC18" name="PSC18" title="" type="text" class="textBox" maxlength="15" size="190"  alt="" value=""  ><xsl:if test="boolean(./*[name() = 'PSC18']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:if test="./*[name() = 'PSC18']/text()"><xsl:attribute name="value"><xsl:value-of select="./*[name() = 'PSC18']"/></xsl:attribute></xsl:if></input></span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+				<div id="layoutColumn87009" class="column "  style="width:518px;">
+
+<div id="layoutCell140990" class="cell " >
+
+		<span class="fieldLabel" title=""  ><xsl:text disable-output-escaping="yes">[19] - Obec </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell140991" class="cell  sirokyTextBox450px" >
+
+		<label class="fieldLabel" title="" for="Obec19" style="display: none">[19] - Obec </label><span class="fieldContent"><input  id="Obec19" name="Obec19" title="" type="text" class="textBox" maxlength="40" size="190"  alt="" value=""  ><xsl:if test="boolean(./*[name() = 'Obec19']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:if test="./*[name() = 'Obec19']/text()"><xsl:attribute name="value"><xsl:value-of select="./*[name() = 'Obec19']"/></xsl:attribute></xsl:if></input></span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+				<div id="layoutColumn87010" class="column "  style="width:120px;">
+
+<div id="layoutCell140992" class="cell " >
+
+		<span class="fieldLabel" title=""  ><xsl:text disable-output-escaping="yes">[20] - Štát </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell140993" class="cell " >
+
+		<label class="fieldLabel" title="" for="Stat20" style="display: none">[20] - Štát </label><span class="fieldContent"><input  id="Stat20" name="Stat20" title="" type="text" class="textBox" maxlength="37" size="190"  alt="" value=""  ><xsl:if test="boolean(./*[name() = 'Stat20']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:if test="./*[name() = 'Stat20']/text()"><xsl:attribute name="value"><xsl:value-of select="./*[name() = 'Stat20']"/></xsl:attribute></xsl:if></input></span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+			<div class="clear"></div>
+		</div>
+			</div>
+			</xsl:for-each>
+
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+			<div class="clear"></div>
+		</div>
+			</div>
+			</xsl:for-each>
+
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+			<div class="clear"></div>
+		</div>
+			</div>
+			</xsl:for-each>
+							<xsl:if test="/V2Pv21/UdajeDrzitelaSekcia/@notInFormData">
+				<script type="text/javascript">$(document).ready(function () { initRepetitionSection(1, 1, 'layoutRow35034') })</script>
+					</xsl:if>
+							<xsl:for-each select="/V2Pv21/UdajeZapDaneSekcia">
+		<div id="layoutRow35035" class="layoutRow ui-tabs ui-widget-content  "   title="" >
+						<input type="hidden" name="UdajeZapDaneSekcia"  />
+					<div class="caption ui-widget-header">
+				<h1 class="headercorrection" title="III. ODDIEL - ÚDAJE O ZAPLATENÍ DANE Z PRÍJMOV ZO ZÁVISLEJ ČINNOSTI - v eurách">III. ODDIEL - ÚDAJE O ZAPLATENÍ DANE Z PRÍJMOV ZO ZÁVISLEJ ČINNOSTI - v eurách</h1><span class="arrow ui-icon ui-icon-carat-1-n"></span></div>
+		<div id="layoutRowContentlayoutRow35035" class="columns">
+
+				<div id="layoutColumn87011" class="column first" >
+
+<div id="layoutCell140994" class="cell " >
+
+			<xsl:for-each select="/V2Pv21/UdajeZapDaneSekcia/Riadok21">
+		<div id="layoutRow35046" class="layoutRow ui-tabs ui-widget-content  nocaption "   title="" >
+						<input type="hidden" name="Riadok21"  />
+					<div class="caption ui-widget-header">
+				<span class="arrow ui-icon ui-icon-carat-1-n"></span></div>
+		<div id="layoutRowContentlayoutRow35046" class="columns">
+
+				<div id="layoutColumn87012" class="column first"  style="width:610px;">
+
+<div id="layoutCell140995" class="cell " >
+
+		<span class="fieldLabel" title=""   style="width:620px;"><xsl:text disable-output-escaping="yes">Daň – podľa § 15 zákona (z r. 06 ročného zúčtovania preddavkov na daň) </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+				<div id="layoutColumn87013" class="column "  style="width:40px;">
+
+<div id="layoutCell140996" class="cell " >
+
+		<span class="fieldLabel" title=""  ><xsl:text disable-output-escaping="yes">21 </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+				<div id="layoutColumn87014" class="column "  style="width:160px;">
+
+<div id="layoutCell140997" class="cell  textNapravo" >
+
+		<label class="fieldLabel" title="" for="t21" style="display: none">riadok 21 </label><span class="fieldContent"><input  id="t21" name="t21" title="Nezáporné numerické číslo s 2 des. miestami." type="text" class="textBox" maxlength="11" size="190"  alt="Nezáporné numerické číslo s 2 des. miestami." value=""  ><xsl:if test="boolean(./*[name() = 't21']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:if test="./*[name() = 't21']/text()"><xsl:attribute name="value"><xsl:value-of select="./*[name() = 't21']"/></xsl:attribute></xsl:if></input></span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+			<div class="clear"></div>
+		</div>
+			</div>
+			</xsl:for-each>
+
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell140998" class="cell " >
+
+			<xsl:for-each select="/V2Pv21/UdajeZapDaneSekcia/Riadok22">
+		<div id="layoutRow35047" class="layoutRow ui-tabs ui-widget-content  nocaption "   title="" >
+						<input type="hidden" name="Riadok22"  />
+					<div class="caption ui-widget-header">
+				<span class="arrow ui-icon ui-icon-carat-1-n"></span></div>
+		<div id="layoutRowContentlayoutRow35047" class="columns">
+
+				<div id="layoutColumn87015" class="column first"  style="width:610px;">
+
+<div id="layoutCell140999" class="cell " >
+
+		<span class="fieldLabel" title=""   style="width:620px;"><xsl:text disable-output-escaping="yes">Nárok na daňový bonus podľa § 33 zákona (z r. 09 ročného zúčtovania preddavkov na daň) </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+				<div id="layoutColumn87016" class="column "  style="width:40px;">
+
+<div id="layoutCell141000" class="cell " >
+
+		<span class="fieldLabel" title=""  ><xsl:text disable-output-escaping="yes">22 </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+				<div id="layoutColumn87017" class="column "  style="width:160px;">
+
+<div id="layoutCell141001" class="cell  textNapravo" >
+
+		<label class="fieldLabel" title="" for="t22" style="display: none">riadok 22 </label><span class="fieldContent"><input  id="t22" name="t22" title="Nezáporné numerické číslo s 2 des. miestami." type="text" class="textBox" maxlength="7" size="190"  alt="Nezáporné numerické číslo s 2 des. miestami." value=""  ><xsl:if test="boolean(./*[name() = 't22']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:if test="./*[name() = 't22']/text()"><xsl:attribute name="value"><xsl:value-of select="./*[name() = 't22']"/></xsl:attribute></xsl:if></input></span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+			<div class="clear"></div>
+		</div>
+			</div>
+			</xsl:for-each>
+
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell141002" class="cell " >
+
+			<xsl:for-each select="/V2Pv21/UdajeZapDaneSekcia/Riadok23">
+		<div id="layoutRow35048" class="layoutRow ui-tabs ui-widget-content  nocaption "   title="" >
+						<input type="hidden" name="Riadok23"  />
+					<div class="caption ui-widget-header">
+				<span class="arrow ui-icon ui-icon-carat-1-n"></span></div>
+		<div id="layoutRowContentlayoutRow35048" class="columns">
+
+				<div id="layoutColumn87018" class="column first"  style="width:610px;">
+
+<div id="layoutCell141003" class="cell " >
+
+		<span class="fieldLabel" title=""   style="width:620px;"><xsl:text disable-output-escaping="yes">Nárok na daňový bonus na zaplatené úroky podľa § 33a zákona (z r. 15 ročného zúčtovania preddavkov na daň) </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+				<div id="layoutColumn87019" class="column "  style="width:40px;">
+
+<div id="layoutCell141004" class="cell " >
+
+		<span class="fieldLabel" title=""  ><xsl:text disable-output-escaping="yes">23 </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+				<div id="layoutColumn87020" class="column "  style="width:160px;">
+
+<div id="layoutCell141005" class="cell  textNapravo" >
+
+		<label class="fieldLabel" title="" for="t23" style="display: none">riadok 23 </label><span class="fieldContent"><input  id="t23" name="t23" title="Nezáporné numerické číslo s 2 des. miestami. Daňovník si môže uplatniť DB na zaplatené úroky max. do sumy 400 €." type="text" class="textBox" maxlength="7" size="190"  alt="Nezáporné numerické číslo s 2 des. miestami. Daňovník si môže uplatniť DB na zaplatené úroky max. do sumy 400 €." value=""  ><xsl:if test="boolean(./*[name() = 't23']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:if test="./*[name() = 't23']/text()"><xsl:attribute name="value"><xsl:value-of select="./*[name() = 't23']"/></xsl:attribute></xsl:if></input></span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+			<div class="clear"></div>
+		</div>
+			</div>
+			</xsl:for-each>
+
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell141006" class="cell " >
+
+			<xsl:for-each select="/V2Pv21/UdajeZapDaneSekcia/Riadok24">
+		<div id="layoutRow35049" class="layoutRow ui-tabs ui-widget-content  nocaption "   title="" >
+						<input type="hidden" name="Riadok24"  />
+					<div class="caption ui-widget-header">
+				<span class="arrow ui-icon ui-icon-carat-1-n"></span></div>
+		<div id="layoutRowContentlayoutRow35049" class="columns">
+
+				<div id="layoutColumn87021" class="column first"  style="width:610px;">
+
+<div id="layoutCell141007" class="cell " >
+
+		<span class="fieldLabel" title=""   style="width:620px;"><xsl:text disable-output-escaping="yes">Daň znížená o daňový bonus (§ 33 zákona) a daňový bonus na zaplatené úroky (§ 33a zákona)&lt;br/&gt; (r. 21 - r. 22 - r. 23 ) &gt; 0 </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+				<div id="layoutColumn87022" class="column "  style="width:40px;">
+
+<div id="layoutCell141008" class="cell " >
+
+		<span class="fieldLabel" title=""  ><xsl:text disable-output-escaping="yes">24 </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+				<div id="layoutColumn87023" class="column "  style="width:160px;">
+
+<div id="layoutCell141009" class="cell  textNapravo" >
+
+		<label class="fieldLabel" title="" for="t24" style="display: none">riadok 24 </label><span class="fieldContent"><input  id="t24" name="t24" title="0 &lt; r.24 = r. 21 - r. 22 - r.23 Nezáporné numerické číslo s 2 des. miestami." type="text" class="textBox" maxlength="11" size="190"  alt="0 &lt; r.24 = r. 21 - r. 22 - r.23 Nezáporné numerické číslo s 2 des. miestami." value=""  ><xsl:if test="boolean(./*[name() = 't24']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:if test="./*[name() = 't24']/text()"><xsl:attribute name="value"><xsl:value-of select="./*[name() = 't24']"/></xsl:attribute></xsl:if></input></span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+			<div class="clear"></div>
+		</div>
+			</div>
+			</xsl:for-each>
+
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell141010" class="cell " >
+
+			<xsl:for-each select="/V2Pv21/UdajeZapDaneSekcia/Riadok25">
+		<div id="layoutRow35050" class="layoutRow ui-tabs ui-widget-content  nocaption "   title="" >
+						<input type="hidden" name="Riadok25"  />
+					<div class="caption ui-widget-header">
+				<span class="arrow ui-icon ui-icon-carat-1-n"></span></div>
+		<div id="layoutRowContentlayoutRow35050" class="columns">
+
+				<div id="layoutColumn87024" class="column first"  style="width:610px;">
+
+<div id="layoutCell141011" class="cell " >
+
+		<span class="fieldLabel" title=""   style="width:620px;"><xsl:text disable-output-escaping="yes">Daň na úhradu (z r. 21 ročného zúčtovania preddavkov na daň) </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+				<div id="layoutColumn87025" class="column "  style="width:40px;">
+
+<div id="layoutCell141012" class="cell " >
+
+		<span class="fieldLabel" title=""  ><xsl:text disable-output-escaping="yes">25 </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+				<div id="layoutColumn87026" class="column "  style="width:160px;">
+
+<div id="layoutCell141013" class="cell  textNapravo" >
+
+		<label class="fieldLabel" title="" for="t25" style="display: none">riadok 25 </label><span class="fieldContent"><input  id="t25" name="t25" title="Nezáporné numerické číslo s 2 des. miestami." type="text" class="textBox" maxlength="11" size="190"  alt="Nezáporné numerické číslo s 2 des. miestami." value=""  ><xsl:if test="boolean(./*[name() = 't25']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:if test="./*[name() = 't25']/text()"><xsl:attribute name="value"><xsl:value-of select="./*[name() = 't25']"/></xsl:attribute></xsl:if></input></span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+			<div class="clear"></div>
+		</div>
+			</div>
+			</xsl:for-each>
+
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell141014" class="cell " >
+
+			<xsl:for-each select="/V2Pv21/UdajeZapDaneSekcia/Riadok26">
+		<div id="layoutRow35051" class="layoutRow ui-tabs ui-widget-content  nocaption "   title="" >
+						<input type="hidden" name="Riadok26"  />
+					<div class="caption ui-widget-header">
+				<span class="arrow ui-icon ui-icon-carat-1-n"></span></div>
+		<div id="layoutRowContentlayoutRow35051" class="columns">
+
+				<div id="layoutColumn87027" class="column first"  style="width:610px;">
+
+<div id="layoutCell141015" class="cell " >
+
+		<span class="fieldLabel" title=""   style="width:620px;"><xsl:text disable-output-escaping="yes">Daň na úhradu (z r. 25 tohto potvrdenia), zrazená zamestnancovi alebo zaplatená zamestnancom v lehote&lt;br/&gt; do podania vyhlásenia o poukázaní podielu zaplatenej dane z príjmov fyzickej osoby v úhrnnej sume </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+				<div id="layoutColumn87028" class="column "  style="width:40px;">
+
+<div id="layoutCell141016" class="cell " >
+
+		<span class="fieldLabel" title=""  ><xsl:text disable-output-escaping="yes">26 </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+				<div id="layoutColumn87029" class="column "  style="width:205px;">
+
+<div id="layoutCell141017" class="cell  textNapravo" >
+
+		<label class="fieldLabel" title="" for="t26" style="display: none">riadok 26 </label><span class="fieldContent"><input  id="t26" name="t26" title="Suma na r. 26 potvrdenia nemôže byť vyššia ako na r. 25. Ak je r. 25 prázdne, alebo sa rovná 0, potom aj r. 26 musí byť prázdne, alebo sa rovnať 0." type="text" class="textBox" maxlength="11" size="190"  alt="Suma na r. 26 potvrdenia nemôže byť vyššia ako na r. 25. Ak je r. 25 prázdne, alebo sa rovná 0, potom aj r. 26 musí byť prázdne, alebo sa rovnať 0." value=""  ><xsl:if test="boolean(./*[name() = 't26']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:if test="./*[name() = 't26']/text()"><xsl:attribute name="value"><xsl:value-of select="./*[name() = 't26']"/></xsl:attribute></xsl:if></input></span>
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell141018" class="cell  kratkyTextBox75px" >
+
+		<label class="fieldLabel" title="" for="t26_D"  style="width:72px;"><xsl:text disable-output-escaping="yes">Dňa </xsl:text> </label><span class="fieldContent"><input alt="Ak r.25 je > 5€ a súčasne r.26 dátum je vyšší ako 30.4.XXXX rok zdaňovacie obdobie +1. Nedoplatok z RZ uhradený neskoro, nie sú splnené podmienky. Ak suma dane na úhradu na r.25 je >5 € a súčasne dátum v r. 26 nie je vyplnený. Nedoplatok na dani vyšší ako 5 € nebol zrazený pri RZ, uveďte dátum úhrady správcovi dane." id="t26_D" name="t26_D" title="Ak r.25 je > 5€ a súčasne r.26 dátum je vyšší ako 30.4.XXXX rok zdaňovacie obdobie +1. Nedoplatok z RZ uhradený neskoro, nie sú splnené podmienky. Ak suma dane na úhradu na r.25 je >5 € a súčasne dátum v r. 26 nie je vyplnený. Nedoplatok na dani vyšší ako 5 € nebol zrazený pri RZ, uveďte dátum úhrady správcovi dane." type="text" class="date datepicker" maxlength="14" size="190"  ><xsl:if test="boolean(./*[name() = 't26_D']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:attribute name="value"><xsl:value-of select="./*[name() = 't26_D']"/></xsl:attribute></input></span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+			<div class="clear"></div>
+		</div>
+			</div>
+			</xsl:for-each>
+
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+			<div class="clear"></div>
+		</div>
+			</div>
+			</xsl:for-each>
+							<xsl:if test="/V2Pv21/UdajeZapDaneSekcia/@notInFormData">
+				<script type="text/javascript">$(document).ready(function () { initRepetitionSection(1, 1, 'layoutRow35035') })</script>
+					</xsl:if>
+							<xsl:for-each select="/V2Pv21/SekciaVypracoval_P">
+		<div id="layoutRow35036" class="layoutRow ui-tabs ui-widget-content  nocaption "   title="" >
+						<input type="hidden" name="SekciaVypracoval_P"  />
+					<div class="caption ui-widget-header">
+				<span class="arrow ui-icon ui-icon-carat-1-n"></span></div>
+		<div id="layoutRowContentlayoutRow35036" class="columns">
+
+				<div id="layoutColumn86983" class="column first" >
+
+<div id="layoutCell140936" class="cell  sirokyTextBox818px" >
+
+		<label class="fieldLabel" title="" for="Vypracoval_P"  style="width:250px;"><xsl:text disable-output-escaping="yes">Potvrdenie vypracoval (a) </xsl:text> </label><span class="fieldContent"><input  id="Vypracoval_P" name="Vypracoval_P" title="" type="text" class="textBox" maxlength="60" size="190"  alt="" value=""  ><xsl:if test="boolean(./*[name() = 'Vypracoval_P']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:if test="./*[name() = 'Vypracoval_P']/text()"><xsl:attribute name="value"><xsl:value-of select="./*[name() = 'Vypracoval_P']"/></xsl:attribute></xsl:if></input></span>
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell140937" class="cell  tucnyText" >
+
+		<span class="fieldLabel" title=""   style="width:800px;"><xsl:text disable-output-escaping="yes">Potvrdzujeme týmto, že údaje uvedené v potvrdení sú pravdivé. </xsl:text> </span>
+		<div class="clear"></div>
+</div>
+
+<div id="layoutCell140938" class="cell " >
+
+		<label class="fieldLabel" title="" for="VyhlasenieDatum_P" ><xsl:text disable-output-escaping="yes">Dátum </xsl:text> </label><span class="fieldContent"><input alt="Dátum, musí byť &lt;= lehota na podanie vyhlásenia v hlavičke FB." id="VyhlasenieDatum_P" name="VyhlasenieDatum_P" title="Dátum, musí byť &lt;= lehota na podanie vyhlásenia v hlavičke FB." type="text" class="date datepicker" maxlength="14" size="190"  ><xsl:if test="boolean(./*[name() = 'VyhlasenieDatum_P']/@isReadOnly = 'true')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if><xsl:attribute name="value"><xsl:value-of select="./*[name() = 'VyhlasenieDatum_P']"/></xsl:attribute></input></span>
+		<div class="clear"></div>
+</div>
+
+				</div>
+
+			<div class="clear"></div>
+		</div>
+			</div>
+			</xsl:for-each>
+							<xsl:if test="/V2Pv21/SekciaVypracoval_P/@notInFormData">
+				<script type="text/javascript">$(document).ready(function () { initRepetitionSection(1, 1, 'layoutRow35036') })</script>
+					</xsl:if>
+
+			<div id="buttonsPlaceholder">
+								<input id="saveForm" type="submit" class="button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" value="Uložiť" alt="Uložiť" accesskey="U" />
+								<input id="cancelForm" type="button" class="button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" value="Zrušiť"  alt="Zrušiť" accesskey="Z" />
+			</div>
+		</div>
+		<div id="statusDialog" title="Status">
+			<img id="statusLoader" src="Images/ajax-loader.png" alt="Čakajte prosím" />
+			<p id="statusMessage" class="statusMessage"></p>
+		</div>
+		<div id="savedFormsContainer" class="layoutMain ui-widget-content" style="display:none">
+		  <div id="savedFormsContainerRow" class="layoutRow ui-tabs ui-widget-content"  title="" >
+			<input type="hidden" name="Basic" />
+			<div class="caption ui-widget-header">
+			  <div class="headercorrection" title="Uložené formuláre">Uložené formuláre</div>
+			  <span class="arrow ui-icon ui-icon-carat-1-n"></span>
+			</div>
+			<div id="layoutRowSavedForms" class="columns">
+			  <div id="lcolumnSavedForms" class="column first" >
+				<div id="lcellSavedForms" class="cell">
+				</div>
+			  </div>
+			  <div class="clear"></div>
+			</div>
+		  </div>
+		</div>
+	</form>
+</body>
+</html>
+</xsl:template>
+</xsl:stylesheet>
+    XSLT
+  },
+  {
+    document_type: 'CLS_F_XSLT_TXT_SGN',
+    language: 'sk',
+    data: <<~XSLT
+    <?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet version="1.0"
+	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" >
+	<xsl:output method="text" indent="yes" omit-xml-declaration="yes"/>
+	<xsl:strip-space elements="*" />
+	<xsl:template match="dokument">
+		<xsl:text>V2Pv21</xsl:text>
+		<xsl:apply-templates/>
+	</xsl:template>
+	<xsl:template match="dokument/hlavicka">
+		<xsl:text>&#xA;</xsl:text>
+		<xsl:text>&#09;</xsl:text>
+		<xsl:text>VYHLÁSENIE</xsl:text>
+		<xsl:apply-templates/>
+	</xsl:template>
+	<xsl:template match="dokument/hlavicka/rodneCislo">
+		<xsl:text>&#xA;</xsl:text>
+		<xsl:text>&#09;</xsl:text>
+		<xsl:text>&#09;</xsl:text>
+		<xsl:text>[01] - Rodné číslo</xsl:text>
+		<xsl:apply-templates/>
+	</xsl:template>
+	<xsl:template match="dokument/hlavicka/rodneCislo/rcPredLom">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Pred lomítkom: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/hlavicka/rodneCislo/rcZaLom">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Za lomítkom: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/hlavicka/datumNarodenia">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>[02] - Dátum narodenia: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/hlavicka/zaRok">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Rok: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/hlavicka/danovnik">
+		<xsl:text>&#xA;</xsl:text>
+		<xsl:text>&#09;</xsl:text>
+		<xsl:text>&#09;</xsl:text>
+		<xsl:text>I. ODDIEL - ÚDAJE O DAŇOVNÍKOVI</xsl:text>
+		<xsl:apply-templates/>
+	</xsl:template>
+	<xsl:template match="dokument/hlavicka/danovnik/priezvisko">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>[03] - Priezvisko: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/hlavicka/danovnik/meno">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>[04] - Meno: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/hlavicka/danovnik/titulPred">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>[05] - Titul pred menom: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/hlavicka/danovnik/titulZa">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>[05] - Titul za priezviskom: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/hlavicka/danovnik/adresa">
+		<xsl:text>&#xA;</xsl:text>
+		<xsl:text>&#09;</xsl:text>
+		<xsl:text>&#09;</xsl:text>
+		<xsl:text>&#09;</xsl:text>
+		<xsl:text>Adresa trvalého pobytu</xsl:text>
+		<xsl:apply-templates/>
+	</xsl:template>
+	<xsl:template match="dokument/hlavicka/danovnik/adresa/ulica">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>[06] - Ulica: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/hlavicka/danovnik/adresa/supisneOrientacneCislo">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>[07] - Súpisné/orientačné číslo: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/hlavicka/danovnik/adresa/psc">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>[08] - PSČ: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/hlavicka/danovnik/adresa/obec">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>[09] - Obec: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/hlavicka/danovnik/adresa/stat">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>[10] - Štát: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/hlavicka/danovnik/telefon">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>[11] - Telefónne číslo: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/hlavicka/danovnik/zaplatenaDan">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>[12] - Zaplatená daň, z ktorej sa vypočíta suma do výšky 2 % resp. 3 % 1) zaplatenej dane: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/hlavicka/danovnik/sumaZDane">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>[13] - Suma do výšky 2 % resp. 3 % 1) zo zaplatenej dane z r. 12 (min. 3 eurá): </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/hlavicka/danovnik/datumZaplatenia">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>[14] - Dátum zaplatenia dane: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/hlavicka/danovnik/splnam3perc">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>spĺňam podmienky na poukázanie 3% z dane: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/hlavicka/prijimatel">
+		<xsl:text>&#xA;</xsl:text>
+		<xsl:text>&#09;</xsl:text>
+		<xsl:text>&#09;</xsl:text>
+		<xsl:text>II. ODDIEL - ÚDAJE O PRIJÍMATEĽOVI</xsl:text>
+		<xsl:apply-templates/>
+	</xsl:template>
+	<xsl:template match="dokument/hlavicka/prijimatel/ico">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>[15] - IČO: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/hlavicka/prijimatel/obchodneMeno">
+		<xsl:text>&#xA;</xsl:text>
+		<xsl:text>&#09;</xsl:text>
+		<xsl:text>&#09;</xsl:text>
+		<xsl:text>&#09;</xsl:text>
+		<xsl:text>[16] - Obchodné meno (názov)</xsl:text>
+		<xsl:apply-templates/>
+	</xsl:template>
+	<xsl:template match="dokument/hlavicka/prijimatel/obchodneMeno/riadok">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>riadok: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/hlavicka/suhlas">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>súhlasím so zaslaním údajov (meno, priezvisko a trvalý pobyt) mnou určenému príjmateľovi podielu zaplatenej dane uvedenému v II. oddiele podľa § 50 ods. 8 zákona: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/hlavicka/datumVyhlasenia">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Dátum: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/hlavicka/podpis">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Vyhlasujem, že uvedené údaje v tomto vyhlásení sú pravdivé: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/potvrdenie">
+		<xsl:text>&#xA;</xsl:text>
+		<xsl:text>&#09;</xsl:text>
+		<xsl:text>POTVRDENIE</xsl:text>
+		<xsl:apply-templates/>
+	</xsl:template>
+	<xsl:template match="dokument/potvrdenie/rodneCislo">
+		<xsl:text>&#xA;</xsl:text>
+		<xsl:text>&#09;</xsl:text>
+		<xsl:text>&#09;</xsl:text>
+		<xsl:text>[01] - Rodné číslo</xsl:text>
+		<xsl:apply-templates/>
+	</xsl:template>
+	<xsl:template match="dokument/potvrdenie/rodneCislo/rcPredLom">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Pred lomítkom: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/potvrdenie/rodneCislo/rcZaLom">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Za lomítkom: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/potvrdenie/datumNarodenia">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>[02] - Dátum narodenia: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/potvrdenie/zaRok">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Rok: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/potvrdenie/zamestnanec">
+		<xsl:text>&#xA;</xsl:text>
+		<xsl:text>&#09;</xsl:text>
+		<xsl:text>&#09;</xsl:text>
+		<xsl:text>I. ÚDAJE O ZAMESTNANCOVI</xsl:text>
+		<xsl:apply-templates/>
+	</xsl:template>
+	<xsl:template match="dokument/potvrdenie/zamestnanec/priezvisko">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>[03] - Priezvisko: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/potvrdenie/zamestnanec/meno">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>[04] - Meno: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/potvrdenie/zamestnanec/titulPred">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>[05] - Titul pred menom: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/potvrdenie/zamestnanec/titulZa">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>[05] - Titul za priezviskom: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/potvrdenie/zamestnanec/adresa">
+		<xsl:text>&#xA;</xsl:text>
+		<xsl:text>&#09;</xsl:text>
+		<xsl:text>&#09;</xsl:text>
+		<xsl:text>&#09;</xsl:text>
+		<xsl:text>Adresa trvalého pobytu</xsl:text>
+		<xsl:apply-templates/>
+	</xsl:template>
+	<xsl:template match="dokument/potvrdenie/zamestnanec/adresa/ulica">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>[06] - Ulica: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/potvrdenie/zamestnanec/adresa/supisneOrientacneCislo">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>[07] - Súpisné/orientačné číslo: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/potvrdenie/zamestnanec/adresa/psc">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>[08] - PSČ: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/potvrdenie/zamestnanec/adresa/obec">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>[09] - Obec: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/potvrdenie/zamestnanec/adresa/stat">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>[10] - Štát: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/potvrdenie/zamestnavatel">
+		<xsl:text>&#xA;</xsl:text>
+		<xsl:text>&#09;</xsl:text>
+		<xsl:text>&#09;</xsl:text>
+		<xsl:text>II. ÚDAJE O ZAMESTNÁVATEĽOVI</xsl:text>
+		<xsl:apply-templates/>
+	</xsl:template>
+	<xsl:template match="dokument/potvrdenie/zamestnavatel/dic">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>[11] - Daňové identifikačné číslo: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/potvrdenie/zamestnavatel/fyzickaOsoba">
+		<xsl:text>&#xA;</xsl:text>
+		<xsl:text>&#09;</xsl:text>
+		<xsl:text>&#09;</xsl:text>
+		<xsl:text>&#09;</xsl:text>
+		<xsl:text>Fyzická osoba</xsl:text>
+		<xsl:apply-templates/>
+	</xsl:template>
+	<xsl:template match="dokument/potvrdenie/zamestnavatel/fyzickaOsoba/priezvisko">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>[12] - Priezvisko: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/potvrdenie/zamestnavatel/fyzickaOsoba/meno">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>[13] - Meno: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/potvrdenie/zamestnavatel/fyzickaOsoba/titulPred">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>[14] - Titul pred menom: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/potvrdenie/zamestnavatel/fyzickaOsoba/titulZa">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>[14] - Titul za priezviskom: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/potvrdenie/zamestnavatel/obchodneMeno">
+		<xsl:text>&#xA;</xsl:text>
+		<xsl:text>&#09;</xsl:text>
+		<xsl:text>&#09;</xsl:text>
+		<xsl:text>&#09;</xsl:text>
+		<xsl:text>[15] - Obchodné meno alebo názov</xsl:text>
+		<xsl:apply-templates/>
+	</xsl:template>
+	<xsl:template match="dokument/potvrdenie/zamestnavatel/obchodneMeno/riadok">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>riadok: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/potvrdenie/zamestnavatel/trvalyPobyt">
+		<xsl:text>&#xA;</xsl:text>
+		<xsl:text>&#09;</xsl:text>
+		<xsl:text>&#09;</xsl:text>
+		<xsl:text>&#09;</xsl:text>
+		<xsl:text>Trvalý pobyt (fyzická osoba) alebo sídlo (právnická osoba)</xsl:text>
+		<xsl:apply-templates/>
+	</xsl:template>
+	<xsl:template match="dokument/potvrdenie/zamestnavatel/trvalyPobyt/ulica">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>[16] - Ulica: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/potvrdenie/zamestnavatel/trvalyPobyt/supisneOrientacneCislo">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>[17] - Súpisné/orientačné číslo: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/potvrdenie/zamestnavatel/trvalyPobyt/psc">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>[18] - PSČ: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/potvrdenie/zamestnavatel/trvalyPobyt/obec">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>[19] - Obec: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/potvrdenie/zamestnavatel/trvalyPobyt/stat">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>[20] - Štát: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/potvrdenie/udajeOZaplateni">
+		<xsl:text>&#xA;</xsl:text>
+		<xsl:text>&#09;</xsl:text>
+		<xsl:text>&#09;</xsl:text>
+		<xsl:text>III. ÚDAJE O ZAPLATENÍ DANE Z PRÍJMOV ZO ZÁVISLEJ ČINNOSTI - v eurách</xsl:text>
+		<xsl:apply-templates/>
+	</xsl:template>
+	<xsl:template match="dokument/potvrdenie/udajeOZaplateni/danPar15">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>[21] - Daň – podľa § 15 zákona (z r. 06 ročného zúčtovania preddavkov na daň): </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/potvrdenie/udajeOZaplateni/danBonus">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>[22] - Nárok na daňový bonus podľa § 33 zákona (z r. 09 ročného zúčtovania preddavkov na daň): </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/potvrdenie/udajeOZaplateni/danBonusUroky">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>[23] - Nárok na daňový bonus na zaplatené úroky podľa § 33a zákona (z r. 15 ročného zúčtovania preddavkov na daň): </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/potvrdenie/udajeOZaplateni/danZnizena">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>[24] - Daň znížená o daňový bonus (§ 33 zákona) a daňový bonus na zaplatené úroky (§ 33a zákona) (r. 21 - r. 22 - r. 23 ) &gt; 0: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/potvrdenie/udajeOZaplateni/danNaUhradu">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>[25] - Daň na úhradu (z r. 21 ročného zúčtovania preddavkov na daň): </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/potvrdenie/udajeOZaplateni/danZaplatena">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>[26] - Daň na úhradu (z r. 25 tohto potvrdenia), zrazená zamestnancovi alebo zaplatená zamestnancom v lehote do podania vyhlásenia o poukázaní podielu zaplatenej dane z príjmov fyzickej osoby v úhrnnej sume: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/potvrdenie/udajeOZaplateni/datumZaplatenia">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Dňa: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/potvrdenie/vypracoval">
+		<xsl:text>&#xA;</xsl:text>
+		<xsl:text>&#09;</xsl:text>
+		<xsl:text>&#09;</xsl:text>
+		<xsl:text>Vypracoval</xsl:text>
+		<xsl:apply-templates/>
+	</xsl:template>
+	<xsl:template match="dokument/potvrdenie/vypracoval/vypr">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Potvrdenie vypracoval(a): </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/potvrdenie/vypracoval/dna">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Dátum: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="dokument/potvrdenie/vypracoval/podpis">
+		<xsl:if test="./text()">
+			<xsl:text>&#xA;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>&#09;</xsl:text>
+			<xsl:text>Potvrdzujeme týmto, že údaje uvedené v potvrdení sú pravdivé: </xsl:text>
+			<xsl:call-template name="string-replace-all">
+				<xsl:with-param name="text" select="." />
+				<xsl:with-param name="replace" select="'&#10;'" />
+				<xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template name="formatAnyUri">
+		<xsl:param name="anyUri" />
+		<xsl:variable name="anyUriString" select="string($anyUri)" />
+		<xsl:variable name="anyUriSubString">
+			<xsl:choose>
+				<xsl:when test="$anyUriString != '' and contains($anyUriString, 'mailto:') and contains($anyUriString, '@')">
+					<xsl:value-of select="substring($anyUriString, 8, string-length($anyUriString))" />
+				</xsl:when>
+				<xsl:when test="$anyUriString != '' and contains($anyUriString, 'http://')">
+					<xsl:value-of select="substring($anyUriString, 8, string-length($anyUriString))" />
+				</xsl:when>
+				<xsl:when test="$anyUriString != '' and contains($anyUriString, 'https://')">
+					<xsl:value-of select="substring($anyUriString, 9, string-length($anyUriString))" />
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="$anyUriString"></xsl:value-of>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<xsl:value-of select="$anyUriSubString"/>
+	</xsl:template>
+	<xsl:template name="booleanCheckboxToString">
+		<xsl:param name="boolValue" />
+		<xsl:variable name="boolValueString" select="string($boolValue)" />
+		<xsl:choose>
+			<xsl:when test="$boolValueString = 'true' ">
+				<xsl:text>Áno</xsl:text>
+			</xsl:when>
+			<xsl:when test="$boolValueString = '1' ">
+				<xsl:text>Áno</xsl:text>
+			</xsl:when>
+			<xsl:when test="$boolValueString = 'false' ">
+				<xsl:text>Nie</xsl:text>
+			</xsl:when>
+			<xsl:when test="$boolValueString = '0' ">
+				<xsl:text>Nie</xsl:text>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$boolValueString"></xsl:value-of>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template name="string-replace-all">
+		<xsl:param name="text"/>
+		<xsl:param name="replace"/>
+		<xsl:param name="by"/>
+		<xsl:choose>
+			<xsl:when test="contains($text, $replace)">
+				<xsl:value-of select="substring-before($text,$replace)"/>
+				<xsl:value-of select="$by"/>
+				<xsl:call-template name="string-replace-all">
+					<xsl:with-param name="text" select="substring-after($text,$replace)"/>
+					<xsl:with-param name="replace" select="$replace"/>
+					<xsl:with-param name="by" select="$by" />
+				</xsl:call-template>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$text"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template name="formatToSkDate">
+		<xsl:param name="date" />
+		<xsl:variable name="dateString" select="string($date)" />
+		<xsl:choose>
+			<xsl:when test="$dateString != '' and string-length($dateString)=10 and string(number(substring($dateString, 1, 4))) != 'NaN' ">
+				<xsl:value-of select="concat(substring($dateString, 9, 2), '.', substring($dateString, 6, 2), '.', substring($dateString, 1, 4))" />
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$dateString"></xsl:value-of>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template name="formatTimeTrimMinutes">
+		<xsl:param name="time" />
+		<xsl:variable name="timeString" select="string($time)" />
+		<xsl:if test="$timeString != ''">
+			<xsl:value-of select="substring($timeString, 1, 5)" />
+		</xsl:if>
+	</xsl:template>
+	<xsl:template name="formatToSkDateTime">
+		<xsl:param name="dateTime" />
+		<xsl:variable name="dateSubstring" select="substring($dateTime, 1, 10)" />
+		<xsl:variable name="timeSubstring" select="substring($dateTime, 12, 8)" />
+		<xsl:variable name="dateString">
+			<xsl:choose>
+				<xsl:when test="$dateSubstring != '' and string-length($dateSubstring)=10 and string(number(substring($dateSubstring, 1, 4))) != 'NaN' ">
+					<xsl:value-of select="concat(substring($dateSubstring, 9, 2), '.', substring($dateSubstring, 6, 2), '.', substring($dateSubstring, 1, 4))" />
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="$dateSubstring"></xsl:value-of>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<xsl:variable name="timeString">
+			<xsl:if test="$timeSubstring != ''">
+				<xsl:value-of select="substring($timeSubstring, 1, 5)" />
+			</xsl:if>
+		</xsl:variable>
+		<xsl:value-of select="concat($dateString,' ',$timeString)"/>
 	</xsl:template>
 </xsl:stylesheet>
     XSLT
