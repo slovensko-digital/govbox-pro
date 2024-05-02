@@ -46343,7 +46343,7 @@ fs_form2_related_documents = [
 	<!--  povinny datum v tvare: (d)d.(m)m.rrrr  -->
 	<xs:simpleType name="oneFieldDateType">
 		<xs:restriction base="xs:string">
-			<xs:pattern value="\d?\d\.\d?\d\.\d\d\d\d"/>
+			<xs:pattern value="\\d?\\d\.\\d?\\d\.\\d\\d\\d\\d"/>
 		</xs:restriction>
 	</xs:simpleType>
 	<!--  nepovinny datum v tvare: (d)d.(m)m.rrrr  -->
@@ -46353,7 +46353,7 @@ fs_form2_related_documents = [
 	<!--  povinny den/mesiac v tvare: (d)d/(m)m  -->
 	<xs:simpleType name="dayMonthType">
 		<xs:restriction base="xs:decimal">
-			<xs:pattern value="\d?\d"/>
+			<xs:pattern value="\\d?\\d"/>
 		</xs:restriction>
 	</xs:simpleType>
 	<!--  nepovinny den/mesiac v tvare: (d)d/(m)m  -->
@@ -46363,7 +46363,7 @@ fs_form2_related_documents = [
 	<!--  povinny rok  -->
 	<xs:simpleType name="yearType">
 		<xs:restriction base="xs:decimal">
-			<xs:pattern value="\d\d\d\d"/>
+			<xs:pattern value="\\d\\d\\d\\d"/>
 		</xs:restriction>
 	</xs:simpleType>
 	<!--  nepovinny rok  -->
@@ -46450,7 +46450,7 @@ fs_form2_related_documents = [
 	<!--  povinne dic  -->
 	<xs:simpleType name="dicType">
 		<xs:restriction base="xs:decimal">
-			<xs:pattern value="\d{10}"/>
+			<xs:pattern value="\\d{10}"/>
 		</xs:restriction>
 	</xs:simpleType>
 	<!--  nepovinne dic  -->
@@ -46460,7 +46460,7 @@ fs_form2_related_documents = [
 	<!--  povinne ico  -->
 	<xs:simpleType name="icoType">
 		<xs:restriction base="xs:string">
-			<xs:pattern value="\d{8}"/>
+			<xs:pattern value="\\d{8}"/>
 		</xs:restriction>
 	</xs:simpleType>
 	<!--  nepovinne ico  -->
@@ -46668,7 +46668,7 @@ $.validator.addMethod
 function(value, element)
 {
 if ($(element).hasClass('disableValidators')) { return true; }
-return value.match(new RegExp(/^$|^\d{8}$|^\d{12}$/));
+return value.match(new RegExp(/^$|^\\d{8}$|^\\d{12}$/));
 }
 );
 
@@ -46678,7 +46678,7 @@ $.validator.addMethod
 function(value, element)
 {
 if ($(element).hasClass('disableValidators')) { return true; }
-return value.match(new RegExp(/^$|^\d{6}$/));
+return value.match(new RegExp(/^$|^\\d{6}$/));
 }
 );
 
@@ -46688,7 +46688,7 @@ $.validator.addMethod
 function(value, element)
 {
 if ($(element).hasClass('disableValidators')) { return true; }
-return value.match(new RegExp(/^$|^\d{3,4}$/));
+return value.match(new RegExp(/^$|^\\d{3,4}$/));
 }
 );
 
@@ -46698,7 +46698,7 @@ $.validator.addMethod
 function(value, element)
 {
 if ($(element).hasClass('disableValidators')) { return true; }
-return value.match(new RegExp(/^$|^(([0][1-9])|([12][0-9])|(3[01])).([0][1-9]|[1][0-2]).\d{4}$/));
+return value.match(new RegExp(/^$|^(([0][1-9])|([12][0-9])|(3[01])).([0][1-9]|[1][0-2]).\\d{4}$/));
 }
 );
 
@@ -46708,7 +46708,7 @@ $.validator.addMethod
 function(value, element)
 {
 if ($(element).hasClass('disableValidators')) { return true; }
-return value.match(new RegExp(/^$|^(([0][1-9])|([12][0-9])|(3[01])).([0][1-9]|[1][0-2]).\d{4}$/));
+return value.match(new RegExp(/^$|^(([0][1-9])|([12][0-9])|(3[01])).([0][1-9]|[1][0-2]).\\d{4}$/));
 }
 );
 
@@ -46728,7 +46728,7 @@ $.validator.addMethod
 function(value, element)
 {
 if ($(element).hasClass('disableValidators')) { return true; }
-return value.match(new RegExp(/^$|^\d{6}$/));
+return value.match(new RegExp(/^$|^\\d{6}$/));
 }
 );
 
@@ -46738,7 +46738,7 @@ $.validator.addMethod
 function(value, element)
 {
 if ($(element).hasClass('disableValidators')) { return true; }
-return value.match(new RegExp(/^$|^\d{3,4}$/));
+return value.match(new RegExp(/^$|^\\d{3,4}$/));
 }
 );
 
@@ -46808,7 +46808,7 @@ $.validator.addMethod
 function(value, element)
 {
 if ($(element).hasClass('disableValidators')) { return true; }
-return value.match(new RegExp(/^$|^\d{10}$/));
+return value.match(new RegExp(/^$|^\\d{10}$/));
 }
 );
 
@@ -46981,7 +46981,7 @@ var psc_aut_val = $("[name='psc']").val();;
 
 if (psc_aut_val != "")
 {
-return (stat_aut_val == "Slovensko"||stat_aut_val == "slovensko"||stat_aut_val == "SVK"||stat_aut_val == "SK"||stat_aut_val == "SR"||stat_aut_val == "Slovenská republika"||stat_aut_val == "Slovenská Republika"||stat_aut_val == "slovenská republika"||stat_aut_val == "Slovakia"||stat_aut_val == "Slovak Republic"||stat_aut_val == "sk"||stat_aut_val == "SLOVENSKO"||stat_aut_val == "SLOVENSKÁ REPUBLIKA"||stat_aut_val == "svk") && (!(/^\d+$/).test(psc_aut_val) || psc_aut_val.length != 5) ? 0 : 1;
+return (stat_aut_val == "Slovensko"||stat_aut_val == "slovensko"||stat_aut_val == "SVK"||stat_aut_val == "SK"||stat_aut_val == "SR"||stat_aut_val == "Slovenská republika"||stat_aut_val == "Slovenská Republika"||stat_aut_val == "slovenská republika"||stat_aut_val == "Slovakia"||stat_aut_val == "Slovak Republic"||stat_aut_val == "sk"||stat_aut_val == "SLOVENSKO"||stat_aut_val == "SLOVENSKÁ REPUBLIKA"||stat_aut_val == "svk") && (!(/^\\d+$/).test(psc_aut_val) || psc_aut_val.length != 5) ? 0 : 1;
 }else
 return 1
 }
@@ -47135,7 +47135,7 @@ var psc_aut_val = $("[name='PSC08']").val();;
 
 if (psc_aut_val != "")
 {
-return (stat_aut_val == "Slovensko"||stat_aut_val == "slovensko"||stat_aut_val == "SVK"||stat_aut_val == "SK"||stat_aut_val == "SR"||stat_aut_val == "Slovenská republika"||stat_aut_val == "Slovenská Republika"||stat_aut_val == "slovenská republika"||stat_aut_val == "Slovakia"||stat_aut_val == "Slovak Republic"||stat_aut_val == "sk"||stat_aut_val == "SLOVENSKO"||stat_aut_val == "SLOVENSKÁ REPUBLIKA"||stat_aut_val == "svk") && (!(/^\d+$/).test(psc_aut_val) || psc_aut_val.length != 5) ? 0 : 1;
+return (stat_aut_val == "Slovensko"||stat_aut_val == "slovensko"||stat_aut_val == "SVK"||stat_aut_val == "SK"||stat_aut_val == "SR"||stat_aut_val == "Slovenská republika"||stat_aut_val == "Slovenská Republika"||stat_aut_val == "slovenská republika"||stat_aut_val == "Slovakia"||stat_aut_val == "Slovak Republic"||stat_aut_val == "sk"||stat_aut_val == "SLOVENSKO"||stat_aut_val == "SLOVENSKÁ REPUBLIKA"||stat_aut_val == "svk") && (!(/^\\d+$/).test(psc_aut_val) || psc_aut_val.length != 5) ? 0 : 1;
 }else
 return 1
 }
@@ -47148,7 +47148,7 @@ var psc_aut_val = $("[name='PSC18']").val();;
 
 if (psc_aut_val != "")
 {
-return (stat_aut_val == "Slovensko"||stat_aut_val == "slovensko"||stat_aut_val == "SVK"||stat_aut_val == "SK"||stat_aut_val == "SR"||stat_aut_val == "Slovenská republika"||stat_aut_val == "Slovenská Republika"||stat_aut_val == "slovenská republika"||stat_aut_val == "Slovakia"||stat_aut_val == "Slovak Republic"||stat_aut_val == "sk"||stat_aut_val == "SLOVENSKO"||stat_aut_val == "SLOVENSKÁ REPUBLIKA"||stat_aut_val == "svk") && (!(/^\d+$/).test(psc_aut_val) || psc_aut_val.length != 5) ? 0 : 1;
+return (stat_aut_val == "Slovensko"||stat_aut_val == "slovensko"||stat_aut_val == "SVK"||stat_aut_val == "SK"||stat_aut_val == "SR"||stat_aut_val == "Slovenská republika"||stat_aut_val == "Slovenská Republika"||stat_aut_val == "slovenská republika"||stat_aut_val == "Slovakia"||stat_aut_val == "Slovak Republic"||stat_aut_val == "sk"||stat_aut_val == "SLOVENSKO"||stat_aut_val == "SLOVENSKÁ REPUBLIKA"||stat_aut_val == "svk") && (!(/^\\d+$/).test(psc_aut_val) || psc_aut_val.length != 5) ? 0 : 1;
 }else
 return 1
 }
@@ -47368,7 +47368,7 @@ return 1;
 }
 
 function inlinetelcislo(element,sid) {
-return /^$|^\+\d{12}|0\d{3}\/?\d{6}$/.test($("#TelCislo").val())
+return /^$|^\+\\d{12}|0\\d{3}\/?\\d{6}$/.test($("#TelCislo").val())
 }
 
 function inliner14_korona(element,sid) {

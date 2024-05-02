@@ -57,7 +57,7 @@ class Fs::MessageDraft < MessageDraft
     )
     MessageObjectDatum.create(
       message_object: form_object,
-      blob: Base64.decode64(form_file.read)
+      blob: form_file.read.force_encoding("UTF-8")
     )
 
     message
@@ -66,8 +66,6 @@ class Fs::MessageDraft < MessageDraft
   def submit
     raise NotImplementedError
   end
-
-  private
 
   def form
     Fs::Form.find(metadata['fs_form_id'])
