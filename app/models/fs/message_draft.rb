@@ -36,6 +36,7 @@ class Fs::MessageDraft < MessageDraft
       replyable: false,
       delivered_at: Time.now,
       metadata: {
+        'status': 'created',
         'fs_form_id': fs_form.id
       }
     )
@@ -64,10 +65,21 @@ class Fs::MessageDraft < MessageDraft
   end
 
   def submit
-    raise NotImplementedError
+    Fs::SubmitMessageDraftAction.run(self)
   end
 
   def form
     Fs::Form.find(metadata['fs_form_id'])
+  end
+
+  private
+
+  def validate_data
+    validate_metadata
+    validate_form_object
+  end
+
+  def validate_metadata
+    errors.add(:metadata, 'No form ID') unless metadata&.dig('fs_form_id')
   end
 end

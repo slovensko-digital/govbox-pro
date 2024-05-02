@@ -2,7 +2,7 @@ class Govbox::SubmitMessageDraftsAction
   def self.run(message_threads)
     jobs_batch = GoodJob::Batch.new
 
-    messages = message_threads.map(&:messages).flatten
+    messages = message_threads.map(&:message_drafts).where(type: ['Upvs::MessageDraft', nil]).flatten
 
     results = messages.map { |message| ::Govbox::SubmitMessageDraftAction.run(message, jobs_batch: jobs_batch) }
     submittable_messages = results.select { |value| value }.present?

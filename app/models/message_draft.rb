@@ -50,14 +50,12 @@ class MessageDraft < Message
     message_draft.validates :sender_name, presence: true
     message_draft.validates :recipient_name, presence: true
     message_draft.validate :validate_metadata_with_template
-    message_draft.validate :validate_form
+    message_draft.validate :validate_form_object
+    message_draft.validate :validate_allow_rules
   end
 
   with_options on: :validate_data do |message_draft|
-    message_draft.validate :validate_metadata
-    message_draft.validate :validate_form
-    message_draft.validate :validate_objects
-    message_draft.validate :validate_with_message_template
+    message_draft.validate :validate_data
   end
 
   def update_content(parameters)
@@ -169,14 +167,18 @@ class MessageDraft < Message
     )
   end
 
-  # TODO remove UPVS stuff from core domain
-  def validate_form
-    return if errors[:metadata].any?
+  private
 
-    unless ::Upvs::ServiceWithFormAllowRule.matching_metadata(all_metadata).where(institution_uri: metadata['recipient_uri']).any?
-      errors.add(:base, :disallowed_form_for_recipient)
-      return
-    end
+  def validate_data
+    validate_metadata
+    validate_form_object
+    validate_allow_rules
+    validate_objects
+    validate_with_message_template
+  end
+
+  def validate_form_object
+    return if errors[:metadata].any?
 
     raise "Missing XSD schema" unless form&.xsd_schema
 
@@ -197,7 +199,12 @@ class MessageDraft < Message
     errors.add(:base, :invalid_form) if form_errors.any?
   end
 
-  private
+  def validate_allow_rules
+    unless ::Upvs::ServiceWithFormAllowRule.matching_metadata(all_metadata).where(institution_uri: metadata['recipient_uri']).any?
+      errors.add(:base, :disallowed_form_for_recipient)
+      return
+    end
+  end
 
   def validate_uuid
     if uuid

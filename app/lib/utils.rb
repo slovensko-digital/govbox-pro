@@ -3,7 +3,7 @@ module Utils
 
   UUID_PATTERN = %r{\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z}
   EXTENSIONS_ALLOW_LIST = %w(pdf xml asice asics xzep zip txt doc docx jpg jpeg png tif tiff)
-  MIMETYPES_ALLOW_LIST = %w(application/x-eform-xml application/xml application/msword application/pdf application/vnd.etsi.asic-e+zip application/vnd.etsi.asic-s+zip application/vnd.openxmlformats-officedocument.wordprocessingml.document application/x-xades_zep application/x-zip-compressed image/jpg image/jpeg image/png image/tiff application/pkix-cert)
+  MIMETYPES_ALLOW_LIST = %w(application/x-eform-xml application/xml application/msword application/pdf application/vnd.etsi.asic-e+zip application/vnd.etsi.asic-s+zip application/vnd.openxmlformats-officedocument.wordprocessingml.document application/x-xades_zep application/x-zip-compressed image/jpg image/jpeg text/xml image/png image/tiff application/pkix-cert)
 
   def file_directory(file_path)
     File.dirname(file_path)
