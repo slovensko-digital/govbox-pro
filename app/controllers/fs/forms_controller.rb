@@ -9,7 +9,7 @@ class Fs::FormsController < ApplicationController
   end
 
   def search_forms_list
-    @forms_list = Fs::Form.where('unaccent(name) ILIKE unaccent(?) OR unaccent(identifier) ILIKE unaccent(?) OR unaccent(group_slug) ILIKE unaccent(?)', "%#{params[:search]}%", "%#{params[:search]}%", "%#{params[:search]}%")
+    @forms_list = Fs::Form.where('unaccent(name) ILIKE unaccent(?) OR unaccent(identifier) ILIKE unaccent(?) OR unaccent(slug) ILIKE unaccent(?)', "%#{sanitize_sql_like_search}%", "%#{sanitize_sql_like_search}%", "%#{sanitize_sql_like_search}%")
                           .first(10)
                           .pluck(:name, :id)
                           .map { |name, id| { id: id, name: name }}
@@ -30,5 +30,9 @@ class Fs::FormsController < ApplicationController
     @forms_list = Fs::Form.first(10)
                           .pluck(:name, :id)
                           .map { |name, id| { id: id, name: name }}
+  end
+
+  def sanitize_sql_like_search
+    ActiveRecord::Base.send(:sanitize_sql_like, params[:search])
   end
 end

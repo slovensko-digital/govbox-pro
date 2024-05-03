@@ -1,0 +1,23 @@
+class Fs::FetchFormsJob < ApplicationJob
+  def perform(api_base_url: ENV['FS_API_URL'], downloader: Utils::Downloader.new, download_related_documents_job: ::Fs::DownloadFormRelatedDocumentsJob)
+    fs_forms_list = JSON.parse(downloader.download("#{api_base_url}/forms"))
+
+    fs_forms_list.each do |fs_form_data|
+      fs_form = Fs::Form.find_or_initialize_by(
+        identifier: fs_form_data['identifier'],
+        slug: fs_form_data['slug']
+      ) do |form|
+        form.update(
+          name: fs_form_data['name'],
+          group_name: fs_form_data['group_name'],
+          subtype_name: fs_form_data['subtype_name'],
+          signature_required: fs_form_data['signature_required'],
+          ez_signature: fs_form_data['ez_signature'],
+          number_identifier: fs_form_data['number_identifier']
+        )
+      end
+
+      download_related_documents_job.perform_later(fs_form)
+    end
+  end
+end

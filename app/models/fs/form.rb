@@ -4,17 +4,15 @@
 #
 #  id                 :bigint           not null, primary key
 #  ez_signature       :boolean
-#  group_slug         :string
+#  group_name         :string
 #  identifier         :string           not null
 #  name               :string           not null
+#  number_identifier  :integer
 #  signature_required :boolean
+#  slug               :string
 #  subtype_name       :string
-#  xdc_identifier     :string
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
-#  group_number_id    :integer
-#  object_type_id     :integer
-#  submission_type_id :integer
 #
 class Fs::Form < ApplicationRecord
   has_many :related_documents, class_name: 'Fs::FormRelatedDocument', foreign_key: 'fs_form_id', dependent: :destroy

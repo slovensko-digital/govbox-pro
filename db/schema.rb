@@ -215,14 +215,12 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_30_104551) do
   create_table "fs_forms", force: :cascade do |t|
     t.string "identifier", null: false
     t.string "name", null: false
+    t.string "group_name"
     t.string "subtype_name"
-    t.integer "submission_type_id"
-    t.integer "object_type_id"
-    t.string "xdc_identifier"
     t.boolean "signature_required"
     t.boolean "ez_signature"
-    t.string "group_slug"
-    t.integer "group_number_id"
+    t.string "slug"
+    t.integer "number_identifier"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

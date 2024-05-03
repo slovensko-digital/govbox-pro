@@ -54,6 +54,12 @@ module GovboxPro
       description: "Regular job to archive message_threads"
     }
 
+    config.good_job.cron['fetch_fs_forms'] = {
+      cron: "0 */12 * * *",  # run every 12 hours
+      class: "Fs::FetchFormsJob",
+      description: "Regular job to fetch Fs::Forms"
+    }
+
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files

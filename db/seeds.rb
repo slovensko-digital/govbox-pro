@@ -40129,14 +40129,12 @@ end
 fs_form1 = Fs::Form.find_or_create_by!(
   identifier: "792_772",
   name: "Daňové priznanie k dani z príjmov FO (typ B) za obdobie 2023 (platné od 1.1.2024)",
+  group_name: "Správa daní/Daň z príjmov fyzickej osoby/Daňové priznanie k dani z príjmov FO (typ B) za obdobie 2023 (platné od 1.1.2024)",
   subtype_name: "Riadne",
-  submission_type_id: 792,
-  object_type_id: 772,
-  xdc_identifier: "https://ekr.financnasprava.sk/Formulare/xsd/dpfo_b2023.xsd",
   signature_required: true,
   ez_signature: true,
-  group_slug: "DPFOBv23",
-  group_number_id: 572
+  slug: "DPFOBv23",
+  number_identifier: 572
 )
 fs_form1_related_documents = [
   {
@@ -46312,14 +46310,12 @@ end
 fs_form2 = Fs::Form.find_or_create_by!(
   identifier: "792_773",
   name: "Test 1",
+  group_name: "Test 1",
   subtype_name: "Riadne",
-  submission_type_id: 792,
-  object_type_id: 772,
-  xdc_identifier: "https://ekr.financnasprava.sk/Formulare/xsd/dpfo_a2023.xsd",
   signature_required: true,
   ez_signature: true,
-  group_slug: "DPFOAv23",
-  group_number_id: 572
+  slug: "DPFOAv23",
+  number_identifier: 572
 )
 fs_form2_related_documents = [
   {
@@ -54678,12 +54674,10 @@ end
 Fs::Form.find_or_create_by!(
   identifier: "792_774",
   name: "Test 2",
+  group_name: "Test 2",
   subtype_name: "Riadne",
-  submission_type_id: 792,
-  object_type_id: 772,
-  xdc_identifier: "https://ekr.financnasprava.sk/Formulare/xsd/dpfo_c2023.xsd",
   signature_required: true,
   ez_signature: true,
-  group_slug: "DPFOCv23",
-  group_number_id: 572
+  slug: "DPFOCv23",
+  number_identifier: 572
 )
