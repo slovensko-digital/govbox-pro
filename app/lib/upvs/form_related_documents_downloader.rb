@@ -1,8 +1,6 @@
 module Upvs
   class FormRelatedDocumentsDownloader < ::Utils::Downloader
-
-    # SOURCE_URL = 'https://forms-slovensko-digital.s3.eu-central-1.amazonaws.com/upvs/'
-    SOURCE_URL = 'https://www.slovensko.sk/static/eForm/dataset/'
+    SOURCE_URL = "#{ENV['FORMS_STORAGE_API_URL']}/upvs"
     XSD_PATH = 'schema.xsd'
 
     attr_reader :upvs_form
@@ -34,7 +32,7 @@ module Upvs
     end
 
     def download_related_document(path:, type:)
-      upvs_form.related_documents.find_or_initialize_by(
+      @upvs_form.related_documents.find_or_initialize_by(
         document_type: type,
         language: 'sk'
       ).tap do |form_related_document|
