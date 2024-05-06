@@ -20,6 +20,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_08_100351) do
   # Note that some types may not work with other database engines. Be careful if changing database.
   create_enum "color", ["slate", "gray", "zinc", "neutral", "stone", "red", "orange", "amber", "yellow", "lime", "green", "emerald", "teal", "cyan", "sky", "blue", "indigo", "violet", "purple", "fuchsia", "pink", "rose"]
   create_enum "group_type", ["ALL", "USER", "CUSTOM", "ADMIN"]
+  create_enum "icon", ["key", "fingerprint", "pencil", "check"]
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -414,7 +415,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_08_100351) do
     t.datetime "delivered_at", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.datetime "last_message_delivered_at", null: false
+    t.datetime "last_message_delivered_at", precision: nil, null: false
     t.bigint "box_id", null: false
     t.index ["folder_id"], name: "index_message_threads_on_folder_id"
   end
@@ -527,7 +528,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_08_100351) do
     t.string "icon"
     t.index "tenant_id, type, lower((name)::text)", name: "index_tags_on_tenant_id_and_type_and_lowercase_name", unique: true
     t.index ["owner_id"], name: "index_tags_on_owner_id"
-    t.index ["tenant_id", "type"], name: "signings_tags", unique: true, where: "((type)::text = ANY (ARRAY[('SignatureRequestedTag'::character varying)::text, ('SignedTag'::character varying)::text]))"
+    t.index ["tenant_id", "type"], name: "signings_tags", unique: true, where: "((type)::text = ANY ((ARRAY['SignatureRequestedTag'::character varying, 'SignedTag'::character varying])::text[]))"
     t.index ["tenant_id"], name: "index_tags_on_tenant_id"
   end
 
@@ -567,6 +568,15 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_08_100351) do
     t.string "type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "user_hidden_items", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "user_hideable_type", null: false
+    t.bigint "user_hideable_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_user_hidden_items_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -636,5 +646,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_08_100351) do
   add_foreign_key "tags", "tenants"
   add_foreign_key "tags", "users", column: "owner_id"
   add_foreign_key "upvs_form_related_documents", "upvs_forms"
+  add_foreign_key "user_hidden_items", "users"
   add_foreign_key "users", "tenants"
 end
