@@ -76,6 +76,10 @@ module PdfVisualizationOperations
       ) if posp_id && posp_version
     end
 
+    def downloadable_as_pdf?
+      xml? && upvs_form&.xsl_fo&.present?
+    end
+
     def xml?
       if is_signed?
         nested_message_objects&.where(mimetype: Utils::XML_MIMETYPES)&.any?
