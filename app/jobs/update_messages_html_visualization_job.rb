@@ -1,9 +1,7 @@
 class UpdateMessagesHtmlVisualizationJob < ApplicationJob
-  def perform
-    Message.find_each do |message|
-      next if message.html_visualization.present?
-
-      message.update_html_visualization
+  def perform(update_message_job: UpdateMessageHtmlVisualizationJob)
+    Message.where(html_visualization: nil).find_each do |message|
+      update_message_job.perform_later(message)
     end
   end
 end
