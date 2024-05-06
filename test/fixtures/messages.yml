@@ -72,6 +72,12 @@ ssd_main_general_draft_two:
   replyable: false
   metadata:
     status: created
+    sktalk_class: EGOV_APPLICATION
+    posp_id: App.GeneralAgenda
+    posp_version: 1.9
+    message_type: App.GeneralAgenda
+    correlation_id: <%= SecureRandom.uuid %>
+    recipient_uri: ico://sk/12345678
   author: basic
 
 ssd_main_delivery_draft:

@@ -5,5 +5,9 @@ one:
   blob: MyText
 
 two:
-  message_object: ssd_main_general_two_from
+  message_object: ssd_main_general_two_form
   blob: MyText
+
+draft_two:
+  message_object: ssd_main_general_draft_two_form
+  blob: <GeneralAgenda xmlns="http://schemas.gov.sk/form/App.GeneralAgenda/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><subject>predmet</subject><text>text</text></GeneralAgenda>
