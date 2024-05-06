@@ -1,9 +1,10 @@
-class CreateMessageSubmissionRequests < ActiveRecord::Migration[7.1]
+class CreateStatsMessageSubmissionRequests < ActiveRecord::Migration[7.1]
   def change
-    create_table :message_submission_requests do |t|
+    create_table :stats_message_submission_requests do |t|
       t.belongs_to :box, null: false, foreign_key: true
       t.string :request_url
       t.integer :response_status
+      t.boolean :bulk
       t.timestamps
     end
   end

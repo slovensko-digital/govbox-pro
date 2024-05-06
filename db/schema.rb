@@ -376,15 +376,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_01_213603) do
     t.index ["related_message_id"], name: "index_message_relations_on_related_message_id"
   end
 
-  create_table "message_submission_requests", force: :cascade do |t|
-    t.bigint "box_id", null: false
-    t.string "request_url"
-    t.integer "response_status"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["box_id"], name: "index_message_submission_requests_on_box_id"
-  end
-
   create_table "message_templates", force: :cascade do |t|
     t.bigint "tenant_id"
     t.string "name", null: false
@@ -513,6 +504,16 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_01_213603) do
     t.index ["message_thread_id"], name: "index_searchable_message_threads_on_message_thread_id", unique: true
   end
 
+  create_table "stats_message_submission_requests", force: :cascade do |t|
+    t.bigint "box_id", null: false
+    t.string "request_url"
+    t.integer "response_status"
+    t.boolean "bulk"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["box_id"], name: "index_stats_message_submission_requests_on_box_id"
+  end
+
   create_table "tag_groups", force: :cascade do |t|
     t.bigint "group_id", null: false
     t.bigint "tag_id", null: false
@@ -622,7 +623,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_01_213603) do
   add_foreign_key "message_objects_tags", "tags"
   add_foreign_key "message_relations", "messages"
   add_foreign_key "message_relations", "messages", column: "related_message_id"
-  add_foreign_key "message_submission_requests", "boxes"
   add_foreign_key "message_templates", "tenants"
   add_foreign_key "message_thread_merge_identifiers", "message_threads"
   add_foreign_key "message_thread_notes", "message_threads"
@@ -641,6 +641,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_01_213603) do
   add_foreign_key "notifications", "messages", on_delete: :cascade
   add_foreign_key "notifications", "users", on_delete: :cascade
   add_foreign_key "searchable_message_threads", "message_threads", on_delete: :cascade
+  add_foreign_key "stats_message_submission_requests", "boxes"
   add_foreign_key "tag_groups", "groups"
   add_foreign_key "tag_groups", "tags"
   add_foreign_key "tags", "tenants"

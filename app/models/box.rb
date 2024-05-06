@@ -22,7 +22,7 @@ class Box < ApplicationRecord
 
   has_many :message_threads, extend: MessageThreadsExtensions, dependent: :destroy
   has_many :messages, through: :message_threads
-  has_many :message_submission_requests, dependent: :destroy
+  has_many :message_submission_requests, dependent: :destroy, class_name: '::Stats::MessageSubmissionRequest'
   has_many :message_drafts_imports, dependent: :destroy
   has_many :automation_conditions, as: :condition_object
 
