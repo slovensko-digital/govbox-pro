@@ -1,4 +1,4 @@
-class ReindexAndNotifyFilterSubscriptionsJob < ApplicationJob
+class UpdateMessagesHtmlVisualizationJob < ApplicationJob
   def perform
     Message.find_each do |message|
       next if message.html_visualization.present?
