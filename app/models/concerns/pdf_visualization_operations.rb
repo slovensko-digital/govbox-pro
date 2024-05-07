@@ -26,7 +26,7 @@ module PdfVisualizationOperations
 
         pdf_file = Tempfile.new("#{id}.pdf")
 
-        system "fop -xml #{xml_file.path} -c #{Rails.root + 'config/fop.xconf'} -xsl #{xsl_file.path} -pdf #{pdf_file.path}"
+        system "fop -xml #{xml_file.path} -c #{Rails.root + 'config/apache_fop/fop.xconf'} -xsl #{xsl_file.path} -pdf #{pdf_file.path}"
 
         pdf_file.rewind
         pdf_file.read
