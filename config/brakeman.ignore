@@ -15,7 +15,7 @@
           "type": "controller",
           "class": "Admin::TagsController",
           "method": "show",
-          "line": 12,
+          "line": 16,
           "file": "app/controllers/admin/tags_controller.rb",
           "rendered": {
             "name": "admin/tags/show",
@@ -31,6 +31,29 @@
       "confidence": "Weak",
       "cwe_id": [
         22
+      ],
+      "note": ""
+    },
+    {
+      "warning_type": "Command Injection",
+      "warning_code": 14,
+      "fingerprint": "0e46cba48716199f7ea04662919eab270a1f5b2d6ca30095fafd50bbad9dfb42",
+      "check_name": "Execute",
+      "message": "Possible command injection",
+      "file": "app/models/concerns/pdf_visualization_operations.rb",
+      "line": 29,
+      "link": "https://brakemanscanner.org/docs/warning_types/command_injection/",
+      "code": "system(\"fop -xml #{Tempfile.new(\"#{id}.xml\").path} -c #{(Rails.root + \"config/fop.xconf\")} -xsl #{Tempfile.new(\"#{id}.fo.xsl\").path} -pdf #{Tempfile.new(\"#{id}.pdf\").path}\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "PdfVisualizationOperations",
+        "method": "prepare_pdf_visualization"
+      },
+      "user_input": "Tempfile.new(\"#{id}.xml\").path",
+      "confidence": "Medium",
+      "cwe_id": [
+        77
       ],
       "note": ""
     },
@@ -103,6 +126,6 @@
       "note": ""
     }
   ],
-  "updated": "2023-09-22 12:38:37 +0200",
-  "brakeman_version": "6.0.1"
+  "updated": "2024-05-07 10:45:42 +0200",
+  "brakeman_version": "6.1.2"
 }
