@@ -565,8 +565,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_30_104551) do
     t.string "version", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "message_type", null: false
-    t.index ["identifier", "version", "message_type"], name: "index_forms_on_identifier_version_message_type", unique: true
+    t.index ["identifier", "version"], name: "index_forms_on_identifier_version", unique: true
   end
 
   create_table "upvs_service_with_form_allow_rules", force: :cascade do |t|

@@ -28,4 +28,8 @@ class NestedMessageObjectPolicy < ApplicationPolicy
   def download?
     true
   end
+
+  def download_pdf?
+    true
+  end
 end

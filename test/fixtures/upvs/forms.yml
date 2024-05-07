@@ -2,5 +2,4 @@
 
 general_agenda:
   identifier: App.GeneralAgenda
-  message_type: App.GeneralAgenda
   version: 1.9

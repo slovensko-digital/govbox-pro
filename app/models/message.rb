@@ -92,8 +92,7 @@ class Message < ApplicationRecord
   def upvs_form
     ::Upvs::Form.find_by(
       identifier: all_metadata['posp_id'],
-      version: all_metadata['posp_version'],
-      message_type: all_metadata['message_type']
+      version: all_metadata['posp_version']
     )
   end
 
@@ -113,15 +112,8 @@ class Message < ApplicationRecord
     return unless upvs_form&.xslt_html
     return unless form&.unsigned_content
 
-    document = Nokogiri::XML(form.unsigned_content) do |config|
-      config.noblanks
-    end
-    document = Nokogiri::XML(document.xpath('*:XMLDataContainer/*:XMLData/*').to_xml) do |config|
-      config.noblanks
-    end if document.xpath('*:XMLDataContainer/*:XMLData').any?
-
     template = Nokogiri::XSLT(upvs_form.xslt_html)
-    template.transform(document)
+    template.transform(form.xml_unsigned_content)
   end
 
   def all_metadata

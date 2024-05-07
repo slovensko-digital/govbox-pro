@@ -14,7 +14,7 @@ end
 api_connection = Govbox::ApiConnection.find_or_create_by!(sub: "SPL_Irvin_83300252_KK_24022023", api_token_private_key: File.read(Rails.root + "security/govbox_api_fix.pem"))
 tenant.boxes.find_or_create_by!(name: "Dev box", uri: "ico://sk/83300252", short_name: 'DEV', api_connection: api_connection)
 
-tenant.tags.find_or_create_by!(type: 'SimpleTag', name: 'NASES', owner_id: tenant.users.first.id)
+tenant.tags.find_or_create_by!(type: 'SimpleTag', name: 'TITANS freelancers', owner_id: tenant.users.first.id)
 
 if tenant.users.first
   rule = tenant.automation_rules.create!(name: 'NASES Tag Sender Rule', user: tenant.users.first, trigger_event: :message_created)
@@ -327,8 +327,7 @@ Upvs::MessageTemplate.find_or_create_by!(
 
 ga_form = Upvs::Form.find_or_create_by!(
   identifier: "App.GeneralAgenda",
-  version: "1.9",
-  message_type: "App.GeneralAgenda"
+  version: "1.9"
 )
 ga_related_docs = [
   {
@@ -711,6 +710,169 @@ ga_related_docs = [
 	</xsl:template>
 </xsl:stylesheet>
     XSLT
+  },
+  {
+    language: "sk",
+    document_type: "CLS_F_XSL_FO",
+    data: <<~XSLT
+<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<xsl:stylesheet xml:lang="en"
+	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+	xmlns:fo="http://www.w3.org/1999/XSL/Format"
+	xmlns:d = "http://docbook.org/ns/docbook"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xmlns:exsl="http://exslt.org/common"
+	xmlns:egonp="http://schemas.gov.sk/form/App.GeneralAgenda/1.9" exclude-result-prefixes="d" version="1.0">
+	<xsl:template match="/">
+		<fo:root
+			xmlns:fo="http://www.w3.org/1999/XSL/Format">
+			<fo:layout-master-set>
+				<fo:simple-page-master master-name="A4"      page-height="842px" page-width="595px"      margin-top="10px" margin-bottom="10px"      margin-left="10px" margin-right="10px">
+					<fo:region-body margin-bottom="20mm"/>
+					<fo:region-after region-name="footer" extent="10mm"/>
+				</fo:simple-page-master>
+				<fo:page-sequence-master master-name="document">
+					<fo:repeatable-page-master-alternatives>
+						<fo:conditional-page-master-reference master-reference="A4"/>
+					</fo:repeatable-page-master-alternatives>
+				</fo:page-sequence-master>
+			</fo:layout-master-set>
+			<fo:page-sequence master-reference="document" font-family="Arial">
+				<fo:static-content flow-name="footer">
+					<fo:block text-align="end">
+						<fo:page-number/>
+					</fo:block>
+				</fo:static-content>
+				<fo:flow flow-name="xsl-region-body">
+					<fo:block font-size='20pt' text-align='center'>Všeobecná agenda</fo:block>
+					<fo:block color='white'>|</fo:block>
+					<fo:block/>
+					<xsl:apply-templates/>
+				</fo:flow>
+			</fo:page-sequence>
+		</fo:root>
+	</xsl:template>
+	<xsl:template name="string-replace-all">
+		<xsl:param name="text"/>
+		<xsl:param name="replace"/>
+		<xsl:param name="by"/>
+		<xsl:choose>
+			<xsl:when test="contains($text, $replace)">
+				<xsl:value-of select="substring-before($text,$replace)"/>
+				<xsl:value-of select="$by"/>
+				<xsl:call-template name="string-replace-all">
+					<xsl:with-param name="text" select="substring-after($text,$replace)"/>
+					<xsl:with-param name="replace" select="$replace"/>
+					<xsl:with-param name="by" select="$by" />
+				</xsl:call-template>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$text"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template name="formatTimeTrimSeconds">
+		<xsl:param name="time" />
+		<xsl:variable name="timeString" select="string($time)" />
+		<xsl:if test="$timeString != ''">
+			<xsl:value-of select="substring($timeString, 1, 5)" />
+		</xsl:if>
+	</xsl:template>
+	<xsl:template name="formatTime">
+		<xsl:param name="time" />
+		<xsl:variable name="timeString" select="string($time)" />
+		<xsl:if test="$timeString != ''">
+			<xsl:value-of select="substring($timeString, 1, 8)" />
+		</xsl:if>
+	</xsl:template>
+	<xsl:template name="formatToSkDate">
+		<xsl:param name="date" />
+		<xsl:variable name="dateString" select="string($date)" />
+		<xsl:choose>
+			<xsl:when test="$dateString != '' and string-length($dateString)=10 and string(number(substring($dateString, 1, 4))) != 'NaN' ">
+				<xsl:value-of select="concat(substring($dateString, 9, 2), '.', substring($dateString, 6, 2), '.', substring($dateString, 1, 4))" />
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$dateString"></xsl:value-of>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template name="formatToSkDateTime">
+		<xsl:param name="dateTime" />
+		<xsl:variable name="dateTimeString" select="string($dateTime)" />
+		<xsl:choose>
+			<xsl:when test="$dateTimeString!= '' and string-length($dateTimeString)>18 and string(number(substring($dateTimeString, 1, 4))) != 'NaN' ">
+				<xsl:value-of select="concat(substring($dateTimeString, 9, 2), '.', substring($dateTimeString, 6, 2), '.', substring($dateTimeString, 1, 4),' ', substring($dateTimeString, 12, 2),':', substring($dateTimeString, 15, 2))" />
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$dateTimeString"></xsl:value-of>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template name="formatToSkDateTimeSecond">
+		<xsl:param name="dateTime" />
+		<xsl:variable name="dateTimeString" select="string($dateTime)" />
+		<xsl:choose>
+			<xsl:when test="$dateTimeString!= '' and string-length($dateTimeString)>18 and string(number(substring($dateTimeString, 1, 4))) != 'NaN' ">
+				<xsl:value-of select="concat(substring($dateTimeString, 9, 2), '.', substring($dateTimeString, 6, 2), '.', substring($dateTimeString, 1, 4),' ', substring($dateTimeString, 12, 2),':', substring($dateTimeString, 15, 2),':', substring($dateTimeString, 18, 2))" />
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$dateTimeString"></xsl:value-of>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template match="egonp:GeneralAgenda">
+		<fo:block start-indent='5mm'>
+			<fo:block background-color='black' color='white'>Všeobecná agenda</fo:block>
+			<fo:block color='white'>|</fo:block>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block >Predmet</fo:block>
+						</fo:table-cell>
+						<fo:table-cell border-width='0.6pt' border-style='solid' background-color='white' padding='1pt'>
+							<fo:block>
+								<xsl:call-template name="string-replace-all">
+									<xsl:with-param name="text" select="egonp:subject" />
+									<xsl:with-param name="replace" select="'%0A'" />
+									<xsl:with-param name="by" select="'&#13;&#10;'" />
+								</xsl:call-template>
+								<fo:inline color='white'>___</fo:inline>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+			<fo:block color='white'>|</fo:block>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block >Text</fo:block>
+						</fo:table-cell>
+						<fo:table-cell height='100px' border-width='0.6pt' border-style='solid' background-color='white' padding='1pt'>
+							<fo:block hyphenate='true' linefeed-treatment='preserve'>
+								<xsl:call-template name="string-replace-all">
+									<xsl:with-param name="text" select="egonp:text" />
+									<xsl:with-param name="replace" select="'%0A'" />
+									<xsl:with-param name="by" select="'&#13;&#10;'" />
+								</xsl:call-template>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+			<fo:block color='white'>|</fo:block>
+		</fo:block>
+	</xsl:template>
+</xsl:stylesheet>
+XSLT
   }
 ]
 ga_related_docs.each do |related_document|
@@ -724,8 +886,7 @@ end
 
 crac_tu_registration_form = Upvs::Form.find_or_create_by!(
   identifier: "42156424.IAM_Zapis_autentifikacneho_certifikatu_s_vytvorenim_TU.sk",
-  version: "1.5",
-  message_type: "42156424.IAM_Zapis_autentifikacneho_certifikatu_s_vytvorenim_TU.sk"
+  version: "1.5"
 )
 crac_tu_registration_form_related_docs = [
   {
@@ -1887,6 +2048,1039 @@ XSD
   </xsl:template>
 </xsl:stylesheet>
     XSLT
+  },
+  {
+    language: "sk",
+    document_type: "CLS_F_XSL_FO",
+    data: <<~XSLT
+<?xml version="1.0" encoding="utf-8"?>
+<xsl:stylesheet xml:lang="en"
+	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+	xmlns:fo="http://www.w3.org/1999/XSL/Format"
+	xmlns:d = "http://docbook.org/ns/docbook"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xmlns:exsl="http://exslt.org/common"
+	xmlns:egonp="http://schemas.gov.sk/form/42156424.IAM_Zapis_autentifikacneho_certifikatu_s_vytvorenim_TU.sk/1.5" exclude-result-prefixes="d" version="1.0">
+	<xsl:template match="/">
+		<fo:root
+			xmlns:fo="http://www.w3.org/1999/XSL/Format">
+			<fo:layout-master-set>
+				<fo:simple-page-master master-name="A4" page-height="842px" page-width="595px" margin-top="10px" margin-bottom="10px" margin-left="10px" margin-right="10px">
+					<fo:region-body margin-bottom="20mm"/>
+					<fo:region-after region-name="footer" extent="10mm"/>
+				</fo:simple-page-master>
+				<fo:page-sequence-master master-name="document">
+					<fo:repeatable-page-master-alternatives>
+						<fo:conditional-page-master-reference master-reference="A4"/>
+					</fo:repeatable-page-master-alternatives>
+				</fo:page-sequence-master>
+			</fo:layout-master-set>
+			<fo:page-sequence master-reference="document" font-family="Arial">
+				<fo:static-content flow-name="footer">
+					<fo:block text-align="end">
+						<fo:page-number/>
+					</fo:block>
+				</fo:static-content>
+				<fo:flow flow-name="xsl-region-body">
+					<fo:block start-indent='5mm' margin-top="20mm" font-size='12pt' font-weight="bold" text-align='center'>Žiadosť o zápis autentifikačného certifikátu do registra autentifikačných certifikátov</fo:block>
+					<fo:block>
+						<fo:leader />
+					</fo:block>
+					<fo:block/>
+					<xsl:apply-templates/>
+				</fo:flow>
+			</fo:page-sequence>
+		</fo:root>
+	</xsl:template>
+	<xsl:template name="string-replace-all">
+		<xsl:param name="text"/>
+		<xsl:param name="replace"/>
+		<xsl:param name="by"/>
+		<xsl:choose>
+			<xsl:when test="contains($text, $replace)">
+				<xsl:value-of select="substring-before($text,$replace)"/>
+				<xsl:value-of select="$by"/>
+				<xsl:call-template name="string-replace-all">
+					<xsl:with-param name="text" select="substring-after($text,$replace)"/>
+					<xsl:with-param name="replace" select="$replace"/>
+					<xsl:with-param name="by" select="$by" />
+				</xsl:call-template>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$text"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template name="formatTimeTrimSeconds">
+		<xsl:param name="time" />
+		<xsl:variable name="timeString" select="string($time)" />
+		<xsl:if test="$timeString != ''">
+			<xsl:value-of select="substring($timeString, 1, 5)" />
+		</xsl:if>
+	</xsl:template>
+	<xsl:template name="formatTime">
+		<xsl:param name="time" />
+		<xsl:variable name="timeString" select="string($time)" />
+		<xsl:if test="$timeString != ''">
+			<xsl:value-of select="substring($timeString, 1, 8)" />
+		</xsl:if>
+	</xsl:template>
+	<xsl:template name="formatToSkDate">
+		<xsl:param name="date" />
+		<xsl:variable name="dateString" select="string($date)" />
+		<xsl:choose>
+			<xsl:when test="$dateString != '' and string-length($dateString)=10 and string(number(substring($dateString, 1, 4))) != 'NaN' ">
+				<xsl:value-of select="concat(substring($dateString, 9, 2), '.', substring($dateString, 6, 2), '.', substring($dateString, 1, 4))" />
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$dateString"></xsl:value-of>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template name="formatToSkDateTime">
+		<xsl:param name="dateTime" />
+		<xsl:variable name="dateTimeString" select="string($dateTime)" />
+		<xsl:choose>
+			<xsl:when test="$dateTimeString!= '' and string-length($dateTimeString)>18 and string(number(substring($dateTimeString, 1, 4))) != 'NaN' ">
+				<xsl:value-of select="concat(substring($dateTimeString, 9, 2), '.', substring($dateTimeString, 6, 2), '.', substring($dateTimeString, 1, 4),' ', substring($dateTimeString, 12, 2),':', substring($dateTimeString, 15, 2))" />
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$dateTimeString"></xsl:value-of>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template name="formatToSkDateTimeSecond">
+		<xsl:param name="dateTime" />
+		<xsl:variable name="dateTimeString" select="string($dateTime)" />
+		<xsl:choose>
+			<xsl:when test="$dateTimeString!= '' and string-length($dateTimeString)>18 and string(number(substring($dateTimeString, 1, 4))) != 'NaN' ">
+				<xsl:value-of select="concat(substring($dateTimeString, 9, 2), '.', substring($dateTimeString, 6, 2), '.', substring($dateTimeString, 1, 4),' ', substring($dateTimeString, 12, 2),':', substring($dateTimeString, 15, 2),':', substring($dateTimeString, 18, 2))" />
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$dateTimeString"></xsl:value-of>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template name="intersperse-with-zero-spaces">
+		<xsl:param name="str"/>
+		<xsl:variable name="spacechars">&#x9;&#xA;" +
+"      &#x2000;&#x2001;&#x2002;&#x2003;&#x2004;&#x2005;" +
+"      &#x2006;&#x2007;&#x2008;&#x2009;&#x200A;&#x200B;</xsl:variable>
+		<xsl:if test="string-length($str) &gt; 0">
+			<xsl:variable name="c1" select="substring($str, 1, 1)"/>
+			<xsl:value-of select="$c1"/>
+			<xsl:if test="$c1 != '' and not(contains($spacechars, $c1))">
+				<xsl:text>&#x200B;</xsl:text>
+			</xsl:if>
+			<xsl:call-template name="intersperse-with-zero-spaces">
+				<xsl:with-param name="str" select="substring($str, 2)"/>
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration">
+		<fo:block start-indent='5mm'>
+			<xsl:apply-templates select="./egonp:CertificateOwner"/>
+			<xsl:apply-templates select="./egonp:ContactPerson"/>
+			<xsl:apply-templates select="./egonp:IntegrationContract"/>
+			<xsl:apply-templates select="./egonp:TechnicalAccount"/>
+			<xsl:apply-templates select="./egonp:AuthentificationCertificateData"/>
+		</fo:block>
+	</xsl:template>
+	<xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:IntegrationContract">
+		<fo:block start-indent='5mm'>
+			<fo:block>
+				<fo:leader />
+			</fo:block>
+			<fo:block font-weight="bold">Názov technického alebo programového prostriedku</fo:block>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell >
+							<fo:block >Názov technického alebo programového prostriedku</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block>
+								<xsl:call-template name="string-replace-all">
+									<xsl:with-param name="text" select="egonp:ProjectID" />
+									<xsl:with-param name="replace" select="'%0A'" />
+									<xsl:with-param name="by" select="'&#13;&#10;'" />
+								</xsl:call-template>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:AuthentificationCertificateData">
+		<fo:block start-indent='5mm'>
+			<fo:block>
+				<fo:leader />
+			</fo:block>
+			<fo:block font-weight="bold">Digitálny odtlačok autentifikačného certifikátu</fo:block>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block>Funkcia pre výpočet digitálneho odtlačku</fo:block>
+						</fo:table-cell>
+						<fo:table-cell >
+							<fo:block>SHA:256</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row  space-before='2mm'>
+						<fo:table-cell>
+							<fo:block >Digitálny odtlačok</fo:block>
+						</fo:table-cell>
+						<fo:table-cell height='100px' >
+							<fo:block hyphenate='true' linefeed-treatment='preserve'>
+								<xsl:if test="egonp:Thumbprint">
+									<xsl:call-template name="intersperse-with-zero-spaces">
+										<xsl:with-param name="str" select="egonp:Thumbprint" />
+									</xsl:call-template>
+								</xsl:if>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:CertificateOwner">
+		<fo:block start-indent='5mm'>
+			<fo:block font-weight="bold">Údaje o držiteľovi autentifikačného certifikátu</fo:block>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block >Typ subjektu</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block font-size='12pt'>
+								<xsl:choose>
+									<xsl:when test="egonp:IdentityType[text()='PO']">
+										<fo:inline>Právnická osoba / Fyzická osoba - podnikateľ</fo:inline>
+									</xsl:when>
+									<xsl:when test="egonp:IdentityType[text()='FO']">
+										<fo:inline>Fyzická osoba</fo:inline>
+									</xsl:when>
+									<xsl:when test="egonp:IdentityType[text()='OVM']">
+										<fo:inline>Orgán verejnej moci</fo:inline>
+									</xsl:when>
+									<xsl:otherwise></xsl:otherwise>
+								</xsl:choose>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+			<xsl:choose>
+				<xsl:when test="egonp:IdentityType[text()='PO'] or egonp:IdentityType[text()='OVM']">
+					<xsl:apply-templates select="./egonp:OwnerPoOvm"/>
+				</xsl:when>
+				<xsl:when test="egonp:IdentityType[text()='FO']">
+					<xsl:apply-templates select="./egonp:OwnerFO"/>
+				</xsl:when>
+				<xsl:otherwise></xsl:otherwise>
+			</xsl:choose>
+		</fo:block>
+	</xsl:template>
+	<xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:CertificateOwner/egonp:OwnerPoOvm">
+		<fo:block start-indent='5mm'>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block >IČO</fo:block>
+						</fo:table-cell>
+						<fo:table-cell >
+							<fo:block>
+								<xsl:call-template name="string-replace-all">
+									<xsl:with-param name="text" select="egonp:ICO" />
+									<xsl:with-param name="replace" select="'%0A'" />
+									<xsl:with-param name="by" select="'&#13;&#10;'" />
+								</xsl:call-template>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+			<xsl:if test='egonp:Suffix/text()'>
+				<fo:table space-before='2mm'>
+					<fo:table-column column-width='285px'/>
+					<fo:table-column/>
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<fo:block >Suffix</fo:block>
+							</fo:table-cell>
+							<fo:table-cell >
+								<fo:block>
+									<xsl:call-template name="string-replace-all">
+										<xsl:with-param name="text" select="egonp:Suffix" />
+										<xsl:with-param name="replace" select="'%0A'" />
+										<xsl:with-param name="by" select="'&#13;&#10;'" />
+									</xsl:call-template>
+								</fo:block>
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</xsl:if>
+		</fo:block>
+	</xsl:template>
+	<xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:CertificateOwner/egonp:OwnerFO">
+		<fo:block start-indent='5mm'>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block >Meno</fo:block>
+						</fo:table-cell>
+						<fo:table-cell >
+							<fo:block>
+								<xsl:call-template name="string-replace-all">
+									<xsl:with-param name="text" select="egonp:GivenName" />
+									<xsl:with-param name="replace" select="'%0A'" />
+									<xsl:with-param name="by" select="'&#13;&#10;'" />
+								</xsl:call-template>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block >Priezvisko</fo:block>
+						</fo:table-cell>
+						<fo:table-cell >
+							<fo:block>
+								<xsl:call-template name="string-replace-all">
+									<xsl:with-param name="text" select="egonp:FamilyName" />
+									<xsl:with-param name="replace" select="'%0A'" />
+									<xsl:with-param name="by" select="'&#13;&#10;'" />
+								</xsl:call-template>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block >Rodné číslo</fo:block>
+						</fo:table-cell>
+						<fo:table-cell >
+							<fo:block>
+								<xsl:call-template name="string-replace-all">
+									<xsl:with-param name="text" select="egonp:BirthNumber" />
+									<xsl:with-param name="replace" select="'%0A'" />
+									<xsl:with-param name="by" select="'&#13;&#10;'" />
+								</xsl:call-template>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:ContactPerson">
+		<fo:block start-indent='5mm'>
+			<fo:block>
+				<fo:leader />
+			</fo:block>
+			<fo:block font-weight="bold">Kontaktné údaje</fo:block>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block >Meno a priezvisko</fo:block>
+						</fo:table-cell>
+						<fo:table-cell >
+							<fo:block>
+								<xsl:call-template name="string-replace-all">
+									<xsl:with-param name="text" select="egonp:ContactName" />
+									<xsl:with-param name="replace" select="'%0A'" />
+									<xsl:with-param name="by" select="'&#13;&#10;'" />
+								</xsl:call-template>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block >E-mail</fo:block>
+						</fo:table-cell>
+						<fo:table-cell >
+							<fo:block>
+								<xsl:call-template name="string-replace-all">
+									<xsl:with-param name="text" select="egonp:Email" />
+									<xsl:with-param name="replace" select="'%0A'" />
+									<xsl:with-param name="by" select="'&#13;&#10;'" />
+								</xsl:call-template>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block >Telefón</fo:block>
+						</fo:table-cell>
+						<fo:table-cell >
+							<fo:block>
+								<xsl:call-template name="string-replace-all">
+									<xsl:with-param name="text" select="egonp:Phone" />
+									<xsl:with-param name="replace" select="'%0A'" />
+									<xsl:with-param name="by" select="'&#13;&#10;'" />
+								</xsl:call-template>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:TechnicalAccount">
+		<fo:block start-indent='5mm'>
+			<fo:block>
+				<fo:leader />
+			</fo:block>
+			<fo:block font-weight="bold">Oprávnenia</fo:block>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block >Prístup do elektronickej schránky</fo:block>
+						</fo:table-cell>
+						<fo:table-cell >
+							<fo:block>
+								<xsl:if test="egonp:EDeckAccessType[text()='1']">&#218;pln&#253;</xsl:if>
+								<xsl:if test="egonp:EDeckAccessType[text()='2']">Čiastočn&#253;</xsl:if>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block >Platnosť od</fo:block>
+						</fo:table-cell>
+						<fo:table-cell >
+							<fo:block>
+								<xsl:call-template name="formatToSkDate">
+									<xsl:with-param name="date" select="egonp:ValidFrom" />
+								</xsl:call-template>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block >Platnosť do</fo:block>
+						</fo:table-cell>
+						<fo:table-cell >
+							<fo:block>
+								<xsl:call-template name="formatToSkDate">
+									<xsl:with-param name="date" select="egonp:ValidTo" />
+								</xsl:call-template>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+			<xsl:apply-templates select="./egonp:Roles"/>
+		</fo:block>
+	</xsl:template>
+	<xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:TechnicalAccount/egonp:Roles">
+		<fo:block start-indent='5mm'>
+			<xsl:apply-templates select="./egonp:Role"/>
+		</fo:block>
+	</xsl:template>
+	<xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:TechnicalAccount/egonp:Roles/egonp:Role">
+		<fo:block start-indent='5mm'>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block >Oprávnenia</fo:block>
+						</fo:table-cell>
+						<fo:table-cell >
+							<fo:block>
+								<xsl:call-template name="string-replace-all">
+									<xsl:with-param name="text" select="egonp:RoleCode" />
+									<xsl:with-param name="replace" select="'%0A'" />
+									<xsl:with-param name="by" select="'&#13;&#10;'" />
+								</xsl:call-template>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+</xsl:stylesheet>"
+=> "
+<?xml version="1.0" encoding="utf-8"?>
+<xsl:stylesheet xml:lang="en"
+	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+	xmlns:fo="http://www.w3.org/1999/XSL/Format"
+	xmlns:d = "http://docbook.org/ns/docbook"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xmlns:exsl="http://exslt.org/common"
+	xmlns:egonp="http://schemas.gov.sk/form/42156424.IAM_Zapis_autentifikacneho_certifikatu_s_vytvorenim_TU.sk/1.5" exclude-result-prefixes="d" version="1.0">
+	<xsl:template match="/">
+		<fo:root
+			xmlns:fo="http://www.w3.org/1999/XSL/Format">
+			<fo:layout-master-set>
+				<fo:simple-page-master master-name="A4"          page-height="842px" page-width="595px"          margin-top="10px" margin-bottom="10px"          margin-left="10px" margin-right="10px">
+					<fo:region-body margin-bottom="20mm"/>
+					<fo:region-after region-name="footer" extent="10mm"/>
+				</fo:simple-page-master>
+				<fo:page-sequence-master master-name="document">
+					<fo:repeatable-page-master-alternatives>
+						<fo:conditional-page-master-reference master-reference="A4"/>
+					</fo:repeatable-page-master-alternatives>
+				</fo:page-sequence-master>
+			</fo:layout-master-set>
+			<fo:page-sequence master-reference="document" font-family="Arial">
+				<fo:static-content flow-name="footer">
+					<fo:block text-align="end">
+						<fo:page-number/>
+					</fo:block>
+				</fo:static-content>
+				<fo:flow flow-name="xsl-region-body">
+					<fo:block start-indent='5mm' margin-top="20mm" font-size='12pt' font-weight="bold" text-align='center'>Žiadosť o zápis autentifikačného certifikátu do registra autentifikačných certifikátov</fo:block>
+					<fo:block>
+						<fo:leader />
+					</fo:block>
+					<fo:block/>
+					<xsl:apply-templates/>
+				</fo:flow>
+			</fo:page-sequence>
+		</fo:root>
+	</xsl:template>
+	<xsl:template name="string-replace-all">
+		<xsl:param name="text"/>
+		<xsl:param name="replace"/>
+		<xsl:param name="by"/>
+		<xsl:choose>
+			<xsl:when test="contains($text, $replace)">
+				<xsl:value-of select="substring-before($text,$replace)"/>
+				<xsl:value-of select="$by"/>
+				<xsl:call-template name="string-replace-all">
+					<xsl:with-param name="text" select="substring-after($text,$replace)"/>
+					<xsl:with-param name="replace" select="$replace"/>
+					<xsl:with-param name="by" select="$by" />
+				</xsl:call-template>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$text"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template name="formatTimeTrimSeconds">
+		<xsl:param name="time" />
+		<xsl:variable name="timeString" select="string($time)" />
+		<xsl:if test="$timeString != ''">
+			<xsl:value-of select="substring($timeString, 1, 5)" />
+		</xsl:if>
+	</xsl:template>
+	<xsl:template name="formatTime">
+		<xsl:param name="time" />
+		<xsl:variable name="timeString" select="string($time)" />
+		<xsl:if test="$timeString != ''">
+			<xsl:value-of select="substring($timeString, 1, 8)" />
+		</xsl:if>
+	</xsl:template>
+	<xsl:template name="formatToSkDate">
+		<xsl:param name="date" />
+		<xsl:variable name="dateString" select="string($date)" />
+		<xsl:choose>
+			<xsl:when test="$dateString != '' and string-length($dateString)=10 and string(number(substring($dateString, 1, 4))) != 'NaN' ">
+				<xsl:value-of select="concat(substring($dateString, 9, 2), '.', substring($dateString, 6, 2), '.', substring($dateString, 1, 4))" />
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$dateString"></xsl:value-of>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template name="formatToSkDateTime">
+		<xsl:param name="dateTime" />
+		<xsl:variable name="dateTimeString" select="string($dateTime)" />
+		<xsl:choose>
+			<xsl:when test="$dateTimeString!= '' and string-length($dateTimeString)>18 and string(number(substring($dateTimeString, 1, 4))) != 'NaN' ">
+				<xsl:value-of select="concat(substring($dateTimeString, 9, 2), '.', substring($dateTimeString, 6, 2), '.', substring($dateTimeString, 1, 4),' ', substring($dateTimeString, 12, 2),':', substring($dateTimeString, 15, 2))" />
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$dateTimeString"></xsl:value-of>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template name="formatToSkDateTimeSecond">
+		<xsl:param name="dateTime" />
+		<xsl:variable name="dateTimeString" select="string($dateTime)" />
+		<xsl:choose>
+			<xsl:when test="$dateTimeString!= '' and string-length($dateTimeString)>18 and string(number(substring($dateTimeString, 1, 4))) != 'NaN' ">
+				<xsl:value-of select="concat(substring($dateTimeString, 9, 2), '.', substring($dateTimeString, 6, 2), '.', substring($dateTimeString, 1, 4),' ', substring($dateTimeString, 12, 2),':', substring($dateTimeString, 15, 2),':', substring($dateTimeString, 18, 2))" />
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$dateTimeString"></xsl:value-of>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template name="intersperse-with-zero-spaces">
+		<xsl:param name="str"/>
+		<xsl:variable name="spacechars">&#x9;&#xA;      &#x2000;&#x2001;&#x2002;&#x2003;&#x2004;&#x2005;      &#x2006;&#x2007;&#x2008;&#x2009;&#x200A;&#x200B;</xsl:variable>
+		<xsl:if test="string-length($str) &gt; 0">
+			<xsl:variable name="c1" select="substring($str, 1, 1)"/>
+			<xsl:value-of select="$c1"/>
+			<xsl:if test="$c1 != '' and not(contains($spacechars, $c1))">
+				<xsl:text>&#x200B;</xsl:text>
+			</xsl:if>
+			<xsl:call-template name="intersperse-with-zero-spaces">
+				<xsl:with-param name="str" select="substring($str, 2)"/>
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration">
+		<fo:block start-indent='5mm'>
+			<xsl:apply-templates select="./egonp:CertificateOwner"/>
+			<xsl:apply-templates select="./egonp:ContactPerson"/>
+			<xsl:apply-templates select="./egonp:IntegrationContract"/>
+			<xsl:apply-templates select="./egonp:TechnicalAccount"/>
+			<xsl:apply-templates select="./egonp:AuthentificationCertificateData"/>
+		</fo:block>
+	</xsl:template>
+	<xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:IntegrationContract">
+		<fo:block start-indent='5mm'>
+			<fo:block>
+				<fo:leader />
+			</fo:block>
+			<fo:block font-weight="bold">Názov technického alebo programového prostriedku</fo:block>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell >
+							<fo:block >Názov technického alebo programového prostriedku</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block>
+								<xsl:call-template name="string-replace-all">
+									<xsl:with-param name="text" select="egonp:ProjectID" />
+									<xsl:with-param name="replace" select="'%0A'" />
+									<xsl:with-param name="by" select="'&#13;&#10;'" />
+								</xsl:call-template>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:AuthentificationCertificateData">
+		<fo:block start-indent='5mm'>
+			<fo:block>
+				<fo:leader />
+			</fo:block>
+			<fo:block font-weight="bold">Digitálny odtlačok autentifikačného certifikátu</fo:block>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block>Funkcia pre výpočet digitálneho odtlačku</fo:block>
+						</fo:table-cell>
+						<fo:table-cell >
+							<fo:block>SHA:256</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row  space-before='2mm'>
+						<fo:table-cell>
+							<fo:block >Digitálny odtlačok</fo:block>
+						</fo:table-cell>
+						<fo:table-cell height='100px' >
+							<fo:block hyphenate='true' linefeed-treatment='preserve'>
+								<xsl:if test="egonp:Thumbprint">
+									<xsl:call-template name="intersperse-with-zero-spaces">
+										<xsl:with-param name="str" select="egonp:Thumbprint" />
+									</xsl:call-template>
+								</xsl:if>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:CertificateOwner">
+		<fo:block start-indent='5mm'>
+			<fo:block font-weight="bold">Údaje o držiteľovi autentifikačného certifikátu</fo:block>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block >Typ subjektu</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block font-size='12pt'>
+								<xsl:choose>
+									<xsl:when test="egonp:IdentityType[text()='PO']">
+										<fo:inline>Právnická osoba / Fyzická osoba - podnikateľ</fo:inline>
+									</xsl:when>
+									<xsl:when test="egonp:IdentityType[text()='FO']">
+										<fo:inline>Fyzická osoba</fo:inline>
+									</xsl:when>
+									<xsl:when test="egonp:IdentityType[text()='OVM']">
+										<fo:inline>Orgán verejnej moci</fo:inline>
+									</xsl:when>
+									<xsl:otherwise></xsl:otherwise>
+								</xsl:choose>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+			<xsl:choose>
+				<xsl:when test="egonp:IdentityType[text()='PO'] or egonp:IdentityType[text()='OVM']">
+					<xsl:apply-templates select="./egonp:OwnerPoOvm"/>
+				</xsl:when>
+				<xsl:when test="egonp:IdentityType[text()='FO']">
+					<xsl:apply-templates select="./egonp:OwnerFO"/>
+				</xsl:when>
+				<xsl:otherwise></xsl:otherwise>
+			</xsl:choose>
+		</fo:block>
+	</xsl:template>
+	<xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:CertificateOwner/egonp:OwnerPoOvm">
+		<fo:block start-indent='5mm'>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block >IČO</fo:block>
+						</fo:table-cell>
+						<fo:table-cell >
+							<fo:block>
+								<xsl:call-template name="string-replace-all">
+									<xsl:with-param name="text" select="egonp:ICO" />
+									<xsl:with-param name="replace" select="'%0A'" />
+									<xsl:with-param name="by" select="'&#13;&#10;'" />
+								</xsl:call-template>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+			<xsl:if test='egonp:Suffix/text()'>
+				<fo:table space-before='2mm'>
+					<fo:table-column column-width='285px'/>
+					<fo:table-column/>
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<fo:block >Suffix</fo:block>
+							</fo:table-cell>
+							<fo:table-cell >
+								<fo:block>
+									<xsl:call-template name="string-replace-all">
+										<xsl:with-param name="text" select="egonp:Suffix" />
+										<xsl:with-param name="replace" select="'%0A'" />
+										<xsl:with-param name="by" select="'&#13;&#10;'" />
+									</xsl:call-template>
+								</fo:block>
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</xsl:if>
+		</fo:block>
+	</xsl:template>
+	<xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:CertificateOwner/egonp:OwnerFO">
+		<fo:block start-indent='5mm'>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block >Meno</fo:block>
+						</fo:table-cell>
+						<fo:table-cell >
+							<fo:block>
+								<xsl:call-template name="string-replace-all">
+									<xsl:with-param name="text" select="egonp:GivenName" />
+									<xsl:with-param name="replace" select="'%0A'" />
+									<xsl:with-param name="by" select="'&#13;&#10;'" />
+								</xsl:call-template>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block >Priezvisko</fo:block>
+						</fo:table-cell>
+						<fo:table-cell >
+							<fo:block>
+								<xsl:call-template name="string-replace-all">
+									<xsl:with-param name="text" select="egonp:FamilyName" />
+									<xsl:with-param name="replace" select="'%0A'" />
+									<xsl:with-param name="by" select="'&#13;&#10;'" />
+								</xsl:call-template>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block >Rodné číslo</fo:block>
+						</fo:table-cell>
+						<fo:table-cell >
+							<fo:block>
+								<xsl:call-template name="string-replace-all">
+									<xsl:with-param name="text" select="egonp:BirthNumber" />
+									<xsl:with-param name="replace" select="'%0A'" />
+									<xsl:with-param name="by" select="'&#13;&#10;'" />
+								</xsl:call-template>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:ContactPerson">
+		<fo:block start-indent='5mm'>
+			<fo:block>
+				<fo:leader />
+			</fo:block>
+			<fo:block font-weight="bold">Kontaktné údaje</fo:block>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block >Meno a priezvisko</fo:block>
+						</fo:table-cell>
+						<fo:table-cell >
+							<fo:block>
+								<xsl:call-template name="string-replace-all">
+									<xsl:with-param name="text" select="egonp:ContactName" />
+									<xsl:with-param name="replace" select="'%0A'" />
+									<xsl:with-param name="by" select="'&#13;&#10;'" />
+								</xsl:call-template>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block >E-mail</fo:block>
+						</fo:table-cell>
+						<fo:table-cell >
+							<fo:block>
+								<xsl:call-template name="string-replace-all">
+									<xsl:with-param name="text" select="egonp:Email" />
+									<xsl:with-param name="replace" select="'%0A'" />
+									<xsl:with-param name="by" select="'&#13;&#10;'" />
+								</xsl:call-template>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block >Telefón</fo:block>
+						</fo:table-cell>
+						<fo:table-cell >
+							<fo:block>
+								<xsl:call-template name="string-replace-all">
+									<xsl:with-param name="text" select="egonp:Phone" />
+									<xsl:with-param name="replace" select="'%0A'" />
+									<xsl:with-param name="by" select="'&#13;&#10;'" />
+								</xsl:call-template>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:TechnicalAccount">
+		<fo:block start-indent='5mm'>
+			<fo:block>
+				<fo:leader />
+			</fo:block>
+			<fo:block font-weight="bold">Oprávnenia</fo:block>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block >Prístup do elektronickej schránky</fo:block>
+						</fo:table-cell>
+						<fo:table-cell >
+							<fo:block>
+								<xsl:if test="egonp:EDeckAccessType[text()='1']">&#218;pln&#253;</xsl:if>
+								<xsl:if test="egonp:EDeckAccessType[text()='2']">Čiastočn&#253;</xsl:if>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block >Platnosť od</fo:block>
+						</fo:table-cell>
+						<fo:table-cell >
+							<fo:block>
+								<xsl:call-template name="formatToSkDate">
+									<xsl:with-param name="date" select="egonp:ValidFrom" />
+								</xsl:call-template>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block >Platnosť do</fo:block>
+						</fo:table-cell>
+						<fo:table-cell >
+							<fo:block>
+								<xsl:call-template name="formatToSkDate">
+									<xsl:with-param name="date" select="egonp:ValidTo" />
+								</xsl:call-template>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+			<xsl:apply-templates select="./egonp:Roles"/>
+		</fo:block>
+	</xsl:template>
+	<xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:TechnicalAccount/egonp:Roles">
+		<fo:block start-indent='5mm'>
+			<xsl:apply-templates select="./egonp:Role"/>
+		</fo:block>
+	</xsl:template>
+	<xsl:template match="egonp:AuthentificationCertificateWithTechnicalAccountRegistration/egonp:TechnicalAccount/egonp:Roles/egonp:Role">
+		<fo:block start-indent='5mm'>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block >Oprávnenia</fo:block>
+						</fo:table-cell>
+						<fo:table-cell >
+							<fo:block>
+								<xsl:call-template name="string-replace-all">
+									<xsl:with-param name="text" select="egonp:RoleCode" />
+									<xsl:with-param name="replace" select="'%0A'" />
+									<xsl:with-param name="by" select="'&#13;&#10;'" />
+								</xsl:call-template>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+</xsl:stylesheet>
+    XSLT
   }
 ]
 crac_tu_registration_form_related_docs.each do |related_document|
@@ -1900,8 +3094,7 @@ end
 
 crac_cert_registration_form = Upvs::Form.find_or_create_by!(
   identifier: "42156424.IAM_Zmena_zapisu_autentifikacneho_certifikatu.sk",
-  version: "1.5",
-  message_type: "42156424.IAM_Zmena_zapisu_autentifikacneho_certifikatu.sk"
+  version: "1.5"
 )
 crac_cert_registration_form_related_docs = [
   {
@@ -2873,6 +4066,432 @@ crac_cert_registration_form_related_docs = [
 	</xsl:template>
 </xsl:stylesheet>
     XSLT
+  },
+  {
+    language: "sk",
+    document_type: "CLS_F_XSL_FO",
+    data: <<~XSLT
+<?xml version="1.0" encoding="utf-8"?>
+<xsl:stylesheet xml:lang="en"
+	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+	xmlns:fo="http://www.w3.org/1999/XSL/Format"
+	xmlns:d = "http://docbook.org/ns/docbook"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xmlns:exsl="http://exslt.org/common"
+	xmlns:egonp="http://schemas.gov.sk/form/42156424.IAM_Zmena_zapisu_autentifikacneho_certifikatu.sk/1.5" exclude-result-prefixes="d" version="1.0">
+	<xsl:template match="/">
+		<fo:root
+			xmlns:fo="http://www.w3.org/1999/XSL/Format">
+			<fo:layout-master-set>
+				<fo:simple-page-master master-name="A4"          page-height="842px" page-width="595px"          margin-top="10px" margin-bottom="10px"          margin-left="10px" margin-right="10px">
+					<fo:region-body margin-bottom="20mm"/>
+					<fo:region-after region-name="footer" extent="10mm"/>
+				</fo:simple-page-master>
+				<fo:page-sequence-master master-name="document">
+					<fo:repeatable-page-master-alternatives>
+						<fo:conditional-page-master-reference master-reference="A4"/>
+					</fo:repeatable-page-master-alternatives>
+				</fo:page-sequence-master>
+			</fo:layout-master-set>
+			<fo:page-sequence master-reference="document" font-family="Arial">
+				<fo:static-content flow-name="footer">
+					<fo:block text-align="end">
+						<fo:page-number/>
+					</fo:block>
+				</fo:static-content>
+				<fo:flow flow-name="xsl-region-body">
+					<fo:block start-indent='5mm' margin-top="20mm" font-size='12pt' font-weight="bold" text-align='center'>Žiadosť o zmenu zápisu autentifikačného certifikátu v registri autentifikačných certifikátov</fo:block>
+					<fo:block>
+						<fo:leader />
+					</fo:block>
+					<fo:block/>
+					<xsl:apply-templates/>
+				</fo:flow>
+			</fo:page-sequence>
+		</fo:root>
+	</xsl:template>
+	<xsl:template name="string-replace-all">
+		<xsl:param name="text"/>
+		<xsl:param name="replace"/>
+		<xsl:param name="by"/>
+		<xsl:choose>
+			<xsl:when test="contains($text, $replace)">
+				<xsl:value-of select="substring-before($text,$replace)"/>
+				<xsl:value-of select="$by"/>
+				<xsl:call-template name="string-replace-all">
+					<xsl:with-param name="text" select="substring-after($text,$replace)"/>
+					<xsl:with-param name="replace" select="$replace"/>
+					<xsl:with-param name="by" select="$by" />
+				</xsl:call-template>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$text"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template name="formatTimeTrimSeconds">
+		<xsl:param name="time" />
+		<xsl:variable name="timeString" select="string($time)" />
+		<xsl:if test="$timeString != ''">
+			<xsl:value-of select="substring($timeString, 1, 5)" />
+		</xsl:if>
+	</xsl:template>
+	<xsl:template name="formatTime">
+		<xsl:param name="time" />
+		<xsl:variable name="timeString" select="string($time)" />
+		<xsl:if test="$timeString != ''">
+			<xsl:value-of select="substring($timeString, 1, 8)" />
+		</xsl:if>
+	</xsl:template>
+	<xsl:template name="formatToSkDate">
+		<xsl:param name="date" />
+		<xsl:variable name="dateString" select="string($date)" />
+		<xsl:choose>
+			<xsl:when test="$dateString != '' and string-length($dateString)=10 and string(number(substring($dateString, 1, 4))) != 'NaN' ">
+				<xsl:value-of select="concat(substring($dateString, 9, 2), '.', substring($dateString, 6, 2), '.', substring($dateString, 1, 4))" />
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$dateString"></xsl:value-of>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template name="formatToSkDateTime">
+		<xsl:param name="dateTime" />
+		<xsl:variable name="dateTimeString" select="string($dateTime)" />
+		<xsl:choose>
+			<xsl:when test="$dateTimeString!= '' and string-length($dateTimeString)>18 and string(number(substring($dateTimeString, 1, 4))) != 'NaN' ">
+				<xsl:value-of select="concat(substring($dateTimeString, 9, 2), '.', substring($dateTimeString, 6, 2), '.', substring($dateTimeString, 1, 4),' ', substring($dateTimeString, 12, 2),':', substring($dateTimeString, 15, 2))" />
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$dateTimeString"></xsl:value-of>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template name="formatToSkDateTimeSecond">
+		<xsl:param name="dateTime" />
+		<xsl:variable name="dateTimeString" select="string($dateTime)" />
+		<xsl:choose>
+			<xsl:when test="$dateTimeString!= '' and string-length($dateTimeString)>18 and string(number(substring($dateTimeString, 1, 4))) != 'NaN' ">
+				<xsl:value-of select="concat(substring($dateTimeString, 9, 2), '.', substring($dateTimeString, 6, 2), '.', substring($dateTimeString, 1, 4),' ', substring($dateTimeString, 12, 2),':', substring($dateTimeString, 15, 2),':', substring($dateTimeString, 18, 2))" />
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$dateTimeString"></xsl:value-of>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template name="intersperse-with-zero-spaces">
+		<xsl:param name="str"/>
+		<xsl:variable name="spacechars">&#x9;&#xA;      &#x2000;&#x2001;&#x2002;&#x2003;&#x2004;&#x2005;      &#x2006;&#x2007;&#x2008;&#x2009;&#x200A;&#x200B;</xsl:variable>
+		<xsl:if test="string-length($str) &gt; 0">
+			<xsl:variable name="c1" select="substring($str, 1, 1)"/>
+			<xsl:value-of select="$c1"/>
+			<xsl:if test="$c1 != '' and not(contains($spacechars, $c1))">
+				<xsl:text>&#x200B;</xsl:text>
+			</xsl:if>
+			<xsl:call-template name="intersperse-with-zero-spaces">
+				<xsl:with-param name="str" select="substring($str, 2)"/>
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:AuthentificationCertificateRegistration">
+		<fo:block start-indent='5mm'>
+			<xsl:apply-templates select="./egonp:CertificateOwner"/>
+			<xsl:apply-templates select="./egonp:ContactPerson"/>
+			<xsl:apply-templates select="./egonp:AuthentificationCertificateData"/>
+			<xsl:apply-templates select="./egonp:TechnicalAccountData"/>
+		</fo:block>
+	</xsl:template>
+	<xsl:template match="egonp:AuthentificationCertificateRegistration/egonp:AuthentificationCertificateData">
+		<fo:block start-indent='5mm'>
+			<fo:block>
+				<fo:leader />
+			</fo:block>
+			<fo:block font-weight='bold'>Digitálny odtlačok autentifikačného certifikátu</fo:block>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block>Funkcia pre výpočet digitálneho odtlačku</fo:block>
+						</fo:table-cell>
+						<fo:table-cell >
+							<fo:block>SHA:256</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block >Digitálny odtlačok</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block hyphenate='true' linefeed-treatment='preserve'>
+								<xsl:if test="egonp:Thumbprint">
+									<xsl:call-template name="intersperse-with-zero-spaces">
+										<xsl:with-param name="str" select="egonp:Thumbprint" />
+									</xsl:call-template>
+								</xsl:if>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template match="egonp:AuthentificationCertificateRegistration/egonp:TechnicalAccountData">
+		<fo:block start-indent='5mm'>
+			<fo:block>
+				<fo:leader />
+			</fo:block>
+			<fo:block font-weight='bold'>Údaje technického účtu</fo:block>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block >Názov technického účtu</fo:block>
+						</fo:table-cell>
+						<fo:table-cell >
+							<fo:block>
+								<xsl:call-template name="string-replace-all">
+									<xsl:with-param name="text" select="egonp:TechnicalAccountName" />
+									<xsl:with-param name="replace" select="'%0A'" />
+									<xsl:with-param name="by" select="'&#13;&#10;'" />
+								</xsl:call-template>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template match="egonp:AuthentificationCertificateRegistration/egonp:CertificateOwner">
+		<fo:block start-indent='5mm'>
+			<fo:block font-weight='bold'>Údaje o držiteľovi autentifikačného certifikátu</fo:block>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block >Typ subjektu</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block font-size='12pt'>
+								<xsl:choose>
+									<xsl:when test="egonp:IdentityType[text()='PO']">
+										<fo:inline>Právnická osoba / Fyzická osoba - podnikateľ</fo:inline>
+									</xsl:when>
+									<xsl:when test="egonp:IdentityType[text()='FO']">
+										<fo:inline>Fyzická osoba</fo:inline>
+									</xsl:when>
+									<xsl:when test="egonp:IdentityType[text()='OVM']">
+										<fo:inline>Orgán verejnej moci</fo:inline>
+									</xsl:when>
+									<xsl:otherwise></xsl:otherwise>
+								</xsl:choose>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+			<xsl:choose>
+				<xsl:when test="egonp:IdentityType[text()='PO'] or egonp:IdentityType[text()='OVM']">
+					<xsl:apply-templates select="./egonp:OwnerPoOvm"/>
+				</xsl:when>
+				<xsl:when test="egonp:IdentityType[text()='FO']">
+					<xsl:apply-templates select="./egonp:OwnerFO"/>
+				</xsl:when>
+				<xsl:otherwise></xsl:otherwise>
+			</xsl:choose>
+		</fo:block>
+	</xsl:template>
+	<xsl:template match="egonp:AuthentificationCertificateRegistration/egonp:CertificateOwner/egonp:OwnerPoOvm">
+		<fo:block start-indent='5mm'>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block >IČO</fo:block>
+						</fo:table-cell>
+						<fo:table-cell >
+							<fo:block>
+								<xsl:call-template name="string-replace-all">
+									<xsl:with-param name="text" select="egonp:ICO" />
+									<xsl:with-param name="replace" select="'%0A'" />
+									<xsl:with-param name="by" select="'&#13;&#10;'" />
+								</xsl:call-template>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+			<xsl:if test='egonp:Suffix/text()'>
+				<fo:table space-before='2mm'>
+					<fo:table-column column-width='285px'/>
+					<fo:table-column/>
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<fo:block >Suffix</fo:block>
+							</fo:table-cell>
+							<fo:table-cell >
+								<fo:block>
+									<xsl:call-template name="string-replace-all">
+										<xsl:with-param name="text" select="egonp:Suffix" />
+										<xsl:with-param name="replace" select="'%0A'" />
+										<xsl:with-param name="by" select="'&#13;&#10;'" />
+									</xsl:call-template>
+								</fo:block>
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</xsl:if>
+		</fo:block>
+	</xsl:template>
+	<xsl:template match="egonp:AuthentificationCertificateRegistration/egonp:CertificateOwner/egonp:OwnerFO">
+		<fo:block start-indent='5mm'>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block >Meno</fo:block>
+						</fo:table-cell>
+						<fo:table-cell >
+							<fo:block>
+								<xsl:call-template name="string-replace-all">
+									<xsl:with-param name="text" select="egonp:GivenName" />
+									<xsl:with-param name="replace" select="'%0A'" />
+									<xsl:with-param name="by" select="'&#13;&#10;'" />
+								</xsl:call-template>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block >Priezvisko</fo:block>
+						</fo:table-cell>
+						<fo:table-cell >
+							<fo:block>
+								<xsl:call-template name="string-replace-all">
+									<xsl:with-param name="text" select="egonp:FamilyName" />
+									<xsl:with-param name="replace" select="'%0A'" />
+									<xsl:with-param name="by" select="'&#13;&#10;'" />
+								</xsl:call-template>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block >Rodné číslo</fo:block>
+						</fo:table-cell>
+						<fo:table-cell >
+							<fo:block>
+								<xsl:call-template name="string-replace-all">
+									<xsl:with-param name="text" select="egonp:BirthNumber" />
+									<xsl:with-param name="replace" select="'%0A'" />
+									<xsl:with-param name="by" select="'&#13;&#10;'" />
+								</xsl:call-template>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template match="egonp:AuthentificationCertificateRegistration/egonp:ContactPerson">
+		<fo:block start-indent='5mm'>
+			<fo:block>
+				<fo:leader />
+			</fo:block>
+			<fo:block font-weight='bold'>Kontaktné údaje</fo:block>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block >Meno a priezvisko</fo:block>
+						</fo:table-cell>
+						<fo:table-cell >
+							<fo:block>
+								<xsl:call-template name="string-replace-all">
+									<xsl:with-param name="text" select="egonp:ContactName" />
+									<xsl:with-param name="replace" select="'%0A'" />
+									<xsl:with-param name="by" select="'&#13;&#10;'" />
+								</xsl:call-template>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block >E-mail</fo:block>
+						</fo:table-cell>
+						<fo:table-cell >
+							<fo:block>
+								<xsl:call-template name="string-replace-all">
+									<xsl:with-param name="text" select="egonp:Email" />
+									<xsl:with-param name="replace" select="'%0A'" />
+									<xsl:with-param name="by" select="'&#13;&#10;'" />
+								</xsl:call-template>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block >Telefón</fo:block>
+						</fo:table-cell>
+						<fo:table-cell >
+							<fo:block>
+								<xsl:call-template name="string-replace-all">
+									<xsl:with-param name="text" select="egonp:Phone" />
+									<xsl:with-param name="replace" select="'%0A'" />
+									<xsl:with-param name="by" select="'&#13;&#10;'" />
+								</xsl:call-template>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+</xsl:stylesheet>
+    XSLT
   }
 ]
 crac_cert_registration_form_related_docs.each do |related_document|
@@ -2886,8 +4505,7 @@ end
 
 crac_tu_termination_form = Upvs::Form.find_or_create_by!(
   identifier: "42156424.IAM_Zrusenie_TU.sk",
-  version: "1.5",
-  message_type: "42156424.IAM_Zrusenie_TU.sk"
+  version: "1.5"
 )
 crac_tu_termination_form_related_docs = [
   {
@@ -3410,7 +5028,6 @@ crac_tu_termination_form_related_docs = [
     language: "sk",
     document_type: "CLS_F_XSLT_HTML",
     data: <<~XSLT
-  
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -3816,6 +5433,410 @@ crac_tu_termination_form_related_docs = [
 	</xsl:template>
 </xsl:stylesheet>
     XSLT
+  },
+  {
+    language: "sk",
+    document_type: "CLS_F_XSL_FO",
+    data: <<~XSLT
+<?xml version="1.0" encoding="utf-8"?>
+<xsl:stylesheet xml:lang="en"
+	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+	xmlns:fo="http://www.w3.org/1999/XSL/Format"
+	xmlns:d = "http://docbook.org/ns/docbook"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xmlns:exsl="http://exslt.org/common"
+	xmlns:egonp="http://schemas.gov.sk/form/42156424.IAM_Zrusenie_TU.sk/1.5" exclude-result-prefixes="d" version="1.0">
+	<xsl:template match="/">
+		<fo:root
+			xmlns:fo="http://www.w3.org/1999/XSL/Format">
+			<fo:layout-master-set>
+				<fo:simple-page-master master-name="A4"          page-height="842px" page-width="595px"          margin-top="10px" margin-bottom="10px"          margin-left="10px" margin-right="10px">
+					<fo:region-body margin-bottom="20mm"/>
+					<fo:region-after region-name="footer" extent="10mm"/>
+				</fo:simple-page-master>
+				<fo:page-sequence-master master-name="document">
+					<fo:repeatable-page-master-alternatives>
+						<fo:conditional-page-master-reference master-reference="A4"/>
+					</fo:repeatable-page-master-alternatives>
+				</fo:page-sequence-master>
+			</fo:layout-master-set>
+			<fo:page-sequence master-reference="document" font-family="Arial">
+				<fo:static-content flow-name="footer">
+					<fo:block text-align="end">
+						<fo:page-number/>
+					</fo:block>
+				</fo:static-content>
+				<fo:flow flow-name="xsl-region-body">
+					<fo:block start-indent='5mm' margin-top="20mm" font-size='12pt' font-weight='bold' text-align='center'>Žiadosť o zrušenie prístupových oprávnení technického účtu (zrušenie technického účtu)</fo:block>
+					<fo:block>
+						<fo:leader />
+					</fo:block>
+					<fo:block/>
+					<xsl:apply-templates/>
+				</fo:flow>
+			</fo:page-sequence>
+		</fo:root>
+	</xsl:template>
+	<xsl:template name="string-replace-all">
+		<xsl:param name="text"/>
+		<xsl:param name="replace"/>
+		<xsl:param name="by"/>
+		<xsl:choose>
+			<xsl:when test="contains($text, $replace)">
+				<xsl:value-of select="substring-before($text,$replace)"/>
+				<xsl:value-of select="$by"/>
+				<xsl:call-template name="string-replace-all">
+					<xsl:with-param name="text" select="substring-after($text,$replace)"/>
+					<xsl:with-param name="replace" select="$replace"/>
+					<xsl:with-param name="by" select="$by" />
+				</xsl:call-template>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$text"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template name="formatTimeTrimSeconds">
+		<xsl:param name="time" />
+		<xsl:variable name="timeString" select="string($time)" />
+		<xsl:if test="$timeString != ''">
+			<xsl:value-of select="substring($timeString, 1, 5)" />
+		</xsl:if>
+	</xsl:template>
+	<xsl:template name="formatTime">
+		<xsl:param name="time" />
+		<xsl:variable name="timeString" select="string($time)" />
+		<xsl:if test="$timeString != ''">
+			<xsl:value-of select="substring($timeString, 1, 8)" />
+		</xsl:if>
+	</xsl:template>
+	<xsl:template name="formatToSkDate">
+		<xsl:param name="date" />
+		<xsl:variable name="dateString" select="string($date)" />
+		<xsl:choose>
+			<xsl:when test="$dateString != '' and string-length($dateString)=10 and string(number(substring($dateString, 1, 4))) != 'NaN' ">
+				<xsl:value-of select="concat(substring($dateString, 9, 2), '.', substring($dateString, 6, 2), '.', substring($dateString, 1, 4))" />
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$dateString"></xsl:value-of>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template name="formatToSkDateTime">
+		<xsl:param name="dateTime" />
+		<xsl:variable name="dateTimeString" select="string($dateTime)" />
+		<xsl:choose>
+			<xsl:when test="$dateTimeString!= '' and string-length($dateTimeString)>18 and string(number(substring($dateTimeString, 1, 4))) != 'NaN' ">
+				<xsl:value-of select="concat(substring($dateTimeString, 9, 2), '.', substring($dateTimeString, 6, 2), '.', substring($dateTimeString, 1, 4),' ', substring($dateTimeString, 12, 2),':', substring($dateTimeString, 15, 2))" />
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$dateTimeString"></xsl:value-of>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template name="formatToSkDateTimeSecond">
+		<xsl:param name="dateTime" />
+		<xsl:variable name="dateTimeString" select="string($dateTime)" />
+		<xsl:choose>
+			<xsl:when test="$dateTimeString!= '' and string-length($dateTimeString)>18 and string(number(substring($dateTimeString, 1, 4))) != 'NaN' ">
+				<xsl:value-of select="concat(substring($dateTimeString, 9, 2), '.', substring($dateTimeString, 6, 2), '.', substring($dateTimeString, 1, 4),' ', substring($dateTimeString, 12, 2),':', substring($dateTimeString, 15, 2),':', substring($dateTimeString, 18, 2))" />
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$dateTimeString"></xsl:value-of>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template name="intersperse-with-zero-spaces">
+		<xsl:param name="str"/>
+		<xsl:variable name="spacechars">&#x9;&#xA;      &#x2000;&#x2001;&#x2002;&#x2003;&#x2004;&#x2005;      &#x2006;&#x2007;&#x2008;&#x2009;&#x200A;&#x200B;</xsl:variable>
+		<xsl:if test="string-length($str) &gt; 0">
+			<xsl:variable name="c1" select="substring($str, 1, 1)"/>
+			<xsl:value-of select="$c1"/>
+			<xsl:if test="$c1 != '' and not(contains($spacechars, $c1))">
+				<xsl:text>&#x200B;</xsl:text>
+			</xsl:if>
+			<xsl:call-template name="intersperse-with-zero-spaces">
+				<xsl:with-param name="str" select="substring($str, 2)"/>
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="egonp:TechnicalAccountTermination">
+		<fo:block start-indent='5mm'>
+			<xsl:apply-templates select="./egonp:CertificateOwner"/>
+			<xsl:apply-templates select="./egonp:ContactPerson"/>
+			<xsl:apply-templates select="./egonp:TechnicalAccountData"/>
+		</fo:block>
+	</xsl:template>
+	<xsl:template match="egonp:TechnicalAccountTermination/egonp:TechnicalAccountData">
+		<fo:block start-indent='5mm'>
+			<fo:block>
+				<fo:leader />
+			</fo:block>
+			<fo:block font-weight='bold'>Údaje technického účtu</fo:block>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block >Zrušenie technického účtu k dátumu a času</fo:block>
+						</fo:table-cell>
+						<fo:table-cell >
+							<fo:block>
+								<xsl:call-template name="formatToSkDateTime">
+									<xsl:with-param name="dateTime" select="egonp:DateFrom" />
+								</xsl:call-template>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block >Názov technického účtu</fo:block>
+						</fo:table-cell>
+						<fo:table-cell >
+							<fo:block>
+								<xsl:call-template name="string-replace-all">
+									<xsl:with-param name="text" select="egonp:TechnicalAccountName" />
+									<xsl:with-param name="replace" select="'%0A'" />
+									<xsl:with-param name="by" select="'&#13;&#10;'" />
+								</xsl:call-template>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template match="egonp:TechnicalAccountTermination/egonp:CertificateOwner">
+		<fo:block start-indent='5mm'>
+			<fo:block>
+				<fo:leader />
+			</fo:block>
+			<fo:block font-weight='bold'>Údaje o držiteľovi autentifikačného certifikátu</fo:block>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block >Typ subjektu</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block font-size='12pt'>
+								<xsl:choose>
+									<xsl:when test="egonp:IdentityType[text()='PO']">
+										<fo:inline>Právnická osoba / Fyzická osoba - podnikateľ</fo:inline>
+									</xsl:when>
+									<xsl:when test="egonp:IdentityType[text()='FO']">
+										<fo:inline>Fyzická osoba</fo:inline>
+									</xsl:when>
+									<xsl:when test="egonp:IdentityType[text()='OVM']">
+										<fo:inline>Orgán verejnej moci</fo:inline>
+									</xsl:when>
+									<xsl:otherwise></xsl:otherwise>
+								</xsl:choose>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+			<xsl:choose>
+				<xsl:when test="egonp:IdentityType[text()='PO'] or egonp:IdentityType[text()='OVM']">
+					<xsl:apply-templates select="./egonp:OwnerPoOvm"/>
+				</xsl:when>
+				<xsl:when test="egonp:IdentityType[text()='FO']">
+					<xsl:apply-templates select="./egonp:OwnerFO"/>
+				</xsl:when>
+				<xsl:otherwise></xsl:otherwise>
+			</xsl:choose>
+		</fo:block>
+	</xsl:template>
+	<xsl:template match="egonp:TechnicalAccountTermination/egonp:CertificateOwner/egonp:OwnerPoOvm">
+		<fo:block start-indent='5mm'>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block >IČO</fo:block>
+						</fo:table-cell>
+						<fo:table-cell >
+							<fo:block>
+								<xsl:call-template name="string-replace-all">
+									<xsl:with-param name="text" select="egonp:ICO" />
+									<xsl:with-param name="replace" select="'%0A'" />
+									<xsl:with-param name="by" select="'&#13;&#10;'" />
+								</xsl:call-template>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+			<xsl:if test='egonp:Suffix/text()'>
+				<fo:table space-before='2mm'>
+					<fo:table-column column-width='285px'/>
+					<fo:table-column/>
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<fo:block >Suffix</fo:block>
+							</fo:table-cell>
+							<fo:table-cell >
+								<fo:block>
+									<xsl:call-template name="string-replace-all">
+										<xsl:with-param name="text" select="egonp:Suffix" />
+										<xsl:with-param name="replace" select="'%0A'" />
+										<xsl:with-param name="by" select="'&#13;&#10;'" />
+									</xsl:call-template>
+								</fo:block>
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</xsl:if>
+		</fo:block>
+	</xsl:template>
+	<xsl:template match="egonp:TechnicalAccountTermination/egonp:CertificateOwner/egonp:OwnerFO">
+		<fo:block start-indent='5mm'>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block >Meno</fo:block>
+						</fo:table-cell>
+						<fo:table-cell >
+							<fo:block>
+								<xsl:call-template name="string-replace-all">
+									<xsl:with-param name="text" select="egonp:GivenName" />
+									<xsl:with-param name="replace" select="'%0A'" />
+									<xsl:with-param name="by" select="'&#13;&#10;'" />
+								</xsl:call-template>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block >Priezvisko</fo:block>
+						</fo:table-cell>
+						<fo:table-cell >
+							<fo:block>
+								<xsl:call-template name="string-replace-all">
+									<xsl:with-param name="text" select="egonp:FamilyName" />
+									<xsl:with-param name="replace" select="'%0A'" />
+									<xsl:with-param name="by" select="'&#13;&#10;'" />
+								</xsl:call-template>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block >Rodné číslo</fo:block>
+						</fo:table-cell>
+						<fo:table-cell >
+							<fo:block>
+								<xsl:call-template name="string-replace-all">
+									<xsl:with-param name="text" select="egonp:BirthNumber" />
+									<xsl:with-param name="replace" select="'%0A'" />
+									<xsl:with-param name="by" select="'&#13;&#10;'" />
+								</xsl:call-template>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template match="egonp:TechnicalAccountTermination/egonp:ContactPerson">
+		<fo:block start-indent='5mm'>
+			<fo:block>
+				<fo:leader />
+			</fo:block>
+			<fo:block font-weight='bold'>Kontaktné údaje</fo:block>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block >Meno a priezvisko</fo:block>
+						</fo:table-cell>
+						<fo:table-cell >
+							<fo:block>
+								<xsl:call-template name="string-replace-all">
+									<xsl:with-param name="text" select="egonp:ContactName" />
+									<xsl:with-param name="replace" select="'%0A'" />
+									<xsl:with-param name="by" select="'&#13;&#10;'" />
+								</xsl:call-template>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block >E-mail</fo:block>
+						</fo:table-cell>
+						<fo:table-cell >
+							<fo:block>
+								<xsl:call-template name="string-replace-all">
+									<xsl:with-param name="text" select="egonp:Email" />
+									<xsl:with-param name="replace" select="'%0A'" />
+									<xsl:with-param name="by" select="'&#13;&#10;'" />
+								</xsl:call-template>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+			<fo:table space-before='2mm'>
+				<fo:table-column column-width='285px'/>
+				<fo:table-column/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block >Telefón</fo:block>
+						</fo:table-cell>
+						<fo:table-cell >
+							<fo:block>
+								<xsl:call-template name="string-replace-all">
+									<xsl:with-param name="text" select="egonp:Phone" />
+									<xsl:with-param name="replace" select="'%0A'" />
+									<xsl:with-param name="by" select="'&#13;&#10;'" />
+								</xsl:call-template>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+</xsl:stylesheet>
+    XSLT
   }
 ]
 crac_tu_termination_form_related_docs.each do |related_document|
@@ -3829,8 +5850,7 @@ end
 
 exe_form = Upvs::Form.find_or_create_by!(
   identifier: "00166073.RESS_Exekucne_konanie_Navrh_na_vykonanie_exekucie.sk",
-  version: "1.24",
-  message_type: "00166073.RESS_Exekucne_konanie_Navrh_na_vykonanie_exekucie.sk"
+  version: "1.24"
 )
 exe_related_docs = [
   {
@@ -36694,6 +38714,19518 @@ font-size:13pt;
     </xsl:template>
 </xsl:stylesheet>
     XSLT
+  },
+  {
+    language: "sk",
+    document_type: "CLS_F_XSL_FO",
+    data: <<~XSLT
+<?xml version="1.0" encoding="utf-8"?>
+<xsl:stylesheet xml:lang="sk"
+	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+	xmlns:fo="http://www.w3.org/1999/XSL/Format"
+	xmlns:d = "http://docbook.org/ns/docbook"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xmlns:exsl="http://exslt.org/common"
+	xmlns:egonp="http://schemas.gov.sk/form/00166073.RESS_Exekucne_konanie_Navrh_na_vykonanie_exekucie.sk/1.24" exclude-result-prefixes="d" version="1.0">
+	<xsl:template match="/">
+		<fo:root
+			xmlns:fo="http://www.w3.org/1999/XSL/Format">
+			<fo:layout-master-set>
+				<fo:simple-page-master master-name="A4"      page-height="842px" page-width="595px"      margin-top="10px" margin-bottom="10px"      margin-left="10px" margin-right="10px">
+					<fo:region-body margin-bottom="20mm"/>
+					<fo:region-after region-name="footer" extent="10mm"/>
+				</fo:simple-page-master>
+				<fo:page-sequence-master master-name="document">
+					<fo:repeatable-page-master-alternatives>
+						<fo:conditional-page-master-reference master-reference="A4"/>
+					</fo:repeatable-page-master-alternatives>
+				</fo:page-sequence-master>
+			</fo:layout-master-set>
+			<fo:page-sequence master-reference="document" font-family="Arial, sans-serif" font-size="0.75em" id="document">
+				<fo:static-content flow-name="footer">
+					<fo:block text-align="end" >
+						<fo:page-number/>/
+						<fo:page-number-citation-last ref-id="document"/>
+					</fo:block>
+				</fo:static-content>
+				<fo:flow flow-name="xsl-region-body">
+					<xsl:apply-templates/>
+				</fo:flow>
+			</fo:page-sequence>
+		</fo:root>
+	</xsl:template>
+	<xsl:template name="string-replace-all">
+		<xsl:param name="text"/>
+		<xsl:param name="replace"/>
+		<xsl:param name="by"/>
+		<xsl:choose>
+			<xsl:when test="contains($text, $replace)">
+				<xsl:value-of select="substring-before($text,$replace)"/>
+				<xsl:value-of select="$by"/>
+				<xsl:call-template name="string-replace-all">
+					<xsl:with-param name="text" select="substring-after($text,$replace)"/>
+					<xsl:with-param name="replace" select="$replace"/>
+					<xsl:with-param name="by" select="$by" />
+				</xsl:call-template>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$text"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template match="egonp:ProposalForExecution">
+		<fo:table table-layout="fixed" width="100%">
+			<fo:table-column column-width="proportional-column-width(1)" />
+			<fo:table-body>
+				<fo:table-row>
+					<fo:table-cell>
+						<xsl:call-template name="Nazov_2" />
+						<xsl:call-template name="Sekcia_SudnyExekutor" />
+						<xsl:call-template name="Asekcia_ucastniciKonaniaOpravneny" />
+						<xsl:call-template name="SekciaBmaNema" />
+						<xsl:if test="/egonp:ProposalForExecution/egonp:CollectiveRepresentative">
+							<xsl:call-template name="Sekcia_MaZastupcu_1" />
+						</xsl:if>
+						<xsl:call-template name="Csekcia_ucastniciKonaniaPovinny" />
+						<xsl:call-template name="Dsekcia_ExekucnyTitul" />
+						<xsl:choose>
+							<xsl:when test="not(/egonp:ProposalForExecution/egonp:EnforcementOfClaims)">
+								<xsl:call-template name="Esekcia_VymahanyNarok" />
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:if test="/egonp:ProposalForExecution/egonp:EnforcementOfClaims">
+									<xsl:call-template name="Esekcia_VymahanyNarok" />
+								</xsl:if>
+							</xsl:otherwise>
+						</xsl:choose>
+						<xsl:choose>
+							<xsl:when test="not(/egonp:ProposalForExecution/egonp:CostsOfExecution)">
+								<xsl:call-template name="Fsekcia_TrovyExekucie" />
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:if test="/egonp:ProposalForExecution/egonp:CostsOfExecution">
+									<xsl:call-template name="Fsekcia_TrovyExekucie" />
+								</xsl:if>
+							</xsl:otherwise>
+						</xsl:choose>
+						<xsl:choose>
+							<xsl:when test="not(/egonp:ProposalForExecution/egonp:ExemptionFromCourtFees)">
+								<xsl:call-template name="Gsekcia_OslobodenieOdSudnehoPoplatku" />
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:if test="/egonp:ProposalForExecution/egonp:ExemptionFromCourtFees">
+									<xsl:call-template name="Gsekcia_OslobodenieOdSudnehoPoplatku" />
+								</xsl:if>
+							</xsl:otherwise>
+						</xsl:choose>
+						<xsl:choose>
+							<xsl:when test="not(/egonp:ProposalForExecution/egonp:StatementsAndProposal)">
+								<xsl:call-template name="Hsekcia_VyhlaseniaNavrh" />
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:if test="/egonp:ProposalForExecution/egonp:StatementsAndProposal">
+									<xsl:call-template name="Hsekcia_VyhlaseniaNavrh" />
+								</xsl:if>
+							</xsl:otherwise>
+						</xsl:choose>
+						<xsl:choose>
+							<xsl:when test="not(/egonp:ProposalForExecution/egonp:SPRAttachments)">
+								<xsl:call-template name="Isekcia_prilohySpr" />
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:if test="/egonp:ProposalForExecution/egonp:SPRAttachments">
+									<xsl:call-template name="Isekcia_prilohySpr" />
+								</xsl:if>
+							</xsl:otherwise>
+						</xsl:choose>
+						<xsl:call-template name="SekOznacenieMiesta" />
+						<xsl:if test="/egonp:ProposalForExecution/egonp:Attachments/egonp:Attachment">
+							<xsl:call-template name="Hsekcia_Prilohy" />
+						</xsl:if>
+					</fo:table-cell>
+				</fo:table-row>
+			</fo:table-body>
+		</fo:table>
+	</xsl:template>
+	<xsl:template name="Nazov_2">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="proportional-column-width(1)" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="565.50px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block margin-top="1mm" text-align="center" font-weight="bold" font-size="1.75em">
+														<fo:inline>Exekučné konanie - Návrh na vykonanie exekúcie</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="proportional-column-width(1)" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block margin-top="1mm" text-align="center" font-weight="bold" font-size="1.75em">
+														<fo:inline>Okresnému súdu Banská Bystrica</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_SudnyExekutor">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:block background-color="#F8EFFB" color="#4b0082" margin-left="3pt" margin-top="3pt" margin-right="3pt" padding-left="1pt" padding-top="2pt" keep-with-next.within-page="always" keep-together.within-column="1">
+					<fo:block>
+						<fo:inline>Spôsob podania návrhu</fo:inline>
+					</fo:block>
+				</fo:block>
+				<fo:block color="white" keep-with-next.within-page="always" keep-together.within-column="1">|</fo:block>
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="proportional-column-width(1)" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="206.70px" />
+										<fo:table-column column-width="proportional-column-width(1)" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Návrh sa podáva prostredníctvom súdneho exekútora</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell>
+													<fo:block>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="/egonp:ProposalForExecution/egonp:ProposalMethod/egonp:Executor[text()='1']">
+																					<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>&#193;no</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="/egonp:ProposalForExecution/egonp:ProposalMethod/egonp:Executor[text()='0']">
+																					<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>Nie</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<xsl:if test="/egonp:ProposalForExecution/egonp:ProposalMethod/egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:GivenName or /egonp:ProposalForExecution/egonp:ProposalMethod/egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:Affix[@type='qualification' and @position='prefix'] or /egonp:ProposalForExecution/egonp:ProposalMethod/egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:FamilyName or /egonp:ProposalForExecution/egonp:ProposalMethod/egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:Affix[@type='qualification' and @position='postfix'] or /egonp:ProposalForExecution/egonp:ProposalMethod/egonp:EvidenceNumber">
+									<xsl:call-template name="Sekcia_MenoPriezviskoExekutor" />
+								</xsl:if>
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_MenoPriezviskoExekutor">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="266.50px" />
+				<fo:table-column column-width="273.00px" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="128.70px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Evidenčné číslo</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="/egonp:ProposalForExecution/egonp:ProposalMethod/egonp:EvidenceNumber">
+														<xsl:call-template name="intersperse-with-zero-spaces">
+															<xsl:with-param name="str" select="/egonp:ProposalForExecution/egonp:ProposalMethod/egonp:EvidenceNumber" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+							<xsl:choose>
+								<xsl:when test="not(/egonp:ProposalForExecution/egonp:ProposalMethod/egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:GivenName)">
+									<xsl:call-template name="Sekcia_MenoExekutor" />
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:for-each select="/egonp:ProposalForExecution/egonp:ProposalMethod/egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:GivenName">
+										<xsl:call-template name="Sekcia_MenoExekutor" />
+									</xsl:for-each>
+								</xsl:otherwise>
+							</xsl:choose>
+							<xsl:choose>
+								<xsl:when test="not(/egonp:ProposalForExecution/egonp:ProposalMethod/egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:Affix[@type='qualification' and @position='prefix'])">
+									<xsl:call-template name="Sekcia_TitulPredExekutor" />
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:for-each select="/egonp:ProposalForExecution/egonp:ProposalMethod/egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:Affix[@type='qualification' and @position='prefix']">
+										<xsl:call-template name="Sekcia_TitulPredExekutor" />
+									</xsl:for-each>
+								</xsl:otherwise>
+							</xsl:choose>
+						</fo:table-cell>
+						<fo:table-cell>
+							<xsl:choose>
+								<xsl:when test="not(/egonp:ProposalForExecution/egonp:ProposalMethod/egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:FamilyName)">
+									<xsl:call-template name="Sekcia_PriezviskoExekutor" />
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:for-each select="/egonp:ProposalForExecution/egonp:ProposalMethod/egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:FamilyName">
+										<xsl:call-template name="Sekcia_PriezviskoExekutor" />
+									</xsl:for-each>
+								</xsl:otherwise>
+							</xsl:choose>
+							<xsl:choose>
+								<xsl:when test="not(/egonp:ProposalForExecution/egonp:ProposalMethod/egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:Affix[@type='qualification' and @position='postfix'])">
+									<xsl:call-template name="Sekcia_TitulZaExekutor" />
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:for-each select="/egonp:ProposalForExecution/egonp:ProposalMethod/egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:Affix[@type='qualification' and @position='postfix']">
+										<xsl:call-template name="Sekcia_TitulZaExekutor" />
+									</xsl:for-each>
+								</xsl:otherwise>
+							</xsl:choose>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_MenoExekutor">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Meno</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='GivenName'">
+														<xsl:if test=".">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="." />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_TitulPredExekutor">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Titul pred</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='Affix'">
+														<xsl:if test="./egonp:Codelist[egonp:CodelistCode='cis_0062']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Codelist[egonp:CodelistCode='cis_0062']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_PriezviskoExekutor">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Priezvisko</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='FamilyName'">
+														<xsl:if test=".">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="." />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_TitulZaExekutor">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Titul za</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='Affix'">
+														<xsl:if test="./egonp:Codelist[egonp:CodelistCode='cis_0063']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Codelist[egonp:CodelistCode='cis_0063']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Asekcia_ucastniciKonaniaOpravneny">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:block background-color="#F8EFFB" color="#4b0082" margin-left="3pt" margin-top="3pt" margin-right="3pt" padding-left="1pt" padding-top="2pt" keep-with-next.within-page="always" keep-together.within-column="1">
+					<fo:block>
+						<fo:inline>A) Účastníci konania a ich zákonní zástupcovia – oprávnení</fo:inline>
+					</fo:block>
+				</fo:block>
+				<fo:block color="white" keep-with-next.within-page="always" keep-together.within-column="1">|</fo:block>
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="proportional-column-width(1)" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<xsl:choose>
+									<xsl:when test="not(/egonp:ProposalForExecution/egonp:LegitimatePerson)">
+										<xsl:call-template name="UcastnikKonaniaOpravneny" />
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:for-each select="/egonp:ProposalForExecution/egonp:LegitimatePerson">
+											<xsl:call-template name="UcastnikKonaniaOpravneny" />
+										</xsl:for-each>
+									</xsl:otherwise>
+								</xsl:choose>
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="UcastnikKonaniaOpravneny">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:block background-color="#F8EFFB" color="#4b0082" margin-left="3pt" margin-top="3pt" margin-right="3pt" padding-left="1pt" padding-top="2pt" keep-with-next.within-page="always" keep-together.within-column="1">
+					<fo:block>
+						<fo:inline>Oprávnený č.</fo:inline>
+					</fo:block>
+				</fo:block>
+				<fo:block color="white" keep-with-next.within-page="always" keep-together.within-column="1">|</fo:block>
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="proportional-column-width(1)" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<xsl:call-template name="CisloSekcie" />
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="135.20px" />
+										<fo:table-column column-width="proportional-column-width(1)" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Typ subjektu</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell>
+													<fo:block>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="./egonp:SubjectType/egonp:Codelist[egonp:CodelistCode='57']/egonp:CodelistItem/egonp:ItemCode[text()='Fyzick&#225; osoba']">
+																					<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>Fyzick&#225; osoba</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="./egonp:SubjectType/egonp:Codelist[egonp:CodelistCode='57']/egonp:CodelistItem/egonp:ItemCode[text()='Pr&#225;vnick&#225; osoba']">
+																					<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>Pr&#225;vnick&#225; osoba</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="./egonp:SubjectType/egonp:Codelist[egonp:CodelistCode='57']/egonp:CodelistItem/egonp:ItemCode[text()='Št&#225;t']">
+																					<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>Št&#225;t</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<xsl:if test="./egonp:PhysicalPersonData">
+									<xsl:call-template name="Sekcia_UdajeOsobyUcastnikKonaniaOpravnenyFO" />
+								</xsl:if>
+								<xsl:if test="./egonp:CorporateBodyData">
+									<xsl:call-template name="Sekcia_UdajeOsobyUcastnikKonaniaOpravnenyPO" />
+								</xsl:if>
+								<xsl:if test="./egonp:State">
+									<xsl:call-template name="Sekcia_UdajeOsobyStatUcastnikKonaniaOpravneny" />
+								</xsl:if>
+								<xsl:call-template name="FudajeObankovomUcteUcastnikKonaniaOpravneny" />
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="23.40px" />
+										<fo:table-column />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block>
+														<xsl:choose>
+															<xsl:when test="./egonp:HasLegalRepresentative[text()='1' or text()='true']">
+																<fo:inline font-family="Wingdings">&#xF078;</fo:inline>
+															</xsl:when>
+															<xsl:otherwise>
+																<fo:inline font-family="Wingdings">&#xF0A8;</fo:inline>
+															</xsl:otherwise>
+														</xsl:choose>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Oprávnený má zákonného zástupcu (správcu)</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<xsl:for-each select="./egonp:LegalRepresentative">
+									<xsl:call-template name="Sekcia_ZakZas" />
+								</xsl:for-each>
+								<fo:block />
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="CisloSekcie">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="55.25px" />
+				<fo:table-column column-width="260.00px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline color="white">___</fo:inline>
+													<fo:inline>&#x00A0;</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="13.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px" font-weight="bold" font-size="1.0em">
+												<fo:block>
+													<xsl:if test="local-name()='LegitimatePerson'">
+														<xsl:if test="./egonp:SectionNumber">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:SectionNumber" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_UdajeOsobyUcastnikKonaniaOpravnenyFO">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="proportional-column-width(1)" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="565.50px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block margin-top="1mm">
+														<fo:inline>Ak sa jedná o fyzickú osobu – podnikateľa, informácie o osobe je možné načítať na základe IČO z Registra právnických osôb po stlačení tlačidla "Načítať údaje z RPO".</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<xsl:call-template name="SekciaSpisovaZnacka" />
+								<xsl:call-template name="SekciaIdentifikatory" />
+								<xsl:call-template name="MenoPriezviskoNavrhovatelFO_1" />
+								<xsl:call-template name="SekciaIcoOm" />
+								<xsl:call-template name="Sekcia_Adresa1NavrhovatelaFO_1" />
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="23.40px" />
+										<fo:table-column />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block>
+														<xsl:choose>
+															<xsl:when test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddressCheckBox[text()='1' or text()='true']">
+																<fo:inline font-family="Wingdings">&#xF078;</fo:inline>
+															</xsl:when>
+															<xsl:otherwise>
+																<fo:inline font-family="Wingdings">&#xF0A8;</fo:inline>
+															</xsl:otherwise>
+														</xsl:choose>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Adresa, na ktorú sa má doručovať prednostne</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:Country/egonp:Codelist[egonp:CodelistCode='69']/egonp:CodelistItem/egonp:ItemCode or ./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:Country/egonp:Codelist[egonp:CodelistCode='69']/egonp:CodelistItem/egonp:ItemName[@Language='sk'] or ./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:StreetName or ./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:DeliveryAddress/egonp:PostalCode or ./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk'] or ./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:NonCodelistData or ./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemCode or ./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:PropertyRegistrationNumber or ./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:BuildingNumber">
+									<xsl:call-template name="Sekcia_Adresa2ZalobcaFO" />
+								</xsl:if>
+								<xsl:call-template name="Sekcie_KontaktneNavrhovatelFO_1" />
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SekciaSpisovaZnacka">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="128.70px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Vaša značka</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegitimatePerson'">
+														<xsl:if test="./egonp:PhysicalPersonData/egonp:YourMark">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:YourMark" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SekciaIdentifikatory">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="111.80px" />
+				<fo:table-column column-width="104.00px" />
+				<fo:table-column column-width="172.25px" />
+				<fo:table-column column-width="165.75px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="21.45px" />
+									<fo:table-column column-width="65.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve" margin-left="0px">
+													<fo:inline>IČO</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegitimatePerson'">
+														<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:ID[egonp:IdentifierType/egonp:Codelist[egonp:CodelistCode='4001']/egonp:CodelistItem[egonp:ItemCode='7']]/egonp:IdentifierValue">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:ID[egonp:IdentifierType/egonp:Codelist[egonp:CodelistCode='4001']/egonp:CodelistItem[egonp:ItemCode='7']]/egonp:IdentifierValue" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block />
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="76.70px" />
+									<fo:table-column column-width="65.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve" margin-left="0px">
+													<fo:inline>Dátum narodenia</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegitimatePerson'">
+														<xsl:call-template name="formatToSkDate">
+															<xsl:with-param name="date" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:Birth/egonp:DateOfBirth" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="63.70px" />
+									<fo:table-column column-width="65.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve" margin-left="0px">
+													<fo:inline>Rodné číslo</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegitimatePerson'">
+														<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:ID[egonp:IdentifierType/egonp:Codelist[egonp:CodelistCode='4001']/egonp:CodelistItem[egonp:ItemCode='9']]/egonp:IdentifierValue">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:ID[egonp:IdentifierType/egonp:Codelist[egonp:CodelistCode='4001']/egonp:CodelistItem[egonp:ItemCode='9']]/egonp:IdentifierValue" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="MenoPriezviskoNavrhovatelFO_1">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="279.50px" />
+				<fo:table-column column-width="273.00px" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<xsl:choose>
+								<xsl:when test="not(./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:GivenName)">
+									<xsl:call-template name="Sekcia_MenoUcastnikKonaniaOpravneny" />
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:for-each select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:GivenName">
+										<xsl:call-template name="Sekcia_MenoUcastnikKonaniaOpravneny" />
+									</xsl:for-each>
+								</xsl:otherwise>
+							</xsl:choose>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="128.70px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Rodné priezvisko</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegitimatePerson'">
+														<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:GivenFamilyName">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:GivenFamilyName" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+							<xsl:choose>
+								<xsl:when test="not(./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:Affix[@type='qualification' and @position='prefix'])">
+									<xsl:call-template name="Sekcia_TitulPredUcastnikKonaniaOpravneny" />
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:for-each select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:Affix[@type='qualification' and @position='prefix']">
+										<xsl:call-template name="Sekcia_TitulPredUcastnikKonaniaOpravneny" />
+									</xsl:for-each>
+								</xsl:otherwise>
+							</xsl:choose>
+						</fo:table-cell>
+						<fo:table-cell>
+							<xsl:choose>
+								<xsl:when test="not(./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:FamilyName)">
+									<xsl:call-template name="Sekcia_PriezviskoUcastnikKonaniaOpravneny" />
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:for-each select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:FamilyName">
+										<xsl:call-template name="Sekcia_PriezviskoUcastnikKonaniaOpravneny" />
+									</xsl:for-each>
+								</xsl:otherwise>
+							</xsl:choose>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline color="white">___</fo:inline>
+													<fo:inline>&#x00A0;</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+							<xsl:choose>
+								<xsl:when test="not(./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:Affix[@type='qualification' and @position='postfix'])">
+									<xsl:call-template name="Sekcia_TitulZaUcastnikKonaniaOpravneny" />
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:for-each select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:Affix[@type='qualification' and @position='postfix']">
+										<xsl:call-template name="Sekcia_TitulZaUcastnikKonaniaOpravneny" />
+									</xsl:for-each>
+								</xsl:otherwise>
+							</xsl:choose>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_MenoUcastnikKonaniaOpravneny">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Meno</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='GivenName'">
+														<xsl:if test=".">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="." />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_TitulPredUcastnikKonaniaOpravneny">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Titul pred</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='Affix'">
+														<xsl:if test="./egonp:Codelist[egonp:CodelistCode='cis_0062']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Codelist[egonp:CodelistCode='cis_0062']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_PriezviskoUcastnikKonaniaOpravneny">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Priezvisko</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='FamilyName'">
+														<xsl:if test=".">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="." />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_TitulZaUcastnikKonaniaOpravneny">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Titul za</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='Affix'">
+														<xsl:if test="./egonp:Codelist[egonp:CodelistCode='cis_0063']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Codelist[egonp:CodelistCode='cis_0063']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SekciaIcoOm">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="383.50px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Obchodné meno</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegitimatePerson'">
+														<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:CorporateBody/egonp:CorporateBodyFullName">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:CorporateBody/egonp:CorporateBodyFullName" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_Adresa1NavrhovatelaFO_1">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:block background-color="#F8EFFB" color="#4b0082" margin-left="3pt" margin-top="3pt" margin-right="3pt" padding-left="1pt" padding-top="2pt" keep-with-next.within-page="always" keep-together.within-column="1">
+					<fo:block>
+						<fo:inline>Trvalý pobyt / Pobyt / Miesto podnikania</fo:inline>
+					</fo:block>
+				</fo:block>
+				<fo:block color="white" keep-with-next.within-page="always" keep-together.within-column="1">|</fo:block>
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="273.00px" />
+					<fo:table-column column-width="282.75px" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="127.40px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Štát</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='LegitimatePerson'">
+															<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Country/egonp:Codelist[egonp:CodelistCode='cis_0086']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Country/egonp:Codelist[egonp:CodelistCode='cis_0086']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="127.40px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Ulica</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='LegitimatePerson'">
+															<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:StreetName">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:StreetName" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="127.40px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>PSČ</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='LegitimatePerson'">
+															<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:DeliveryAddress/egonp:PostalCode">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:DeliveryAddress/egonp:PostalCode" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+							</fo:table-cell>
+							<fo:table-cell>
+								<fo:block>
+									<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']/text()">
+										<fo:block margin-top="3mm">
+											<fo:table table-layout="fixed" width="100%">
+												<fo:table-column column-width="130.00px" />
+												<fo:table-column column-width="91.00px" />
+												<fo:table-body>
+													<fo:table-row>
+														<fo:table-cell>
+															<fo:block linefeed-treatment="preserve">
+																<fo:inline>Obec</fo:inline>
+															</fo:block>
+														</fo:table-cell>
+														<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+															<fo:block>
+																<xsl:if test="local-name()='LegitimatePerson'">
+																	<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+																		<xsl:call-template name="intersperse-with-zero-spaces">
+																			<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+																		</xsl:call-template>
+																	</xsl:if>
+																</xsl:if>
+															</fo:block>
+														</fo:table-cell>
+													</fo:table-row>
+												</fo:table-body>
+											</fo:table>
+										</fo:block>
+									</xsl:if>
+								</fo:block>
+								<fo:block>
+									<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:NonCodelistData/text() or (not(./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:NonCodelistData/text())and not(./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']/text())and not(./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemCode/text()))">
+										<fo:block margin-top="3mm">
+											<fo:table table-layout="fixed" width="100%">
+												<fo:table-column column-width="130.00px" />
+												<fo:table-column column-width="104.00px" />
+												<fo:table-body>
+													<fo:table-row>
+														<fo:table-cell>
+															<fo:block linefeed-treatment="preserve">
+																<fo:inline>Obec</fo:inline>
+															</fo:block>
+														</fo:table-cell>
+														<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+															<fo:block>
+																<xsl:if test="local-name()='LegitimatePerson'">
+																	<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:NonCodelistData">
+																		<xsl:call-template name="intersperse-with-zero-spaces">
+																			<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:NonCodelistData" />
+																		</xsl:call-template>
+																	</xsl:if>
+																</xsl:if>
+															</fo:block>
+														</fo:table-cell>
+													</fo:table-row>
+												</fo:table-body>
+											</fo:table>
+										</fo:block>
+									</xsl:if>
+								</fo:block>
+								<xsl:call-template name="Sekcia_Supisne1NavrhovatelFO_1" />
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_Supisne1NavrhovatelFO_1">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="133.25px" />
+				<fo:table-column column-width="58.50px" />
+				<fo:table-column column-width="65.00px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>Súpisné / Orientačné číslo</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="39.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegitimatePerson'">
+														<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:PropertyRegistrationNumber">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:PropertyRegistrationNumber" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="45.50px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegitimatePerson'">
+														<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:BuildingNumber">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:BuildingNumber" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_Adresa2ZalobcaFO">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:block background-color="#F8EFFB" color="#4b0082" margin-left="3pt" margin-top="3pt" margin-right="3pt" padding-left="1pt" padding-top="2pt" keep-with-next.within-page="always" keep-together.within-column="1">
+					<fo:block>
+						<fo:inline>Adresa, na ktorú sa má doručovať prednostne</fo:inline>
+					</fo:block>
+				</fo:block>
+				<fo:block color="white" keep-with-next.within-page="always" keep-together.within-column="1">|</fo:block>
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="273.00px" />
+					<fo:table-column column-width="282.75px" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="127.40px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Štát</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='LegitimatePerson'">
+															<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:Country/egonp:Codelist[egonp:CodelistCode='69']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:Country/egonp:Codelist[egonp:CodelistCode='69']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="127.40px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Ulica</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='LegitimatePerson'">
+															<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:StreetName">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:StreetName" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="127.40px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>PSČ</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='LegitimatePerson'">
+															<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:DeliveryAddress/egonp:PostalCode">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:DeliveryAddress/egonp:PostalCode" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+							</fo:table-cell>
+							<fo:table-cell>
+								<fo:block>
+									<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']/text()">
+										<fo:block margin-top="3mm">
+											<fo:table table-layout="fixed" width="100%">
+												<fo:table-column column-width="130.00px" />
+												<fo:table-column column-width="91.00px" />
+												<fo:table-body>
+													<fo:table-row>
+														<fo:table-cell>
+															<fo:block linefeed-treatment="preserve">
+																<fo:inline>Obec</fo:inline>
+															</fo:block>
+														</fo:table-cell>
+														<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+															<fo:block>
+																<xsl:if test="local-name()='LegitimatePerson'">
+																	<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+																		<xsl:call-template name="intersperse-with-zero-spaces">
+																			<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+																		</xsl:call-template>
+																	</xsl:if>
+																</xsl:if>
+															</fo:block>
+														</fo:table-cell>
+													</fo:table-row>
+												</fo:table-body>
+											</fo:table>
+										</fo:block>
+									</xsl:if>
+								</fo:block>
+								<fo:block>
+									<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:NonCodelistData/text() or (not(./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:NonCodelistData/text())and not(./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']/text())and not(./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemCode/text()))">
+										<fo:block margin-top="3mm">
+											<fo:table table-layout="fixed" width="100%">
+												<fo:table-column column-width="130.00px" />
+												<fo:table-column column-width="104.00px" />
+												<fo:table-body>
+													<fo:table-row>
+														<fo:table-cell>
+															<fo:block linefeed-treatment="preserve">
+																<fo:inline>Obec</fo:inline>
+															</fo:block>
+														</fo:table-cell>
+														<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+															<fo:block>
+																<xsl:if test="local-name()='LegitimatePerson'">
+																	<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:NonCodelistData">
+																		<xsl:call-template name="intersperse-with-zero-spaces">
+																			<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:NonCodelistData" />
+																		</xsl:call-template>
+																	</xsl:if>
+																</xsl:if>
+															</fo:block>
+														</fo:table-cell>
+													</fo:table-row>
+												</fo:table-body>
+											</fo:table>
+										</fo:block>
+									</xsl:if>
+								</fo:block>
+								<xsl:call-template name="Sekcia_Supisne2ZalobcaFO" />
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_Supisne2ZalobcaFO">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="133.25px" />
+				<fo:table-column column-width="58.50px" />
+				<fo:table-column column-width="65.00px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>Súpisné / Orientačné číslo</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="39.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegitimatePerson'">
+														<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:PropertyRegistrationNumber">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:PropertyRegistrationNumber" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="45.50px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegitimatePerson'">
+														<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:BuildingNumber">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:BuildingNumber" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcie_KontaktneNavrhovatelFO_1">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:block background-color="#F8EFFB" color="#4b0082" margin-left="3pt" margin-top="3pt" margin-right="3pt" padding-left="1pt" padding-top="2pt" keep-with-next.within-page="always" keep-together.within-column="1">
+					<fo:block>
+						<fo:inline>Kontaktné údaje</fo:inline>
+					</fo:block>
+				</fo:block>
+				<fo:block color="white" keep-with-next.within-page="always" keep-together.within-column="1">|</fo:block>
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="proportional-column-width(1)" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<xsl:choose>
+									<xsl:when test="not(./egonp:PhysicalPersonData/egonp:PersonData/egonp:TelephoneAddress)">
+										<xsl:call-template name="Sekcia_TelefonUcastnikKonaniaOpravnenyFO" />
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:for-each select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:TelephoneAddress">
+											<xsl:call-template name="Sekcia_TelefonUcastnikKonaniaOpravnenyFO" />
+										</xsl:for-each>
+									</xsl:otherwise>
+								</xsl:choose>
+								<xsl:call-template name="Sec_EmailSchrankaFO" />
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_TelefonUcastnikKonaniaOpravnenyFO">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="273.00px" />
+				<fo:table-column column-width="266.50px" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="127.40px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Typ telefónu</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='TelephoneAddress'">
+														<xsl:if test="./egonp:TelephoneType/egonp:Codelist[egonp:CodelistCode='cis_4005']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:TelephoneType/egonp:Codelist[egonp:CodelistCode='cis_4005']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Telefónne číslo</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='TelephoneAddress'">
+														<xsl:if test="./egonp:Number/egonp:FormattedNumber">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Number/egonp:FormattedNumber" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sec_EmailSchrankaFO">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="273.00px" />
+				<fo:table-column column-width="266.50px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="127.40px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Email</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegitimatePerson'">
+														<xsl:call-template name="formatAnyUri">
+															<xsl:with-param name="anyUri" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:ElectronicAddress/egonp:InternetAddress" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Označenie elektronickej schránky</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegitimatePerson'">
+														<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:MarkOfElectronicMailbox">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:MarkOfElectronicMailbox" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_UdajeOsobyUcastnikKonaniaOpravnenyPO">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="proportional-column-width(1)" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="565.50px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block margin-top="1mm">
+														<fo:inline>Informácie o právnickej osobe je možné načítať na základe IČO z Registra právnických osôb pomocou tlačidla "Načítať údaje z RPO".</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<xsl:call-template name="SekciaSpisovaZnackaPO" />
+								<xsl:call-template name="SekciaICODICNavrhovatelPO_1" />
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="130.00px" />
+										<fo:table-column column-width="383.50px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Názov</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='LegitimatePerson'">
+															<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:CorporateBody/egonp:CorporateBodyFullName">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:CorporateBody/egonp:CorporateBodyFullName" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="23.40px" />
+										<fo:table-column />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block>
+														<xsl:choose>
+															<xsl:when test="./egonp:CorporateBodyData/egonp:PersonData/egonp:OrganizationalInsert[text()='1' or text()='true']">
+																<fo:inline font-family="Wingdings">&#xF078;</fo:inline>
+															</xsl:when>
+															<xsl:otherwise>
+																<fo:inline font-family="Wingdings">&#xF0A8;</fo:inline>
+															</xsl:otherwise>
+														</xsl:choose>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Spor sa týka organizačnej zložky právnickej osoby</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<xsl:call-template name="sporPO" />
+								<xsl:call-template name="Sekcia_Adresa1NavrhovatelaPO_1" />
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="23.40px" />
+										<fo:table-column />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block>
+														<xsl:choose>
+															<xsl:when test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddressCheckBox[text()='1' or text()='true']">
+																<fo:inline font-family="Wingdings">&#xF078;</fo:inline>
+															</xsl:when>
+															<xsl:otherwise>
+																<fo:inline font-family="Wingdings">&#xF0A8;</fo:inline>
+															</xsl:otherwise>
+														</xsl:choose>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Adresa, na ktorú sa má doručovať prednostne</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:Country/egonp:Codelist[egonp:CodelistCode='69']/egonp:CodelistItem/egonp:ItemCode or ./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:Country/egonp:Codelist[egonp:CodelistCode='69']/egonp:CodelistItem/egonp:ItemName[@Language='sk'] or ./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:StreetName or ./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:DeliveryAddress/egonp:PostalCode or ./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk'] or ./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:NonCodelistData or ./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemCode or ./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:PropertyRegistrationNumber or ./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:BuildingNumber">
+									<xsl:call-template name="Sekcia_Adresa2ZalobcaPO" />
+								</xsl:if>
+								<xsl:call-template name="Sekcie_KontaktneNavrhovatelPO_1" />
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SekciaSpisovaZnackaPO">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="128.70px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Vaša značka</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegitimatePerson'">
+														<xsl:if test="./egonp:CorporateBodyData/egonp:YourMark">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:YourMark" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SekciaICODICNavrhovatelPO_1">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="159.25px" />
+				<fo:table-column column-width="123.50px" />
+				<fo:table-column column-width="273.00px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="24.70px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>IČO</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegitimatePerson'">
+														<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:ID[egonp:IdentifierType/egonp:Codelist[egonp:CodelistCode='4001']/egonp:CodelistItem[egonp:ItemCode='7']]/egonp:IdentifierValue">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:ID[egonp:IdentifierType/egonp:Codelist[egonp:CodelistCode='4001']/egonp:CodelistItem[egonp:ItemCode='7']]/egonp:IdentifierValue" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block />
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="123.50px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Iné identifikačné číslo</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegitimatePerson'">
+														<xsl:if test="./egonp:CorporateBodyData/egonp:OtherIdentifier">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:OtherIdentifier" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="sporPO">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="455.00px" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="455.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>Údaje o organizačnej zložke vyplňte v časti "Oprávnený má zákonného zástupcu (správcu)".</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_Adresa1NavrhovatelaPO_1">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:block background-color="#F8EFFB" color="#4b0082" margin-left="3pt" margin-top="3pt" margin-right="3pt" padding-left="1pt" padding-top="2pt" keep-with-next.within-page="always" keep-together.within-column="1">
+					<fo:block>
+						<fo:inline>Adresa / sídlo</fo:inline>
+					</fo:block>
+				</fo:block>
+				<fo:block color="white" keep-with-next.within-page="always" keep-together.within-column="1">|</fo:block>
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="273.00px" />
+					<fo:table-column column-width="282.75px" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="127.40px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Štát</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='LegitimatePerson'">
+															<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Country/egonp:Codelist[egonp:CodelistCode='cis_0086']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Country/egonp:Codelist[egonp:CodelistCode='cis_0086']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="127.40px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Ulica</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='LegitimatePerson'">
+															<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:StreetName">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:StreetName" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="127.40px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>PSČ</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='LegitimatePerson'">
+															<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:DeliveryAddress/egonp:PostalCode">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:DeliveryAddress/egonp:PostalCode" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+							</fo:table-cell>
+							<fo:table-cell>
+								<fo:block>
+									<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']/text()">
+										<fo:block margin-top="3mm">
+											<fo:table table-layout="fixed" width="100%">
+												<fo:table-column column-width="130.00px" />
+												<fo:table-column column-width="91.00px" />
+												<fo:table-body>
+													<fo:table-row>
+														<fo:table-cell>
+															<fo:block linefeed-treatment="preserve">
+																<fo:inline>Obec</fo:inline>
+															</fo:block>
+														</fo:table-cell>
+														<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+															<fo:block>
+																<xsl:if test="local-name()='LegitimatePerson'">
+																	<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+																		<xsl:call-template name="intersperse-with-zero-spaces">
+																			<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+																		</xsl:call-template>
+																	</xsl:if>
+																</xsl:if>
+															</fo:block>
+														</fo:table-cell>
+													</fo:table-row>
+												</fo:table-body>
+											</fo:table>
+										</fo:block>
+									</xsl:if>
+								</fo:block>
+								<fo:block>
+									<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:NonCodelistData/text() or (not(./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:NonCodelistData/text())and not(./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']/text())and not(./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemCode/text()))">
+										<fo:block margin-top="3mm">
+											<fo:table table-layout="fixed" width="100%">
+												<fo:table-column column-width="130.00px" />
+												<fo:table-column column-width="104.00px" />
+												<fo:table-body>
+													<fo:table-row>
+														<fo:table-cell>
+															<fo:block linefeed-treatment="preserve">
+																<fo:inline>Obec</fo:inline>
+															</fo:block>
+														</fo:table-cell>
+														<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+															<fo:block>
+																<xsl:if test="local-name()='LegitimatePerson'">
+																	<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:NonCodelistData">
+																		<xsl:call-template name="intersperse-with-zero-spaces">
+																			<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:NonCodelistData" />
+																		</xsl:call-template>
+																	</xsl:if>
+																</xsl:if>
+															</fo:block>
+														</fo:table-cell>
+													</fo:table-row>
+												</fo:table-body>
+											</fo:table>
+										</fo:block>
+									</xsl:if>
+								</fo:block>
+								<xsl:call-template name="Sekcia_Supisne1NavrhovatelPO_1" />
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_Supisne1NavrhovatelPO_1">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="133.25px" />
+				<fo:table-column column-width="58.50px" />
+				<fo:table-column column-width="65.00px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>Súpisné / Orientačné číslo</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="39.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegitimatePerson'">
+														<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:PropertyRegistrationNumber">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:PropertyRegistrationNumber" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="45.50px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegitimatePerson'">
+														<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:BuildingNumber">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:BuildingNumber" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_Adresa2ZalobcaPO">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:block background-color="#F8EFFB" color="#4b0082" margin-left="3pt" margin-top="3pt" margin-right="3pt" padding-left="1pt" padding-top="2pt" keep-with-next.within-page="always" keep-together.within-column="1">
+					<fo:block>
+						<fo:inline>Adresa, na ktorú sa má doručovať prednostne</fo:inline>
+					</fo:block>
+				</fo:block>
+				<fo:block color="white" keep-with-next.within-page="always" keep-together.within-column="1">|</fo:block>
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="273.00px" />
+					<fo:table-column column-width="282.75px" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="127.40px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Štát</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='LegitimatePerson'">
+															<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:Country/egonp:Codelist[egonp:CodelistCode='69']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:Country/egonp:Codelist[egonp:CodelistCode='69']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="127.40px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Ulica</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='LegitimatePerson'">
+															<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:StreetName">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:StreetName" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="127.40px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>PSČ</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='LegitimatePerson'">
+															<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:DeliveryAddress/egonp:PostalCode">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:DeliveryAddress/egonp:PostalCode" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+							</fo:table-cell>
+							<fo:table-cell>
+								<fo:block>
+									<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']/text()">
+										<fo:block margin-top="3mm">
+											<fo:table table-layout="fixed" width="100%">
+												<fo:table-column column-width="130.00px" />
+												<fo:table-column column-width="91.00px" />
+												<fo:table-body>
+													<fo:table-row>
+														<fo:table-cell>
+															<fo:block linefeed-treatment="preserve">
+																<fo:inline>Obec</fo:inline>
+															</fo:block>
+														</fo:table-cell>
+														<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+															<fo:block>
+																<xsl:if test="local-name()='LegitimatePerson'">
+																	<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+																		<xsl:call-template name="intersperse-with-zero-spaces">
+																			<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+																		</xsl:call-template>
+																	</xsl:if>
+																</xsl:if>
+															</fo:block>
+														</fo:table-cell>
+													</fo:table-row>
+												</fo:table-body>
+											</fo:table>
+										</fo:block>
+									</xsl:if>
+								</fo:block>
+								<fo:block>
+									<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:NonCodelistData/text() or (not(./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:NonCodelistData/text())and not(./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']/text())and not(./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemCode/text()))">
+										<fo:block margin-top="3mm">
+											<fo:table table-layout="fixed" width="100%">
+												<fo:table-column column-width="130.00px" />
+												<fo:table-column column-width="104.00px" />
+												<fo:table-body>
+													<fo:table-row>
+														<fo:table-cell>
+															<fo:block linefeed-treatment="preserve">
+																<fo:inline>Obec</fo:inline>
+															</fo:block>
+														</fo:table-cell>
+														<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+															<fo:block>
+																<xsl:if test="local-name()='LegitimatePerson'">
+																	<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:NonCodelistData">
+																		<xsl:call-template name="intersperse-with-zero-spaces">
+																			<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:NonCodelistData" />
+																		</xsl:call-template>
+																	</xsl:if>
+																</xsl:if>
+															</fo:block>
+														</fo:table-cell>
+													</fo:table-row>
+												</fo:table-body>
+											</fo:table>
+										</fo:block>
+									</xsl:if>
+								</fo:block>
+								<xsl:call-template name="Sekcia_Supisne2ZalobcaPO" />
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_Supisne2ZalobcaPO">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="133.25px" />
+				<fo:table-column column-width="58.50px" />
+				<fo:table-column column-width="65.00px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>Súpisné / Orientačné číslo</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="39.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegitimatePerson'">
+														<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:PropertyRegistrationNumber">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:PropertyRegistrationNumber" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="45.50px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegitimatePerson'">
+														<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:BuildingNumber">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:BuildingNumber" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcie_KontaktneNavrhovatelPO_1">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:block background-color="#F8EFFB" color="#4b0082" margin-left="3pt" margin-top="3pt" margin-right="3pt" padding-left="1pt" padding-top="2pt" keep-with-next.within-page="always" keep-together.within-column="1">
+					<fo:block>
+						<fo:inline>Kontaktné údaje</fo:inline>
+					</fo:block>
+				</fo:block>
+				<fo:block color="white" keep-with-next.within-page="always" keep-together.within-column="1">|</fo:block>
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="proportional-column-width(1)" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<xsl:choose>
+									<xsl:when test="not(./egonp:CorporateBodyData/egonp:PersonData/egonp:TelephoneAddress)">
+										<xsl:call-template name="Sekcia_TelefonUcastnikKonaniaOpravnenyPO" />
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:for-each select="./egonp:CorporateBodyData/egonp:PersonData/egonp:TelephoneAddress">
+											<xsl:call-template name="Sekcia_TelefonUcastnikKonaniaOpravnenyPO" />
+										</xsl:for-each>
+									</xsl:otherwise>
+								</xsl:choose>
+								<xsl:call-template name="Sec_EmailSchrankaPO" />
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_TelefonUcastnikKonaniaOpravnenyPO">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="273.00px" />
+				<fo:table-column column-width="266.50px" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="127.40px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Typ telefónu</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='TelephoneAddress'">
+														<xsl:if test="./egonp:TelephoneType/egonp:Codelist[egonp:CodelistCode='cis_4005']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:TelephoneType/egonp:Codelist[egonp:CodelistCode='cis_4005']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Telefónne číslo</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='TelephoneAddress'">
+														<xsl:if test="./egonp:Number/egonp:FormattedNumber">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Number/egonp:FormattedNumber" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sec_EmailSchrankaPO">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="273.00px" />
+				<fo:table-column column-width="266.50px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="127.40px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Email</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegitimatePerson'">
+														<xsl:call-template name="formatAnyUri">
+															<xsl:with-param name="anyUri" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:ElectronicAddress/egonp:InternetAddress" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Označenie elektronickej schránky</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegitimatePerson'">
+														<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:MarkOfElectronicMailbox">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:MarkOfElectronicMailbox" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_UdajeOsobyStatUcastnikKonaniaOpravneny">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="proportional-column-width(1)" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<xsl:call-template name="SekciaSpisovaZnackaStat" />
+								<xsl:choose>
+									<xsl:when test="not(./egonp:State/egonp:PersonData/egonp:CorporateBody)">
+										<xsl:call-template name="Sekcia_NazovNavrhovatelaStatUcastnikKonaniaOpravneny" />
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:if test="./egonp:State/egonp:PersonData/egonp:CorporateBody">
+											<xsl:call-template name="Sekcia_NazovNavrhovatelaStatUcastnikKonaniaOpravneny" />
+										</xsl:if>
+									</xsl:otherwise>
+								</xsl:choose>
+								<xsl:call-template name="Sekcia_Adresa1NavrhovatelaStat_1" />
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="23.40px" />
+										<fo:table-column />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block>
+														<xsl:choose>
+															<xsl:when test="./egonp:State/egonp:PersonData/egonp:PreferenceAddressCheckBox[text()='1' or text()='true']">
+																<fo:inline font-family="Wingdings">&#xF078;</fo:inline>
+															</xsl:when>
+															<xsl:otherwise>
+																<fo:inline font-family="Wingdings">&#xF0A8;</fo:inline>
+															</xsl:otherwise>
+														</xsl:choose>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Adresa, na ktorú sa má doručovať prednostne</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<xsl:if test="./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:Country/egonp:Codelist[egonp:CodelistCode='69']/egonp:CodelistItem/egonp:ItemCode or ./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:Country/egonp:Codelist[egonp:CodelistCode='69']/egonp:CodelistItem/egonp:ItemName[@Language='sk'] or ./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:StreetName or ./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:DeliveryAddress/egonp:PostalCode or ./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk'] or ./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:NonCodelistData or ./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemCode or ./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:PropertyRegistrationNumber or ./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:BuildingNumber">
+									<xsl:call-template name="Sekcia_Adresa2ZalobcaStat" />
+								</xsl:if>
+								<xsl:call-template name="Sekcie_KontaktneNavrhovatelStat_1" />
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SekciaSpisovaZnackaStat">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="128.70px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Vaša značka</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegitimatePerson'">
+														<xsl:if test="./egonp:State/egonp:YourMark">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:State/egonp:YourMark" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_NazovNavrhovatelaStatUcastnikKonaniaOpravneny">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="383.50px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Názov</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegitimatePerson'">
+														<xsl:if test="./egonp:State/egonp:PersonData/egonp:CorporateBody/egonp:CorporateBodyFullName">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:State/egonp:PersonData/egonp:CorporateBody/egonp:CorporateBodyFullName" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="273.65px" />
+									<fo:table-column column-width="240.50px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Označenie štátneho orgánu, alebo právnickej osoby, ktorý za štát koná</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegitimatePerson'">
+														<xsl:if test="./egonp:State/egonp:IndicationOfThePublicAuthority">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:State/egonp:IndicationOfThePublicAuthority" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="273.65px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>IČO</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegitimatePerson'">
+														<xsl:if test="./egonp:State/egonp:PersonData/egonp:ID[egonp:IdentifierType/egonp:Codelist[egonp:CodelistCode='4001']/egonp:CodelistItem[egonp:ItemCode='7']]/egonp:IdentifierValue">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:State/egonp:PersonData/egonp:ID[egonp:IdentifierType/egonp:Codelist[egonp:CodelistCode='4001']/egonp:CodelistItem[egonp:ItemCode='7']]/egonp:IdentifierValue" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_Adresa1NavrhovatelaStat_1">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:block background-color="#F8EFFB" color="#4b0082" margin-left="3pt" margin-top="3pt" margin-right="3pt" padding-left="1pt" padding-top="2pt" keep-with-next.within-page="always" keep-together.within-column="1">
+					<fo:block>
+						<fo:inline>Adresa / sídlo</fo:inline>
+					</fo:block>
+				</fo:block>
+				<fo:block color="white" keep-with-next.within-page="always" keep-together.within-column="1">|</fo:block>
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="273.00px" />
+					<fo:table-column column-width="282.75px" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="127.40px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Štát</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='LegitimatePerson'">
+															<xsl:if test="./egonp:State/egonp:PersonData/egonp:PhysicalAddress/egonp:Country/egonp:Codelist[egonp:CodelistCode='cis_0086']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:State/egonp:PersonData/egonp:PhysicalAddress/egonp:Country/egonp:Codelist[egonp:CodelistCode='cis_0086']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="127.40px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Ulica</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='LegitimatePerson'">
+															<xsl:if test="./egonp:State/egonp:PersonData/egonp:PhysicalAddress/egonp:StreetName">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:State/egonp:PersonData/egonp:PhysicalAddress/egonp:StreetName" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="127.40px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>PSČ</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='LegitimatePerson'">
+															<xsl:if test="./egonp:State/egonp:PersonData/egonp:PhysicalAddress/egonp:DeliveryAddress/egonp:PostalCode">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:State/egonp:PersonData/egonp:PhysicalAddress/egonp:DeliveryAddress/egonp:PostalCode" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+							</fo:table-cell>
+							<fo:table-cell>
+								<fo:block>
+									<xsl:if test="./egonp:State/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']/text()">
+										<fo:block margin-top="3mm">
+											<fo:table table-layout="fixed" width="100%">
+												<fo:table-column column-width="130.00px" />
+												<fo:table-column column-width="91.00px" />
+												<fo:table-body>
+													<fo:table-row>
+														<fo:table-cell>
+															<fo:block linefeed-treatment="preserve">
+																<fo:inline>Obec</fo:inline>
+															</fo:block>
+														</fo:table-cell>
+														<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+															<fo:block>
+																<xsl:if test="local-name()='LegitimatePerson'">
+																	<xsl:if test="./egonp:State/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+																		<xsl:call-template name="intersperse-with-zero-spaces">
+																			<xsl:with-param name="str" select="./egonp:State/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+																		</xsl:call-template>
+																	</xsl:if>
+																</xsl:if>
+															</fo:block>
+														</fo:table-cell>
+													</fo:table-row>
+												</fo:table-body>
+											</fo:table>
+										</fo:block>
+									</xsl:if>
+								</fo:block>
+								<fo:block>
+									<xsl:if test="./egonp:State/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:NonCodelistData/text() or (not(./egonp:State/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:NonCodelistData/text())and not(./egonp:State/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']/text())and not(./egonp:State/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemCode/text()))">
+										<fo:block margin-top="3mm">
+											<fo:table table-layout="fixed" width="100%">
+												<fo:table-column column-width="130.00px" />
+												<fo:table-column column-width="104.00px" />
+												<fo:table-body>
+													<fo:table-row>
+														<fo:table-cell>
+															<fo:block linefeed-treatment="preserve">
+																<fo:inline>Obec</fo:inline>
+															</fo:block>
+														</fo:table-cell>
+														<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+															<fo:block>
+																<xsl:if test="local-name()='LegitimatePerson'">
+																	<xsl:if test="./egonp:State/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:NonCodelistData">
+																		<xsl:call-template name="intersperse-with-zero-spaces">
+																			<xsl:with-param name="str" select="./egonp:State/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:NonCodelistData" />
+																		</xsl:call-template>
+																	</xsl:if>
+																</xsl:if>
+															</fo:block>
+														</fo:table-cell>
+													</fo:table-row>
+												</fo:table-body>
+											</fo:table>
+										</fo:block>
+									</xsl:if>
+								</fo:block>
+								<xsl:call-template name="Sekcia_Supisne1NavrhovatelStat_1" />
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_Supisne1NavrhovatelStat_1">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="133.25px" />
+				<fo:table-column column-width="58.50px" />
+				<fo:table-column column-width="65.00px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>Súpisné / Orientačné číslo</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="39.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegitimatePerson'">
+														<xsl:if test="./egonp:State/egonp:PersonData/egonp:PhysicalAddress/egonp:PropertyRegistrationNumber">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:State/egonp:PersonData/egonp:PhysicalAddress/egonp:PropertyRegistrationNumber" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="45.50px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegitimatePerson'">
+														<xsl:if test="./egonp:State/egonp:PersonData/egonp:PhysicalAddress/egonp:BuildingNumber">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:State/egonp:PersonData/egonp:PhysicalAddress/egonp:BuildingNumber" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_Adresa2ZalobcaStat">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:block background-color="#F8EFFB" color="#4b0082" margin-left="3pt" margin-top="3pt" margin-right="3pt" padding-left="1pt" padding-top="2pt" keep-with-next.within-page="always" keep-together.within-column="1">
+					<fo:block>
+						<fo:inline>Adresa, na ktorú sa má doručovať prednostne</fo:inline>
+					</fo:block>
+				</fo:block>
+				<fo:block color="white" keep-with-next.within-page="always" keep-together.within-column="1">|</fo:block>
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="273.00px" />
+					<fo:table-column column-width="282.75px" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="127.40px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Štát</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='LegitimatePerson'">
+															<xsl:if test="./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:Country/egonp:Codelist[egonp:CodelistCode='69']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:Country/egonp:Codelist[egonp:CodelistCode='69']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="127.40px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Ulica</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='LegitimatePerson'">
+															<xsl:if test="./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:StreetName">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:StreetName" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="127.40px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>PSČ</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='LegitimatePerson'">
+															<xsl:if test="./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:DeliveryAddress/egonp:PostalCode">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:DeliveryAddress/egonp:PostalCode" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+							</fo:table-cell>
+							<fo:table-cell>
+								<fo:block>
+									<xsl:if test="./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']/text()">
+										<fo:block margin-top="3mm">
+											<fo:table table-layout="fixed" width="100%">
+												<fo:table-column column-width="130.00px" />
+												<fo:table-column column-width="91.00px" />
+												<fo:table-body>
+													<fo:table-row>
+														<fo:table-cell>
+															<fo:block linefeed-treatment="preserve">
+																<fo:inline>Obec</fo:inline>
+															</fo:block>
+														</fo:table-cell>
+														<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+															<fo:block>
+																<xsl:if test="local-name()='LegitimatePerson'">
+																	<xsl:if test="./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+																		<xsl:call-template name="intersperse-with-zero-spaces">
+																			<xsl:with-param name="str" select="./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+																		</xsl:call-template>
+																	</xsl:if>
+																</xsl:if>
+															</fo:block>
+														</fo:table-cell>
+													</fo:table-row>
+												</fo:table-body>
+											</fo:table>
+										</fo:block>
+									</xsl:if>
+								</fo:block>
+								<fo:block>
+									<xsl:if test="./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:NonCodelistData/text() or (not(./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:NonCodelistData/text())and not(./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']/text())and not(./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemCode/text()))">
+										<fo:block margin-top="3mm">
+											<fo:table table-layout="fixed" width="100%">
+												<fo:table-column column-width="130.00px" />
+												<fo:table-column column-width="104.00px" />
+												<fo:table-body>
+													<fo:table-row>
+														<fo:table-cell>
+															<fo:block linefeed-treatment="preserve">
+																<fo:inline>Obec</fo:inline>
+															</fo:block>
+														</fo:table-cell>
+														<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+															<fo:block>
+																<xsl:if test="local-name()='LegitimatePerson'">
+																	<xsl:if test="./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:NonCodelistData">
+																		<xsl:call-template name="intersperse-with-zero-spaces">
+																			<xsl:with-param name="str" select="./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:NonCodelistData" />
+																		</xsl:call-template>
+																	</xsl:if>
+																</xsl:if>
+															</fo:block>
+														</fo:table-cell>
+													</fo:table-row>
+												</fo:table-body>
+											</fo:table>
+										</fo:block>
+									</xsl:if>
+								</fo:block>
+								<xsl:call-template name="Sekcia_Supisne2ZalobcaStat" />
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_Supisne2ZalobcaStat">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="133.25px" />
+				<fo:table-column column-width="58.50px" />
+				<fo:table-column column-width="65.00px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>Súpisné / Orientačné číslo</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="39.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegitimatePerson'">
+														<xsl:if test="./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:PropertyRegistrationNumber">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:PropertyRegistrationNumber" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="45.50px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegitimatePerson'">
+														<xsl:if test="./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:BuildingNumber">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:BuildingNumber" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcie_KontaktneNavrhovatelStat_1">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:block background-color="#F8EFFB" color="#4b0082" margin-left="3pt" margin-top="3pt" margin-right="3pt" padding-left="1pt" padding-top="2pt" keep-with-next.within-page="always" keep-together.within-column="1">
+					<fo:block>
+						<fo:inline>Kontaktné údaje</fo:inline>
+					</fo:block>
+				</fo:block>
+				<fo:block color="white" keep-with-next.within-page="always" keep-together.within-column="1">|</fo:block>
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="proportional-column-width(1)" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<xsl:choose>
+									<xsl:when test="not(./egonp:State/egonp:PersonData/egonp:TelephoneAddress)">
+										<xsl:call-template name="Sekcia_TelefonNavrhovatelStatUcastnikKonaniaOpravneny" />
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:for-each select="./egonp:State/egonp:PersonData/egonp:TelephoneAddress">
+											<xsl:call-template name="Sekcia_TelefonNavrhovatelStatUcastnikKonaniaOpravneny" />
+										</xsl:for-each>
+									</xsl:otherwise>
+								</xsl:choose>
+								<xsl:call-template name="Sec_EmailSchrankaST" />
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_TelefonNavrhovatelStatUcastnikKonaniaOpravneny">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="273.00px" />
+				<fo:table-column column-width="266.50px" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="127.40px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Typ telefónu</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='TelephoneAddress'">
+														<xsl:if test="./egonp:TelephoneType/egonp:Codelist[egonp:CodelistCode='cis_4005']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:TelephoneType/egonp:Codelist[egonp:CodelistCode='cis_4005']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Telefónne číslo</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='TelephoneAddress'">
+														<xsl:if test="./egonp:Number/egonp:FormattedNumber">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Number/egonp:FormattedNumber" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sec_EmailSchrankaST">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="273.00px" />
+				<fo:table-column column-width="266.50px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="127.40px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Email</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegitimatePerson'">
+														<xsl:call-template name="formatAnyUri">
+															<xsl:with-param name="anyUri" select="./egonp:State/egonp:PersonData/egonp:ElectronicAddress/egonp:InternetAddress" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Označenie elektronickej schránky</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegitimatePerson'">
+														<xsl:if test="./egonp:State/egonp:PersonData/egonp:MarkOfElectronicMailbox">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:State/egonp:PersonData/egonp:MarkOfElectronicMailbox" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="FudajeObankovomUcteUcastnikKonaniaOpravneny">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:block background-color="#F8EFFB" color="#4b0082" margin-left="3pt" margin-top="3pt" margin-right="3pt" padding-left="1pt" padding-top="2pt" keep-with-next.within-page="always" keep-together.within-column="1">
+					<fo:block>
+						<fo:inline>Údaje pre poukázanie vymoženého nároku</fo:inline>
+					</fo:block>
+				</fo:block>
+				<fo:block color="white" keep-with-next.within-page="always" keep-together.within-column="1">|</fo:block>
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="proportional-column-width(1)" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<xsl:choose>
+									<xsl:when test="not(./egonp:BankConnection)">
+										<xsl:call-template name="UdajeZalovanaSuma_2" />
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:if test="./egonp:BankConnection">
+											<xsl:call-template name="UdajeZalovanaSuma_2" />
+										</xsl:if>
+									</xsl:otherwise>
+								</xsl:choose>
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="UdajeZalovanaSuma_2">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="565.50px" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<xsl:call-template name="hlavickaZalovanaSuma" />
+							<xsl:call-template name="udajeZalovanaSuma" />
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="hlavickaZalovanaSuma">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="159.25px" />
+				<fo:table-column column-width="136.50px" />
+				<fo:table-column column-width="74.75px" />
+				<fo:table-column column-width="74.75px" />
+				<fo:table-column column-width="74.75px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline color="white">___</fo:inline>
+													<fo:inline>&#x00A0;</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>IBAN</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>BIC</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>Variabilný symbol</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>Špecifický symbol</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="udajeZalovanaSuma">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="156.00px" />
+				<fo:table-column column-width="139.75px" />
+				<fo:table-column column-width="74.75px" />
+				<fo:table-column column-width="74.75px" />
+				<fo:table-column column-width="74.75px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="162.50px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>Údaje o bankovom účte oprávneného</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegitimatePerson'">
+														<xsl:if test="./egonp:BankConnection/egonp:InternationalBankConnection/egonp:IBAN">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:BankConnection/egonp:InternationalBankConnection/egonp:IBAN" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="65.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegitimatePerson'">
+														<xsl:if test="./egonp:BankConnection/egonp:InternationalBankConnection/egonp:BIC">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:BankConnection/egonp:InternationalBankConnection/egonp:BIC" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="65.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegitimatePerson'">
+														<xsl:if test="./egonp:BankConnection/egonp:VariableSymbol">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:BankConnection/egonp:VariableSymbol" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="65.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegitimatePerson'">
+														<xsl:if test="./egonp:BankConnection/egonp:SpecificSymbol">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:BankConnection/egonp:SpecificSymbol" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_ZakZas">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:block background-color="#F8EFFB" color="#4b0082" margin-left="3pt" margin-top="3pt" margin-right="3pt" padding-left="1pt" padding-top="2pt" keep-with-next.within-page="always" keep-together.within-column="1">
+					<fo:block>
+						<fo:inline>Zákonní zástupcovia</fo:inline>
+					</fo:block>
+				</fo:block>
+				<fo:block color="white" keep-with-next.within-page="always" keep-together.within-column="1">|</fo:block>
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="572.00px" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="135.20px" />
+										<fo:table-column column-width="proportional-column-width(1)" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Typ subjektu</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell>
+													<fo:block>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="./egonp:SubjectType/egonp:Codelist[egonp:CodelistCode='22']/egonp:CodelistItem/egonp:ItemCode[text()='Fyzick&#225; osoba']">
+																					<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>Fyzick&#225; osoba</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="./egonp:SubjectType/egonp:Codelist[egonp:CodelistCode='22']/egonp:CodelistItem/egonp:ItemCode[text()='Pr&#225;vnick&#225; osoba']">
+																					<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>Pr&#225;vnick&#225; osoba</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="144.95px" />
+										<fo:table-column column-width="370.50px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Typ zákonného zástupcu (správcu)</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='LegalRepresentative'">
+															<xsl:if test="./egonp:RelationshipType">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:RelationshipType" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<xsl:if test="./egonp:PhysicalPersonData or ./egonp:CorporateBodyData">
+									<xsl:call-template name="Sekcia_ZastupcaUcastnikKonaniaOpravneny_2" />
+								</xsl:if>
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_ZastupcaUcastnikKonaniaOpravneny_2">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="565.50px" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<xsl:if test="./egonp:PhysicalPersonData">
+								<xsl:call-template name="Sekcia_UdajeZastupcaFO_2" />
+							</xsl:if>
+							<xsl:if test="./egonp:CorporateBodyData">
+								<xsl:call-template name="Sekcia_UdajeZastupcaPO_2" />
+							</xsl:if>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_UdajeZastupcaFO_2">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="proportional-column-width(1)" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<xsl:call-template name="Sekcia_MenoPriezvisko2_2" />
+								<xsl:call-template name="Sekcia_AdresaZastupcaFO_2" />
+								<xsl:call-template name="Sekcie_KontaktneZastupcaFO_2" />
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_MenoPriezvisko2_2">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="266.50px" />
+				<fo:table-column column-width="273.00px" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block>
+								<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:Birth/egonp:DateOfBirth/text()">
+									<fo:block margin-top="3mm">
+										<fo:table table-layout="fixed" width="100%">
+											<fo:table-column column-width="128.70px" />
+											<fo:table-column column-width="104.00px" />
+											<fo:table-body>
+												<fo:table-row>
+													<fo:table-cell>
+														<fo:block linefeed-treatment="preserve">
+															<fo:inline>Dátum narodenia</fo:inline>
+														</fo:block>
+													</fo:table-cell>
+													<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+														<fo:block>
+															<xsl:if test="local-name()='LegalRepresentative'">
+																<xsl:call-template name="formatToSkDate">
+																	<xsl:with-param name="date" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:Birth/egonp:DateOfBirth" />
+																</xsl:call-template>
+															</xsl:if>
+														</fo:block>
+													</fo:table-cell>
+												</fo:table-row>
+											</fo:table-body>
+										</fo:table>
+									</fo:block>
+								</xsl:if>
+							</fo:block>
+							<xsl:choose>
+								<xsl:when test="not(./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:GivenName)">
+									<xsl:call-template name="Sekcia_MenoZastupcaUcastnikKonaniaOpravnenyFO_2" />
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:for-each select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:GivenName">
+										<xsl:call-template name="Sekcia_MenoZastupcaUcastnikKonaniaOpravnenyFO_2" />
+									</xsl:for-each>
+								</xsl:otherwise>
+							</xsl:choose>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="128.70px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Rodné priezvisko</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegalRepresentative'">
+														<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:GivenFamilyName">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:GivenFamilyName" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+							<xsl:choose>
+								<xsl:when test="not(./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:Affix[@type='qualification' and @position='prefix'])">
+									<xsl:call-template name="Sekcia_TitulPredZastupcaUcastnikKonaniaOpravnenyFO_2" />
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:for-each select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:Affix[@type='qualification' and @position='prefix']">
+										<xsl:call-template name="Sekcia_TitulPredZastupcaUcastnikKonaniaOpravnenyFO_2" />
+									</xsl:for-each>
+								</xsl:otherwise>
+							</xsl:choose>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block>
+								<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:ID[egonp:IdentifierType/egonp:Codelist[egonp:CodelistCode='4001']/egonp:CodelistItem[egonp:ItemCode='9']]/egonp:IdentifierValue/text()">
+									<fo:block margin-top="3mm">
+										<fo:table table-layout="fixed" width="100%">
+											<fo:table-column column-width="130.65px" />
+											<fo:table-column column-width="104.00px" />
+											<fo:table-body>
+												<fo:table-row>
+													<fo:table-cell>
+														<fo:block linefeed-treatment="preserve">
+															<fo:inline>Rodné číslo</fo:inline>
+														</fo:block>
+													</fo:table-cell>
+													<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+														<fo:block>
+															<xsl:if test="local-name()='LegalRepresentative'">
+																<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:ID[egonp:IdentifierType/egonp:Codelist[egonp:CodelistCode='4001']/egonp:CodelistItem[egonp:ItemCode='9']]/egonp:IdentifierValue">
+																	<xsl:call-template name="intersperse-with-zero-spaces">
+																		<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:ID[egonp:IdentifierType/egonp:Codelist[egonp:CodelistCode='4001']/egonp:CodelistItem[egonp:ItemCode='9']]/egonp:IdentifierValue" />
+																	</xsl:call-template>
+																</xsl:if>
+															</xsl:if>
+														</fo:block>
+													</fo:table-cell>
+												</fo:table-row>
+											</fo:table-body>
+										</fo:table>
+									</fo:block>
+								</xsl:if>
+							</fo:block>
+							<xsl:choose>
+								<xsl:when test="not(./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:FamilyName)">
+									<xsl:call-template name="Sekcia_PriezviskoZastupcaUcastnikKonaniaOpravnenyFO_2" />
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:for-each select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:FamilyName">
+										<xsl:call-template name="Sekcia_PriezviskoZastupcaUcastnikKonaniaOpravnenyFO_2" />
+									</xsl:for-each>
+								</xsl:otherwise>
+							</xsl:choose>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline color="white">___</fo:inline>
+													<fo:inline>&#x00A0;</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+							<xsl:choose>
+								<xsl:when test="not(./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:Affix[@type='qualification' and @position='postfix'])">
+									<xsl:call-template name="Sekcia_TitulZaZastupcaUcastnikKonaniaOpravnenyFO_2" />
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:for-each select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:Affix[@type='qualification' and @position='postfix']">
+										<xsl:call-template name="Sekcia_TitulZaZastupcaUcastnikKonaniaOpravnenyFO_2" />
+									</xsl:for-each>
+								</xsl:otherwise>
+							</xsl:choose>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_MenoZastupcaUcastnikKonaniaOpravnenyFO_2">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Meno</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='GivenName'">
+														<xsl:if test=".">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="." />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_TitulPredZastupcaUcastnikKonaniaOpravnenyFO_2">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Titul pred</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='Affix'">
+														<xsl:if test="./egonp:Codelist[egonp:CodelistCode='cis_0062']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Codelist[egonp:CodelistCode='cis_0062']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_PriezviskoZastupcaUcastnikKonaniaOpravnenyFO_2">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Priezvisko</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='FamilyName'">
+														<xsl:if test=".">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="." />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_TitulZaZastupcaUcastnikKonaniaOpravnenyFO_2">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Titul za</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='Affix'">
+														<xsl:if test="./egonp:Codelist[egonp:CodelistCode='cis_0063']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Codelist[egonp:CodelistCode='cis_0063']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_AdresaZastupcaFO_2">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:block background-color="#F8EFFB" color="#4b0082" margin-left="3pt" margin-top="3pt" margin-right="3pt" padding-left="1pt" padding-top="2pt" keep-with-next.within-page="always" keep-together.within-column="1">
+					<fo:block>
+						<fo:inline>Trvalý pobyt / Pobyt</fo:inline>
+					</fo:block>
+				</fo:block>
+				<fo:block color="white" keep-with-next.within-page="always" keep-together.within-column="1">|</fo:block>
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="266.50px" />
+					<fo:table-column column-width="282.75px" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="126.75px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Štát</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='LegalRepresentative'">
+															<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Country/egonp:Codelist[egonp:CodelistCode='cis_0086']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Country/egonp:Codelist[egonp:CodelistCode='cis_0086']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="126.75px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Ulica</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='LegalRepresentative'">
+															<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:StreetName">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:StreetName" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="126.75px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>PSČ</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='LegalRepresentative'">
+															<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:DeliveryAddress/egonp:PostalCode">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:DeliveryAddress/egonp:PostalCode" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+							</fo:table-cell>
+							<fo:table-cell>
+								<fo:block>
+									<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']/text()">
+										<fo:block margin-top="3mm">
+											<fo:table table-layout="fixed" width="100%">
+												<fo:table-column column-width="128.70px" />
+												<fo:table-column column-width="91.00px" />
+												<fo:table-body>
+													<fo:table-row>
+														<fo:table-cell>
+															<fo:block linefeed-treatment="preserve">
+																<fo:inline>Obec</fo:inline>
+															</fo:block>
+														</fo:table-cell>
+														<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+															<fo:block>
+																<xsl:if test="local-name()='LegalRepresentative'">
+																	<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+																		<xsl:call-template name="intersperse-with-zero-spaces">
+																			<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+																		</xsl:call-template>
+																	</xsl:if>
+																</xsl:if>
+															</fo:block>
+														</fo:table-cell>
+													</fo:table-row>
+												</fo:table-body>
+											</fo:table>
+										</fo:block>
+									</xsl:if>
+								</fo:block>
+								<fo:block>
+									<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:NonCodelistData/text() or (not(./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:NonCodelistData/text())and not(./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']/text())and not(./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemCode/text()))">
+										<fo:block margin-top="3mm">
+											<fo:table table-layout="fixed" width="100%">
+												<fo:table-column column-width="128.70px" />
+												<fo:table-column column-width="104.00px" />
+												<fo:table-body>
+													<fo:table-row>
+														<fo:table-cell>
+															<fo:block linefeed-treatment="preserve">
+																<fo:inline>Obec</fo:inline>
+															</fo:block>
+														</fo:table-cell>
+														<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+															<fo:block>
+																<xsl:if test="local-name()='LegalRepresentative'">
+																	<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:NonCodelistData">
+																		<xsl:call-template name="intersperse-with-zero-spaces">
+																			<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:NonCodelistData" />
+																		</xsl:call-template>
+																	</xsl:if>
+																</xsl:if>
+															</fo:block>
+														</fo:table-cell>
+													</fo:table-row>
+												</fo:table-body>
+											</fo:table>
+										</fo:block>
+									</xsl:if>
+								</fo:block>
+								<xsl:call-template name="Sekcia_SupisneZastupcaFO_2" />
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_SupisneZastupcaFO_2">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="131.95px" />
+				<fo:table-column column-width="58.50px" />
+				<fo:table-column column-width="65.00px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>Súpisné / Orientačné číslo</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="39.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegalRepresentative'">
+														<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:PropertyRegistrationNumber">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:PropertyRegistrationNumber" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="45.50px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegalRepresentative'">
+														<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:BuildingNumber">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:BuildingNumber" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcie_KontaktneZastupcaFO_2">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:block background-color="#F8EFFB" color="#4b0082" margin-left="3pt" margin-top="3pt" margin-right="3pt" padding-left="1pt" padding-top="2pt" keep-with-next.within-page="always" keep-together.within-column="1">
+					<fo:block>
+						<fo:inline>Kontaktné údaje</fo:inline>
+					</fo:block>
+				</fo:block>
+				<fo:block color="white" keep-with-next.within-page="always" keep-together.within-column="1">|</fo:block>
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="proportional-column-width(1)" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<xsl:choose>
+									<xsl:when test="not(./egonp:PhysicalPersonData/egonp:PersonData/egonp:TelephoneAddress)">
+										<xsl:call-template name="Sekcia_TelefonZastupcaUcastnikKonaniaOpravnenyFO_2" />
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:for-each select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:TelephoneAddress">
+											<xsl:call-template name="Sekcia_TelefonZastupcaUcastnikKonaniaOpravnenyFO_2" />
+										</xsl:for-each>
+									</xsl:otherwise>
+								</xsl:choose>
+								<xsl:call-template name="Sec_EmailSchrankaFO_1" />
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_TelefonZastupcaUcastnikKonaniaOpravnenyFO_2">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="266.50px" />
+				<fo:table-column column-width="273.00px" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="128.05px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Typ telefónu</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='TelephoneAddress'">
+														<xsl:if test="./egonp:TelephoneType/egonp:Codelist[egonp:CodelistCode='cis_4005']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:TelephoneType/egonp:Codelist[egonp:CodelistCode='cis_4005']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Telefónne číslo</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='TelephoneAddress'">
+														<xsl:if test="./egonp:Number/egonp:FormattedNumber">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Number/egonp:FormattedNumber" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sec_EmailSchrankaFO_1">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="266.50px" />
+				<fo:table-column column-width="273.00px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="126.75px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Email</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegalRepresentative'">
+														<xsl:call-template name="formatAnyUri">
+															<xsl:with-param name="anyUri" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:ElectronicAddress/egonp:InternetAddress" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Označenie elektronickej schránky</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegalRepresentative'">
+														<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:MarkOfElectronicMailbox">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:MarkOfElectronicMailbox" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_UdajeZastupcaPO_2">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="proportional-column-width(1)" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="565.50px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block margin-top="1mm">
+														<fo:inline>Informácie o právnickej osobe je možné načítať na základe IČO z Registra právnických osôb pomocou tlačidla "Načítať údaje z RPO".</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<xsl:call-template name="SekciaICODICZastupcaZalobcu_2" />
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="128.70px" />
+										<fo:table-column column-width="390.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Názov</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='LegalRepresentative'">
+															<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:CorporateBody/egonp:CorporateBodyFullName">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:CorporateBody/egonp:CorporateBodyFullName" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<xsl:call-template name="Sekcia_AdresaZastupcaPO_2" />
+								<xsl:call-template name="Sekcie_KontaktneZastupcaPO_2" />
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SekciaICODICZastupcaZalobcu_2">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="159.25px" />
+				<fo:table-column column-width="123.50px" />
+				<fo:table-column column-width="266.50px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="24.70px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>IČO</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegalRepresentative'">
+														<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:ID[egonp:IdentifierType/egonp:Codelist[egonp:CodelistCode='4001']/egonp:CodelistItem[egonp:ItemCode='7']]/egonp:IdentifierValue">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:ID[egonp:IdentifierType/egonp:Codelist[egonp:CodelistCode='4001']/egonp:CodelistItem[egonp:ItemCode='7']]/egonp:IdentifierValue" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block />
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="123.50px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Iné identifikačné číslo</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegalRepresentative'">
+														<xsl:if test="./egonp:CorporateBodyData/egonp:OtherIdentifier">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:OtherIdentifier" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_AdresaZastupcaPO_2">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:block background-color="#F8EFFB" color="#4b0082" margin-left="3pt" margin-top="3pt" margin-right="3pt" padding-left="1pt" padding-top="2pt" keep-with-next.within-page="always" keep-together.within-column="1">
+					<fo:block>
+						<fo:inline>Adresa / sídlo zástupcu</fo:inline>
+					</fo:block>
+				</fo:block>
+				<fo:block color="white" keep-with-next.within-page="always" keep-together.within-column="1">|</fo:block>
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="266.50px" />
+					<fo:table-column column-width="282.75px" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="126.75px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Štát</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='LegalRepresentative'">
+															<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Country/egonp:Codelist[egonp:CodelistCode='cis_0086']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Country/egonp:Codelist[egonp:CodelistCode='cis_0086']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="126.75px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Ulica</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='LegalRepresentative'">
+															<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:StreetName">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:StreetName" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="126.75px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>PSČ</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='LegalRepresentative'">
+															<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:DeliveryAddress/egonp:PostalCode">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:DeliveryAddress/egonp:PostalCode" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+							</fo:table-cell>
+							<fo:table-cell>
+								<fo:block>
+									<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']/text()">
+										<fo:block margin-top="3mm">
+											<fo:table table-layout="fixed" width="100%">
+												<fo:table-column column-width="128.70px" />
+												<fo:table-column column-width="91.00px" />
+												<fo:table-body>
+													<fo:table-row>
+														<fo:table-cell>
+															<fo:block linefeed-treatment="preserve">
+																<fo:inline>Obec</fo:inline>
+															</fo:block>
+														</fo:table-cell>
+														<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+															<fo:block>
+																<xsl:if test="local-name()='LegalRepresentative'">
+																	<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+																		<xsl:call-template name="intersperse-with-zero-spaces">
+																			<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+																		</xsl:call-template>
+																	</xsl:if>
+																</xsl:if>
+															</fo:block>
+														</fo:table-cell>
+													</fo:table-row>
+												</fo:table-body>
+											</fo:table>
+										</fo:block>
+									</xsl:if>
+								</fo:block>
+								<fo:block>
+									<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:NonCodelistData/text() or (not(./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:NonCodelistData/text())and not(./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']/text())and not(./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemCode/text()))">
+										<fo:block margin-top="3mm">
+											<fo:table table-layout="fixed" width="100%">
+												<fo:table-column column-width="128.70px" />
+												<fo:table-column column-width="104.00px" />
+												<fo:table-body>
+													<fo:table-row>
+														<fo:table-cell>
+															<fo:block linefeed-treatment="preserve">
+																<fo:inline>Obec</fo:inline>
+															</fo:block>
+														</fo:table-cell>
+														<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+															<fo:block>
+																<xsl:if test="local-name()='LegalRepresentative'">
+																	<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:NonCodelistData">
+																		<xsl:call-template name="intersperse-with-zero-spaces">
+																			<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:NonCodelistData" />
+																		</xsl:call-template>
+																	</xsl:if>
+																</xsl:if>
+															</fo:block>
+														</fo:table-cell>
+													</fo:table-row>
+												</fo:table-body>
+											</fo:table>
+										</fo:block>
+									</xsl:if>
+								</fo:block>
+								<xsl:call-template name="Sekcia_SupisneZastupcaPO_2" />
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_SupisneZastupcaPO_2">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="131.95px" />
+				<fo:table-column column-width="58.50px" />
+				<fo:table-column column-width="65.00px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>Súpisné / Orientačné číslo</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="39.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegalRepresentative'">
+														<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:PropertyRegistrationNumber">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:PropertyRegistrationNumber" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="45.50px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegalRepresentative'">
+														<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:BuildingNumber">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:BuildingNumber" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcie_KontaktneZastupcaPO_2">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:block background-color="#F8EFFB" color="#4b0082" margin-left="3pt" margin-top="3pt" margin-right="3pt" padding-left="1pt" padding-top="2pt" keep-with-next.within-page="always" keep-together.within-column="1">
+					<fo:block>
+						<fo:inline>Kontaktné údaje</fo:inline>
+					</fo:block>
+				</fo:block>
+				<fo:block color="white" keep-with-next.within-page="always" keep-together.within-column="1">|</fo:block>
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="proportional-column-width(1)" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<xsl:choose>
+									<xsl:when test="not(./egonp:CorporateBodyData/egonp:PersonData/egonp:TelephoneAddress)">
+										<xsl:call-template name="Sekcia_TelefonZastupcaUcastnikKonaniaOpravnenyPO_2" />
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:for-each select="./egonp:CorporateBodyData/egonp:PersonData/egonp:TelephoneAddress">
+											<xsl:call-template name="Sekcia_TelefonZastupcaUcastnikKonaniaOpravnenyPO_2" />
+										</xsl:for-each>
+									</xsl:otherwise>
+								</xsl:choose>
+								<xsl:call-template name="Sec_EmailSchrankaPO_1" />
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_TelefonZastupcaUcastnikKonaniaOpravnenyPO_2">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="266.50px" />
+				<fo:table-column column-width="273.00px" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="128.05px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Typ telefónu</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='TelephoneAddress'">
+														<xsl:if test="./egonp:TelephoneType/egonp:Codelist[egonp:CodelistCode='cis_4005']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:TelephoneType/egonp:Codelist[egonp:CodelistCode='cis_4005']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Telefónne číslo</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='TelephoneAddress'">
+														<xsl:if test="./egonp:Number/egonp:FormattedNumber">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Number/egonp:FormattedNumber" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sec_EmailSchrankaPO_1">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="266.50px" />
+				<fo:table-column column-width="273.00px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="126.75px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Email</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegalRepresentative'">
+														<xsl:call-template name="formatAnyUri">
+															<xsl:with-param name="anyUri" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:ElectronicAddress/egonp:InternetAddress" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Označenie elektronickej schránky</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegalRepresentative'">
+														<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:MarkOfElectronicMailbox">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:MarkOfElectronicMailbox" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SekciaBmaNema">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="proportional-column-width(1)" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="23.40px" />
+										<fo:table-column />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block>
+														<xsl:choose>
+															<xsl:when test="/egonp:ProposalForExecution/egonp:HasCommonRepresentative[text()='1' or text()='true']">
+																<fo:inline font-family="Wingdings">&#xF078;</fo:inline>
+															</xsl:when>
+															<xsl:otherwise>
+																<fo:inline font-family="Wingdings">&#xF0A8;</fo:inline>
+															</xsl:otherwise>
+														</xsl:choose>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Oprávnený má právneho zástupcu</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_MaZastupcu_1">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:block background-color="#F8EFFB" color="#4b0082" margin-left="3pt" margin-top="3pt" margin-right="3pt" padding-left="1pt" padding-top="2pt" keep-with-next.within-page="always" keep-together.within-column="1">
+					<fo:block>
+						<fo:inline>B) Právny zástupca (spoločný zástupca)</fo:inline>
+					</fo:block>
+				</fo:block>
+				<fo:block color="white" keep-with-next.within-page="always" keep-together.within-column="1">|</fo:block>
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="572.00px" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<xsl:call-template name="SekciaZastupcaZalobcuFoPo_1" />
+								<xsl:if test="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:CommonRepresentative">
+									<xsl:call-template name="spolocnyZastupcaPomSekcia" />
+								</xsl:if>
+								<xsl:if test="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:Lawyer">
+									<xsl:call-template name="advokatZalobcaPom_1" />
+								</xsl:if>
+								<xsl:if test="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:PhysicalPersonData or /egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:CorporateBodyData or /egonp:ProposalForExecution/egonp:LegitimatePerson/egonp:BankConnection or /egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:BankConnection/egonp:InternationalBankConnection/egonp:IBAN or /egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:BankConnection/egonp:InternationalBankConnection/egonp:BIC or /egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:BankConnection/egonp:VariableSymbol or /egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:BankConnection/egonp:SpecificSymbol">
+									<xsl:call-template name="Sekcia_ZastupcaZalobca_1" />
+								</xsl:if>
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SekciaZastupcaZalobcuFoPo_1">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="144.30px" />
+				<fo:table-column column-width="325.00px" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>Typ subjektu</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block>
+													<fo:table>
+														<fo:table-column column-width="23.40px" />
+														<fo:table-column />
+														<fo:table-body>
+															<fo:table-row>
+																<fo:table-cell>
+																	<fo:block>
+																		<xsl:choose>
+																			<xsl:when test="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:SubjectType/egonp:Codelist[egonp:CodelistCode='22']/egonp:CodelistItem/egonp:ItemCode[text()='Fyzick&#225; osoba']">
+																				<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																			</xsl:when>
+																			<xsl:otherwise>
+																				<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																			</xsl:otherwise>
+																		</xsl:choose>
+																	</fo:block>
+																</fo:table-cell>
+																<fo:table-cell>
+																	<fo:block>Fyzick&#225; osoba</fo:block>
+																</fo:table-cell>
+															</fo:table-row>
+														</fo:table-body>
+													</fo:table>
+													<fo:table>
+														<fo:table-column column-width="23.40px" />
+														<fo:table-column />
+														<fo:table-body>
+															<fo:table-row>
+																<fo:table-cell>
+																	<fo:block>
+																		<xsl:choose>
+																			<xsl:when test="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:SubjectType/egonp:Codelist[egonp:CodelistCode='22']/egonp:CodelistItem/egonp:ItemCode[text()='Pr&#225;vnick&#225; osoba']">
+																				<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																			</xsl:when>
+																			<xsl:otherwise>
+																				<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																			</xsl:otherwise>
+																		</xsl:choose>
+																	</fo:block>
+																</fo:table-cell>
+																<fo:table-cell>
+																	<fo:block>Pr&#225;vnick&#225; osoba</fo:block>
+																</fo:table-cell>
+															</fo:table-row>
+														</fo:table-body>
+													</fo:table>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="spolocnyZastupcaPomSekcia">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="23.40px" />
+									<fo:table-column />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block>
+													<xsl:choose>
+														<xsl:when test="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:CommonRepresentative[text()='1' or text()='true']">
+															<fo:inline font-family="Wingdings">&#xF078;</fo:inline>
+														</xsl:when>
+														<xsl:otherwise>
+															<fo:inline font-family="Wingdings">&#xF0A8;</fo:inline>
+														</xsl:otherwise>
+													</xsl:choose>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Spoločný zástupca</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="advokatZalobcaPom_1">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="146.90px" />
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Advokát</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell>
+												<fo:block>
+													<fo:table>
+														<fo:table-column column-width="23.40px" />
+														<fo:table-column />
+														<fo:table-body>
+															<fo:table-row>
+																<fo:table-cell>
+																	<fo:block>
+																		<xsl:choose>
+																			<xsl:when test="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:Lawyer/egonp:LawyerExist[text()='1']">
+																				<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																			</xsl:when>
+																			<xsl:otherwise>
+																				<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																			</xsl:otherwise>
+																		</xsl:choose>
+																	</fo:block>
+																</fo:table-cell>
+																<fo:table-cell>
+																	<fo:block>&#193;no</fo:block>
+																</fo:table-cell>
+															</fo:table-row>
+														</fo:table-body>
+													</fo:table>
+													<fo:table>
+														<fo:table-column column-width="23.40px" />
+														<fo:table-column />
+														<fo:table-body>
+															<fo:table-row>
+																<fo:table-cell>
+																	<fo:block>
+																		<xsl:choose>
+																			<xsl:when test="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:Lawyer/egonp:LawyerExist[text()='0']">
+																				<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																			</xsl:when>
+																			<xsl:otherwise>
+																				<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																			</xsl:otherwise>
+																		</xsl:choose>
+																	</fo:block>
+																</fo:table-cell>
+																<fo:table-cell>
+																	<fo:block>Nie</fo:block>
+																</fo:table-cell>
+															</fo:table-row>
+														</fo:table-body>
+													</fo:table>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+							<xsl:call-template name="advokatZalobcaEvidencneCisloPom_1" />
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="advokatZalobcaEvidencneCisloPom_1">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block>
+								<xsl:if test="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:Lawyer/egonp:EvidenceNumber/text()">
+									<fo:block margin-top="3mm">
+										<fo:table table-layout="fixed" width="100%">
+											<fo:table-column column-width="130.00px" />
+											<fo:table-column column-width="104.00px" />
+											<fo:table-body>
+												<fo:table-row>
+													<fo:table-cell>
+														<fo:block linefeed-treatment="preserve">
+															<fo:inline>Registračné číslo advokáta</fo:inline>
+														</fo:block>
+													</fo:table-cell>
+													<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+														<fo:block>
+															<xsl:if test="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:Lawyer/egonp:EvidenceNumber">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:Lawyer/egonp:EvidenceNumber" />
+																</xsl:call-template>
+															</xsl:if>
+														</fo:block>
+													</fo:table-cell>
+												</fo:table-row>
+											</fo:table-body>
+										</fo:table>
+									</fo:block>
+								</xsl:if>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_ZastupcaZalobca_1">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="565.50px" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<xsl:if test="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:PhysicalPersonData">
+								<xsl:call-template name="Sekcia_UdajeZastupcaFO_1" />
+							</xsl:if>
+							<xsl:if test="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:CorporateBodyData">
+								<xsl:call-template name="Sekcia_UdajeZastupcaPO_1" />
+							</xsl:if>
+							<xsl:call-template name="B_FudajeObankovomUcteUcastnikKonaniaOpravneny" />
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_UdajeZastupcaFO_1">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="proportional-column-width(1)" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<xsl:call-template name="sekBIdenti" />
+								<xsl:call-template name="Sekcia_MenoPriezvisko2_1" />
+								<xsl:call-template name="Sekcia_AdresaZastupcaFO_1" />
+								<xsl:call-template name="Sekcie_KontaktneZastupcaFO_1" />
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="sekBIdenti">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="169.00px" />
+				<fo:table-column column-width="162.50px" />
+				<fo:table-column column-width="111.80px" />
+				<fo:table-column column-width="97.50px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block>
+								<xsl:if test="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:Birth/egonp:DateOfBirth/text()">
+									<fo:block margin-top="3mm">
+										<fo:table table-layout="fixed" width="100%">
+											<fo:table-column column-width="76.70px" />
+											<fo:table-column column-width="65.00px" />
+											<fo:table-body>
+												<fo:table-row>
+													<fo:table-cell>
+														<fo:block linefeed-treatment="preserve" margin-left="0px">
+															<fo:inline>Dátum narodenia</fo:inline>
+														</fo:block>
+													</fo:table-cell>
+													<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+														<fo:block>
+															<xsl:call-template name="formatToSkDate">
+																<xsl:with-param name="date" select="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:Birth/egonp:DateOfBirth" />
+															</xsl:call-template>
+														</fo:block>
+													</fo:table-cell>
+												</fo:table-row>
+											</fo:table-body>
+										</fo:table>
+									</fo:block>
+								</xsl:if>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block>
+								<xsl:if test="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:PhysicalPersonData/egonp:PersonData/egonp:ID[egonp:IdentifierType/egonp:Codelist[egonp:CodelistCode='4001']/egonp:CodelistItem[egonp:ItemCode='9']]/egonp:IdentifierValue/text()">
+									<fo:block margin-top="3mm">
+										<fo:table table-layout="fixed" width="100%">
+											<fo:table-column column-width="63.70px" />
+											<fo:table-column column-width="65.00px" />
+											<fo:table-body>
+												<fo:table-row>
+													<fo:table-cell>
+														<fo:block linefeed-treatment="preserve" margin-left="0px">
+															<fo:inline>Rodné číslo</fo:inline>
+														</fo:block>
+													</fo:table-cell>
+													<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+														<fo:block>
+															<xsl:if test="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:PhysicalPersonData/egonp:PersonData/egonp:ID[egonp:IdentifierType/egonp:Codelist[egonp:CodelistCode='4001']/egonp:CodelistItem[egonp:ItemCode='9']]/egonp:IdentifierValue">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:PhysicalPersonData/egonp:PersonData/egonp:ID[egonp:IdentifierType/egonp:Codelist[egonp:CodelistCode='4001']/egonp:CodelistItem[egonp:ItemCode='9']]/egonp:IdentifierValue" />
+																</xsl:call-template>
+															</xsl:if>
+														</fo:block>
+													</fo:table-cell>
+												</fo:table-row>
+											</fo:table-body>
+										</fo:table>
+									</fo:block>
+								</xsl:if>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="21.45px" />
+									<fo:table-column column-width="65.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve" margin-left="0px">
+													<fo:inline>IČO</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:PhysicalPersonData/egonp:PersonData/egonp:ID[egonp:IdentifierType/egonp:Codelist[egonp:CodelistCode='4001']/egonp:CodelistItem[egonp:ItemCode='7']]/egonp:IdentifierValue">
+														<xsl:call-template name="intersperse-with-zero-spaces">
+															<xsl:with-param name="str" select="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:PhysicalPersonData/egonp:PersonData/egonp:ID[egonp:IdentifierType/egonp:Codelist[egonp:CodelistCode='4001']/egonp:CodelistItem[egonp:ItemCode='7']]/egonp:IdentifierValue" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block />
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_MenoPriezvisko2_1">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="266.50px" />
+				<fo:table-column column-width="273.00px" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<xsl:choose>
+								<xsl:when test="not(/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:GivenName)">
+									<xsl:call-template name="Sekcia_MenoZastupcaZalobcaFO_1" />
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:for-each select="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:GivenName">
+										<xsl:call-template name="Sekcia_MenoZastupcaZalobcaFO_1" />
+									</xsl:for-each>
+								</xsl:otherwise>
+							</xsl:choose>
+							<xsl:if test="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:GivenFamilyName">
+								<xsl:call-template name="rodnePriezviskoPomSekcia" />
+							</xsl:if>
+							<xsl:choose>
+								<xsl:when test="not(/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:Affix[@type='qualification' and @position='prefix'])">
+									<xsl:call-template name="Sekcia_TitulPredZastupcaZalobcaFO_1" />
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:for-each select="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:Affix[@type='qualification' and @position='prefix']">
+										<xsl:call-template name="Sekcia_TitulPredZastupcaZalobcaFO_1" />
+									</xsl:for-each>
+								</xsl:otherwise>
+							</xsl:choose>
+						</fo:table-cell>
+						<fo:table-cell>
+							<xsl:choose>
+								<xsl:when test="not(/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:FamilyName)">
+									<xsl:call-template name="Sekcia_PriezviskoZastupcaZalobcaFO_1" />
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:for-each select="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:FamilyName">
+										<xsl:call-template name="Sekcia_PriezviskoZastupcaZalobcaFO_1" />
+									</xsl:for-each>
+								</xsl:otherwise>
+							</xsl:choose>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline color="white">___</fo:inline>
+													<fo:inline>&#x00A0;</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+							<xsl:choose>
+								<xsl:when test="not(/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:Affix[@type='qualification' and @position='postfix'])">
+									<xsl:call-template name="Sekcia_TitulZaZastupcaZalobcaFO_1" />
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:for-each select="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:Affix[@type='qualification' and @position='postfix']">
+										<xsl:call-template name="Sekcia_TitulZaZastupcaZalobcaFO_1" />
+									</xsl:for-each>
+								</xsl:otherwise>
+							</xsl:choose>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_MenoZastupcaZalobcaFO_1">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Meno</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='GivenName'">
+														<xsl:if test=".">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="." />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="rodnePriezviskoPomSekcia">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="128.70px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Rodné priezvisko</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:GivenFamilyName">
+														<xsl:call-template name="intersperse-with-zero-spaces">
+															<xsl:with-param name="str" select="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:GivenFamilyName" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_TitulPredZastupcaZalobcaFO_1">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Titul pred</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='Affix'">
+														<xsl:if test="./egonp:Codelist[egonp:CodelistCode='cis_0062']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Codelist[egonp:CodelistCode='cis_0062']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_PriezviskoZastupcaZalobcaFO_1">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Priezvisko</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='FamilyName'">
+														<xsl:if test=".">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="." />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_TitulZaZastupcaZalobcaFO_1">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Titul za</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='Affix'">
+														<xsl:if test="./egonp:Codelist[egonp:CodelistCode='cis_0063']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Codelist[egonp:CodelistCode='cis_0063']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_AdresaZastupcaFO_1">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:block background-color="#F8EFFB" color="#4b0082" margin-left="3pt" margin-top="3pt" margin-right="3pt" padding-left="1pt" padding-top="2pt" keep-with-next.within-page="always" keep-together.within-column="1">
+					<fo:block>
+						<fo:inline>Sídlo zástupcu</fo:inline>
+					</fo:block>
+				</fo:block>
+				<fo:block color="white" keep-with-next.within-page="always" keep-together.within-column="1">|</fo:block>
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="266.50px" />
+					<fo:table-column column-width="282.75px" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="126.75px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Štát</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Country/egonp:Codelist[egonp:CodelistCode='cis_0086']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Country/egonp:Codelist[egonp:CodelistCode='cis_0086']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="126.75px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Ulica</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:StreetName">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:StreetName" />
+															</xsl:call-template>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="126.75px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>PSČ</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:DeliveryAddress/egonp:PostalCode">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:DeliveryAddress/egonp:PostalCode" />
+															</xsl:call-template>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+							</fo:table-cell>
+							<fo:table-cell>
+								<fo:block>
+									<xsl:if test="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']/text()">
+										<fo:block margin-top="3mm">
+											<fo:table table-layout="fixed" width="100%">
+												<fo:table-column column-width="128.70px" />
+												<fo:table-column column-width="91.00px" />
+												<fo:table-body>
+													<fo:table-row>
+														<fo:table-cell>
+															<fo:block linefeed-treatment="preserve">
+																<fo:inline>Obec</fo:inline>
+															</fo:block>
+														</fo:table-cell>
+														<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+															<fo:block>
+																<xsl:if test="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+																	<xsl:call-template name="intersperse-with-zero-spaces">
+																		<xsl:with-param name="str" select="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+																	</xsl:call-template>
+																</xsl:if>
+															</fo:block>
+														</fo:table-cell>
+													</fo:table-row>
+												</fo:table-body>
+											</fo:table>
+										</fo:block>
+									</xsl:if>
+								</fo:block>
+								<fo:block>
+									<xsl:if test="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:NonCodelistData/text() or (not(/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:NonCodelistData/text())and not(/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']/text())and not(/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemCode/text()))">
+										<fo:block margin-top="3mm">
+											<fo:table table-layout="fixed" width="100%">
+												<fo:table-column column-width="128.70px" />
+												<fo:table-column column-width="104.00px" />
+												<fo:table-body>
+													<fo:table-row>
+														<fo:table-cell>
+															<fo:block linefeed-treatment="preserve">
+																<fo:inline>Obec</fo:inline>
+															</fo:block>
+														</fo:table-cell>
+														<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+															<fo:block>
+																<xsl:if test="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:NonCodelistData">
+																	<xsl:call-template name="intersperse-with-zero-spaces">
+																		<xsl:with-param name="str" select="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:NonCodelistData" />
+																	</xsl:call-template>
+																</xsl:if>
+															</fo:block>
+														</fo:table-cell>
+													</fo:table-row>
+												</fo:table-body>
+											</fo:table>
+										</fo:block>
+									</xsl:if>
+								</fo:block>
+								<xsl:call-template name="Sekcia_SupisneZastupcaFO_1" />
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_SupisneZastupcaFO_1">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="131.95px" />
+				<fo:table-column column-width="58.50px" />
+				<fo:table-column column-width="65.00px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>Súpisné / Orientačné číslo</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="39.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:PropertyRegistrationNumber">
+														<xsl:call-template name="intersperse-with-zero-spaces">
+															<xsl:with-param name="str" select="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:PropertyRegistrationNumber" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="45.50px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:BuildingNumber">
+														<xsl:call-template name="intersperse-with-zero-spaces">
+															<xsl:with-param name="str" select="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:BuildingNumber" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcie_KontaktneZastupcaFO_1">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:block background-color="#F8EFFB" color="#4b0082" margin-left="3pt" margin-top="3pt" margin-right="3pt" padding-left="1pt" padding-top="2pt" keep-with-next.within-page="always" keep-together.within-column="1">
+					<fo:block>
+						<fo:inline>Kontaktné údaje</fo:inline>
+					</fo:block>
+				</fo:block>
+				<fo:block color="white" keep-with-next.within-page="always" keep-together.within-column="1">|</fo:block>
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="proportional-column-width(1)" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<xsl:choose>
+									<xsl:when test="not(/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:PhysicalPersonData/egonp:PersonData/egonp:TelephoneAddress)">
+										<xsl:call-template name="Sekcia_TelefonZastupcaZalobcaFO_1" />
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:for-each select="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:PhysicalPersonData/egonp:PersonData/egonp:TelephoneAddress">
+											<xsl:call-template name="Sekcia_TelefonZastupcaZalobcaFO_1" />
+										</xsl:for-each>
+									</xsl:otherwise>
+								</xsl:choose>
+								<xsl:call-template name="Sec_EmailSchrankaFO_B" />
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_TelefonZastupcaZalobcaFO_1">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="266.50px" />
+				<fo:table-column column-width="273.00px" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="128.05px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Typ telefónu</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='TelephoneAddress'">
+														<xsl:if test="./egonp:TelephoneType/egonp:Codelist[egonp:CodelistCode='cis_4005']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:TelephoneType/egonp:Codelist[egonp:CodelistCode='cis_4005']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Telefónne číslo</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='TelephoneAddress'">
+														<xsl:if test="./egonp:Number/egonp:FormattedNumber">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Number/egonp:FormattedNumber" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sec_EmailSchrankaFO_B">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="266.50px" />
+				<fo:table-column column-width="273.00px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="126.75px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Email</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:call-template name="formatAnyUri">
+														<xsl:with-param name="anyUri" select="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:PhysicalPersonData/egonp:PersonData/egonp:ElectronicAddress/egonp:InternetAddress" />
+													</xsl:call-template>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Označenie elektronickej schránky</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:PhysicalPersonData/egonp:PersonData/egonp:MarkOfElectronicMailbox">
+														<xsl:call-template name="intersperse-with-zero-spaces">
+															<xsl:with-param name="str" select="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:PhysicalPersonData/egonp:PersonData/egonp:MarkOfElectronicMailbox" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_UdajeZastupcaPO_1">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="proportional-column-width(1)" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="565.50px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block margin-top="1mm">
+														<fo:inline>Informácie o právnickej osobe je možné načítať na základe IČO z Registra právnických osôb pomocou tlačidla "Načítať údaje z RPO".</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<xsl:call-template name="SekciaICODICZastupcaZalobcu_1" />
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="128.70px" />
+										<fo:table-column column-width="390.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Názov</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:CorporateBodyData/egonp:PersonData/egonp:CorporateBody/egonp:CorporateBodyFullName">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:CorporateBodyData/egonp:PersonData/egonp:CorporateBody/egonp:CorporateBodyFullName" />
+															</xsl:call-template>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<xsl:call-template name="Sekcia_AdresaZastupcaPO_1" />
+								<xsl:call-template name="Sekcie_KontaktneZastupcaPO_1" />
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SekciaICODICZastupcaZalobcu_1">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="159.25px" />
+				<fo:table-column column-width="123.50px" />
+				<fo:table-column column-width="266.50px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="24.70px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>IČO</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:CorporateBodyData/egonp:PersonData/egonp:ID[egonp:IdentifierType/egonp:Codelist[egonp:CodelistCode='4001']/egonp:CodelistItem[egonp:ItemCode='7']]/egonp:IdentifierValue">
+														<xsl:call-template name="intersperse-with-zero-spaces">
+															<xsl:with-param name="str" select="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:CorporateBodyData/egonp:PersonData/egonp:ID[egonp:IdentifierType/egonp:Codelist[egonp:CodelistCode='4001']/egonp:CodelistItem[egonp:ItemCode='7']]/egonp:IdentifierValue" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block />
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="123.50px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Iné identifikačné číslo</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:CorporateBodyData/egonp:OtherIdentifier">
+														<xsl:call-template name="intersperse-with-zero-spaces">
+															<xsl:with-param name="str" select="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:CorporateBodyData/egonp:OtherIdentifier" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_AdresaZastupcaPO_1">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:block background-color="#F8EFFB" color="#4b0082" margin-left="3pt" margin-top="3pt" margin-right="3pt" padding-left="1pt" padding-top="2pt" keep-with-next.within-page="always" keep-together.within-column="1">
+					<fo:block>
+						<fo:inline>Adresa / sídlo zástupcu</fo:inline>
+					</fo:block>
+				</fo:block>
+				<fo:block color="white" keep-with-next.within-page="always" keep-together.within-column="1">|</fo:block>
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="266.50px" />
+					<fo:table-column column-width="282.75px" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="126.75px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Štát</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Country/egonp:Codelist[egonp:CodelistCode='cis_0086']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Country/egonp:Codelist[egonp:CodelistCode='cis_0086']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="126.75px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Ulica</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:StreetName">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:StreetName" />
+															</xsl:call-template>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="126.75px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>PSČ</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:DeliveryAddress/egonp:PostalCode">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:DeliveryAddress/egonp:PostalCode" />
+															</xsl:call-template>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+							</fo:table-cell>
+							<fo:table-cell>
+								<fo:block>
+									<xsl:if test="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']/text()">
+										<fo:block margin-top="3mm">
+											<fo:table table-layout="fixed" width="100%">
+												<fo:table-column column-width="128.70px" />
+												<fo:table-column column-width="91.00px" />
+												<fo:table-body>
+													<fo:table-row>
+														<fo:table-cell>
+															<fo:block linefeed-treatment="preserve">
+																<fo:inline>Obec</fo:inline>
+															</fo:block>
+														</fo:table-cell>
+														<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+															<fo:block>
+																<xsl:if test="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+																	<xsl:call-template name="intersperse-with-zero-spaces">
+																		<xsl:with-param name="str" select="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+																	</xsl:call-template>
+																</xsl:if>
+															</fo:block>
+														</fo:table-cell>
+													</fo:table-row>
+												</fo:table-body>
+											</fo:table>
+										</fo:block>
+									</xsl:if>
+								</fo:block>
+								<fo:block>
+									<xsl:if test="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:NonCodelistData/text() or (not(/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:NonCodelistData/text())and not(/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']/text())and not(/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemCode/text()))">
+										<fo:block margin-top="3mm">
+											<fo:table table-layout="fixed" width="100%">
+												<fo:table-column column-width="128.70px" />
+												<fo:table-column column-width="104.00px" />
+												<fo:table-body>
+													<fo:table-row>
+														<fo:table-cell>
+															<fo:block linefeed-treatment="preserve">
+																<fo:inline>Obec</fo:inline>
+															</fo:block>
+														</fo:table-cell>
+														<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+															<fo:block>
+																<xsl:if test="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:NonCodelistData">
+																	<xsl:call-template name="intersperse-with-zero-spaces">
+																		<xsl:with-param name="str" select="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:NonCodelistData" />
+																	</xsl:call-template>
+																</xsl:if>
+															</fo:block>
+														</fo:table-cell>
+													</fo:table-row>
+												</fo:table-body>
+											</fo:table>
+										</fo:block>
+									</xsl:if>
+								</fo:block>
+								<xsl:call-template name="Sekcia_SupisneZastupcaPO_1" />
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_SupisneZastupcaPO_1">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="131.95px" />
+				<fo:table-column column-width="58.50px" />
+				<fo:table-column column-width="65.00px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>Súpisné / Orientačné číslo</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="39.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:PropertyRegistrationNumber">
+														<xsl:call-template name="intersperse-with-zero-spaces">
+															<xsl:with-param name="str" select="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:PropertyRegistrationNumber" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="45.50px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:BuildingNumber">
+														<xsl:call-template name="intersperse-with-zero-spaces">
+															<xsl:with-param name="str" select="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:BuildingNumber" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcie_KontaktneZastupcaPO_1">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:block background-color="#F8EFFB" color="#4b0082" margin-left="3pt" margin-top="3pt" margin-right="3pt" padding-left="1pt" padding-top="2pt" keep-with-next.within-page="always" keep-together.within-column="1">
+					<fo:block>
+						<fo:inline>Kontaktné údaje</fo:inline>
+					</fo:block>
+				</fo:block>
+				<fo:block color="white" keep-with-next.within-page="always" keep-together.within-column="1">|</fo:block>
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="proportional-column-width(1)" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<xsl:choose>
+									<xsl:when test="not(/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:CorporateBodyData/egonp:PersonData/egonp:TelephoneAddress)">
+										<xsl:call-template name="Sekcia_TelefonZastupcaZalobcaPO_1" />
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:for-each select="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:CorporateBodyData/egonp:PersonData/egonp:TelephoneAddress">
+											<xsl:call-template name="Sekcia_TelefonZastupcaZalobcaPO_1" />
+										</xsl:for-each>
+									</xsl:otherwise>
+								</xsl:choose>
+								<xsl:call-template name="Sec_EmailSchrankaPO_B" />
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_TelefonZastupcaZalobcaPO_1">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="266.50px" />
+				<fo:table-column column-width="273.00px" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="128.05px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Typ telefónu</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='TelephoneAddress'">
+														<xsl:if test="./egonp:TelephoneType/egonp:Codelist[egonp:CodelistCode='cis_4005']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:TelephoneType/egonp:Codelist[egonp:CodelistCode='cis_4005']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Telefónne číslo</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='TelephoneAddress'">
+														<xsl:if test="./egonp:Number/egonp:FormattedNumber">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Number/egonp:FormattedNumber" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sec_EmailSchrankaPO_B">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="266.50px" />
+				<fo:table-column column-width="273.00px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="126.75px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Email</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:call-template name="formatAnyUri">
+														<xsl:with-param name="anyUri" select="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:CorporateBodyData/egonp:PersonData/egonp:ElectronicAddress/egonp:InternetAddress" />
+													</xsl:call-template>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Označenie elektronickej schránky</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:CorporateBodyData/egonp:PersonData/egonp:MarkOfElectronicMailbox">
+														<xsl:call-template name="intersperse-with-zero-spaces">
+															<xsl:with-param name="str" select="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:CorporateBodyData/egonp:PersonData/egonp:MarkOfElectronicMailbox" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="B_FudajeObankovomUcteUcastnikKonaniaOpravneny">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:block background-color="#F8EFFB" color="#4b0082" margin-left="3pt" margin-top="3pt" margin-right="3pt" padding-left="1pt" padding-top="2pt" keep-with-next.within-page="always" keep-together.within-column="1">
+					<fo:block>
+						<fo:inline>Údaje o bankovom účte právneho zástupcu (spoločného zástupcu)</fo:inline>
+					</fo:block>
+				</fo:block>
+				<fo:block color="white" keep-with-next.within-page="always" keep-together.within-column="1">|</fo:block>
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="proportional-column-width(1)" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<xsl:choose>
+									<xsl:when test="not(/egonp:ProposalForExecution/egonp:LegitimatePerson/egonp:BankConnection)">
+										<xsl:call-template name="B_UdajeZalovanaSuma" />
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:if test="/egonp:ProposalForExecution/egonp:LegitimatePerson/egonp:BankConnection">
+											<xsl:call-template name="B_UdajeZalovanaSuma" />
+										</xsl:if>
+									</xsl:otherwise>
+								</xsl:choose>
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="B_UdajeZalovanaSuma">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="565.50px" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<xsl:call-template name="hlavickaZalovanaSuma_1" />
+							<xsl:call-template name="udajeZalovanaSuma_1" />
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="hlavickaZalovanaSuma_1">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="159.25px" />
+				<fo:table-column column-width="136.50px" />
+				<fo:table-column column-width="74.75px" />
+				<fo:table-column column-width="74.75px" />
+				<fo:table-column column-width="74.75px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline color="white">___</fo:inline>
+													<fo:inline>&#x00A0;</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>IBAN</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>BIC</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>Variabilný symbol</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>Špecifický symbol</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="udajeZalovanaSuma_1">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="156.00px" />
+				<fo:table-column column-width="139.75px" />
+				<fo:table-column column-width="74.75px" />
+				<fo:table-column column-width="74.75px" />
+				<fo:table-column column-width="74.75px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="162.50px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>Údaje o bankovom účte</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:BankConnection/egonp:InternationalBankConnection/egonp:IBAN">
+														<xsl:call-template name="intersperse-with-zero-spaces">
+															<xsl:with-param name="str" select="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:BankConnection/egonp:InternationalBankConnection/egonp:IBAN" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="65.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:BankConnection/egonp:InternationalBankConnection/egonp:BIC">
+														<xsl:call-template name="intersperse-with-zero-spaces">
+															<xsl:with-param name="str" select="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:BankConnection/egonp:InternationalBankConnection/egonp:BIC" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="65.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:BankConnection/egonp:VariableSymbol">
+														<xsl:call-template name="intersperse-with-zero-spaces">
+															<xsl:with-param name="str" select="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:BankConnection/egonp:VariableSymbol" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="65.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:BankConnection/egonp:SpecificSymbol">
+														<xsl:call-template name="intersperse-with-zero-spaces">
+															<xsl:with-param name="str" select="/egonp:ProposalForExecution/egonp:CollectiveRepresentative/egonp:BankConnection/egonp:SpecificSymbol" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Csekcia_ucastniciKonaniaPovinny">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:block background-color="#F8EFFB" color="#4b0082" margin-left="3pt" margin-top="3pt" margin-right="3pt" padding-left="1pt" padding-top="2pt" keep-with-next.within-page="always" keep-together.within-column="1">
+					<fo:block>
+						<fo:inline>C) Účastníci konania a ich zákonní zástupcovia – povinní</fo:inline>
+					</fo:block>
+				</fo:block>
+				<fo:block color="white" keep-with-next.within-page="always" keep-together.within-column="1">|</fo:block>
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="proportional-column-width(1)" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<xsl:choose>
+									<xsl:when test="not(/egonp:ProposalForExecution/egonp:ObligatoryPerson)">
+										<xsl:call-template name="Zalovany" />
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:for-each select="/egonp:ProposalForExecution/egonp:ObligatoryPerson">
+											<xsl:call-template name="Zalovany" />
+										</xsl:for-each>
+									</xsl:otherwise>
+								</xsl:choose>
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Zalovany">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:block background-color="#F8EFFB" color="#4b0082" margin-left="3pt" margin-top="3pt" margin-right="3pt" padding-left="1pt" padding-top="2pt" keep-with-next.within-page="always" keep-together.within-column="1">
+					<fo:block>
+						<fo:inline>Povinný č.</fo:inline>
+					</fo:block>
+				</fo:block>
+				<fo:block color="white" keep-with-next.within-page="always" keep-together.within-column="1">|</fo:block>
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="proportional-column-width(1)" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<xsl:call-template name="CisloSekcie_1" />
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="135.20px" />
+										<fo:table-column column-width="proportional-column-width(1)" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Typ subjektu</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell>
+													<fo:block>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="./egonp:SubjectType/egonp:Codelist[egonp:CodelistCode='57']/egonp:CodelistItem/egonp:ItemCode[text()='Fyzick&#225; osoba']">
+																					<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>Fyzick&#225; osoba</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="./egonp:SubjectType/egonp:Codelist[egonp:CodelistCode='57']/egonp:CodelistItem/egonp:ItemCode[text()='Pr&#225;vnick&#225; osoba']">
+																					<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>Pr&#225;vnick&#225; osoba</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="./egonp:SubjectType/egonp:Codelist[egonp:CodelistCode='57']/egonp:CodelistItem/egonp:ItemCode[text()='Št&#225;t']">
+																					<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>Št&#225;t</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<xsl:if test="./egonp:PhysicalPersonData">
+									<xsl:call-template name="Sekcia_UdajeOsobyFO" />
+								</xsl:if>
+								<xsl:if test="./egonp:CorporateBodyData">
+									<xsl:call-template name="Sekcia_UdajeOsobyPO" />
+								</xsl:if>
+								<xsl:if test="./egonp:State">
+									<xsl:call-template name="Sekcia_UdajeOsobyStat" />
+								</xsl:if>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="23.40px" />
+										<fo:table-column />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block>
+														<xsl:choose>
+															<xsl:when test="./egonp:HasLegalRepresentative[text()='1' or text()='true']">
+																<fo:inline font-family="Wingdings">&#xF078;</fo:inline>
+															</xsl:when>
+															<xsl:otherwise>
+																<fo:inline font-family="Wingdings">&#xF0A8;</fo:inline>
+															</xsl:otherwise>
+														</xsl:choose>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Povinný má zákonného zástupcu (správcu)</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<xsl:for-each select="./egonp:LegalRepresentative">
+									<xsl:call-template name="Sekcia_MaZastupcu" />
+								</xsl:for-each>
+								<fo:block />
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="CisloSekcie_1">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="42.25px" />
+				<fo:table-column column-width="260.00px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline color="white">___</fo:inline>
+													<fo:inline>&#x00A0;</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="13.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px" font-weight="bold" font-size="1.0em">
+												<fo:block>
+													<xsl:if test="local-name()='ObligatoryPerson'">
+														<xsl:if test="./egonp:SectionNumber">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:SectionNumber" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_UdajeOsobyFO">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="proportional-column-width(1)" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="565.50px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block margin-top="1mm">
+														<fo:inline>Ak sa jedná o fyzickú osobu – podnikateľa, informácie o osobe je možné načítať na základe IČO z Registra právnických osôb po stlačení tlačidla "Načítať údaje z RPO".</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<xsl:call-template name="SekciaIdentifikatoryC" />
+								<xsl:call-template name="MenoPriezviskoNavrhovatelFO" />
+								<xsl:call-template name="Sekcia_IcoOm" />
+								<xsl:call-template name="Sekcia_Adresa1NavrhovatelaFO" />
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="23.40px" />
+										<fo:table-column />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block>
+														<xsl:choose>
+															<xsl:when test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddressCheckBox[text()='1' or text()='true']">
+																<fo:inline font-family="Wingdings">&#xF078;</fo:inline>
+															</xsl:when>
+															<xsl:otherwise>
+																<fo:inline font-family="Wingdings">&#xF0A8;</fo:inline>
+															</xsl:otherwise>
+														</xsl:choose>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Adresa, na ktorú sa má doručovať prednostne</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:Country/egonp:Codelist[egonp:CodelistCode='69']/egonp:CodelistItem/egonp:ItemCode or ./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:Country/egonp:Codelist[egonp:CodelistCode='69']/egonp:CodelistItem/egonp:ItemName[@Language='sk'] or ./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:StreetName or ./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:DeliveryAddress/egonp:PostalCode or ./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk'] or ./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:NonCodelistData or ./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemCode or ./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:PropertyRegistrationNumber or ./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:BuildingNumber">
+									<xsl:call-template name="Sekcia_Adresa2NavrhovatelaFO" />
+								</xsl:if>
+								<xsl:call-template name="Sekcie_KontaktneNavrhovatelFO" />
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SekciaIdentifikatoryC">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="111.80px" />
+				<fo:table-column column-width="104.00px" />
+				<fo:table-column column-width="172.25px" />
+				<fo:table-column column-width="165.75px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="21.45px" />
+									<fo:table-column column-width="65.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve" margin-left="0px">
+													<fo:inline>IČO</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='ObligatoryPerson'">
+														<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:ID[egonp:IdentifierType/egonp:Codelist[egonp:CodelistCode='4001']/egonp:CodelistItem[egonp:ItemCode='7']]/egonp:IdentifierValue">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:ID[egonp:IdentifierType/egonp:Codelist[egonp:CodelistCode='4001']/egonp:CodelistItem[egonp:ItemCode='7']]/egonp:IdentifierValue" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block />
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="76.70px" />
+									<fo:table-column column-width="65.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve" margin-left="0px">
+													<fo:inline>Dátum narodenia</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='ObligatoryPerson'">
+														<xsl:call-template name="formatToSkDate">
+															<xsl:with-param name="date" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:Birth/egonp:DateOfBirth" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="63.70px" />
+									<fo:table-column column-width="65.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve" margin-left="0px">
+													<fo:inline>Rodné číslo</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='ObligatoryPerson'">
+														<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:ID[egonp:IdentifierType/egonp:Codelist[egonp:CodelistCode='4001']/egonp:CodelistItem[egonp:ItemCode='9']]/egonp:IdentifierValue">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:ID[egonp:IdentifierType/egonp:Codelist[egonp:CodelistCode='4001']/egonp:CodelistItem[egonp:ItemCode='9']]/egonp:IdentifierValue" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="MenoPriezviskoNavrhovatelFO">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="279.50px" />
+				<fo:table-column column-width="273.00px" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<xsl:choose>
+								<xsl:when test="not(./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:GivenName)">
+									<xsl:call-template name="Sekcia_MenoNavrhovatela" />
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:for-each select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:GivenName">
+										<xsl:call-template name="Sekcia_MenoNavrhovatela" />
+									</xsl:for-each>
+								</xsl:otherwise>
+							</xsl:choose>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="128.70px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Rodné priezvisko</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='ObligatoryPerson'">
+														<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:GivenFamilyName">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:GivenFamilyName" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+							<xsl:choose>
+								<xsl:when test="not(./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:Affix[@type='qualification' and @position='prefix'])">
+									<xsl:call-template name="Sekcia_TitulPred" />
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:for-each select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:Affix[@type='qualification' and @position='prefix']">
+										<xsl:call-template name="Sekcia_TitulPred" />
+									</xsl:for-each>
+								</xsl:otherwise>
+							</xsl:choose>
+						</fo:table-cell>
+						<fo:table-cell>
+							<xsl:choose>
+								<xsl:when test="not(./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:FamilyName)">
+									<xsl:call-template name="Sekcia_PriezviskoNavrhovatela" />
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:for-each select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:FamilyName">
+										<xsl:call-template name="Sekcia_PriezviskoNavrhovatela" />
+									</xsl:for-each>
+								</xsl:otherwise>
+							</xsl:choose>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline color="white">___</fo:inline>
+													<fo:inline>&#x00A0;</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+							<xsl:choose>
+								<xsl:when test="not(./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:Affix[@type='qualification' and @position='postfix'])">
+									<xsl:call-template name="Sekcia_TitulZa" />
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:for-each select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:Affix[@type='qualification' and @position='postfix']">
+										<xsl:call-template name="Sekcia_TitulZa" />
+									</xsl:for-each>
+								</xsl:otherwise>
+							</xsl:choose>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_MenoNavrhovatela">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Meno</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='GivenName'">
+														<xsl:if test=".">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="." />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_TitulPred">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Titul pred</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='Affix'">
+														<xsl:if test="./egonp:Codelist[egonp:CodelistCode='cis_0062']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Codelist[egonp:CodelistCode='cis_0062']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_PriezviskoNavrhovatela">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Priezvisko</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='FamilyName'">
+														<xsl:if test=".">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="." />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_TitulZa">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Titul za</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='Affix'">
+														<xsl:if test="./egonp:Codelist[egonp:CodelistCode='cis_0063']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Codelist[egonp:CodelistCode='cis_0063']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_IcoOm">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="383.50px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Obchodné meno</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='ObligatoryPerson'">
+														<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:CorporateBody/egonp:CorporateBodyFullName">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:CorporateBody/egonp:CorporateBodyFullName" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_Adresa1NavrhovatelaFO">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:block background-color="#F8EFFB" color="#4b0082" margin-left="3pt" margin-top="3pt" margin-right="3pt" padding-left="1pt" padding-top="2pt" keep-with-next.within-page="always" keep-together.within-column="1">
+					<fo:block>
+						<fo:inline>Trvalý pobyt / Pobyt / Miesto podnikania</fo:inline>
+					</fo:block>
+				</fo:block>
+				<fo:block color="white" keep-with-next.within-page="always" keep-together.within-column="1">|</fo:block>
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="273.00px" />
+					<fo:table-column column-width="282.75px" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="127.40px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Štát</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='ObligatoryPerson'">
+															<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Country/egonp:Codelist[egonp:CodelistCode='cis_0086']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Country/egonp:Codelist[egonp:CodelistCode='cis_0086']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="127.40px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Ulica</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='ObligatoryPerson'">
+															<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:StreetName">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:StreetName" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="127.40px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>PSČ</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='ObligatoryPerson'">
+															<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:DeliveryAddress/egonp:PostalCode">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:DeliveryAddress/egonp:PostalCode" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+							</fo:table-cell>
+							<fo:table-cell>
+								<fo:block>
+									<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']/text()">
+										<fo:block margin-top="3mm">
+											<fo:table table-layout="fixed" width="100%">
+												<fo:table-column column-width="130.00px" />
+												<fo:table-column column-width="91.00px" />
+												<fo:table-body>
+													<fo:table-row>
+														<fo:table-cell>
+															<fo:block linefeed-treatment="preserve">
+																<fo:inline>Obec</fo:inline>
+															</fo:block>
+														</fo:table-cell>
+														<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+															<fo:block>
+																<xsl:if test="local-name()='ObligatoryPerson'">
+																	<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+																		<xsl:call-template name="intersperse-with-zero-spaces">
+																			<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+																		</xsl:call-template>
+																	</xsl:if>
+																</xsl:if>
+															</fo:block>
+														</fo:table-cell>
+													</fo:table-row>
+												</fo:table-body>
+											</fo:table>
+										</fo:block>
+									</xsl:if>
+								</fo:block>
+								<fo:block>
+									<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:NonCodelistData/text() or (not(./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:NonCodelistData/text())and not(./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']/text())and not(./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemCode/text()))">
+										<fo:block margin-top="3mm">
+											<fo:table table-layout="fixed" width="100%">
+												<fo:table-column column-width="130.00px" />
+												<fo:table-column column-width="104.00px" />
+												<fo:table-body>
+													<fo:table-row>
+														<fo:table-cell>
+															<fo:block linefeed-treatment="preserve">
+																<fo:inline>Obec</fo:inline>
+															</fo:block>
+														</fo:table-cell>
+														<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+															<fo:block>
+																<xsl:if test="local-name()='ObligatoryPerson'">
+																	<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:NonCodelistData">
+																		<xsl:call-template name="intersperse-with-zero-spaces">
+																			<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:NonCodelistData" />
+																		</xsl:call-template>
+																	</xsl:if>
+																</xsl:if>
+															</fo:block>
+														</fo:table-cell>
+													</fo:table-row>
+												</fo:table-body>
+											</fo:table>
+										</fo:block>
+									</xsl:if>
+								</fo:block>
+								<xsl:call-template name="Sekcia_Supisne1NavrhovatelFO" />
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_Supisne1NavrhovatelFO">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="133.25px" />
+				<fo:table-column column-width="58.50px" />
+				<fo:table-column column-width="65.00px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>Súpisné / Orientačné číslo</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="39.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='ObligatoryPerson'">
+														<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:PropertyRegistrationNumber">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:PropertyRegistrationNumber" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="45.50px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='ObligatoryPerson'">
+														<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:BuildingNumber">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:BuildingNumber" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_Adresa2NavrhovatelaFO">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:block background-color="#F8EFFB" color="#4b0082" margin-left="3pt" margin-top="3pt" margin-right="3pt" padding-left="1pt" padding-top="2pt" keep-with-next.within-page="always" keep-together.within-column="1">
+					<fo:block>
+						<fo:inline>Adresa, na ktorú sa má doručovať prednostne</fo:inline>
+					</fo:block>
+				</fo:block>
+				<fo:block color="white" keep-with-next.within-page="always" keep-together.within-column="1">|</fo:block>
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="273.00px" />
+					<fo:table-column column-width="282.75px" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="127.40px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Štát</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='ObligatoryPerson'">
+															<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:Country/egonp:Codelist[egonp:CodelistCode='69']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:Country/egonp:Codelist[egonp:CodelistCode='69']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="127.40px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Ulica</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='ObligatoryPerson'">
+															<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:StreetName">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:StreetName" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="127.40px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>PSČ</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='ObligatoryPerson'">
+															<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:DeliveryAddress/egonp:PostalCode">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:DeliveryAddress/egonp:PostalCode" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+							</fo:table-cell>
+							<fo:table-cell>
+								<fo:block>
+									<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']/text()">
+										<fo:block margin-top="3mm">
+											<fo:table table-layout="fixed" width="100%">
+												<fo:table-column column-width="130.00px" />
+												<fo:table-column column-width="91.00px" />
+												<fo:table-body>
+													<fo:table-row>
+														<fo:table-cell>
+															<fo:block linefeed-treatment="preserve">
+																<fo:inline>Obec</fo:inline>
+															</fo:block>
+														</fo:table-cell>
+														<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+															<fo:block>
+																<xsl:if test="local-name()='ObligatoryPerson'">
+																	<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+																		<xsl:call-template name="intersperse-with-zero-spaces">
+																			<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+																		</xsl:call-template>
+																	</xsl:if>
+																</xsl:if>
+															</fo:block>
+														</fo:table-cell>
+													</fo:table-row>
+												</fo:table-body>
+											</fo:table>
+										</fo:block>
+									</xsl:if>
+								</fo:block>
+								<fo:block>
+									<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:NonCodelistData/text() or (not(./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:NonCodelistData/text())and not(./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']/text())and not(./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemCode/text()))">
+										<fo:block margin-top="3mm">
+											<fo:table table-layout="fixed" width="100%">
+												<fo:table-column column-width="130.00px" />
+												<fo:table-column column-width="104.00px" />
+												<fo:table-body>
+													<fo:table-row>
+														<fo:table-cell>
+															<fo:block linefeed-treatment="preserve">
+																<fo:inline>Obec</fo:inline>
+															</fo:block>
+														</fo:table-cell>
+														<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+															<fo:block>
+																<xsl:if test="local-name()='ObligatoryPerson'">
+																	<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:NonCodelistData">
+																		<xsl:call-template name="intersperse-with-zero-spaces">
+																			<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:NonCodelistData" />
+																		</xsl:call-template>
+																	</xsl:if>
+																</xsl:if>
+															</fo:block>
+														</fo:table-cell>
+													</fo:table-row>
+												</fo:table-body>
+											</fo:table>
+										</fo:block>
+									</xsl:if>
+								</fo:block>
+								<xsl:call-template name="Sekcia_Supisne2NavrhovatelFO" />
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_Supisne2NavrhovatelFO">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="133.25px" />
+				<fo:table-column column-width="58.50px" />
+				<fo:table-column column-width="65.00px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>Súpisné / Orientačné číslo</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="39.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='ObligatoryPerson'">
+														<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:PropertyRegistrationNumber">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:PropertyRegistrationNumber" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="45.50px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='ObligatoryPerson'">
+														<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:BuildingNumber">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PreferenceAddress/egonp:BuildingNumber" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcie_KontaktneNavrhovatelFO">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:block background-color="#F8EFFB" color="#4b0082" margin-left="3pt" margin-top="3pt" margin-right="3pt" padding-left="1pt" padding-top="2pt" keep-with-next.within-page="always" keep-together.within-column="1">
+					<fo:block>
+						<fo:inline>Kontaktné údaje</fo:inline>
+					</fo:block>
+				</fo:block>
+				<fo:block color="white" keep-with-next.within-page="always" keep-together.within-column="1">|</fo:block>
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="proportional-column-width(1)" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<xsl:choose>
+									<xsl:when test="not(./egonp:PhysicalPersonData/egonp:PersonData/egonp:TelephoneAddress)">
+										<xsl:call-template name="Sekcia_TelefonNavrhovatelFO" />
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:for-each select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:TelephoneAddress">
+											<xsl:call-template name="Sekcia_TelefonNavrhovatelFO" />
+										</xsl:for-each>
+									</xsl:otherwise>
+								</xsl:choose>
+								<xsl:call-template name="Sec_EmailSchrankaFO_C" />
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_TelefonNavrhovatelFO">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="273.00px" />
+				<fo:table-column column-width="266.50px" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="127.40px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Typ telefónu</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='TelephoneAddress'">
+														<xsl:if test="./egonp:TelephoneType/egonp:Codelist[egonp:CodelistCode='cis_4005']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:TelephoneType/egonp:Codelist[egonp:CodelistCode='cis_4005']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Telefónne číslo</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='TelephoneAddress'">
+														<xsl:if test="./egonp:Number/egonp:FormattedNumber">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Number/egonp:FormattedNumber" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sec_EmailSchrankaFO_C">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="273.00px" />
+				<fo:table-column column-width="266.50px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="127.40px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Email</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='ObligatoryPerson'">
+														<xsl:call-template name="formatAnyUri">
+															<xsl:with-param name="anyUri" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:ElectronicAddress/egonp:InternetAddress" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Označenie elektronickej schránky</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='ObligatoryPerson'">
+														<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:MarkOfElectronicMailbox">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:MarkOfElectronicMailbox" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_UdajeOsobyPO">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="proportional-column-width(1)" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="565.50px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block margin-top="1mm">
+														<fo:inline>Informácie o právnickej osobe je možné načítať na základe IČO z Registra právnických osôb pomocou tlačidla "Načítať údaje z RPO".</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<xsl:call-template name="SekciaICODICNavrhovatelPO" />
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="130.00px" />
+										<fo:table-column column-width="383.50px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Názov</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='ObligatoryPerson'">
+															<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:CorporateBody/egonp:CorporateBodyFullName">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:CorporateBody/egonp:CorporateBodyFullName" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="23.40px" />
+										<fo:table-column />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block>
+														<xsl:choose>
+															<xsl:when test="./egonp:CorporateBodyData/egonp:PersonData/egonp:ControversyCheck[text()='1' or text()='true']">
+																<fo:inline font-family="Wingdings">&#xF078;</fo:inline>
+															</xsl:when>
+															<xsl:otherwise>
+																<fo:inline font-family="Wingdings">&#xF0A8;</fo:inline>
+															</xsl:otherwise>
+														</xsl:choose>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Spor sa týka organizačnej zložky právnickej osoby</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<xsl:call-template name="sporPO_1" />
+								<xsl:call-template name="Sekcia_Adresa1NavrhovatelaPO" />
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="23.40px" />
+										<fo:table-column />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block>
+														<xsl:choose>
+															<xsl:when test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddressCheckBox[text()='1' or text()='true']">
+																<fo:inline font-family="Wingdings">&#xF078;</fo:inline>
+															</xsl:when>
+															<xsl:otherwise>
+																<fo:inline font-family="Wingdings">&#xF0A8;</fo:inline>
+															</xsl:otherwise>
+														</xsl:choose>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Adresa, na ktorú sa má doručovať prednostne</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:Country/egonp:Codelist[egonp:CodelistCode='69']/egonp:CodelistItem/egonp:ItemCode or ./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:Country/egonp:Codelist[egonp:CodelistCode='69']/egonp:CodelistItem/egonp:ItemName[@Language='sk'] or ./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:StreetName or ./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:DeliveryAddress/egonp:PostalCode or ./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk'] or ./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:NonCodelistData or ./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemCode or ./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:PropertyRegistrationNumber or ./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:BuildingNumber">
+									<xsl:call-template name="Sekcia_Adresa2NavrhovatelaPO" />
+								</xsl:if>
+								<xsl:call-template name="Sekcie_KontaktneNavrhovatelPO" />
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SekciaICODICNavrhovatelPO">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="191.75px" />
+				<fo:table-column column-width="91.00px" />
+				<fo:table-column column-width="273.00px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="44.20px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>IČO</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='ObligatoryPerson'">
+														<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:ID[egonp:IdentifierType/egonp:Codelist[egonp:CodelistCode='4001']/egonp:CodelistItem[egonp:ItemCode='7']]/egonp:IdentifierValue">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:ID[egonp:IdentifierType/egonp:Codelist[egonp:CodelistCode='4001']/egonp:CodelistItem[egonp:ItemCode='7']]/egonp:IdentifierValue" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block />
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="123.50px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Iné identifikačné číslo</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='ObligatoryPerson'">
+														<xsl:if test="./egonp:CorporateBodyData/egonp:OtherIdentifier">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:OtherIdentifier" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="sporPO_1">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="455.00px" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="455.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>Údaje o organizačnej zložke vyplňte v časti "Povinný má zákonného zástupcu (správcu)".</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_Adresa1NavrhovatelaPO">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:block background-color="#F8EFFB" color="#4b0082" margin-left="3pt" margin-top="3pt" margin-right="3pt" padding-left="1pt" padding-top="2pt" keep-with-next.within-page="always" keep-together.within-column="1">
+					<fo:block>
+						<fo:inline>Adresa / sídlo</fo:inline>
+					</fo:block>
+				</fo:block>
+				<fo:block color="white" keep-with-next.within-page="always" keep-together.within-column="1">|</fo:block>
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="273.00px" />
+					<fo:table-column column-width="282.75px" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="127.40px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Štát</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='ObligatoryPerson'">
+															<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Country/egonp:Codelist[egonp:CodelistCode='cis_0086']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Country/egonp:Codelist[egonp:CodelistCode='cis_0086']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="127.40px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Ulica</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='ObligatoryPerson'">
+															<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:StreetName">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:StreetName" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="127.40px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>PSČ</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='ObligatoryPerson'">
+															<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:DeliveryAddress/egonp:PostalCode">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:DeliveryAddress/egonp:PostalCode" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+							</fo:table-cell>
+							<fo:table-cell>
+								<fo:block>
+									<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']/text()">
+										<fo:block margin-top="3mm">
+											<fo:table table-layout="fixed" width="100%">
+												<fo:table-column column-width="130.00px" />
+												<fo:table-column column-width="91.00px" />
+												<fo:table-body>
+													<fo:table-row>
+														<fo:table-cell>
+															<fo:block linefeed-treatment="preserve">
+																<fo:inline>Obec</fo:inline>
+															</fo:block>
+														</fo:table-cell>
+														<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+															<fo:block>
+																<xsl:if test="local-name()='ObligatoryPerson'">
+																	<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+																		<xsl:call-template name="intersperse-with-zero-spaces">
+																			<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+																		</xsl:call-template>
+																	</xsl:if>
+																</xsl:if>
+															</fo:block>
+														</fo:table-cell>
+													</fo:table-row>
+												</fo:table-body>
+											</fo:table>
+										</fo:block>
+									</xsl:if>
+								</fo:block>
+								<fo:block>
+									<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:NonCodelistData/text() or (not(./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:NonCodelistData/text())and not(./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']/text())and not(./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemCode/text()))">
+										<fo:block margin-top="3mm">
+											<fo:table table-layout="fixed" width="100%">
+												<fo:table-column column-width="130.00px" />
+												<fo:table-column column-width="104.00px" />
+												<fo:table-body>
+													<fo:table-row>
+														<fo:table-cell>
+															<fo:block linefeed-treatment="preserve">
+																<fo:inline>Obec</fo:inline>
+															</fo:block>
+														</fo:table-cell>
+														<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+															<fo:block>
+																<xsl:if test="local-name()='ObligatoryPerson'">
+																	<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:NonCodelistData">
+																		<xsl:call-template name="intersperse-with-zero-spaces">
+																			<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:NonCodelistData" />
+																		</xsl:call-template>
+																	</xsl:if>
+																</xsl:if>
+															</fo:block>
+														</fo:table-cell>
+													</fo:table-row>
+												</fo:table-body>
+											</fo:table>
+										</fo:block>
+									</xsl:if>
+								</fo:block>
+								<xsl:call-template name="Sekcia_Supisne1NavrhovatelPO" />
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_Supisne1NavrhovatelPO">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="133.25px" />
+				<fo:table-column column-width="58.50px" />
+				<fo:table-column column-width="65.00px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>Súpisné / Orientačné číslo</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="39.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='ObligatoryPerson'">
+														<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:PropertyRegistrationNumber">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:PropertyRegistrationNumber" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="45.50px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='ObligatoryPerson'">
+														<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:BuildingNumber">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:BuildingNumber" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_Adresa2NavrhovatelaPO">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:block background-color="#F8EFFB" color="#4b0082" margin-left="3pt" margin-top="3pt" margin-right="3pt" padding-left="1pt" padding-top="2pt" keep-with-next.within-page="always" keep-together.within-column="1">
+					<fo:block>
+						<fo:inline>Adresa, na ktorú sa má doručovať prednostne</fo:inline>
+					</fo:block>
+				</fo:block>
+				<fo:block color="white" keep-with-next.within-page="always" keep-together.within-column="1">|</fo:block>
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="273.00px" />
+					<fo:table-column column-width="282.75px" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="127.40px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Štát</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='ObligatoryPerson'">
+															<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:Country/egonp:Codelist[egonp:CodelistCode='69']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:Country/egonp:Codelist[egonp:CodelistCode='69']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="127.40px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Ulica</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='ObligatoryPerson'">
+															<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:StreetName">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:StreetName" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="127.40px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>PSČ</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='ObligatoryPerson'">
+															<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:DeliveryAddress/egonp:PostalCode">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:DeliveryAddress/egonp:PostalCode" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+							</fo:table-cell>
+							<fo:table-cell>
+								<fo:block>
+									<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']/text()">
+										<fo:block margin-top="3mm">
+											<fo:table table-layout="fixed" width="100%">
+												<fo:table-column column-width="130.00px" />
+												<fo:table-column column-width="91.00px" />
+												<fo:table-body>
+													<fo:table-row>
+														<fo:table-cell>
+															<fo:block linefeed-treatment="preserve">
+																<fo:inline>Obec</fo:inline>
+															</fo:block>
+														</fo:table-cell>
+														<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+															<fo:block>
+																<xsl:if test="local-name()='ObligatoryPerson'">
+																	<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+																		<xsl:call-template name="intersperse-with-zero-spaces">
+																			<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+																		</xsl:call-template>
+																	</xsl:if>
+																</xsl:if>
+															</fo:block>
+														</fo:table-cell>
+													</fo:table-row>
+												</fo:table-body>
+											</fo:table>
+										</fo:block>
+									</xsl:if>
+								</fo:block>
+								<fo:block>
+									<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:NonCodelistData/text() or (not(./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:NonCodelistData/text())and not(./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']/text())and not(./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemCode/text()))">
+										<fo:block margin-top="3mm">
+											<fo:table table-layout="fixed" width="100%">
+												<fo:table-column column-width="130.00px" />
+												<fo:table-column column-width="104.00px" />
+												<fo:table-body>
+													<fo:table-row>
+														<fo:table-cell>
+															<fo:block linefeed-treatment="preserve">
+																<fo:inline>Obec</fo:inline>
+															</fo:block>
+														</fo:table-cell>
+														<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+															<fo:block>
+																<xsl:if test="local-name()='ObligatoryPerson'">
+																	<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:NonCodelistData">
+																		<xsl:call-template name="intersperse-with-zero-spaces">
+																			<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:NonCodelistData" />
+																		</xsl:call-template>
+																	</xsl:if>
+																</xsl:if>
+															</fo:block>
+														</fo:table-cell>
+													</fo:table-row>
+												</fo:table-body>
+											</fo:table>
+										</fo:block>
+									</xsl:if>
+								</fo:block>
+								<xsl:call-template name="Sekcia_Supisne2NavrhovatelPO" />
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_Supisne2NavrhovatelPO">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="133.25px" />
+				<fo:table-column column-width="58.50px" />
+				<fo:table-column column-width="65.00px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>Súpisné / Orientačné číslo</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="39.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='ObligatoryPerson'">
+														<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:PropertyRegistrationNumber">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:PropertyRegistrationNumber" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="45.50px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='ObligatoryPerson'">
+														<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:BuildingNumber">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:PreferenceAddress/egonp:BuildingNumber" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcie_KontaktneNavrhovatelPO">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:block background-color="#F8EFFB" color="#4b0082" margin-left="3pt" margin-top="3pt" margin-right="3pt" padding-left="1pt" padding-top="2pt" keep-with-next.within-page="always" keep-together.within-column="1">
+					<fo:block>
+						<fo:inline>Kontaktné údaje</fo:inline>
+					</fo:block>
+				</fo:block>
+				<fo:block color="white" keep-with-next.within-page="always" keep-together.within-column="1">|</fo:block>
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="proportional-column-width(1)" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<xsl:choose>
+									<xsl:when test="not(./egonp:CorporateBodyData/egonp:PersonData/egonp:TelephoneAddress)">
+										<xsl:call-template name="Sekcia_TelefonNavrhovatelPO" />
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:for-each select="./egonp:CorporateBodyData/egonp:PersonData/egonp:TelephoneAddress">
+											<xsl:call-template name="Sekcia_TelefonNavrhovatelPO" />
+										</xsl:for-each>
+									</xsl:otherwise>
+								</xsl:choose>
+								<xsl:call-template name="Sec_EmailSchrankaPO_C" />
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_TelefonNavrhovatelPO">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="273.00px" />
+				<fo:table-column column-width="266.50px" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="127.40px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Typ telefónu</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='TelephoneAddress'">
+														<xsl:if test="./egonp:TelephoneType/egonp:Codelist[egonp:CodelistCode='cis_4005']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:TelephoneType/egonp:Codelist[egonp:CodelistCode='cis_4005']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Telefónne číslo</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='TelephoneAddress'">
+														<xsl:if test="./egonp:Number/egonp:FormattedNumber">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Number/egonp:FormattedNumber" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sec_EmailSchrankaPO_C">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="273.00px" />
+				<fo:table-column column-width="266.50px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="127.40px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Email</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='ObligatoryPerson'">
+														<xsl:call-template name="formatAnyUri">
+															<xsl:with-param name="anyUri" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:ElectronicAddress/egonp:InternetAddress" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Označenie elektronickej schránky</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='ObligatoryPerson'">
+														<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:MarkOfElectronicMailbox">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:MarkOfElectronicMailbox" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_UdajeOsobyStat">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="proportional-column-width(1)" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<xsl:choose>
+									<xsl:when test="not(./egonp:State/egonp:PersonData/egonp:CorporateBody)">
+										<xsl:call-template name="Sekcia_NazovNavrhovatelaStat" />
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:if test="./egonp:State/egonp:PersonData/egonp:CorporateBody">
+											<xsl:call-template name="Sekcia_NazovNavrhovatelaStat" />
+										</xsl:if>
+									</xsl:otherwise>
+								</xsl:choose>
+								<xsl:call-template name="Sekcia_Adresa1NavrhovatelaStat" />
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="23.40px" />
+										<fo:table-column />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block>
+														<xsl:choose>
+															<xsl:when test="./egonp:State/egonp:PersonData/egonp:PreferenceAddressCheckBox[text()='1' or text()='true']">
+																<fo:inline font-family="Wingdings">&#xF078;</fo:inline>
+															</xsl:when>
+															<xsl:otherwise>
+																<fo:inline font-family="Wingdings">&#xF0A8;</fo:inline>
+															</xsl:otherwise>
+														</xsl:choose>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Adresa, na ktorú sa má doručovať prednostne</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<xsl:if test="./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:Country/egonp:Codelist[egonp:CodelistCode='69']/egonp:CodelistItem/egonp:ItemCode or ./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:Country/egonp:Codelist[egonp:CodelistCode='69']/egonp:CodelistItem/egonp:ItemName[@Language='sk'] or ./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:StreetName or ./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:DeliveryAddress/egonp:PostalCode or ./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk'] or ./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:NonCodelistData or ./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemCode or ./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:PropertyRegistrationNumber or ./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:BuildingNumber">
+									<xsl:call-template name="Sekcia_Adresa2NavrhovatelaStat" />
+								</xsl:if>
+								<xsl:call-template name="Sekcie_KontaktneNavrhovatelStat" />
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_NazovNavrhovatelaStat">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="383.50px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Názov</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='ObligatoryPerson'">
+														<xsl:if test="./egonp:State/egonp:PersonData/egonp:CorporateBody/egonp:CorporateBodyFullName">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:State/egonp:PersonData/egonp:CorporateBody/egonp:CorporateBodyFullName" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="273.65px" />
+									<fo:table-column column-width="240.50px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Označenie štátneho orgánu, alebo právnickej osoby, ktorý za štát koná</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='ObligatoryPerson'">
+														<xsl:if test="./egonp:State/egonp:IndicationOfThePublicAuthority">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:State/egonp:IndicationOfThePublicAuthority" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="273.65px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>IČO</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='ObligatoryPerson'">
+														<xsl:if test="./egonp:State/egonp:PersonData/egonp:ID[egonp:IdentifierType/egonp:Codelist[egonp:CodelistCode='4001']/egonp:CodelistItem[egonp:ItemCode='7']]/egonp:IdentifierValue">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:State/egonp:PersonData/egonp:ID[egonp:IdentifierType/egonp:Codelist[egonp:CodelistCode='4001']/egonp:CodelistItem[egonp:ItemCode='7']]/egonp:IdentifierValue" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_Adresa1NavrhovatelaStat">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:block background-color="#F8EFFB" color="#4b0082" margin-left="3pt" margin-top="3pt" margin-right="3pt" padding-left="1pt" padding-top="2pt" keep-with-next.within-page="always" keep-together.within-column="1">
+					<fo:block>
+						<fo:inline>Adresa / sídlo</fo:inline>
+					</fo:block>
+				</fo:block>
+				<fo:block color="white" keep-with-next.within-page="always" keep-together.within-column="1">|</fo:block>
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="273.00px" />
+					<fo:table-column column-width="282.75px" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="127.40px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Štát</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='ObligatoryPerson'">
+															<xsl:if test="./egonp:State/egonp:PersonData/egonp:PhysicalAddress/egonp:Country/egonp:Codelist[egonp:CodelistCode='cis_0086']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:State/egonp:PersonData/egonp:PhysicalAddress/egonp:Country/egonp:Codelist[egonp:CodelistCode='cis_0086']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="127.40px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Ulica</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='ObligatoryPerson'">
+															<xsl:if test="./egonp:State/egonp:PersonData/egonp:PhysicalAddress/egonp:StreetName">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:State/egonp:PersonData/egonp:PhysicalAddress/egonp:StreetName" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="127.40px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>PSČ</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='ObligatoryPerson'">
+															<xsl:if test="./egonp:State/egonp:PersonData/egonp:PhysicalAddress/egonp:DeliveryAddress/egonp:PostalCode">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:State/egonp:PersonData/egonp:PhysicalAddress/egonp:DeliveryAddress/egonp:PostalCode" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+							</fo:table-cell>
+							<fo:table-cell>
+								<fo:block>
+									<xsl:if test="./egonp:State/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']/text()">
+										<fo:block margin-top="3mm">
+											<fo:table table-layout="fixed" width="100%">
+												<fo:table-column column-width="130.00px" />
+												<fo:table-column column-width="91.00px" />
+												<fo:table-body>
+													<fo:table-row>
+														<fo:table-cell>
+															<fo:block linefeed-treatment="preserve">
+																<fo:inline>Obec</fo:inline>
+															</fo:block>
+														</fo:table-cell>
+														<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+															<fo:block>
+																<xsl:if test="local-name()='ObligatoryPerson'">
+																	<xsl:if test="./egonp:State/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+																		<xsl:call-template name="intersperse-with-zero-spaces">
+																			<xsl:with-param name="str" select="./egonp:State/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+																		</xsl:call-template>
+																	</xsl:if>
+																</xsl:if>
+															</fo:block>
+														</fo:table-cell>
+													</fo:table-row>
+												</fo:table-body>
+											</fo:table>
+										</fo:block>
+									</xsl:if>
+								</fo:block>
+								<fo:block>
+									<xsl:if test="./egonp:State/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:NonCodelistData/text() or (not(./egonp:State/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:NonCodelistData/text())and not(./egonp:State/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']/text())and not(./egonp:State/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemCode/text()))">
+										<fo:block margin-top="3mm">
+											<fo:table table-layout="fixed" width="100%">
+												<fo:table-column column-width="130.00px" />
+												<fo:table-column column-width="104.00px" />
+												<fo:table-body>
+													<fo:table-row>
+														<fo:table-cell>
+															<fo:block linefeed-treatment="preserve">
+																<fo:inline>Obec</fo:inline>
+															</fo:block>
+														</fo:table-cell>
+														<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+															<fo:block>
+																<xsl:if test="local-name()='ObligatoryPerson'">
+																	<xsl:if test="./egonp:State/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:NonCodelistData">
+																		<xsl:call-template name="intersperse-with-zero-spaces">
+																			<xsl:with-param name="str" select="./egonp:State/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:NonCodelistData" />
+																		</xsl:call-template>
+																	</xsl:if>
+																</xsl:if>
+															</fo:block>
+														</fo:table-cell>
+													</fo:table-row>
+												</fo:table-body>
+											</fo:table>
+										</fo:block>
+									</xsl:if>
+								</fo:block>
+								<xsl:call-template name="Sekcia_Supisne1NavrhovatelStat" />
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_Supisne1NavrhovatelStat">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="133.25px" />
+				<fo:table-column column-width="58.50px" />
+				<fo:table-column column-width="65.00px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>Súpisné / Orientačné číslo</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="39.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='ObligatoryPerson'">
+														<xsl:if test="./egonp:State/egonp:PersonData/egonp:PhysicalAddress/egonp:PropertyRegistrationNumber">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:State/egonp:PersonData/egonp:PhysicalAddress/egonp:PropertyRegistrationNumber" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="45.50px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='ObligatoryPerson'">
+														<xsl:if test="./egonp:State/egonp:PersonData/egonp:PhysicalAddress/egonp:BuildingNumber">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:State/egonp:PersonData/egonp:PhysicalAddress/egonp:BuildingNumber" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_Adresa2NavrhovatelaStat">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:block background-color="#F8EFFB" color="#4b0082" margin-left="3pt" margin-top="3pt" margin-right="3pt" padding-left="1pt" padding-top="2pt" keep-with-next.within-page="always" keep-together.within-column="1">
+					<fo:block>
+						<fo:inline>Adresa, na ktorú sa má doručovať prednostne</fo:inline>
+					</fo:block>
+				</fo:block>
+				<fo:block color="white" keep-with-next.within-page="always" keep-together.within-column="1">|</fo:block>
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="273.00px" />
+					<fo:table-column column-width="282.75px" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="127.40px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Štát</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='ObligatoryPerson'">
+															<xsl:if test="./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:Country/egonp:Codelist[egonp:CodelistCode='69']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:Country/egonp:Codelist[egonp:CodelistCode='69']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="127.40px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Ulica</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='ObligatoryPerson'">
+															<xsl:if test="./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:StreetName">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:StreetName" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="127.40px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>PSČ</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='ObligatoryPerson'">
+															<xsl:if test="./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:DeliveryAddress/egonp:PostalCode">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:DeliveryAddress/egonp:PostalCode" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+							</fo:table-cell>
+							<fo:table-cell>
+								<fo:block>
+									<xsl:if test="./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']/text()">
+										<fo:block margin-top="3mm">
+											<fo:table table-layout="fixed" width="100%">
+												<fo:table-column column-width="130.00px" />
+												<fo:table-column column-width="91.00px" />
+												<fo:table-body>
+													<fo:table-row>
+														<fo:table-cell>
+															<fo:block linefeed-treatment="preserve">
+																<fo:inline>Obec</fo:inline>
+															</fo:block>
+														</fo:table-cell>
+														<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+															<fo:block>
+																<xsl:if test="local-name()='ObligatoryPerson'">
+																	<xsl:if test="./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+																		<xsl:call-template name="intersperse-with-zero-spaces">
+																			<xsl:with-param name="str" select="./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+																		</xsl:call-template>
+																	</xsl:if>
+																</xsl:if>
+															</fo:block>
+														</fo:table-cell>
+													</fo:table-row>
+												</fo:table-body>
+											</fo:table>
+										</fo:block>
+									</xsl:if>
+								</fo:block>
+								<fo:block>
+									<xsl:if test="./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:NonCodelistData/text() or (not(./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:NonCodelistData/text())and not(./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']/text())and not(./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemCode/text()))">
+										<fo:block margin-top="3mm">
+											<fo:table table-layout="fixed" width="100%">
+												<fo:table-column column-width="130.00px" />
+												<fo:table-column column-width="104.00px" />
+												<fo:table-body>
+													<fo:table-row>
+														<fo:table-cell>
+															<fo:block linefeed-treatment="preserve">
+																<fo:inline>Obec</fo:inline>
+															</fo:block>
+														</fo:table-cell>
+														<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+															<fo:block>
+																<xsl:if test="local-name()='ObligatoryPerson'">
+																	<xsl:if test="./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:NonCodelistData">
+																		<xsl:call-template name="intersperse-with-zero-spaces">
+																			<xsl:with-param name="str" select="./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:Municipality/egonp:NonCodelistData" />
+																		</xsl:call-template>
+																	</xsl:if>
+																</xsl:if>
+															</fo:block>
+														</fo:table-cell>
+													</fo:table-row>
+												</fo:table-body>
+											</fo:table>
+										</fo:block>
+									</xsl:if>
+								</fo:block>
+								<xsl:call-template name="Sekcia_Supisne2NavrhovatelStat" />
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_Supisne2NavrhovatelStat">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="133.25px" />
+				<fo:table-column column-width="58.50px" />
+				<fo:table-column column-width="65.00px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>Súpisné / Orientačné číslo</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="39.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='ObligatoryPerson'">
+														<xsl:if test="./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:PropertyRegistrationNumber">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:PropertyRegistrationNumber" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="45.50px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='ObligatoryPerson'">
+														<xsl:if test="./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:BuildingNumber">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:State/egonp:PersonData/egonp:PreferenceAddress/egonp:BuildingNumber" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcie_KontaktneNavrhovatelStat">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:block background-color="#F8EFFB" color="#4b0082" margin-left="3pt" margin-top="3pt" margin-right="3pt" padding-left="1pt" padding-top="2pt" keep-with-next.within-page="always" keep-together.within-column="1">
+					<fo:block>
+						<fo:inline>Kontaktné údaje</fo:inline>
+					</fo:block>
+				</fo:block>
+				<fo:block color="white" keep-with-next.within-page="always" keep-together.within-column="1">|</fo:block>
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="proportional-column-width(1)" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<xsl:choose>
+									<xsl:when test="not(./egonp:State/egonp:PersonData/egonp:TelephoneAddress)">
+										<xsl:call-template name="Sekcia_TelefonNavrhovatelStat" />
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:for-each select="./egonp:State/egonp:PersonData/egonp:TelephoneAddress">
+											<xsl:call-template name="Sekcia_TelefonNavrhovatelStat" />
+										</xsl:for-each>
+									</xsl:otherwise>
+								</xsl:choose>
+								<xsl:call-template name="Sec_EmailSchrankaST_C" />
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_TelefonNavrhovatelStat">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="273.00px" />
+				<fo:table-column column-width="266.50px" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="127.40px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Typ telefónu</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='TelephoneAddress'">
+														<xsl:if test="./egonp:TelephoneType/egonp:Codelist[egonp:CodelistCode='cis_4005']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:TelephoneType/egonp:Codelist[egonp:CodelistCode='cis_4005']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Telefónne číslo</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='TelephoneAddress'">
+														<xsl:if test="./egonp:Number/egonp:FormattedNumber">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Number/egonp:FormattedNumber" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sec_EmailSchrankaST_C">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="273.00px" />
+				<fo:table-column column-width="266.50px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="127.40px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Email</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='ObligatoryPerson'">
+														<xsl:call-template name="formatAnyUri">
+															<xsl:with-param name="anyUri" select="./egonp:State/egonp:PersonData/egonp:ElectronicAddress/egonp:InternetAddress" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Označenie elektronickej schránky</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='ObligatoryPerson'">
+														<xsl:if test="./egonp:State/egonp:PersonData/egonp:MarkOfElectronicMailbox">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:State/egonp:PersonData/egonp:MarkOfElectronicMailbox" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_MaZastupcu">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:block background-color="#F8EFFB" color="#4b0082" margin-left="3pt" margin-top="3pt" margin-right="3pt" padding-left="1pt" padding-top="2pt" keep-with-next.within-page="always" keep-together.within-column="1">
+					<fo:block>
+						<fo:inline>Zakonní zástupcovia</fo:inline>
+					</fo:block>
+				</fo:block>
+				<fo:block color="white" keep-with-next.within-page="always" keep-together.within-column="1">|</fo:block>
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="572.00px" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="135.20px" />
+										<fo:table-column column-width="proportional-column-width(1)" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Typ subjektu</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell>
+													<fo:block>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="./egonp:SubjectType/egonp:Codelist[egonp:CodelistCode='22']/egonp:CodelistItem/egonp:ItemCode[text()='Fyzick&#225; osoba']">
+																					<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>Fyzick&#225; osoba</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="./egonp:SubjectType/egonp:Codelist[egonp:CodelistCode='22']/egonp:CodelistItem/egonp:ItemCode[text()='Pr&#225;vnick&#225; osoba']">
+																					<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>Pr&#225;vnick&#225; osoba</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="144.95px" />
+										<fo:table-column column-width="370.50px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Typ zákonného zástupcu (správcu)</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='LegalRepresentative'">
+															<xsl:if test="./egonp:RelationshipType">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:RelationshipType" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<xsl:if test="./egonp:PhysicalPersonData or ./egonp:CorporateBodyData">
+									<xsl:call-template name="Sekcia_Zastupca" />
+								</xsl:if>
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_Zastupca">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="565.50px" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<xsl:if test="./egonp:PhysicalPersonData">
+								<xsl:call-template name="Sekcia_UdajeZastupcaFO" />
+							</xsl:if>
+							<xsl:if test="./egonp:CorporateBodyData">
+								<xsl:call-template name="Sekcia_UdajeZastupcaPO" />
+							</xsl:if>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_UdajeZastupcaFO">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="proportional-column-width(1)" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<xsl:call-template name="Sekcia_MenoPriezvisko2" />
+								<xsl:call-template name="Sekcia_AdresaZastupcaFO" />
+								<xsl:call-template name="Sekcie_KontaktneZastupcaFO" />
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_MenoPriezvisko2">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="266.50px" />
+				<fo:table-column column-width="273.00px" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block>
+								<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:Birth/egonp:DateOfBirth/text()">
+									<fo:block margin-top="3mm">
+										<fo:table table-layout="fixed" width="100%">
+											<fo:table-column column-width="128.70px" />
+											<fo:table-column column-width="104.00px" />
+											<fo:table-body>
+												<fo:table-row>
+													<fo:table-cell>
+														<fo:block linefeed-treatment="preserve">
+															<fo:inline>Dátum narodenia</fo:inline>
+														</fo:block>
+													</fo:table-cell>
+													<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+														<fo:block>
+															<xsl:if test="local-name()='LegalRepresentative'">
+																<xsl:call-template name="formatToSkDate">
+																	<xsl:with-param name="date" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:Birth/egonp:DateOfBirth" />
+																</xsl:call-template>
+															</xsl:if>
+														</fo:block>
+													</fo:table-cell>
+												</fo:table-row>
+											</fo:table-body>
+										</fo:table>
+									</fo:block>
+								</xsl:if>
+							</fo:block>
+							<xsl:choose>
+								<xsl:when test="not(./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:GivenName)">
+									<xsl:call-template name="Sekcia_MenoZastupcaFO" />
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:for-each select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:GivenName">
+										<xsl:call-template name="Sekcia_MenoZastupcaFO" />
+									</xsl:for-each>
+								</xsl:otherwise>
+							</xsl:choose>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="128.70px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Rodné priezvisko</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegalRepresentative'">
+														<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:GivenFamilyName">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:GivenFamilyName" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+							<xsl:choose>
+								<xsl:when test="not(./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:Affix[@type='qualification' and @position='prefix'])">
+									<xsl:call-template name="Sekcia_TitulPredZastupcaFO" />
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:for-each select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:Affix[@type='qualification' and @position='prefix']">
+										<xsl:call-template name="Sekcia_TitulPredZastupcaFO" />
+									</xsl:for-each>
+								</xsl:otherwise>
+							</xsl:choose>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block>
+								<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:ID[egonp:IdentifierType/egonp:Codelist[egonp:CodelistCode='4001']/egonp:CodelistItem[egonp:ItemCode='9']]/egonp:IdentifierValue/text()">
+									<fo:block margin-top="3mm">
+										<fo:table table-layout="fixed" width="100%">
+											<fo:table-column column-width="130.65px" />
+											<fo:table-column column-width="104.00px" />
+											<fo:table-body>
+												<fo:table-row>
+													<fo:table-cell>
+														<fo:block linefeed-treatment="preserve">
+															<fo:inline>Rodné číslo</fo:inline>
+														</fo:block>
+													</fo:table-cell>
+													<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+														<fo:block>
+															<xsl:if test="local-name()='LegalRepresentative'">
+																<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:ID[egonp:IdentifierType/egonp:Codelist[egonp:CodelistCode='4001']/egonp:CodelistItem[egonp:ItemCode='9']]/egonp:IdentifierValue">
+																	<xsl:call-template name="intersperse-with-zero-spaces">
+																		<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:ID[egonp:IdentifierType/egonp:Codelist[egonp:CodelistCode='4001']/egonp:CodelistItem[egonp:ItemCode='9']]/egonp:IdentifierValue" />
+																	</xsl:call-template>
+																</xsl:if>
+															</xsl:if>
+														</fo:block>
+													</fo:table-cell>
+												</fo:table-row>
+											</fo:table-body>
+										</fo:table>
+									</fo:block>
+								</xsl:if>
+							</fo:block>
+							<xsl:choose>
+								<xsl:when test="not(./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:FamilyName)">
+									<xsl:call-template name="Sekcia_PriezviskoZastupcaFO" />
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:for-each select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:FamilyName">
+										<xsl:call-template name="Sekcia_PriezviskoZastupcaFO" />
+									</xsl:for-each>
+								</xsl:otherwise>
+							</xsl:choose>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline color="white">___</fo:inline>
+													<fo:inline>&#x00A0;</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+							<xsl:choose>
+								<xsl:when test="not(./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:Affix[@type='qualification' and @position='postfix'])">
+									<xsl:call-template name="Sekcia_TitulZaZastupcaFO" />
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:for-each select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalPerson/egonp:PersonName/egonp:Affix[@type='qualification' and @position='postfix']">
+										<xsl:call-template name="Sekcia_TitulZaZastupcaFO" />
+									</xsl:for-each>
+								</xsl:otherwise>
+							</xsl:choose>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_MenoZastupcaFO">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Meno</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='GivenName'">
+														<xsl:if test=".">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="." />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_TitulPredZastupcaFO">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Titul pred</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='Affix'">
+														<xsl:if test="./egonp:Codelist[egonp:CodelistCode='cis_0062']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Codelist[egonp:CodelistCode='cis_0062']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_PriezviskoZastupcaFO">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Priezvisko</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='FamilyName'">
+														<xsl:if test=".">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="." />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_TitulZaZastupcaFO">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Titul za</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='Affix'">
+														<xsl:if test="./egonp:Codelist[egonp:CodelistCode='cis_0063']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Codelist[egonp:CodelistCode='cis_0063']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_AdresaZastupcaFO">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:block background-color="#F8EFFB" color="#4b0082" margin-left="3pt" margin-top="3pt" margin-right="3pt" padding-left="1pt" padding-top="2pt" keep-with-next.within-page="always" keep-together.within-column="1">
+					<fo:block>
+						<fo:inline>Trvalý pobyt / Pobyt</fo:inline>
+					</fo:block>
+				</fo:block>
+				<fo:block color="white" keep-with-next.within-page="always" keep-together.within-column="1">|</fo:block>
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="266.50px" />
+					<fo:table-column column-width="282.75px" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="126.75px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Štát</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='LegalRepresentative'">
+															<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Country/egonp:Codelist[egonp:CodelistCode='cis_0086']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Country/egonp:Codelist[egonp:CodelistCode='cis_0086']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="126.75px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Ulica</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='LegalRepresentative'">
+															<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:StreetName">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:StreetName" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="126.75px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>PSČ</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='LegalRepresentative'">
+															<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:DeliveryAddress/egonp:PostalCode">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:DeliveryAddress/egonp:PostalCode" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+							</fo:table-cell>
+							<fo:table-cell>
+								<fo:block>
+									<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']/text()">
+										<fo:block margin-top="3mm">
+											<fo:table table-layout="fixed" width="100%">
+												<fo:table-column column-width="128.70px" />
+												<fo:table-column column-width="91.00px" />
+												<fo:table-body>
+													<fo:table-row>
+														<fo:table-cell>
+															<fo:block linefeed-treatment="preserve">
+																<fo:inline>Obec</fo:inline>
+															</fo:block>
+														</fo:table-cell>
+														<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+															<fo:block>
+																<xsl:if test="local-name()='LegalRepresentative'">
+																	<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+																		<xsl:call-template name="intersperse-with-zero-spaces">
+																			<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+																		</xsl:call-template>
+																	</xsl:if>
+																</xsl:if>
+															</fo:block>
+														</fo:table-cell>
+													</fo:table-row>
+												</fo:table-body>
+											</fo:table>
+										</fo:block>
+									</xsl:if>
+								</fo:block>
+								<fo:block>
+									<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:NonCodelistData/text() or (not(./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:NonCodelistData/text())and not(./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']/text())and not(./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemCode/text()))">
+										<fo:block margin-top="3mm">
+											<fo:table table-layout="fixed" width="100%">
+												<fo:table-column column-width="128.70px" />
+												<fo:table-column column-width="104.00px" />
+												<fo:table-body>
+													<fo:table-row>
+														<fo:table-cell>
+															<fo:block linefeed-treatment="preserve">
+																<fo:inline>Obec</fo:inline>
+															</fo:block>
+														</fo:table-cell>
+														<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+															<fo:block>
+																<xsl:if test="local-name()='LegalRepresentative'">
+																	<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:NonCodelistData">
+																		<xsl:call-template name="intersperse-with-zero-spaces">
+																			<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:NonCodelistData" />
+																		</xsl:call-template>
+																	</xsl:if>
+																</xsl:if>
+															</fo:block>
+														</fo:table-cell>
+													</fo:table-row>
+												</fo:table-body>
+											</fo:table>
+										</fo:block>
+									</xsl:if>
+								</fo:block>
+								<xsl:call-template name="Sekcia_SupisneZastupcaFO" />
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_SupisneZastupcaFO">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="131.95px" />
+				<fo:table-column column-width="58.50px" />
+				<fo:table-column column-width="65.00px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>Súpisné / Orientačné číslo</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="39.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegalRepresentative'">
+														<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:PropertyRegistrationNumber">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:PropertyRegistrationNumber" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="45.50px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegalRepresentative'">
+														<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:BuildingNumber">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:PhysicalAddress/egonp:BuildingNumber" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcie_KontaktneZastupcaFO">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:block background-color="#F8EFFB" color="#4b0082" margin-left="3pt" margin-top="3pt" margin-right="3pt" padding-left="1pt" padding-top="2pt" keep-with-next.within-page="always" keep-together.within-column="1">
+					<fo:block>
+						<fo:inline>Kontaktné údaje</fo:inline>
+					</fo:block>
+				</fo:block>
+				<fo:block color="white" keep-with-next.within-page="always" keep-together.within-column="1">|</fo:block>
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="proportional-column-width(1)" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<xsl:choose>
+									<xsl:when test="not(./egonp:PhysicalPersonData/egonp:PersonData/egonp:TelephoneAddress)">
+										<xsl:call-template name="Sekcia_TelefonZastupcaFO" />
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:for-each select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:TelephoneAddress">
+											<xsl:call-template name="Sekcia_TelefonZastupcaFO" />
+										</xsl:for-each>
+									</xsl:otherwise>
+								</xsl:choose>
+								<xsl:call-template name="Sec_EmailSchrankaFO_C1" />
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_TelefonZastupcaFO">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="266.50px" />
+				<fo:table-column column-width="273.00px" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="128.05px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Typ telefónu</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='TelephoneAddress'">
+														<xsl:if test="./egonp:TelephoneType/egonp:Codelist[egonp:CodelistCode='cis_4005']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:TelephoneType/egonp:Codelist[egonp:CodelistCode='cis_4005']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Telefónne číslo</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='TelephoneAddress'">
+														<xsl:if test="./egonp:Number/egonp:FormattedNumber">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Number/egonp:FormattedNumber" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sec_EmailSchrankaFO_C1">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="266.50px" />
+				<fo:table-column column-width="273.00px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="126.75px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Email</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegalRepresentative'">
+														<xsl:call-template name="formatAnyUri">
+															<xsl:with-param name="anyUri" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:ElectronicAddress/egonp:InternetAddress" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Označenie elektronickej schránky</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegalRepresentative'">
+														<xsl:if test="./egonp:PhysicalPersonData/egonp:PersonData/egonp:MarkOfElectronicMailbox">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:PhysicalPersonData/egonp:PersonData/egonp:MarkOfElectronicMailbox" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_UdajeZastupcaPO">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="proportional-column-width(1)" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="565.50px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block margin-top="1mm">
+														<fo:inline>Informácie o právnickej osobe je možné načítať na základe IČO z Registra právnických osôb pomocou tlačidla "Načítať údaje z RPO".</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<xsl:call-template name="SekciaICODICZastupcaZalovaneho" />
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="128.70px" />
+										<fo:table-column column-width="390.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Názov</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='LegalRepresentative'">
+															<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:CorporateBody/egonp:CorporateBodyFullName">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:CorporateBody/egonp:CorporateBodyFullName" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<xsl:call-template name="Sekcia_AdresaZastupcaPO" />
+								<xsl:call-template name="Sekcie_KontaktneZastupcaPO" />
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SekciaICODICZastupcaZalovaneho">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="159.25px" />
+				<fo:table-column column-width="123.50px" />
+				<fo:table-column column-width="266.50px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="24.70px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>IČO</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegalRepresentative'">
+														<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:ID[egonp:IdentifierType/egonp:Codelist[egonp:CodelistCode='4001']/egonp:CodelistItem[egonp:ItemCode='7']]/egonp:IdentifierValue">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:ID[egonp:IdentifierType/egonp:Codelist[egonp:CodelistCode='4001']/egonp:CodelistItem[egonp:ItemCode='7']]/egonp:IdentifierValue" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block />
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="128.70px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Iné identifikačné číslo</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegalRepresentative'">
+														<xsl:if test="./egonp:CorporateBodyData/egonp:OtherIdentifier">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:OtherIdentifier" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_AdresaZastupcaPO">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:block background-color="#F8EFFB" color="#4b0082" margin-left="3pt" margin-top="3pt" margin-right="3pt" padding-left="1pt" padding-top="2pt" keep-with-next.within-page="always" keep-together.within-column="1">
+					<fo:block>
+						<fo:inline>Adresa / sídlo zástupcu</fo:inline>
+					</fo:block>
+				</fo:block>
+				<fo:block color="white" keep-with-next.within-page="always" keep-together.within-column="1">|</fo:block>
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="266.50px" />
+					<fo:table-column column-width="282.75px" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="126.75px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Štát</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='LegalRepresentative'">
+															<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Country/egonp:Codelist[egonp:CodelistCode='cis_0086']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Country/egonp:Codelist[egonp:CodelistCode='cis_0086']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="126.75px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Ulica</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='LegalRepresentative'">
+															<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:StreetName">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:StreetName" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="126.75px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>PSČ</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='LegalRepresentative'">
+															<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:DeliveryAddress/egonp:PostalCode">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:DeliveryAddress/egonp:PostalCode" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+							</fo:table-cell>
+							<fo:table-cell>
+								<fo:block>
+									<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']/text()">
+										<fo:block margin-top="3mm">
+											<fo:table table-layout="fixed" width="100%">
+												<fo:table-column column-width="128.70px" />
+												<fo:table-column column-width="91.00px" />
+												<fo:table-body>
+													<fo:table-row>
+														<fo:table-cell>
+															<fo:block linefeed-treatment="preserve">
+																<fo:inline>Obec</fo:inline>
+															</fo:block>
+														</fo:table-cell>
+														<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+															<fo:block>
+																<xsl:if test="local-name()='LegalRepresentative'">
+																	<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+																		<xsl:call-template name="intersperse-with-zero-spaces">
+																			<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+																		</xsl:call-template>
+																	</xsl:if>
+																</xsl:if>
+															</fo:block>
+														</fo:table-cell>
+													</fo:table-row>
+												</fo:table-body>
+											</fo:table>
+										</fo:block>
+									</xsl:if>
+								</fo:block>
+								<fo:block>
+									<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:NonCodelistData/text() or (not(./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:NonCodelistData/text())and not(./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemName[@Language='sk']/text())and not(./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:Codelist[egonp:CodelistCode='cis_0025']/egonp:CodelistItem/egonp:ItemCode/text()))">
+										<fo:block margin-top="3mm">
+											<fo:table table-layout="fixed" width="100%">
+												<fo:table-column column-width="128.70px" />
+												<fo:table-column column-width="104.00px" />
+												<fo:table-body>
+													<fo:table-row>
+														<fo:table-cell>
+															<fo:block linefeed-treatment="preserve">
+																<fo:inline>Obec</fo:inline>
+															</fo:block>
+														</fo:table-cell>
+														<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+															<fo:block>
+																<xsl:if test="local-name()='LegalRepresentative'">
+																	<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:NonCodelistData">
+																		<xsl:call-template name="intersperse-with-zero-spaces">
+																			<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:Municipality/egonp:NonCodelistData" />
+																		</xsl:call-template>
+																	</xsl:if>
+																</xsl:if>
+															</fo:block>
+														</fo:table-cell>
+													</fo:table-row>
+												</fo:table-body>
+											</fo:table>
+										</fo:block>
+									</xsl:if>
+								</fo:block>
+								<xsl:call-template name="Sekcia_SupisneZastupcaPO" />
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_SupisneZastupcaPO">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="131.95px" />
+				<fo:table-column column-width="58.50px" />
+				<fo:table-column column-width="65.00px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>Súpisné / Orientačné číslo</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="39.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegalRepresentative'">
+														<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:PropertyRegistrationNumber">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:PropertyRegistrationNumber" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="45.50px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegalRepresentative'">
+														<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:BuildingNumber">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:PhysicalAddress/egonp:BuildingNumber" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcie_KontaktneZastupcaPO">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:block background-color="#F8EFFB" color="#4b0082" margin-left="3pt" margin-top="3pt" margin-right="3pt" padding-left="1pt" padding-top="2pt" keep-with-next.within-page="always" keep-together.within-column="1">
+					<fo:block>
+						<fo:inline>Kontaktné údaje</fo:inline>
+					</fo:block>
+				</fo:block>
+				<fo:block color="white" keep-with-next.within-page="always" keep-together.within-column="1">|</fo:block>
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="proportional-column-width(1)" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<xsl:choose>
+									<xsl:when test="not(./egonp:CorporateBodyData/egonp:PersonData/egonp:TelephoneAddress)">
+										<xsl:call-template name="Sekcia_TelefonZastupcaPO" />
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:for-each select="./egonp:CorporateBodyData/egonp:PersonData/egonp:TelephoneAddress">
+											<xsl:call-template name="Sekcia_TelefonZastupcaPO" />
+										</xsl:for-each>
+									</xsl:otherwise>
+								</xsl:choose>
+								<xsl:call-template name="Sec_EmailSchrankaPO_C1" />
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sekcia_TelefonZastupcaPO">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="266.50px" />
+				<fo:table-column column-width="273.00px" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="128.05px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Typ telefónu</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='TelephoneAddress'">
+														<xsl:if test="./egonp:TelephoneType/egonp:Codelist[egonp:CodelistCode='cis_4005']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:TelephoneType/egonp:Codelist[egonp:CodelistCode='cis_4005']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Telefónne číslo</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='TelephoneAddress'">
+														<xsl:if test="./egonp:Number/egonp:FormattedNumber">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Number/egonp:FormattedNumber" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Sec_EmailSchrankaPO_C1">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="266.50px" />
+				<fo:table-column column-width="273.00px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="126.75px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Email</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegalRepresentative'">
+														<xsl:call-template name="formatAnyUri">
+															<xsl:with-param name="anyUri" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:ElectronicAddress/egonp:InternetAddress" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="130.00px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Označenie elektronickej schránky</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegalRepresentative'">
+														<xsl:if test="./egonp:CorporateBodyData/egonp:PersonData/egonp:MarkOfElectronicMailbox">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:CorporateBodyData/egonp:PersonData/egonp:MarkOfElectronicMailbox" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Dsekcia_ExekucnyTitul">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:block background-color="#F8EFFB" color="#4b0082" margin-left="3pt" margin-top="3pt" margin-right="3pt" padding-left="1pt" padding-top="2pt" keep-with-next.within-page="always" keep-together.within-column="1">
+					<fo:block>
+						<fo:inline>D) Exekučný titul</fo:inline>
+					</fo:block>
+				</fo:block>
+				<fo:block color="white" keep-with-next.within-page="always" keep-together.within-column="1">|</fo:block>
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="proportional-column-width(1)" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<xsl:choose>
+									<xsl:when test="not(/egonp:ProposalForExecution/egonp:ExecutionTitle)">
+										<xsl:call-template name="exekucnyTitulOpak" />
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:for-each select="/egonp:ProposalForExecution/egonp:ExecutionTitle">
+											<xsl:call-template name="exekucnyTitulOpak" />
+										</xsl:for-each>
+									</xsl:otherwise>
+								</xsl:choose>
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="exekucnyTitulOpak">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="proportional-column-width(1)" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="proportional-column-width(1)" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block margin-top="1mm">
+														<fo:inline>Druh exekučného titulu</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="516.10px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='ExecutionTitle'">
+															<xsl:if test="./egonp:KindOfExecutionTitle/egonp:Codelist[egonp:CodelistCode='63']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:KindOfExecutionTitle/egonp:Codelist[egonp:CodelistCode='63']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block>
+									<xsl:if test="./egonp:KindOfExecutionTitle/egonp:NonCodelistData/text() or (not(./egonp:KindOfExecutionTitle/egonp:NonCodelistData/text())and not(./egonp:KindOfExecutionTitle/egonp:Codelist[egonp:CodelistCode='63']/egonp:CodelistItem/egonp:ItemCode/text())and not(./egonp:KindOfExecutionTitle/egonp:Codelist[egonp:CodelistCode='63']/egonp:CodelistItem/egonp:ItemName[@Language='sk']/text()))">
+										<fo:block margin-top="3mm">
+											<fo:table table-layout="fixed" width="100%">
+												<fo:table-column column-width="104.00px" />
+												<fo:table-body>
+													<fo:table-row>
+														<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+															<fo:block>
+																<xsl:if test="local-name()='ExecutionTitle'">
+																	<xsl:if test="./egonp:KindOfExecutionTitle/egonp:NonCodelistData">
+																		<xsl:call-template name="intersperse-with-zero-spaces">
+																			<xsl:with-param name="str" select="./egonp:KindOfExecutionTitle/egonp:NonCodelistData" />
+																		</xsl:call-template>
+																	</xsl:if>
+																</xsl:if>
+															</fo:block>
+														</fo:table-cell>
+													</fo:table-row>
+												</fo:table-body>
+											</fo:table>
+										</fo:block>
+									</xsl:if>
+								</fo:block>
+								<xsl:call-template name="labelsSection" />
+								<xsl:if test="./egonp:Designation">
+									<xsl:call-template name="oznacenieExekucnehoTituluSekcia" />
+								</xsl:if>
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="labelsSection">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block>
+								<xsl:if test="./text()">
+									<fo:block margin-top="3mm">
+										<fo:table table-layout="fixed" width="100%">
+											<fo:table-column column-width="565.50px" />
+											<fo:table-body>
+												<fo:table-row>
+													<fo:table-cell>
+														<fo:block margin-top="1mm" text-align="justify">
+															<fo:inline>
+																<fo:inline>K návrhu na vykonanie exekúcie na podklade cudzieho exekučného titulu je potrebné pripojiť aj listiny uvedené v osobitnom predpise.
+																	<fo:inline font-size="60%" vertical-align="super">1)</fo:inline>
+																</fo:inline>
+																<fo:inline>Ak sa podľa osobitného predpisu vyžaduje rozhodnutie o vyhlásení vykonateľnosti
+																	<fo:inline font-size="60%" vertical-align="super">2)</fo:inline>
+																</fo:inline>
+																<fo:inline>alebo o uznaní
+																	<fo:inline font-size="60%" vertical-align="super">3)</fo:inline>
+																</fo:inline>
+																<fo:inline>ako podmienka výkonu cudzieho exekučného titulu, je potrebné pripojiť aj rozhodnutie súdu o uznaní alebo o vyhlásení vykonateľnosti tohto cudzieho exekučného titulu. Ak bol exekučný titul osvedčený podľa osobitného predpisu a ako podmienka jeho výkonu sa nevyžaduje rozhodnutie súdu o jeho vykonateľnosti, je potrebné pripojiť osvedčenie podľa tohto osobitného predpisu.
+																	<fo:inline font-size="60%" vertical-align="super">4)</fo:inline>
+																</fo:inline>
+															</fo:inline>
+														</fo:block>
+													</fo:table-cell>
+												</fo:table-row>
+											</fo:table-body>
+										</fo:table>
+									</fo:block>
+								</xsl:if>
+							</fo:block>
+							<fo:block>
+								<xsl:if test="./text()">
+									<fo:block margin-top="3mm">
+										<fo:table table-layout="fixed" width="100%">
+											<fo:table-column column-width="565.50px" />
+											<fo:table-body>
+												<fo:table-row>
+													<fo:table-cell>
+														<fo:block margin-top="1mm" linefeed-treatment="preserve" text-align="justify" font-size="0.6em">
+															<fo:inline>1) Napríklad § 47 zákona č.244/2002 Z. z. v znení neskorších predpisov&#xA; 2) Napríklad nariadenie Rady (ES) č.44/2001 z 22. decembra 2000 o právomoci a o uznávaní a výkone rozsudkov v občianskych a obchodných veciach (Ú.v. ES L12, 16. 1. 2001), nariadenie Rady (ES) č.4/2009 z  18. decembra 2008 o právomoci, rozhodnom práve, uznávaní a výkone rozhodnutí a o spolupráci vo veciach vyživovacej povinnosti (Ú.v. EÚ L7, 10. 1. 2009) v prípade rozhodnutia vydaného v členskom štáte, ktorý nie je viazaný Haagskym protokolom z roku 2007, nariadenie (ES) č.650/2012 z júla 2012 o právomoci, rozhodnom práve, uznávaní a výkone verejných listín v dedičských veciach a o zavedení európskeho osvedčenia o dedičstve, Lugánsky dohovor zo 16. septembra 1988 o právomoci a výkone rozsudkov v občianskych a obchodných veciach, ktorým sa rozširuje pôsobnosť pravidiel obsiahnutých v Bruselskom dohovore z roku 1968 na niektoré členské štáty Európskeho združenia voľného obchodu</fo:inline>
+														</fo:block>
+													</fo:table-cell>
+												</fo:table-row>
+											</fo:table-body>
+										</fo:table>
+									</fo:block>
+								</xsl:if>
+							</fo:block>
+							<fo:block>
+								<xsl:if test="./text()">
+									<fo:block margin-top="3mm">
+										<fo:table table-layout="fixed" width="100%">
+											<fo:table-column column-width="565.50px" />
+											<fo:table-body>
+												<fo:table-row>
+													<fo:table-cell>
+														<fo:block margin-top="1mm" linefeed-treatment="preserve" text-align="justify" font-size="0.6em">
+															<fo:inline>3) Napríklad § 67 ods. 4 zákona č.97/1963 Zb. o medzinárodnom práve súkromnom a procesnom v znení neskorších predpisov&#xA; 4) Napríklad nariadenie Európskeho parlamentu a Rady (EÚ) č.1215/2012 z 12. decembra 2012 o právomoci a o uznávaní a výkone rozsudkov v občianskych a obchodných veciach (prepracované znenie) (Ú.v. EÚ L351, 20. 12. 2012) v platnom znení, nariadenie Európskeho parlamentu a Rady (ES) č.805/2004 z 21. apríla 2004, ktorým sa vytvára európsky exekučný titul pre nesporné nároky (Ú.v. EÚ L143, 30. 4. 2004) v platnom znení, nariadenie Európskeho parlamentu a Rady (ES) č. 896/2006 z 12. decembra 2006, ktorým sa zavádza európske konanie o platobnom rozkaze (Ú.v. EÚ L399, 30. 12. 2006) v platnom znení, nariadenie Európskeho parlamentu a Rady (ES) č.861/2007 z 11. júla 2007, ktorým sa ustanovuje Európske konanie vo veciach s nízkou hodnotou sporu (Ú.v. EÚ L 199, 31. 7. 2007) v platnom znení, nariadenie Európskeho parlamentu a Rady (EÚ) č. 606/2013 z 12. júna 2013 o vzájomnom uznávaní ochranných opatrení v občianskych veciach (Ú.v. EÚ L 181, 29. 6. 2013)</fo:inline>
+														</fo:block>
+													</fo:table-cell>
+												</fo:table-row>
+											</fo:table-body>
+										</fo:table>
+									</fo:block>
+								</xsl:if>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="oznacenieExekucnehoTituluSekcia">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:block background-color="#F8EFFB" color="#4b0082" margin-left="3pt" margin-top="3pt" margin-right="3pt" padding-left="1pt" padding-top="2pt" keep-with-next.within-page="always" keep-together.within-column="1">
+					<fo:block>
+						<fo:inline>Označenie exekučného titulu</fo:inline>
+					</fo:block>
+				</fo:block>
+				<fo:block color="white" keep-with-next.within-page="always" keep-together.within-column="1">|</fo:block>
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="proportional-column-width(1)" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="135.20px" />
+										<fo:table-column column-width="370.50px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Orgán, ktorý exekučný titul vydal</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='ExecutionTitle'">
+															<xsl:if test="./egonp:Designation/egonp:Organ">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:Designation/egonp:Organ" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="135.20px" />
+										<fo:table-column column-width="370.50px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Spisová značka/číslo konania</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='ExecutionTitle'">
+															<xsl:if test="./egonp:Designation/egonp:FileReference">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:Designation/egonp:FileReference" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="135.20px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Dátum vydania</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='ExecutionTitle'">
+															<xsl:call-template name="formatToSkDate">
+																<xsl:with-param name="date" select="./egonp:Designation/egonp:ReleaseDate" />
+															</xsl:call-template>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<xsl:choose>
+									<xsl:when test="not(./egonp:Designation/egonp:EnforceabilityDates)">
+										<xsl:call-template name="datumVykonatelnostiPomSekcia" />
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:for-each select="./egonp:Designation/egonp:EnforceabilityDates">
+											<xsl:call-template name="datumVykonatelnostiPomSekcia" />
+										</xsl:for-each>
+									</xsl:otherwise>
+								</xsl:choose>
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="datumVykonatelnostiPomSekcia">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="135.20px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Dátum vykonateľnosti</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='EnforceabilityDates'">
+														<xsl:call-template name="formatToSkDate">
+															<xsl:with-param name="date" select="./egonp:EnforceabilityDate" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="135.20px" />
+									<fo:table-column column-width="370.50px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Doplňujúce informácie</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell height="100px" border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block hyphenate="true" linefeed-treatment="preserve">
+													<xsl:if test="local-name()='EnforceabilityDates'">
+														<xsl:if test="./egonp:AdditionalInformation">
+															<xsl:value-of select="./egonp:AdditionalInformation" />
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Esekcia_VymahanyNarok">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:block background-color="#F8EFFB" color="#4b0082" margin-left="3pt" margin-top="3pt" margin-right="3pt" padding-left="1pt" padding-top="2pt" keep-with-next.within-page="always" keep-together.within-column="1">
+					<fo:block>
+						<fo:inline>E) Vymáhaný nárok</fo:inline>
+					</fo:block>
+				</fo:block>
+				<fo:block color="white" keep-with-next.within-page="always" keep-together.within-column="1">|</fo:block>
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="proportional-column-width(1)" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="135.20px" />
+										<fo:table-column column-width="proportional-column-width(1)" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Vymáhaný nárok</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell>
+													<fo:block>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:KindOfClaims/egonp:Codelist[egonp:CodelistCode='64']/egonp:CodelistItem/egonp:ItemCode[text()='NAROK_NEPENAZNY']">
+																					<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>nepeňažn&#253; n&#225;rok</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:KindOfClaims/egonp:Codelist[egonp:CodelistCode='64']/egonp:CodelistItem/egonp:ItemCode[text()='NAROK_PENAZNY']">
+																					<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>peňažn&#253; n&#225;rok</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:KindOfClaims/egonp:Codelist[egonp:CodelistCode='64']/egonp:CodelistItem/egonp:ItemCode[text()='NAROK_VYZIVNE']">
+																					<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>peňažn&#253; n&#225;rok - v&#253;živn&#233;</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<xsl:if test="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:MoneyClaim">
+									<xsl:call-template name="penaznyNarokSekcia" />
+								</xsl:if>
+								<xsl:if test="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:Alimony">
+									<xsl:call-template name="penaznyNarokVyzivneSekcia" />
+								</xsl:if>
+								<xsl:if test="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:NotMoneyClaim">
+									<xsl:call-template name="nepenaznyNarokSekcia" />
+								</xsl:if>
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="penaznyNarokSekcia">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="proportional-column-width(1)" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="135.20px" />
+										<fo:table-column column-width="proportional-column-width(1)" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Peňažný nárok</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell>
+													<fo:block>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:MoneyClaim/egonp:KindOdMoneyClaim/egonp:Codelist[egonp:CodelistCode='108']/egonp:CodelistItem/egonp:ItemCode[text()='ISTINA']">
+																					<fo:inline font-family="Wingdings">&#xF078;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A8;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>istina</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:MoneyClaim/egonp:KindOdMoneyClaim/egonp:Codelist[egonp:CodelistCode='108']/egonp:CodelistItem/egonp:ItemCode[text()='UROK']">
+																					<fo:inline font-family="Wingdings">&#xF078;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A8;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>&#250;rok</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:MoneyClaim/egonp:KindOdMoneyClaim/egonp:Codelist[egonp:CodelistCode='108']/egonp:CodelistItem/egonp:ItemCode[text()='UROK_Z_OMESKANIA']">
+																					<fo:inline font-family="Wingdings">&#xF078;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A8;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>&#250;rok z omeškania</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:MoneyClaim/egonp:KindOdMoneyClaim/egonp:Codelist[egonp:CodelistCode='108']/egonp:CodelistItem/egonp:ItemCode[text()='POPLATOK_Z_OMESKANIA']">
+																					<fo:inline font-family="Wingdings">&#xF078;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A8;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>poplatok z omeškania</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:MoneyClaim/egonp:KindOdMoneyClaim/egonp:Codelist[egonp:CodelistCode='108']/egonp:CodelistItem/egonp:ItemCode[text()='ZMLUVNA_POKUTA']">
+																					<fo:inline font-family="Wingdings">&#xF078;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A8;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>zmluvn&#225; pokuta</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:MoneyClaim/egonp:KindOdMoneyClaim/egonp:Codelist[egonp:CodelistCode='108']/egonp:CodelistItem/egonp:ItemCode[text()='NAKLADY']">
+																					<fo:inline font-family="Wingdings">&#xF078;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A8;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>n&#225;klady spojen&#233; s uplatnen&#237;m pohľad&#225;vky</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:MoneyClaim/egonp:KindOdMoneyClaim/egonp:Codelist[egonp:CodelistCode='108']/egonp:CodelistItem/egonp:ItemCode[text()='INE']">
+																					<fo:inline font-family="Wingdings">&#xF078;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A8;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>in&#233;</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<xsl:call-template name="sekIstina" />
+								<xsl:if test="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:MoneyClaim/egonp:InterestRate">
+									<xsl:call-template name="SecUrok" />
+								</xsl:if>
+								<xsl:if test="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:MoneyClaim/egonp:InterestOnArrears">
+									<xsl:call-template name="SecUrok_3" />
+								</xsl:if>
+								<xsl:if test="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:MoneyClaim/egonp:LatePaymentFee">
+									<xsl:call-template name="SecUrok_6" />
+								</xsl:if>
+								<xsl:if test="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:MoneyClaim/egonp:ContractPenalty">
+									<xsl:call-template name="SecZmluvnaPokutaObal" />
+								</xsl:if>
+								<xsl:if test="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:MoneyClaim/egonp:LegalExpensesClaims">
+									<xsl:call-template name="naklSpojeneSuplatPohlPom" />
+								</xsl:if>
+								<xsl:if test="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:MoneyClaim/egonp:Other">
+									<xsl:call-template name="SecIneObal_2" />
+								</xsl:if>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="174.20px" />
+										<fo:table-column column-width="382.20px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Doplňujúce informácie o peňažnom nároku</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell height="100px" border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block hyphenate="true" linefeed-treatment="preserve">
+														<xsl:if test="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:MoneyClaim/egonp:AdditionalInformation">
+															<xsl:value-of select="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:MoneyClaim/egonp:AdditionalInformation" />
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="sekIstina">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="520.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm" font-weight="bold">
+													<fo:inline>Istina</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+							<xsl:choose>
+								<xsl:when test="not(/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:MoneyClaim/egonp:Principal)">
+									<xsl:call-template name="istinaPom" />
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:for-each select="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:MoneyClaim/egonp:Principal">
+										<xsl:call-template name="istinaPom" />
+									</xsl:for-each>
+								</xsl:otherwise>
+							</xsl:choose>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="istinaPom">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="214.50px" />
+				<fo:table-column column-width="65.00px" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="96.20px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Výška istiny</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px" text-align="right">
+												<fo:block>
+													<xsl:if test="local-name()='Principal'">
+														<xsl:call-template name="string-replace-all">
+															<xsl:with-param name="text" select="./egonp:PrincipalAmount" />
+															<xsl:with-param name="replace" select="'.'" />
+															<xsl:with-param name="by" select="','" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="35.10px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='Principal'">
+														<xsl:if test="./egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SecUrok">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="520.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm" font-weight="bold">
+													<fo:inline>Úrok</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+							<xsl:choose>
+								<xsl:when test="not(/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:MoneyClaim/egonp:InterestRate)">
+									<xsl:call-template name="SecUrokOpak" />
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:for-each select="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:MoneyClaim/egonp:InterestRate">
+										<xsl:call-template name="SecUrokOpak" />
+									</xsl:for-each>
+								</xsl:otherwise>
+							</xsl:choose>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SecUrokOpak">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<xsl:call-template name="datumUrokCheckboxPomSekcia" />
+							<xsl:call-template name="SecPercentualnaSadzba" />
+							<xsl:if test="./egonp:Arrears">
+								<xsl:call-template name="SekciaSuma" />
+							</xsl:if>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="datumUrokCheckboxPomSekcia">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="448.50px" />
+				<fo:table-column column-width="84.50px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline color="white">___</fo:inline>
+													<fo:inline>&#x00A0;</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="23.40px" />
+									<fo:table-column />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block>
+													<xsl:choose>
+														<xsl:when test="./egonp:isDate[text()='1' or text()='true']">
+															<fo:inline font-family="Wingdings">&#xF078;</fo:inline>
+														</xsl:when>
+														<xsl:otherwise>
+															<fo:inline font-family="Wingdings">&#xF0A8;</fo:inline>
+														</xsl:otherwise>
+													</xsl:choose>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>dátum</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SecPercentualnaSadzba">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="128.05px" />
+				<fo:table-column column-width="13.00px" />
+				<fo:table-column column-width="65.00px" />
+				<fo:table-column column-width="39.00px" />
+				<fo:table-column column-width="78.00px" />
+				<fo:table-column column-width="48.75px" />
+				<fo:table-column column-width="84.50px" />
+				<fo:table-column column-width="84.50px" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="89.05px" />
+									<fo:table-column column-width="34.45px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve" margin-left="0px">
+													<fo:inline>percentuálna sadzba</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px" text-align="right">
+												<fo:block>
+													<xsl:if test="local-name()='InterestRate'">
+														<xsl:call-template name="string-replace-all">
+															<xsl:with-param name="text" select="./egonp:Rate" />
+															<xsl:with-param name="replace" select="'.'" />
+															<xsl:with-param name="by" select="','" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="13.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>%</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="51.35px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='InterestRate'">
+														<xsl:if test="./egonp:Periodicity/egonp:Codelist[egonp:CodelistCode='50']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Periodicity/egonp:Codelist[egonp:CodelistCode='50']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="39.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>zo sumy</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="65.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px" text-align="right">
+												<fo:block>
+													<xsl:if test="local-name()='InterestRate'">
+														<xsl:call-template name="string-replace-all">
+															<xsl:with-param name="text" select="./egonp:Amount" />
+															<xsl:with-param name="replace" select="'.'" />
+															<xsl:with-param name="by" select="','" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="35.10px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='InterestRate'">
+														<xsl:if test="./egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="27.95px" />
+									<fo:table-column column-width="48.75px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve" margin-left="0px">
+													<fo:inline>od</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='InterestRate'">
+														<xsl:call-template name="formatToSkDate">
+															<xsl:with-param name="date" select="./egonp:DateFrom" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block>
+								<xsl:if test="./egonp:DateTo/text()">
+									<fo:block margin-top="3mm">
+										<fo:table table-layout="fixed" width="100%">
+											<fo:table-column column-width="27.95px" />
+											<fo:table-column column-width="48.75px" />
+											<fo:table-body>
+												<fo:table-row>
+													<fo:table-cell>
+														<fo:block linefeed-treatment="preserve" margin-left="0px">
+															<fo:inline>do</fo:inline>
+														</fo:block>
+													</fo:table-cell>
+													<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+														<fo:block>
+															<xsl:if test="local-name()='InterestRate'">
+																<xsl:call-template name="formatToSkDate">
+																	<xsl:with-param name="date" select="./egonp:DateTo" />
+																</xsl:call-template>
+															</xsl:if>
+														</fo:block>
+													</fo:table-cell>
+												</fo:table-row>
+											</fo:table-body>
+										</fo:table>
+									</fo:block>
+								</xsl:if>
+							</fo:block>
+							<fo:block>
+								<xsl:if test="./egonp:TextTo/text()">
+									<fo:block margin-top="3mm">
+										<fo:table table-layout="fixed" width="100%">
+											<fo:table-column column-width="27.95px" />
+											<fo:table-column column-width="48.75px" />
+											<fo:table-body>
+												<fo:table-row>
+													<fo:table-cell>
+														<fo:block linefeed-treatment="preserve" margin-left="0px">
+															<fo:inline>do</fo:inline>
+														</fo:block>
+													</fo:table-cell>
+													<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+														<fo:block>
+															<xsl:if test="local-name()='InterestRate'">
+																<xsl:if test="./egonp:TextTo">
+																	<xsl:call-template name="intersperse-with-zero-spaces">
+																		<xsl:with-param name="str" select="./egonp:TextTo" />
+																	</xsl:call-template>
+																</xsl:if>
+															</xsl:if>
+														</fo:block>
+													</fo:table-cell>
+												</fo:table-row>
+											</fo:table-body>
+										</fo:table>
+									</fo:block>
+								</xsl:if>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SekciaSuma">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="135.20px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>suma kapitalizovaných úrokov</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='InterestRate'">
+														<xsl:call-template name="string-replace-all">
+															<xsl:with-param name="text" select="./egonp:Arrears" />
+															<xsl:with-param name="replace" select="'.'" />
+															<xsl:with-param name="by" select="','" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SecUrok_3">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="520.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm" font-weight="bold">
+													<fo:inline>Úrok z omeškania</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+							<xsl:choose>
+								<xsl:when test="not(/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:MoneyClaim/egonp:InterestOnArrears)">
+									<xsl:call-template name="SecUrokZOmeskaniaOpak_3" />
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:for-each select="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:MoneyClaim/egonp:InterestOnArrears">
+										<xsl:call-template name="SecUrokZOmeskaniaOpak_3" />
+									</xsl:for-each>
+								</xsl:otherwise>
+							</xsl:choose>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SecUrokZOmeskaniaOpak_3">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<xsl:call-template name="datumUrokZomeskaniaCheckboxPomSekcia_3" />
+							<xsl:call-template name="SecPercentualnaSadzba_3" />
+							<xsl:if test="./egonp:Arrears">
+								<xsl:call-template name="SekciaSuma_1" />
+							</xsl:if>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="datumUrokZomeskaniaCheckboxPomSekcia_3">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="448.50px" />
+				<fo:table-column column-width="78.00px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline color="white">___</fo:inline>
+													<fo:inline>&#x00A0;</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="23.40px" />
+									<fo:table-column />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block>
+													<xsl:choose>
+														<xsl:when test="./egonp:isDate[text()='1' or text()='true']">
+															<fo:inline font-family="Wingdings">&#xF078;</fo:inline>
+														</xsl:when>
+														<xsl:otherwise>
+															<fo:inline font-family="Wingdings">&#xF0A8;</fo:inline>
+														</xsl:otherwise>
+													</xsl:choose>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>dátum</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SecPercentualnaSadzba_3">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="130.65px" />
+				<fo:table-column column-width="31.85px" />
+				<fo:table-column column-width="58.50px" />
+				<fo:table-column column-width="39.00px" />
+				<fo:table-column column-width="78.00px" />
+				<fo:table-column column-width="48.75px" />
+				<fo:table-column column-width="78.00px" />
+				<fo:table-column column-width="78.00px" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="91.00px" />
+									<fo:table-column column-width="34.45px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve" margin-left="0px">
+													<fo:inline>percentuálna sadzba</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px" text-align="right">
+												<fo:block>
+													<xsl:if test="local-name()='InterestOnArrears'">
+														<xsl:call-template name="string-replace-all">
+															<xsl:with-param name="text" select="./egonp:Rate" />
+															<xsl:with-param name="replace" select="'.'" />
+															<xsl:with-param name="by" select="','" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="25.35px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='InterestOnArrears'">
+														<xsl:if test="./egonp:PercentPromile/egonp:Codelist[egonp:CodelistCode='109']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:PercentPromile/egonp:Codelist[egonp:CodelistCode='109']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="51.35px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='InterestOnArrears'">
+														<xsl:if test="./egonp:Periodicity/egonp:Codelist[egonp:CodelistCode='50']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Periodicity/egonp:Codelist[egonp:CodelistCode='50']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="55.25px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>zo sumy</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="65.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px" text-align="right">
+												<fo:block>
+													<xsl:if test="local-name()='InterestOnArrears'">
+														<xsl:call-template name="string-replace-all">
+															<xsl:with-param name="text" select="./egonp:Amount" />
+															<xsl:with-param name="replace" select="'.'" />
+															<xsl:with-param name="by" select="','" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="35.10px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='InterestOnArrears'">
+														<xsl:if test="./egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="22.75px" />
+									<fo:table-column column-width="48.75px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve" margin-left="0px">
+													<fo:inline>od</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='InterestOnArrears'">
+														<xsl:call-template name="formatToSkDate">
+															<xsl:with-param name="date" select="./egonp:DateFrom" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block>
+								<xsl:if test="./egonp:DateTo/text()">
+									<fo:block margin-top="3mm">
+										<fo:table table-layout="fixed" width="100%">
+											<fo:table-column column-width="22.75px" />
+											<fo:table-column column-width="48.75px" />
+											<fo:table-body>
+												<fo:table-row>
+													<fo:table-cell>
+														<fo:block linefeed-treatment="preserve" margin-left="0px">
+															<fo:inline>do</fo:inline>
+														</fo:block>
+													</fo:table-cell>
+													<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+														<fo:block>
+															<xsl:if test="local-name()='InterestOnArrears'">
+																<xsl:call-template name="formatToSkDate">
+																	<xsl:with-param name="date" select="./egonp:DateTo" />
+																</xsl:call-template>
+															</xsl:if>
+														</fo:block>
+													</fo:table-cell>
+												</fo:table-row>
+											</fo:table-body>
+										</fo:table>
+									</fo:block>
+								</xsl:if>
+							</fo:block>
+							<fo:block>
+								<xsl:if test="./egonp:TextTo/text()">
+									<fo:block margin-top="3mm">
+										<fo:table table-layout="fixed" width="100%">
+											<fo:table-column column-width="22.75px" />
+											<fo:table-column column-width="48.75px" />
+											<fo:table-body>
+												<fo:table-row>
+													<fo:table-cell>
+														<fo:block linefeed-treatment="preserve" margin-left="0px">
+															<fo:inline>do</fo:inline>
+														</fo:block>
+													</fo:table-cell>
+													<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+														<fo:block>
+															<xsl:if test="local-name()='InterestOnArrears'">
+																<xsl:if test="./egonp:TextTo">
+																	<xsl:call-template name="intersperse-with-zero-spaces">
+																		<xsl:with-param name="str" select="./egonp:TextTo" />
+																	</xsl:call-template>
+																</xsl:if>
+															</xsl:if>
+														</fo:block>
+													</fo:table-cell>
+												</fo:table-row>
+											</fo:table-body>
+										</fo:table>
+									</fo:block>
+								</xsl:if>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SekciaSuma_1">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="135.20px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>suma kapitalizovaných úrokov z omeškania</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='InterestOnArrears'">
+														<xsl:call-template name="string-replace-all">
+															<xsl:with-param name="text" select="./egonp:Arrears" />
+															<xsl:with-param name="replace" select="'.'" />
+															<xsl:with-param name="by" select="','" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SecUrok_6">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="520.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm" font-weight="bold">
+													<fo:inline>Poplatok z omeškania</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+							<xsl:choose>
+								<xsl:when test="not(/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:MoneyClaim/egonp:LatePaymentFee)">
+									<xsl:call-template name="SecPoplatokZOmeskaniaOpak_6" />
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:for-each select="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:MoneyClaim/egonp:LatePaymentFee">
+										<xsl:call-template name="SecPoplatokZOmeskaniaOpak_6" />
+									</xsl:for-each>
+								</xsl:otherwise>
+							</xsl:choose>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SecPoplatokZOmeskaniaOpak_6">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<xsl:call-template name="datumPoplatokZomeskaniaCheckboxPomSekcia_6" />
+							<xsl:call-template name="SecPercentualnaSadzba_6" />
+							<xsl:if test="./egonp:Arrears">
+								<xsl:call-template name="SekciaSuma_2" />
+							</xsl:if>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="datumPoplatokZomeskaniaCheckboxPomSekcia_6">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="448.50px" />
+				<fo:table-column column-width="78.00px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline color="white">___</fo:inline>
+													<fo:inline>&#x00A0;</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="23.40px" />
+									<fo:table-column />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block>
+													<xsl:choose>
+														<xsl:when test="./egonp:isDate[text()='1' or text()='true']">
+															<fo:inline font-family="Wingdings">&#xF078;</fo:inline>
+														</xsl:when>
+														<xsl:otherwise>
+															<fo:inline font-family="Wingdings">&#xF0A8;</fo:inline>
+														</xsl:otherwise>
+													</xsl:choose>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>dátum</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SecPercentualnaSadzba_6">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="146.25px" />
+				<fo:table-column column-width="35.10px" />
+				<fo:table-column column-width="35.75px" />
+				<fo:table-column column-width="32.50px" />
+				<fo:table-column column-width="78.00px" />
+				<fo:table-column column-width="48.75px" />
+				<fo:table-column column-width="84.50px" />
+				<fo:table-column column-width="78.00px" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="89.05px" />
+									<fo:table-column column-width="34.45px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve" margin-left="0px">
+													<fo:inline>sadzba</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px" text-align="right">
+												<fo:block>
+													<xsl:if test="local-name()='LatePaymentFee'">
+														<xsl:call-template name="string-replace-all">
+															<xsl:with-param name="text" select="./egonp:Rate" />
+															<xsl:with-param name="replace" select="'.'" />
+															<xsl:with-param name="by" select="','" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="25.35px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LatePaymentFee'">
+														<xsl:if test="./egonp:PercentPromile/egonp:Codelist[egonp:CodelistCode='109']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:PercentPromile/egonp:Codelist[egonp:CodelistCode='109']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="52.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>denne</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="55.25px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>zo sumy</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="65.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px" text-align="right">
+												<fo:block>
+													<xsl:if test="local-name()='LatePaymentFee'">
+														<xsl:call-template name="string-replace-all">
+															<xsl:with-param name="text" select="./egonp:Amount" />
+															<xsl:with-param name="replace" select="'.'" />
+															<xsl:with-param name="by" select="','" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="35.10px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LatePaymentFee'">
+														<xsl:if test="./egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="22.75px" />
+									<fo:table-column column-width="48.75px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve" margin-left="0px">
+													<fo:inline>od</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LatePaymentFee'">
+														<xsl:call-template name="formatToSkDate">
+															<xsl:with-param name="date" select="./egonp:DateFrom" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block>
+								<xsl:if test="./egonp:DateTo/text()">
+									<fo:block margin-top="3mm">
+										<fo:table table-layout="fixed" width="100%">
+											<fo:table-column column-width="22.75px" />
+											<fo:table-column column-width="48.75px" />
+											<fo:table-body>
+												<fo:table-row>
+													<fo:table-cell>
+														<fo:block linefeed-treatment="preserve" margin-left="0px">
+															<fo:inline>do</fo:inline>
+														</fo:block>
+													</fo:table-cell>
+													<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+														<fo:block>
+															<xsl:if test="local-name()='LatePaymentFee'">
+																<xsl:call-template name="formatToSkDate">
+																	<xsl:with-param name="date" select="./egonp:DateTo" />
+																</xsl:call-template>
+															</xsl:if>
+														</fo:block>
+													</fo:table-cell>
+												</fo:table-row>
+											</fo:table-body>
+										</fo:table>
+									</fo:block>
+								</xsl:if>
+							</fo:block>
+							<fo:block>
+								<xsl:if test="./egonp:TextTo/text()">
+									<fo:block margin-top="3mm">
+										<fo:table table-layout="fixed" width="100%">
+											<fo:table-column column-width="22.75px" />
+											<fo:table-column column-width="48.75px" />
+											<fo:table-body>
+												<fo:table-row>
+													<fo:table-cell>
+														<fo:block linefeed-treatment="preserve" margin-left="0px">
+															<fo:inline>do</fo:inline>
+														</fo:block>
+													</fo:table-cell>
+													<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+														<fo:block>
+															<xsl:if test="local-name()='LatePaymentFee'">
+																<xsl:if test="./egonp:TextTo">
+																	<xsl:call-template name="intersperse-with-zero-spaces">
+																		<xsl:with-param name="str" select="./egonp:TextTo" />
+																	</xsl:call-template>
+																</xsl:if>
+															</xsl:if>
+														</fo:block>
+													</fo:table-cell>
+												</fo:table-row>
+											</fo:table-body>
+										</fo:table>
+									</fo:block>
+								</xsl:if>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SekciaSuma_2">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="135.20px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>suma kapitalizovaných poplatkov z omeškania</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LatePaymentFee'">
+														<xsl:call-template name="string-replace-all">
+															<xsl:with-param name="text" select="./egonp:Arrears" />
+															<xsl:with-param name="replace" select="'.'" />
+															<xsl:with-param name="by" select="','" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SecZmluvnaPokutaObal">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<xsl:choose>
+								<xsl:when test="not(/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:MoneyClaim/egonp:ContractPenalty)">
+									<xsl:call-template name="SecZmluvnaPokutaOpak" />
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:for-each select="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:MoneyClaim/egonp:ContractPenalty">
+										<xsl:call-template name="SecZmluvnaPokutaOpak" />
+									</xsl:for-each>
+								</xsl:otherwise>
+							</xsl:choose>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SecZmluvnaPokutaOpak">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="520.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm" font-weight="bold">
+													<fo:inline>Zmluvná pokuta</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block>
+													<fo:table>
+														<fo:table-column column-width="23.40px" />
+														<fo:table-column />
+														<fo:table-body>
+															<fo:table-row>
+																<fo:table-cell>
+																	<fo:block>
+																		<xsl:choose>
+																			<xsl:when test="./egonp:ContractPenaltyType/egonp:Codelist[egonp:CodelistCode='52']/egonp:CodelistItem/egonp:ItemCode[text()='PEVNA']">
+																				<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																			</xsl:when>
+																			<xsl:otherwise>
+																				<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																			</xsl:otherwise>
+																		</xsl:choose>
+																	</fo:block>
+																</fo:table-cell>
+																<fo:table-cell>
+																	<fo:block>pevn&#225; suma</fo:block>
+																</fo:table-cell>
+															</fo:table-row>
+														</fo:table-body>
+													</fo:table>
+													<fo:table>
+														<fo:table-column column-width="23.40px" />
+														<fo:table-column />
+														<fo:table-body>
+															<fo:table-row>
+																<fo:table-cell>
+																	<fo:block>
+																		<xsl:choose>
+																			<xsl:when test="./egonp:ContractPenaltyType/egonp:Codelist[egonp:CodelistCode='52']/egonp:CodelistItem/egonp:ItemCode[text()='PERCENTUALNA']">
+																				<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																			</xsl:when>
+																			<xsl:otherwise>
+																				<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																			</xsl:otherwise>
+																		</xsl:choose>
+																	</fo:block>
+																</fo:table-cell>
+																<fo:table-cell>
+																	<fo:block>percentu&#225;lna</fo:block>
+																</fo:table-cell>
+															</fo:table-row>
+														</fo:table-body>
+													</fo:table>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+							<xsl:if test="./egonp:Fixed/egonp:Amount or ./egonp:Fixed/egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemCode or ./egonp:Fixed/egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+								<xsl:call-template name="SecZmluvnaPokuta" />
+							</xsl:if>
+							<xsl:if test="./egonp:Pecentage/egonp:isDate or ./egonp:Pecentage/egonp:Rate or ./egonp:Pecentage/egonp:Periodicity/egonp:Codelist[egonp:CodelistCode='50']/egonp:CodelistItem/egonp:ItemCode or ./egonp:Pecentage/egonp:Periodicity/egonp:Codelist[egonp:CodelistCode='50']/egonp:CodelistItem/egonp:ItemName[@Language='sk'] or ./egonp:Pecentage/egonp:Amount or ./egonp:Pecentage/egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemCode or ./egonp:Pecentage/egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemName[@Language='sk'] or ./egonp:Pecentage/egonp:DateFrom or ./egonp:Pecentage/egonp:DateTo or ./egonp:Pecentage/egonp:TextTo">
+								<xsl:call-template name="SecZmluvnaPokuta_3" />
+							</xsl:if>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SecZmluvnaPokuta">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<xsl:call-template name="SecZmluvnaPokutaPevnaSuma" />
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SecZmluvnaPokutaPevnaSuma">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="211.25px" />
+				<fo:table-column column-width="260.00px" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="88.40px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>suma</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px" text-align="right">
+												<fo:block>
+													<xsl:if test="local-name()='ContractPenalty'">
+														<xsl:call-template name="string-replace-all">
+															<xsl:with-param name="text" select="./egonp:Fixed/egonp:Amount" />
+															<xsl:with-param name="replace" select="'.'" />
+															<xsl:with-param name="by" select="','" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="35.10px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='ContractPenalty'">
+														<xsl:if test="./egonp:Fixed/egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Fixed/egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SecZmluvnaPokuta_3">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<xsl:call-template name="datumZmluvnaPokutaCheckboxPomSekcia" />
+							<xsl:call-template name="PokutaPercentualnaSadzbaPom_3" />
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="datumZmluvnaPokutaCheckboxPomSekcia">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="448.50px" />
+				<fo:table-column column-width="78.00px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline color="white">___</fo:inline>
+													<fo:inline>&#x00A0;</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="23.40px" />
+									<fo:table-column />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block>
+													<xsl:choose>
+														<xsl:when test="./egonp:Pecentage/egonp:isDate[text()='1' or text()='true']">
+															<fo:inline font-family="Wingdings">&#xF078;</fo:inline>
+														</xsl:when>
+														<xsl:otherwise>
+															<fo:inline font-family="Wingdings">&#xF0A8;</fo:inline>
+														</xsl:otherwise>
+													</xsl:choose>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>dátum</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="PokutaPercentualnaSadzbaPom_3">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="128.05px" />
+				<fo:table-column column-width="13.00px" />
+				<fo:table-column column-width="65.00px" />
+				<fo:table-column column-width="39.00px" />
+				<fo:table-column column-width="78.00px" />
+				<fo:table-column column-width="48.75px" />
+				<fo:table-column column-width="84.50px" />
+				<fo:table-column column-width="78.00px" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="89.05px" />
+									<fo:table-column column-width="34.45px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve" margin-left="0px">
+													<fo:inline>percentuálna sadzba</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px" text-align="right">
+												<fo:block>
+													<xsl:if test="local-name()='ContractPenalty'">
+														<xsl:call-template name="string-replace-all">
+															<xsl:with-param name="text" select="./egonp:Pecentage/egonp:Rate" />
+															<xsl:with-param name="replace" select="'.'" />
+															<xsl:with-param name="by" select="','" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="13.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>%</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="51.35px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='ContractPenalty'">
+														<xsl:if test="./egonp:Pecentage/egonp:Periodicity/egonp:Codelist[egonp:CodelistCode='50']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Pecentage/egonp:Periodicity/egonp:Codelist[egonp:CodelistCode='50']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="55.25px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>zo sumy</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="65.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px" text-align="right">
+												<fo:block>
+													<xsl:if test="local-name()='ContractPenalty'">
+														<xsl:call-template name="string-replace-all">
+															<xsl:with-param name="text" select="./egonp:Pecentage/egonp:Amount" />
+															<xsl:with-param name="replace" select="'.'" />
+															<xsl:with-param name="by" select="','" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="35.10px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='ContractPenalty'">
+														<xsl:if test="./egonp:Pecentage/egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Pecentage/egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="26.00px" />
+									<fo:table-column column-width="47.45px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve" margin-left="0px">
+													<fo:inline>od</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='ContractPenalty'">
+														<xsl:call-template name="formatToSkDate">
+															<xsl:with-param name="date" select="./egonp:Pecentage/egonp:DateFrom" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block>
+								<xsl:if test="./egonp:Pecentage/egonp:DateTo/text()">
+									<fo:block margin-top="3mm">
+										<fo:table table-layout="fixed" width="100%">
+											<fo:table-column column-width="26.00px" />
+											<fo:table-column column-width="47.45px" />
+											<fo:table-body>
+												<fo:table-row>
+													<fo:table-cell>
+														<fo:block linefeed-treatment="preserve" margin-left="0px">
+															<fo:inline>do</fo:inline>
+														</fo:block>
+													</fo:table-cell>
+													<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+														<fo:block>
+															<xsl:if test="local-name()='ContractPenalty'">
+																<xsl:call-template name="formatToSkDate">
+																	<xsl:with-param name="date" select="./egonp:Pecentage/egonp:DateTo" />
+																</xsl:call-template>
+															</xsl:if>
+														</fo:block>
+													</fo:table-cell>
+												</fo:table-row>
+											</fo:table-body>
+										</fo:table>
+									</fo:block>
+								</xsl:if>
+							</fo:block>
+							<fo:block>
+								<xsl:if test="./egonp:Pecentage/egonp:TextTo/text()">
+									<fo:block margin-top="3mm">
+										<fo:table table-layout="fixed" width="100%">
+											<fo:table-column column-width="26.00px" />
+											<fo:table-column column-width="47.45px" />
+											<fo:table-body>
+												<fo:table-row>
+													<fo:table-cell>
+														<fo:block linefeed-treatment="preserve" margin-left="0px">
+															<fo:inline>do</fo:inline>
+														</fo:block>
+													</fo:table-cell>
+													<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+														<fo:block>
+															<xsl:if test="local-name()='ContractPenalty'">
+																<xsl:if test="./egonp:Pecentage/egonp:TextTo">
+																	<xsl:call-template name="intersperse-with-zero-spaces">
+																		<xsl:with-param name="str" select="./egonp:Pecentage/egonp:TextTo" />
+																	</xsl:call-template>
+																</xsl:if>
+															</xsl:if>
+														</fo:block>
+													</fo:table-cell>
+												</fo:table-row>
+											</fo:table-body>
+										</fo:table>
+									</fo:block>
+								</xsl:if>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="naklSpojeneSuplatPohlPom">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="520.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm" font-weight="bold">
+													<fo:inline>Náklady spojené s uplatnením pohľadávky</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+							<xsl:choose>
+								<xsl:when test="not(/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:MoneyClaim/egonp:LegalExpensesClaims)">
+									<xsl:call-template name="sumaPom" />
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:for-each select="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:MoneyClaim/egonp:LegalExpensesClaims">
+										<xsl:call-template name="sumaPom" />
+									</xsl:for-each>
+								</xsl:otherwise>
+							</xsl:choose>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="sumaPom">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="211.25px" />
+				<fo:table-column column-width="260.00px" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="94.90px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Suma</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px" text-align="right">
+												<fo:block>
+													<xsl:if test="local-name()='LegalExpensesClaims'">
+														<xsl:call-template name="string-replace-all">
+															<xsl:with-param name="text" select="./egonp:Amount" />
+															<xsl:with-param name="replace" select="'.'" />
+															<xsl:with-param name="by" select="','" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="35.10px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegalExpensesClaims'">
+														<xsl:if test="./egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SecIneObal_2">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<xsl:choose>
+								<xsl:when test="not(/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:MoneyClaim/egonp:Other)">
+									<xsl:call-template name="SecZmluvnaPokutaOpak_2" />
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:for-each select="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:MoneyClaim/egonp:Other">
+										<xsl:call-template name="SecZmluvnaPokutaOpak_2" />
+									</xsl:for-each>
+								</xsl:otherwise>
+							</xsl:choose>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SecZmluvnaPokutaOpak_2">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="520.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm" font-weight="bold">
+													<fo:inline>Iné</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="260.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='Other'">
+														<xsl:if test="./egonp:About">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:About" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block>
+													<fo:table>
+														<fo:table-column column-width="23.40px" />
+														<fo:table-column />
+														<fo:table-body>
+															<fo:table-row>
+																<fo:table-cell>
+																	<fo:block>
+																		<xsl:choose>
+																			<xsl:when test="./egonp:OtherType/egonp:Codelist[egonp:CodelistCode='52']/egonp:CodelistItem/egonp:ItemCode[text()='PEVNA']">
+																				<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																			</xsl:when>
+																			<xsl:otherwise>
+																				<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																			</xsl:otherwise>
+																		</xsl:choose>
+																	</fo:block>
+																</fo:table-cell>
+																<fo:table-cell>
+																	<fo:block>pevn&#225; suma</fo:block>
+																</fo:table-cell>
+															</fo:table-row>
+														</fo:table-body>
+													</fo:table>
+													<fo:table>
+														<fo:table-column column-width="23.40px" />
+														<fo:table-column />
+														<fo:table-body>
+															<fo:table-row>
+																<fo:table-cell>
+																	<fo:block>
+																		<xsl:choose>
+																			<xsl:when test="./egonp:OtherType/egonp:Codelist[egonp:CodelistCode='52']/egonp:CodelistItem/egonp:ItemCode[text()='PERCENTUALNA']">
+																				<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																			</xsl:when>
+																			<xsl:otherwise>
+																				<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																			</xsl:otherwise>
+																		</xsl:choose>
+																	</fo:block>
+																</fo:table-cell>
+																<fo:table-cell>
+																	<fo:block>percentu&#225;lna</fo:block>
+																</fo:table-cell>
+															</fo:table-row>
+														</fo:table-body>
+													</fo:table>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+							<xsl:if test="./egonp:Fixed/egonp:Amount or ./egonp:Fixed/egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemCode or ./egonp:Fixed/egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+								<xsl:call-template name="SecInePev_2" />
+							</xsl:if>
+							<xsl:if test="./egonp:Pecentage/egonp:isDate or ./egonp:Pecentage/egonp:Rate or ./egonp:Pecentage/egonp:Periodicity/egonp:Codelist[egonp:CodelistCode='50']/egonp:CodelistItem/egonp:ItemCode or ./egonp:Pecentage/egonp:Periodicity/egonp:Codelist[egonp:CodelistCode='50']/egonp:CodelistItem/egonp:ItemName[@Language='sk'] or ./egonp:Pecentage/egonp:Amount or ./egonp:Pecentage/egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemCode or ./egonp:Pecentage/egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemName[@Language='sk'] or ./egonp:Pecentage/egonp:DateFrom or ./egonp:Pecentage/egonp:DateTo or ./egonp:Pecentage/egonp:TextTo">
+								<xsl:call-template name="SecInePer_2" />
+							</xsl:if>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SecInePev_2">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<xsl:call-template name="SecIneSuma_2" />
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SecIneSuma_2">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="211.25px" />
+				<fo:table-column column-width="260.00px" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="88.40px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>suma</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px" text-align="right">
+												<fo:block>
+													<xsl:if test="local-name()='Other'">
+														<xsl:call-template name="string-replace-all">
+															<xsl:with-param name="text" select="./egonp:Fixed/egonp:Amount" />
+															<xsl:with-param name="replace" select="'.'" />
+															<xsl:with-param name="by" select="','" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="35.10px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='Other'">
+														<xsl:if test="./egonp:Fixed/egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Fixed/egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SecInePer_2">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<xsl:call-template name="datumIneCheckboxPomSekcia_2" />
+							<xsl:call-template name="InePercentualnaSadzbaPom_2" />
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="datumIneCheckboxPomSekcia_2">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="448.50px" />
+				<fo:table-column column-width="78.00px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline color="white">___</fo:inline>
+													<fo:inline>&#x00A0;</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="23.40px" />
+									<fo:table-column />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block>
+													<xsl:choose>
+														<xsl:when test="./egonp:Pecentage/egonp:isDate[text()='1' or text()='true']">
+															<fo:inline font-family="Wingdings">&#xF078;</fo:inline>
+														</xsl:when>
+														<xsl:otherwise>
+															<fo:inline font-family="Wingdings">&#xF0A8;</fo:inline>
+														</xsl:otherwise>
+													</xsl:choose>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>dátum</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="InePercentualnaSadzbaPom_2">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="128.05px" />
+				<fo:table-column column-width="13.00px" />
+				<fo:table-column column-width="65.00px" />
+				<fo:table-column column-width="39.00px" />
+				<fo:table-column column-width="78.00px" />
+				<fo:table-column column-width="48.75px" />
+				<fo:table-column column-width="84.50px" />
+				<fo:table-column column-width="78.00px" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="89.05px" />
+									<fo:table-column column-width="34.45px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve" margin-left="0px">
+													<fo:inline>percentuálna sadzba</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px" text-align="right">
+												<fo:block>
+													<xsl:if test="local-name()='Other'">
+														<xsl:call-template name="string-replace-all">
+															<xsl:with-param name="text" select="./egonp:Pecentage/egonp:Rate" />
+															<xsl:with-param name="replace" select="'.'" />
+															<xsl:with-param name="by" select="','" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="13.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>%</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="51.35px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='Other'">
+														<xsl:if test="./egonp:Pecentage/egonp:Periodicity/egonp:Codelist[egonp:CodelistCode='50']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Pecentage/egonp:Periodicity/egonp:Codelist[egonp:CodelistCode='50']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="55.25px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>zo sumy</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="65.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px" text-align="right">
+												<fo:block>
+													<xsl:if test="local-name()='Other'">
+														<xsl:call-template name="string-replace-all">
+															<xsl:with-param name="text" select="./egonp:Pecentage/egonp:Amount" />
+															<xsl:with-param name="replace" select="'.'" />
+															<xsl:with-param name="by" select="','" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="35.10px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='Other'">
+														<xsl:if test="./egonp:Pecentage/egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Pecentage/egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="26.00px" />
+									<fo:table-column column-width="47.45px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve" margin-left="0px">
+													<fo:inline>od</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='Other'">
+														<xsl:call-template name="formatToSkDate">
+															<xsl:with-param name="date" select="./egonp:Pecentage/egonp:DateFrom" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block>
+								<xsl:if test="./egonp:Pecentage/egonp:DateTo/text()">
+									<fo:block margin-top="3mm">
+										<fo:table table-layout="fixed" width="100%">
+											<fo:table-column column-width="26.00px" />
+											<fo:table-column column-width="47.45px" />
+											<fo:table-body>
+												<fo:table-row>
+													<fo:table-cell>
+														<fo:block linefeed-treatment="preserve" margin-left="0px">
+															<fo:inline>do</fo:inline>
+														</fo:block>
+													</fo:table-cell>
+													<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+														<fo:block>
+															<xsl:if test="local-name()='Other'">
+																<xsl:call-template name="formatToSkDate">
+																	<xsl:with-param name="date" select="./egonp:Pecentage/egonp:DateTo" />
+																</xsl:call-template>
+															</xsl:if>
+														</fo:block>
+													</fo:table-cell>
+												</fo:table-row>
+											</fo:table-body>
+										</fo:table>
+									</fo:block>
+								</xsl:if>
+							</fo:block>
+							<fo:block>
+								<xsl:if test="./egonp:Pecentage/egonp:TextTo/text()">
+									<fo:block margin-top="3mm">
+										<fo:table table-layout="fixed" width="100%">
+											<fo:table-column column-width="26.00px" />
+											<fo:table-column column-width="47.45px" />
+											<fo:table-body>
+												<fo:table-row>
+													<fo:table-cell>
+														<fo:block linefeed-treatment="preserve" margin-left="0px">
+															<fo:inline>do</fo:inline>
+														</fo:block>
+													</fo:table-cell>
+													<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+														<fo:block>
+															<xsl:if test="local-name()='Other'">
+																<xsl:if test="./egonp:Pecentage/egonp:TextTo">
+																	<xsl:call-template name="intersperse-with-zero-spaces">
+																		<xsl:with-param name="str" select="./egonp:Pecentage/egonp:TextTo" />
+																	</xsl:call-template>
+																</xsl:if>
+															</xsl:if>
+														</fo:block>
+													</fo:table-cell>
+												</fo:table-row>
+											</fo:table-body>
+										</fo:table>
+									</fo:block>
+								</xsl:if>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="penaznyNarokVyzivneSekcia">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="proportional-column-width(1)" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="177.45px" />
+										<fo:table-column column-width="370.50px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Zameškané výživné (ku dňu podania návrhu)</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:Alimony/egonp:MissedAlimony">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:Alimony/egonp:MissedAlimony" />
+															</xsl:call-template>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="177.45px" />
+										<fo:table-column column-width="370.50px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Bežné výživné</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:Alimony/egonp:NormalAlimony">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:Alimony/egonp:NormalAlimony" />
+															</xsl:call-template>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="177.45px" />
+										<fo:table-column column-width="370.50px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Doplňujúce informácie o vyživovacej povinnosti</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell height="100px" border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block hyphenate="true" linefeed-treatment="preserve">
+														<xsl:if test="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:Alimony/egonp:AdditionalInformation">
+															<xsl:value-of select="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:Alimony/egonp:AdditionalInformation" />
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="nepenaznyNarokSekcia">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="proportional-column-width(1)" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="122.20px" />
+										<fo:table-column column-width="382.20px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Popis</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell height="100px" border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block hyphenate="true" linefeed-treatment="preserve">
+														<xsl:if test="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:NotMoneyClaim/egonp:NotMoneyClaim">
+															<xsl:value-of select="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:NotMoneyClaim/egonp:NotMoneyClaim" />
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<xsl:if test="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:NotMoneyClaim/egonp:NotMoneyClaimOptional">
+									<xsl:call-template name="SuvisiacPenNarok" />
+								</xsl:if>
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SuvisiacPenNarok">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="proportional-column-width(1)" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="proportional-column-width(1)" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block margin-top="1mm">
+														<fo:inline>Súvisiaci peňažný nárok</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="135.20px" />
+										<fo:table-column column-width="proportional-column-width(1)" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Peňažný nárok</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell>
+													<fo:block>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:NotMoneyClaim/egonp:NotMoneyClaimOptional/egonp:KindOdMoneyClaim/egonp:Codelist[egonp:CodelistCode='108']/egonp:CodelistItem/egonp:ItemCode[text()='ISTINA']">
+																					<fo:inline font-family="Wingdings">&#xF078;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A8;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>istina</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:NotMoneyClaim/egonp:NotMoneyClaimOptional/egonp:KindOdMoneyClaim/egonp:Codelist[egonp:CodelistCode='108']/egonp:CodelistItem/egonp:ItemCode[text()='UROK']">
+																					<fo:inline font-family="Wingdings">&#xF078;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A8;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>&#250;rok</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:NotMoneyClaim/egonp:NotMoneyClaimOptional/egonp:KindOdMoneyClaim/egonp:Codelist[egonp:CodelistCode='108']/egonp:CodelistItem/egonp:ItemCode[text()='UROK_Z_OMESKANIA']">
+																					<fo:inline font-family="Wingdings">&#xF078;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A8;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>&#250;rok z omeškania</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:NotMoneyClaim/egonp:NotMoneyClaimOptional/egonp:KindOdMoneyClaim/egonp:Codelist[egonp:CodelistCode='108']/egonp:CodelistItem/egonp:ItemCode[text()='POPLATOK_Z_OMESKANIA']">
+																					<fo:inline font-family="Wingdings">&#xF078;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A8;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>poplatok z omeškania</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:NotMoneyClaim/egonp:NotMoneyClaimOptional/egonp:KindOdMoneyClaim/egonp:Codelist[egonp:CodelistCode='108']/egonp:CodelistItem/egonp:ItemCode[text()='ZMLUVNA_POKUTA']">
+																					<fo:inline font-family="Wingdings">&#xF078;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A8;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>zmluvn&#225; pokuta</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:NotMoneyClaim/egonp:NotMoneyClaimOptional/egonp:KindOdMoneyClaim/egonp:Codelist[egonp:CodelistCode='108']/egonp:CodelistItem/egonp:ItemCode[text()='NAKLADY']">
+																					<fo:inline font-family="Wingdings">&#xF078;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A8;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>n&#225;klady spojen&#233; s uplatnen&#237;m pohľad&#225;vky</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:NotMoneyClaim/egonp:NotMoneyClaimOptional/egonp:KindOdMoneyClaim/egonp:Codelist[egonp:CodelistCode='108']/egonp:CodelistItem/egonp:ItemCode[text()='INE']">
+																					<fo:inline font-family="Wingdings">&#xF078;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A8;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>in&#233;</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<xsl:if test="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:NotMoneyClaim/egonp:NotMoneyClaimOptional/egonp:Principal">
+									<xsl:call-template name="istinaPom_1" />
+								</xsl:if>
+								<xsl:if test="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:NotMoneyClaim/egonp:NotMoneyClaimOptional/egonp:InterestRate">
+									<xsl:call-template name="SecUrok_5" />
+								</xsl:if>
+								<xsl:if test="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:NotMoneyClaim/egonp:NotMoneyClaimOptional/egonp:InterestOnArrears">
+									<xsl:call-template name="SecUrok_7" />
+								</xsl:if>
+								<xsl:if test="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:NotMoneyClaim/egonp:NotMoneyClaimOptional/egonp:LatePaymentFee">
+									<xsl:call-template name="SecUrok_9" />
+								</xsl:if>
+								<xsl:if test="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:NotMoneyClaim/egonp:NotMoneyClaimOptional/egonp:ContractPenalty">
+									<xsl:call-template name="SecZmluvnaPokutaObal_1" />
+								</xsl:if>
+								<xsl:if test="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:NotMoneyClaim/egonp:NotMoneyClaimOptional/egonp:LegalExpensesClaims">
+									<xsl:call-template name="naklSpojeneSuplatPohlPom_1" />
+								</xsl:if>
+								<xsl:if test="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:NotMoneyClaim/egonp:NotMoneyClaimOptional/egonp:Other">
+									<xsl:call-template name="SecIneObal_3" />
+								</xsl:if>
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="istinaPom_1">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="214.50px" />
+				<fo:table-column column-width="65.00px" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="520.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm" font-weight="bold">
+													<fo:inline>Istina</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="100.75px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Výška istiny</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px" text-align="right">
+												<fo:block>
+													<xsl:call-template name="string-replace-all">
+														<xsl:with-param name="text" select="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:NotMoneyClaim/egonp:NotMoneyClaimOptional/egonp:Principal/egonp:PrincipalAmount" />
+														<xsl:with-param name="replace" select="'.'" />
+														<xsl:with-param name="by" select="','" />
+													</xsl:call-template>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline color="white">___</fo:inline>
+													<fo:inline>&#x00A0;</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="35.10px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:NotMoneyClaim/egonp:NotMoneyClaimOptional/egonp:Principal/egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+														<xsl:call-template name="intersperse-with-zero-spaces">
+															<xsl:with-param name="str" select="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:NotMoneyClaim/egonp:NotMoneyClaimOptional/egonp:Principal/egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SecUrok_5">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="520.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm" font-weight="bold">
+													<fo:inline>Úrok</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+							<xsl:choose>
+								<xsl:when test="not(/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:NotMoneyClaim/egonp:NotMoneyClaimOptional/egonp:InterestRate)">
+									<xsl:call-template name="SecUrokOpak_5" />
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:for-each select="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:NotMoneyClaim/egonp:NotMoneyClaimOptional/egonp:InterestRate">
+										<xsl:call-template name="SecUrokOpak_5" />
+									</xsl:for-each>
+								</xsl:otherwise>
+							</xsl:choose>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SecUrokOpak_5">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<xsl:call-template name="datumUrokCheckboxPomSekcia_5" />
+							<xsl:call-template name="SecPercentualnaSadzba_5" />
+							<xsl:if test="./egonp:Arrears">
+								<xsl:call-template name="SekciaSuma_3" />
+							</xsl:if>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="datumUrokCheckboxPomSekcia_5">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="448.50px" />
+				<fo:table-column column-width="84.50px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline color="white">___</fo:inline>
+													<fo:inline>&#x00A0;</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="23.40px" />
+									<fo:table-column />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block>
+													<xsl:choose>
+														<xsl:when test="./egonp:isDate[text()='1' or text()='true']">
+															<fo:inline font-family="Wingdings">&#xF078;</fo:inline>
+														</xsl:when>
+														<xsl:otherwise>
+															<fo:inline font-family="Wingdings">&#xF0A8;</fo:inline>
+														</xsl:otherwise>
+													</xsl:choose>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>dátum</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SecPercentualnaSadzba_5">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="128.05px" />
+				<fo:table-column column-width="13.00px" />
+				<fo:table-column column-width="65.00px" />
+				<fo:table-column column-width="39.00px" />
+				<fo:table-column column-width="78.00px" />
+				<fo:table-column column-width="48.75px" />
+				<fo:table-column column-width="84.50px" />
+				<fo:table-column column-width="84.50px" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="89.05px" />
+									<fo:table-column column-width="34.45px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve" margin-left="0px">
+													<fo:inline>percentuálna sadzba</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px" text-align="right">
+												<fo:block>
+													<xsl:if test="local-name()='InterestRate'">
+														<xsl:call-template name="string-replace-all">
+															<xsl:with-param name="text" select="./egonp:Rate" />
+															<xsl:with-param name="replace" select="'.'" />
+															<xsl:with-param name="by" select="','" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="13.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>%</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="51.35px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='InterestRate'">
+														<xsl:if test="./egonp:Periodicity/egonp:Codelist[egonp:CodelistCode='50']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Periodicity/egonp:Codelist[egonp:CodelistCode='50']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="39.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>zo sumy</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="65.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px" text-align="right">
+												<fo:block>
+													<xsl:if test="local-name()='InterestRate'">
+														<xsl:call-template name="string-replace-all">
+															<xsl:with-param name="text" select="./egonp:Amount" />
+															<xsl:with-param name="replace" select="'.'" />
+															<xsl:with-param name="by" select="','" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="35.10px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='InterestRate'">
+														<xsl:if test="./egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="27.95px" />
+									<fo:table-column column-width="48.75px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve" margin-left="0px">
+													<fo:inline>od</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='InterestRate'">
+														<xsl:call-template name="formatToSkDate">
+															<xsl:with-param name="date" select="./egonp:DateFrom" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block>
+								<xsl:if test="./egonp:DateTo/text()">
+									<fo:block margin-top="3mm">
+										<fo:table table-layout="fixed" width="100%">
+											<fo:table-column column-width="27.95px" />
+											<fo:table-column column-width="48.75px" />
+											<fo:table-body>
+												<fo:table-row>
+													<fo:table-cell>
+														<fo:block linefeed-treatment="preserve" margin-left="0px">
+															<fo:inline>do</fo:inline>
+														</fo:block>
+													</fo:table-cell>
+													<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+														<fo:block>
+															<xsl:if test="local-name()='InterestRate'">
+																<xsl:call-template name="formatToSkDate">
+																	<xsl:with-param name="date" select="./egonp:DateTo" />
+																</xsl:call-template>
+															</xsl:if>
+														</fo:block>
+													</fo:table-cell>
+												</fo:table-row>
+											</fo:table-body>
+										</fo:table>
+									</fo:block>
+								</xsl:if>
+							</fo:block>
+							<fo:block>
+								<xsl:if test="./egonp:TextTo/text()">
+									<fo:block margin-top="3mm">
+										<fo:table table-layout="fixed" width="100%">
+											<fo:table-column column-width="27.95px" />
+											<fo:table-column column-width="48.75px" />
+											<fo:table-body>
+												<fo:table-row>
+													<fo:table-cell>
+														<fo:block linefeed-treatment="preserve" margin-left="0px">
+															<fo:inline>do</fo:inline>
+														</fo:block>
+													</fo:table-cell>
+													<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+														<fo:block>
+															<xsl:if test="local-name()='InterestRate'">
+																<xsl:if test="./egonp:TextTo">
+																	<xsl:call-template name="intersperse-with-zero-spaces">
+																		<xsl:with-param name="str" select="./egonp:TextTo" />
+																	</xsl:call-template>
+																</xsl:if>
+															</xsl:if>
+														</fo:block>
+													</fo:table-cell>
+												</fo:table-row>
+											</fo:table-body>
+										</fo:table>
+									</fo:block>
+								</xsl:if>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SekciaSuma_3">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="135.20px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>suma kapitalizovaných úrokov</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='InterestRate'">
+														<xsl:call-template name="string-replace-all">
+															<xsl:with-param name="text" select="./egonp:Arrears" />
+															<xsl:with-param name="replace" select="'.'" />
+															<xsl:with-param name="by" select="','" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SecUrok_7">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="520.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm" font-weight="bold">
+													<fo:inline>Úrok z omeškania</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+							<xsl:choose>
+								<xsl:when test="not(/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:NotMoneyClaim/egonp:NotMoneyClaimOptional/egonp:InterestOnArrears)">
+									<xsl:call-template name="SecUrokZOmeskaniaOpak_7" />
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:for-each select="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:NotMoneyClaim/egonp:NotMoneyClaimOptional/egonp:InterestOnArrears">
+										<xsl:call-template name="SecUrokZOmeskaniaOpak_7" />
+									</xsl:for-each>
+								</xsl:otherwise>
+							</xsl:choose>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SecUrokZOmeskaniaOpak_7">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<xsl:call-template name="datumUrokZomeskaniaCheckboxPomSekcia_7" />
+							<xsl:call-template name="SecPercentualnaSadzba_7" />
+							<xsl:if test="./egonp:Arrears">
+								<xsl:call-template name="SekciaSuma_4" />
+							</xsl:if>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="datumUrokZomeskaniaCheckboxPomSekcia_7">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="448.50px" />
+				<fo:table-column column-width="78.00px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline color="white">___</fo:inline>
+													<fo:inline>&#x00A0;</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="23.40px" />
+									<fo:table-column />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block>
+													<xsl:choose>
+														<xsl:when test="./egonp:isDate[text()='1' or text()='true']">
+															<fo:inline font-family="Wingdings">&#xF078;</fo:inline>
+														</xsl:when>
+														<xsl:otherwise>
+															<fo:inline font-family="Wingdings">&#xF0A8;</fo:inline>
+														</xsl:otherwise>
+													</xsl:choose>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>dátum</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SecPercentualnaSadzba_7">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="133.25px" />
+				<fo:table-column column-width="0.65px" />
+				<fo:table-column column-width="29.25px" />
+				<fo:table-column column-width="58.50px" />
+				<fo:table-column column-width="31.20px" />
+				<fo:table-column column-width="78.00px" />
+				<fo:table-column column-width="42.25px" />
+				<fo:table-column column-width="81.25px" />
+				<fo:table-column column-width="84.50px" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="89.05px" />
+									<fo:table-column column-width="34.45px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve" margin-left="0px">
+													<fo:inline>percentuálna sadzba</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px" text-align="right">
+												<fo:block>
+													<xsl:if test="local-name()='InterestOnArrears'">
+														<xsl:call-template name="string-replace-all">
+															<xsl:with-param name="text" select="./egonp:Rate" />
+															<xsl:with-param name="replace" select="'.'" />
+															<xsl:with-param name="by" select="','" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline color="white">___</fo:inline>
+													<fo:inline>&#x00A0;</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="25.35px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='InterestOnArrears'">
+														<xsl:if test="./egonp:PercentPromile/egonp:Codelist[egonp:CodelistCode='109']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:PercentPromile/egonp:Codelist[egonp:CodelistCode='109']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="51.35px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='InterestOnArrears'">
+														<xsl:if test="./egonp:Periodicity/egonp:Codelist[egonp:CodelistCode='50']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Periodicity/egonp:Codelist[egonp:CodelistCode='50']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="55.25px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>zo sumy</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="65.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px" text-align="right">
+												<fo:block>
+													<xsl:if test="local-name()='InterestOnArrears'">
+														<xsl:call-template name="string-replace-all">
+															<xsl:with-param name="text" select="./egonp:Amount" />
+															<xsl:with-param name="replace" select="'.'" />
+															<xsl:with-param name="by" select="','" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="35.10px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='InterestOnArrears'">
+														<xsl:if test="./egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="27.95px" />
+									<fo:table-column column-width="48.75px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve" margin-left="0px">
+													<fo:inline>od</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='InterestOnArrears'">
+														<xsl:call-template name="formatToSkDate">
+															<xsl:with-param name="date" select="./egonp:DateFrom" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block>
+								<xsl:if test="./egonp:DateTo/text()">
+									<fo:block margin-top="3mm">
+										<fo:table table-layout="fixed" width="100%">
+											<fo:table-column column-width="27.95px" />
+											<fo:table-column column-width="48.75px" />
+											<fo:table-body>
+												<fo:table-row>
+													<fo:table-cell>
+														<fo:block linefeed-treatment="preserve" margin-left="0px">
+															<fo:inline>do</fo:inline>
+														</fo:block>
+													</fo:table-cell>
+													<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+														<fo:block>
+															<xsl:if test="local-name()='InterestOnArrears'">
+																<xsl:call-template name="formatToSkDate">
+																	<xsl:with-param name="date" select="./egonp:DateTo" />
+																</xsl:call-template>
+															</xsl:if>
+														</fo:block>
+													</fo:table-cell>
+												</fo:table-row>
+											</fo:table-body>
+										</fo:table>
+									</fo:block>
+								</xsl:if>
+							</fo:block>
+							<fo:block>
+								<xsl:if test="./egonp:TextTo/text()">
+									<fo:block margin-top="3mm">
+										<fo:table table-layout="fixed" width="100%">
+											<fo:table-column column-width="27.95px" />
+											<fo:table-column column-width="48.75px" />
+											<fo:table-body>
+												<fo:table-row>
+													<fo:table-cell>
+														<fo:block linefeed-treatment="preserve" margin-left="0px">
+															<fo:inline>do</fo:inline>
+														</fo:block>
+													</fo:table-cell>
+													<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+														<fo:block>
+															<xsl:if test="local-name()='InterestOnArrears'">
+																<xsl:if test="./egonp:TextTo">
+																	<xsl:call-template name="intersperse-with-zero-spaces">
+																		<xsl:with-param name="str" select="./egonp:TextTo" />
+																	</xsl:call-template>
+																</xsl:if>
+															</xsl:if>
+														</fo:block>
+													</fo:table-cell>
+												</fo:table-row>
+											</fo:table-body>
+										</fo:table>
+									</fo:block>
+								</xsl:if>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SekciaSuma_4">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="135.20px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>suma kapitalizovaných úrokov z omeškania</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='InterestOnArrears'">
+														<xsl:call-template name="string-replace-all">
+															<xsl:with-param name="text" select="./egonp:Arrears" />
+															<xsl:with-param name="replace" select="'.'" />
+															<xsl:with-param name="by" select="','" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SecUrok_9">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="520.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm" font-weight="bold">
+													<fo:inline>Poplatok z omeškania</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+							<xsl:choose>
+								<xsl:when test="not(/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:NotMoneyClaim/egonp:NotMoneyClaimOptional/egonp:LatePaymentFee)">
+									<xsl:call-template name="SecPoplatokZOmeskaniaOpak_9" />
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:for-each select="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:NotMoneyClaim/egonp:NotMoneyClaimOptional/egonp:LatePaymentFee">
+										<xsl:call-template name="SecPoplatokZOmeskaniaOpak_9" />
+									</xsl:for-each>
+								</xsl:otherwise>
+							</xsl:choose>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SecPoplatokZOmeskaniaOpak_9">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<xsl:call-template name="datumPoplatokZomeskaniaCheckboxPomSekcia_9" />
+							<xsl:call-template name="SecPercentualnaSadzba_9" />
+							<xsl:if test="./egonp:Arrears">
+								<xsl:call-template name="SekciaSuma_5" />
+							</xsl:if>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="datumPoplatokZomeskaniaCheckboxPomSekcia_9">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="448.50px" />
+				<fo:table-column column-width="78.00px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline color="white">___</fo:inline>
+													<fo:inline>&#x00A0;</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="23.40px" />
+									<fo:table-column />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block>
+													<xsl:choose>
+														<xsl:when test="./egonp:isDate[text()='1' or text()='true']">
+															<fo:inline font-family="Wingdings">&#xF078;</fo:inline>
+														</xsl:when>
+														<xsl:otherwise>
+															<fo:inline font-family="Wingdings">&#xF0A8;</fo:inline>
+														</xsl:otherwise>
+													</xsl:choose>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>dátum</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SecPercentualnaSadzba_9">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="136.50px" />
+				<fo:table-column column-width="32.50px" />
+				<fo:table-column column-width="26.00px" />
+				<fo:table-column column-width="35.75px" />
+				<fo:table-column column-width="78.00px" />
+				<fo:table-column column-width="48.75px" />
+				<fo:table-column column-width="82.55px" />
+				<fo:table-column column-width="84.50px" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="89.05px" />
+									<fo:table-column column-width="34.45px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve" margin-left="0px">
+													<fo:inline>sadzba</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px" text-align="right">
+												<fo:block>
+													<xsl:if test="local-name()='LatePaymentFee'">
+														<xsl:call-template name="string-replace-all">
+															<xsl:with-param name="text" select="./egonp:Rate" />
+															<xsl:with-param name="replace" select="'.'" />
+															<xsl:with-param name="by" select="','" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="25.35px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LatePaymentFee'">
+														<xsl:if test="./egonp:PercentPromile/egonp:Codelist[egonp:CodelistCode='109']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:PercentPromile/egonp:Codelist[egonp:CodelistCode='109']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="52.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>denne</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="55.25px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>zo sumy</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="65.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px" text-align="right">
+												<fo:block>
+													<xsl:if test="local-name()='LatePaymentFee'">
+														<xsl:call-template name="string-replace-all">
+															<xsl:with-param name="text" select="./egonp:Amount" />
+															<xsl:with-param name="replace" select="'.'" />
+															<xsl:with-param name="by" select="','" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="35.10px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LatePaymentFee'">
+														<xsl:if test="./egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="27.95px" />
+									<fo:table-column column-width="48.75px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve" margin-left="0px">
+													<fo:inline>od</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LatePaymentFee'">
+														<xsl:call-template name="formatToSkDate">
+															<xsl:with-param name="date" select="./egonp:DateFrom" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block>
+								<xsl:if test="./egonp:DateTo/text()">
+									<fo:block margin-top="3mm">
+										<fo:table table-layout="fixed" width="100%">
+											<fo:table-column column-width="27.30px" />
+											<fo:table-column column-width="48.75px" />
+											<fo:table-body>
+												<fo:table-row>
+													<fo:table-cell>
+														<fo:block linefeed-treatment="preserve" margin-left="0px">
+															<fo:inline>do</fo:inline>
+														</fo:block>
+													</fo:table-cell>
+													<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+														<fo:block>
+															<xsl:if test="local-name()='LatePaymentFee'">
+																<xsl:call-template name="formatToSkDate">
+																	<xsl:with-param name="date" select="./egonp:DateTo" />
+																</xsl:call-template>
+															</xsl:if>
+														</fo:block>
+													</fo:table-cell>
+												</fo:table-row>
+											</fo:table-body>
+										</fo:table>
+									</fo:block>
+								</xsl:if>
+							</fo:block>
+							<fo:block>
+								<xsl:if test="./egonp:TextTo/text()">
+									<fo:block margin-top="3mm">
+										<fo:table table-layout="fixed" width="100%">
+											<fo:table-column column-width="27.30px" />
+											<fo:table-column column-width="48.75px" />
+											<fo:table-body>
+												<fo:table-row>
+													<fo:table-cell>
+														<fo:block linefeed-treatment="preserve" margin-left="0px">
+															<fo:inline>do</fo:inline>
+														</fo:block>
+													</fo:table-cell>
+													<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+														<fo:block>
+															<xsl:if test="local-name()='LatePaymentFee'">
+																<xsl:if test="./egonp:TextTo">
+																	<xsl:call-template name="intersperse-with-zero-spaces">
+																		<xsl:with-param name="str" select="./egonp:TextTo" />
+																	</xsl:call-template>
+																</xsl:if>
+															</xsl:if>
+														</fo:block>
+													</fo:table-cell>
+												</fo:table-row>
+											</fo:table-body>
+										</fo:table>
+									</fo:block>
+								</xsl:if>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SekciaSuma_5">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="135.20px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>suma kapitalizovaných poplatkov z omeškania</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LatePaymentFee'">
+														<xsl:call-template name="string-replace-all">
+															<xsl:with-param name="text" select="./egonp:Arrears" />
+															<xsl:with-param name="replace" select="'.'" />
+															<xsl:with-param name="by" select="','" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SecZmluvnaPokutaObal_1">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<xsl:choose>
+								<xsl:when test="not(/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:NotMoneyClaim/egonp:NotMoneyClaimOptional/egonp:ContractPenalty)">
+									<xsl:call-template name="SecZmluvnaPokutaOpak_1" />
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:for-each select="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:NotMoneyClaim/egonp:NotMoneyClaimOptional/egonp:ContractPenalty">
+										<xsl:call-template name="SecZmluvnaPokutaOpak_1" />
+									</xsl:for-each>
+								</xsl:otherwise>
+							</xsl:choose>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SecZmluvnaPokutaOpak_1">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="520.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm" font-weight="bold">
+													<fo:inline>Zmluvná pokuta</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block>
+													<fo:table>
+														<fo:table-column column-width="23.40px" />
+														<fo:table-column />
+														<fo:table-body>
+															<fo:table-row>
+																<fo:table-cell>
+																	<fo:block>
+																		<xsl:choose>
+																			<xsl:when test="./egonp:ContractPenaltyType/egonp:Codelist[egonp:CodelistCode='52']/egonp:CodelistItem/egonp:ItemCode[text()='PEVNA']">
+																				<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																			</xsl:when>
+																			<xsl:otherwise>
+																				<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																			</xsl:otherwise>
+																		</xsl:choose>
+																	</fo:block>
+																</fo:table-cell>
+																<fo:table-cell>
+																	<fo:block>pevn&#225; suma</fo:block>
+																</fo:table-cell>
+															</fo:table-row>
+														</fo:table-body>
+													</fo:table>
+													<fo:table>
+														<fo:table-column column-width="23.40px" />
+														<fo:table-column />
+														<fo:table-body>
+															<fo:table-row>
+																<fo:table-cell>
+																	<fo:block>
+																		<xsl:choose>
+																			<xsl:when test="./egonp:ContractPenaltyType/egonp:Codelist[egonp:CodelistCode='52']/egonp:CodelistItem/egonp:ItemCode[text()='PERCENTUALNA']">
+																				<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																			</xsl:when>
+																			<xsl:otherwise>
+																				<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																			</xsl:otherwise>
+																		</xsl:choose>
+																	</fo:block>
+																</fo:table-cell>
+																<fo:table-cell>
+																	<fo:block>percentu&#225;lna</fo:block>
+																</fo:table-cell>
+															</fo:table-row>
+														</fo:table-body>
+													</fo:table>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+							<xsl:if test="./egonp:Fixed/egonp:Amount or ./egonp:Fixed/egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemCode or ./egonp:Fixed/egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+								<xsl:call-template name="SecZmluvnaPokuta_1" />
+							</xsl:if>
+							<xsl:if test="./egonp:Pecentage/egonp:isDate or ./egonp:Pecentage/egonp:Rate or ./egonp:Pecentage/egonp:Periodicity/egonp:Codelist[egonp:CodelistCode='50']/egonp:CodelistItem/egonp:ItemCode or ./egonp:Pecentage/egonp:Periodicity/egonp:Codelist[egonp:CodelistCode='50']/egonp:CodelistItem/egonp:ItemName[@Language='sk'] or ./egonp:Pecentage/egonp:Amount or ./egonp:Pecentage/egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemCode or ./egonp:Pecentage/egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemName[@Language='sk'] or ./egonp:Pecentage/egonp:DateFrom or ./egonp:Pecentage/egonp:DateTo or ./egonp:Pecentage/egonp:TextTo">
+								<xsl:call-template name="SecZmluvnaPokuta_1a" />
+							</xsl:if>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SecZmluvnaPokuta_1">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<xsl:call-template name="SecZmluvnaPokutaPevnaSuma_1" />
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SecZmluvnaPokutaPevnaSuma_1">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="211.25px" />
+				<fo:table-column column-width="260.00px" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="88.40px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>suma</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px" text-align="right">
+												<fo:block>
+													<xsl:if test="local-name()='ContractPenalty'">
+														<xsl:call-template name="string-replace-all">
+															<xsl:with-param name="text" select="./egonp:Fixed/egonp:Amount" />
+															<xsl:with-param name="replace" select="'.'" />
+															<xsl:with-param name="by" select="','" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="35.10px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='ContractPenalty'">
+														<xsl:if test="./egonp:Fixed/egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Fixed/egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SecZmluvnaPokuta_1a">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<xsl:call-template name="datumZmluvnaPokutaNepenaznyCheckboxPomSekcia" />
+							<xsl:call-template name="PokutaPercentualnaSadzbaPom_1" />
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="datumZmluvnaPokutaNepenaznyCheckboxPomSekcia">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="448.50px" />
+				<fo:table-column column-width="78.00px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline color="white">___</fo:inline>
+													<fo:inline>&#x00A0;</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="23.40px" />
+									<fo:table-column />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block>
+													<xsl:choose>
+														<xsl:when test="./egonp:Pecentage/egonp:isDate[text()='1' or text()='true']">
+															<fo:inline font-family="Wingdings">&#xF078;</fo:inline>
+														</xsl:when>
+														<xsl:otherwise>
+															<fo:inline font-family="Wingdings">&#xF0A8;</fo:inline>
+														</xsl:otherwise>
+													</xsl:choose>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>dátum</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="PokutaPercentualnaSadzbaPom_1">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="128.05px" />
+				<fo:table-column column-width="13.00px" />
+				<fo:table-column column-width="65.00px" />
+				<fo:table-column column-width="39.00px" />
+				<fo:table-column column-width="78.00px" />
+				<fo:table-column column-width="48.75px" />
+				<fo:table-column column-width="84.50px" />
+				<fo:table-column column-width="78.00px" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="89.05px" />
+									<fo:table-column column-width="34.45px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve" margin-left="0px">
+													<fo:inline>percentuálna sadzba</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px" text-align="right">
+												<fo:block>
+													<xsl:if test="local-name()='ContractPenalty'">
+														<xsl:call-template name="string-replace-all">
+															<xsl:with-param name="text" select="./egonp:Pecentage/egonp:Rate" />
+															<xsl:with-param name="replace" select="'.'" />
+															<xsl:with-param name="by" select="','" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="13.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>%</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="51.35px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='ContractPenalty'">
+														<xsl:if test="./egonp:Pecentage/egonp:Periodicity/egonp:Codelist[egonp:CodelistCode='50']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Pecentage/egonp:Periodicity/egonp:Codelist[egonp:CodelistCode='50']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="55.25px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>zo sumy</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="65.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px" text-align="right">
+												<fo:block>
+													<xsl:if test="local-name()='ContractPenalty'">
+														<xsl:call-template name="string-replace-all">
+															<xsl:with-param name="text" select="./egonp:Pecentage/egonp:Amount" />
+															<xsl:with-param name="replace" select="'.'" />
+															<xsl:with-param name="by" select="','" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="35.10px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='ContractPenalty'">
+														<xsl:if test="./egonp:Pecentage/egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Pecentage/egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="26.00px" />
+									<fo:table-column column-width="47.45px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve" margin-left="0px">
+													<fo:inline>od</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='ContractPenalty'">
+														<xsl:call-template name="formatToSkDate">
+															<xsl:with-param name="date" select="./egonp:Pecentage/egonp:DateFrom" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="26.00px" />
+									<fo:table-column column-width="47.45px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve" margin-left="0px">
+													<fo:inline>do</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='ContractPenalty'">
+														<xsl:call-template name="formatToSkDate">
+															<xsl:with-param name="date" select="./egonp:Pecentage/egonp:DateTo" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+							<fo:block>
+								<xsl:if test="./egonp:Pecentage/egonp:TextTo/text()">
+									<fo:block margin-top="3mm">
+										<fo:table table-layout="fixed" width="100%">
+											<fo:table-column column-width="26.00px" />
+											<fo:table-column column-width="47.45px" />
+											<fo:table-body>
+												<fo:table-row>
+													<fo:table-cell>
+														<fo:block linefeed-treatment="preserve" margin-left="0px">
+															<fo:inline>do</fo:inline>
+														</fo:block>
+													</fo:table-cell>
+													<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+														<fo:block>
+															<xsl:if test="local-name()='ContractPenalty'">
+																<xsl:if test="./egonp:Pecentage/egonp:TextTo">
+																	<xsl:call-template name="intersperse-with-zero-spaces">
+																		<xsl:with-param name="str" select="./egonp:Pecentage/egonp:TextTo" />
+																	</xsl:call-template>
+																</xsl:if>
+															</xsl:if>
+														</fo:block>
+													</fo:table-cell>
+												</fo:table-row>
+											</fo:table-body>
+										</fo:table>
+									</fo:block>
+								</xsl:if>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="naklSpojeneSuplatPohlPom_1">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="520.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm" font-weight="bold">
+													<fo:inline>Náklady spojené s uplatnením pohľadávky</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+							<xsl:choose>
+								<xsl:when test="not(/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:NotMoneyClaim/egonp:NotMoneyClaimOptional/egonp:LegalExpensesClaims)">
+									<xsl:call-template name="sumaPom_1" />
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:for-each select="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:NotMoneyClaim/egonp:NotMoneyClaimOptional/egonp:LegalExpensesClaims">
+										<xsl:call-template name="sumaPom_1" />
+									</xsl:for-each>
+								</xsl:otherwise>
+							</xsl:choose>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="sumaPom_1">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="211.25px" />
+				<fo:table-column column-width="260.00px" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="94.90px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Suma</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px" text-align="right">
+												<fo:block>
+													<xsl:if test="local-name()='LegalExpensesClaims'">
+														<xsl:call-template name="string-replace-all">
+															<xsl:with-param name="text" select="./egonp:Amount" />
+															<xsl:with-param name="replace" select="'.'" />
+															<xsl:with-param name="by" select="','" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="35.10px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='LegalExpensesClaims'">
+														<xsl:if test="./egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SecIneObal_3">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<xsl:choose>
+								<xsl:when test="not(/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:NotMoneyClaim/egonp:NotMoneyClaimOptional/egonp:Other)">
+									<xsl:call-template name="SecZmluvnaPokutaOpak_3" />
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:for-each select="/egonp:ProposalForExecution/egonp:EnforcementOfClaims/egonp:NotMoneyClaim/egonp:NotMoneyClaimOptional/egonp:Other">
+										<xsl:call-template name="SecZmluvnaPokutaOpak_3" />
+									</xsl:for-each>
+								</xsl:otherwise>
+							</xsl:choose>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SecZmluvnaPokutaOpak_3">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="520.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm" font-weight="bold">
+													<fo:inline>Iné</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="260.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='Other'">
+														<xsl:if test="./egonp:About">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:About" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block>
+													<fo:table>
+														<fo:table-column column-width="23.40px" />
+														<fo:table-column />
+														<fo:table-body>
+															<fo:table-row>
+																<fo:table-cell>
+																	<fo:block>
+																		<xsl:choose>
+																			<xsl:when test="./egonp:OtherType/egonp:Codelist[egonp:CodelistCode='52']/egonp:CodelistItem/egonp:ItemCode[text()='PEVNA']">
+																				<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																			</xsl:when>
+																			<xsl:otherwise>
+																				<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																			</xsl:otherwise>
+																		</xsl:choose>
+																	</fo:block>
+																</fo:table-cell>
+																<fo:table-cell>
+																	<fo:block>pevn&#225; suma</fo:block>
+																</fo:table-cell>
+															</fo:table-row>
+														</fo:table-body>
+													</fo:table>
+													<fo:table>
+														<fo:table-column column-width="23.40px" />
+														<fo:table-column />
+														<fo:table-body>
+															<fo:table-row>
+																<fo:table-cell>
+																	<fo:block>
+																		<xsl:choose>
+																			<xsl:when test="./egonp:OtherType/egonp:Codelist[egonp:CodelistCode='52']/egonp:CodelistItem/egonp:ItemCode[text()='PERCENTUALNA']">
+																				<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																			</xsl:when>
+																			<xsl:otherwise>
+																				<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																			</xsl:otherwise>
+																		</xsl:choose>
+																	</fo:block>
+																</fo:table-cell>
+																<fo:table-cell>
+																	<fo:block>percentu&#225;lna</fo:block>
+																</fo:table-cell>
+															</fo:table-row>
+														</fo:table-body>
+													</fo:table>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+							<xsl:if test="./egonp:Fixed/egonp:Amount or ./egonp:Fixed/egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemCode or ./egonp:Fixed/egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+								<xsl:call-template name="SecInePev_3" />
+							</xsl:if>
+							<xsl:if test="./egonp:Pecentage/egonp:isDate or ./egonp:Pecentage/egonp:Rate or ./egonp:Pecentage/egonp:Periodicity/egonp:Codelist[egonp:CodelistCode='50']/egonp:CodelistItem/egonp:ItemCode or ./egonp:Pecentage/egonp:Periodicity/egonp:Codelist[egonp:CodelistCode='50']/egonp:CodelistItem/egonp:ItemName[@Language='sk'] or ./egonp:Pecentage/egonp:Amount or ./egonp:Pecentage/egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemCode or ./egonp:Pecentage/egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemName[@Language='sk'] or ./egonp:Pecentage/egonp:DateFrom or ./egonp:Pecentage/egonp:DateTo or ./egonp:Pecentage/egonp:TextTo">
+								<xsl:call-template name="SecInePer_3" />
+							</xsl:if>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SecInePev_3">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<xsl:call-template name="SecIneSuma_3" />
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SecIneSuma_3">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="211.25px" />
+				<fo:table-column column-width="260.00px" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="88.40px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>suma</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px" text-align="right">
+												<fo:block>
+													<xsl:if test="local-name()='Other'">
+														<xsl:call-template name="string-replace-all">
+															<xsl:with-param name="text" select="./egonp:Fixed/egonp:Amount" />
+															<xsl:with-param name="replace" select="'.'" />
+															<xsl:with-param name="by" select="','" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="35.10px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='Other'">
+														<xsl:if test="./egonp:Fixed/egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Fixed/egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SecInePer_3">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<xsl:call-template name="datumIneCheckboxPomSekcia_3" />
+							<xsl:call-template name="InePercentualnaSadzbaPom_1" />
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="datumIneCheckboxPomSekcia_3">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="448.50px" />
+				<fo:table-column column-width="78.00px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline color="white">___</fo:inline>
+													<fo:inline>&#x00A0;</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="23.40px" />
+									<fo:table-column />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block>
+													<xsl:choose>
+														<xsl:when test="./egonp:Pecentage/egonp:isDate[text()='1' or text()='true']">
+															<fo:inline font-family="Wingdings">&#xF078;</fo:inline>
+														</xsl:when>
+														<xsl:otherwise>
+															<fo:inline font-family="Wingdings">&#xF0A8;</fo:inline>
+														</xsl:otherwise>
+													</xsl:choose>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>dátum</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="InePercentualnaSadzbaPom_1">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="128.05px" />
+				<fo:table-column column-width="13.00px" />
+				<fo:table-column column-width="65.00px" />
+				<fo:table-column column-width="39.00px" />
+				<fo:table-column column-width="78.00px" />
+				<fo:table-column column-width="48.75px" />
+				<fo:table-column column-width="84.50px" />
+				<fo:table-column column-width="78.00px" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="89.05px" />
+									<fo:table-column column-width="34.45px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve" margin-left="0px">
+													<fo:inline>percentuálna sadzba</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px" text-align="right">
+												<fo:block>
+													<xsl:if test="local-name()='Other'">
+														<xsl:call-template name="string-replace-all">
+															<xsl:with-param name="text" select="./egonp:Pecentage/egonp:Rate" />
+															<xsl:with-param name="replace" select="'.'" />
+															<xsl:with-param name="by" select="','" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="13.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>%</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="51.35px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='Other'">
+														<xsl:if test="./egonp:Pecentage/egonp:Periodicity/egonp:Codelist[egonp:CodelistCode='50']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Pecentage/egonp:Periodicity/egonp:Codelist[egonp:CodelistCode='50']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="55.25px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>zo sumy</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="65.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px" text-align="right">
+												<fo:block>
+													<xsl:if test="local-name()='Other'">
+														<xsl:call-template name="string-replace-all">
+															<xsl:with-param name="text" select="./egonp:Pecentage/egonp:Amount" />
+															<xsl:with-param name="replace" select="'.'" />
+															<xsl:with-param name="by" select="','" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="35.10px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='Other'">
+														<xsl:if test="./egonp:Pecentage/egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemName[@Language='sk']">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Pecentage/egonp:Currency/egonp:Codelist[egonp:CodelistCode='cis_0138']/egonp:CodelistItem/egonp:ItemName[@Language='sk']" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="26.00px" />
+									<fo:table-column column-width="47.45px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve" margin-left="0px">
+													<fo:inline>od</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='Other'">
+														<xsl:call-template name="formatToSkDate">
+															<xsl:with-param name="date" select="./egonp:Pecentage/egonp:DateFrom" />
+														</xsl:call-template>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block>
+								<xsl:if test="./egonp:Pecentage/egonp:DateTo/text()">
+									<fo:block margin-top="3mm">
+										<fo:table table-layout="fixed" width="100%">
+											<fo:table-column column-width="26.00px" />
+											<fo:table-column column-width="47.45px" />
+											<fo:table-body>
+												<fo:table-row>
+													<fo:table-cell>
+														<fo:block linefeed-treatment="preserve" margin-left="0px">
+															<fo:inline>do</fo:inline>
+														</fo:block>
+													</fo:table-cell>
+													<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+														<fo:block>
+															<xsl:if test="local-name()='Other'">
+																<xsl:call-template name="formatToSkDate">
+																	<xsl:with-param name="date" select="./egonp:Pecentage/egonp:DateTo" />
+																</xsl:call-template>
+															</xsl:if>
+														</fo:block>
+													</fo:table-cell>
+												</fo:table-row>
+											</fo:table-body>
+										</fo:table>
+									</fo:block>
+								</xsl:if>
+							</fo:block>
+							<fo:block>
+								<xsl:if test="./egonp:Pecentage/egonp:TextTo/text()">
+									<fo:block margin-top="3mm">
+										<fo:table table-layout="fixed" width="100%">
+											<fo:table-column column-width="26.00px" />
+											<fo:table-column column-width="47.45px" />
+											<fo:table-body>
+												<fo:table-row>
+													<fo:table-cell>
+														<fo:block linefeed-treatment="preserve" margin-left="0px">
+															<fo:inline>do</fo:inline>
+														</fo:block>
+													</fo:table-cell>
+													<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+														<fo:block>
+															<xsl:if test="local-name()='Other'">
+																<xsl:if test="./egonp:Pecentage/egonp:TextTo">
+																	<xsl:call-template name="intersperse-with-zero-spaces">
+																		<xsl:with-param name="str" select="./egonp:Pecentage/egonp:TextTo" />
+																	</xsl:call-template>
+																</xsl:if>
+															</xsl:if>
+														</fo:block>
+													</fo:table-cell>
+												</fo:table-row>
+											</fo:table-body>
+										</fo:table>
+									</fo:block>
+								</xsl:if>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Fsekcia_TrovyExekucie">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:block background-color="#F8EFFB" color="#4b0082" margin-left="3pt" margin-top="3pt" margin-right="3pt" padding-left="1pt" padding-top="2pt" keep-with-next.within-page="always" keep-together.within-column="1">
+					<fo:block>
+						<fo:inline>F) Trovy exekúcie - oprávnený</fo:inline>
+					</fo:block>
+				</fo:block>
+				<fo:block color="white" keep-with-next.within-page="always" keep-together.within-column="1">|</fo:block>
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="proportional-column-width(1)" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="369.20px" />
+										<fo:table-column column-width="proportional-column-width(1)" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Súdny poplatok (návrh na vykonanie exekúcie)</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell>
+													<fo:block>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="/egonp:ProposalForExecution/egonp:CostsOfExecution/egonp:CourtFee[text()='1']">
+																					<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>&#193;no</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="/egonp:ProposalForExecution/egonp:CostsOfExecution/egonp:CourtFee[text()='0']">
+																					<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>Nie</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<xsl:if test="/egonp:ProposalForExecution/egonp:CostsOfExecution/egonp:AmountOfCourtFee">
+									<xsl:call-template name="SekciaSudnyPoplatok" />
+								</xsl:if>
+								<xsl:if test="/egonp:ProposalForExecution/egonp:CostsOfExecution/egonp:ConversionFee">
+									<xsl:call-template name="sek_PoplatokZaKonverziu" />
+								</xsl:if>
+								<xsl:call-template name="SekciaTrovy_1" />
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="369.20px" />
+										<fo:table-column column-width="proportional-column-width(1)" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Trovy za spísanie návrhu na vykonanie exekúcie u súdneho exekútora</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell>
+													<fo:block>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="/egonp:ProposalForExecution/egonp:CostsOfExecution/egonp:CostsForDraftingTheProposal[text()='1']">
+																					<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>&#193;no</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="/egonp:ProposalForExecution/egonp:CostsOfExecution/egonp:CostsForDraftingTheProposal[text()='0']">
+																					<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>Nie</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<xsl:if test="/egonp:ProposalForExecution/egonp:CostsOfExecution/egonp:AmountOfCostsForDraftingTheProposal">
+									<xsl:call-template name="SekciaVyska_2" />
+								</xsl:if>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="369.20px" />
+										<fo:table-column column-width="proportional-column-width(1)" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Iné trovy</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell>
+													<fo:block>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="/egonp:ProposalForExecution/egonp:CostsOfExecution/egonp:OtherCosts[text()='1']">
+																					<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>&#193;no</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="/egonp:ProposalForExecution/egonp:CostsOfExecution/egonp:OtherCosts[text()='0']">
+																					<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>Nie</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<xsl:call-template name="sec_ine_trovy" />
+								<xsl:call-template name="SekciaTrovy_3" />
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="proportional-column-width(1)" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block margin-top="1mm">
+														<fo:inline>Odôvodnenie trov</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="520.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell height="100px" border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block hyphenate="true" linefeed-treatment="preserve">
+														<xsl:if test="/egonp:ProposalForExecution/egonp:CostsOfExecution/egonp:DescriptionOfCosts">
+															<xsl:value-of select="/egonp:ProposalForExecution/egonp:CostsOfExecution/egonp:DescriptionOfCosts" />
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SekciaSudnyPoplatok">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="513.50px" />
+				<fo:table-column column-width="39.00px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block>
+								<xsl:if test="/egonp:ProposalForExecution/egonp:CostsOfExecution/egonp:AmountOfCourtFee/text()">
+									<fo:block margin-top="3mm">
+										<fo:table table-layout="fixed" width="100%">
+											<fo:table-column column-width="369.20px" />
+											<fo:table-column column-width="104.00px" />
+											<fo:table-body>
+												<fo:table-row>
+													<fo:table-cell>
+														<fo:block linefeed-treatment="preserve">
+															<fo:inline>Súdny poplatok</fo:inline>
+														</fo:block>
+													</fo:table-cell>
+													<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px" text-align="right">
+														<fo:block>
+															<xsl:call-template name="string-replace-all">
+																<xsl:with-param name="text" select="/egonp:ProposalForExecution/egonp:CostsOfExecution/egonp:AmountOfCourtFee" />
+																<xsl:with-param name="replace" select="'.'" />
+																<xsl:with-param name="by" select="','" />
+															</xsl:call-template>
+														</fo:block>
+													</fo:table-cell>
+												</fo:table-row>
+											</fo:table-body>
+										</fo:table>
+									</fo:block>
+								</xsl:if>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block />
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="sek_PoplatokZaKonverziu">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="513.50px" />
+				<fo:table-column column-width="39.00px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block>
+								<xsl:if test="/egonp:ProposalForExecution/egonp:CostsOfExecution/egonp:ConversionFee/text()">
+									<fo:block margin-top="3mm">
+										<fo:table table-layout="fixed" width="100%">
+											<fo:table-column column-width="369.20px" />
+											<fo:table-column column-width="104.00px" />
+											<fo:table-body>
+												<fo:table-row>
+													<fo:table-cell>
+														<fo:block linefeed-treatment="preserve">
+															<fo:inline>Poplatok za konverziu</fo:inline>
+														</fo:block>
+													</fo:table-cell>
+													<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px" text-align="right">
+														<fo:block>
+															<xsl:call-template name="string-replace-all">
+																<xsl:with-param name="text" select="/egonp:ProposalForExecution/egonp:CostsOfExecution/egonp:ConversionFee" />
+																<xsl:with-param name="replace" select="'.'" />
+																<xsl:with-param name="by" select="','" />
+															</xsl:call-template>
+														</fo:block>
+													</fo:table-cell>
+												</fo:table-row>
+											</fo:table-body>
+										</fo:table>
+									</fo:block>
+								</xsl:if>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block />
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SekciaTrovy_1">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="513.50px" />
+				<fo:table-column column-width="39.00px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="369.20px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Trovy právneho zastúpenia (vrátane DPH)</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px" text-align="right">
+												<fo:block>
+													<xsl:call-template name="string-replace-all">
+														<xsl:with-param name="text" select="/egonp:ProposalForExecution/egonp:CostsOfExecution/egonp:CostsOfLegalRepresentation" />
+														<xsl:with-param name="replace" select="'.'" />
+														<xsl:with-param name="by" select="','" />
+													</xsl:call-template>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block />
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SekciaVyska_2">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="513.50px" />
+				<fo:table-column column-width="39.00px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block>
+								<xsl:if test="/egonp:ProposalForExecution/egonp:CostsOfExecution/egonp:AmountOfCostsForDraftingTheProposal/text()">
+									<fo:block margin-top="3mm">
+										<fo:table table-layout="fixed" width="100%">
+											<fo:table-column column-width="369.20px" />
+											<fo:table-column column-width="104.00px" />
+											<fo:table-body>
+												<fo:table-row>
+													<fo:table-cell>
+														<fo:block linefeed-treatment="preserve">
+															<fo:inline>Výška trov za spísanie návrhu na vykonanie exekúcie u súdneho exekútora</fo:inline>
+														</fo:block>
+													</fo:table-cell>
+													<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px" text-align="right">
+														<fo:block>
+															<xsl:call-template name="string-replace-all">
+																<xsl:with-param name="text" select="/egonp:ProposalForExecution/egonp:CostsOfExecution/egonp:AmountOfCostsForDraftingTheProposal" />
+																<xsl:with-param name="replace" select="'.'" />
+																<xsl:with-param name="by" select="','" />
+															</xsl:call-template>
+														</fo:block>
+													</fo:table-cell>
+												</fo:table-row>
+											</fo:table-body>
+										</fo:table>
+									</fo:block>
+								</xsl:if>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block />
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="sec_ine_trovy">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="513.50px" />
+				<fo:table-column column-width="39.00px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="369.20px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Výška iných trov</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px" text-align="right">
+												<fo:block>
+													<xsl:call-template name="string-replace-all">
+														<xsl:with-param name="text" select="/egonp:ProposalForExecution/egonp:CostsOfExecution/egonp:AmountOfOtherCosts" />
+														<xsl:with-param name="replace" select="'.'" />
+														<xsl:with-param name="by" select="','" />
+													</xsl:call-template>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block />
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SekciaTrovy_3">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="513.50px" />
+				<fo:table-column column-width="39.00px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="369.20px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Trovy celkom (vrátane DPH)</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px" text-align="right">
+												<fo:block>
+													<xsl:call-template name="string-replace-all">
+														<xsl:with-param name="text" select="/egonp:ProposalForExecution/egonp:CostsOfExecution/egonp:TotalCosts" />
+														<xsl:with-param name="replace" select="'.'" />
+														<xsl:with-param name="by" select="','" />
+													</xsl:call-template>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block />
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Gsekcia_OslobodenieOdSudnehoPoplatku">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:block background-color="#F8EFFB" color="#4b0082" margin-left="3pt" margin-top="3pt" margin-right="3pt" padding-left="1pt" padding-top="2pt" keep-with-next.within-page="always" keep-together.within-column="1">
+					<fo:block>
+						<fo:inline>G) Oslobodenie od súdneho poplatku</fo:inline>
+					</fo:block>
+				</fo:block>
+				<fo:block color="white" keep-with-next.within-page="always" keep-together.within-column="1">|</fo:block>
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="proportional-column-width(1)" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="369.20px" />
+										<fo:table-column column-width="proportional-column-width(1)" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Oslobodenie od súdneho poplatku</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell>
+													<fo:block>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="/egonp:ProposalForExecution/egonp:ExemptionFromCourtFees/egonp:ItIsExempted[text()='1']">
+																					<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>&#193;no</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="/egonp:ProposalForExecution/egonp:ExemptionFromCourtFees/egonp:ItIsExempted[text()='0']">
+																					<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>Nie</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<xsl:if test="/egonp:ProposalForExecution/egonp:ExemptionFromCourtFees/egonp:Proposal/egonp:Codelist[egonp:CodelistCode='51']/egonp:CodelistItem/egonp:ItemCode or /egonp:ProposalForExecution/egonp:ExemptionFromCourtFees/egonp:Proposal/egonp:Codelist[egonp:CodelistCode='51']/egonp:CodelistItem/egonp:ItemName[@Language='sk'] or /egonp:ProposalForExecution/egonp:ExemptionFromCourtFees/egonp:Reasons">
+									<xsl:call-template name="oslobodenieOdSUdnehoPoplatkuPom" />
+								</xsl:if>
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="oslobodenieOdSUdnehoPoplatkuPom">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="369.20px" />
+									<fo:table-column column-width="proportional-column-width(1)" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Oslobodenie od súdneho poplatku</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell>
+												<fo:block>
+													<fo:table>
+														<fo:table-column column-width="23.40px" />
+														<fo:table-column />
+														<fo:table-body>
+															<fo:table-row>
+																<fo:table-cell>
+																	<fo:block>
+																		<xsl:choose>
+																			<xsl:when test="/egonp:ProposalForExecution/egonp:ExemptionFromCourtFees/egonp:Proposal/egonp:Codelist[egonp:CodelistCode='51']/egonp:CodelistItem/egonp:ItemCode[text()='ZAKON']">
+																				<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																			</xsl:when>
+																			<xsl:otherwise>
+																				<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																			</xsl:otherwise>
+																		</xsl:choose>
+																	</fo:block>
+																</fo:table-cell>
+																<fo:table-cell>
+																	<fo:block>zo z&#225;kona</fo:block>
+																</fo:table-cell>
+															</fo:table-row>
+														</fo:table-body>
+													</fo:table>
+													<fo:table>
+														<fo:table-column column-width="23.40px" />
+														<fo:table-column />
+														<fo:table-body>
+															<fo:table-row>
+																<fo:table-cell>
+																	<fo:block>
+																		<xsl:choose>
+																			<xsl:when test="/egonp:ProposalForExecution/egonp:ExemptionFromCourtFees/egonp:Proposal/egonp:Codelist[egonp:CodelistCode='51']/egonp:CodelistItem/egonp:ItemCode[text()='NAVRH']">
+																				<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																			</xsl:when>
+																			<xsl:otherwise>
+																				<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																			</xsl:otherwise>
+																		</xsl:choose>
+																	</fo:block>
+																</fo:table-cell>
+																<fo:table-cell>
+																	<fo:block>na n&#225;vrh</fo:block>
+																</fo:table-cell>
+															</fo:table-row>
+														</fo:table-body>
+													</fo:table>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="131.95px" />
+									<fo:table-column column-width="383.50px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Dôvody</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell height="100px" border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block hyphenate="true" linefeed-treatment="preserve">
+													<xsl:if test="/egonp:ProposalForExecution/egonp:ExemptionFromCourtFees/egonp:Reasons">
+														<xsl:value-of select="/egonp:ProposalForExecution/egonp:ExemptionFromCourtFees/egonp:Reasons" />
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Hsekcia_VyhlaseniaNavrh">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:block background-color="#F8EFFB" color="#4b0082" margin-left="3pt" margin-top="3pt" margin-right="3pt" padding-left="1pt" padding-top="2pt" keep-with-next.within-page="always" keep-together.within-column="1">
+					<fo:block>
+						<fo:inline>H) Vyhlásenia a návrh</fo:inline>
+					</fo:block>
+				</fo:block>
+				<fo:block color="white" keep-with-next.within-page="always" keep-together.within-column="1">|</fo:block>
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="proportional-column-width(1)" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="466.70px" />
+										<fo:table-column column-width="proportional-column-width(1)" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Oprávnený vyhlasuje, že nárok podľa exekučného titulu povinný ku dňu podania návrhu na vykonanie exekúcie dobrovoľne nesplnil</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell>
+													<fo:block>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="/egonp:ProposalForExecution/egonp:StatementsAndProposal/egonp:TheMandateForRecovery[text()='1']">
+																					<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>Celkom</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="/egonp:ProposalForExecution/egonp:StatementsAndProposal/egonp:TheMandateForRecovery[text()='0']">
+																					<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>Sčasti</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<xsl:if test="/egonp:ProposalForExecution/egonp:StatementsAndProposal/egonp:TheMandateForRecoveryDetail">
+									<xsl:call-template name="SekciaPodrobnosti" />
+								</xsl:if>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="466.70px" />
+										<fo:table-column column-width="proportional-column-width(1)" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Oprávnený vyhlasuje, že na podklade exekučného titulu uvedeného v časti D) ohľadne toho istého nároku iné exekučné konanie alebo obdobné vykonávacie konanie</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell>
+													<fo:block>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="/egonp:ProposalForExecution/egonp:StatementsAndProposal/egonp:ThereIsNoOtherProceedings[text()='1']">
+																					<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>je veden&#233;</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="/egonp:ProposalForExecution/egonp:StatementsAndProposal/egonp:ThereIsNoOtherProceedings[text()='0']">
+																					<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>nie je veden&#233;</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<xsl:if test="/egonp:ProposalForExecution/egonp:StatementsAndProposal/egonp:ThereIsNoOtherProceedingsDetail">
+									<xsl:call-template name="SekciaPodrobnosti_2" />
+								</xsl:if>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="478.40px" />
+										<fo:table-column column-width="proportional-column-width(1)" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Časť nároku podľa exekučného titulu je vymáhaná v inom exekučnom konaní alebo obdobnom vykonávacom konaní</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell>
+													<fo:block>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="/egonp:ProposalForExecution/egonp:StatementsAndProposal/egonp:InAnotherPartOfTheEnforcementProceedings[text()='1']">
+																					<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>&#193;no</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="/egonp:ProposalForExecution/egonp:StatementsAndProposal/egonp:InAnotherPartOfTheEnforcementProceedings[text()='0']">
+																					<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>Nie</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<xsl:if test="/egonp:ProposalForExecution/egonp:StatementsAndProposal/egonp:InAnotherPartOfTheEnforcementProceedingsDetail">
+									<xsl:call-template name="SekciaPodrobnosti_3" />
+								</xsl:if>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="466.70px" />
+										<fo:table-column column-width="proportional-column-width(1)" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Návrhom sa uplatňuje nárok zo starej exekúcie</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell>
+													<fo:block>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="/egonp:ProposalForExecution/egonp:StatementsAndProposal/egonp:ClaimFromOldExecution[text()='1']">
+																					<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>&#193;no</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="/egonp:ProposalForExecution/egonp:StatementsAndProposal/egonp:ClaimFromOldExecution[text()='0']">
+																					<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>Nie</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<xsl:if test="/egonp:ProposalForExecution/egonp:StatementsAndProposal/egonp:ClaimFromOldExecutionDetail">
+									<xsl:call-template name="SekciaPodrobnosti_8" />
+								</xsl:if>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="478.40px" />
+										<fo:table-column column-width="proportional-column-width(1)" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Oprávnený je oprávnený vyžadovať splnenie vymáhaného nároku zároveň od iných osôb</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell>
+													<fo:block>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="/egonp:ProposalForExecution/egonp:StatementsAndProposal/egonp:EnforcementOfClaimsByThirdParties[text()='1']">
+																					<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>&#193;no</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="/egonp:ProposalForExecution/egonp:StatementsAndProposal/egonp:EnforcementOfClaimsByThirdParties[text()='0']">
+																					<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>Nie</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<xsl:if test="/egonp:ProposalForExecution/egonp:StatementsAndProposal/egonp:EnforcementOfClaimsByThirdPartiesDetail">
+									<xsl:call-template name="SekciaPodrobnosti_4" />
+								</xsl:if>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="478.40px" />
+										<fo:table-column column-width="proportional-column-width(1)" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Oprávnený/povinný je právnym nástupcom osoby uvedenej v exekučnom titule</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell>
+													<fo:block>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="/egonp:ProposalForExecution/egonp:StatementsAndProposal/egonp:IsLegalSuccessor[text()='1']">
+																					<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>&#193;no</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="/egonp:ProposalForExecution/egonp:StatementsAndProposal/egonp:IsLegalSuccessor[text()='0']">
+																					<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>Nie</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<xsl:if test="/egonp:ProposalForExecution/egonp:StatementsAndProposal/egonp:IsLegalSuccessorDetail">
+									<xsl:call-template name="SekciaPodrobnosti_5" />
+								</xsl:if>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="466.70px" />
+										<fo:table-column column-width="proportional-column-width(1)" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Nárok priznaný exekučným titulom vyplýva zo zmenky</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell>
+													<fo:block>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="/egonp:ProposalForExecution/egonp:StatementsAndProposal/egonp:ClaimOfBills[text()='1']">
+																					<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>&#193;no</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="/egonp:ProposalForExecution/egonp:StatementsAndProposal/egonp:ClaimOfBills[text()='0']">
+																					<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>Nie</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<xsl:if test="/egonp:ProposalForExecution/egonp:StatementsAndProposal/egonp:ClaimOfBillsDetail">
+									<xsl:call-template name="SekciaPodrobnosti_6" />
+								</xsl:if>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="478.40px" />
+										<fo:table-column column-width="proportional-column-width(1)" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Nárok je podmienený splnením podmienky alebo vzájomnej povinnosti oprávneným</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell>
+													<fo:block>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="/egonp:ProposalForExecution/egonp:StatementsAndProposal/egonp:OnEnforcementOfClaimsAreEligibleAlsoOtherAuthorized[text()='1']">
+																					<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>&#193;no</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="/egonp:ProposalForExecution/egonp:StatementsAndProposal/egonp:OnEnforcementOfClaimsAreEligibleAlsoOtherAuthorized[text()='0']">
+																					<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>Nie</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<xsl:if test="/egonp:ProposalForExecution/egonp:StatementsAndProposal/egonp:OnEnforcementOfClaimsAreEligibleAlsoOtherAuthorizedDetail">
+									<xsl:call-template name="SekciaPodrobnosti_7" />
+								</xsl:if>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="478.40px" />
+										<fo:table-column column-width="proportional-column-width(1)" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Návrhom na vykonanie exekúcie sa uplatňuje nárok zo spotrebiteľskej zmluvy</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell>
+													<fo:block>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="/egonp:ProposalForExecution/egonp:StatementsAndProposal/egonp:PersonHavingFulfilledTheConditionOrMutualObligation[text()='1']">
+																					<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>&#193;no</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="/egonp:ProposalForExecution/egonp:StatementsAndProposal/egonp:PersonHavingFulfilledTheConditionOrMutualObligation[text()='0']">
+																					<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>Nie</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SekciaPodrobnosti">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="520.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>Uveďte podrobnosti</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="520.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell height="100px" border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block hyphenate="true" linefeed-treatment="preserve">
+													<xsl:if test="/egonp:ProposalForExecution/egonp:StatementsAndProposal/egonp:TheMandateForRecoveryDetail">
+														<xsl:value-of select="/egonp:ProposalForExecution/egonp:StatementsAndProposal/egonp:TheMandateForRecoveryDetail" />
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SekciaPodrobnosti_2">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="520.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>Uveďte podrobnosti</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="520.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell height="100px" border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block hyphenate="true" linefeed-treatment="preserve">
+													<xsl:if test="/egonp:ProposalForExecution/egonp:StatementsAndProposal/egonp:ThereIsNoOtherProceedingsDetail">
+														<xsl:value-of select="/egonp:ProposalForExecution/egonp:StatementsAndProposal/egonp:ThereIsNoOtherProceedingsDetail" />
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SekciaPodrobnosti_3">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="520.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>Uveďte podrobnosti</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="520.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell height="100px" border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block hyphenate="true" linefeed-treatment="preserve">
+													<xsl:if test="/egonp:ProposalForExecution/egonp:StatementsAndProposal/egonp:InAnotherPartOfTheEnforcementProceedingsDetail">
+														<xsl:value-of select="/egonp:ProposalForExecution/egonp:StatementsAndProposal/egonp:InAnotherPartOfTheEnforcementProceedingsDetail" />
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SekciaPodrobnosti_8">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="520.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>Uveďte podrobnosti</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="520.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell height="100px" border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block hyphenate="true" linefeed-treatment="preserve">
+													<xsl:if test="/egonp:ProposalForExecution/egonp:StatementsAndProposal/egonp:ClaimFromOldExecutionDetail">
+														<xsl:value-of select="/egonp:ProposalForExecution/egonp:StatementsAndProposal/egonp:ClaimFromOldExecutionDetail" />
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SekciaPodrobnosti_4">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="520.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>Uveďte podrobnosti</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="520.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell height="100px" border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block hyphenate="true" linefeed-treatment="preserve">
+													<xsl:if test="/egonp:ProposalForExecution/egonp:StatementsAndProposal/egonp:EnforcementOfClaimsByThirdPartiesDetail">
+														<xsl:value-of select="/egonp:ProposalForExecution/egonp:StatementsAndProposal/egonp:EnforcementOfClaimsByThirdPartiesDetail" />
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SekciaPodrobnosti_5">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="520.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>Opíšte skutočnosti, z ktorých právne nástupníctvo vyplýva. Listinné dôkazy pripojte ako prílohu.</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="520.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell height="100px" border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block hyphenate="true" linefeed-treatment="preserve">
+													<xsl:if test="/egonp:ProposalForExecution/egonp:StatementsAndProposal/egonp:IsLegalSuccessorDetail">
+														<xsl:value-of select="/egonp:ProposalForExecution/egonp:StatementsAndProposal/egonp:IsLegalSuccessorDetail" />
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SekciaPodrobnosti_6">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="520.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>Opíšte rozhodujúce skutočnosti a označte dôkazy týkajúce sa vlastného vzťahu s povinným. Listinné dôkazy pripojte ako prílohu.</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="520.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell height="100px" border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block hyphenate="true" linefeed-treatment="preserve">
+													<xsl:if test="/egonp:ProposalForExecution/egonp:StatementsAndProposal/egonp:ClaimOfBillsDetail">
+														<xsl:value-of select="/egonp:ProposalForExecution/egonp:StatementsAndProposal/egonp:ClaimOfBillsDetail" />
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SekciaPodrobnosti_7">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="proportional-column-width(1)" />
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="520.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block margin-top="1mm">
+													<fo:inline>Opíšte skutočnosti týkajúce sa splnenia podmienky alebo vzájomnej povinnosti a označte dôkazy. Listinné dôkazy pripojte ako prílohu.</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="520.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell height="100px" border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block hyphenate="true" linefeed-treatment="preserve">
+													<xsl:if test="/egonp:ProposalForExecution/egonp:StatementsAndProposal/egonp:OnEnforcementOfClaimsAreEligibleAlsoOtherAuthorizedDetail">
+														<xsl:value-of select="/egonp:ProposalForExecution/egonp:StatementsAndProposal/egonp:OnEnforcementOfClaimsAreEligibleAlsoOtherAuthorizedDetail" />
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Isekcia_prilohySpr">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:block background-color="#F8EFFB" color="#4b0082" margin-left="3pt" margin-top="3pt" margin-right="3pt" padding-left="1pt" padding-top="2pt" keep-with-next.within-page="always" keep-together.within-column="1">
+					<fo:block>
+						<fo:inline>I) Prílohy uložené v OpP</fo:inline>
+					</fo:block>
+				</fo:block>
+				<fo:block color="white" keep-with-next.within-page="always" keep-together.within-column="1">|</fo:block>
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="proportional-column-width(1)" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="239.20px" />
+										<fo:table-column column-width="proportional-column-width(1)" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Uložené v správnom registri súdu (OpP)</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell>
+													<fo:block>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="/egonp:ProposalForExecution/egonp:SPRAttachments/egonp:StoredInRegister[text()='1']">
+																					<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>&#193;no</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+														<fo:table>
+															<fo:table-column column-width="23.40px" />
+															<fo:table-column />
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell>
+																		<fo:block>
+																			<xsl:choose>
+																				<xsl:when test="/egonp:ProposalForExecution/egonp:SPRAttachments/egonp:StoredInRegister[text()='0']">
+																					<fo:inline font-family="Wingdings">&#xF0A4;</fo:inline>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<fo:inline font-family="Wingdings">&#xF0A1;</fo:inline>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell>
+																		<fo:block>Nie</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<xsl:for-each select="/egonp:ProposalForExecution/egonp:SPRAttachments/egonp:SPRAttachment">
+									<xsl:call-template name="SekciaCisloSpr_1" />
+								</xsl:for-each>
+								<fo:block />
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SekciaCisloSpr_1">
+		<fo:block margin-bottom="6pt" start-indent="1.2px">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="208.00px" />
+				<fo:table-column column-width="344.50px" />
+				<fo:table-body>
+					<fo:table-row keep-together.within-page="always">
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="57.20px" />
+									<fo:table-column column-width="104.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Číslo OpP</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='SPRAttachment'">
+														<xsl:if test="./egonp:Number">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Number" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block margin-top="3mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="76.70px" />
+									<fo:table-column column-width="260.00px" />
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block linefeed-treatment="preserve">
+													<fo:inline>Popis prílohy</fo:inline>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+												<fo:block>
+													<xsl:if test="local-name()='SPRAttachment'">
+														<xsl:if test="./egonp:Description">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="./egonp:Description" />
+															</xsl:call-template>
+														</xsl:if>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="SekOznacenieMiesta">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:block background-color="#F8EFFB" color="#4b0082" margin-left="3pt" margin-top="3pt" margin-right="3pt" padding-left="1pt" padding-top="2pt" keep-with-next.within-page="always" keep-together.within-column="1">
+					<fo:block>
+						<fo:inline>J) Označenie miesta, dátumu a podávajúceho</fo:inline>
+					</fo:block>
+				</fo:block>
+				<fo:block color="white" keep-with-next.within-page="always" keep-together.within-column="1">|</fo:block>
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="proportional-column-width(1)" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="135.20px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>V</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="/egonp:ProposalForExecution/egonp:LabelingInformation/egonp:Place">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="/egonp:ProposalForExecution/egonp:LabelingInformation/egonp:Place" />
+															</xsl:call-template>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="135.20px" />
+										<fo:table-column column-width="104.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>dňa</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:call-template name="formatToSkDate">
+															<xsl:with-param name="date" select="/egonp:ProposalForExecution/egonp:LabelingInformation/egonp:Date" />
+														</xsl:call-template>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="135.20px" />
+										<fo:table-column column-width="227.50px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block linefeed-treatment="preserve">
+														<fo:inline>Podávajúci</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell height="100px" border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block hyphenate="true" linefeed-treatment="preserve">
+														<xsl:if test="/egonp:ProposalForExecution/egonp:LabelingInformation/egonp:Sign">
+															<xsl:call-template name="intersperse-with-zero-spaces">
+																<xsl:with-param name="str" select="/egonp:ProposalForExecution/egonp:LabelingInformation/egonp:Sign" />
+															</xsl:call-template>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Hsekcia_Prilohy">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:block background-color="#F8EFFB" color="#4b0082" margin-left="3pt" margin-top="3pt" margin-right="3pt" padding-left="1pt" padding-top="2pt" keep-with-next.within-page="always" keep-together.within-column="1">
+					<fo:block>
+						<fo:inline>K) Prílohy</fo:inline>
+					</fo:block>
+				</fo:block>
+				<fo:block color="white" keep-with-next.within-page="always" keep-together.within-column="1">|</fo:block>
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="proportional-column-width(1)" />
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<xsl:call-template name="AttachmentLabel" />
+								<xsl:choose>
+									<xsl:when test="not(/egonp:ProposalForExecution/egonp:Attachments/egonp:Attachment)">
+										<xsl:call-template name="Attachment" />
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:for-each select="/egonp:ProposalForExecution/egonp:Attachments/egonp:Attachment">
+											<xsl:call-template name="Attachment" />
+										</xsl:for-each>
+									</xsl:otherwise>
+								</xsl:choose>
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="AttachmentLabel">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="39.00px" />
+					<fo:table-column column-width="201.50px" />
+					<fo:table-column column-width="243.75px" />
+					<fo:table-column column-width="71.50px" />
+					<fo:table-body>
+						<fo:table-row keep-together.within-page="always">
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="proportional-column-width(1)" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block margin-top="1mm">
+														<fo:inline>Por. číslo</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+							</fo:table-cell>
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="proportional-column-width(1)" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block margin-top="1mm">
+														<fo:inline>Názov prílohy</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+							</fo:table-cell>
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="proportional-column-width(1)" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block margin-top="1mm">
+														<fo:inline>Názov súboru prílohy</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+							</fo:table-cell>
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="proportional-column-width(1)" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block margin-top="1mm">
+														<fo:inline>Spôsob doručenia</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="Attachment">
+		<fo:block border-width="0.3pt" border-style="solid" margin-left="1pt" margin-top="6pt" margin-right="1pt">
+			<fo:block margin-bottom="6pt">
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="39.00px" />
+					<fo:table-column column-width="201.50px" />
+					<fo:table-column column-width="243.75px" />
+					<fo:table-column column-width="71.50px" />
+					<fo:table-body>
+						<fo:table-row keep-together.within-page="always">
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="32.50px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px" text-align="right">
+													<fo:block>
+														<xsl:if test="local-name()='Attachment'">
+															<xsl:if test="./egonp:AttachmentNr">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:AttachmentNr" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+							</fo:table-cell>
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="195.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='Attachment'">
+															<xsl:if test="./egonp:AttachmentName">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:AttachmentName" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+							</fo:table-cell>
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="234.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='Attachment'">
+															<xsl:if test="./egonp:AttachmentFileName">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:AttachmentFileName" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+							</fo:table-cell>
+							<fo:table-cell>
+								<fo:block margin-top="3mm">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="65.00px" />
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt" block-progression-dimension.minimum="10px">
+													<fo:block>
+														<xsl:if test="local-name()='Attachment'">
+															<xsl:if test="./egonp:AttachmentDelivery">
+																<xsl:call-template name="intersperse-with-zero-spaces">
+																	<xsl:with-param name="str" select="./egonp:AttachmentDelivery" />
+																</xsl:call-template>
+															</xsl:if>
+														</xsl:if>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block>
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	<xsl:template name="intersperse-with-zero-spaces">
+		<xsl:param name="str"/>
+		<xsl:variable name="spacechars">&#x9;&#xA;\t&#x2000;&#x2001;&#x2002;&#x2003;&#x2004;&#x2005;\t&#x2006;&#x2007;&#x2008;&#x2009;&#x200A;&#x200B;</xsl:variable>
+		<xsl:if test="string-length($str) &gt; 0">
+			<xsl:variable name="c1" select="substring($str, 1, 1)"/>
+			<xsl:value-of select="$c1"/>
+			<xsl:if test="$c1 != '' and not(contains($spacechars, $c1))">
+				<xsl:text>&#x200B;</xsl:text>
+			</xsl:if>
+			<xsl:call-template name="intersperse-with-zero-spaces">
+				<xsl:with-param name="str" select="substring($str, 2)"/>
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template name="formatTimeTrimMinutes">
+		<xsl:param name="time" />
+		<xsl:variable name="timeString" select="string($time)" />
+		<xsl:if test="$timeString != ''">
+			<xsl:value-of select="substring($timeString, 1, 5)" />
+		</xsl:if>
+	</xsl:template>
+	<xsl:template name="formatToSkDateTime">
+		<xsl:param name="dateTime" />
+		<xsl:variable name="dateSubstring" select="substring($dateTime, 1, 10)" />
+		<xsl:variable name="timeSubstring" select="substring($dateTime, 12, 8)" />
+		<xsl:variable name="dateString">
+			<xsl:choose>
+				<xsl:when test="$dateSubstring != '' and string-length($dateSubstring)=10 and string(number(substring($dateSubstring, 1, 4))) != 'NaN' ">
+					<xsl:value-of select="concat(substring($dateSubstring, 9, 2), '.', substring($dateSubstring, 6, 2), '.', substring($dateSubstring, 1, 4))" />
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="$dateSubstring"></xsl:value-of>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<xsl:variable name="timeString">
+			<xsl:if test="$timeSubstring != ''">
+				<xsl:value-of select="substring($timeSubstring, 1, 5)" />
+			</xsl:if>
+		</xsl:variable>
+		<xsl:value-of select="concat($dateString,' ',$timeString)"/>
+	</xsl:template>
+	<xsl:template name="formatToSkDate">
+		<xsl:param name="date" />
+		<xsl:variable name="dateString" select="string($date)" />
+		<xsl:choose>
+			<xsl:when test="$dateString != '' and string-length($dateString)=10 and string(number(substring($dateString, 1, 4))) != 'NaN' ">
+				<xsl:value-of select="concat(substring($dateString, 9, 2), '.', substring($dateString, 6, 2), '.', substring($dateString, 1, 4))" />
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$dateString"></xsl:value-of>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template name="formatAnyUri">
+		<xsl:param name="anyUri" />
+		<xsl:variable name="anyUriString" select="string($anyUri)" />
+		<xsl:variable name="anyUriSubString">
+			<xsl:choose>
+				<xsl:when test="$anyUriString != '' and contains($anyUriString, 'mailto:') and contains($anyUriString, '@')">
+					<xsl:call-template name="intersperse-with-zero-spaces">
+						<xsl:with-param name="str" select="substring($anyUriString, 8, string-length($anyUriString))"/>
+					</xsl:call-template>
+				</xsl:when>
+				<xsl:when test="$anyUriString != '' and contains($anyUriString, 'http://')">
+					<xsl:call-template name="intersperse-with-zero-spaces">
+						<xsl:with-param name="str" select="substring($anyUriString, 8, string-length($anyUriString))"/>
+					</xsl:call-template>
+				</xsl:when>
+				<xsl:when test="$anyUriString != '' and contains($anyUriString, 'https://')">
+					<xsl:call-template name="intersperse-with-zero-spaces">
+						<xsl:with-param name="str" select="substring($anyUriString, 9, string-length($anyUriString))"/>
+					</xsl:call-template>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:call-template name="intersperse-with-zero-spaces">
+						<xsl:with-param name="str" select="$anyUriString"/>
+					</xsl:call-template>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<xsl:value-of select="$anyUriSubString"/>
+	</xsl:template>
+	<xsl:template name="booleanToSkString">
+		<xsl:param name="boolValue" />
+		<xsl:variable name="boolValueString" select="string($boolValue)" />
+		<xsl:choose>
+			<xsl:when test="$boolValueString = 'true' ">
+				<xsl:text>Áno</xsl:text>
+			</xsl:when>
+			<xsl:when test="$boolValueString = '1' ">
+				<xsl:text>Áno</xsl:text>
+			</xsl:when>
+			<xsl:when test="$boolValueString = 'false' ">
+				<xsl:text>Nie</xsl:text>
+			</xsl:when>
+			<xsl:when test="$boolValueString = '0' ">
+				<xsl:text>Nie</xsl:text>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$boolValueString"></xsl:value-of>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+</xsl:stylesheet>
+    XSLT
   }
 ]
 exe_related_docs.each do |related_document|
@@ -36707,8 +58239,7 @@ end
 
 szco_registration_form = Upvs::Form.find_or_create_by!(
   identifier: "JKM_ZROHLAS_FO",
-  version: "1.5",
-  message_type: "sluzba_egov_1097"
+  version: "1.5"
 )
 szco_registration_form_related_docs = [
   {
