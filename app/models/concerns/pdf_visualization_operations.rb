@@ -6,7 +6,7 @@ module PdfVisualizationOperations
   FORM_IDENTIFIER_PATTERN = /([^\/]+)\/(\d+\.\d+)\z/
 
   included do
-    def prepare_pdf_transformation
+    def prepare_pdf_visualization
       return unless upvs_form&.xsl_fo
       return unless unsigned_content
       return unless xml?

@@ -32,7 +32,7 @@ class MessageObjectsController < ApplicationController
   def download_pdf
     authorize @message_object
 
-    pdf_content = @message_object.prepare_pdf_transformation
+    pdf_content = @message_object.prepare_pdf_visualization
     if pdf_content
       send_data pdf_content, filename: MessageObjectHelper.pdf_name(@message_object), type: 'application/pdf', disposition: :download
     else
