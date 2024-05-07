@@ -62,8 +62,7 @@ class Drafts::LoadContentJob < ApplicationJob
   def save_form_visualisation(message_draft)
     upvs_form = Upvs::Form.find_by(
       identifier: message_draft.metadata["posp_id"],
-      version: message_draft.metadata["posp_version"],
-      message_type: message_draft.metadata["message_type"],
+      version: message_draft.metadata["posp_version"]
     )
     upvs_form_xslt_html = upvs_form&.xslt_html
 
