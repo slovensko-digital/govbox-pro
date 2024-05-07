@@ -19,7 +19,7 @@ module Upvs
         related_document_path = XSD_PATH
         related_document_type = 'CLS_F_XSD_EDOC'
       when :xslt_html
-        related_document_path = xml_manifest.xpath('//manifest:file-entry[@media-destination="screen"]')&.first['full-path']
+        related_document_path = xml_manifest.xpath('//manifest:file-entry[@media-destination="screen" or @media-destination="view"]')&.first['full-path']
         related_document_path&.gsub!(/\\/, '/')
         related_document_type = 'CLS_F_XSLT_HTML'
       when :xsl_fo
