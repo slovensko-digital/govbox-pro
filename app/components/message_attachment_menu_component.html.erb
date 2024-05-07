@@ -1,17 +1,17 @@
 <%= render Common::OptionsComponent.new(id: "message-attachment-menu") do |options| %>
   <% options.with_menu_content do %>
-    <%= link_to download_message_message_object_path(@message_attachment.message, @message_attachment), class: "flex gap-3", role: "menuitem", tabindex: "-1", data: { turbo_frame: "_top" } do %>
+    <%= link_to download_message_message_object_path(@message_attachment.message, @message_attachment), class: "flex gap-3", role: "menuitem", tabindex: "-1", data: { turbo_frame: "_top", turbo: false } do %>
       <%= render Icons::ArrowDownTrayComponent.new(css_classes: "h-5 w-5") %>
       Stiahnuť
     <% end %>
     <% if @message_attachment.xml? %>
-      <%= link_to download_pdf_message_message_object_path(@message_attachment.message, @message_attachment), class: "flex gap-3", role: "menuitem", tabindex: "-1", data: { turbo_frame: "_top" } do %>
+      <%= link_to download_pdf_message_message_object_path(@message_attachment.message, @message_attachment), class: "flex gap-3", role: "menuitem", tabindex: "-1", data: { turbo_frame: "_top", turbo: false } do %>
         <%= render Icons::ArrowDownTrayComponent.new(css_classes: "h-5 w-5") %>
         Stiahnuť ako PDF
       <% end %>
     <% end %>
     <% if @message_attachment.downloadable_archived_object? %>
-      <%= link_to download_archived_message_message_object_path(@message_attachment.message, @message_attachment), class: "flex gap-3", role: "menuitem", tabindex: "-1", data: { turbo_frame: "_top" } do %>
+      <%= link_to download_archived_message_message_object_path(@message_attachment.message, @message_attachment), class: "flex gap-3", role: "menuitem", tabindex: "-1", data: { turbo_frame: "_top", turbo: false } do %>
         <%= render Icons::ArrowDownTrayComponent.new(css_classes: "h-5 w-5") %>
         Stiahnuť archivované
       <% end %>

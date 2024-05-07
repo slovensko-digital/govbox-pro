@@ -1,11 +1,11 @@
 <% if @message.form.present? %>
   <%= render Common::OptionsComponent.new(id: "message-options") do |options| %>
     <% options.with_menu_content do %>
-      <%= link_to download_message_message_object_path(@message, @message.form), data: { turbo_frame: '_top' }, class: 'whitespace-nowrap flex gap-3', role: 'menu-item', tabindex: -1 do %>
+      <%= link_to download_message_message_object_path(@message, @message.form), data: { turbo_frame: '_top', turbo: false }, class: 'whitespace-nowrap flex gap-3', role: 'menu-item', tabindex: -1 do %>
         <%= render Icons::ArrowDownTrayComponent.new(css_classes: "w-5 h-5") %>
         Stiahnuť správu
       <% end %>
-      <%= link_to download_pdf_message_message_object_path(@message, @message.form), data: { turbo_frame: '_top' }, class: 'whitespace-nowrap flex gap-3', role: 'menu-item', tabindex: -1 do %>
+      <%= link_to download_pdf_message_message_object_path(@message, @message.form), data: { turbo_frame: '_top', turbo: false }, class: 'whitespace-nowrap flex gap-3', role: 'menu-item', tabindex: -1 do %>
         <%= render Icons::ArrowDownTrayComponent.new(css_classes: "w-5 h-5") %>
         Stiahnuť správu ako PDF
       <% end %>
