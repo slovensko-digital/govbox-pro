@@ -56,7 +56,7 @@ module PdfVisualizationOperations
       return unless xml?
 
       xml_document = xml_unsigned_content
-      posp_id, posp_version = xml_document.root.namespace&.href&.match(FORM_IDENTIFIER_PATTERN)&.captures
+      posp_id, posp_version = xml_document&.root&.namespace&.href&.match(FORM_IDENTIFIER_PATTERN)&.captures
 
       ::Upvs::Form.find_by(
         identifier: posp_id,
