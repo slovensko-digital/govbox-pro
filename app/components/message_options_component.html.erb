@@ -8,7 +8,7 @@
       <% if Current.tenant.feature_enabled?(:pdf_transformation) && @message.form&.downloadable_as_pdf? %>
         <%= link_to download_pdf_message_message_object_path(@message, @message.form), data: { turbo_frame: '_top' }, class: 'whitespace-nowrap flex gap-3', role: 'menu-item', tabindex: -1 do %>
           <%= render Icons::ArrowDownTrayComponent.new(css_classes: "w-5 h-5") %>
-          Stiahnuť správu ako PDF
+          Stiahnuť ako PDF
         <% end %>
       <% end %>
       <% if @message.form&.downloadable_archived_object? %>
