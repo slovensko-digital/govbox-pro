@@ -37,7 +37,7 @@ class Message < ApplicationRecord
   delegate :tenant, to: :thread
 
   scope :outbox, -> { where(outbox: true) }
-  scope :inbox, -> { where.not(outbox: true).where(type: nil).or(self.where.not(type: "MessageDraft")) }
+  scope :inbox, -> { where.not(outbox: true).where(type: [nil, 'Message']) }
 
   after_update_commit ->(message) { EventBus.publish(:message_changed, message) }
   after_destroy_commit ->(message) { EventBus.publish(:message_destroyed, message) }
@@ -96,7 +96,17 @@ class Message < ApplicationRecord
     )
   end
 
-  def visualization
+  def update_html_visualization
+    self.update(
+      html_visualization: build_html_visualization
+    )
+
+    form&.update(
+      visualizable: html_visualization.present?
+    )
+  end
+
+  def build_html_visualization
     return self.html_visualization if self.html_visualization.present?
 
     return unless upvs_form&.xslt_html

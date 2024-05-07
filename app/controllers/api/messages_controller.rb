@@ -38,8 +38,7 @@ class Api::MessagesController < Api::TenantController
       end
 
       if @message.valid?(:validate_data)
-        @message.metadata['status'] = 'created'
-        @message.save
+        @message.created!
 
         head :created
       else

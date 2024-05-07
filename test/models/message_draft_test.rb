@@ -1,6 +1,34 @@
 require "test_helper"
 
 class MessageDraftTest < ActiveSupport::TestCase
+  test "created! method publishes events on EventBus" do
+    box = boxes(:ssd_main)
+    message = MessageDraft.create(
+      uuid: SecureRandom.uuid,
+      title: 'message title',
+      sender_name: 'social department',
+      recipient_name: box.name,
+      delivered_at: Time.now,
+      thread: box.message_threads.first,
+      read: true,
+      replyable: false
+    )
+
+    subscriber1 = Minitest::Mock.new
+    subscriber1.expect :call, true, [message]
+
+    subscriber2 = Minitest::Mock.new
+    subscriber2.expect :perform_later, true, [message.thread]
+
+    EventBus.subscribe(:message_created, subscriber1)
+    EventBus.subscribe_job(:message_thread_created, subscriber2)
+
+    message.created!
+
+    assert_mock subscriber1
+    assert_mock subscriber2
+  end
+
   test 'after destroy callback should keep message thread drafts tag if message drafts present' do
     message_draft = messages(:ssd_main_general_draft_one)
     message_draft._run_create_callbacks
