@@ -65,10 +65,10 @@ module PdfVisualizationOperations
     end
 
     def find_or_create_upvs_form
-      return  unless xml?
+      return unless xml?
 
       xml_document = xml_unsigned_content
-      posp_id, posp_version = xml_document.root.namespace&.href&.match(FORM_IDENTIFIER_PATTERN)&.captures
+      posp_id, posp_version = xml_document&.root&.namespace&.href&.match(FORM_IDENTIFIER_PATTERN)&.captures
 
       ::Upvs::Form.find_or_create_by(
         identifier: posp_id,
