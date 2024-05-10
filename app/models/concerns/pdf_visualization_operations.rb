@@ -11,10 +11,6 @@ module PdfVisualizationOperations
       return unless unsigned_content
       return unless xml?
 
-      template = Nokogiri::XSLT(upvs_form.xsl_fo)
-      fo_xml = template.transform(xml_unsigned_content)
-      fo_xml.encoding = 'UTF-8'
-
       begin
         xml_file = Tempfile.new("#{id}.xml")
         xml_file.write(xml_unsigned_content)
@@ -26,10 +22,12 @@ module PdfVisualizationOperations
 
         pdf_file = Tempfile.new("#{id}.pdf")
 
-        system "fop -xml #{xml_file.path} -c #{Rails.root + 'config/apache_fop/fop.xconf'} -xsl #{xsl_file.path} -pdf #{pdf_file.path}"
+        success = system "fop -xml #{xml_file.path} -c #{Rails.root + 'config/apache_fop/fop.xconf'} -xsl #{xsl_file.path} -pdf #{pdf_file.path}"
 
-        pdf_file.rewind
-        pdf_file.read
+        if success
+          pdf_file.rewind
+          pdf_file.read
+        end
       ensure
         xml_file.close
         xsl_file.close
