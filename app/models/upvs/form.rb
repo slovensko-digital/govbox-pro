@@ -2,18 +2,21 @@
 #
 # Table name: upvs_forms
 #
-#  id           :bigint           not null, primary key
-#  identifier   :string           not null
-#  message_type :string           not null
-#  version      :string           not null
-#  created_at   :datetime         not null
-#  updated_at   :datetime         not null
+#  id         :bigint           not null, primary key
+#  identifier :string           not null
+#  version    :string           not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
 #
 class Upvs::Form < ApplicationRecord
   has_many :related_documents, class_name: 'Upvs::FormRelatedDocument', foreign_key: 'upvs_form_id', dependent: :destroy
 
   def xslt_html
     related_document('CLS_F_XSLT_HTML')
+  end
+
+  def xsl_fo
+    related_document('CLS_F_XSL_FO')
   end
 
   def xsd_schema

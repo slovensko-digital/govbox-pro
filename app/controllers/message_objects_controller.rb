@@ -29,6 +29,17 @@ class MessageObjectsController < ApplicationController
     send_data @message_object.content, filename: MessageObjectHelper.displayable_name(@message_object), type: @message_object.mimetype, disposition: :download
   end
 
+  def download_pdf
+    authorize @message_object
+
+    pdf_content = @message_object.prepare_pdf_visualization
+    if pdf_content
+      send_data pdf_content, filename: MessageObjectHelper.pdf_name(@message_object), type: 'application/pdf', disposition: :download
+    else
+      redirect_back fallback_location: message_thread_path(@message_object.message.thread), alert: "Obsah nie je možné stiahnuť."
+    end
+  end
+
   def download_archived
     authorize @message_object
     send_data @message_object.archived_object.content, filename: MessageObjectHelper.displayable_name(@message_object), type: @message_object.mimetype, disposition: :download

@@ -4,7 +4,7 @@ class Govbox::SubmitMessageDraftAction
 
     if is_submittable
       if jobs_batch
-        jobs_batch.add { Govbox::SubmitMessageDraftJob.perform_later(message, schedule_sync: false) }
+        jobs_batch.add { Govbox::SubmitMessageDraftJob.perform_later(message, bulk_submit: true) }
       else
         Govbox::SubmitMessageDraftJob.perform_later(message)
       end
