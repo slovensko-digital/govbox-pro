@@ -3,3 +3,7 @@
 general_agenda:
   identifier: App.GeneralAgenda
   version: 1.9
+
+fs_eud_v1_0:
+  identifier: 42499500.FS_EUD_v1_0.sk
+  version: 1.6

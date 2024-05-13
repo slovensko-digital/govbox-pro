@@ -35,3 +35,9 @@ ssd_main_delivery_draft_form:
   name: MyString
   mimetype: MyString
   object_type: FORM
+
+ssd_main_fs_one_form:
+  message: ssd_main_fs_one
+  name: MyString
+  mimetype: application/x-eform-xml
+  object_type: FORM
