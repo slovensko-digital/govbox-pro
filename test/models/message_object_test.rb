@@ -187,4 +187,10 @@ class MessageObjectTest < ActiveSupport::TestCase
     assert_equal [@user_one.signed_by_tag, @user_two.signed_by_tag, tenant.signed_tag!].to_set,
                  object_1.message.thread.tags.signing_tags.reload.to_set
   end
+
+  test "prepares PDF visualization" do
+    message_object = message_objects(:ssd_main_fs_one_form)
+
+    assert_not_equal nil, message_object.prepare_pdf_visualization
+  end
 end
