@@ -191,6 +191,8 @@ class MessageObjectTest < ActiveSupport::TestCase
   test "prepares PDF visualization" do
     message_object = message_objects(:ssd_main_fs_one_form)
 
+    skip('Test needs to be run in docker')
+
     assert_not_equal nil, message_object.prepare_pdf_visualization
   end
 end
