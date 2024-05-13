@@ -101,7 +101,7 @@ class Message < ApplicationRecord
       html_visualization: build_html_visualization
     )
 
-    form&.update(
+    form_object&.update(
       visualizable: html_visualization.present?
     )
   end
