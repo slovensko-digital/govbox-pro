@@ -4,37 +4,37 @@ module Fs
       @url = url
       @handler = handler
       @handler.options.timeout = 900_000
-      @sub = box&.api_connection.sub
+      @sub = box&.api_connection&.sub
       @api_token_private_key = box ? OpenSSL::PKey::RSA.new(box.api_connection.api_token_private_key) : nil
-      @fs_credentials = box&.api_connection.fs_credentials
+      @fs_credentials = box ? "#{box.settings_fs_username}:#{box.settings_fs_password}" : nil
     end
 
-    def fetch_forms(*args)
+    def fetch_forms(**args)
       request(:get, "forms", **args)
     end
 
-    def get_public_key(*args)
-      @fs_public_key ||= request(:get, "public-key")[1][:public_key_b64]
+    def get_public_key(**args)
+      @fs_public_key ||= request(:get, "public-key")[:body]["public_key_b64"]
     end
 
     def get_subjects
-      request(:get, "subjects", {}, jwt_header)
+      request(:get, "subjects", {}, jwt_header.merge(fs_credentials_header()))[:body]
     end
 
     def fetch_sent_messages(obo, page: 1, count: 100)
-      request(:get, "sent-messages", {}, jwt_header(obo).merge fs_credentials_header)
+      request(:get, "sent-messages", {}, jwt_header(obo).merge(fs_credentials_header()))[:body]
     end
 
     def fetch_sent_message(obo, message_id)
-      request(:get, "sent-messages/#{message_id}", {}, jwt_header(obo).merge fs_credentials_header)
+      request(:get, "sent-messages/#{message_id}", {}, jwt_header(obo).merge(fs_credentials_header()))[:body]
     end
 
     def fetch_received_messages(obo, page: 1, count: 100)
-      request(:get, "received-messages", {}, jwt_header(obo).merge fs_credentials_header)
+      request(:get, "received-messages", {}, jwt_header(obo).merge(fs_credentials_header()))[:body]
     end
 
     def fetch_received_message(obo, message_id)
-      request(:get, "received-messages/#{message_id}", {}, jwt_header(obo).merge fs_credentials_header)
+      request(:get, "received-messages/#{message_id}", {}, jwt_header(obo).merge(fs_credentials_header()))[:body]
     end
 
     def post_validation(form_identifier, content)
@@ -51,7 +51,7 @@ module Fs
         mime_type: mime_type,
         form_identifier: form_identifier,
         content: content
-      }, jwt_header(obo).merge fs_credentials_header)
+      }, jwt_header(obo).merge(fs_credentials_header()))
     end
 
     def delete_submission(submission_id)
@@ -84,7 +84,7 @@ module Fs
 
     def fs_credentials_header
       key = OpenSSL::PKey::RSA.new(Base64.decode64 get_public_key)
-      token = Base64.strict_encode64 key.public_encrypt(@fs_credentials)
+      token = Base64.strict_encode64 key.public_encrypt(Base64.strict_encode64 @fs_credentials)
 
       { "X-FS-Authorization": "Bearer #{token}" }
     end
@@ -97,10 +97,10 @@ module Fs
       response = @handler.public_send(method, path, *args)
       structure = response.body.empty? ? nil : JSON.parse(response.body)
     rescue StandardError => error
-      raise Error.new(error.response) if error.respond_to?(:response) && error.response
+      raise StandardError.new(error.response) if error.respond_to?(:response) && error.response
       raise error
     else
-      raise Error.new(response) unless response.status < 400
+      raise StandardError.new(response.body) unless response.status < 400
       return {
         status: response.status,
         body: structure,

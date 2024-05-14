@@ -1,6 +1,6 @@
 class Fs::FetchFormsJob < ApplicationJob
   def perform(fs_client: FsEnvironment.fs_client, download_related_documents_job: ::Fs::DownloadFormRelatedDocumentsJob)
-    fs_forms_list = JSON.parse(fs_client.api.fetch_forms[:body])
+    fs_forms_list = fs_client.api.fetch_forms[:body]
 
     fs_forms_list.each do |fs_form_data|
       fs_form = Fs::Form.find_or_initialize_by(

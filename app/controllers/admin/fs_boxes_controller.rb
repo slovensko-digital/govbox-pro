@@ -1,0 +1,26 @@
+class Admin::FsBoxesController < Admin::BoxesController
+  def create
+    @box = Current.tenant.boxes.new(box_params)
+    authorize([:admin, @box])
+    if @box.save
+      redirect_to admin_tenant_boxes_url(Current.tenant), notice: "Box was successfully created."
+    else
+      render :new, status: :unprocessable_entity
+    end
+  end
+
+  def update
+    authorize([:admin, @box])
+    if @box.update(box_params)
+      redirect_to admin_tenant_boxes_url(Current.tenant), notice: "Box was successfully updated."
+    else
+      render :edit, status: :unprocessable_entity
+    end
+  end
+
+  private
+
+  def box_params
+    params.require(:fs_box).permit(:api_connection_id, :name, :uri, :short_name, :color, :settings_fs_username, :settings_fs_password)
+  end
+end

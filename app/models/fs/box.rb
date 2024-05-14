@@ -19,4 +19,9 @@ class Fs::Box < Box
   def self.policy_class
     BoxPolicy
   end
+
+  encrypts :settings
+
+  store_accessor :settings, :fs_username, prefix: true
+  store_accessor :settings, :fs_password, prefix: true
 end
