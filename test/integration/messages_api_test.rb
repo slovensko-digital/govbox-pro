@@ -54,7 +54,7 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
   end
 
   test "can not read first message with offset" do
-    get "/api/messages/sync", params: { token: generate_api_token(sub: @tenant.id, key_pair: @key_pair), offset: @tenant.messages.first.id }, as: :json
+    get "/api/messages/sync", params: { token: generate_api_token(sub: @tenant.id, key_pair: @key_pair), last_id: @tenant.messages.first.id }, as: :json
 
     assert_response :success
     json_response = JSON.parse(response.body)

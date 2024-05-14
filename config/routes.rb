@@ -201,11 +201,9 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :message_threads, only: [:show, :index] do
+    resources :message_threads, only: [:show] do
       resources :tags, only: [:create] do
         delete :destroy, on: :collection
-        delete :batch_remove, on: :collection
-        post :batch_add, on: :collection
       end
     end
     resources :messages, only: [:show] do

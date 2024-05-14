@@ -51,8 +51,8 @@ class Api::MessagesController < Api::TenantController
   end
 
   def sync
-    @messages = @tenant.messages.where('messages.id > ?', params[:offset]).order(:id).limit(API_PAGE_SIZE) if params[:offset]
-    @messages = @tenant.messages.order(:id).limit(API_PAGE_SIZE) unless params[:offset]
+    @messages = @tenant.messages.order(:id).limit(API_PAGE_SIZE)
+    @messages = @messages.where('messages.id > ?', params[:last_id]) if params[:last_id]
   end
 
   private
@@ -99,7 +99,7 @@ class Api::MessagesController < Api::TenantController
       render_unprocessable_entity("Tag with name #{tag_name} does not exist") and return
     end
 
-    message_object_tag_names = permitted_params.fetch(:objects, []).map { |o| o['tags'] }.compact.flatten
+    message_object_tag_names = permitted_params.fetch(:objects, []).pluck('tags').compact.flatten
     message_object_tag_names.each do |tag_name|
       @tenant.user_signature_tags.find_by!(name: tag_name)
     rescue ActiveRecord::RecordNotFound
