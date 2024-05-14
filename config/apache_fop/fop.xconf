@@ -111,7 +111,7 @@ the location of this file.
       -->
 
         <!-- Times Roman -->
-        <font>
+        <font embed-url="times_new_roman.ttf">
           <afp-font name="Times Roman" type="raster" codepage="T1V10500" encoding="Cp500">
             <afp-raster-font size="6" characterset="C0N20060" base14-font="TimesRoman"/>
             <afp-raster-font size="7" characterset="C0N20070" base14-font="TimesRoman"/>
@@ -136,9 +136,9 @@ the location of this file.
           <font-triplet name="TimesNewRoman" style="normal" weight="normal"/>
           <font-triplet name="serif" style="normal" weight="normal"/>
         </font>
- 
+
         <!-- Times Roman Italic -->
-        <font>
+        <font embed-url="times_new_roman_italic.ttf">
           <afp-font name="Times Roman Italic" type="raster" codepage="T1V10500" encoding="Cp500">
             <afp-raster-font size="6" characterset="C0N30060" base14-font="TimesItalic"/>
             <afp-raster-font size="7" characterset="C0N30070" base14-font="TimesItalic"/>
@@ -163,9 +163,9 @@ the location of this file.
           <font-triplet name="TimesNewRoman" style="italic" weight="normal"/>
           <font-triplet name="serif" style="italic" weight="normal"/>
         </font>
- 
+
         <!-- Times Roman Bold -->
-        <font>
+        <font embed-url="times_new_roman_bold.ttf">
           <afp-font name="Times Roman Bold" type="raster" codepage="T1V10500" encoding="Cp500">
             <afp-raster-font size="6" characterset="C0N40060" base14-font="TimesBold"/>
             <afp-raster-font size="7" characterset="C0N40070" base14-font="TimesBold"/>
@@ -192,7 +192,7 @@ the location of this file.
         </font>
 
         <!-- Times Roman Italic Bold -->
-        <font>
+        <font embed-url="times_new_roman_bold_italic.ttf">
           <afp-font name="Times Roman Italic Bold" type="raster" codepage="T1V10500" encoding="Cp500">
             <afp-raster-font size="6" characterset="C0N50060" base14-font="TimesBoldItalic"/>
             <afp-raster-font size="7" characterset="C0N50070" base14-font="TimesBoldItalic"/>
@@ -219,7 +219,7 @@ the location of this file.
         </font>
 
         <!-- Helvetica -->
-        <font>
+        <font embed-url="helvetica.ttf">
           <afp-font name="Helvetica" type="raster" codepage="T1V10500" encoding="Cp500">
             <afp-raster-font size="6" characterset="C0H20060" base14-font="Helvetica"/>
             <afp-raster-font size="7" characterset="C0H20070" base14-font="Helvetica"/>
@@ -243,7 +243,7 @@ the location of this file.
         </font>
 
         <!-- Helvetica Italic -->
-        <font>
+        <font embed-url="helvetica_italic.ttf">
           <afp-font name="Helvetica Italic" type="raster" codepage="T1V10500" encoding="Cp500">
             <afp-raster-font size="6" characterset="C0H30060" base14-font="HelveticaOblique"/>
             <afp-raster-font size="7" characterset="C0H30070" base14-font="HelveticaOblique"/>
@@ -266,7 +266,7 @@ the location of this file.
         </font>
 
         <!-- Helvetica (Semi) Bold -->
-        <font>
+        <font embed-url="helvetica_semibold.ttf">
           <afp-font name="Helvetica (Semi) Bold" type="raster" codepage="T1V10500" encoding="Cp500">
             <afp-raster-font size="6" characterset="C0H40060" base14-font="HelveticaBold"/>
             <afp-raster-font size="7" characterset="C0H40070" base14-font="HelveticaBold"/>
@@ -289,7 +289,7 @@ the location of this file.
         </font>
 
         <!-- Helvetica Italic (Semi) Bold -->
-        <font>
+        <font embed-url="helvetica_italic.ttf">
           <afp-font name="Helvetica Italic (Semi) Bold" type="raster" codepage="T1V10500" encoding="Cp500">
             <afp-raster-font size="6" characterset="C0H50060" base14-font="HelveticaBoldOblique"/>
             <afp-raster-font size="7" characterset="C0H50070" base14-font="HelveticaBoldOblique"/>
@@ -312,7 +312,7 @@ the location of this file.
         </font>
 
         <!-- Courier -->
-        <font>
+        <font embed-url="courier.ttf">
           <afp-font name="Courier" type="raster" codepage="T1V10500" encoding="Cp500">
             <afp-raster-font size="6" characterset="C0420060" base14-font="Courier"/>
             <afp-raster-font size="7" characterset="C0420070" base14-font="Courier"/>
@@ -334,7 +334,7 @@ the location of this file.
         </font>
 
         <!-- Courier Italic -->
-        <font>
+        <font embed-url="courier_italic.ttf">
           <afp-font name="Courier Italic" type="raster" codepage="T1V10500" encoding="Cp500">
             <afp-raster-font size="6" characterset="C0430060" base14-font="CourierOblique"/>
             <afp-raster-font size="7" characterset="C0430070" base14-font="CourierOblique"/>
@@ -356,7 +356,7 @@ the location of this file.
         </font>
 
         <!-- Courier Bold -->
-        <font>
+        <font embed-url="courier_bold.ttf">
           <afp-font name="Courier Bold" type="raster" codepage="T1V10500" encoding="Cp500">
             <afp-raster-font size="6" characterset="C0440060" base14-font="CourierBold"/>
             <afp-raster-font size="7" characterset="C0440070" base14-font="CourierBold"/>
@@ -378,7 +378,7 @@ the location of this file.
         </font>
 
         <!-- Courier Italic Bold -->
-        <font>
+        <font embed-url="courier_bold_italic.ttf">
           <afp-font name="Courier Italic Bold" type="raster" codepage="T1V10500" encoding="Cp500">
             <afp-raster-font size="6" characterset="C0450060" base14-font="CourierBoldOblique"/>
             <afp-raster-font size="7" characterset="C0450070" base14-font="CourierBoldOblique"/>
@@ -398,27 +398,27 @@ the location of this file.
           <font-triplet name="Courier" style="italic" weight="bold"/>
           <font-triplet name="monospace" style="italic" weight="bold"/>
         </font>
-        
-         <!-- 
-        Configure double-byte (CID Keyed font (Type 0)) AFP fonts with type="CIDKeyed".  
-        
+
+         <!--
+        Configure double-byte (CID Keyed font (Type 0)) AFP fonts with type="CIDKeyed".
+
         example:
          <font>
-        	<afp-font type="CIDKeyed" encoding="UnicodeBigUnmarked"  
-        	codepage="T1120000" characterset="CZJHMNU" 
+        	<afp-font type="CIDKeyed" encoding="UnicodeBigUnmarked"
+        	codepage="T1120000" characterset="CZJHMNU"
         	base-uri="fonts" />
          	<font-triplet name="J-Heisei Mincho" style="normal" weight="normal" />
      	 </font>
         -->
-        
-        
+
+
       </fonts>
     </renderer>
 
     <renderer mime="application/postscript">
       <!-- This option forces the PS renderer to rotate landscape pages -->
       <!--auto-rotate-landscape>true</auto-rotate-landscape-->
-      
+
       <!-- This option lets you specify additional options on an XML handler -->
       <!--xml-handler namespace="http://www.w3.org/2000/svg">
         <stroke-text>false</stroke-text>
@@ -462,4 +462,3 @@ the location of this file.
   </renderers>
 
 </fop>
-
