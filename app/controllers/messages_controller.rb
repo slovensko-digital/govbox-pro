@@ -27,6 +27,12 @@ class MessagesController < ApplicationController
     redirect_back fallback_location: messages_path(@message)
   end
 
+  def export
+    authorize @message
+
+    send_data @message.prepare_message_export, filename: "#{@message.id}.zip", type: 'application/x-zip-compressed', disposition: :download
+  end
+
   def authorize_delivery_notification
     authorize @message
 

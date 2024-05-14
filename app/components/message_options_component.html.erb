@@ -11,6 +11,10 @@
           Stiahnuť ako PDF
         <% end %>
       <% end %>
+      <%= link_to export_message_path(@message), data: { turbo_frame: '_top', turbo: false }, class: 'whitespace-nowrap flex gap-3', role: 'menu-item', tabindex: -1 do %>
+        <%= render Icons::ArrowDownTrayComponent.new(css_classes: "w-5 h-5") %>
+        Exportovať správu
+      <% end %>
       <% if @message.form&.downloadable_archived_object? %>
         <%= link_to download_archived_message_message_object_path(@message, @message.form), class: "flex gap-3", role: "menuitem", tabindex: "-1" do %>
           <%= render Icons::ArrowDownTrayComponent.new(css_classes: "h-5 w-5") %>
