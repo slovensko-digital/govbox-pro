@@ -30,7 +30,7 @@ class MessagesController < ApplicationController
   def export
     authorize @message
 
-    send_data @message.prepare_message_export, filename: "#{@message.id}.zip", type: 'application/x-zip-compressed', disposition: :download
+    send_data @message.prepare_message_export, filename: MessageHelper.export_name(@message), type: 'application/x-zip-compressed', disposition: :download
   end
 
   def authorize_delivery_notification
