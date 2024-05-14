@@ -15,7 +15,7 @@ module MessageExportOperations
 
     def prepare_original_objects(zip)
       objects.each do |message_object|
-        zip.put_next_entry("na_pravne_ucely/#{MessageObjectHelper.displayable_name(message_object)}")
+        zip.put_next_entry("originaly/#{MessageObjectHelper.displayable_name(message_object)}")
         zip.write(message_object.content)
       end
     end
@@ -26,7 +26,7 @@ module MessageExportOperations
 
         next unless pdf_content
 
-        zip.put_next_entry("na_tlac/#{MessageObjectHelper.pdf_name(message_object)}")
+        zip.put_next_entry(MessageObjectHelper.pdf_name(message_object))
         zip.write(pdf_content)
       end
     end
