@@ -12,8 +12,7 @@ class Admin::BoxesController < ApplicationController
   end
 
   def new
-    @box = Current.tenant.boxes.new
-    authorize([:admin, @box])
+    raise NotImplementedError
   end
 
   def edit
