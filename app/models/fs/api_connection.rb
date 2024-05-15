@@ -13,7 +13,7 @@
 #  tenant_id             :bigint
 #
 class Fs::ApiConnection < ::ApiConnection
-  validates :tenant_id, absence: true
+  validates :tenant_id, presence: true
   encrypts :settings
 
   store_accessor :settings, :username, prefix: true
@@ -30,6 +30,22 @@ class Fs::ApiConnection < ::ApiConnection
 
   def validate_box(box)
     box.errors.add(:settings_obo, :not_allowed) if invalid_obo?(box)
+  end
+
+  def editable?
+    true
+  end
+
+  def destroyable?
+    true
+  end
+
+  def fs_type?
+    true
+  end
+
+  def upvs_type?
+    false
   end
 
   private

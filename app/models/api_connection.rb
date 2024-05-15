@@ -28,6 +28,26 @@ class ApiConnection < ApplicationRecord
     raise NotImplementedError
   end
 
+  def name
+    "#{type} - #{sub}"
+  end
+
+  def editable?
+    false
+  end
+
+  def destroyable?
+    false
+  end
+
+  def upvs_type?
+    true
+  end
+
+  def fs_type?
+    false
+  end
+
   private
 
   def invalid_obo?(box)

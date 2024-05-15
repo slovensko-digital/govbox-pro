@@ -36,9 +36,12 @@ Rails.application.routes.draw do
         end
       end
       resources :users
-      resources :boxes, only: [:index, :new]
+      resources :boxes, only: :index
       resources :upvs_boxes, except: :destroy
       resources :fs_boxes, except: :destroy
+      resources :api_connections, only: [:index, :destroy]
+      resources :upvs_api_connections, except: [:index, :destroy]
+      resources :fs_api_connections, except: [:index, :destroy]
       resources :tags
       resources :tag_groups
     end

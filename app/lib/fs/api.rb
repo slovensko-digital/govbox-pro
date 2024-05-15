@@ -6,7 +6,7 @@ module Fs
       @handler.options.timeout = 900_000
       @sub = api_connection&.sub
       @api_token_private_key = api_connection ? OpenSSL::PKey::RSA.new(api_connection.api_token_private_key) : nil
-      @fs_credentials = api_connection ? "#{api_connection.settings_fs_username}:#{api_connection.settings_fs_password}" : nil
+      @fs_credentials = api_connection ? "#{api_connection.settings_username}:#{api_connection.settings_password}" : nil
       @obo = box ? "#{box.settings_subject_id}:#{box.settings_dic}" : nil
     end
 

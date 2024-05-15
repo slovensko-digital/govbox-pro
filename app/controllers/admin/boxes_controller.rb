@@ -24,6 +24,10 @@ class Admin::BoxesController < ApplicationController
     raise NotImplementedError
   end
 
+  def create
+    raise NotImplementedError
+  end
+
   private
 
   def set_box

@@ -1,0 +1,68 @@
+<%= tag.turbo_frame id: "modal" do %>
+  <div class="fixed inset-0 z-40 p-2" role="dialog" aria-modal="true">
+    <div class="fixed inset-0 transition-opacity bg-gray-400 bg-opacity-75" aria-hidden="true"></div>
+    <div class="relative flex items-center justify-center">
+      <div class="flex flex-col justify-start items-start overflow-hidden rounded-lg bg-white border border-gray-300" style="box-shadow: 1px 1px 4px 0 rgba(0,0,0,0.1);">
+        <div class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 overflow-hidden gap-4 px-6 py-4 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
+          <div class="flex flex-col justify-start items-start flex-grow relative">
+            <p class="self-stretch flex-grow-0 flex-shrink-0 text-xl font-semibold text-left text-gray-900"><%= @api_connection.new_record? ? 'Nové prepojenie s FS' : 'Úprava prepojenia s FS'%></p>
+          </div>
+          <%= render Common::CloseButtonComponent.new(link_to: admin_tenant_api_connections_path(Current.tenant)) %>
+        </div>
+        <%= form_with model: [:admin, Current.tenant, @api_connection], scope: :fs_api_connection, url: polymorphic_path([:admin, Current.tenant, @api_connection]) do |form| %>
+          <%= form.hidden_field(:type, value: 'Fs::ApiConnection') %>
+          <div class="w-96">
+            <div class="px-6 py-4">
+              <%= form.label :settings_username, "Prihlasovacie meno na FS", class: "leading-6" %>
+              <div class="relative mt-2 rounded-md shadow-sm">
+                <% color = @api_connection.errors[:settings_username].any? ? "red" : "gray" %>
+                <%= form.text_field :settings_username, placeholder: "12345678", class: "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-#{color}-300 placeholder:text-#{color}-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" %>
+              </div>
+              <% @api_connection.errors[:settings_username].each do |error| %>
+                <p class="mt-2 text-sm text-red-600"><%= error %></p>
+              <% end %>
+            </div>
+            <div class="px-6 py-4">
+              <%= form.label :settings_password, "Heslo na FS", class: "leading-6" %>
+              <div class="relative mt-2 rounded-md shadow-sm">
+                <% color = @api_connection.errors[:settings_password].any? ? "red" : "gray" %>
+                <%= form.text_field :settings_password, placeholder: "**********", class: "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-#{color}-300 placeholder:text-#{color}-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" %>
+              </div>
+              <% @api_connection.errors[:settings_password].each do |error| %>
+                <p class="mt-2 text-sm text-red-600"><%= error %></p>
+              <% end %>
+            </div>
+            <div class="px-6 py-4">
+              <%= form.label :sub, "FS API sub claim", class: "block" %>
+              <div class="relative mt-2 rounded-md shadow-sm">
+                <% color = @api_connection.errors[:sub].any? ? "red" : "gray" %>
+                <%= form.text_field :sub, class: "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-#{color}-300 placeholder:text-#{color}-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" %>
+              </div>
+              <% @api_connection.errors[:sub].each do |error| %>
+                <p class="mt-2 text-sm text-red-600"><%= error %></p>
+              <% end %>
+            </div>
+            <div class="px-6 py-4">
+              <%= form.label :api_token_private_key, "FS API private key", class: "block" %>
+              <div class="relative mt-2 rounded-md shadow-sm">
+                <% color = @api_connection.errors[:api_token_private_key].any? ? "red" : "gray" %>
+                <%= form.text_area :api_token_private_key, class: "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-#{color}-300 placeholder:text-#{color}-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" %>
+              </div>
+              <% @api_connection.errors[:api_token_private_key].each do |error| %>
+                <p class="mt-2 text-sm text-red-600"><%= error %></p>
+              <% end %>
+            </div>
+          </div>
+          <div class="flex justify-start items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6">
+            <%= link_to admin_tenant_api_connections_path(Current.tenant), class: "flex justify-center items-center flex-grow relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300", data: { turbo_frame: "_top" } do %>
+              <p class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-gray-900">Zahodiť</p>
+            <% end %>
+            <%= form.button class: "flex justify-center items-center flex-grow relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md bg-blue-600", data: { turbo_frame: "_top" } do %>
+              <p class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-white"><%= @api_connection.new_record? ? 'Vytvoriť' : 'Uložiť' %></p>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>
