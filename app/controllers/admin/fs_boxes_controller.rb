@@ -21,6 +21,6 @@ class Admin::FsBoxesController < Admin::BoxesController
   private
 
   def box_params
-    params.require(:fs_box).permit(:api_connection_id, :name, :uri, :short_name, :color, :settings_fs_username, :settings_fs_password)
+    params.require(:fs_box).permit(:api_connection_id, :name, :uri, :short_name, :color, :settings_dic, :settings_subject_id)
   end
 end

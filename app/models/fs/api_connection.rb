@@ -5,6 +5,7 @@
 #  id                    :bigint           not null, primary key
 #  api_token_private_key :string           not null
 #  obo                   :uuid
+#  settings              :jsonb
 #  sub                   :string           not null
 #  type                  :string
 #  created_at            :datetime         not null
@@ -13,6 +14,10 @@
 #
 class Fs::ApiConnection < ::ApiConnection
   validates :tenant_id, absence: true
+  encrypts :settings
+
+  store_accessor :settings, :username, prefix: true
+  store_accessor :settings, :password, prefix: true
 
   def box_obo(box)
     raise "OBO not allowed!" if invalid_obo?(box)

@@ -33,22 +33,22 @@
               <% end %>
             </div>
             <div class="px-6">
-              <%= form.label :settings_fs_username, "FS Username", class: "leading-6" %>
+              <%= form.label :settings_dic, "DIČ", class: "leading-6" %>
               <div class="relative mt-2 rounded-md shadow-sm">
-                <% color = @box.errors[:settings_fs_username].any? ? "red" : "gray" %>
-                <%= form.text_field :settings_fs_username, placeholder: "12345678", class: "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-#{color}-300 placeholder:text-#{color}-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" %>
+                <% color = @box.errors[:settings_dic].any? ? "red" : "gray" %>
+                <%= form.text_field :settings_dic, placeholder: "1234567890", class: "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-#{color}-300 placeholder:text-#{color}-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" %>
               </div>
-              <% @box.errors[:settings_fs_username].each do |error| %>
+              <% @box.errors[:settings_dic].each do |error| %>
                 <p class="mt-2 text-sm text-red-600"><%= error %></p>
               <% end %>
             </div>
             <div class="px-6 py-4">
-              <%= form.label :settings_fs_password, "FS Password", class: "leading-6" %>
+              <%= form.label :settings_subject_id, "ID identity", class: "leading-6" %>
               <div class="relative mt-2 rounded-md shadow-sm">
-                <% color = @box.errors[:settings_fs_password].any? ? "red" : "gray" %>
-                <%= form.text_field :settings_fs_password, placeholder: "********", class: "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-#{color}-300 placeholder:text-#{color}-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" %>
+                <% color = @box.errors[:settings_subject_id].any? ? "red" : "gray" %>
+                <%= form.text_field :settings_subject_id, placeholder: SecureRandom.uuid, class: "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-#{color}-300 placeholder:text-#{color}-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" %>
               </div>
-              <% @box.errors[:settings_fs_password].each do |error| %>
+              <% @box.errors[:settings_subject_id].each do |error| %>
                 <p class="mt-2 text-sm text-red-600"><%= error %></p>
               <% end %>
             </div>

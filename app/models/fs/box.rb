@@ -20,8 +20,6 @@ class Fs::Box < Box
     BoxPolicy
   end
 
-  encrypts :settings
-
-  store_accessor :settings, :fs_username, prefix: true
-  store_accessor :settings, :fs_password, prefix: true
+  store_accessor :settings, :dic, prefix: true
+  store_accessor :settings, :subject_id, prefix: true
 end

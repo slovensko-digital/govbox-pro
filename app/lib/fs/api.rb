@@ -1,12 +1,13 @@
 module Fs
   class Api
-    def initialize(url, box: , handler: Faraday)
+    def initialize(url, api_connection: nil, box: nil, handler: Faraday)
       @url = url
       @handler = handler
       @handler.options.timeout = 900_000
-      @sub = box&.api_connection&.sub
-      @api_token_private_key = box ? OpenSSL::PKey::RSA.new(box.api_connection.api_token_private_key) : nil
-      @fs_credentials = box ? "#{box.settings_fs_username}:#{box.settings_fs_password}" : nil
+      @sub = api_connection&.sub
+      @api_token_private_key = api_connection ? OpenSSL::PKey::RSA.new(api_connection.api_token_private_key) : nil
+      @fs_credentials = api_connection ? "#{api_connection.settings_fs_username}:#{api_connection.settings_fs_password}" : nil
+      @obo = box ? "#{box.settings_subject_id}:#{box.settings_dic}" : nil
     end
 
     def fetch_forms(**args)
@@ -21,19 +22,19 @@ module Fs
       request(:get, "subjects", {}, jwt_header.merge(fs_credentials_header()))[:body]
     end
 
-    def fetch_sent_messages(obo, page: 1, count: 100)
+    def fetch_sent_messages(page: 1, count: 100, obo: @obo)
       request(:get, "sent-messages", {}, jwt_header(obo).merge(fs_credentials_header()))[:body]
     end
 
-    def fetch_sent_message(obo, message_id)
+    def fetch_sent_message(message_id, obo: @obo)
       request(:get, "sent-messages/#{message_id}", {}, jwt_header(obo).merge(fs_credentials_header()))[:body]
     end
 
-    def fetch_received_messages(obo, page: 1, count: 100)
+    def fetch_received_messages(page: 1, count: 100, obo: @obo)
       request(:get, "received-messages", {}, jwt_header(obo).merge(fs_credentials_header()))[:body]
     end
 
-    def fetch_received_message(obo, message_id)
+    def fetch_received_message(message_id, obo: @obo)
       request(:get, "received-messages/#{message_id}", {}, jwt_header(obo).merge(fs_credentials_header()))[:body]
     end
 
@@ -45,7 +46,7 @@ module Fs
       request(:delete, "validations/#{validation_id}", {}, jwt_header)
     end
 
-    def post_submission(obo, form_identifier, content, is_signed = true, mime_type = "applicaiton/xml")
+    def post_submission(form_identifier, content, is_signed = true, mime_type = "applicaiton/xml", obo: @obo)
       request(:post, "submissions", {
         is_signed: is_signed,
         mime_type: mime_type,
