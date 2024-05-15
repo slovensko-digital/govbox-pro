@@ -22,9 +22,11 @@ module MessageExportOperations
 
     def prepare_print_objects(zip)
       objects.each do |message_object|
+        next unless message_object.downloadable_as_pdf?
+
         pdf_content = message_object.prepare_pdf_visualization
 
-        next unless pdf_content
+        raise StandardError, "Unable to prepare PDF visualization for MessageObject ID #{message_object.id}" unless pdf_content
 
         zip.put_next_entry(MessageObjectHelper.pdf_name(message_object))
         zip.write(pdf_content)
