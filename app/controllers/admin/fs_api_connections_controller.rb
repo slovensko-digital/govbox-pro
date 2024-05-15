@@ -23,6 +23,12 @@ class Admin::FsApiConnectionsController < Admin::ApiConnectionsController
     authorize([:admin, @api_connection])
   end
 
+  def boxify
+    authorize([:admin, @api_connection])
+    count = @api_connection.boxify
+    redirect_to admin_tenant_api_connections_url(Current.tenant), notice: "API connection created #{count} new FS boxes."
+  end
+
   private
 
   def api_connection_params

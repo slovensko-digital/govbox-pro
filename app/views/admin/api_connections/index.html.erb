@@ -50,6 +50,12 @@
           </div>
         </div>
         <div class="justify-start items-start gap-2 flex">
+
+        <%= button_to boxify_admin_tenant_fs_api_connection_path(api_connection.tenant, api_connection) do %>
+            <div class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300 hover:bg-gray-100">
+              <%= render Icons::RectangleStackComponent.new %>
+            </div>
+          <% end %>
           <% if api_connection.editable? %>
             <%= link_to edit_polymorphic_path([:admin, api_connection.tenant, api_connection]), data: { turbo_frame: "modal" } do %>
               <%= render Common::EditButtonComponent.new %>

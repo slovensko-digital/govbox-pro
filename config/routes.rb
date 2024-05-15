@@ -41,7 +41,9 @@ Rails.application.routes.draw do
       resources :fs_boxes, except: [:index, :destroy]
       resources :api_connections, only: [:index, :destroy]
       resources :upvs_api_connections, except: [:index, :destroy]
-      resources :fs_api_connections, except: [:index, :destroy]
+      resources :fs_api_connections, except: [:index, :destroy] do
+        post :boxify, on: :member
+      end
       resources :tags
       resources :tag_groups
     end

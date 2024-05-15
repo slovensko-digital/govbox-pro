@@ -46,4 +46,25 @@ class Fs::ApiConnection < ::ApiConnection
   def upvs_type?
     false
   end
+
+  def boxify
+    count = 0
+    fs_api = FsEnvironment.fs_client.api(api_connection: self)
+    fs_api.get_subjects.each do |subject|
+      unless Fs::Box.where("settings @> ?", {dic: subject["dic"], subject_id: subject["subject_id"]}.to_json).count > 0
+        box = Fs::Box.new(
+          settings_dic: subject["dic"],
+          settings_subject_id: subject["subject_id"],
+          api_connection: self,
+          tenant: tenant,
+          name: "FS " + subject["name"],
+          short_name: "FS" + subject["name"].split.map(&:first).join.upcase,
+          uri: "dic://sk/#{subject['dic']}"
+        )
+        count += 1 if box.save
+      end
+    end
+
+    count
+  end
 end

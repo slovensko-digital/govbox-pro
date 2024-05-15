@@ -3,7 +3,7 @@ class Fs::FsApiClient
     @host = host
   end
 
-  def api(box: nil)
-    Fs::Api.new(@host, box: box)
+  def api(api_connection: nil, box: nil)
+    Fs::Api.new(@host, api_connection: api_connection, box: box)
   end
 end
