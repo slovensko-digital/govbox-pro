@@ -104,8 +104,9 @@ Rails.application.routes.draw do
 
   resources :messages do
     member do
-      post 'reply'
-      post 'authorize_delivery_notification'
+      post :reply
+      post :authorize_delivery_notification
+      get :export
     end
 
     resources :message_objects do

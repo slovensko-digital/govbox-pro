@@ -33,6 +33,10 @@ class MessagePolicy < ApplicationPolicy
     true
   end
 
+  def export?
+    show?
+  end
+
   def authorize_delivery_notification?
     show?
   end
