@@ -4,6 +4,8 @@ module Fs
       @url = url
       @handler = handler
       @handler.options.timeout = 900_000
+
+      api_connection = box&.api_connection unless api_connection
       @sub = api_connection&.sub
       @api_token_private_key = api_connection ? OpenSSL::PKey::RSA.new(api_connection.api_token_private_key) : nil
       @fs_credentials = api_connection ? "#{api_connection.settings_username}:#{api_connection.settings_password}" : nil

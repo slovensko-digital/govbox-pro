@@ -29,7 +29,6 @@ class Fs::ApiConnection < ::ApiConnection
   end
 
   def validate_box(box)
-    box.errors.add(:settings_obo, :not_allowed) if invalid_obo?(box)
   end
 
   def editable?
@@ -46,11 +45,5 @@ class Fs::ApiConnection < ::ApiConnection
 
   def upvs_type?
     false
-  end
-
-  private
-
-  def invalid_obo?(box)
-    box.settings && box.settings["obo"].present?
   end
 end
