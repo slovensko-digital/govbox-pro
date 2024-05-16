@@ -35,8 +35,23 @@ Rails.application.routes.draw do
         resources :group_memberships do
         end
       end
+
       resources :users
-      resources :boxes, except: :destroy
+
+      resources :boxes, only: :index
+      namespace :boxes do
+        resources :upvs_boxes, except: [:index, :destroy]
+        resources :fs_boxes, except: [:index, :destroy]
+      end
+
+      resources :api_connections, only: [:index, :destroy]
+      namespace :api_connections do
+        resources :upvs_api_connections, except: [:index, :destroy]
+        resources :fs_api_connections, except: [:index, :destroy] do
+          post :boxify, on: :member
+        end
+      end
+
       resources :tags
       resources :tag_groups
     end

@@ -19,4 +19,7 @@ class Fs::Box < Box
   def self.policy_class
     BoxPolicy
   end
+
+  store_accessor :settings, :dic, prefix: true
+  store_accessor :settings, :subject_id, prefix: true
 end
