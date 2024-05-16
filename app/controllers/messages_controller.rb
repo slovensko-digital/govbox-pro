@@ -27,6 +27,14 @@ class MessagesController < ApplicationController
     redirect_back fallback_location: messages_path(@message)
   end
 
+  def export
+    authorize @message
+
+    send_data @message.prepare_message_export, filename: MessageHelper.export_filename(@message), type: 'application/x-zip-compressed', disposition: :download
+  rescue
+    redirect_back fallback_location: message_thread_path(@message.thread), alert: "Export nie je možné stiahnuť."
+  end
+
   def authorize_delivery_notification
     authorize @message
 

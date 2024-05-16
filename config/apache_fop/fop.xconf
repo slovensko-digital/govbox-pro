@@ -89,6 +89,15 @@ the location of this file.
           <font-triplet name="TimesNewRoman" style="normal" weight="normal"/>
           <font-triplet name="serif" style="normal" weight="normal"/>
         </font>
+        <font kerning="yes" embed-url="times_bold.ttf">
+          <font-triplet name="Times" style="normal" weight="bold"/>
+          <font-triplet name="TimesRoman" style="normal" weight="bold"/>
+          <font-triplet name="Times Roman" style="normal" weight="bold"/>
+          <font-triplet name="Times-Roman" style="normal" weight="bold"/>
+          <font-triplet name="Times New Roman" style="normal" weight="bold"/>
+          <font-triplet name="TimesNewRoman" style="normal" weight="bold"/>
+          <font-triplet name="serif" style="normal" weight="bold"/>
+        </font>
       </fonts>
 
       <!-- This option lets you specify additional options on an XML handler -->

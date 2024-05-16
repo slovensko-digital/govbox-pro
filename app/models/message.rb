@@ -22,6 +22,8 @@
 #  message_thread_id  :bigint           not null
 #
 class Message < ApplicationRecord
+  include MessageExportOperations
+
   belongs_to :thread, class_name: 'MessageThread', foreign_key: :message_thread_id, inverse_of: :messages
   belongs_to :author, class_name: 'User', foreign_key: :author_id, optional: true
   has_many :message_relations, dependent: :destroy
