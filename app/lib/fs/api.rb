@@ -21,23 +21,23 @@ module Fs
     end
 
     def get_subjects
-      request(:get, "subjects", {}, jwt_header.merge(fs_credentials_header()))[:body]
+      request(:get, "subjects", {}, jwt_header.merge(fs_credentials_header))[:body]
     end
 
     def fetch_sent_messages(page: 1, count: 100, obo: @obo)
-      request(:get, "sent-messages", {}, jwt_header(obo).merge(fs_credentials_header()))[:body]
+      request(:get, "sent-messages", {}, jwt_header(obo).merge(fs_credentials_header))[:body]
     end
 
     def fetch_sent_message(message_id, obo: @obo)
-      request(:get, "sent-messages/#{message_id}", {}, jwt_header(obo).merge(fs_credentials_header()))[:body]
+      request(:get, "sent-messages/#{message_id}", {}, jwt_header(obo).merge(fs_credentials_header))[:body]
     end
 
     def fetch_received_messages(page: 1, count: 100, obo: @obo)
-      request(:get, "received-messages", {}, jwt_header(obo).merge(fs_credentials_header()))[:body]
+      request(:get, "received-messages", {}, jwt_header(obo).merge(fs_credentials_header))[:body]
     end
 
     def fetch_received_message(message_id, obo: @obo)
-      request(:get, "received-messages/#{message_id}", {}, jwt_header(obo).merge(fs_credentials_header()))[:body]
+      request(:get, "received-messages/#{message_id}", {}, jwt_header(obo).merge(fs_credentials_header))[:body]
     end
 
     def post_validation(form_identifier, content)
@@ -54,7 +54,7 @@ module Fs
         mime_type: mime_type,
         form_identifier: form_identifier,
         content: content
-      }, jwt_header(obo).merge(fs_credentials_header()))
+      }, jwt_header(obo).merge(fs_credentials_header))
     end
 
     def delete_submission(submission_id)
