@@ -52,8 +52,8 @@
         <div class="justify-start items-start gap-2 flex">
 
         <%= button_to boxify_admin_tenant_api_connections_fs_api_connection_path(api_connection.tenant, api_connection) do %>
-            <div class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300 hover:bg-gray-100">
-              <%= render Icons::RectangleStackComponent.new %>
+            <div class="px-3.5 py-2.5 bg-blue-600 rounded-md justify-center items-center gap-2.5 flex">
+              <p class="text-white text-base font-medium leading-normal">Automaticky vytvoriť schránky</p>
             </div>
           <% end %>
           <% if api_connection.editable? %>
