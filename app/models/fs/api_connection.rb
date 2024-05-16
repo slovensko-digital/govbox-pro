@@ -59,7 +59,8 @@ class Fs::ApiConnection < ::ApiConnection
           tenant: tenant,
           name: "FS " + subject["name"],
           short_name: "FS" + subject["name"].split.map(&:first).join.upcase,
-          uri: "dic://sk/#{subject['dic']}"
+          uri: "dic://sk/#{subject['dic']}",
+          syncable: false
         )
         count += 1 if box.save
       end
