@@ -70,17 +70,17 @@ the location of this file.
         -->
 
         <!--
-        <font metrics-url="arial.xml" kerning="yes" embed-url="arial.ttf">
+        <font metrics-url="arial.xml" kerning="yes" embed-url="fonts/arial.ttf">
           <font-triplet name="Arial" style="normal" weight="normal"/>
           <font-triplet name="ArialMT" style="normal" weight="normal"/>
         </font>
-        <font metrics-url="arialb.xml" kerning="yes" embed-url="arialb.ttf">
+        <font metrics-url="arialb.xml" kerning="yes" embed-url="fonts/arialb.ttf">
           <font-triplet name="Arial" style="normal" weight="bold"/>
           <font-triplet name="ArialMT" style="normal" weight="bold"/>
         </font>
         -->
 
-        <font kerning="yes" embed-url="times.ttf">
+        <font kerning="yes" embed-url="fonts/times.ttf">
           <font-triplet name="Times" style="normal" weight="normal"/>
           <font-triplet name="TimesRoman" style="normal" weight="normal"/>
           <font-triplet name="Times Roman" style="normal" weight="normal"/>
@@ -89,7 +89,16 @@ the location of this file.
           <font-triplet name="TimesNewRoman" style="normal" weight="normal"/>
           <font-triplet name="serif" style="normal" weight="normal"/>
         </font>
-        <font kerning="yes" embed-url="times_bold.ttf">
+        <font kerning="yes" embed-url="fonts/times_italic.ttf">
+          <font-triplet name="Times" style="italic" weight="normal"/>
+          <font-triplet name="TimesRoman" style="italic" weight="normal"/>
+          <font-triplet name="Times Roman" style="italic" weight="normal"/>
+          <font-triplet name="Times-Roman" style="italic" weight="normal"/>
+          <font-triplet name="Times New Roman" style="italic" weight="normal"/>
+          <font-triplet name="TimesNewRoman" style="italic" weight="normal"/>
+          <font-triplet name="serif" style="italic" weight="normal"/>
+        </font>
+        <font kerning="yes" embed-url="fonts/times_bold.ttf">
           <font-triplet name="Times" style="normal" weight="bold"/>
           <font-triplet name="TimesRoman" style="normal" weight="bold"/>
           <font-triplet name="Times Roman" style="normal" weight="bold"/>
@@ -97,6 +106,54 @@ the location of this file.
           <font-triplet name="Times New Roman" style="normal" weight="bold"/>
           <font-triplet name="TimesNewRoman" style="normal" weight="bold"/>
           <font-triplet name="serif" style="normal" weight="bold"/>
+        </font>
+        <font kerning="yes" embed-url="fonts/times_bold_italic.ttf">
+          <font-triplet name="Times" style="italic" weight="bold"/>
+          <font-triplet name="TimesRoman" style="italic" weight="bold"/>
+          <font-triplet name="Times Roman" style="italic" weight="bold"/>
+          <font-triplet name="Times-Roman" style="italic" weight="bold"/>
+          <font-triplet name="Times New Roman" style="italic" weight="bold"/>
+          <font-triplet name="TimesNewRoman" style="italic" weight="bold"/>
+          <font-triplet name="serif" style="italic" weight="bold"/>
+        </font>
+
+        <font kerning="yes" embed-url="fonts/helvetica.ttf">
+          <font-triplet name="Helvetica" style="normal" weight="normal"/>
+          <font-triplet name="Arial" style="normal" weight="normal"/>
+          <font-triplet name="sans-serif" style="normal" weight="normal"/>
+          <font-triplet name="any" style="normal" weight="normal"/>
+        </font>
+        <font kerning="yes" embed-url="fonts/helvetica_italic.ttf">
+          <font-triplet name="Helvetica" style="italic" weight="normal"/>
+          <font-triplet name="Arial" style="italic" weight="normal"/>
+          <font-triplet name="sans-serif" style="italic" weight="normal"/>
+        </font>
+        <font kerning="yes" embed-url="fonts/helvetica_bold.ttf">
+          <font-triplet name="Helvetica" style="normal" weight="bold"/>
+          <font-triplet name="Arial" style="normal" weight="bold"/>
+          <font-triplet name="sans-serif" style="normal" weight="bold"/>
+        </font>
+        <font kerning="yes" embed-url="fonts/helvetica_bold_italic.ttf">
+          <font-triplet name="Helvetica" style="italic" weight="bold"/>
+          <font-triplet name="Arial" style="italic" weight="bold"/>
+          <font-triplet name="sans-serif" style="italic" weight="bold"/>
+        </font>
+
+        <font kerning="yes" embed-url="fonts/courier.ttf">
+          <font-triplet name="Courier" style="normal" weight="normal"/>
+          <font-triplet name="monospace" style="normal" weight="normal"/>
+        </font>
+        <font kerning="yes" embed-url="fonts/courier_italic.ttf">
+          <font-triplet name="Courier" style="italic" weight="normal"/>
+          <font-triplet name="monospace" style="italic" weight="normal"/>
+        </font>
+        <font kerning="yes" embed-url="fonts/courier_bold.ttf">
+          <font-triplet name="Courier" style="normal" weight="bold"/>
+          <font-triplet name="monospace" style="normal" weight="bold"/>
+        </font>
+        <font kerning="yes" embed-url="fonts/courier_bold_italic.ttf">
+          <font-triplet name="Courier" style="italic" weight="bold"/>
+          <font-triplet name="monospace" style="italic" weight="bold"/>
         </font>
       </fonts>
 
