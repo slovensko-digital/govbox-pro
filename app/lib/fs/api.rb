@@ -41,11 +41,11 @@ module Fs
     end
 
     def post_validation(form_identifier, content)
-      request(:post, "validations", {form_identifier: form_identifier, content: content}, jwt_header)
+      request(:post, "validations", {form_identifier: form_identifier, content: content}, jwt_header, accept_negative: true)
     end
 
     def delete_validation(validation_id)
-      request(:delete, "validations/#{validation_id}", {}, jwt_header)
+      request(:delete, "validations/#{validation_id}", {}, jwt_header, accept_negative: true)
     end
 
     def post_submission(form_identifier, content, is_signed = true, mime_type = "applicaiton/xml", obo: @obo)
@@ -54,21 +54,16 @@ module Fs
         mime_type: mime_type,
         form_identifier: form_identifier,
         content: content
-      }, jwt_header(obo).merge(fs_credentials_header))
-    end
-
-    def delete_submission(submission_id)
-      request(:delete, "submissions/#{submission_id}", {}, jwt_header)
-    end
-
-    def wait_for_result(response)
-      while response[:headers][:location]
-        response = request_url(:get, response[:headers][:location], {}, jwt_header)
-        sleep response[:headers][:retry_after] if response[:headers][:retry_after]
+        }, jwt_header(obo).merge(fs_credentials_header))
       end
 
-      response
-    end
+      def delete_submission(submission_id)
+        request(:delete, "submissions/#{submission_id}", {}, jwt_header)
+      end
+
+      def get_location(location_header)
+        request_url(:get, location_header, {}, jwt_header, accept_negative: true)
+      end
 
     private
 
@@ -92,18 +87,18 @@ module Fs
       { "X-FS-Authorization": "Bearer #{token}" }
     end
 
-    def request(method, path, *args)
-      request_url(method, "#{@url}/api/v1/#{path}", *args)
+    def request(method, path, *args, accept_negative: false)
+      request_url(method, "#{@url}/api/v1/#{path}", *args, accept_negative: true)
     end
 
-    def request_url(method, path, *args)
+    def request_url(method, path, *args, accept_negative: false)
       response = @handler.public_send(method, path, *args)
       structure = response.body.empty? ? nil : JSON.parse(response.body)
     rescue StandardError => error
       raise StandardError.new(error.response) if error.respond_to?(:response) && error.response
       raise error
     else
-      raise StandardError.new(response.body) unless response.status < 400
+      raise StandardError.new(response.body) unless accept_negative || response.status < 400
       return {
         status: response.status,
         body: structure,

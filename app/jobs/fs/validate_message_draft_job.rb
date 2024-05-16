@@ -1,12 +1,12 @@
 class Fs::ValidateMessageDraftJob < ApplicationJob
   def perform(message_draft, fs_client: FsEnvironment.fs_client)
-    # TODO: This should become validate_message_draft_action.rb?
-    response = fs_client.api.wait_for_result fs_client.api.post_validation(
+    response = fs_client.api(box: message_draft.thread.box).post_validation(
       message_draft.metadata['fs_form_id'],
-      message_draft.form_object.content  # TODO get content some other way
+      Base64.strict_encode64(message_draft.form_object.content)
     )
 
-    raise Error.new("Response status is not 200. Message #{response[:body][:errors]}") unless response[:status] == 200
-    # TODO: Do something with this result
+    raise RuntimeError.new("Response status is not 202. Message #{response[:body][:errors]}") unless response[:status] == 202
+
+    Fs::ValidateMessageDraftStatusJob.perform_later(message_draft, response[:headers][:location])
   end
 end

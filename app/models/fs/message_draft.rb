@@ -37,7 +37,7 @@ class Fs::MessageDraft < MessageDraft
       delivered_at: Time.now,
       metadata: {
         'status': 'created',
-        'fs_form_id': fs_form.id
+        'fs_form_id': fs_form.identifier
       }
     )
 
