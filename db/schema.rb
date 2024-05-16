@@ -530,6 +530,16 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_15_084401) do
     t.index ["message_thread_id"], name: "index_searchable_message_threads_on_message_thread_id", unique: true
   end
 
+  create_table "stats_message_submission_requests", force: :cascade do |t|
+    t.bigint "box_id", null: false
+    t.string "request_url"
+    t.integer "response_status"
+    t.boolean "bulk"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["box_id"], name: "index_stats_message_submission_requests_on_box_id"
+  end
+
   create_table "tag_groups", force: :cascade do |t|
     t.bigint "group_id", null: false
     t.bigint "tag_id", null: false
@@ -581,8 +591,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_15_084401) do
     t.string "version", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "message_type", null: false
-    t.index ["identifier", "version", "message_type"], name: "index_forms_on_identifier_version_message_type", unique: true
+    t.index ["identifier", "version"], name: "index_forms_on_identifier_version", unique: true
   end
 
   create_table "upvs_service_with_form_allow_rules", force: :cascade do |t|
@@ -658,6 +667,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_15_084401) do
   add_foreign_key "notifications", "messages", on_delete: :cascade
   add_foreign_key "notifications", "users", on_delete: :cascade
   add_foreign_key "searchable_message_threads", "message_threads", on_delete: :cascade
+  add_foreign_key "stats_message_submission_requests", "boxes"
   add_foreign_key "tag_groups", "groups"
   add_foreign_key "tag_groups", "tags"
   add_foreign_key "tags", "tenants"

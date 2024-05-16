@@ -68,6 +68,16 @@ class Fs::MessageDraft < MessageDraft
     Fs::SubmitMessageDraftAction.run(self)
   end
 
+  def build_html_visualization
+    return self.html_visualization if self.html_visualization.present?
+
+    return unless form&.xslt_txt
+    return unless form_object&.unsigned_content
+
+    template = Nokogiri::XSLT(form.xslt_txt)
+    template.transform(form_object.xml_unsigned_content)
+  end
+
   def form
     Fs::Form.find(metadata['fs_form_id'])
   end

@@ -72,7 +72,7 @@ class MessageObjectTest < ActiveSupport::TestCase
   test "remove_signature_requested_from_user removes user signature tag and tenant signature tag if there is no other users signature tag" do
     tenant = tenants(:ssd)
     object_1 = message_objects(:ssd_main_general_one_attachment)
-    object_2 = message_objects(:ssd_main_general_two_from)
+    object_2 = message_objects(:ssd_main_general_two_form)
 
     user_1_signature_requested_tag = @user_one.signature_requested_from_tag
     user_2_signature_requested_tag = @user_two.signature_requested_from_tag
@@ -115,7 +115,7 @@ class MessageObjectTest < ActiveSupport::TestCase
   test "mark_signed_by_user removes user_signature_requested_tags and mark object and thread as signed if there is not other signature requested tag" do
     tenant = tenants(:ssd)
     object_1 = message_objects(:ssd_main_general_one_attachment)
-    object_2 = message_objects(:ssd_main_general_two_from)
+    object_2 = message_objects(:ssd_main_general_two_form)
 
     object_1.add_signature_requested_from_user(@user_one)
     object_1.add_signature_requested_from_user(@user_two)
@@ -159,7 +159,7 @@ class MessageObjectTest < ActiveSupport::TestCase
   test "signature_requested_from is added and removed to fully signed thread" do
     tenant = tenants(:ssd)
     object_1 = message_objects(:ssd_main_general_one_attachment)
-    object_2 = message_objects(:ssd_main_general_two_from)
+    object_2 = message_objects(:ssd_main_general_two_form)
 
     object_1.mark_signed_by_user(@user_one)
     object_2.mark_signed_by_user(@user_two)

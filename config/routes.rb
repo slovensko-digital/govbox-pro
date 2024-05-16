@@ -126,12 +126,14 @@ Rails.application.routes.draw do
     resources :message_objects do
       member do
         get 'download'
+        get 'download_pdf'
         get 'signing_data'
         get 'download_archived'
       end
 
       resources :nested_message_objects do
         get 'download'
+        get 'download_pdf'
       end
     end
   end

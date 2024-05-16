@@ -92,26 +92,28 @@ class Message < ApplicationRecord
   def form
     ::Upvs::Form.find_by(
       identifier: all_metadata['posp_id'],
-      version: all_metadata['posp_version'],
-      message_type: all_metadata['message_type']
+      version: all_metadata['posp_version']
     )
   end
 
-  def visualization
+  def update_html_visualization
+    self.update(
+      html_visualization: build_html_visualization
+    )
+
+    form_object&.update(
+      visualizable: html_visualization.present?
+    )
+  end
+
+  def build_html_visualization
     return self.html_visualization if self.html_visualization.present?
 
     return unless form&.xslt_html
     return unless form_object&.unsigned_content
 
-    document = Nokogiri::XML(form_object.unsigned_content) do |config|
-      config.noblanks
-    end
-    document = Nokogiri::XML(document.xpath('*:XMLDataContainer/*:XMLData/*').to_xml) do |config|
-      config.noblanks
-    end if document.xpath('*:XMLDataContainer/*:XMLData').any?
-
-    template = Nokogiri::XSLT(form.xslt_html)
-    template.transform(document)
+    template = Nokogiri::XSLT(upvs_form.xslt_html)
+    template.transform(form_object.xml_unsigned_content)
   end
 
   def all_metadata

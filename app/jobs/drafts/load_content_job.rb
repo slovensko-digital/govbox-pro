@@ -60,18 +60,11 @@ class Drafts::LoadContentJob < ApplicationJob
   end
   
   def save_form_visualisation(message_draft)
-      message_draft.update(
-        html_visualization: message_draft.visualization
-      )
 
-      if message_draft.custom_visualization?
-        message_draft.metadata["message_body"] = Upvs::FormBuilder.parse_general_agenda_text(message_draft.form_object.content)
-        message_draft.save!
-      end
-
-      message_draft.form_object.update(
-        visualizable: true
-      ) if message_draft.html_visualization
+    if message_draft.custom_visualization?
+      message_draft.metadata["message_body"] = Upvs::FormBuilder.parse_general_agenda_text(message_draft.form_object.content)
+      message_draft.save!
+    end
   end
 
   delegate :uuid, to: self

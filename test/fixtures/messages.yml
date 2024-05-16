@@ -39,6 +39,17 @@ ssd_main_general_three:
   metadata: {}
   collapsed: true
 
+ssd_main_general_four:
+  uuid: <%= SecureRandom.uuid %>
+  title: The Fourth Message
+  delivered_at: 2023-05-18 16:17:26
+  thread: ssd_main_general
+  metadata:
+    authorized: false
+    posp_id: App.GeneralAgenda
+    posp_version: 1.9
+    message_type: App.GeneralAgenda
+
 ssd_main_general_draft_one:
   type: MessageDraft
   uuid: <%= SecureRandom.uuid %>
@@ -61,6 +72,12 @@ ssd_main_general_draft_two:
   replyable: false
   metadata:
     status: created
+    sktalk_class: EGOV_APPLICATION
+    posp_id: App.GeneralAgenda
+    posp_version: 1.9
+    message_type: App.GeneralAgenda
+    correlation_id: <%= SecureRandom.uuid %>
+    recipient_uri: ico://sk/12345678
   author: basic
 
 ssd_main_delivery_draft:
