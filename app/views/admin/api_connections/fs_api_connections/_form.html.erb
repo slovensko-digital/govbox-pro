@@ -9,7 +9,7 @@
           </div>
           <%= render Common::CloseButtonComponent.new(link_to: admin_tenant_api_connections_path(Current.tenant)) %>
         </div>
-        <%= form_with model: [:admin, Current.tenant, @api_connection], scope: :fs_api_connection, url: polymorphic_path([:admin, Current.tenant, @api_connection]) do |form| %>
+        <%= form_with model: [:admin, Current.tenant, @api_connection], scope: :fs_api_connection, url: polymorphic_path([:admin, Current.tenant, :api_connections, @api_connection]) do |form| %>
           <%= form.hidden_field(:type, value: 'Fs::ApiConnection') %>
           <div class="w-96">
             <div class="px-6 py-4">

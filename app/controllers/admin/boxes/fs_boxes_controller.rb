@@ -1,13 +1,13 @@
-class Admin::UpvsBoxesController < Admin::BoxesController
+class Admin::Boxes::FsBoxesController < Admin::BoxesController
   def new
-    @box = Current.tenant.boxes.new(type: "Upvs::Box")
+    @box = Current.tenant.boxes.new(type: "Fs::Box")
     authorize([:admin, @box])
   end
 
   def create
-    @box = Current.tenant.boxes.new(type: "Upvs::Box", **box_params)
+    @box = Current.tenant.boxes.new(type: "Fs::Box", uri: "dic://sk/#{box_params.require(:settings_dic)}", **box_params)
     authorize([:admin, @box])
-    if @box.save
+    if @box.save!
       redirect_to admin_tenant_boxes_url(Current.tenant), notice: "Box was successfully created."
     else
       render :new, status: :unprocessable_entity
@@ -16,7 +16,7 @@ class Admin::UpvsBoxesController < Admin::BoxesController
 
   def update
     authorize([:admin, @box])
-    if @box.update(type: "Upvs::Box", **box_params)
+    if @box.update(uri: "dic://sk/#{box_params.require(:settings_dic)}", **box_params)
       redirect_to admin_tenant_boxes_url(Current.tenant), notice: "Box was successfully updated."
     else
       render :edit, status: :unprocessable_entity
@@ -26,6 +26,6 @@ class Admin::UpvsBoxesController < Admin::BoxesController
   private
 
   def box_params
-    params.require(:upvs_box).permit(:api_connection_id, :name, :uri, :short_name, :color, :settings_obo)
+    params.require(:fs_box).permit(:api_connection_id, :name, :short_name, :color, :settings_dic, :settings_subject_id)
   end
 end

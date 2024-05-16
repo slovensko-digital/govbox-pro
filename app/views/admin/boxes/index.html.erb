@@ -3,7 +3,7 @@
     <div class="self-stretch p-6 border-b border-gray-200 justify-start items-center gap-4 inline-flex">
       <div class="grow shrink basis-0 text-gray-900 text-xl font-semibold leading-[35px]">ÚPVS Schránky</div>
       <% if Current.tenant.api_connections.where(type: "Govbox::ApiConnectionWithOboSupport" ).any? %>
-        <%= link_to new_admin_tenant_upvs_box_path, data: { turbo_frame: "modal" }, class: "px-3.5 py-2.5 bg-blue-600 rounded-md justify-center items-center gap-2.5 flex" do %>
+        <%= link_to new_admin_tenant_boxes_upvs_box_path, data: { turbo_frame: "modal" }, class: "px-3.5 py-2.5 bg-blue-600 rounded-md justify-center items-center gap-2.5 flex" do %>
           <p class="text-white text-base font-medium leading-normal">Pripojiť novú schránku</p>
         <% end %>
       <% end %>
@@ -20,7 +20,7 @@
             </div>
           </div>
           <div class="justify-start items-start gap-2 flex">
-            <%= link_to edit_polymorphic_path([:admin, box.tenant, box]), data: { turbo_frame: "modal" } do %>
+            <%= link_to edit_polymorphic_path([:admin, box.tenant, :boxes, box]), data: { turbo_frame: "modal" } do %>
               <%= render Common::EditButtonComponent.new %>
             <% end %>
           </div>
@@ -33,7 +33,7 @@
     <div class="self-stretch p-6 border-b border-gray-200 justify-start items-center gap-4 inline-flex">
       <div class="grow shrink basis-0 text-gray-900 text-xl font-semibold leading-[35px]">FS Schránky</div>
       <% if Current.tenant.api_connections.where(type: "Fs::ApiConnection" ).any? %>
-        <%= link_to new_admin_tenant_fs_box_path, data: { turbo_frame: "modal" }, class: "px-3.5 py-2.5 bg-blue-600 rounded-md justify-center items-center gap-2.5 flex" do %>
+        <%= link_to new_admin_tenant_boxes_fs_box_path, data: { turbo_frame: "modal" }, class: "px-3.5 py-2.5 bg-blue-600 rounded-md justify-center items-center gap-2.5 flex" do %>
           <p class="text-white text-base font-medium leading-normal">Pripojiť novú schránku</p>
         <% end %>
       <% end %>
@@ -50,7 +50,7 @@
             </div>
           </div>
           <div class="justify-start items-start gap-2 flex">
-            <%= link_to edit_polymorphic_path([:admin, box.tenant, box]), data: { turbo_frame: "modal" } do %>
+            <%= link_to edit_polymorphic_path([:admin, box.tenant, :boxes, box]), data: { turbo_frame: "modal" } do %>
               <%= render Common::EditButtonComponent.new %>
             <% end %>
           </div>

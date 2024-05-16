@@ -34,7 +34,7 @@
   <div class="self-stretch bg-white rounded-md border border-gray-200 flex-col justify-start items-start flex">
   <div class="self-stretch p-6 border-b border-gray-200 justify-start items-center gap-4 inline-flex">
     <div class="grow shrink basis-0 text-gray-900 text-xl font-semibold leading-[35px]">FS prepojenia</div>
-    <%= link_to new_admin_tenant_fs_api_connection_path, data: { turbo_frame: "modal" }, class: "px-3.5 py-2.5 bg-blue-600 rounded-md justify-center items-center gap-2.5 flex" do %>
+    <%= link_to new_admin_tenant_api_connections_fs_api_connection_path, data: { turbo_frame: "modal" }, class: "px-3.5 py-2.5 bg-blue-600 rounded-md justify-center items-center gap-2.5 flex" do %>
       <p class="text-white text-base font-medium leading-normal">Vytvoriť nové prepojenie s FS</p>
     <% end %>
   </div>
@@ -51,13 +51,13 @@
         </div>
         <div class="justify-start items-start gap-2 flex">
 
-        <%= button_to boxify_admin_tenant_fs_api_connection_path(api_connection.tenant, api_connection) do %>
+        <%= button_to boxify_admin_tenant_api_connections_fs_api_connection_path(api_connection.tenant, api_connection) do %>
             <div class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300 hover:bg-gray-100">
               <%= render Icons::RectangleStackComponent.new %>
             </div>
           <% end %>
           <% if api_connection.editable? %>
-            <%= link_to edit_polymorphic_path([:admin, api_connection.tenant, api_connection]), data: { turbo_frame: "modal" } do %>
+            <%= link_to edit_polymorphic_path([:admin, api_connection.tenant, :api_connections, api_connection]), data: { turbo_frame: "modal" } do %>
               <%= render Common::EditButtonComponent.new %>
             <% end %>
             <% if api_connection.destroyable? %>

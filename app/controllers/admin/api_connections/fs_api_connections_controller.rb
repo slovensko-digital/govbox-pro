@@ -1,4 +1,4 @@
-class Admin::FsApiConnectionsController < Admin::ApiConnectionsController
+class Admin::ApiConnections::FsApiConnectionsController < Admin::ApiConnectionsController
   def create
     @api_connection = Current.tenant.api_connections.new(api_connection_params)
     authorize([:admin, @api_connection])
