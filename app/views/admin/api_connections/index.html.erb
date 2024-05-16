@@ -20,7 +20,7 @@
                 <%= render Common::EditButtonComponent.new %>
               <% end %>
               <% if api_connection.destroyable? %>
-                <%= link_to (api_connection.editable? ? polymorphic_path([:admin, api_connection.tenant, api_connection]) : polymorphic_path([:admin, api_connection.tenant, api_connection])), data: { turbo_frame: "Naozaj chcete zmazať skupinu '#{api_connection.name}'?" } do %>
+                <%= button_to (api_connection.editable? ? polymorphic_path([:admin, api_connection.tenant, api_connection]) : polymorphic_path([:admin, api_connection.tenant, api_connection])), method: :delete, data: { turbo_confirm: "Naozaj chcete zmazať skupinu '#{api_connection.name}'?" } do %>
                   <%= render Common::DeleteButtonComponent.new %>
                 <% end %>
               <% end %>
@@ -61,7 +61,7 @@
               <%= render Common::EditButtonComponent.new %>
             <% end %>
             <% if api_connection.destroyable? %>
-              <%= button_to admin_tenant_api_connection_path(api_connection.tenant, api_connection), method: :delete, data: { turbo_frame: "Naozaj chcete zmazať API prepojenie '#{api_connection.name}'?" } do %>
+              <%= button_to admin_tenant_api_connection_path(api_connection.tenant, api_connection), method: :delete, data: { turbo_confirm: "Naozaj chcete zmazať API prepojenie '#{api_connection.name}'?" } do %>
                 <%= render Common::DeleteButtonComponent.new %>
               <% end %>
             <% end %>

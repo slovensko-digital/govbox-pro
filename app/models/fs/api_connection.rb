@@ -36,7 +36,7 @@ class Fs::ApiConnection < ::ApiConnection
   end
 
   def destroyable?
-    true
+    boxes.empty?
   end
 
   def fs_type?
