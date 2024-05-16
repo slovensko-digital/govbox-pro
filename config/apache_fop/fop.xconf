@@ -80,7 +80,7 @@ the location of this file.
         </font>
         -->
 
-        <font kerning="yes" embed-url="Times.ttc" sub-font="Times Roman">
+        <font kerning="yes" embed-url="times.ttf">
           <font-triplet name="Times" style="normal" weight="normal"/>
           <font-triplet name="TimesRoman" style="normal" weight="normal"/>
           <font-triplet name="Times Roman" style="normal" weight="normal"/>
@@ -88,15 +88,6 @@ the location of this file.
           <font-triplet name="Times New Roman" style="normal" weight="normal"/>
           <font-triplet name="TimesNewRoman" style="normal" weight="normal"/>
           <font-triplet name="serif" style="normal" weight="normal"/>
-        </font>
-        <font kerning="yes" embed-url="Helvetica.ttc" sub-font="Helvetica">
-          <font-triplet name="Helvetica" style="normal" weight="normal"/>
-          <font-triplet name="sans-serif" style="normal" weight="normal"/>
-          <font-triplet name="any" style="normal" weight="normal"/>
-        </font>
-        <font kerning="yes" embed-url="Courier.ttc" sub-font="Courier">
-          <font-triplet name="Courier" style="normal" weight="normal"/>
-          <font-triplet name="monospace" style="normal" weight="normal"/>
         </font>
       </fonts>
 
