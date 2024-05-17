@@ -80,9 +80,9 @@ class MessageObject < ApplicationRecord
     message_object_datum&.blob
   end
 
-  def unsigned_content(mimetype: 'application/xml')
+  def unsigned_content(mimetypes: Utils::XML_MIMETYPES)
     if is_signed
-      nested_message_objects&.find_by(mimetype: mimetype)&.content
+      nested_message_objects&.where("mimetype ILIKE ANY ( array[?] )", mimetypes.map {|val| "#{val}%" })&.first&.content
     else
       content
     end

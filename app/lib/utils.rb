@@ -4,7 +4,7 @@ module Utils
   UUID_PATTERN = %r{\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z}
   EXTENSIONS_ALLOW_LIST = %w(pdf xml asice asics xzep zip txt doc docx jpg jpeg png tif tiff)
   MIMETYPES_ALLOW_LIST = %w(application/x-eform-xml application/xml application/msword application/pdf application/vnd.etsi.asic-e+zip application/vnd.etsi.asic-s+zip application/vnd.openxmlformats-officedocument.wordprocessingml.document application/x-xades_zep application/x-zip-compressed image/jpg image/jpeg image/png image/tiff application/pkix-cert)
-  XML_MIMETYPES = %w(application/x-eform-xml application/xml)
+  XML_MIMETYPES = %w(application/x-eform-xml application/xml application/vnd.gov.sk.xmldatacontainer+xml)
 
   def file_directory(file_path)
     File.dirname(file_path)
@@ -54,30 +54,30 @@ module Utils
   end
 
   def file_extension_by_mime_type(mime_type)
-    case mime_type.downcase
-    when 'application/pdf'
+    case
+    when mime_type.include?('application/pdf')
       '.pdf'
-    when 'application/xml', 'application/x-eform-xml'
+    when %w[application/xml application/x-eform-xml application/vnd.gov.sk.xmldatacontainer+xml].any? { |xml_mimetype| mime_type.include?(xml_mimetype) }
       '.xml'
-    when 'application/vnd.etsi.asic-e+zip'
+    when mime_type.include?('application/vnd.etsi.asic-e+zip')
       '.asice'
-    when 'application/vnd.etsi.asic-s+zip'
+    when mime_type.include?('application/vnd.etsi.asic-s+zip')
       '.asics'
-    when 'application/x-xades_zep'
+    when mime_type.include?('application/x-xades_zep')
       '.xzep'
-    when 'application/x-zip-compressed'
+    when mime_type.include?('application/x-zip-compressed')
       '.zip'
-    when 'text/plain'
+    when mime_type.include?('text/plain')
       '.txt'
-    when 'application/msword'
+    when mime_type.include?('application/msword')
       '.doc'
-    when 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    when mime_type.include?('application/vnd.openxmlformats-officedocument.wordprocessingml.document')
       '.docx'
-    when 'image/jpeg'
+    when mime_type.include?('image/jpeg')
       '.jpg'
-    when 'image/png'
+    when mime_type.include?('image/png')
       '.png'
-    when 'image/tiff'
+    when mime_type.include?('image/tiff')
       '.tiff'
     end
   end

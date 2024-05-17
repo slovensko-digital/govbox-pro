@@ -39,7 +39,7 @@ class NestedMessageObject < ApplicationRecord
   end
 
   def xml?
-    mimetype == 'application/xml'
+    Utils::XML_MIMETYPES.any? { |xml_mimetype| mimetype.include?(xml_mimetype) }
   end
 
   def unsigned_content
