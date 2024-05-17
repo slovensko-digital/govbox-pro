@@ -36,8 +36,11 @@ class SignedAttachment::Asice
   
   def self.extract_documents_from_content(content)
     payload_documents = []
+    manifest_file_content = nil
 
     with_file_entries_from_content(content) do |entry|
+      manifest_file_content = entry.content if entry.name == 'META-INF/manifest.xml'
+
       next if should_skip_entry?(entry)
 
       payload_document = PayloadDocument.new
@@ -46,6 +49,8 @@ class SignedAttachment::Asice
       payload_document.mimetype = Utils.file_mime_type_by_name(entry_name: entry.name)
       payload_documents << payload_document
     end
+
+    fill_missing_information_from_manifest(payload_documents, manifest_file_content)
 
     payload_documents
   end
@@ -63,6 +68,19 @@ class SignedAttachment::Asice
           yield FileEntry.new(zip_entry)
         end
       end
+    end
+  end
+
+  def self.fill_missing_information_from_manifest(payload_documents, manifest_file_content)
+    xml_manifest = Nokogiri::XML(manifest_file_content) if manifest_file_content
+
+    payload_documents.each do |payload_document|
+      next unless payload_document.mimetype == 'application/octet-stream'
+
+      mimetype_from_manifest = xml_manifest.xpath("//manifest:file-entry[@manifest:full-path = '#{payload_document.name}']/@manifest:media-type")&.first&.value
+
+      payload_document.mimetype = mimetype_from_manifest if mimetype_from_manifest
+      payload_document.name += Utils.file_extension_by_mime_type(payload_document.mimetype).to_s unless payload_document.name.include?(Utils.file_extension_by_mime_type(payload_document.mimetype).to_s)
     end
   end
 end
