@@ -83,4 +83,14 @@ class SignedAttachment::Asice
       payload_document.name += Utils.file_extension_by_mime_type(payload_document.mimetype).to_s unless payload_document.name.include?(Utils.file_extension_by_mime_type(payload_document.mimetype).to_s)
     end
   end
+
+  def self.get_manifest_file_content(content)
+    manifest_file_content = nil
+
+    with_file_entries_from_content(content) do |entry|
+      manifest_file_content = entry.content if entry.name == 'META-INF/manifest.xml'
+    end
+
+    manifest_file_content
+  end
 end
