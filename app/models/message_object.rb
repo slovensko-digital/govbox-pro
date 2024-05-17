@@ -30,6 +30,7 @@ class MessageObject < ApplicationRecord
   validates :name, presence: { message: "Name can't be blank" }, on: :validate_data
   validate :allowed_mime_type?, on: :validate_data
 
+  after_create ->(message_object) { message_object.update(name: message_object.name + Utils.file_extension_by_mime_type(message_object.mimetype).to_s) unless message_object.name.include?(Utils.file_extension_by_mime_type(message_object.mimetype).to_s) }
   after_update ->(message_object) { EventBus.publish(:message_object_changed, message_object) }
 
   def self.create_message_objects(message, objects)
