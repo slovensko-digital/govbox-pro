@@ -54,6 +54,8 @@ module Utils
   end
 
   def file_extension_by_mime_type(mime_type)
+    return unless mime_type
+
     case
     when mime_type.include?('application/pdf')
       '.pdf'

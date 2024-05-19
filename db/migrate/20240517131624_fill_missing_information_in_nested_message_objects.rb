@@ -7,7 +7,7 @@ class FillMissingInformationInNestedMessageObjects < ActiveRecord::Migration[7.1
       mimetype_from_manifest = xml_manifest.xpath("//manifest:file-entry[@manifest:full-path = '#{nested_message_object.name}']/@manifest:media-type")&.first&.value
 
       nested_message_object.mimetype = mimetype_from_manifest if mimetype_from_manifest
-      nested_message_object.name += Utils.file_extension_by_mime_type(nested_message_object.mimetype).to_s unless nested_message_object.name.include?(Utils.file_extension_by_mime_type(nested_message_object.mimetype).to_s)
+      nested_message_object.name += Utils.file_extension_by_mime_type(nested_message_object.mimetype).to_s if nested_message_object.name.present? && !nested_message_object.name&.include?(Utils.file_extension_by_mime_type(nested_message_object.mimetype).to_s)
 
       nested_message_object.save
     end
