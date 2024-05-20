@@ -15,6 +15,10 @@ module Utils
       Dir["*"].reject { |o| not File.directory?(o) }
     end
   end
+
+  def file_name_without_extension?(object)
+    object.name.present? && !object.name&.include?(file_extension_by_mime_type(object.mimetype).to_s)
+  end
     
   def csv?(name)
     File.extname(name).downcase == '.csv'
