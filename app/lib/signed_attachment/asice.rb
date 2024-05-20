@@ -79,7 +79,9 @@ class SignedAttachment::Asice
 
       mimetype_from_manifest = xml_manifest.xpath("//manifest:file-entry[@manifest:full-path = '#{payload_document.name}']/@manifest:media-type")&.first&.value
 
-      payload_document.mimetype = mimetype_from_manifest if mimetype_from_manifest
+      next unless mimetype_from_manifest.present?
+
+      payload_document.mimetype = mimetype_from_manifest
       payload_document.name += Utils.file_extension_by_mime_type(payload_document.mimetype).to_s if Utils.file_name_without_extension?(payload_document)
     end
   end
