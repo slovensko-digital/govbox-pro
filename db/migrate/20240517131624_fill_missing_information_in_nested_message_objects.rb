@@ -12,7 +12,7 @@ class FillMissingInformationInNestedMessageObjects < ActiveRecord::Migration[7.1
       next unless mimetype_from_manifest.present?
 
       nested_message_object.mimetype = mimetype_from_manifest
-      nested_message_object.name += Utils.file_extension_by_mime_type(nested_message_object.mimetype).to_s if Utils.file_name_without_extension?(nested_message_object))
+      nested_message_object.name += Utils.file_extension_by_mime_type(nested_message_object.mimetype).to_s if Utils.file_name_without_extension?(nested_message_object)
 
       nested_message_object.save
     end
