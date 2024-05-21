@@ -5,6 +5,10 @@ module Utils
   EXTENSIONS_ALLOW_LIST = %w(pdf xml asice asics xzep zip txt doc docx jpg jpeg png tif tiff)
   MIMETYPES_ALLOW_LIST = %w(application/x-eform-xml application/xml application/msword application/pdf application/vnd.etsi.asic-e+zip application/vnd.etsi.asic-s+zip application/vnd.openxmlformats-officedocument.wordprocessingml.document application/x-xades_zep application/x-zip-compressed image/jpg image/jpeg image/png image/tiff application/pkix-cert)
   XML_MIMETYPES = %w(application/x-eform-xml application/xml application/vnd.gov.sk.xmldatacontainer+xml)
+  PDF_MIMETYPE = 'application/pdf'
+  OCTET_STREAM_MIMETYPE = 'application/octet-stream'
+
+  MIMETYPE_WITHOUT_OPTIONAL_PARAMS_REGEXP = /^[^;]*/
 
   def file_directory(file_path)
     File.dirname(file_path)
@@ -22,6 +26,10 @@ module Utils
     
   def csv?(name)
     File.extname(name).downcase == '.csv'
+  end
+
+  def mime_type_without_optional_params(mimetype)
+    MIMETYPE_WITHOUT_OPTIONAL_PARAMS_REGEXP.match(mimetype).to_s
   end
 
   def file_mime_type_by_name(entry_name:, is_form: false)
@@ -60,30 +68,30 @@ module Utils
   def file_extension_by_mime_type(mime_type)
     return unless mime_type
 
-    case
-    when mime_type.include?('application/pdf')
+    case mime_type_without_optional_params(mime_type)
+    when 'application/pdf'
       '.pdf'
-    when %w[application/xml application/x-eform-xml application/vnd.gov.sk.xmldatacontainer+xml].any? { |xml_mimetype| mime_type.include?(xml_mimetype) }
+    when 'application/xml', 'application/x-eform-xml', 'application/vnd.gov.sk.xmldatacontainer+xml'
       '.xml'
-    when mime_type.include?('application/vnd.etsi.asic-e+zip')
+    when 'application/vnd.etsi.asic-e+zip'
       '.asice'
-    when mime_type.include?('application/vnd.etsi.asic-s+zip')
+    when 'application/vnd.etsi.asic-s+zip'
       '.asics'
-    when mime_type.include?('application/x-xades_zep')
+    when 'application/x-xades_zep'
       '.xzep'
-    when mime_type.include?('application/x-zip-compressed')
+    when 'application/x-zip-compressed'
       '.zip'
-    when mime_type.include?('text/plain')
+    when 'text/plain'
       '.txt'
-    when mime_type.include?('application/msword')
+    when 'application/msword'
       '.doc'
-    when mime_type.include?('application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+    when 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
       '.docx'
-    when mime_type.include?('image/jpeg')
+    when 'image/jpeg'
       '.jpg'
-    when mime_type.include?('image/png')
+    when 'image/png'
       '.png'
-    when mime_type.include?('image/tiff')
+    when 'image/tiff'
       '.tiff'
     end
   end

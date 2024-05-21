@@ -75,7 +75,7 @@ class SignedAttachment::Asice
     xml_manifest = Nokogiri::XML(manifest_file_content) if manifest_file_content
 
     payload_documents.each do |payload_document|
-      next unless payload_document.mimetype == 'application/octet-stream'
+      next unless Utils.mime_type_without_optional_params(payload_document.mimetype) == Utils::OCTET_STREAM_MIMETYPE
 
       mimetype_from_manifest = xml_manifest.xpath("//manifest:file-entry[@manifest:full-path = '#{payload_document.name}']/@manifest:media-type")&.first&.value
 

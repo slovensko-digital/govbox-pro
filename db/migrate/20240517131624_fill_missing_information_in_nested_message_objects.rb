@@ -1,6 +1,6 @@
 class FillMissingInformationInNestedMessageObjects < ActiveRecord::Migration[7.1]
   def up
-    NestedMessageObject.where(mimetype: 'application/octet-stream').find_each do |nested_message_object|
+    NestedMessageObject.where(mimetype: Utils::OCTET_STREAM_MIMETYPE).find_each do |nested_message_object|
       manifest_file_content = ::SignedAttachment::Asice.get_manifest_file_content(nested_message_object.message_object.content)
 
       next unless manifest_file_content.present?

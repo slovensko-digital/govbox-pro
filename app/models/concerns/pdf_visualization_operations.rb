@@ -82,7 +82,7 @@ module PdfVisualizationOperations
       if is_signed?
         nested_message_objects&.where("mimetype ILIKE ANY ( array[?] )", Utils::XML_MIMETYPES.map {|val| "#{val}%" })&.any?
       else
-        Utils::XML_MIMETYPES.any? { |xml_mimetype| xml_mimetype.include?(mimetype) }
+        Utils::XML_MIMETYPES.any? { |xml_mimetype| xml_mimetype == Utils.mime_type_without_optional_params(mimetype) }
       end
     end
   end
