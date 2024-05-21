@@ -21,18 +21,18 @@ module Utils
   end
 
   def file_name_without_extension?(object)
-    object.name.present? && !object.name&.include?(file_extension_by_mime_type(object.mimetype).to_s)
+    object.name.present? && !object.name&.include?(file_extension_by_mimetype(object.mimetype).to_s)
   end
     
   def csv?(name)
     File.extname(name).downcase == '.csv'
   end
 
-  def mime_type_without_optional_params(mimetype)
+  def mimetype_without_optional_params(mimetype)
     MIMETYPE_WITHOUT_OPTIONAL_PARAMS_REGEXP.match(mimetype).to_s
   end
 
-  def file_mime_type_by_name(entry_name:, is_form: false)
+  def file_mimetype_by_name(entry_name:, is_form: false)
     case File.extname(entry_name.to_s).downcase
     when '.pdf'
       'application/pdf'
@@ -65,10 +65,10 @@ module Utils
     end
   end
 
-  def file_extension_by_mime_type(mime_type)
-    return unless mime_type
+  def file_extension_by_mimetype(mimetype)
+    return unless mimetype
 
-    case mime_type_without_optional_params(mime_type)
+    case mimetype_without_optional_params(mimetype)
     when 'application/pdf'
       '.pdf'
     when 'application/xml', 'application/x-eform-xml', 'application/vnd.gov.sk.xmldatacontainer+xml'

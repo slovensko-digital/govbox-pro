@@ -12,7 +12,7 @@ module MessageExportOperations
     end
 
     def pdf?
-      Utils.mime_type_without_optional_params(mimetype) == Utils::PDF_MIMETYPE
+      Utils.mimetype_without_optional_params(mimetype) == Utils::PDF_MIMETYPE
     end
 
     private

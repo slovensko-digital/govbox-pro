@@ -28,9 +28,9 @@ class MessageObject < ApplicationRecord
   scope :should_be_signed, -> { where(to_be_signed: true, is_signed: false) }
 
   validates :name, presence: { message: "Name can't be blank" }, on: :validate_data
-  validate :allowed_mime_type?, on: :validate_data
+  validate :allowed_mimetype?, on: :validate_data
 
-  after_create ->(message_object) { message_object.update(name: message_object.name + Utils.file_extension_by_mime_type(message_object.mimetype).to_s) if Utils.file_name_without_extension?(message_object) }
+  after_create ->(message_object) { message_object.update(name: message_object.name + Utils.file_extension_by_mimetype(message_object.mimetype).to_s) if Utils.file_name_without_extension?(message_object) }
   after_update ->(message_object) { EventBus.publish(:message_object_changed, message_object) }
 
   def self.create_message_objects(message, objects)
@@ -43,7 +43,7 @@ class MessageObject < ApplicationRecord
       message_object = MessageObject.create!(
         message: message,
         name: raw_object.original_filename,
-        mimetype: Utils.file_mime_type_by_name(entry_name: raw_object.original_filename),
+        mimetype: Utils.file_mimetype_by_name(entry_name: raw_object.original_filename),
         is_signed: is_signed,
         object_type: "ATTACHMENT",
         tags: tags
@@ -116,11 +116,11 @@ class MessageObject < ApplicationRecord
 
   private
 
-  def allowed_mime_type?
+  def allowed_mimetype?
     if mimetype
-      errors.add(:mime_type, "MimeType of #{name} object is disallowed, allowed mimetypes: #{Utils::MIMETYPES_ALLOW_LIST.join(", ")}") unless Utils::MIMETYPES_ALLOW_LIST.include?(mimetype)
+      errors.add(:mimetype, "MimeType of #{name} object is disallowed, allowed mimetypes: #{Utils::MIMETYPES_ALLOW_LIST.join(", ")}") unless Utils::MIMETYPES_ALLOW_LIST.include?(mimetype)
     else
-      errors.add(:mime_type, "MimeType of #{name} object is disallowed, allowed file types: #{Utils::EXTENSIONS_ALLOW_LIST.join(", ")}")
+      errors.add(:mimetype, "MimeType of #{name} object is disallowed, allowed file types: #{Utils::EXTENSIONS_ALLOW_LIST.join(", ")}")
     end
   end
 

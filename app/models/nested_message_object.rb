@@ -40,7 +40,7 @@ class NestedMessageObject < ApplicationRecord
   end
 
   def xml?
-    Utils::XML_MIMETYPES.any? { |xml_mimetype| xml_mimetype == Utils.mime_type_without_optional_params(mimetype) }
+    Utils::XML_MIMETYPES.any? { |xml_mimetype| xml_mimetype == Utils.mimetype_without_optional_params(mimetype) }
   end
 
   def unsigned_content
