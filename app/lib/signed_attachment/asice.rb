@@ -50,7 +50,7 @@ class SignedAttachment::Asice
       payload_documents << payload_document
     end
 
-    fill_missing_information_from_manifest(payload_documents, manifest_file_content)
+    fill_missing_information_from_manifest(payload_documents, manifest_file_content) if manifest_file_content
 
     payload_documents
   end
@@ -72,7 +72,7 @@ class SignedAttachment::Asice
   end
 
   def self.fill_missing_information_from_manifest(payload_documents, manifest_file_content)
-    xml_manifest = Nokogiri::XML(manifest_file_content) if manifest_file_content
+    xml_manifest = Nokogiri::XML(manifest_file_content)
 
     payload_documents.each do |payload_document|
       next unless Utils.mimetype_without_optional_params(payload_document.mimetype) == Utils::OCTET_STREAM_MIMETYPE
