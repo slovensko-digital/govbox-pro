@@ -12,6 +12,7 @@
 #
 class NestedMessageObject < ApplicationRecord
   include PdfVisualizationOperations
+  include MessageExportOperations
 
   belongs_to :message_object, inverse_of: :nested_message_objects
 
@@ -39,7 +40,7 @@ class NestedMessageObject < ApplicationRecord
   end
 
   def xml?
-    mimetype == 'application/xml'
+    Utils::XML_MIMETYPES.any? { |xml_mimetype| xml_mimetype == Utils.mimetype_without_optional_params(mimetype) }
   end
 
   def unsigned_content
