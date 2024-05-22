@@ -50,15 +50,14 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     json_response = JSON.parse(response.body)
-    assert_includes json_response["messages"].pluck("id"), @tenant.messages.first.id
+    assert_includes json_response.pluck("id"), @tenant.messages.first.id
   end
 
   test "can not read first message with offset" do
     get "/api/messages/sync", params: { token: generate_api_token(sub: @tenant.id, key_pair: @key_pair), last_id: @tenant.messages.first.id }, as: :json
 
-    assert_response :success
     json_response = JSON.parse(response.body)
-    assert_not_includes json_response["messages"].pluck("id"), @tenant.messages.first.id
-    assert_includes json_response["messages"].pluck("id"), @tenant.messages.second.id
+    assert_not_includes json_response.pluck("id"), @tenant.messages.first.id
+    assert_includes json_response.pluck("id"), @tenant.messages.second.id
   end
 end

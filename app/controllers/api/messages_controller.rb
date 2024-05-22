@@ -51,7 +51,7 @@ class Api::MessagesController < Api::TenantController
   end
 
   def sync
-    @messages = @tenant.messages.order(:id).limit(API_PAGE_SIZE)
+    @messages = @tenant.messages.order(:id).limit(API_PAGE_SIZE).includes(:objects)
     @messages = @messages.where('messages.id > ?', params[:last_id]) if params[:last_id]
   end
 

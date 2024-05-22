@@ -20,26 +20,6 @@ servers:
     url: http://localhost:3000
 
 paths:
-  /api/message_threads:
-    get:
-      tags: [Vlákna]
-      summary: Vráti zoznam všetkých vlákien
-      description: Vrátu zoznam všetkých vlákien tenanta príslušného API používateľa
-      parameters:
-        - name: offset
-          in: query
-          description: Offset v rámci stránkovania - ID posledného načítaného vlákna
-          required: false
-          schema:
-            type: integer
-            format: int64
-      responses:
-        200:
-          description: Úspešné získanie zoznamu vlákien
-          content:
-            application/json:
-              schema:
-                type: array
   /api/message_threads/{id}:
     get:
       tags: [Vlákna]
@@ -77,7 +57,59 @@ paths:
                       format: url
       security:
         - "Tenant_Token": []
-
+  /api/message_threads/{id}/tags:
+    post:
+      tags: [Vlákna, Štítky]
+      summary: Pridá štítky k vláknu
+      description: Pridá štítky k vláknu. V prípade, že štítok neexistuje, vytvorí nový
+      parameters:
+        - name: id
+          description: Id vlákna
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: tags
+          description: Zoznam názvov štítkov
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        204:
+          description: Úspešné pridanie štítkov k vláknu
+        404:
+          description: Vlákno nenájdené
+      security:
+        - "Tenant_Token": []
+    delete:
+      tags: [Vlákna, Štítky]
+      summary: Odoberie štítky z vlákna
+      description: Odoberie štítky z vlákna
+      parameters:
+        - name: id
+          description: Id vlákna
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: tags
+          description: Zoznam názvov štítkov
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        204:
+          description: Úspešné odobranie štítkov z vlákna
+        404:
+          description: Vlákno nenájdené
+      security:
+        - "Tenant_Token": []
   /api/messages/{id}:
     get:
       tags: [Správy]
@@ -259,8 +291,7 @@ paths:
                       object_type:
                         description: Typ objektu
                         type: string
-                        format:
-                          enum: [FORM, ATTACHMENT]
+                        enum: ["FORM", "ATTACHMENT"]
                       content:
                         description: Obsah objektu zakódovaný podľa Base64
                         type: string
@@ -308,6 +339,72 @@ paths:
           description: Úspešné vytvorenie správy
         422:
           description: Nevalidný obsah správy
+      security:
+        - "Tenant_Token": []
+  /api/messages/sync:
+    get:
+      tags: [Správy]
+      summary: Vráti zoznam správ od určeného ID
+      description: Vráti zoznam správ od poslednej synchronizácie, t.j. od posledného prijatého ID. Určené na synchronizáciu do iných alpikácií. Počet správ vrátený v jednom volaní je obmedzený na 200
+      parameters:
+        - name: lastId
+          in: query
+          schema:
+            type: integer
+      responses:
+        204:
+          description: Úspešne vrátený zoznam správ
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      description: Identifikátor správy v systéme Govbox Pro
+                      type: integer
+                    uuid:
+                      description: UUID správy
+                      type: string
+                      format: uuid
+                    title:
+                      description: Predmet správy
+                      type: string
+                    sender_name:
+                      description: Odosielateľ správy
+                      type: string
+                    recipient_name:
+                      description: Prijímateľ správy
+                      type: string
+                    delivered_at:
+                      description: Dátum a čas doručenia správy
+                      type: string
+                      format: date-time
+                    message_objects:
+                      description: Zoznam objektov správy
+                      type: array
+                      items:
+                        description: Objekt správy
+                        type: object
+                        properties:
+                          name:
+                            description: Názov objektu
+                            type: string
+                          mimetype:
+                            description: Typ súboru objektu
+                            type: string
+                          object_type:
+                            description: Typ objektu
+                            type: string
+                            enum: ["FORM", "ATTACHMENT"]
+                          updated_at:
+                            description: Dátum poslednej zmeny (pridanie, podpísanie, ...) objektu
+                            type: string
+                            format: date-time
+                          is_signed:
+                            description: Príznak, či je objekt podpísaný
+                            type: boolean
       security:
         - "Tenant_Token": []
 
