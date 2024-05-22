@@ -70,15 +70,91 @@ the location of this file.
         -->
 
         <!--
-        <font metrics-url="arial.xml" kerning="yes" embed-url="arial.ttf">
+        <font metrics-url="arial.xml" kerning="yes" embed-url="../../vendor/apache_fop/fonts/arial.ttf">
           <font-triplet name="Arial" style="normal" weight="normal"/>
           <font-triplet name="ArialMT" style="normal" weight="normal"/>
         </font>
-        <font metrics-url="arialb.xml" kerning="yes" embed-url="arialb.ttf">
+        <font metrics-url="arialb.xml" kerning="yes" embed-url="../../vendor/apache_fop/fonts/arialb.ttf">
           <font-triplet name="Arial" style="normal" weight="bold"/>
           <font-triplet name="ArialMT" style="normal" weight="bold"/>
         </font>
         -->
+
+        <font kerning="yes" embed-url="../../vendor/apache_fop/fonts/times.ttf">
+          <font-triplet name="Times" style="normal" weight="normal"/>
+          <font-triplet name="TimesRoman" style="normal" weight="normal"/>
+          <font-triplet name="Times Roman" style="normal" weight="normal"/>
+          <font-triplet name="Times-Roman" style="normal" weight="normal"/>
+          <font-triplet name="Times New Roman" style="normal" weight="normal"/>
+          <font-triplet name="TimesNewRoman" style="normal" weight="normal"/>
+          <font-triplet name="serif" style="normal" weight="normal"/>
+        </font>
+        <font kerning="yes" embed-url="../../vendor/apache_fop/fonts/times_italic.ttf">
+          <font-triplet name="Times" style="italic" weight="normal"/>
+          <font-triplet name="TimesRoman" style="italic" weight="normal"/>
+          <font-triplet name="Times Roman" style="italic" weight="normal"/>
+          <font-triplet name="Times-Roman" style="italic" weight="normal"/>
+          <font-triplet name="Times New Roman" style="italic" weight="normal"/>
+          <font-triplet name="TimesNewRoman" style="italic" weight="normal"/>
+          <font-triplet name="serif" style="italic" weight="normal"/>
+        </font>
+        <font kerning="yes" embed-url="../../vendor/apache_fop/fonts/times_bold.ttf">
+          <font-triplet name="Times" style="normal" weight="bold"/>
+          <font-triplet name="TimesRoman" style="normal" weight="bold"/>
+          <font-triplet name="Times Roman" style="normal" weight="bold"/>
+          <font-triplet name="Times-Roman" style="normal" weight="bold"/>
+          <font-triplet name="Times New Roman" style="normal" weight="bold"/>
+          <font-triplet name="TimesNewRoman" style="normal" weight="bold"/>
+          <font-triplet name="serif" style="normal" weight="bold"/>
+        </font>
+        <font kerning="yes" embed-url="../../vendor/apache_fop/fonts/times_bold_italic.ttf">
+          <font-triplet name="Times" style="italic" weight="bold"/>
+          <font-triplet name="TimesRoman" style="italic" weight="bold"/>
+          <font-triplet name="Times Roman" style="italic" weight="bold"/>
+          <font-triplet name="Times-Roman" style="italic" weight="bold"/>
+          <font-triplet name="Times New Roman" style="italic" weight="bold"/>
+          <font-triplet name="TimesNewRoman" style="italic" weight="bold"/>
+          <font-triplet name="serif" style="italic" weight="bold"/>
+        </font>
+
+        <font kerning="yes" embed-url="../../vendor/apache_fop/fonts/helvetica.ttf">
+          <font-triplet name="Helvetica" style="normal" weight="normal"/>
+          <font-triplet name="Arial" style="normal" weight="normal"/>
+          <font-triplet name="sans-serif" style="normal" weight="normal"/>
+          <font-triplet name="any" style="normal" weight="normal"/>
+        </font>
+        <font kerning="yes" embed-url="../../vendor/apache_fop/fonts/helvetica_italic.ttf">
+          <font-triplet name="Helvetica" style="italic" weight="normal"/>
+          <font-triplet name="Arial" style="italic" weight="normal"/>
+          <font-triplet name="sans-serif" style="italic" weight="normal"/>
+        </font>
+        <font kerning="yes" embed-url="../../vendor/apache_fop/fonts/helvetica_bold.ttf">
+          <font-triplet name="Helvetica" style="normal" weight="bold"/>
+          <font-triplet name="Arial" style="normal" weight="bold"/>
+          <font-triplet name="sans-serif" style="normal" weight="bold"/>
+        </font>
+        <font kerning="yes" embed-url="../../vendor/apache_fop/fonts/helvetica_bold_italic.ttf">
+          <font-triplet name="Helvetica" style="italic" weight="bold"/>
+          <font-triplet name="Arial" style="italic" weight="bold"/>
+          <font-triplet name="sans-serif" style="italic" weight="bold"/>
+        </font>
+
+        <font kerning="yes" embed-url="../../vendor/apache_fop/fonts/courier.ttf">
+          <font-triplet name="Courier" style="normal" weight="normal"/>
+          <font-triplet name="monospace" style="normal" weight="normal"/>
+        </font>
+        <font kerning="yes" embed-url="../../vendor/apache_fop/fonts/courier_italic.ttf">
+          <font-triplet name="Courier" style="italic" weight="normal"/>
+          <font-triplet name="monospace" style="italic" weight="normal"/>
+        </font>
+        <font kerning="yes" embed-url="../../vendor/apache_fop/fonts/courier_bold.ttf">
+          <font-triplet name="Courier" style="normal" weight="bold"/>
+          <font-triplet name="monospace" style="normal" weight="bold"/>
+        </font>
+        <font kerning="yes" embed-url="../../vendor/apache_fop/fonts/courier_bold_italic.ttf">
+          <font-triplet name="Courier" style="italic" weight="bold"/>
+          <font-triplet name="monospace" style="italic" weight="bold"/>
+        </font>
       </fonts>
 
       <!-- This option lets you specify additional options on an XML handler -->
@@ -136,7 +212,7 @@ the location of this file.
           <font-triplet name="TimesNewRoman" style="normal" weight="normal"/>
           <font-triplet name="serif" style="normal" weight="normal"/>
         </font>
- 
+
         <!-- Times Roman Italic -->
         <font>
           <afp-font name="Times Roman Italic" type="raster" codepage="T1V10500" encoding="Cp500">
@@ -163,7 +239,7 @@ the location of this file.
           <font-triplet name="TimesNewRoman" style="italic" weight="normal"/>
           <font-triplet name="serif" style="italic" weight="normal"/>
         </font>
- 
+
         <!-- Times Roman Bold -->
         <font>
           <afp-font name="Times Roman Bold" type="raster" codepage="T1V10500" encoding="Cp500">
@@ -398,27 +474,27 @@ the location of this file.
           <font-triplet name="Courier" style="italic" weight="bold"/>
           <font-triplet name="monospace" style="italic" weight="bold"/>
         </font>
-        
-         <!-- 
-        Configure double-byte (CID Keyed font (Type 0)) AFP fonts with type="CIDKeyed".  
-        
+
+         <!--
+        Configure double-byte (CID Keyed font (Type 0)) AFP fonts with type="CIDKeyed".
+
         example:
          <font>
-        	<afp-font type="CIDKeyed" encoding="UnicodeBigUnmarked"  
-        	codepage="T1120000" characterset="CZJHMNU" 
+        	<afp-font type="CIDKeyed" encoding="UnicodeBigUnmarked"
+        	codepage="T1120000" characterset="CZJHMNU"
         	base-uri="fonts" />
          	<font-triplet name="J-Heisei Mincho" style="normal" weight="normal" />
      	 </font>
         -->
-        
-        
+
+
       </fonts>
     </renderer>
 
     <renderer mime="application/postscript">
       <!-- This option forces the PS renderer to rotate landscape pages -->
       <!--auto-rotate-landscape>true</auto-rotate-landscape-->
-      
+
       <!-- This option lets you specify additional options on an XML handler -->
       <!--xml-handler namespace="http://www.w3.org/2000/svg">
         <stroke-text>false</stroke-text>
@@ -462,4 +538,3 @@ the location of this file.
   </renderers>
 
 </fop>
-
