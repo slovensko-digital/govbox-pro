@@ -11,7 +11,7 @@ class Fs::MessageDraftsController < ApplicationController
   end
 
   def create
-    @message = ::Fs::MessageDraft.create_with_fs_form(@fs_form, box: @box, form_file: message_draft_params[:content])
+    @message = ::Fs::MessageDraft.create_and_validate_with_fs_form(@fs_form, box: @box, form_file: message_draft_params[:content])
 
     authorize @message
 

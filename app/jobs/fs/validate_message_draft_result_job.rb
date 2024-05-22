@@ -3,12 +3,11 @@ class Fs::ValidateMessageDraftResultJob < ApplicationJob
     response = fs_client.api(box: message_draft.thread.box).get_location(location_header)
 
     if 200 == response[:status]
-      # TODO validation success
-      puts "OK"
+      message_draft.metadata[:status] = 'created'
+      message_draft.save
     elsif [400, 422].include?(response[:status])
-      # TODO validation fail
-      puts "FAIL"
-      puts response[:body]
+      message_draft.metadata[:status] = 'invalid'
+      message_draft.save
     else
       raise RuntimeError.new("Unexpected response status: #{response[:status]}")
     end

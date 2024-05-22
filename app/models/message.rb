@@ -112,7 +112,7 @@ class Message < ApplicationRecord
     return unless form&.xslt_html
     return unless form_object&.unsigned_content
 
-    template = Nokogiri::XSLT(upvs_form.xslt_html)
+    template = Nokogiri::XSLT(form.xslt_html)
     template.transform(form_object.xml_unsigned_content)
   end
 

@@ -1,6 +1,6 @@
 module Upvs
   class FormRelatedDocumentsDownloader < ::Utils::Downloader
-    SOURCE_URL = ENV['FORMS_STORAGE_API_URL']
+    SOURCE_URL = "#{ENV['FORMS_STORAGE_API_URL']}/upvs"
     XSD_PATH = 'schema.xsd'
 
     attr_reader :upvs_form

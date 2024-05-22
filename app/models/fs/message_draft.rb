@@ -26,7 +26,7 @@ class Fs::MessageDraft < MessageDraft
     MessageDraftPolicy
   end
 
-  def self.create_with_fs_form(fs_form, box:, form_file: nil)
+  def self.create_and_validate_with_fs_form(fs_form, box:, form_file: nil)
     message = ::Fs::MessageDraft.create(
       uuid: SecureRandom.uuid,
       title: fs_form.name,
@@ -36,8 +36,8 @@ class Fs::MessageDraft < MessageDraft
       replyable: false,
       delivered_at: Time.now,
       metadata: {
-        'status': 'created',
-        'fs_form_id': fs_form.identifier
+        'status': 'being_loaded',
+        'fs_form_id': fs_form.id
       }
     )
 
@@ -61,11 +61,17 @@ class Fs::MessageDraft < MessageDraft
       blob: form_file.read.force_encoding("UTF-8")
     )
 
+    Fs::ValidateMessageDraftJob.perform_later(message)
+
     message
   end
 
   def submit
     Fs::SubmitMessageDraftAction.run(self)
+  end
+
+  def attachments_allowed?
+    false
   end
 
   def build_html_visualization

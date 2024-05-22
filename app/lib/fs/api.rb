@@ -88,7 +88,7 @@ module Fs
     end
 
     def request(method, path, *args, accept_negative: false)
-      request_url(method, "#{@url}/api/v1/#{path}", *args, accept_negative: true)
+      request_url(method, "#{@url}/api/v1/#{path}", *args, accept_negative: accept_negative)
     end
 
     def request_url(method, path, *args, accept_negative: false)

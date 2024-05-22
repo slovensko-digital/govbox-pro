@@ -105,7 +105,11 @@ class MessageDraft < Message
   end
 
   def not_yet_submitted?
-    metadata["status"].in?(%w[created invalid])
+    metadata["status"].in?(%w[created invalid being_validated])
+  end
+
+  def being_validated?
+    metadata["status"] == "being_validated"
   end
 
   def being_submitted?
@@ -137,6 +141,10 @@ class MessageDraft < Message
     metadata["status"] = "submitted"
     save!
     EventBus.publish(:message_draft_submitted, self)
+  end
+
+  def attachments_allowed?
+    true
   end
 
   def original_message
