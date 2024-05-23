@@ -42,11 +42,24 @@ module GovboxPro
       }
     end
 
+    config.good_job.cron['check_messages_mapping'] = {
+      cron: "30 7 * * *",  # run every day at 7:30 am
+      class: "Govbox::CheckMessagesMappingJob",
+      description: "Regular job to check messages mapping"
+    }
+
     config.good_job.cron['check_archived_documents'] = {
       cron: "30 3 * * *",  # run every day at 3:30 am
       class: "Archivation::ArchiveAllArchivedMessageThreadsJob",
       description: "Regular job to archive message_threads"
     }
+
+    config.good_job.cron['fetch_upvs_forms_related_documents'] = {
+      cron: "0 */12 * * *",  # run every 12 hours
+      class: "Upvs::FetchFormRelatedDocumentsJob",
+      description: "Regular job to fetch Upvs::FormRelatedDocuments"
+    }
+
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files

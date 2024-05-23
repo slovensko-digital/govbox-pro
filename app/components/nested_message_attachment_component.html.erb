@@ -5,15 +5,21 @@
     </div>
     <div class="flex flex-col justify-start items-start overflow-x-clip">
       <div class="flex justify-start items-start gap-4 w-full">
-        <span class="truncate text-base font-semibold text-left text-gray-900"><%= @nested_message_attachment.name %></span>
+        <span class="truncate text-base font-semibold text-left text-gray-900"><%= MessageObjectHelper.displayable_name(@nested_message_attachment) %></span>
       </div>
     </div>
   <% end %>
   <%= render Common::OptionsComponent.new(id: "message-attachment-menu") do |options| %>
     <% options.with_menu_content do %>
-      <%= link_to message_message_object_nested_message_object_path(@message, @message_object, @nested_message_attachment), class: "flex gap-3", role: "menuitem", tabindex: "-1", data: { turbo_frame: "_top" } do %>
+      <%= link_to message_message_object_nested_message_object_download_path(@message, @message_object, @nested_message_attachment), class: "flex gap-3", role: "menuitem", tabindex: "-1", data: { turbo_frame: "_top", turbo: false } do %>
         <%= render Icons::ArrowDownTrayComponent.new(css_classes: "h-5 w-5") %>
         Stiahnuť
+      <% end %>
+      <% if Current.tenant.feature_enabled?(:pdf_transformation) && @nested_message_attachment.downloadable_as_pdf? %>
+        <%= link_to message_message_object_nested_message_object_download_pdf_path(@message, @message_object, @nested_message_attachment), class: "flex gap-3", role: "menuitem", tabindex: "-1", data: { turbo_frame: "_top", turbo: false } do %>
+          <%= render Common::IconComponent.new("document-arrow-down", classes: "w-5 h-5") %>
+          Stiahnuť ako PDF
+        <% end %>
       <% end %>
     <% end %>
   <% end %>

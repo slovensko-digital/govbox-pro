@@ -40,10 +40,6 @@ class MessageThread < ApplicationRecord
     message_thread_note || build_message_thread_note
   end
 
-  def messages_visible_to_user(user)
-    messages.where(author_id: [nil, user.id])
-  end
-
   def automation_rules_for_event(event)
     tenant.automation_rules.where(trigger_event: event)
   end
@@ -80,6 +76,8 @@ class MessageThread < ApplicationRecord
   end
 
   def self.merge_threads
+    return unless all.map(&:box).uniq.count == 1
+
     EventBus.publish(:message_threads_merged, all)
     transaction do
       target_thread = first
@@ -160,6 +158,10 @@ class MessageThread < ApplicationRecord
     end
   end
 
+  def assign_tag(tag)
+    message_threads_tags.find_or_create_by!(tag: tag)
+  end
+
   private
 
   def has_tag?(tag)
@@ -168,10 +170,6 @@ class MessageThread < ApplicationRecord
 
   def has_tag_in_message_objects?(tag)
     objects.joins(:tags).where(tags: tag).exists?
-  end
-
-  def assign_tag(tag)
-    message_threads_tags.find_or_create_by!(tag: tag)
   end
 
   def unassign_tag(tag)

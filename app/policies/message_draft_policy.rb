@@ -11,7 +11,7 @@ class MessageDraftPolicy < ApplicationPolicy
   class Scope < Scope
     def resolve
       # TODO: this does not work for imported drafts (no tags present)
-      scope.where(author_id: @user.id).where(
+      scope.where(
         MessageThreadsTag
           .select(1)
           .joins(tag_groups: :group_memberships)
@@ -34,6 +34,10 @@ class MessageDraftPolicy < ApplicationPolicy
     true # TODO: can everyone create new messages?
   end
 
+  def reply?
+    true
+  end
+
   def show?
     true
   end
@@ -44,10 +48,6 @@ class MessageDraftPolicy < ApplicationPolicy
 
   def submit?
     create?
-  end
-
-  def submit_all?
-    submit?
   end
 
   def destroy?

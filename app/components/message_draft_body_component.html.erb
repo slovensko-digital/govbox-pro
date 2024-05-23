@@ -17,12 +17,20 @@
             <% end %>
           </div>
         <% end %>
-        <% unless @message.not_yet_submitted? %>
+        <% if @message.invalid? || @message.submit_failed? %>
+          <div class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-1.5 px-1.5 py-0.5 rounded-md bg-red-50 border border-red-300">
+            <% if @message.invalid? %>
+              <p class="flex-grow-0 flex-shrink-0 text-sm text-left text-red-600">Správa nie je validná</p>
+            <% elsif @message.submit_failed? %>
+              <p class="flex-grow-0 flex-shrink-0 text-sm text-left text-red-600">Správu sa nepodarilo odoslať</p>
+            <% end %>
+          </div>
+        <% elsif @message.being_submitted? || @message.submitted? %>
           <div class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-1.5 px-1.5 py-0.5 rounded-md bg-purple-50 border border-purple-300">
-            <% if @message.being_submitted? %>
-              <p class="flex-grow-0 flex-shrink-0 text-sm text-left text-purple-600">Správa sa odosiela</p>
-            <% elsif @message.submitted? %>
+            <% if @message.submitted? %>
               <p class="flex-grow-0 flex-shrink-0 text-sm text-left text-purple-600">Správa bola odoslaná</p>
+            <% elsif @message.being_submitted? %>
+              <p class="flex-grow-0 flex-shrink-0 text-sm text-left text-purple-600">Správa sa odosiela</p>
             <% end %>
           </div>
         <% end %>
@@ -34,28 +42,8 @@
 
   <div class="flex flex-col justify-stretch items-start relative gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
     <% if @message.custom_visualization? %>
-      <% message_title_id = dom_id(@message, :title)
-         message_text_id = dom_id(@message, :text) %>
-      <%= content_tag(:div,
-                      {
-                        "data-controller": "message-drafts",
-                        "data-message-drafts-message-draft-path": message_draft_path(@message.id),
-                        "data-message-drafts-authenticity-token": form_authenticity_token,
-                        "data-message-drafts-title-id": message_title_id,
-                        "data-message-drafts-text-id": message_text_id,
-                        "class": "mb-3 pt-0 w-full"
-                      }) do %>
-        <% if @message.editable? %>
-          <%= text_field_tag message_title_id, @message.title, placeholder: "Predmet", "data-action": "change->message-drafts#update", class: "mb-3 px-3 py-4 placeholder-slate-300 text-slate-900 relative bg-white bg-white rounded-lg text-base border-0 shadow outline-none focus:outline-none focus:ring w-full" %>
-          <%= text_area_tag message_text_id, @message.metadata["message_body"], autofocus: @is_last, placeholder: "Text", "data-action": "change->message-drafts#update", rows: 10, class: "px-3 py-4 placeholder-slate-300 text-slate-900 relative bg-white bg-white rounded-lg text-base border-0 shadow outline-none focus:outline-none focus:ring w-full h-full" %>
-        <% else %>
-          <%= button_to confirm_unlock_message_draft_path(@message), class: "w-full", data: { turbo_frame: "modal" } do %>
-            <%= text_field_tag message_title_id, @message.title, placeholder: "Predmet", readonly: true, class: "mb-3 px-3 py-4 placeholder-slate-300 text-slate-900 relative bg-white bg-white rounded-lg text-base border-0 shadow outline-none focus:outline-none focus:ring w-full" %>
-            <%= text_area_tag message_text_id, @message.metadata["message_body"], autofocus: @is_last, readonly: true, placeholder: "Text", rows: 10, class: "px-3 py-4 placeholder-slate-300 text-slate-900 relative bg-white bg-white rounded-lg text-base border-0 shadow outline-none focus:outline-none focus:ring w-full h-full" %>
-          <% end %>
-        <% end %>
-      <% end %>
-    <% else %>
+      <%= render MessageTemplateComponent.new(message: @message, is_last: @is_last) %>
+    <% elsif @message.html_visualization.present? %>
       <div class="w-full">
         <%= tag.iframe class: "relative border-none overflow-hidden h-full w-full", srcdoc: @message.html_visualization, onload: "(
             function(iframe) {
@@ -67,6 +55,8 @@
             (this)
           )" %>
       </div>
+    <% else %>
+      <p>Správu nie je možné vizualizovať.</p>
     <% end %>
   </div>
 </div>

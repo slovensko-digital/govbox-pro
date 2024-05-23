@@ -26,6 +26,10 @@ class BoxPolicy < ApplicationPolicy
     @user.admin?
   end
 
+  def sync_all?
+    true
+  end
+
   def select?
     true
   end

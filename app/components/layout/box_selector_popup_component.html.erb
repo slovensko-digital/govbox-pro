@@ -2,11 +2,11 @@
   <% modal.with_modal_content do %>
     <%= link_to select_all_boxes_path, data: { turbo_frame: "_top" }, class: "flex justify-between items-center self-stretch flex-grow-0 flex-shrink-0 py-2" do %>
       <span class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-gray-900">
-      Všetky schránky
-    </span>
+        Všetky schránky
+      </span>
       <span class="flex-grow-0 flex-shrink-0 text-sm text-left text-gray-600 px-1.5 py-0.5 rounded-md bg-gray-50 border border-gray-300">
-      <%= @all_unread_messages_count %>
-    </span>
+        <%= @all_unread_messages_count %>
+      </span>
     <% end %>
     <hr>
     <div class="flex flex-col gap-2 mb-4">
@@ -18,10 +18,10 @@
             </div>
             <%= tag.turbo_frame id: "box-search-results" %>
             <%= form.search_field :name_search, value: params[:name_search], placeholder: "Vyhľadaj schránku",
-                                  oninput: "this.form.requestSubmit()",
-                                  onreset: "this.form.requestSubmit()",
-                                  autofocus: true,
-                                  class: "block w-full flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" %>
+                                                oninput: "this.form.requestSubmit()",
+                                                onreset: "this.form.requestSubmit()",
+                                                autofocus: true,
+                                                class: "block w-full flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" %>
           </div>
         <% end %>
       <% end %>
@@ -31,7 +31,11 @@
         <% end %>
       <% end %>
     </div>
-
-    <%= render Common::ModalActionsComponent.new %>
+    <div class="flex sm:flex-row flex-col-reverse gap-4 justify-center sm:-mx-6 sm:px-6 -mx-4 p-4 -mb-4 bg-gray-50">
+      <%= button_to sync_all_boxes_path, class: "flex w-full justify-center gap-4", data: { turbo_frame: "_top" } do %>
+        <%= render Common::IconComponent.new("cloud-arrow-down", classes: "size-6 text-gray-400") %>
+        <%= "Stiahnuť nové správy" %>
+      <% end %>
+    </div>
   <% end %>
 <% end %>

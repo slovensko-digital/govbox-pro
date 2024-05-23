@@ -1,7 +1,12 @@
 FROM ruby:3.3.0
 
 # Install packages
-RUN apt-get update && apt-get install -y build-essential nodejs libpq-dev npm
+RUN apt-get update && apt-get install -y build-essential nodejs libpq-dev npm fop=1:2.* libsaxon-java libsaxonb-java
+
+# Setup FOP to use saxon xslt parser
+RUN sed -i '/find_jars/i \
+find_jars saxon saxonb' /usr/bin/fop
+RUN sed -i 's/^run_java /run_java -Djavax.xml.transform.TransformerFactory=net.sf.saxon.TransformerFactoryImpl /' /usr/bin/fop
 
 # Set working directory
 RUN mkdir /app

@@ -4,6 +4,7 @@ ssd_main_general_one:
   uuid: <%= SecureRandom.uuid %>
   title: The First Message
   sender_name: Social Department
+  recipient_name: SSD
   html_visualization: Visualization 1
   delivered_at: 2023-05-18 16:16:26
   thread: ssd_main_general
@@ -11,6 +12,8 @@ ssd_main_general_one:
   replyable: false
   metadata:
     authorized: true
+    sender_uri: SenderURI
+    correlation_id: <%= SecureRandom.uuid %>
     delivery_notification:
       delivery_period_end_at: <%= DateTime.current - 1.day %>
 
@@ -24,6 +27,8 @@ ssd_main_general_two:
     authorized: false
     delivery_notification:
       delivery_period_end_at: <%= DateTime.current + 1.day %>
+      consignment:
+        type: Doc.GeneralAgendaReport
 
 ssd_main_general_three:
   uuid: <%= SecureRandom.uuid %>
@@ -34,6 +39,27 @@ ssd_main_general_three:
   metadata: {}
   collapsed: true
 
+ssd_main_general_four:
+  uuid: <%= SecureRandom.uuid %>
+  title: The Fourth Message
+  delivered_at: 2023-05-18 16:17:26
+  thread: ssd_main_general
+  metadata:
+    authorized: false
+    posp_id: App.GeneralAgenda
+    posp_version: 1.9
+    message_type: App.GeneralAgenda
+
+ssd_main_fs_one:
+  uuid: <%= SecureRandom.uuid %>
+  title: FS Message
+  delivered_at: 2023-05-18 16:17:26
+  thread: ssd_main_general
+  metadata:
+    posp_id: 42499500.FS_EUD_v1_0.sk
+    posp_version: 1.6
+    message_type: Elektronický úradný dokument finančnej správy
+
 ssd_main_general_draft_one:
   type: MessageDraft
   uuid: <%= SecureRandom.uuid %>
@@ -41,7 +67,9 @@ ssd_main_general_draft_one:
   html_visualization: Reply to something
   delivered_at: 2023-05-18 16:18:26
   thread: ssd_main_general
-  metadata: {}
+  replyable: false
+  metadata:
+    status: created
   author: basic
 
 ssd_main_general_draft_two:
@@ -51,7 +79,15 @@ ssd_main_general_draft_two:
   html_visualization: MyString
   delivered_at: 2023-05-18 16:18:26
   thread: ssd_main_general
-  metadata: {}
+  replyable: false
+  metadata:
+    status: created
+    sktalk_class: EGOV_APPLICATION
+    posp_id: App.GeneralAgenda
+    posp_version: 1.9
+    message_type: App.GeneralAgenda
+    correlation_id: <%= SecureRandom.uuid %>
+    recipient_uri: ico://sk/12345678
   author: basic
 
 ssd_main_delivery_draft:
@@ -61,7 +97,9 @@ ssd_main_delivery_draft:
   html_visualization: MyString
   delivered_at: 2023-05-18 16:19:26
   thread: ssd_main_delivery
-  metadata: {}
+  replyable: false
+  metadata:
+    status: created
   author: basic
 
 ssd_main_issue_one:
@@ -80,7 +118,9 @@ ssd_main_issue_two:
   html_visualization: MyString
   delivered_at: 2023-05-18 16:20:26
   thread: ssd_main_issue
-  metadata: {}
+  metadata:
+    sender_uri: ico://sk/12345678
+    correlation_id: <%= SecureRandom.uuid %>
 
 ssd_main_collapsed_one:
   uuid: <%= SecureRandom.uuid %>

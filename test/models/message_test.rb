@@ -1,6 +1,22 @@
 require "test_helper"
 
 class MessageTest < ActiveSupport::TestCase
+  test "Automatically sets html_visualization after form object data created" do
+    message = messages(:ssd_main_general_four)
+
+    form = message.objects.create(
+      name: 'form',
+      mimetype: 'application/xml',
+      object_type: 'FORM'
+    )
+    MessageObjectDatum.create(
+      message_object: form,
+      blob: '<GeneralAgenda xmlns="http://schemas.gov.sk/form/App.GeneralAgenda/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><subject>predmet</subject><text>text</text></GeneralAgenda>'
+    )
+
+    assert message.html_visualization.present?
+  end
+
   test "add_cascade_tag method should add tag to message and message thread" do
     message = messages(:ssd_main_general_one)
     tag = tags(:ssd_finance)
@@ -40,7 +56,8 @@ class MessageTest < ActiveSupport::TestCase
     message = messages(:ssd_main_general_one)
     user = users(:basic)
 
-    reply = MessageDraft.create_message_reply(original_message: message, author: user)
+    reply = MessageDraft.new
+    MessageTemplate.reply_template.create_message_reply(reply, original_message: message, author: user)
 
     assert_equal reply.sender_name, message.recipient_name
     assert_equal reply.recipient_name, message.sender_name

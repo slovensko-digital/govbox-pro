@@ -3,6 +3,16 @@
 require "test_helper"
 
 class EventBusTest < ActiveSupport::TestCase
+  include ActiveJob::TestHelper
+
+  test ":message_draft_changed event schedules Searchable::ReindexMessageThreadJob" do
+    message = messages(:ssd_main_general_draft_one)
+
+    assert_enqueued_with(job: Searchable::ReindexMessageThreadJob) do
+      message.update(html_visualization: '<html><head>some junk</head><body id="test">text</body>')
+    end
+  end
+
   test "should fire matching subscribers" do
     subscriber1 = Minitest::Mock.new
     subscriber1.expect :call, true, [1, 2, 3]

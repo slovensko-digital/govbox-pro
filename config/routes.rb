@@ -37,7 +37,7 @@ Rails.application.routes.draw do
         end
       end
       resources :users
-      resources :boxes
+      resources :boxes, except: :destroy
       resources :tags
       resources :tag_groups
     end
@@ -46,8 +46,9 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :boxes, path: 'schranky', only: %i[index show] do
+  resources :boxes, path: 'schranky', only: [] do
     post :sync
+    post :sync_all, on: :collection
     get :select, on: :member
     get :select_all, on: :collection
     get :get_selector, on: :collection
@@ -64,8 +65,19 @@ Rails.application.routes.draw do
         end
       end
 
+      resource :message_drafts, only: [:update] do
+        collection do
+          post :submit
+        end
+      end
+
       resource :authorize_deliveries, only: [:update]
       resource :archive, only: [:update]
+
+      resource :signing, only: [:update] do
+        post :new
+        post :start
+      end
     end
   end
 
@@ -93,18 +105,22 @@ Rails.application.routes.draw do
 
   resources :messages do
     member do
-      post 'authorize_delivery_notification'
+      post :reply
+      post :authorize_delivery_notification
+      get :export
     end
 
     resources :message_objects do
       member do
         get 'download'
+        get 'download_pdf'
         get 'signing_data'
         get 'download_archived'
       end
 
       resources :nested_message_objects do
         get 'download'
+        get 'download_pdf'
       end
     end
   end
@@ -119,8 +135,6 @@ Rails.application.routes.draw do
       post :unlock
       post :submit
     end
-
-    post 'submit_all', on: :collection
 
     scope module: 'message_drafts' do
       resource :document_selections, only: [:new, :update] do
@@ -152,8 +166,19 @@ Rails.application.routes.draw do
 
   resource :settings
 
+  resources :message_templates do
+    get :recipient_selector
+    get :recipients_list
+    post :search_recipients_list
+    post :recipient_selected
+  end
+
   resources :message_drafts_imports, only: :create do
     get :upload_new, path: 'novy', on: :collection
+  end
+
+  namespace :upvs do
+    get :allowed_recipient_services
   end
 
   resources :sessions do
@@ -180,8 +205,10 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :message_threads, only: [:show]
-    resources :messages, only: [:show]
+    resources :message_threads, only: :show
+    resources :messages, only: :show do
+      post :message_drafts, on: :collection
+    end
   end
 
   if UpvsEnvironment.sso_support?

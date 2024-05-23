@@ -7,11 +7,17 @@ class Govbox::SubmitMessageDraftJob < ApplicationJob
 
   retry_on TemporarySubmissionError, wait: 2.minutes, attempts: 5
 
-  def perform(message_draft, schedule_sync: true, upvs_client: UpvsEnvironment.upvs_client)
+  def perform(message_draft, bulk_submit: false, upvs_client: UpvsEnvironment.upvs_client)
+    raise "Invalid message!" unless message_draft.valid?(:validate_data)
+
+    box = message_draft.thread.box
+    all_message_metadata = message_draft.all_metadata
+
     message_draft_data = {
-      posp_id: message_draft.metadata["posp_id"],
-      posp_version: message_draft.metadata["posp_version"],
-      message_type: message_draft.metadata["message_type"],
+      sktalk_class: all_message_metadata["sktalk_class"],
+      posp_id: all_message_metadata["posp_id"],
+      posp_version: all_message_metadata["posp_version"],
+      message_type: all_message_metadata["message_type"],
       message_id: message_draft.uuid,
       correlation_id: message_draft.metadata["correlation_id"],
       recipient_uri: message_draft.metadata["recipient_uri"],
@@ -21,16 +27,24 @@ class Govbox::SubmitMessageDraftJob < ApplicationJob
       objects: build_objects(message_draft)
     }.compact
 
-    sktalk_api = upvs_client.api(message_draft.thread.box).sktalk
+    sktalk_api = upvs_client.api(box).sktalk
     success, response_status, response_body = sktalk_api.receive_and_save_to_outbox(message_draft_data)
 
+    box.message_submission_requests.create(
+      request_url: sktalk_api.receive_and_save_to_outbox_url,
+      response_status: response_status,
+      bulk: bulk_submit
+    )
+
     if success
+      message_draft.remove_cascading_tag(message_draft.tenant.submission_error_tag)
       message_draft.submitted!
-      Govbox::SyncBoxJob.set(wait: 3.minutes).perform_later(message_draft.thread.box) if schedule_sync
+      Govbox::SyncBoxJob.set(wait: 3.minutes).perform_later(box) unless bulk_submit
     else
       handle_submit_fail(message_draft, response_status, response_body.dig("message"))
     end
   end
+
   private
 
   def build_objects(message_draft)
@@ -51,6 +65,9 @@ class Govbox::SubmitMessageDraftJob < ApplicationJob
   end
 
   def handle_submit_fail(message_draft, response_status, response_message)
+    # TODO notification
+    message_draft.add_cascading_tag(message_draft.tenant.submission_error_tag)
+
     case response_status
     when 408, 503
       message_draft.metadata["status"] = "temporary_submit_fail"

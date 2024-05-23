@@ -22,6 +22,8 @@
 #  message_thread_id  :bigint           not null
 #
 class Message < ApplicationRecord
+  include MessageExportOperations
+
   belongs_to :thread, class_name: 'MessageThread', foreign_key: :message_thread_id, inverse_of: :messages
   belongs_to :author, class_name: 'User', foreign_key: :author_id, optional: true
   has_many :message_relations, dependent: :destroy
@@ -37,7 +39,7 @@ class Message < ApplicationRecord
   delegate :tenant, to: :thread
 
   scope :outbox, -> { where(outbox: true) }
-  scope :inbox, -> { where.not(outbox: true).where(type: nil).or(self.where.not(type: "MessageDraft")) }
+  scope :inbox, -> { where.not(outbox: true).where(type: [nil, 'Message']) }
 
   after_update_commit ->(message) { EventBus.publish(:message_changed, message) }
   after_destroy_commit ->(message) { EventBus.publish(:message_destroyed, message) }
@@ -64,6 +66,10 @@ class Message < ApplicationRecord
     objects.select { |o| o.form? }&.first
   end
 
+  def submittable?
+    false
+  end
+
   def collapsible?
     true
   end
@@ -77,10 +83,46 @@ class Message < ApplicationRecord
   end
 
   def can_be_authorized?
-    metadata["delivery_notification"] && !metadata["authorized"] && Time.parse(metadata["delivery_notification"]["delivery_period_end_at"]) > Time.now
+    metadata["delivery_notification"] && !metadata["authorized"] && Time.parse(metadata.dig("delivery_notification", "delivery_period_end_at")) > Time.now
   end
 
   def authorized?
     metadata["delivery_notification"] && metadata["authorized"] == true
+  end
+
+  # TODO remove UPVS stuff from core domain
+  def upvs_form
+    ::Upvs::Form.find_by(
+      identifier: all_metadata['posp_id'],
+      version: all_metadata['posp_version']
+    )
+  end
+
+  def update_html_visualization
+    self.update(
+      html_visualization: build_html_visualization
+    )
+
+    form&.update(
+      visualizable: html_visualization.present?
+    )
+  end
+
+  def build_html_visualization
+    return self.html_visualization if self.html_visualization.present?
+
+    return unless upvs_form&.xslt_html
+    return unless form&.unsigned_content
+
+    template = Nokogiri::XSLT(upvs_form.xslt_html)
+    template.transform(form.xml_unsigned_content)
+  end
+
+  def all_metadata
+    metadata.merge(template&.metadata || {})
+  end
+
+  def template
+    MessageTemplate.find(metadata["template_id"]) if metadata["template_id"]
   end
 end

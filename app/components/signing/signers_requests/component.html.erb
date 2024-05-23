@@ -1,6 +1,6 @@
 <%= render Common::ModalComponent.new do |modal| %>
   <% modal.with_header do %>
-    Dokumenty na podpis
+    Podpisujúci
   <% end %>
   <% modal.with_modal_content do %>
     <%= form_with url: prepare_message_draft_signature_requests_path(@message_draft) do %>

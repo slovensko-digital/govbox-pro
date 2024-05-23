@@ -17,7 +17,7 @@ class Govbox::ApiConnectionWithOboSupport < ::ApiConnection
   def box_obo(box)
     raise "OBO not allowed!" if obo.present?
 
-    box.settings_obo
+    box.settings_obo.presence
   end
 
   def destroy_with_box?
@@ -25,9 +25,7 @@ class Govbox::ApiConnectionWithOboSupport < ::ApiConnection
   end
 
   def validate_box(box)
-    box.errors.add(:obo, :not_allowed) if obo.present?
-    if tenant
-      box.errors.add(:settings_obo, :blank) if box.settings_obo.blank?
-    end
+    box.errors.add(:settings_obo, :not_allowed) if obo.present?
+    box.errors.add(:settings_obo, :invalid) if boxes.where.not(id: box.id).where("settings ->> 'obo' = ?", box.settings_obo).exists?
   end
 end

@@ -22,6 +22,7 @@ class Box < ApplicationRecord
 
   has_many :message_threads, extend: MessageThreadsExtensions, dependent: :destroy
   has_many :messages, through: :message_threads
+  has_many :message_submission_requests, dependent: :destroy, class_name: '::Stats::MessageSubmissionRequest'
   has_many :message_drafts_imports, dependent: :destroy
   has_many :automation_conditions, as: :condition_object
 
@@ -50,12 +51,18 @@ class Box < ApplicationRecord
     api_connection.boxes.create!(params.except(:api_connection))
   end
 
+  def sync
+    Govbox::SyncBoxJob.perform_later(self)
+  end
+
+  def self.sync_all
+    find_each(&:sync)
+  end
+
   private
 
   def validate_box_with_api_connection
-    if api_connection.tenant
-      errors.add(:api_connection, :invalid) if api_connection.tenant != tenant
-    end
+    errors.add(:api_connection, :invalid) if api_connection.tenant && (api_connection.tenant != tenant)
 
     api_connection.validate_box(self)
   end

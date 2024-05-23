@@ -20,8 +20,8 @@ module Upvs
         @api.request(:get, "#{@api.url}/api/edesk/folders", {}, header)
       end
 
-      def fetch_messages(folder_id, offset: 0, count: 5000)
-        @api.request(:get, "#{@api.url}/api/edesk/folders/#{folder_id}/messages?page=#{offset}&per_page=#{count}", {}, header)
+      def fetch_messages(folder_id, page: 1, count: 5000)
+        @api.request(:get, "#{@api.url}/api/edesk/folders/#{folder_id}/messages?page=#{page}&per_page=#{count}", {}, header)
       end
 
       def fetch_message(message_id)
@@ -49,8 +49,12 @@ module Upvs
 
     class SkTalk < Namespace
       def receive_and_save_to_outbox(data)
-        response_status, response_body = @api.request(:post, "#{@api.url}/api/sktalk/receive_and_save_to_outbox", data.to_json, header)
+        response_status, response_body = @api.request(:post, receive_and_save_to_outbox_url, data.to_json, header)
         [submit_successful?(response_status, response_body['receive_result'], response_body['save_to_outbox_result']), response_status, response_body]
+      end
+
+      def receive_and_save_to_outbox_url
+        "#{@api.url}/api/sktalk/receive_and_save_to_outbox"
       end
 
       private

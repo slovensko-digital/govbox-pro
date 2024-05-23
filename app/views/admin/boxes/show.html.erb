@@ -5,9 +5,6 @@
     <% end %>
     <%= render @box %>
     <%= link_to 'Edit this box', edit_admin_tenant_box_path(@box.tenant_id, @box), class: "mt-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
-    <div class="inline-block ml-2">
-      <%= button_to 'Destroy this box', admin_tenant_box_path(@box.tenant_id, @box), method: :delete, class: "mt-2 rounded-lg py-3 px-5 bg-gray-100 font-medium" %>
-    </div>
     <%= link_to 'Back to tenant', admin_tenant_path(@box.tenant_id), class: "ml-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
   </div>
 </div>

@@ -1,0 +1,10 @@
+<%= turbo_stream.update 'recipients-list' do %>
+  <% @recipients_list.each do |recipient| %>
+    <%= button_to message_template_recipient_selected_path, method: 'post', params: { recipient_uri: recipient[:uri], recipient_name: recipient[:name] },
+                  class: "py-2", data: { turbo_frame: "_top" } do %>
+      <div>
+        <span class="flex text-base font-medium text-left text-gray-900"><%= recipient[:name] %></span>
+      </div>
+    <% end %>
+  <% end %>
+<% end %>

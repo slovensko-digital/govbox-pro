@@ -1,19 +1,19 @@
 import { Controller } from "@hotwired/stimulus"
-import { patch } from '@rails/request.js'
+import { get, patch } from '@rails/request.js'
 
 export default class extends Controller {
 
   async sign(messageObjectPath, that, batchId = null) {
     return new Promise((resolve, reject) => {
-      fetch(`${messageObjectPath}/signing_data.json`)
+      get(`${messageObjectPath}/signing_data`, { responseKind: "*/*" })
         .then(function (response) {
           // TODO handle login if expired session
 
           if (response.status === 204) {
-            alert("Vyplňte text správy");
+            alert("Vyplňte správu");
           }
-          else {
-            return response.json();
+          else if (response.contentType === 'application/json') {
+            return response.json;
           }
         }).then(async function (messageObjectData) {
           if (!messageObjectData) {
@@ -61,12 +61,9 @@ export default class extends Controller {
                 content: messageObjectData.content
               },
               parameters: {
-                level: signatureLevel,
                 container: signatureContainer,
-                identifier: messageObjectData.identifier,
-                schema: messageObjectData.schema,
-                containerXmlns: messageObjectData.container_xmlns,
-                transformation: messageObjectData.transformation
+                level: signatureLevel,
+                autoLoadEform: true
               },
               payloadMimeType: payloadMimeType
             })

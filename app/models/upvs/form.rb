@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: upvs_form_templates
+# Table name: upvs_forms
 #
 #  id         :bigint           not null, primary key
 #  identifier :string           not null
@@ -8,11 +8,15 @@
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #
-class Upvs::FormTemplate < ApplicationRecord
-  has_many :related_documents, class_name: 'Upvs::FormTemplateRelatedDocument', foreign_key: 'upvs_form_template_id'
+class Upvs::Form < ApplicationRecord
+  has_many :related_documents, class_name: 'Upvs::FormRelatedDocument', foreign_key: 'upvs_form_id'
 
   def xslt_html
     related_document('CLS_F_XSLT_HTML')
+  end
+
+  def xsl_fo
+    related_document('CLS_F_XSL_FO')
   end
 
   def xsd_schema

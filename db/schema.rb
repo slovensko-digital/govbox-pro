@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_01_03_124622) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_17_131624) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -20,7 +20,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_03_124622) do
   # Note that some types may not work with other database engines. Be careful if changing database.
   create_enum "color", ["slate", "gray", "zinc", "neutral", "stone", "red", "orange", "amber", "yellow", "lime", "green", "emerald", "teal", "cyan", "sky", "blue", "indigo", "violet", "purple", "fuchsia", "pink", "rose"]
   create_enum "group_type", ["ALL", "USER", "CUSTOM", "ADMIN"]
-  create_enum "icon", ["key", "fingerprint", "pencil", "check"]
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -161,6 +160,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_03_124622) do
     t.enum "color", enum_type: "color"
     t.bigint "api_connection_id"
     t.jsonb "settings"
+    t.index "tenant_id, api_connection_id, ((settings ->> 'obo'::text))", name: "api_connection_box_settings_obo", unique: true
     t.index ["api_connection_id"], name: "index_boxes_on_api_connection_id"
     t.index ["tenant_id", "short_name"], name: "index_boxes_on_tenant_id_and_short_name", unique: true
     t.index ["tenant_id"], name: "index_boxes_on_tenant_id"
@@ -264,14 +264,16 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_03_124622) do
     t.integer "executions_count"
     t.text "job_class"
     t.integer "error_event", limit: 2
+    t.text "labels", array: true
     t.index ["active_job_id", "created_at"], name: "index_good_jobs_on_active_job_id_and_created_at"
-    t.index ["active_job_id"], name: "index_good_jobs_on_active_job_id"
     t.index ["batch_callback_id"], name: "index_good_jobs_on_batch_callback_id", where: "(batch_callback_id IS NOT NULL)"
     t.index ["batch_id"], name: "index_good_jobs_on_batch_id", where: "(batch_id IS NOT NULL)"
     t.index ["concurrency_key"], name: "index_good_jobs_on_concurrency_key_when_unfinished", where: "(finished_at IS NULL)"
-    t.index ["cron_key", "created_at"], name: "index_good_jobs_on_cron_key_and_created_at"
-    t.index ["cron_key", "cron_at"], name: "index_good_jobs_on_cron_key_and_cron_at", unique: true
+    t.index ["cron_key", "created_at"], name: "index_good_jobs_on_cron_key_and_created_at_cond", where: "(cron_key IS NOT NULL)"
+    t.index ["cron_key", "cron_at"], name: "index_good_jobs_on_cron_key_and_cron_at_cond", unique: true, where: "(cron_key IS NOT NULL)"
     t.index ["finished_at"], name: "index_good_jobs_jobs_on_finished_at", where: "((retried_good_job_id IS NULL) AND (finished_at IS NOT NULL))"
+    t.index ["labels"], name: "index_good_jobs_on_labels", where: "(labels IS NOT NULL)", using: :gin
+    t.index ["priority", "created_at"], name: "index_good_job_jobs_for_candidate_lookup", where: "(finished_at IS NULL)"
     t.index ["priority", "created_at"], name: "index_good_jobs_jobs_on_priority_created_at_when_unfinished", order: { priority: "DESC NULLS LAST" }, where: "(finished_at IS NULL)"
     t.index ["queue_name", "scheduled_at"], name: "index_good_jobs_on_queue_name_and_scheduled_at", where: "(finished_at IS NULL)"
     t.index ["scheduled_at"], name: "index_good_jobs_on_scheduled_at", where: "(finished_at IS NULL)"
@@ -293,7 +295,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_03_124622) do
   create_table "govbox_messages", force: :cascade do |t|
     t.uuid "message_id", null: false
     t.uuid "correlation_id", null: false
-    t.text "body", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "edesk_message_id", null: false
@@ -375,6 +376,18 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_03_124622) do
     t.index ["related_message_id"], name: "index_message_relations_on_related_message_id"
   end
 
+  create_table "message_templates", force: :cascade do |t|
+    t.bigint "tenant_id"
+    t.string "name", null: false
+    t.text "content", null: false
+    t.string "type"
+    t.jsonb "metadata", default: {}
+    t.boolean "system", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tenant_id"], name: "index_message_templates_on_tenant_id"
+  end
+
   create_table "message_thread_merge_identifiers", force: :cascade do |t|
     t.bigint "message_thread_id", null: false
     t.uuid "uuid", null: false
@@ -401,7 +414,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_03_124622) do
     t.datetime "delivered_at", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.datetime "last_message_delivered_at", precision: nil, null: false
+    t.datetime "last_message_delivered_at", null: false
     t.bigint "box_id", null: false
     t.index ["folder_id"], name: "index_message_threads_on_folder_id"
   end
@@ -428,7 +441,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_03_124622) do
     t.datetime "updated_at", null: false
     t.text "html_visualization"
     t.boolean "read", default: false, null: false
-    t.json "metadata"
+    t.json "metadata", default: {}
     t.string "type"
     t.boolean "replyable", default: true, null: false
     t.bigint "import_id"
@@ -491,6 +504,16 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_03_124622) do
     t.index ["message_thread_id"], name: "index_searchable_message_threads_on_message_thread_id", unique: true
   end
 
+  create_table "stats_message_submission_requests", force: :cascade do |t|
+    t.bigint "box_id", null: false
+    t.string "request_url"
+    t.integer "response_status"
+    t.boolean "bulk"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["box_id"], name: "index_stats_message_submission_requests_on_box_id"
+  end
+
   create_table "tag_groups", force: :cascade do |t|
     t.bigint "group_id", null: false
     t.bigint "tag_id", null: false
@@ -514,7 +537,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_03_124622) do
     t.string "icon"
     t.index "tenant_id, type, lower((name)::text)", name: "index_tags_on_tenant_id_and_type_and_lowercase_name", unique: true
     t.index ["owner_id"], name: "index_tags_on_owner_id"
-    t.index ["tenant_id", "type"], name: "signings_tags", unique: true, where: "((type)::text = ANY ((ARRAY['SignatureRequestedTag'::character varying, 'SignedTag'::character varying])::text[]))"
+    t.index ["tenant_id", "type"], name: "signings_tags", unique: true, where: "((type)::text = ANY (ARRAY[('SignatureRequestedTag'::character varying)::text, ('SignedTag'::character varying)::text]))"
     t.index ["tenant_id"], name: "index_tags_on_tenant_id"
   end
 
@@ -526,23 +549,33 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_03_124622) do
     t.string "api_token_public_key"
   end
 
-  create_table "upvs_form_template_related_documents", force: :cascade do |t|
-    t.bigint "upvs_form_template_id", null: false
+  create_table "upvs_form_related_documents", force: :cascade do |t|
+    t.bigint "upvs_form_id", null: false
     t.string "data", null: false
     t.string "language", null: false
     t.string "document_type", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["upvs_form_template_id", "language", "document_type"], name: "index_related_documents_on_template_id_and_language_and_type", unique: true
-    t.index ["upvs_form_template_id"], name: "index_upvs_form_template_related_documents_on_form_template_id"
+    t.index ["upvs_form_id", "language", "document_type"], name: "index_related_documents_on_form_id_and_language_and_type", unique: true
+    t.index ["upvs_form_id"], name: "index_upvs_form_related_documents_on_form_id"
   end
 
-  create_table "upvs_form_templates", force: :cascade do |t|
+  create_table "upvs_forms", force: :cascade do |t|
     t.string "identifier", null: false
     t.string "version", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["identifier", "version"], name: "index_form_templates_on_identifier_and_version", unique: true
+    t.index ["identifier", "version"], name: "index_forms_on_identifier_version", unique: true
+  end
+
+  create_table "upvs_service_with_form_allow_rules", force: :cascade do |t|
+    t.string "name"
+    t.string "institution_uri", null: false
+    t.string "institution_name"
+    t.string "schema_url"
+    t.string "type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "user_hidden_items", force: :cascade do |t|
@@ -598,6 +631,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_03_124622) do
   add_foreign_key "message_objects_tags", "tags"
   add_foreign_key "message_relations", "messages"
   add_foreign_key "message_relations", "messages", column: "related_message_id"
+  add_foreign_key "message_templates", "tenants"
   add_foreign_key "message_thread_merge_identifiers", "message_threads"
   add_foreign_key "message_thread_notes", "message_threads"
   add_foreign_key "message_threads", "boxes"
@@ -615,10 +649,12 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_03_124622) do
   add_foreign_key "notifications", "messages", on_delete: :cascade
   add_foreign_key "notifications", "users", on_delete: :cascade
   add_foreign_key "searchable_message_threads", "message_threads", on_delete: :cascade
+  add_foreign_key "stats_message_submission_requests", "boxes"
   add_foreign_key "tag_groups", "groups"
   add_foreign_key "tag_groups", "tags"
   add_foreign_key "tags", "tenants"
   add_foreign_key "tags", "users", column: "owner_id"
+  add_foreign_key "upvs_form_related_documents", "upvs_forms"
   add_foreign_key "upvs_form_template_related_documents", "upvs_form_templates"
   add_foreign_key "user_hidden_items", "users"
   add_foreign_key "users", "tenants"

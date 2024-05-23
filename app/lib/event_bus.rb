@@ -36,6 +36,9 @@ EventBus.subscribe :message_thread_changed, ->(thread) {
   ReindexAndNotifyFilterSubscriptionsJob.perform_later(thread.id)
 }
 
+# reindexing
+EventBus.subscribe :message_draft_changed, ->(message_draft) { Searchable::ReindexMessageThreadJob.perform_later(message_draft.thread.id) }
+
 # reindexing on removals
 EventBus.subscribe :tag_renamed, ->(tag) do
   ReindexAndNotifyFilterSubscriptionsJob.perform_later_for_tag_id(tag.id)
@@ -85,3 +88,5 @@ EventBus.subscribe :automation_rule_destroyed, ->(automation_rule) { AuditLog::A
 EventBus.subscribe :filter_created, ->(filter) { AuditLog::FilterCreated.create_audit_record(filter) }
 EventBus.subscribe :filter_updated, ->(filter) { AuditLog::FilterUpdated.create_audit_record(filter) }
 EventBus.subscribe :filter_destroyed, ->(filter) { AuditLog::FilterDestroyed.create_audit_record(filter) }
+EventBus.subscribe :box_sync_requested, ->(box) { AuditLog::BoxSyncRequested.create_audit_record(box) }
+EventBus.subscribe :box_sync_all_requested, -> { AuditLog::BoxSyncAllRequested.create_audit_record }

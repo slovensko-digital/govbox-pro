@@ -89,7 +89,7 @@ class AuditLog < ApplicationRecord
         tenant: user.tenant,
         actor: user,
         actor_name: user.name
-      )
+      ) if user
     end
   end
 
@@ -270,6 +270,18 @@ class AuditLog < ApplicationRecord
   class MessageObjectUpdated < AuditLog
     def self.create_audit_record(message_object)
       create_record(object: message_object, message_thread: message_object.message.message_thread)
+    end
+  end
+
+  class BoxSyncRequested < AuditLog
+    def self.create_audit_record(box)
+      create_record(object: box)
+    end
+  end
+
+  class BoxSyncAllRequested < AuditLog
+    def self.create_audit_record
+      create_record(object: nil)
     end
   end
 

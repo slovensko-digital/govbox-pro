@@ -21,12 +21,20 @@ class MessagePolicy < ApplicationPolicy
     end
   end
 
+  def new?
+    true
+  end
+
   def create?
     true
   end
 
   def show?
     true
+  end
+
+  def export?
+    show?
   end
 
   def authorize_delivery_notification?

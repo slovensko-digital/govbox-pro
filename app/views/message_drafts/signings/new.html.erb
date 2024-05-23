@@ -1,7 +1,7 @@
 <%= tag.turbo_frame id: "modal" do %>
   <%=
     render Signing::ProcessingComponent.new(
-      message_draft: @message_draft,
       message_objects: @message_objects,
+      after_singing_path: message_draft_signing_path(@message_draft)
     ) %>
 <% end %>
