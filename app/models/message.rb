@@ -22,6 +22,8 @@
 #  message_thread_id  :bigint           not null
 #
 class Message < ApplicationRecord
+  include MessageExportOperations
+
   belongs_to :thread, class_name: 'MessageThread', foreign_key: :message_thread_id, inverse_of: :messages
   belongs_to :author, class_name: 'User', foreign_key: :author_id, optional: true
   has_many :message_relations, dependent: :destroy
@@ -92,26 +94,28 @@ class Message < ApplicationRecord
   def upvs_form
     ::Upvs::Form.find_by(
       identifier: all_metadata['posp_id'],
-      version: all_metadata['posp_version'],
-      message_type: all_metadata['message_type']
+      version: all_metadata['posp_version']
     )
   end
 
-  def visualization
+  def update_html_visualization
+    self.update(
+      html_visualization: build_html_visualization
+    )
+
+    form&.update(
+      visualizable: html_visualization.present?
+    )
+  end
+
+  def build_html_visualization
     return self.html_visualization if self.html_visualization.present?
 
     return unless upvs_form&.xslt_html
     return unless form&.unsigned_content
 
-    document = Nokogiri::XML(form.unsigned_content) do |config|
-      config.noblanks
-    end
-    document = Nokogiri::XML(document.xpath('*:XMLDataContainer/*:XMLData/*').to_xml) do |config|
-      config.noblanks
-    end if document.xpath('*:XMLDataContainer/*:XMLData').any?
-
     template = Nokogiri::XSLT(upvs_form.xslt_html)
-    template.transform(document)
+    template.transform(form.xml_unsigned_content)
   end
 
   def all_metadata

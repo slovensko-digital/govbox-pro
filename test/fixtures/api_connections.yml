@@ -3,8 +3,36 @@
 govbox_api_api_connection1:
   sub: sub1
   obo: <%= SecureRandom.uuid %>
-  api_token_private_key: private_key
   type: 'Govbox::ApiConnection'
+  api_token_private_key: |
+    -----BEGIN PRIVATE KEY-----
+    MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDCZbSev8zBUut5
+    wu2dQJlVgFx4XqY9yGbia9AzB+7esYgO9YPylhJE0dMqfodn67wnpYZULATdZT4V
+    GGie1z4oxtfi97gImZ834ClKsNUbsietfNAx1+2+PdB+d2sh2hj6ndCsTUBpH8Qe
+    4BAbl6aWkqEs/jLUgFTNzi2IIIsmO8yYHmF+HsTl9NjQd1O/7jzqCLpxcidUNQHC
+    Tm830UUwxq4asTU6FSULFvvuUYwP8HRIXhTYpTTZVdNbAJQANkNZrDQTmI4CjIKk
+    2I/sRIdsXtVfoIOEZ1dsvFZUzIJ9eDcL7BC8gWJPE1z+fsCpNAmUTCEpPfhpvF1u
+    sYTbszKfAgMBAAECggEAFr31QnknyBoeSDFgwPvUtGb+6moQQrwWJTj9s2qjLFRS
+    mYVpeVDLNFfjv13sE2FFstGvhFtd+lSkzaz8WFDQCc8xZHEci40FTnEgA4fqdoIC
+    GE64wIwFWTM8F/96fgxYzcD2r6Gd/m5j8ETAPaohKA5hYrUeVzPoN+d99iXwgXlb
+    NDz2IsyWXfefCChEWWSOR+La5uCLec0d/fBMFj4A+MhnJglQun5SJHk2PmiOLVs/
+    HucgjJCaiY3exE2DIlAXhX1fIaqhCTljqt4zqpLGZMzBfoDVnosJonvbemU3haxS
+    XGccDmJqhyiAgJfaqGN+nJWRsgHgRykqjdgGPlfdCQKBgQDqeCLggi84IT4FTy7l
+    Jde0BtMKDpSsTD9Hpkcbzjo0EISYTVW4MwtFMotZe1MpMZR3cO9fvIriFYpZXEEb
+    I6h9XtfyzN8iVcXqcsOfRua4R4H1gFVXWi5Ai9f/bEuFXs03W4HJKEogDkILnVDG
+    tSZKLgxHR0oT0DRabhzJAvtBywKBgQDUP5BPV2ZYbZEpl2kSBfC/kLt0sa8GBYCr
+    SFPJqUt/nsKBPG4PnYZltnFMpmMrrZiTBiuDEZR1wIrbQQR5b1yHY0ax1QozWeNQ
+    O15Ysj19JxhMcogr87V17AcZfu9x9F5EjFahjFHwsizZzq+4kWGwklnz38NmwIyY
+    fQFyvm/n/QKBgQCD6mN0/MmkQs+qHQq9UbUyTESf++QZrCxOG3cWZcjJUiHHrnrz
+    z4Qfwng0N/ZpzsNBEAEdU+6vlH7qF8Vph35cSugkaq9/mdJoPXliO3nDZDfx7+oT
+    42DyX7t+sWcr+lJrOsiibFCICH2QG0o/AdwxEAdIcwtyakmKNzlqvoquUQKBgDlN
+    yAqD0FADlPOju2xwSiWOT+4bouN/TNPxvR1vJcEY/e6igBybLRP9A+3r5k5+mfjn
+    64uBjZGVIGg9z5VxqYusFAQjPpPKqwKYZMqRpORLT9Yj/fvP2qgxx2Ds0nzzuxfK
+    xADtv5m6oT1U/kBYkAV6Hesn+LufNNZeuatfGxuJAoGACzdvqFLu+ctX7SzEknRu
+    /R7ROoq3udEiIIe68/KnE34pnfLZiofVAEha5zjcwR5EIA/RfIO0BVAKZEPcaibs
+    6uV30K5i4Qik2uN1FrIm1RkrblePvKedY9jSw8lLPFizevUO0qhD8J/STJh2zeoI
+    iaVGRd7ATP+/d6150kwWt/I=
+    -----END PRIVATE KEY-----
 
 govbox_api_api_connection2:
   sub: sub2
