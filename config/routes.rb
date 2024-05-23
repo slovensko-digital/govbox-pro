@@ -22,7 +22,14 @@ Rails.application.routes.draw do
     end
     resources :tags
     resource :profile
-    resources :user_hidden_items
+    resources :filter_visibilities
+    resources :tag_visibilities
+    resources :user_item_visibilities do
+      member do
+        post :move_higher
+        post :move_lower
+      end
+    end
   end
 
   namespace :admin do

@@ -5,7 +5,7 @@
       Nastavte si osobnú preferenciu viditeľnosti <%= @type == "Tag" ? "štítkov" : "filtrov" %> v ľavom menu
     </div>
     <div class="self-stretch flex-col justify-start items-start flex">
-      <%= render Settings::UserHiddenItems::UserHiddenItemsListRowComponent.with_collection(@items, type: @type) %>
+      <%= render Settings::UserItemVisibilities::ListRowComponent.with_collection(@visibilities) %>
     </div>
   </div>
 </div>

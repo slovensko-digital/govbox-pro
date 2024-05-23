@@ -13,8 +13,8 @@ class SidebarMenu
   private
 
   def current_menu(controller)
-    return admin_menu + site_admin_menu if Current.user.admin? && controller.in?(%w[groups users tags tag_groups automation_rules boxes filters user_hidden_items])
-    return settings_menu if controller.in? %w[filters tags user_hidden_items]
+    return admin_menu + site_admin_menu if Current.user.admin? && controller.in?(%w[groups users tags tag_groups automation_rules boxes filters filter_visibilities tag_visibilities])
+    return settings_menu if controller.in? %w[filters tags filter_visibilities tag_visibilities]
 
     default_main_menu
   end
@@ -34,8 +34,8 @@ class SidebarMenu
       TW::SidebarMenuDividerComponent.new(name: 'Nastavenia'),
       TW::SidebarMenuItemComponent.new(name: 'Filtre', url: filters_path, icon: Icons::BookmarkComponent.new),
       TW::SidebarMenuItemComponent.new(name: 'Pravidlá', url: settings_automation_rules_path, icon: Icons::FunnelComponent.new),
-      TW::SidebarMenuItemComponent.new(name: 'Viditeľnosť štítkov', url: settings_user_hidden_items_path(type: "Tag"), icon: Common::IconComponent.new("tag")),
-      TW::SidebarMenuItemComponent.new(name: 'Viditeľnosť filtrov', url: settings_user_hidden_items_path(type: "Filter"), icon: Common::IconComponent.new("bookmark"))
+      TW::SidebarMenuItemComponent.new(name: 'Viditeľnosť štítkov', url: settings_tag_visibilities_path, icon: Common::IconComponent.new("tag")),
+      TW::SidebarMenuItemComponent.new(name: 'Viditeľnosť filtrov', url: settings_filter_visibilities_path, icon: Common::IconComponent.new("bookmark"))
     ]
   end
 
@@ -47,8 +47,8 @@ class SidebarMenu
       TW::SidebarMenuDividerComponent.new(name: 'Nastavenia'),
       TW::SidebarMenuItemComponent.new(name: 'Filtre', url: filters_path, icon: Icons::BookmarkComponent.new),
       TW::SidebarMenuItemComponent.new(name: 'Pravidlá', url: settings_automation_rules_path, icon: Icons::FunnelComponent.new),
-      TW::SidebarMenuItemComponent.new(name: 'Viditeľnosť štítkov', url: settings_user_hidden_items_path(type: Tag), icon: Common::IconComponent.new("bookmark")),
-      TW::SidebarMenuItemComponent.new(name: 'Viditeľnosť filtrov', url: settings_user_hidden_items_path(type: "Filter"), icon: Common::IconComponent.new("tag")),
+      TW::SidebarMenuItemComponent.new(name: 'Viditeľnosť štítkov', url: settings_tag_visibilities_path, icon: Common::IconComponent.new("bookmark")),
+      TW::SidebarMenuItemComponent.new(name: 'Viditeľnosť filtrov', url: settings_filter_visibilities_path, icon: Common::IconComponent.new("tag")),
       TW::SidebarMenuDividerComponent.new(name: 'Administrácia'),
       TW::SidebarMenuItemComponent.new(name: 'Používatelia', url: admin_tenant_users_path(Current.tenant), icon: Icons::UsersComponent.new),
       TW::SidebarMenuItemComponent.new(name: 'Prístup', url: admin_tenant_tag_groups_path(Current.tenant), icon: Icons::LockClosedComponent.new),

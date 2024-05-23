@@ -30,7 +30,7 @@ class Tag < ApplicationRecord
   has_many :automation_actions, class_name: "Automation::Action", as: :action_object, dependent: :restrict_with_error
   has_many :message_objects_tags, dependent: :destroy
   has_many :message_objects, through: :message_objects_tags
-  has_many :user_hidden_items, as: :user_hideable, dependent: :destroy
+  has_many :user_item_visibilities, as: :user_item, dependent: :destroy
 
   validates :name, presence: true
   validates :name, uniqueness: { scope: :tenant_id, case_sensitive: false }

@@ -19,6 +19,7 @@ class Filter < ApplicationRecord
 
   belongs_to :author, class_name: 'User'
   belongs_to :tenant
+  has_many :user_item_visibilities, inverse_of: :user_item, dependent: :destroy
 
   validates :tenant_id, :author_id, :name, presence: true
 

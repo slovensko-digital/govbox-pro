@@ -13,6 +13,7 @@
 #  tenant_id                    :bigint
 #
 class User < ApplicationRecord
+  include Pundit
   include AuditableEvents
 
   belongs_to :tenant
@@ -26,7 +27,7 @@ class User < ApplicationRecord
   has_many :filters, foreign_key: :author_id
   has_many :filter_subscriptions
   has_many :notifications
-  has_many :user_hidden_items, dependent: :destroy
+  has_many :user_item_visibilities, dependent: :destroy
 
   validates_presence_of :name, :email
   validates_uniqueness_of :name, :email, scope: :tenant_id, case_sensitive: false
@@ -49,10 +50,10 @@ class User < ApplicationRecord
   def accessible_tags
     Tag.where(
       TagGroup.select(1)
-              .joins(:group_memberships)
-              .where("tag_groups.tag_id = tags.id")
-              .where(group_memberships: { user_id: id })
-              .arel.exists
+        .joins(:group_memberships)
+        .where("tag_groups.tag_id = tags.id")
+        .where(group_memberships: { user_id: id })
+        .arel.exists
     )
   end
 
@@ -79,7 +80,36 @@ class User < ApplicationRecord
     end
   end
 
+  def build_filter_visibilities!
+    user_items = policy_scope(Filter, policy_scope_class: FilterPolicy::ScopeShowable).order(:position)
+    visibilities = user_item_visibilities.where(user_item_type: "Filter").order(:position)
+    build_user_item_visibilities(user_items, visibilities)
+  end
+
+  def build_tag_visibilities!
+    user_items = policy_scope(Tag, policy_scope_class: TagPolicy::ScopeListable).where(visible: true).order(:name)
+    visibilities = user_item_visibilities.where(user_item_type: "Tag").order(:position)
+    build_user_item_visibilities(user_items, visibilities)
+  end
+
+  def pundit_user
+    self
+  end
+
   private
+
+  def build_user_item_visibilities(user_items, visibilities)
+    user_items_without_visibilities = user_items.where.not(id: visibilities.pluck(:user_item_id))
+    new_visibilities = user_items_without_visibilities.map.with_index do |user_item, i|
+      last_position = visibilities.last&.position || 0
+      user_item_visibilities.new(user_item: user_item, visible: true, position: last_position + 1 + i)
+    end
+
+    all_visibilities = visibilities.to_a + new_visibilities
+    all_visibilities.map(&:save!)
+    user_item_visibilities.where(id: all_visibilities).order(:position)
+  end
+
 
   def delete_user_group
     user_group.destroy
