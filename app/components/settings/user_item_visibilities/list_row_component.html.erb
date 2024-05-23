@@ -1,0 +1,37 @@
+<div class="self-stretch p-6 border-b border-gray-200 items-center gap-4 inline-flex">
+  <div class="grow shrink basis-0 gap-1">
+    <div class="text-gray-900 text-lg font-medium leading-loose w-fit">
+      <%= render Common::TagComponent.new(@item) if @item.is_a?(Tag) %>
+      <%= @item.name if @item.is_a?(Filter) %>
+    </div>
+  </div>
+  <% if @visibility.new_record? %>
+    <%= form_with model: [:settings, Current.user.user_item_visibilities.new(user_item: @item)], method: :post do |form| %>
+      <%= form.hidden_field :user_item_type, value: @item.class %>
+      <%= form.hidden_field :user_item_id, value: @item.id %>
+      <%= form.hidden_field :visible, value: !@visibility.visible %>
+      <%= form.button class: "#{@visibility.hidden ? "bg-gray-200" : "bg-indigo-600"} relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2", role: :switch, aria: { checked: @visibility.hidden.to_s } do %>
+        <span class="sr-only">Use setting</span>
+        <span aria-hidden="true" class="<%= @visibility.hidden ? "translate-x-0" : "translate-x-5" %> pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"></span>
+      <% end %>
+    <% end %>
+  <% else %>
+    <%= form_with model: [:move_higher, :settings, @visibility], method: :post do |form| %>
+      <%= form.button do %>
+        Up
+      <% end %>
+    <% end %>
+    <%= form_with model: [:move_lower, :settings, @visibility], method: :post do |form| %>
+      <%= form.button do %>
+        Down
+      <% end %>
+    <% end %>
+    <%= form_with model: [:settings, @visibility], method: :patch do |form| %>
+      <%= form.hidden_field :visible, value: !@visibility.visible %>
+      <%= form.button class: "#{@visibility.hidden ? "bg-gray-200" : "bg-indigo-600"} relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2", role: :switch, aria: { checked: @visibility.hidden.to_s } do %>
+        <span class="sr-only">Use setting</span>
+        <span aria-hidden="true" class="<%= @visibility.hidden ? "translate-x-0" : "translate-x-5" %> pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"></span>
+      <% end %>
+    <% end %>
+  <% end %>
+</div>

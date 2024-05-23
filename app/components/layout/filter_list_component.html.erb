@@ -1,14 +1,30 @@
 <% if @filters.present? %>
-  <div class="flex flex-col justify-start items-start gap-2" data-test="filters">
-    <div class="flex justify-start items-start px-4 py-2">
-      <p class="text-sm text-center text-gray-400">Filtre</p>
-    </div>
+  <div
+    <% if @sortable %>
+    data-controller="sortable"
+    data-sortable-url-value="<%= sort_filters_path %>"
+    data-sortable-draggable-class=".item"
+    data-sortable-handle-class=".handle"
+    <% end %>
+    class="w-full flex flex-col justify-start items-start gap-2"
+    data-test="filters"
+    >
+    <% if @sortable %>
+      <%= link_to 'Sort', '', class: 'hidden', data: { turbo_method: :patch, sortable_target: 'submit', url: sort_filters_path } %>
+    <% end %>
+    <% if @label.present? %>
+      <div class="flex justify-start items-start px-4 py-2">
+        <p class="text-sm text-center text-gray-400"><%= @label %></p>
+      </div>
+    <% end %>
     <% @filters.each do |filter| %>
-      <% url = message_threads_path(q: filter.query) %>
-      <%= link_to url, class: "text-gray-700 hover:text-indigo-600 hover:bg-gray-50 group w-72 flex gap-x-3 rounded-md p-2 px-4 text-sm leading-6 font-semibold data-[active=true]:bg-gray-50 data-[active=true]:text-indigo-600", data: { active: current_page?(url) } do %>
-        <%= render Icons::BookmarkComponent.new %>
-        <p class="truncate text-base font-medium"><%= filter.name %></p>
-      <% end %>
+      <%= render TW::SidebarMenuItemComponent.new(
+        name: filter.name,
+        url: filtered_message_threads_path(filter:),
+        icon: icon_for(filter),
+        variant: :light,
+        classes: "item #{!@sortable ? 'pl-4' : ''}",
+      ) %>
     <% end %>
   </div>
 <% end %>

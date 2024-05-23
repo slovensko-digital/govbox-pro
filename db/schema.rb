@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_17_131624) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_23_123432) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -183,13 +183,18 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_17_131624) do
     t.bigint "tenant_id", null: false
     t.bigint "author_id", null: false
     t.string "name", null: false
-    t.string "query", null: false
+    t.string "query"
     t.integer "position", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "type"
+    t.bigint "tag_id"
+    t.boolean "is_pinned", default: false, null: false
     t.index ["author_id"], name: "index_filters_on_author_id"
-    t.index ["tenant_id", "position"], name: "index_filters_on_tenant_id_and_position", unique: true
+    t.index ["is_pinned"], name: "index_filters_on_is_pinned"
+    t.index ["tag_id"], name: "index_filters_on_tag_id"
     t.index ["tenant_id"], name: "index_filters_on_tenant_id"
+    t.index ["type"], name: "index_filters_on_type"
   end
 
   create_table "folders", force: :cascade do |t|
@@ -532,12 +537,12 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_17_131624) do
     t.bigint "owner_id"
     t.string "external_name"
     t.string "type", null: false
-    t.enum "color", enum_type: "color"
-    t.integer "tag_groups_count", default: 0, null: false
     t.string "icon"
+    t.integer "tag_groups_count", default: 0, null: false
+    t.enum "color", enum_type: "color"
     t.index "tenant_id, type, lower((name)::text)", name: "index_tags_on_tenant_id_and_type_and_lowercase_name", unique: true
     t.index ["owner_id"], name: "index_tags_on_owner_id"
-    t.index ["tenant_id", "type"], name: "signings_tags", unique: true, where: "((type)::text = ANY (ARRAY[('SignatureRequestedTag'::character varying)::text, ('SignedTag'::character varying)::text]))"
+    t.index ["tenant_id", "type"], name: "signings_tags", unique: true, where: "((type)::text = ANY ((ARRAY['SignatureRequestedTag'::character varying, 'SignedTag'::character varying])::text[]))"
     t.index ["tenant_id"], name: "index_tags_on_tenant_id"
   end
 
@@ -578,6 +583,17 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_17_131624) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "user_item_visibilities", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "user_item_type", null: false
+    t.bigint "user_item_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "visible", default: true, null: false
+    t.integer "position"
+    t.index ["user_id"], name: "index_user_item_visibilities_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.bigint "tenant_id"
     t.string "email", null: false
@@ -607,6 +623,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_17_131624) do
   add_foreign_key "filter_subscriptions", "filters"
   add_foreign_key "filter_subscriptions", "tenants"
   add_foreign_key "filter_subscriptions", "users"
+  add_foreign_key "filters", "tags"
   add_foreign_key "filters", "tenants", on_delete: :cascade
   add_foreign_key "filters", "users", column: "author_id", on_delete: :cascade
   add_foreign_key "folders", "boxes"
@@ -646,5 +663,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_17_131624) do
   add_foreign_key "tags", "tenants"
   add_foreign_key "tags", "users", column: "owner_id"
   add_foreign_key "upvs_form_related_documents", "upvs_forms"
+  add_foreign_key "user_item_visibilities", "users"
   add_foreign_key "users", "tenants"
 end

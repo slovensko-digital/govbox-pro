@@ -39,6 +39,7 @@ gem 'jwt'
 gem 'stimulus-rails'
 gem 'jsbundling-rails'
 gem 'pdf-reader'
+gem "acts_as_list", "~> 1.1"
 
 # Monitoring
 gem 'rollbar'
