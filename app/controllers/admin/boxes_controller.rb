@@ -1,5 +1,5 @@
 class Admin::BoxesController < ApplicationController
-  before_action :set_box, only: %i[show edit update destroy]
+  before_action :set_box, only: %i[show edit update]
 
   def index
     authorize Box
@@ -37,12 +37,6 @@ class Admin::BoxesController < ApplicationController
     else
       render :edit, status: :unprocessable_entity
     end
-  end
-
-  def destroy
-    authorize([:admin, @box])
-    @box.destroy
-    redirect_to admin_tenant_boxes_url(Current.tenant), notice: "Box was successfully destroyed."
   end
 
   private

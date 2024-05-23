@@ -1,9 +1,14 @@
 class Govbox::SubmitMessageDraftAction
-  def self.run(message)
+  def self.run(message, jobs_batch: nil)
     is_submittable = message.submittable?
 
     if is_submittable
-      Govbox::SubmitMessageDraftJob.perform_later(message)
+      if jobs_batch
+        jobs_batch.add { Govbox::SubmitMessageDraftJob.perform_later(message, bulk_submit: true) }
+      else
+        Govbox::SubmitMessageDraftJob.perform_later(message)
+      end
+
       message.being_submitted!
     end
 

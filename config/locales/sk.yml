@@ -14,6 +14,8 @@ sk:
     errors:
       messages:
         record_invalid: "Validácia neúspešná: %{errors}"
+        disallowed_form: "Daný typ formulára nie je povolený"
+        disallowed_form_for_recipient: "Prijímateľ neprijíma tento typ formulára"
         invalid_form: "Formulár nie je validný voči XSD"
       models:
         api_connection:

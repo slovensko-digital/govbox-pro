@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
   include Authentication
   include Pundit::Authorization
+  include Localization
   after_action :verify_authorized
   after_action :verify_policy_scoped, only: :index if respond_to?(:index)
   before_action :set_menu_context

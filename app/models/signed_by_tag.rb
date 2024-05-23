@@ -16,6 +16,11 @@
 #  tenant_id        :bigint           not null
 #
 class SignedByTag < Tag
+  def assign_to_thread(thread)
+    super
+    tenant.signed_tag.assign_to_thread(thread)
+  end
+
   def destroyable?
     false
   end

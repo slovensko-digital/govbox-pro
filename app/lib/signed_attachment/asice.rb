@@ -36,16 +36,21 @@ class SignedAttachment::Asice
   
   def self.extract_documents_from_content(content)
     payload_documents = []
+    manifest_file_content = nil
 
     with_file_entries_from_content(content) do |entry|
+      manifest_file_content = entry.content if entry.name == 'META-INF/manifest.xml'
+
       next if should_skip_entry?(entry)
 
       payload_document = PayloadDocument.new
       payload_document.name = entry.name
       payload_document.content = entry.content
-      payload_document.mimetype = Utils.file_mime_type_by_name(entry_name: entry.name)
+      payload_document.mimetype = Utils.file_mimetype_by_name(entry_name: entry.name)
       payload_documents << payload_document
     end
+
+    fill_missing_information_from_manifest(payload_documents, manifest_file_content) if manifest_file_content
 
     payload_documents
   end
@@ -64,5 +69,30 @@ class SignedAttachment::Asice
         end
       end
     end
+  end
+
+  def self.fill_missing_information_from_manifest(payload_documents, manifest_file_content)
+    xml_manifest = Nokogiri::XML(manifest_file_content)
+
+    payload_documents.each do |payload_document|
+      next unless Utils.mimetype_without_optional_params(payload_document.mimetype) == Utils::OCTET_STREAM_MIMETYPE
+
+      mimetype_from_manifest = xml_manifest.xpath("//manifest:file-entry[@manifest:full-path = '#{payload_document.name}']/@manifest:media-type")&.first&.value
+
+      next unless mimetype_from_manifest.present?
+
+      payload_document.mimetype = mimetype_from_manifest
+      payload_document.name += Utils.file_extension_by_mimetype(payload_document.mimetype).to_s if Utils.file_name_without_extension?(payload_document)
+    end
+  end
+
+  def self.get_manifest_file_content(content)
+    manifest_file_content = nil
+
+    with_file_entries_from_content(content) do |entry|
+      manifest_file_content = entry.content if entry.name == 'META-INF/manifest.xml'
+    end
+
+    manifest_file_content
   end
 end

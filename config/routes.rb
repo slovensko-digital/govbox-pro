@@ -37,7 +37,7 @@ Rails.application.routes.draw do
         end
       end
       resources :users
-      resources :boxes
+      resources :boxes, except: :destroy
       resources :tags
       resources :tag_groups
     end
@@ -105,19 +105,22 @@ Rails.application.routes.draw do
 
   resources :messages do
     member do
-      post 'reply'
-      post 'authorize_delivery_notification'
+      post :reply
+      post :authorize_delivery_notification
+      get :export
     end
 
     resources :message_objects do
       member do
         get 'download'
+        get 'download_pdf'
         get 'signing_data'
         get 'download_archived'
       end
 
       resources :nested_message_objects do
         get 'download'
+        get 'download_pdf'
       end
     end
   end
@@ -141,8 +144,6 @@ Rails.application.routes.draw do
       post :unlock
       post :submit
     end
-
-    post :submit_all, on: :collection
 
     scope module: 'message_drafts' do
       resource :document_selections, only: [:new, :update] do
@@ -213,8 +214,10 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :message_threads, only: [:show]
-    resources :messages, only: [:show]
+    resources :message_threads, only: :show
+    resources :messages, only: :show do
+      post :message_drafts, on: :collection
+    end
   end
 
   if UpvsEnvironment.sso_support?

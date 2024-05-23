@@ -6,7 +6,7 @@ class Drafts::FinishImportJob < ApplicationJob
       next if message_draft.invalid?
 
       if message_draft.valid?(:validate_data)
-        message_draft.metadata["status"] = "created"
+        message_draft.created!
       else
         message_draft.metadata["status"] = "invalid"
       end

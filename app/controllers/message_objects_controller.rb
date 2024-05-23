@@ -15,7 +15,7 @@ class MessageObjectsController < ApplicationController
 
     mark_message_object_as_signed(@message_object)
     
-    last_thread_message_draft = @message.thread.messages.where(type: 'MessageDraft').includes(objects: :nested_message_objects, attachments: :nested_message_objects).order(delivered_at: :asc)&.last
+    last_thread_message_draft = @message.thread.message_drafts.includes(objects: :nested_message_objects, attachments: :nested_message_objects).order(delivered_at: :asc)&.last
     @is_last = @message == last_thread_message_draft
   end
 
@@ -27,6 +27,17 @@ class MessageObjectsController < ApplicationController
   def download
     authorize @message_object
     send_data @message_object.content, filename: MessageObjectHelper.displayable_name(@message_object), type: @message_object.mimetype, disposition: :download
+  end
+
+  def download_pdf
+    authorize @message_object
+
+    pdf_content = @message_object.prepare_pdf_visualization
+    if pdf_content
+      send_data pdf_content, filename: MessageObjectHelper.pdf_name(@message_object), type: 'application/pdf', disposition: :download
+    else
+      redirect_back fallback_location: message_thread_path(@message_object.message.thread), alert: "Obsah nie je možné stiahnuť."
+    end
   end
 
   def download_archived

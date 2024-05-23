@@ -7,7 +7,7 @@ module Govbox
       new_messages_ids = []
 
       0.step do |k|
-        response_status, raw_messages = edesk_api.fetch_messages(folder.edesk_folder_id, offset: k * batch_size + 1, count: batch_size)
+        response_status, raw_messages = edesk_api.fetch_messages(folder.edesk_folder_id, page: k + 1, count: batch_size)
 
         raise "Unable to fetch folder messages" if response_status != 200
 

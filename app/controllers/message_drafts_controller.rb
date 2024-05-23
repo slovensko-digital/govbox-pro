@@ -1,11 +1,11 @@
 class MessageDraftsController < ApplicationController
   before_action :ensure_drafts_import_enabled, only: :index
   before_action :ensure_template_messages_enabled, only: :new
-  before_action :load_message_drafts, only: %i[index submit_all]
+  before_action :load_message_drafts, only: :index
   before_action :load_original_message, only: :create
   before_action :load_box, only: :create
   before_action :load_message_template, only: :create
-  before_action :load_message_draft, except: [:new, :index, :create, :submit_all]
+  before_action :load_message_draft, except: [:new, :index, :create]
 
   include ActionView::RecordIdentifier
   include MessagesConcern
@@ -15,8 +15,8 @@ class MessageDraftsController < ApplicationController
     @templates_list = MessageTemplate.tenant_templates_list(Current.tenant)
     @message_template = MessageTemplate.default_template
     @message = MessageDraft.new
-    @boxes = Current.tenant.boxes.pluck(:name, :id)
-    @box = (Current.box if Current.box || @boxes.first)&.slice(:name, :id).values.to_a
+    @boxes = Current.tenant&.boxes
+    @box = Current.box || @boxes.first
     @recipients_list = @message_template&.recipients&.pluck(:institution_name, :institution_uri)&.map { |name, uri| { uri: uri, name: name }}
 
     authorize @message
@@ -43,8 +43,8 @@ class MessageDraftsController < ApplicationController
     unless @message.valid?(:create_from_template)
       @templates_list = MessageTemplate.tenant_templates_list(Current.tenant)
       @message_template ||= MessageTemplate.default_template
-      @boxes = Current.tenant.boxes.pluck(:name, :id)
-      @box = @box&.slice(:name, :id).values.to_a
+      @boxes = Current.tenant&.boxes
+      @box = Current.box if Current.box || @boxes.first
 
       @recipients_list = @message_template&.recipients&.pluck(:institution_name, :institution_uri)&.map { |name, uri| { uri: uri, name: name }}
 
@@ -74,28 +74,13 @@ class MessageDraftsController < ApplicationController
 
     render :update_body and return unless @message.valid?(:validate_data)
 
-    if @message.submittable?
-      Govbox::SubmitMessageDraftJob.perform_later(@message)
-      @message.being_submitted!
+    if Govbox::SubmitMessageDraftAction.run(@message)
       redirect_to message_thread_path(@message.thread), notice: "Správa bola zaradená na odoslanie"
     else
       # TODO: prisposobit chybovu hlasku aj importovanym draftom
-      redirect_to message_thread_path(@message.thread), alert: "Vyplňte text správy"
+      # TODO FIX: Tato hlaska sa zobrazuje aj ked je object oznaceny ako to_be_signed, ale nebol este podpisany
+      redirect_to message_thread_path(@message.thread), alert: "Vyplňte obsah správy"
     end
-  end
-
-  def submit_all
-    jobs_batch = GoodJob::Batch.new
-
-    @messages.each do |message_draft|
-      next unless message_draft.submittable?
-
-      jobs_batch.add { Govbox::SubmitMessageDraftJob.perform_later(message_draft, schedule_sync: false) }
-      message_draft.being_submitted!
-    end
-
-    boxes_to_sync = Current.tenant.boxes.joins(message_threads: :messages).where(messages: { id: @messages.map(&:id) }).uniq
-    jobs_batch.enqueue(on_finish: Govbox::ScheduleDelayedSyncBoxJob, boxes: boxes_to_sync)
   end
 
   def destroy

@@ -11,10 +11,14 @@
 #  message_object_id :bigint           not null
 #
 class NestedMessageObject < ApplicationRecord
+  include PdfVisualizationOperations
+  include MessageExportOperations
+
   belongs_to :message_object, inverse_of: :nested_message_objects
 
+  delegate :message, to: :message_object
+
   validates :name, presence: true, on: :validate_data
-  validate :allowed_mime_type?, on: :validate_data
 
   def self.create_from_message_object(message_object)
     return unless message_object.asice?
@@ -31,7 +35,15 @@ class NestedMessageObject < ApplicationRecord
     end
   end
 
+  def is_signed?
+    false
+  end
+
   def xml?
-    mimetype == 'application/xml'
+    Utils::XML_MIMETYPES.any? { |xml_mimetype| xml_mimetype == Utils.mimetype_without_optional_params(mimetype) }
+  end
+
+  def unsigned_content
+    content
   end
 end

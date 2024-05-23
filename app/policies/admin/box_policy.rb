@@ -37,8 +37,4 @@ class Admin::BoxPolicy < ApplicationPolicy
   def edit?
     update?
   end
-
-  def destroy?
-    @user.admin?
-  end
 end

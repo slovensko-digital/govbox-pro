@@ -24,6 +24,7 @@ class Tenant < ApplicationRecord
   has_one :signed_tag
   has_one :signed_externally_tag
   has_one :archived_tag
+  has_one :submission_error_tag
   has_many :tags, dependent: :destroy
   has_many :signature_requested_from_tags
   has_many :signed_by_tags
@@ -41,7 +42,7 @@ class Tenant < ApplicationRecord
 
   validates_presence_of :name
 
-  AVAILABLE_FEATURE_FLAGS = [:audit_log, :archive, :api, :message_draft_import, :template_messages]
+  AVAILABLE_FEATURE_FLAGS = [:audit_log, :archive, :api, :message_draft_import, :template_messages, :pdf_transformation]
 
   def draft_tag!
     draft_tag || raise(ActiveRecord::RecordNotFound, "`DraftTag` not found in tenant: #{id}")
@@ -57,6 +58,10 @@ class Tenant < ApplicationRecord
 
   def signed_tag!
     signed_tag || raise(ActiveRecord::RecordNotFound, "`SignatureRequestedTag` not found in tenant: #{id}")
+  end
+
+  def user_signature_tags
+    tags.where(type: %w[SignatureRequestedFromTag SignedByTag])
   end
 
   def feature_enabled?(feature)

@@ -36,7 +36,7 @@ class Drafts::LoadContentJob < ApplicationJob
 
       message_draft_object = MessageObject.create(
         name: file_name,
-        mimetype: Utils.file_mime_type_by_name(entry_name: file_name, is_form: is_form),
+        mimetype: Utils.file_mimetype_by_name(entry_name: file_name, is_form: is_form),
         object_type: is_form ? "FORM" : "ATTACHMENT",
         is_signed: signed,
         to_be_signed: to_be_signed,
@@ -60,39 +60,9 @@ class Drafts::LoadContentJob < ApplicationJob
   end
   
   def save_form_visualisation(message_draft)
-    upvs_form = Upvs::Form.find_by(
-      identifier: message_draft.metadata["posp_id"],
-      version: message_draft.metadata["posp_version"],
-      message_type: message_draft.metadata["message_type"],
-    )
-    upvs_form_xslt_html = upvs_form&.xslt_html
-
-    return unless upvs_form_xslt_html
-
-    xslt_template = Nokogiri::XSLT(upvs_form_xslt_html)
-
-    if message_draft.form.is_signed?
-      # TODO add unsigned_content method which calls UPVS OdpodpisanieDat endpoint and uncomment
-      # message_draft.update(
-      #   html_visualization: xslt_template.transform(Nokogiri::XML(message_draft.form.unsigned_content)).to_s.gsub('"', '\'')
-      # )
-      #
-      # message_draft.form.update(
-      #   visualizable: true
-      # )
-    else
-      message_draft.update(
-        html_visualization: xslt_template.transform(Nokogiri::XML(message_draft.form.content)).to_s.gsub('"', '\'')
-      )
-
-      if message_draft.custom_visualization?
-        message_draft.metadata["message_body"] = Upvs::FormBuilder.parse_general_agenda_text(message_draft.form.content)
-        message_draft.save!
-      end
-
-      message_draft.form.update(
-        visualizable: true
-      )
+    if message_draft.custom_visualization?
+      message_draft.metadata["message_body"] = Upvs::FormBuilder.parse_general_agenda_text(message_draft.form.content)
+      message_draft.save!
     end
   end
 
