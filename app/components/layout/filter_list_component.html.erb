@@ -24,28 +24,7 @@
         icon: icon_for(filter),
         variant: :light,
         classes: "item #{!@sortable ? 'pl-4' : ''}",
-      ) do |menu_item| %>
-        <% if @sortable %>
-          <% menu_item.with_leading do %>
-            <div class="w-4 py-4 handle cursor-move invisible group-hover:visible" data-sortable-target="item" data-id="<%= filter.id %>">
-              <%= render Icons::GripComponent.new(css_classes: 'w-4 h-4 fill-gray-400') %>
-            </div>
-          <% end %>
-        <% end %>
-        <% menu_item.with_trailing do %>
-          <% if filter.is_pinned %>
-            <%= link_to unpin_filter_path(filter), class: "invisible group-hover:visible fill-yellow-400 group/icon p-4", data: { turbo_method: :patch } do %>
-              <%= render Icons::StarComponent.new(css_classes: 'hidden group-hover/icon:inline w-6 h-6', variant: :light) %>
-              <%= render Icons::StarComponent.new(css_classes: 'inline group-hover/icon:hidden w-6 h-6', variant: :solid) %>
-            <% end %>
-          <% else %>
-            <%= link_to pin_filter_path(filter), class: "invisible group-hover:visible fill-yellow-400 group/icon p-4", data: { turbo_method: :patch } do %>
-              <%= render Icons::StarComponent.new(css_classes: 'inline group-hover/icon:hidden w-6 h-6', variant: :light) %>
-              <%= render Icons::StarComponent.new(css_classes: 'hidden group-hover/icon:inline w-6 h-6', variant: :solid) %>
-            <% end %>
-          <% end %>
-        <% end %>
-      <% end %>
+      ) %>
     <% end %>
   </div>
 <% end %>

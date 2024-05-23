@@ -1,5 +1,5 @@
 class FiltersController < ApplicationController
-  before_action :set_filter, only: [:edit, :update, :destroy, :pin, :unpin]
+  before_action :set_filter, only: [:edit, :update, :destroy]
 
   def index
     authorize Filter
@@ -57,18 +57,6 @@ class FiltersController < ApplicationController
     authorize @filter
     @filter.destroy
     redirect_to filters_path, notice: 'Filter bol úspešne odstránený'
-  end
-
-  def pin
-    authorize @filter
-    @filter.update(is_pinned: true)
-    redirect_back fallback_location: filters_path
-  end
-
-  def unpin
-    authorize @filter
-    @filter.update(is_pinned: false)
-    redirect_back fallback_location: filters_path
   end
 
   def sort
