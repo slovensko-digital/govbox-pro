@@ -22,9 +22,8 @@ class SidebarMenu
   def default_main_menu
     [
       TW::SidebarMenuItemComponent.new(name: 'Všetky správy', url: message_threads_path, icon: Common::IconComponent.new("envelope")),
-      Layout::FilterListComponent.new(filters: pinned_filters, sortable: true),
-      Layout::FilterListComponent.new(label: 'Filtre', filters: fulltext_filters),
-      Layout::FilterListComponent.new(label: 'Štítky', filters: tag_filters),
+      Layout::FilterListComponent.new(filters: @filters),
+      Layout::TagListComponent.new(tags: @tags),
       TW::SidebarMenuItemComponent.new(name: 'Nastavenia', url: filters_path, icon: Icons::CogSixToothComponent.new)
     ]
   end
@@ -67,27 +66,5 @@ class SidebarMenu
       TW::SidebarMenuDividerComponent.new(name: 'Admin'),
       TW::SidebarMenuItemComponent.new(name: 'Good Job Dashboard', url: good_job_path, icon: Icons::CogSixToothComponent.new)
     ]
-  end
-
-  private
-
-  def pinned_filters
-    @filters
-      .pinned
-      .order(position: :asc)
-  end
-
-  def fulltext_filters
-    @filters
-      .not_pinned
-      .where(type: 'FulltextFilter')
-      .order(position: :asc)
-  end
-
-  def tag_filters
-    @filters
-      .not_pinned
-      .where(type: 'TagFilter')
-      .order(position: :asc)
   end
 end
