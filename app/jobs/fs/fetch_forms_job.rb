@@ -9,7 +9,7 @@ class Fs::FetchFormsJob < ApplicationJob
       ) do |form|
         form.update(
           name: fs_form_data['name'],
-          group_name: fs_form_data['group_name'],
+          group_name: fs_form_data['form_group_name'],
           subtype_name: fs_form_data['subtype_name'],
           signature_required: fs_form_data['signature_required'],
           ez_signature: fs_form_data['ez_signature'],

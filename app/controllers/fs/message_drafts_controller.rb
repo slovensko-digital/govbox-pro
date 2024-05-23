@@ -1,7 +1,4 @@
 class Fs::MessageDraftsController < ApplicationController
-  before_action :load_selected_box, only: :create
-  before_action :load_selected_fs_form, only: :create
-
   def new
     @message = MessageDraft.new
     @boxes = Current.tenant&.boxes.where(type: 'Fs::Box')
@@ -11,7 +8,7 @@ class Fs::MessageDraftsController < ApplicationController
   end
 
   def create
-    @message = ::Fs::MessageDraft.create_and_validate_with_fs_form(@fs_form, box: @box, form_file: message_draft_params[:content])
+    @message = ::Fs::MessageDraft.create_and_validate_with_fs_form(form_files: message_draft_params[:content])
 
     authorize @message
 
@@ -23,15 +20,6 @@ class Fs::MessageDraftsController < ApplicationController
   end
 
   private
-
-  def load_selected_box
-    @box = Fs::Box.find(message_draft_params[:sender_id])
-  end
-
-
-  def load_selected_fs_form
-    @fs_form = Fs::Form.find(message_draft_params[:form_id])
-  end
 
   def message_draft_params
     params.permit(

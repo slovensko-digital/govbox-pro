@@ -26,44 +26,51 @@ class Fs::MessageDraft < MessageDraft
     MessageDraftPolicy
   end
 
-  def self.create_and_validate_with_fs_form(fs_form, box:, form_file: nil)
-    message = ::Fs::MessageDraft.create(
-      uuid: SecureRandom.uuid,
-      title: fs_form.name,
-      sender_name: box.name,
-      recipient_name: 'Finančná správa',
-      outbox: true,
-      replyable: false,
-      delivered_at: Time.now,
-      metadata: {
-        'status': 'being_loaded',
-        'fs_form_id': fs_form.id
-      }
-    )
+  def self.create_and_validate_with_fs_form(form_files: [])
+    form_files.each do |form_file|
+      dic, fs_form_slug = Utils::FsInformationParser.parse_info_from_filename
 
-    message.thread = box.message_threads&.find_or_build_by_merge_uuid(
-      box: box,
-      merge_uuid: SecureRandom.uuid,
-      title: message.title,
-      delivered_at: message.delivered_at
-    )
+      box = Fs::Box.find_by("settings ->> 'dic' = ?", dic)
+      fs_form = Fs::Form.find_by(slug: fs_form_slug)
 
-    message.save
+      next unless box && fs_form
 
-    form_object = message.objects.create(
-      object_type: 'FORM',
-      name: form_file.original_filename,
-      mimetype: form_file.content_type,
-      is_signed: false,
-    )
-    MessageObjectDatum.create(
-      message_object: form_object,
-      blob: form_file.read.force_encoding("UTF-8")
-    )
+      message = ::Fs::MessageDraft.create(
+        uuid: SecureRandom.uuid,
+        title: fs_form.name,
+        sender_name: box.name,
+        recipient_name: 'Finančná správa',
+        outbox: true,
+        replyable: false,
+        delivered_at: Time.now,
+        metadata: {
+          'status': 'being_loaded',
+          'fs_form_id': fs_form.id
+        }
+      )
 
-    Fs::ValidateMessageDraftJob.perform_later(message)
+      message.thread = box.message_threads&.find_or_build_by_merge_uuid(
+        box: box,
+        merge_uuid: SecureRandom.uuid,
+        title: message.title,
+        delivered_at: message.delivered_at
+      )
 
-    message
+      message.save
+
+      form_object = message.objects.create(
+        object_type: 'FORM',
+        name: form_file.original_filename,
+        mimetype: form_file.content_type,
+        is_signed: false,
+      )
+      MessageObjectDatum.create(
+        message_object: form_object,
+        blob: form_file.read.force_encoding("UTF-8")
+      )
+
+      Fs::ValidateMessageDraftJob.perform_later(message)
+    end
   end
 
   def submit
