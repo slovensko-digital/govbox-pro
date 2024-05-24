@@ -27,7 +27,7 @@ class Fs::MessageDraft < MessageDraft
   end
 
   def self.create_and_validate_with_fs_form(form_files: [])
-    results = []
+    messages = []
 
     form_files.each do |form_file|
       dic, fs_form_slug = Utils::FsInformationParser.parse_info_from_filename(form_file.original_filename)
@@ -36,7 +36,7 @@ class Fs::MessageDraft < MessageDraft
       fs_form = Fs::Form.find_by(slug: fs_form_slug)
 
       unless box && fs_form
-        results << false
+        messages << nil
         next
       end
 
@@ -70,18 +70,19 @@ class Fs::MessageDraft < MessageDraft
         to_be_signed: fs_form.signature_required
       )
       form_object.update(is_signed: form_object.asice?)
+      message.thread.box.tenant.signed_externally_tag!.assign_to_message_object(form_object) if form_object.is_signed?
 
       MessageObjectDatum.create(
         message_object: form_object,
         blob: form_file.read.force_encoding("UTF-8")
       )
 
-      results << message.valid?
+      messages << message
 
       Fs::ValidateMessageDraftJob.perform_later(message)
     end
 
-    results
+    messages
   end
 
   def submit
