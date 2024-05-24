@@ -67,8 +67,10 @@ class Fs::MessageDraft < MessageDraft
         object_type: 'FORM',
         name: form_file.original_filename,
         mimetype: form_file.content_type,
-        is_signed: false,
+        to_be_signed: fs_form.signature_required
       )
+      form_object.update(is_signed: form_object.asice?)
+
       MessageObjectDatum.create(
         message_object: form_object,
         blob: form_file.read.force_encoding("UTF-8")

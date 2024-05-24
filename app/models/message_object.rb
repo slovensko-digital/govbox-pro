@@ -30,7 +30,7 @@ class MessageObject < ApplicationRecord
   validates :name, presence: { message: "Name can't be blank" }, on: :validate_data
   validate :allowed_mimetype?, on: :validate_data
 
-  after_create ->(message_object) { message_object.update(name: message_object.name + Utils.file_extension_by_mimetype(message_object.mimetype).to_s) if Utils.file_name_without_extension?(message_object) }
+  after_create ->(message_object) { message_object.fill_missing_info }
   after_update ->(message_object) { EventBus.publish(:message_object_changed, message_object) }
 
   def self.create_message_objects(message, objects)
@@ -94,7 +94,7 @@ class MessageObject < ApplicationRecord
   end
 
   def asice?
-    mimetype == 'application/vnd.etsi.asic-e+zip'
+    Utils::ASICE_MIMETYPES.include?(mimetype)
   end
 
   def destroyable?
@@ -134,5 +134,12 @@ class MessageObject < ApplicationRecord
 
   def thread
     message.thread
+  end
+
+  private
+
+  def fill_missing_info
+    self.update(name: name + Utils.file_extension_by_mimetype(mimetype).to_s) if Utils.file_name_without_extension?(self)
+    self.update(mimetype: Utils.file_mimetype_by_name(name)) if mimetype == Utils::OCTET_STREAM_MIMETYPE
   end
 end

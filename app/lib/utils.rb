@@ -6,6 +6,7 @@ module Utils
 
   MIMETYPES_ALLOW_LIST = %w(application/x-eform-xml application/xml application/msword application/pdf application/vnd.etsi.asic-e+zip application/vnd.etsi.asic-s+zip application/vnd.openxmlformats-officedocument.wordprocessingml.document application/x-xades_zep application/x-zip-compressed image/jpg image/jpeg text/xml image/png image/tiff application/pkix-cert)
   XML_MIMETYPES = %w(application/x-eform-xml application/xml application/vnd.gov.sk.xmldatacontainer+xml)
+  ASICE_MIMETYPES = %w(application/vnd.etsi.asic-e+zip application/vnd.etsi.asic-s+zip)
   PDF_MIMETYPE = 'application/pdf'
   OCTET_STREAM_MIMETYPE = 'application/octet-stream'
 
