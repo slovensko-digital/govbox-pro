@@ -114,6 +114,11 @@ class MessageObject < ApplicationRecord
     message_objects_tags.find_or_create_by!(tag: tag)
   end
 
+  def fill_missing_info
+    self.update(name: name + Utils.file_extension_by_mimetype(mimetype).to_s) if Utils.file_name_without_extension?(self)
+    self.update(mimetype: Utils.file_mimetype_by_name(entry_name: name)) if mimetype == Utils::OCTET_STREAM_MIMETYPE
+  end
+
   private
 
   def allowed_mimetype?
@@ -134,12 +139,5 @@ class MessageObject < ApplicationRecord
 
   def thread
     message.thread
-  end
-
-  private
-
-  def fill_missing_info
-    self.update(name: name + Utils.file_extension_by_mimetype(mimetype).to_s) if Utils.file_name_without_extension?(self)
-    self.update(mimetype: Utils.file_mimetype_by_name(name)) if mimetype == Utils::OCTET_STREAM_MIMETYPE
   end
 end
