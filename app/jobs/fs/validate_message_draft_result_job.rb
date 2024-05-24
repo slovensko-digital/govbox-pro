@@ -7,6 +7,7 @@ class Fs::ValidateMessageDraftResultJob < ApplicationJob
       message_draft.save
     elsif [400, 422].include?(response[:status])
       message_draft.metadata[:status] = 'invalid'
+      message_draft.metadata[:validation_errors] = [response[:body]['errors']]
       message_draft.save
     else
       raise RuntimeError.new("Unexpected response status: #{response[:status]}")
