@@ -27,13 +27,18 @@ class Fs::MessageDraft < MessageDraft
   end
 
   def self.create_and_validate_with_fs_form(form_files: [])
+    results = []
+
     form_files.each do |form_file|
-      dic, fs_form_slug = Utils::FsInformationParser.parse_info_from_filename
+      dic, fs_form_slug = Utils::FsInformationParser.parse_info_from_filename(form_file.original_filename)
 
       box = Fs::Box.find_by("settings ->> 'dic' = ?", dic)
       fs_form = Fs::Form.find_by(slug: fs_form_slug)
 
-      next unless box && fs_form
+      unless box && fs_form
+        results << false
+        next
+      end
 
       message = ::Fs::MessageDraft.create(
         uuid: SecureRandom.uuid,
@@ -69,8 +74,12 @@ class Fs::MessageDraft < MessageDraft
         blob: form_file.read.force_encoding("UTF-8")
       )
 
+      results << message.valid?
+
       Fs::ValidateMessageDraftJob.perform_later(message)
     end
+
+    results
   end
 
   def submit

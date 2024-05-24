@@ -8,15 +8,17 @@ class Fs::MessageDraftsController < ApplicationController
   end
 
   def create
-    @message = ::Fs::MessageDraft.create_and_validate_with_fs_form(form_files: message_draft_params[:content])
+    authorize ::Fs::MessageDraft
 
-    authorize @message
+    results = ::Fs::MessageDraft.create_and_validate_with_fs_form(form_files: message_draft_params[:content])
 
-    unless @message.valid?
-      render :update_new and return
+    if results.all?(true)
+      redirect_to message_threads_path, notice: 'Správy boli úspešne nahraté'
+    elsif results.all?(false)
+      redirect_to message_threads_path, alert: 'Nahratie správ nebolo úspešné'
+    else
+      redirect_to message_threads_path, alert: 'Niektoré zo správ sa nepodarilo nahrať'
     end
-
-    redirect_to message_thread_path(@message.thread)
   end
 
   private
@@ -25,7 +27,7 @@ class Fs::MessageDraftsController < ApplicationController
     params.permit(
       :sender_id,
       :form_id,
-      :content
+      content: []
     )
   end
 end
