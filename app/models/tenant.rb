@@ -110,6 +110,7 @@ class Tenant < ApplicationRecord
     create_signature_requested_tag!(name: "Na podpis", visible: true, color: "yellow", icon: "pencil")
     create_signed_tag!(name: "Podpísané", visible: true, color: "green", icon: "fingerprint")
     create_signed_externally_tag!(name: "Externe podpísané", visible: false, color: "purple", icon: "shield-check")
+    create_submission_error_tag!(name: 'Problémové')
 
     make_admins_see_everything!
   end
