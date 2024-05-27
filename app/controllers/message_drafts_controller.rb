@@ -15,7 +15,7 @@ class MessageDraftsController < ApplicationController
     else
       # TODO: prisposobit chybovu hlasku aj importovanym draftom
       # TODO FIX: Tato hlaska sa zobrazuje aj ked je object oznaceny ako to_be_signed, ale nebol este podpisany
-      redirect_to message_thread_path(@message.thread), alert: "Vyplňte obsah správy"
+      redirect_to message_thread_path(@message.thread), alert: @message.not_submittable_errors.join(', ')
     end
   end
 
