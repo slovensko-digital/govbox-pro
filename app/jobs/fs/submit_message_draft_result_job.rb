@@ -7,6 +7,7 @@ class Fs::SubmitMessageDraftResultJob < ApplicationJob
       message_draft.save
     elsif [400, 422].include?(response[:status])
       message_draft.metadata[:status] = 'submit_fail'
+      message_draft.add_cascading_tag(message_draft.tenant.submission_error_tag)
       message_draft.save
     else
       raise RuntimeError.new("Unexpected response status: #{response[:status]}")
