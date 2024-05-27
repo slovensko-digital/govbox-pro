@@ -1,9 +1,10 @@
 class Fs::SubmitMessageDraftsAction
   def self.run(message_threads)
 
-    messages = message_threads.map(&:message_drafts).where(type: 'Fs::MessageDraft').flatten
+    messages = []
+    message_threads.each { |thread| messages << thread.messages.where(type: 'Fs::MessageDraft') }
 
-    results = messages.map { |message| ::Fs::SubmitMessageDraftAction.run(message,) }
+    results = messages.flatten.map { |message| ::Fs::SubmitMessageDraftAction.run(message,) }
     results.select { |value| value }.present?
   end
 end
