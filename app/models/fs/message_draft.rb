@@ -72,6 +72,11 @@ class Fs::MessageDraft < MessageDraft
       form_object.update(is_signed: form_object.asice?)
       message.thread.box.tenant.signed_externally_tag!.assign_to_message_object(form_object) if form_object.is_signed?
 
+      if form_object.to_be_signed
+        Current.user.signature_requested_from_tag&.assign_to_message_object(form_object)
+        Current.user.signature_requested_from_tag&.assign_to_thread(message.thread)
+      end
+
       MessageObjectDatum.create(
         message_object: form_object,
         blob: form_file.read.force_encoding("UTF-8")
