@@ -30,10 +30,10 @@ class Fs::MessageDraft < MessageDraft
     messages = []
 
     form_files.each do |form_file|
-      dic, fs_form_slug = Utils::FsInformationParser.parse_info_from_filename(form_file.original_filename)
+      dic, fs_form_identifier = Utils::FsInformationParser.parse_info_from_filename(form_file.original_filename)
 
       box = Fs::Box.find_by("settings ->> 'dic' = ?", dic)
-      fs_form = Fs::Form.find_by(slug: fs_form_slug)
+      fs_form = Fs::Form.find_by(identifier: fs_form_identifier)
 
       unless box && fs_form
         messages << nil
