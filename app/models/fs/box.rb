@@ -20,6 +20,17 @@ class Fs::Box < Box
     BoxPolicy
   end
 
+  def self.create_with_api_connection!(params)
+    if params[:api_connection]
+      api_connection = Fs::ApiConnection.create!(params[:api_connection].merge(tenant_id: params[:tenant_id]))
+    elsif params[:api_connection_id]
+      api_connection = Fs::ApiConnection.find(params[:api_connection_id])
+    end
+    raise ArgumentError, "Api connection must be provided" unless api_connection
+
+    api_connection.boxes.create!(params.except(:api_connection).merge(type: 'Fs::Box'))
+  end
+
   store_accessor :settings, :dic, prefix: true
   store_accessor :settings, :subject_id, prefix: true
 end

@@ -40,10 +40,10 @@ class TenantApiTest < ActionDispatch::IntegrationTest
     assert_not Tenant.exists?(tenant_id)
   end
 
-  test "can add box with obo" do
+  test "can add upvs box with obo" do
     tenant = tenants(:google)
 
-    post "/api/site_admin/tenants/#{tenant.id}/boxes",
+    post "/api/site_admin/tenants/#{tenant.id}/upvs/boxes",
          params: { box: { name: "Test box",
                           uri: "ico://sk//12345678",
                           short_name: "TST",
@@ -61,10 +61,10 @@ class TenantApiTest < ActionDispatch::IntegrationTest
     assert_equal box.id, json_response["id"]
   end
 
-  test "can add box with new api connection without obo" do
+  test "can add upvs box with new api connection without obo" do
     tenant = tenants(:solver)
 
-    post "/api/site_admin/tenants/#{tenant.id}/boxes",
+    post "/api/site_admin/tenants/#{tenant.id}/upvs/boxes",
          params: { box: { name: "Test box",
                           uri: "ico://sk//12345678",
                           short_name: "TST",
@@ -82,10 +82,10 @@ class TenantApiTest < ActionDispatch::IntegrationTest
     assert_equal "supertajnykluc", box.api_connection.api_token_private_key
   end
 
-  test "can not add box without api connection" do
+  test "can not add upvs box without api connection" do
     tenant = tenants(:solver)
 
-    post "/api/site_admin/tenants/#{tenant.id}/boxes",
+    post "/api/site_admin/tenants/#{tenant.id}/upvs/boxes",
          params: { box: { name: "Test box",
                           uri: "ico://sk//12345678",
                           short_name: "TST",
@@ -99,10 +99,58 @@ class TenantApiTest < ActionDispatch::IntegrationTest
     assert_not tenant.boxes.find_by(name: "Test box")
   end
 
-  test "can not add box without tenant" do
+  test "can not add upvs box without tenant" do
+    post "/api/site_admin/tenants//upvs/boxes",
+         params: { box: { name: "Test box",
+                          uri: "ico://sk//12345678",
+                          short_name: "TST",
+                          color: "blue" },
+                   token: generate_api_token },
+         as: :json
+
+    assert_response :not_found
+  end
+
+  test "can add fs box" do
+    tenant = tenants(:google)
+
+    post "/api/site_admin/tenants/#{tenant.id}/fs/boxes",
+         params: { box: { name: "Test box",
+                          uri: "ico://sk//12345678",
+                          short_name: "TST",
+                          color: "blue",
+                          api_connection: { sub: "sub", api_token_private_key: "supertajnykluc", settings: { username: 'test-user', password: 'password' } } },
+                          settings: { dic: "1234567890", subject_id: SecureRandom.uuid },
+                   token: generate_api_token },
+         as: :json
+
+    assert_response :success
+    json_response = JSON.parse(response.body)
+    box = tenant.boxes.find_by(name: "Test box")
+    assert box
+    assert json_response["id"]
+    assert_equal box.id, json_response["id"]
+  end
+
+  test "can not add fs box without api connection" do
     tenant = tenants(:solver)
 
-    post "/api/site_admin/tenants//boxes",
+    post "/api/site_admin/tenants/#{tenant.id}/fs/boxes",
+         params: { box: { name: "Test box",
+                          uri: "ico://sk//12345678",
+                          short_name: "TST",
+                          color: "blue" },
+                   token: generate_api_token },
+         as: :json
+
+    assert_response :unprocessable_entity
+    json_response = JSON.parse(response.body)
+    assert_equal "Api connection must be provided", json_response["message"]
+    assert_not tenant.boxes.find_by(name: "Test box")
+  end
+
+  test "can not add fs box without tenant" do
+    post "/api/site_admin/tenants//fs/boxes",
          params: { box: { name: "Test box",
                           uri: "ico://sk//12345678",
                           short_name: "TST",

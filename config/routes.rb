@@ -219,7 +219,14 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :site_admin do
       resources :tenants, only: [:create, :destroy] do
-        resources :boxes, only: :create
+        namespace :upvs do
+          resources :boxes, only: :create
+        end
+
+        namespace :fs do
+          resources :boxes, only: :create
+        end
+
         resources :api_connections, only: :create
       end
 
