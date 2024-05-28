@@ -241,9 +241,14 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :message_threads, only: :show
-    resources :messages, only: :show do
+    resources :message_threads, only: [:show] do
+      resources :tags, only: [:create] do
+        delete :destroy, on: :collection
+      end
+    end
+    resources :messages, only: [:show] do
       post :message_drafts, on: :collection
+      get :sync, on: :collection
     end
   end
 

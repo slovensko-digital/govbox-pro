@@ -20,6 +20,8 @@ class ApiController < ActionController::API
 
   private
 
+  API_PAGE_SIZE = 200
+
   def authenticity_token
     (ActionController::HttpAuthentication::Token.token_and_options(request)&.first || params[:token])&.squish.presence
   end
