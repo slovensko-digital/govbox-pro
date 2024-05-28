@@ -67,6 +67,7 @@ Rails.application.routes.draw do
       resource :message_drafts, only: [:update] do
         collection do
           post :submit
+          put :destroy
         end
       end
 
