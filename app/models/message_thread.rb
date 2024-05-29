@@ -162,6 +162,10 @@ class MessageThread < ApplicationRecord
     message_threads_tags.find_or_create_by!(tag: tag)
   end
 
+  def unassign_tag(tag)
+    message_threads_tags.find_by(tag: tag)&.destroy
+  end
+
   private
 
   def has_tag?(tag)
@@ -170,9 +174,5 @@ class MessageThread < ApplicationRecord
 
   def has_tag_in_message_objects?(tag)
     objects.joins(:tags).where(tags: tag).exists?
-  end
-
-  def unassign_tag(tag)
-    message_threads_tags.find_by(tag: tag)&.destroy
   end
 end

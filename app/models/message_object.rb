@@ -32,6 +32,7 @@ class MessageObject < ApplicationRecord
 
   after_create ->(message_object) { message_object.update(name: message_object.name + Utils.file_extension_by_mimetype(message_object.mimetype).to_s) if Utils.file_name_without_extension?(message_object) }
   after_update ->(message_object) { EventBus.publish(:message_object_changed, message_object) }
+  before_destroy :remove_object_related_tags_from_thread, prepend: true
 
   def self.create_message_objects(message, objects)
     objects.each do |raw_object|
@@ -134,5 +135,13 @@ class MessageObject < ApplicationRecord
 
   def thread
     message.thread
+  end
+
+  def remove_object_related_tags_from_thread
+    tags.each do |tag|
+      message.thread.unassign_tag(tag) unless message.thread.objects.where.not(id: id).map(&:tags).flatten&.map(&:id).include?(tag.id)
+    end
+
+    message.thread.unassign_tag(message.tenant.signed_tag!) unless message.thread.tags.reload.where(type: SignedByTag.to_s).any?
   end
 end
