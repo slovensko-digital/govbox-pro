@@ -102,6 +102,29 @@ ssd_main_delivery_draft:
     status: created
   author: basic
 
+ssd_main_delivery_one:
+  uuid: <%= SecureRandom.uuid %>
+  title: MyStringDraft4
+  html_visualization: MyString
+  delivered_at: 2023-05-18 16:19:26
+  thread: ssd_main_delivery
+  replyable: false
+  metadata:
+    status: created
+  author: basic
+
+ssd_main_draft:
+  type: MessageDraft
+  uuid: <%= SecureRandom.uuid %>
+  title: MyStringDraft5
+  html_visualization: MyString
+  delivered_at: 2023-05-18 16:19:26
+  thread: ssd_main_draft_only
+  replyable: false
+  metadata:
+    status: created
+  author: basic
+
 ssd_main_issue_one:
   uuid: <%= SecureRandom.uuid %>
   title: MyString3
