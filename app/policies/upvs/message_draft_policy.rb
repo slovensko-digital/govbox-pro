@@ -46,6 +46,10 @@ class ::Upvs::MessageDraftPolicy < ApplicationPolicy
     create?
   end
 
+  def export?
+    show?
+  end
+
   def submit?
     create?
   end
