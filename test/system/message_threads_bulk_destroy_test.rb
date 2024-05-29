@@ -25,7 +25,7 @@ class MessageThreadsBulkDestroyTest < ApplicationSystemTestCase
     click_button "Hromadné akcie"
 
     accept_alert do
-      click_button "Zahodiť"
+      click_button "Zmazať rozpracované"
     end
 
     assert_text "Rozpracované správy vo vláknach boli zahodené"
