@@ -90,6 +90,24 @@ ssd_main_general_draft_two:
     recipient_uri: ico://sk/12345678
   author: basic
 
+ssd_main_general_draft_three:
+  type: MessageDraft
+  uuid: <%= SecureRandom.uuid %>
+  title: MyStringDraft3
+  html_visualization: MyString
+  delivered_at: 2023-05-18 16:18:26
+  thread: ssd_main_draft_only
+  replyable: false
+  metadata:
+    status: created
+    sktalk_class: EGOV_APPLICATION
+    posp_id: App.GeneralAgenda
+    posp_version: 1.9
+    message_type: App.GeneralAgenda
+    correlation_id: <%= SecureRandom.uuid %>
+    recipient_uri: ico://sk/12345678
+  author: basic
+
 ssd_main_delivery_draft:
   type: MessageDraft
   uuid: <%= SecureRandom.uuid %>
