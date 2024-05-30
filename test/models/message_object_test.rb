@@ -188,6 +188,72 @@ class MessageObjectTest < ActiveSupport::TestCase
                  object_1.message.thread.tags.signing_tags.reload.to_set
   end
 
+  test "before_destroy callback deletes object related tags from message thread after object removal (if no more objects with the tag present)" do
+    tenant = tenants(:ssd)
+    signer = users(:basic_two)
+    signed_by_tag = tags(:ssd_basic_user_signed)
+
+    object = message_objects(:ssd_main_general_one_attachment)
+    object.mark_signed_by_user(signer)
+
+    assert object.tags.include?(signed_by_tag)
+    assert object.message.thread.tags.include?(signed_by_tag)
+    assert object.message.thread.tags.include?(tenant.signed_tag!)
+
+    object.destroy
+
+    assert_not object.message.thread.tags.reload.include?(signed_by_tag)
+    assert_not object.message.thread.tags.include?(tenant.signed_tag!)
+  end
+
+  test "before_destroy callback keeps object related tags for message thread after object removal (if another objects with the tag present in the message)" do
+    tenant = tenants(:ssd)
+    signer = users(:basic_two)
+    signed_by_tag = tags(:ssd_basic_user_signed)
+
+    attachment_object = message_objects(:ssd_main_general_draft_one_attachment)
+    attachment_object.mark_signed_by_user(signer)
+
+    assert attachment_object.tags.include?(signed_by_tag)
+    assert attachment_object.message.thread.tags.include?(signed_by_tag)
+    assert attachment_object.message.thread.tags.include?(tenant.signed_tag!)
+
+    form_object = attachment_object.message.form
+    form_object.mark_signed_by_user(signer)
+
+    assert form_object.tags.include?(signed_by_tag)
+    assert form_object.message.thread.tags.include?(signed_by_tag)
+
+    attachment_object.destroy
+
+    assert attachment_object.message.thread.tags.reload.include?(signed_by_tag)
+    assert attachment_object.message.thread.tags.include?(tenant.signed_tag!)
+  end
+
+  test "before_destroy callback keeps object related tags for message thread after object removal (if objects with the tag present in another message in the thread)" do
+    tenant = tenants(:ssd)
+    signer = users(:basic_two)
+    signed_by_tag = tags(:ssd_basic_user_signed)
+
+    attachment_object = message_objects(:ssd_main_general_one_attachment)
+    attachment_object.mark_signed_by_user(signer)
+
+    assert attachment_object.tags.include?(signed_by_tag)
+    assert attachment_object.message.thread.tags.include?(signed_by_tag)
+    assert attachment_object.message.thread.tags.include?(tenant.signed_tag!)
+
+    form_object = message_objects(:ssd_main_general_draft_two_form)
+    form_object.mark_signed_by_user(signer)
+
+    assert form_object.tags.include?(signed_by_tag)
+    assert form_object.message.thread.tags.include?(signed_by_tag)
+
+    attachment_object.destroy
+
+    assert attachment_object.message.thread.tags.reload.include?(signed_by_tag)
+    assert attachment_object.message.thread.tags.include?(tenant.signed_tag!)
+  end
+
   test "prepares PDF visualization" do
     message_object = message_objects(:ssd_main_fs_one_form)
 

@@ -54,11 +54,11 @@ class MessageDraftTest < ActiveSupport::TestCase
 
     message_draft.destroy
 
-    assert !message_thread.tags.include?(drafts_tag)
+    assert !message_thread.tags.reload.include?(drafts_tag)
   end
 
   test 'after destroy callback should destroy message thread if no messages left' do
-    message_draft = messages(:ssd_main_delivery_draft)
+    message_draft = messages(:ssd_main_draft)
     message_draft._run_create_callbacks
 
     message_thread = message_draft.thread

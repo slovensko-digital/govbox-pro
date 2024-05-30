@@ -1006,7 +1006,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
   <subject>Všeobecný predmet</subject>
   <text>Všeobecný text</text>
 </GeneralAgenda>'),
-          tags: ['Podpisane: Another user']
+          tags: ['Podpísané: Another user']
         }
       ],
       tags: ['Legal', 'Other']
@@ -1017,7 +1017,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
     assert_response :created
     assert_not_equal Message.count, @before_request_messages_count
 
-    assert Upvs::MessageDraft.last.objects.last.tags.map(&:name).include?('Podpisane: Another user')
+    assert Upvs::MessageDraft.last.objects.last.tags.map(&:name).include?('Podpísané: Another user')
   end
 
   test 'does not create message unless object name present' do
