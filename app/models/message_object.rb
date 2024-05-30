@@ -146,6 +146,6 @@ class MessageObject < ApplicationRecord
   end
 
   def other_thread_objects_include_tag?(tag)
-    message.thread.objects.where.not(id: id).map(&:tags).flatten&.map(&:id).include?(tag.id)
+    message.thread.objects.excluding(self).joins(:tags).where(tags: { id: tag.id }).any?
   end
 end
