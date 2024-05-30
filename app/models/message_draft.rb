@@ -54,6 +54,7 @@ class MessageDraft < Message
   end
 
   with_options on: :validate_data do |message_draft|
+    message_draft.validate :validate_uuid_uniqueness
     message_draft.validate :validate_metadata
     message_draft.validate :validate_form
     message_draft.validate :validate_objects
@@ -191,10 +192,14 @@ class MessageDraft < Message
 
   def validate_uuid
     if uuid
-      errors.add(:metadata, "UUID must be in UUID format") unless uuid.match?(Utils::UUID_PATTERN)
+      errors.add(:uuid, "UUID must be in UUID format") unless uuid.match?(Utils::UUID_PATTERN)
     else
-      errors.add(:metadata, "UUID can't be blank")
+      errors.add(:uuid, "UUID can't be blank")
     end
+  end
+
+  def validate_uuid_uniqueness
+    errors.add(:uuid, "Message with given UUID already exists") if uuid && box.messages.excluding(self).where(uuid: uuid).any?
   end
 
   def validate_objects

@@ -37,6 +37,7 @@ class Message < ApplicationRecord
   has_many :message_threads_tags, primary_key: :message_thread_id, foreign_key: :message_thread_id
 
   delegate :tenant, to: :thread
+  delegate :box, to: :thread
 
   scope :outbox, -> { where(outbox: true) }
   scope :inbox, -> { where.not(outbox: true).where(type: [nil, 'Message']) }
