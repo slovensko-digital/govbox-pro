@@ -139,13 +139,13 @@ class MessageObject < ApplicationRecord
 
   def remove_object_related_tags_from_thread
     tags.each do |tag|
-      message.thread.unassign_tag(tag) unless other_thread_objects_tags_ids.include?(tag.id)
+      message.thread.unassign_tag(tag) unless other_thread_objects_include_tag?(tag)
     end
 
     message.thread.unassign_tag(message.tenant.signed_tag!) unless message.thread.tags.reload.where(type: SignedByTag.to_s).any?
   end
 
-  def other_thread_objects_tags_ids
-    message.thread.objects.where.not(id: id).map(&:tags).flatten&.map(&:id)
+  def other_thread_objects_include_tag?(tag)
+    message.thread.objects.where.not(id: id).map(&:tags).flatten&.map(&:id).include?(tag.id)
   end
 end
