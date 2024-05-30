@@ -96,7 +96,7 @@ ssd_main_general_draft_three:
   title: MyStringDraft3
   html_visualization: MyString
   delivered_at: 2023-05-18 16:18:26
-  thread: ssd_main_draft_only
+  thread: ssd_main_general
   replyable: false
   metadata:
     status: created
