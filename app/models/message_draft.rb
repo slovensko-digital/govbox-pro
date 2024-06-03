@@ -24,6 +24,9 @@
 class MessageDraft < Message
   belongs_to :import, class_name: 'MessageDraftsImport', optional: true
 
+  scope :in_submission_process, -> { where("metadata ->> 'status' IN ('being_submitted', 'submitted')") }
+  scope :not_in_submission_process, -> { where("metadata ->> 'status' NOT IN ('being_submitted', 'submitted')") }
+
   validate :validate_uuid
   validates :title, presence: { message: "Title can't be blank" }
   validates :delivered_at, presence: true
@@ -43,6 +46,10 @@ class MessageDraft < Message
       drafts_tags.each do |drafts_tag|
         self.remove_cascading_tag(drafts_tag)
       end
+
+      self.remove_cascading_tag(self.thread.tenant.submitted_tag)
+    elsif self.thread.message_drafts.in_submission_process.none?
+      self.remove_cascading_tag(self.thread.tenant.submitted_tag)
     end
   end
 
@@ -126,6 +133,9 @@ class MessageDraft < Message
   end
 
   def being_submitted!
+    remove_cascading_tag(tenant.draft_tag) if thread.message_drafts.not_in_submission_process.excluding(self).reload.none?
+    add_cascading_tag(tenant.submitted_tag)
+
     metadata["status"] = "being_submitted"
     save!
     EventBus.publish(:message_draft_being_submitted, self)
