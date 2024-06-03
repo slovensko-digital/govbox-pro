@@ -49,7 +49,10 @@ class MessageObjectsController < ApplicationController
     authorize @message_object
 
     head :no_content and return unless @message_object.content.present?
-    render template: 'message_drafts/update_body' and return if @message_object.form? && !@message.valid?(:validate_data)
+    
+    return unless @message_object.form?
+
+    render template: 'message_drafts/update_body' unless @message.valid?(:validate_data)
   end
 
   def destroy
