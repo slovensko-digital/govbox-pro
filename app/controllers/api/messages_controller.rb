@@ -13,7 +13,9 @@ class Api::MessagesController < Api::TenantController
   def message_drafts
     ::Message.transaction do
       @message = permitted_params[:type].classify.safe_constantize.load_from_params(permitted_params, box: @box)
+
       render_unprocessable_entity(@message.errors.messages.values.join(', ')) and return unless @message.valid?
+      render_conflict(@message.errors.messages.values.join(', ')) and return unless @message.valid?(:validate_uuid_uniqueness)
 
       @message.save
 
@@ -36,13 +38,6 @@ class Api::MessagesController < Api::TenantController
       permitted_params.fetch(:tags, []).each do |tag_name|
         tag = @tenant.tags.find_by(name: tag_name)
         @message.add_cascading_tag(tag)
-      end
-
-      unless @message.valid?(:validate_uuid_uniqueness)
-        @message.destroy
-        render_conflict(@message.errors.messages.values.join(', '))
-
-        return
       end
 
       if @message.valid?(:validate_data)
