@@ -38,13 +38,18 @@ class Api::MessagesController < Api::TenantController
         @message.add_cascading_tag(tag)
       end
 
+      unless @message.valid?(:validate_uuid_uniqueness)
+        @message.destroy
+        render_conflict(@message.errors.messages.values.join(', '))
+
+        return
+      end
+
       if @message.valid?(:validate_data)
         @message.created!
-
         head :created
       else
         @message.destroy
-
         render_unprocessable_entity(@message.errors.messages.values.join(', '))
       end
     end

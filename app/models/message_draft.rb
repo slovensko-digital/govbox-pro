@@ -61,6 +61,10 @@ class MessageDraft < Message
     message_draft.validate :validate_with_message_template
   end
 
+  with_options on: :validate_uuid_uniqueness do |message_draft|
+    message_draft.validate :validate_uuid_uniqueness
+  end
+
   def update_content(parameters)
     metadata["data"] = parameters.to_h
     save!

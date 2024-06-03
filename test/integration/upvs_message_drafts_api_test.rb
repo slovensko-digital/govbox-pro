@@ -152,7 +152,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
 
     post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
-    assert_response :unprocessable_entity
+    assert_response :conflict
 
     json_response = JSON.parse(response.body)
     assert_equal "Message with given UUID already exists", json_response['message']
