@@ -92,6 +92,10 @@ class ApiController < ActionController::API
     render status: :service_unavailable, json: { message: "Service unavailable" }
   end
 
+  def render_conflict(message)
+    render status: :conflict, json: { message: message }
+  end
+
   def render_unprocessable_entity(message)
     render status: :unprocessable_entity, json: { message: message }
   end

@@ -337,6 +337,8 @@ paths:
       responses:
         201:
           description: Úspešné vytvorenie správy
+        409:
+          description: Duplicitná správa (UUID už existuje)
         422:
           description: Nevalidný obsah správy
       security:

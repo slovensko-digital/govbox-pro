@@ -13,7 +13,9 @@ class Api::MessagesController < Api::TenantController
   def message_drafts
     ::Message.transaction do
       @message = permitted_params[:type].classify.safe_constantize.load_from_params(permitted_params, box: @box)
+
       render_unprocessable_entity(@message.errors.messages.values.join(', ')) and return unless @message.valid?
+      render_conflict(@message.errors.messages.values.join(', ')) and return unless @message.valid?(:validate_uuid_uniqueness)
 
       @message.save
 
@@ -40,11 +42,9 @@ class Api::MessagesController < Api::TenantController
 
       if @message.valid?(:validate_data)
         @message.created!
-
         head :created
       else
         @message.destroy
-
         render_unprocessable_entity(@message.errors.messages.values.join(', '))
       end
     end
