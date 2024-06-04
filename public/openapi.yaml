@@ -617,6 +617,12 @@ paths:
                     obo:
                       description: V prípade použitia spoločného prístupu k schránke OBO identifikátor
                       type: string
+                    dic:
+                      description: DIČ identifikátor subjektu
+                      type: string
+                    subject_id:
+                      description: Identifikátor subjektu
+                      type: string
                 api_connection_id:
                   type: integer
                   description: V prípade použitia spoločného prístupu k schránke identifikátor pripojenia v systéme Govbox Pro
