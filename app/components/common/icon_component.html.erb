@@ -1,3 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="<%= @stroke_width %>" stroke="currentColor" class="shrink-0 <%= @classes.present? ? @classes : "w-6 h-6" %>">
-  <path stroke-linecap="round" stroke-linejoin="round" d="<%= @svg %>" />
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="<%= @stroke_width %>" stroke="currentColor" class="shrink-0 <%= @classes.presence || "w-6 h-6" %>">
+  <% if @svg.class == Array %>
+    <% @svg.each do |svg| %>
+      <path stroke-linecap="round" stroke-linejoin="round" d="<%= svg %>" />
+    <% end %>
+  <% else %>
+    <path stroke-linecap="round" stroke-linejoin="round" d="<%= @svg %>" />
+  <% end %>
 </svg>
