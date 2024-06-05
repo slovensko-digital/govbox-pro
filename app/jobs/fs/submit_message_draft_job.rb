@@ -4,7 +4,7 @@ class Fs::SubmitMessageDraftJob < ApplicationJob
 
     response = fs_client.api(box: message_draft.thread.box).post_submission(
       message_draft.form.identifier,
-      Base64.strict_encode64(message_draft.form_object.unsigned_content),
+      Base64.strict_encode64(message_draft.form_object.content),
       message_draft.form_object.is_signed
     )
 

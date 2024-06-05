@@ -4,7 +4,7 @@ module Upvs
 
     def perform
       MessageObject.find_each do |message_object|
-        message_object.find_or_create_upvs_form
+        message_object.find_or_create_form
       end
     end
   end

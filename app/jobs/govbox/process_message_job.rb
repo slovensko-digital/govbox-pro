@@ -97,9 +97,9 @@ module Govbox
 
     def download_upvs_form_related_documents(message)
       message.objects.each do |message_object|
-        next if message_object.upvs_form&.related_documents.present?
+        next if message_object.form&.related_documents.present?
 
-        upvs_form = message_object.find_or_create_upvs_form
+        upvs_form = message_object.find_or_create_form
         ::Upvs::DownloadFormRelatedDocumentsJob.perform_later(upvs_form) if upvs_form
       end
     end

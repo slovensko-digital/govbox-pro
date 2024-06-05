@@ -5,7 +5,7 @@ class Fs::ValidateMessageDraftJob < ApplicationJob
 
     response = fs_client.api(box: message_draft.thread.box).post_validation(
       message_draft.form.identifier,
-      Base64.strict_encode64(message_draft.form_object.unsigned_content)
+      Base64.strict_encode64(message_draft.form_object.content)
     )
 
     raise RuntimeError.new("Response status is not 202. Message #{response[:body][:errors]}") unless response[:status] == 202

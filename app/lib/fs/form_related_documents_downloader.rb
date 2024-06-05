@@ -1,5 +1,5 @@
 class Fs::FormRelatedDocumentsDownloader < ::Utils::Downloader
-  SOURCE_URL = "#{ENV['FORMS_STORAGE_API_URL']}/fs"
+  SOURCE_URL = "#{ENV['FORMS_STORAGE_API_URL']}/fs/"
   XSD_PATH = 'schema.xsd'
 
   attr_reader :fs_form
@@ -21,6 +21,10 @@ class Fs::FormRelatedDocumentsDownloader < ::Utils::Downloader
       related_document_path = xml_manifest.xpath('//manifest:file-entry[@media-destination="screen" or @media-destination="view"]')&.first['full-path']
       related_document_path&.gsub!(/\\/, '/')
       related_document_type = 'CLS_F_XSLT_HTML'
+    when :xslt_txt
+      related_document_path = xml_manifest.xpath('//manifest:file-entry[@media-destination="sign"]')&.first['full-path']
+      related_document_path&.gsub!(/\\/, '/')
+      related_document_type = 'CLS_F_XSLT_TXT_SGN'
     when :xsl_fo
       related_document_path = xml_manifest.xpath('//manifest:file-entry[@media-destination="print"]')&.first['full-path']
       related_document_path&.gsub!(/\\/, '/')
@@ -35,7 +39,7 @@ class Fs::FormRelatedDocumentsDownloader < ::Utils::Downloader
       document_type: type,
       language: 'sk'
     ).tap do |form_related_document|
-      form_related_document.data = download(SOURCE_URL + "#{@fs_form.slug}/#{path}")
+      form_related_document.data = download(SOURCE_URL + "#{@fs_form.slug}/1.0/#{path}")
       form_related_document.touch if form_related_document.persisted?
       form_related_document.save!
     end
@@ -44,7 +48,7 @@ class Fs::FormRelatedDocumentsDownloader < ::Utils::Downloader
   private
 
   def download_xml_manifest
-    manifest_content = download(SOURCE_URL + "#{@fs_form.slug}/META-INF/manifest.xml")
+    manifest_content = download(SOURCE_URL + "#{@fs_form.slug}/1.0/META-INF/manifest.xml")
     Nokogiri::XML(manifest_content)
   end
 end
