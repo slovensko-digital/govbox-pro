@@ -14,6 +14,8 @@
 #  message_id   :bigint           not null
 #
 class MessageObject < ApplicationRecord
+  include PdfVisualizationOperations
+
   belongs_to :message, inverse_of: :objects
   has_one :message_object_datum, dependent: :destroy
   has_many :nested_message_objects, inverse_of: :message_object, dependent: :destroy
@@ -26,9 +28,11 @@ class MessageObject < ApplicationRecord
   scope :should_be_signed, -> { where(to_be_signed: true, is_signed: false) }
 
   validates :name, presence: { message: "Name can't be blank" }, on: :validate_data
-  validate :allowed_mime_type?, on: :validate_data
+  validate :allowed_mimetype?, on: :validate_data
 
+  after_create ->(message_object) { message_object.update(name: message_object.name + Utils.file_extension_by_mimetype(message_object.mimetype).to_s) if Utils.file_name_without_extension?(message_object) }
   after_update ->(message_object) { EventBus.publish(:message_object_changed, message_object) }
+  before_destroy :remove_object_related_tags_from_thread, prepend: true
 
   def self.create_message_objects(message, objects)
     objects.each do |raw_object|
@@ -40,7 +44,7 @@ class MessageObject < ApplicationRecord
       message_object = MessageObject.create!(
         message: message,
         name: raw_object.original_filename,
-        mimetype: Utils.file_mime_type_by_name(entry_name: raw_object.original_filename),
+        mimetype: Utils.file_mimetype_by_name(entry_name: raw_object.original_filename),
         is_signed: is_signed,
         object_type: "ATTACHMENT",
         tags: tags
@@ -78,9 +82,9 @@ class MessageObject < ApplicationRecord
     message_object_datum&.blob
   end
 
-  def unsigned_content(mimetype: 'application/xml')
+  def unsigned_content(mimetypes: Utils::XML_MIMETYPES)
     if is_signed
-      nested_message_objects&.find_by(mimetype: mimetype)&.content
+      nested_message_objects&.where("mimetype ILIKE ANY ( array[?] )", mimetypes.map {|val| "#{val}%" })&.first&.content
     else
       content
     end
@@ -113,11 +117,11 @@ class MessageObject < ApplicationRecord
 
   private
 
-  def allowed_mime_type?
+  def allowed_mimetype?
     if mimetype
-      errors.add(:mime_type, "MimeType of #{name} object is disallowed, allowed mimetypes: #{Utils::MIMETYPES_ALLOW_LIST.join(", ")}") unless Utils::MIMETYPES_ALLOW_LIST.include?(mimetype)
+      errors.add(:mimetype, "MimeType of #{name} object is disallowed, allowed mimetypes: #{Utils::MIMETYPES_ALLOW_LIST.join(", ")}") unless Utils::MIMETYPES_ALLOW_LIST.include?(mimetype)
     else
-      errors.add(:mime_type, "MimeType of #{name} object is disallowed, allowed file types: #{Utils::EXTENSIONS_ALLOW_LIST.join(", ")}")
+      errors.add(:mimetype, "MimeType of #{name} object is disallowed, allowed file types: #{Utils::EXTENSIONS_ALLOW_LIST.join(", ")}")
     end
   end
 
@@ -131,5 +135,17 @@ class MessageObject < ApplicationRecord
 
   def thread
     message.thread
+  end
+
+  def remove_object_related_tags_from_thread
+    tags.each do |tag|
+      message.thread.unassign_tag(tag) unless other_thread_objects_include_tag?(tag)
+    end
+
+    message.thread.unassign_tag(message.tenant.signed_tag!) unless message.thread.tags.reload.where(type: SignedByTag.to_s).any?
+  end
+
+  def other_thread_objects_include_tag?(tag)
+    message.thread.objects.excluding(self).joins(:tags).where(tags: { id: tag.id }).any?
   end
 end

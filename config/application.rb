@@ -7,7 +7,7 @@ require "rails/all"
 Bundler.require(*Rails.groups)
 
 if ['development', 'test'].include? ENV['RAILS_ENV']
-  Dotenv::Railtie.load
+  Dotenv::Rails.load
 end
 
 module GovboxPro
@@ -52,6 +52,12 @@ module GovboxPro
       cron: "30 3 * * *",  # run every day at 3:30 am
       class: "Archivation::ArchiveAllArchivedMessageThreadsJob",
       description: "Regular job to archive message_threads"
+    }
+
+    config.good_job.cron['fetch_upvs_forms_related_documents'] = {
+      cron: "0 */12 * * *",  # run every 12 hours
+      class: "Upvs::FetchFormRelatedDocumentsJob",
+      description: "Regular job to fetch Upvs::FormRelatedDocuments"
     }
 
     # Configuration for the application, engines, and railties goes here.

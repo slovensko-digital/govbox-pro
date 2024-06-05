@@ -67,6 +67,7 @@ Rails.application.routes.draw do
       resource :message_drafts, only: [:update] do
         collection do
           post :submit
+          delete :destroy
         end
       end
 
@@ -104,19 +105,22 @@ Rails.application.routes.draw do
 
   resources :messages do
     member do
-      post 'reply'
-      post 'authorize_delivery_notification'
+      post :reply
+      post :authorize_delivery_notification
+      get :export
     end
 
     resources :message_objects do
       member do
         get 'download'
+        get 'download_pdf'
         get 'signing_data'
         get 'download_archived'
       end
 
       resources :nested_message_objects do
         get 'download'
+        get 'download_pdf'
       end
     end
   end
@@ -201,9 +205,14 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :message_threads, only: :show
-    resources :messages, only: :show do
+    resources :message_threads, only: [:show] do
+      resources :tags, only: [:create] do
+        delete :destroy, on: :collection
+      end
+    end
+    resources :messages, only: [:show] do
       post :message_drafts, on: :collection
+      get :sync, on: :collection
     end
   end
 

@@ -20,6 +20,8 @@ class ApiController < ActionController::API
 
   private
 
+  API_PAGE_SIZE = 200
+
   def authenticity_token
     (ActionController::HttpAuthentication::Token.token_and_options(request)&.first || params[:token])&.squish.presence
   end
@@ -88,6 +90,10 @@ class ApiController < ActionController::API
 
   def render_service_unavailable_error
     render status: :service_unavailable, json: { message: "Service unavailable" }
+  end
+
+  def render_conflict(message)
+    render status: :conflict, json: { message: message }
   end
 
   def render_unprocessable_entity(message)

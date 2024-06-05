@@ -36,7 +36,7 @@ class Drafts::LoadContentJob < ApplicationJob
 
       message_draft_object = MessageObject.create(
         name: file_name,
-        mimetype: Utils.file_mime_type_by_name(entry_name: file_name, is_form: is_form),
+        mimetype: Utils.file_mimetype_by_name(entry_name: file_name, is_form: is_form),
         object_type: is_form ? "FORM" : "ATTACHMENT",
         is_signed: signed,
         to_be_signed: to_be_signed,
@@ -60,18 +60,10 @@ class Drafts::LoadContentJob < ApplicationJob
   end
   
   def save_form_visualisation(message_draft)
-      message_draft.update(
-        html_visualization: message_draft.visualization
-      )
-
-      if message_draft.custom_visualization?
-        message_draft.metadata["message_body"] = Upvs::FormBuilder.parse_general_agenda_text(message_draft.form.content)
-        message_draft.save!
-      end
-
-      message_draft.form.update(
-        visualizable: true
-      ) if message_draft.html_visualization
+    if message_draft.custom_visualization?
+      message_draft.metadata["message_body"] = Upvs::FormBuilder.parse_general_agenda_text(message_draft.form.content)
+      message_draft.save!
+    end
   end
 
   delegate :uuid, to: self

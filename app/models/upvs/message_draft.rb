@@ -66,14 +66,6 @@ class Upvs::MessageDraft < MessageDraft
 
   private
 
-  def validate_uuid
-    if uuid
-      errors.add(:metadata, 'Message ID must be in UUID format') unless uuid.match?(Utils::UUID_PATTERN)
-    else
-      errors.add(:metadata, "Message ID can't be blank")
-    end
-  end
-
   def validate_correlation_id
     if all_metadata&.dig("correlation_id")
       errors.add(:metadata, "Correlation ID must be UUID") unless all_metadata.dig("correlation_id").match?(Utils::UUID_PATTERN)

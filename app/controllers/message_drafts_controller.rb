@@ -43,7 +43,7 @@ class MessageDraftsController < ApplicationController
     unless @message.valid?(:create_from_template)
       @templates_list = MessageTemplate.tenant_templates_list(Current.tenant)
       @message_template ||= MessageTemplate.default_template
-      @boxes = Current.tenant.boxes.pluck(:name, :id)
+      @boxes = Current.tenant&.boxes
       @box = Current.box if Current.box || @boxes.first
 
       @recipients_list = @message_template&.recipients&.pluck(:institution_name, :institution_uri)&.map { |name, uri| { uri: uri, name: name }}

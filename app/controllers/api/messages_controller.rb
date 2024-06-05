@@ -13,7 +13,10 @@ class Api::MessagesController < Api::TenantController
   def message_drafts
     ::Message.transaction do
       @message = permitted_params[:type].classify.safe_constantize.load_from_params(permitted_params, box: @box)
+
       render_unprocessable_entity(@message.errors.messages.values.join(', ')) and return unless @message.valid?
+      render_conflict(@message.errors.messages.values.join(', ')) and return unless @message.valid?(:validate_uuid_uniqueness)
+
       @message.save
 
       permitted_params.fetch(:objects, []).each do |object_params|
@@ -39,14 +42,17 @@ class Api::MessagesController < Api::TenantController
 
       if @message.valid?(:validate_data)
         @message.created!
-
         head :created
       else
         @message.destroy
-
         render_unprocessable_entity(@message.errors.messages.values.join(', '))
       end
     end
+  end
+
+  def sync
+    @messages = @tenant.messages.order(:id).limit(API_PAGE_SIZE).includes(:objects)
+    @messages = @messages.where('messages.id > ?', params[:last_id]) if params[:last_id]
   end
 
   private
@@ -75,7 +81,7 @@ class Api::MessagesController < Api::TenantController
         :mimetype,
         :object_type,
         :content,
-        tags: []
+        { tags: [] }
       ],
       tags: []
     )
@@ -93,7 +99,7 @@ class Api::MessagesController < Api::TenantController
       render_unprocessable_entity("Tag with name #{tag_name} does not exist") and return
     end
 
-    message_object_tag_names = permitted_params.fetch(:objects, []).map {|o| o['tags'] }.compact.flatten
+    message_object_tag_names = permitted_params.fetch(:objects, []).pluck('tags').compact.flatten
     message_object_tag_names.each do |tag_name|
       @tenant.user_signature_tags.find_by!(name: tag_name)
     rescue ActiveRecord::RecordNotFound

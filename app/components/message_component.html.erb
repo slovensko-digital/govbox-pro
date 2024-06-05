@@ -87,7 +87,7 @@
           </div>
       <% end %>
 
-      <% if @message.form && @message.form.nested_message_objects.present? %>
+      <% if @message.form && @message.form.nested_message_objects.count > 1 %>
         <div class="flex flex-col justify-stretch items-stretch divide-y relative px-4 bg-white border border-gray-200 w-full">
           <% @message.form.nested_message_objects.each do |message_attachment| %>
             <!-- TODO lepsia podmienka (ma sa zobrazit vsetko okrem formulara) -->

@@ -151,17 +151,18 @@ class MessageThreadTest < ActiveSupport::TestCase
   end
 
   test "triggers callback event when new tags is assigned" do
-    called = false
-    EventBus.subscribe(:message_thread_tag_changed, ->(_message_thread_tag) {
-      called = true
-    })
-
     thread = message_threads(:ssd_main_general)
+
+    subscriber1 = Minitest::Mock.new
+    subscriber1.expect :call, true, [MessageThreadsTag]
+
+    EventBus.subscribe(:message_thread_tag_changed, subscriber1)
+
     thread.tags << tags(:ssd_print)
+
+    assert_mock subscriber1
 
     # remove callback
     EventBus.class_variable_get(:@@subscribers_map)[:message_thread_tag_changed].pop
-
-    assert called
   end
 end

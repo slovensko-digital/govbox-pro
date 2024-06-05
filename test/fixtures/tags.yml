@@ -91,7 +91,7 @@ ssd_basic_user_signature_requested:
   color: yellow
 
 ssd_signed:
-  name: Podpisane
+  name: Podpísané
   type: SignedTag
   visible: true
   tenant: ssd
@@ -99,7 +99,7 @@ ssd_signed:
   color: green
 
 ssd_basic_user_signed:
-  name: 'Podpisane: Another user'
+  name: 'Podpísané: Another user'
   type: SignedByTag
   visible: true
   tenant: ssd
@@ -144,6 +144,12 @@ ssd_admin_user_drafts:
   owner: admin
   type: DraftTag
   visible: false
+  tenant: ssd
+
+ssd_submitted:
+  name: Odoslané na spracovanie
+  type: SubmittedTag
+  visible: true
   tenant: ssd
 
 solver_other_user_drafts:

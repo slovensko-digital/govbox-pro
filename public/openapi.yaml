@@ -22,7 +22,7 @@ servers:
 paths:
   /api/message_threads/{id}:
     get:
-      tags: [ Vlákna ]
+      tags: [Vlákna]
       summary: Vráti konkrétne komunikačné vlákno a odkazy na príslušné správy
       description: |
         Vráti konkrétne komunikačné vlákno a odkazy na príslušné správy. Predpokladom je, že konzument disponuje identifikátorom vlákna, napr. z na to vytvoreného subscription na udalosť vytvorenia nového komunikačného vlákna.
@@ -57,11 +57,62 @@ paths:
                       format: url
       security:
         - "Tenant_Token": []
-
-
+  /api/message_threads/{id}/tags:
+    post:
+      tags: [Vlákna, Štítky]
+      summary: Pridá štítky k vláknu
+      description: Pridá štítky k vláknu. V prípade, že štítok neexistuje, vytvorí nový
+      parameters:
+        - name: id
+          description: Id vlákna
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: tags
+          description: Zoznam názvov štítkov
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        204:
+          description: Úspešné pridanie štítkov k vláknu
+        404:
+          description: Vlákno nenájdené
+      security:
+        - "Tenant_Token": []
+    delete:
+      tags: [Vlákna, Štítky]
+      summary: Odoberie štítky z vlákna
+      description: Odoberie štítky z vlákna
+      parameters:
+        - name: id
+          description: Id vlákna
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: tags
+          description: Zoznam názvov štítkov
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        204:
+          description: Úspešné odobranie štítkov z vlákna
+        404:
+          description: Vlákno nenájdené
+      security:
+        - "Tenant_Token": []
   /api/messages/{id}:
     get:
-      tags: [ Správy ]
+      tags: [Správy]
       summary: Vráti konkrétnu správu vrátane jej objektov
       description: |
         Vráti konkrétnu správu vrátane jej objektov.
@@ -117,7 +168,7 @@ paths:
                         object_type:
                           description: Typ objektu
                           type: string
-                          enum: [ "FORM", "ATTACHMENT" ]
+                          enum: ["FORM", "ATTACHMENT"]
                         updated_at:
                           description: Dátum poslednej zmeny (pridanie, podpísanie, ...) objektu
                           type: string
@@ -134,7 +185,7 @@ paths:
 
   /api/messages/message_drafts:
     post:
-      tags: [ Správy ]
+      tags: [Správy]
       summary: Vytvorí novú rozpracovanú správu vrátane jej objektov
       description: |
         Vytvorí novú rozpracovanú správu vrátane jej objektov.
@@ -240,8 +291,7 @@ paths:
                       object_type:
                         description: Typ objektu
                         type: string
-                        format:
-                          enum: [ FORM, ATTACHMENT ]
+                        enum: ["FORM", "ATTACHMENT"]
                       content:
                         description: Obsah objektu zakódovaný podľa Base64
                         type: string
@@ -287,10 +337,81 @@ paths:
       responses:
         201:
           description: Úspešné vytvorenie správy
+        409:
+          description: Duplicitná správa (UUID už existuje)
         422:
           description: Nevalidný obsah správy
       security:
-        - "Tenant_Token": [ ]
+        - "Tenant_Token": []
+  /api/messages/sync:
+    get:
+      tags: [Správy]
+      summary: Vráti zoznam správ od určeného ID
+      description: Vráti zoznam správ od poslednej synchronizácie, t.j. od posledného prijatého ID. Určené na synchronizáciu do iných alpikácií. Počet správ vrátený v jednom volaní je obmedzený na 200
+      parameters:
+        - name: lastId
+          in: query
+          schema:
+            type: integer
+      responses:
+        204:
+          description: Úspešne vrátený zoznam správ
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      description: Identifikátor správy v systéme Govbox Pro
+                      type: integer
+                    thread_id:
+                      description: Identifikátor vlákna, ktorému prislúcha správa
+                      type: integer
+                    uuid:
+                      description: UUID správy
+                      type: string
+                      format: uuid
+                    title:
+                      description: Predmet správy
+                      type: string
+                    sender_name:
+                      description: Odosielateľ správy
+                      type: string
+                    recipient_name:
+                      description: Prijímateľ správy
+                      type: string
+                    delivered_at:
+                      description: Dátum a čas doručenia správy
+                      type: string
+                      format: date-time
+                    message_objects:
+                      description: Zoznam objektov správy
+                      type: array
+                      items:
+                        description: Objekt správy
+                        type: object
+                        properties:
+                          name:
+                            description: Názov objektu
+                            type: string
+                          mimetype:
+                            description: Typ súboru objektu
+                            type: string
+                          object_type:
+                            description: Typ objektu
+                            type: string
+                            enum: ["FORM", "ATTACHMENT"]
+                          updated_at:
+                            description: Dátum poslednej zmeny (pridanie, podpísanie, ...) objektu
+                            type: string
+                            format: date-time
+                          is_signed:
+                            description: Príznak, či je objekt podpísaný
+                            type: boolean
+      security:
+        - "Tenant_Token": []
 
   /api/site_admin/tenant/:
     post:
@@ -596,32 +717,32 @@ components:
     Site_Admin_Token:
       description: |
         Požaduje API token vytvorený treťou stranou, ktorý:
-  
+
         - je zakodovaný algoritmom RS256,
         - je podpísaný privátnym kľúčom tretej strany,
         - má nastavený `exp` claim na čas expirácie, ktorý vyprší o 5 minút alebo skôr od vytvorenia tokenu,
         - má nastavený `jti` claim na identifikátor, ktorý je unikátny počas 5 minút.
-  
+
         Príklad `header` segmentu:
-  
+
               {
                 "alg": "RS256"
               }
-  
+
         Príklad `payload` segmentu:
-  
+
               {
                 "exp": 1543437976,
                 "jti": "4dee8618-abbe-4dc3-83ba-e984d1396f9f"
               }
-  
+
         API token musí byť prítomný buď:
-  
+
         - v hlavičke požiadavky ako `Authorization: Bearer <api-token>`,
         - alebo v URL parametri požiadavky ako `?token=<api-token>`.
-  
+
         Poznámky:
-  
+
         - hodnota `exp` sa odporúča nastaviť na čo najkratší možný čas od vytvorenia tokenu,
         - hodnota `exp` sa kontroluje ako počet sekúnd od 1970-01-01T00:00:00 UTC,
         - hodnota `jti` sa kontroluje podľa regulárneho výrazu `/\A[0-9a-z\-_]{32,256}\z/i`,
