@@ -21,9 +21,23 @@ ssd_main_delivery:
   delivered_at: 2023-05-18 18:15:22
   last_message_delivered_at: 2023-05-18 18:16:22
 
+ssd_main_draft_only:
+  box: ssd_main
+  title: Draft only
+  original_title: MyString
+  delivered_at: 2023-05-18 18:15:22
+  last_message_delivered_at: 2023-05-18 18:16:22
+
 ssd_main_with_application:
   box: ssd_main
   title: With outbox application
+  original_title: MyString
+  delivered_at: 2023-05-18 18:15:22
+  last_message_delivered_at: 2023-05-18 18:16:22
+
+ssd_main_draft_only:
+  box: ssd_main
+  title: With message draft
   original_title: MyString
   delivered_at: 2023-05-18 18:15:22
   last_message_delivered_at: 2023-05-18 18:16:22

@@ -24,8 +24,11 @@
 class MessageDraft < Message
   belongs_to :import, class_name: 'MessageDraftsImport', optional: true
 
+  scope :in_submission_process, -> { where("metadata ->> 'status' IN ('being_submitted', 'submitted')") }
+  scope :not_in_submission_process, -> { where("metadata ->> 'status' NOT IN ('being_submitted', 'submitted')") }
+
   validate :validate_uuid
-  validates :title, presence: true
+  validates :title, presence: { message: "Title can't be blank" }
   validates :delivered_at, presence: true
 
   after_create do
@@ -43,6 +46,10 @@ class MessageDraft < Message
       drafts_tags.each do |drafts_tag|
         self.remove_cascading_tag(drafts_tag)
       end
+
+      self.remove_cascading_tag(self.thread.tenant.submitted_tag)
+    elsif self.thread.message_drafts.in_submission_process.none?
+      self.remove_cascading_tag(self.thread.tenant.submitted_tag)
     end
   end
 
@@ -55,6 +62,10 @@ class MessageDraft < Message
 
   with_options on: :validate_data do |message_draft|
     message_draft.validate :validate_data
+  end
+
+  with_options on: :validate_uuid_uniqueness do |message_draft|
+    message_draft.validate :validate_uuid_uniqueness
   end
 
   def update_content(parameters)
@@ -147,6 +158,9 @@ class MessageDraft < Message
   end
 
   def being_submitted!
+    remove_cascading_tag(tenant.draft_tag) if thread.message_drafts.not_in_submission_process.excluding(self).reload.none?
+    add_cascading_tag(tenant.submitted_tag)
+
     metadata["status"] = "being_submitted"
     save!
     EventBus.publish(:message_draft_being_submitted, self)
@@ -190,10 +204,14 @@ class MessageDraft < Message
 
   def validate_uuid
     if uuid
-      errors.add(:metadata, "UUID must be in UUID format") unless uuid.match?(Utils::UUID_PATTERN)
+      errors.add(:uuid, "UUID must be in UUID format") unless uuid.match?(Utils::UUID_PATTERN)
     else
-      errors.add(:metadata, "UUID can't be blank")
+      errors.add(:uuid, "UUID can't be blank")
     end
+  end
+
+  def validate_uuid_uniqueness
+    errors.add(:uuid, "Message with given UUID already exists") if uuid && box.messages.excluding(self).where(uuid: uuid).any?
   end
 
   def validate_form_object

@@ -115,6 +115,7 @@ class Fs::MessageDraft < MessageDraft
   private
 
   def validate_data
+    validate_uuid_uniqueness
     validate_metadata
     validate_form_object
   end

@@ -82,8 +82,8 @@ class Upvs::MessageDraft < MessageDraft
 
   private
 
-
   def validate_data
+    validate_uuid_uniqueness
     validate_metadata
     validate_allow_rules
     validate_form_object

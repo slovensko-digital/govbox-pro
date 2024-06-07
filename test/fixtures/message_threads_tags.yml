@@ -35,3 +35,15 @@ ssd_main_issue_archived:
 ssd_main_delivery_everything:
   message_thread: ssd_main_delivery
   tag: ssd_everything
+
+ssd_main_draft_only_everything:
+  message_thread: ssd_main_draft_only
+  tag: ssd_everything
+
+ssd_main_draft_only_other:
+  message_thread: ssd_main_draft_only
+  tag: ssd_other
+
+ssd_main_draft_only_finance:
+  message_thread: ssd_main_draft_only
+  tag: ssd_finance

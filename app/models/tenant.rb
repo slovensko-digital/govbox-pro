@@ -24,6 +24,7 @@ class Tenant < ApplicationRecord
   has_one :signed_tag
   has_one :signed_externally_tag
   has_one :archived_tag
+  has_one :submitted_tag
   has_one :submission_error_tag
   has_many :tags, dependent: :destroy
   has_many :signature_requested_from_tags
@@ -42,7 +43,7 @@ class Tenant < ApplicationRecord
 
   validates_presence_of :name
 
-  AVAILABLE_FEATURE_FLAGS = [:audit_log, :archive, :api, :message_draft_import, :template_messages, :pdf_transformation, :fs_api]
+  AVAILABLE_FEATURE_FLAGS = [:audit_log, :archive, :api, :message_draft_import, :template_messages, :fs_api]
 
   def draft_tag!
     draft_tag || raise(ActiveRecord::RecordNotFound, "`DraftTag` not found in tenant: #{id}")
@@ -110,6 +111,7 @@ class Tenant < ApplicationRecord
     create_signature_requested_tag!(name: "Na podpis", visible: true, color: "yellow", icon: "pencil")
     create_signed_tag!(name: "Podpísané", visible: true, color: "green", icon: "fingerprint")
     create_signed_externally_tag!(name: "Externe podpísané", visible: false, color: "purple", icon: "shield-check")
+    create_submitted_tag!(name: 'Odoslané na spracovanie')
     create_submission_error_tag!(name: 'Problémové')
 
     make_admins_see_everything!

@@ -4,7 +4,7 @@
       <%= render Icons::ArrowDownTrayComponent.new(css_classes: "h-5 w-5") %>
       Stiahnuť
     <% end %>
-    <% if Current.tenant.feature_enabled?(:pdf_transformation) && @message_attachment.downloadable_as_pdf? %>
+    <% if @message_attachment.downloadable_as_pdf? %>
       <%= link_to download_pdf_message_message_object_path(@message_attachment.message, @message_attachment), class: "flex gap-3", role: "menuitem", tabindex: "-1", data: { turbo_frame: "_top", turbo: false } do %>
         <%= render Common::IconComponent.new("document-arrow-down", classes: "w-5 h-5") %>
         Stiahnuť ako PDF

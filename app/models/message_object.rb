@@ -32,6 +32,7 @@ class MessageObject < ApplicationRecord
 
   after_create ->(message_object) { message_object.fill_missing_info }
   after_update ->(message_object) { EventBus.publish(:message_object_changed, message_object) }
+  before_destroy :remove_object_related_tags_from_thread, prepend: true
 
   def self.create_message_objects(message, objects)
     objects.each do |raw_object|
@@ -139,5 +140,17 @@ class MessageObject < ApplicationRecord
 
   def thread
     message.thread
+  end
+
+  def remove_object_related_tags_from_thread
+    tags.each do |tag|
+      message.thread.unassign_tag(tag) unless other_thread_objects_include_tag?(tag)
+    end
+
+    message.thread.unassign_tag(message.tenant.signed_tag!) unless message.thread.tags.reload.where(type: SignedByTag.to_s).any?
+  end
+
+  def other_thread_objects_include_tag?(tag)
+    message.thread.objects.excluding(self).joins(:tags).where(tags: { id: tag.id }).any?
   end
 end
