@@ -23,8 +23,8 @@ class Upvs::MessageTemplate < ::MessageTemplate
     Upvs::ServiceWithFormAllowRule.all_institutions_with_template_support(self)
   end
 
-  def create_message(message, author:, box:, recipient_name:, recipient_uri:)
-    message.update(
+  def create_message(author:, box:, recipient_name:, recipient_uri:)
+    message = Upvs::MessageDraft.create(
       uuid: SecureRandom.uuid,
       delivered_at: Time.current,
       read: true,
@@ -61,12 +61,14 @@ class Upvs::MessageTemplate < ::MessageTemplate
 
       create_form_object(message)
     end
+
+    message
   end
 
-  def create_message_reply(message, original_message:, author:)
+  def create_message_reply(original_message:, author:)
     message_title = "Odpoveď: #{original_message.title}"
 
-    message.update(
+    message = Upvs::MessageDraft.create(
       uuid: SecureRandom.uuid,
       delivered_at: Time.current,
       read: true,
@@ -94,6 +96,8 @@ class Upvs::MessageTemplate < ::MessageTemplate
     message.add_cascading_tag(author.draft_tag)
 
     create_form_object(message)
+
+    message
   end
 
   def build_message_from_template(message)

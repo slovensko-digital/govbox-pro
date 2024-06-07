@@ -2,10 +2,9 @@ require "test_helper"
 
 class Upvs::MessageTemplateTest < ActiveSupport::TestCase
   test 'builds XML form for message draft' do
-    message_draft = MessageDraft.new
     message_template = upvs_message_templates(:general_agenda)
 
-    message_template.create_message(message_draft, author: users(:basic), box: boxes(:ssd_main), recipient_name: 'Test OVM', recipient_uri: 'ico://sk/12345678')
+    message_draft = message_template.create_message(author: users(:basic), box: boxes(:ssd_main), recipient_name: 'Test OVM', recipient_uri: 'ico://sk/12345678')
 
     message_draft.metadata['data'] = {
       Predmet: 'Odpoved',

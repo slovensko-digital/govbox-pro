@@ -27,18 +27,16 @@ class Upvs::MessageDraftsController < ApplicationController
   end
 
   def create
-    @message = Upvs::MessageDraft.new
-    authorize @message
-
     @user_is_signer = Current.user.signer?
 
-    @message_template&.create_message(
-      @message,
+    @message = @message_template&.create_message(
       author: Current.user,
       box: @box,
       recipient_name: new_message_draft_params[:recipient_name],
       recipient_uri: new_message_draft_params[:recipient_uri]
     )
+
+    authorize @message
 
     unless @message.valid?(:create_from_template)
       @templates_list = MessageTemplate.tenant_templates_list(Current.tenant)

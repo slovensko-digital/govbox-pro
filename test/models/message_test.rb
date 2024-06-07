@@ -56,15 +56,14 @@ class MessageTest < ActiveSupport::TestCase
     message = messages(:ssd_main_general_one)
     user = users(:basic)
 
-    reply = MessageDraft.new
-    MessageTemplate.reply_template.create_message_reply(reply, original_message: message, author: user)
+    reply = MessageTemplate.reply_template.create_message_reply(original_message: message, author: user)
 
     assert_equal reply.sender_name, message.recipient_name
     assert_equal reply.recipient_name, message.sender_name
     assert_equal reply.message_thread_id, message.message_thread_id
     assert_match message.title, reply.title
     assert_match "Odpoveď", reply.title
-    assert_equal reply.type, "MessageDraft"
+    assert_equal reply.type, "Upvs::MessageDraft"
     assert_equal reply.author_id, user.id
     assert_not reply.collapsed
   end
