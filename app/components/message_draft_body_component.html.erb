@@ -43,7 +43,7 @@
   </div>
 
   <div class="flex flex-col justify-stretch items-start relative gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
-    <% if @message.custom_visualization? %>
+    <% if @message.created_from_template? %>
       <%= render MessageTemplateComponent.new(message: @message, is_last: @is_last) %>
     <% else %>
       <% if @message.metadata['validation_errors']&.any? %>

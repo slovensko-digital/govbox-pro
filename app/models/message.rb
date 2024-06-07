@@ -66,6 +66,10 @@ class Message < ApplicationRecord
     objects.select { |o| o.form? }&.first
   end
 
+  def destroyable?
+    true
+  end
+
   def submittable?
     false
   end

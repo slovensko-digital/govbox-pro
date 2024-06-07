@@ -25,7 +25,7 @@ class MessageDraft < Message
   belongs_to :import, class_name: 'MessageDraftsImport', optional: true
 
   validate :validate_uuid
-  validates :title, presence: { message: "Title can't be blank" }
+  validates :title, presence: true
   validates :delivered_at, presence: true
 
   after_create do

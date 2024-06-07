@@ -46,6 +46,6 @@ class MessageObjectPolicy < ApplicationPolicy
   end
 
   def destroy?
-    @message_object.message.is_a?(MessageDraft)
+    @message_object.message.destroyable?
   end
 end
