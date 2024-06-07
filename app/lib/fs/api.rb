@@ -54,16 +54,20 @@ module Fs
         mime_type: mime_type,
         form_identifier: form_identifier,
         content: content
-        }, jwt_header(obo).merge(fs_credentials_header))
-      end
+      }, jwt_header(obo).merge(fs_credentials_header))
+    end
 
-      def delete_submission(submission_id)
-        request(:delete, "submissions/#{submission_id}", {}, jwt_header)
-      end
+    def submission_url
+      "#{@url}/api/v1/submissions"
+    end
 
-      def get_location(location_header)
-        request_url(:get, location_header, {}, jwt_header, accept_negative: true)
-      end
+    def delete_submission(submission_id)
+      request(:delete, "submissions/#{submission_id}", {}, jwt_header)
+    end
+
+    def get_location(location_header)
+      request_url(:get, location_header, {}, jwt_header, accept_negative: true)
+    end
 
     private
 
