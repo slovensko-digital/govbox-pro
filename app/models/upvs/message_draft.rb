@@ -28,6 +28,14 @@ class Upvs::MessageDraft < MessageDraft
 
   validate :validate_correlation_id
 
+  with_options on: :create_from_template do |message_draft|
+    message_draft.validates :sender_name, presence: true
+    message_draft.validates :recipient_name, presence: true
+    message_draft.validate :validate_metadata_with_template
+    message_draft.validate :validate_form_object
+    message_draft.validate :validate_allow_rules
+  end
+
   def self.load_from_params(message_params, box:)
     message_params = message_params.permit(
       :type,
@@ -68,13 +76,35 @@ class Upvs::MessageDraft < MessageDraft
     message
   end
 
+  def submit
+    Govbox::SubmitMessageDraftAction.run(self)
+  end
+
   private
 
-  def validate_uuid
-    if uuid
-      errors.add(:metadata, 'Message ID must be in UUID format') unless uuid.match?(Utils::UUID_PATTERN)
-    else
-      errors.add(:metadata, "Message ID can't be blank")
+
+  def validate_data
+    validate_metadata
+    validate_allow_rules
+    validate_form_object
+    validate_objects
+    validate_with_message_template
+  end
+
+  def validate_metadata
+    errors.add(:metadata, "No recipient URI") unless all_metadata&.dig("recipient_uri")
+    errors.add(:metadata, "No posp ID") unless all_metadata&.dig("posp_id")
+    errors.add(:metadata, "No posp version") unless all_metadata&.dig("posp_version")
+    errors.add(:metadata, "No message type") unless all_metadata&.dig("message_type")
+
+    errors.add(:metadata, "Reference ID must be UUID") if all_metadata&.dig("reference_id") && !all_metadata&.dig("reference_id")&.match?(Utils::UUID_PATTERN)
+  end
+
+  def validate_allow_rules
+    return if errors[:metadata].any?
+
+    unless ::Upvs::ServiceWithFormAllowRule.matching_metadata(all_metadata).where(institution_uri: metadata['recipient_uri']).any?
+      errors.add(:metadata, :disallowed_form_for_recipient)
     end
   end
 

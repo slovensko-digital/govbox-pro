@@ -51,7 +51,6 @@ class MessageDraft < Message
     message_draft.validates :recipient_name, presence: true
     message_draft.validate :validate_metadata_with_template
     message_draft.validate :validate_form_object
-    message_draft.validate :validate_allow_rules
   end
 
   with_options on: :validate_data do |message_draft|
@@ -67,7 +66,7 @@ class MessageDraft < Message
   end
 
   def submit
-    Govbox::SubmitMessageDraftAction.run(self)
+    raise NotImplementedError
   end
 
   def draft?
@@ -79,16 +78,20 @@ class MessageDraft < Message
   end
 
   def editable?
-    custom_visualization? && !form_object&.is_signed? && not_yet_submitted?
+    created_from_template? && !form_object&.is_signed? && not_yet_submitted?
+  end
+
+  def destroyable?
+    true
   end
 
   def reason_for_readonly
     return :read_only_agenda unless template.present?
-    return :form_submitted if submitted? || being_submitted?
+    return :submitted if submitted? || being_submitted?
     return :form_signed if form_object.is_signed?
   end
 
-  def custom_visualization?
+  def created_from_template?
     template.present?
   end
 
@@ -177,24 +180,20 @@ class MessageDraft < Message
     reload
   end
 
-  def create_form_object
-    # TODO: clean the domain (no UPVS stuff)
-    objects.create!(
-      name: "form.xml",
-      mimetype: "application/x-eform-xml",
-      object_type: "FORM",
-      is_signed: false
-    )
-  end
-
   private
 
   def validate_data
-    validate_metadata
-    validate_allow_rules
     validate_form_object
     validate_objects
     validate_with_message_template
+  end
+
+  def validate_uuid
+    if uuid
+      errors.add(:metadata, "UUID must be in UUID format") unless uuid.match?(Utils::UUID_PATTERN)
+    else
+      errors.add(:metadata, "UUID can't be blank")
+    end
   end
 
   def validate_form_object
@@ -214,22 +213,6 @@ class MessageDraft < Message
     errors.add(:base, :invalid_form) if form_errors.any?
   end
 
-  def validate_allow_rules
-    return if errors[:metadata].any?
-
-    unless ::Upvs::ServiceWithFormAllowRule.matching_metadata(all_metadata).where(institution_uri: metadata['recipient_uri']).any?
-      errors.add(:metadata, :disallowed_form_for_recipient)
-    end
-  end
-
-  def validate_uuid
-    if uuid
-      errors.add(:metadata, "UUID must be in UUID format") unless uuid.match?(Utils::UUID_PATTERN)
-    else
-      errors.add(:metadata, "UUID can't be blank")
-    end
-  end
-
   def validate_objects
     if objects.size == 0
       errors.add(:objects, "Message contains no objects")
@@ -243,15 +226,6 @@ class MessageDraft < Message
 
     forms = objects.select { |o| o.form? }
     errors.add(:objects, "Message has to contain exactly one form object") if forms.size != 1
-  end
-
-  def validate_metadata
-    errors.add(:metadata, "No recipient URI") unless all_metadata&.dig("recipient_uri")
-    errors.add(:metadata, "No posp ID") unless all_metadata&.dig("posp_id")
-    errors.add(:metadata, "No posp version") unless all_metadata&.dig("posp_version")
-    errors.add(:metadata, "No message type") unless all_metadata&.dig("message_type")
-
-    errors.add(:metadata, "Reference ID must be UUID") if all_metadata&.dig("reference_id") && !all_metadata&.dig("reference_id")&.match?(Utils::UUID_PATTERN)
   end
 
   def validate_with_message_template

@@ -1,6 +1,8 @@
 <h2>Nový import draftov</h2>
 <% if !@box %>
-  <p>Pre import draftov vyberte v hornej liste schranku, do ktorej sa ma import realizovat</p>
+  <p>Pre import draftov vyberte v hornej lište schránku, do ktorej sa má import realizovať.</p>
+<% elsif !@box.is_a?(Upvs::Box) %>
+  <p>Pre import draftov vyberte v hornej lište schránku typu ÚPVS, do ktorej sa má import realizovať.</p>
 <% else %>
   <div class="flex p-8">
     <%= "Import prebehne do schránky " %>
