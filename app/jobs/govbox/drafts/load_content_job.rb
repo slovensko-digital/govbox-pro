@@ -1,6 +1,6 @@
 require 'csv'
 
-class Drafts::LoadContentJob < ApplicationJob
+class Govbox::Drafts::LoadContentJob < ApplicationJob
   class << self
     delegate :uuid, to: SecureRandom
   end
@@ -61,7 +61,7 @@ class Drafts::LoadContentJob < ApplicationJob
   
   def save_form_visualisation(message_draft)
 
-    if message_draft.custom_visualization?
+    if message_draft.created_from_template?
       message_draft.metadata["message_body"] = Upvs::FormBuilder.parse_general_agenda_text(message_draft.form_object.content)
       message_draft.save!
     end

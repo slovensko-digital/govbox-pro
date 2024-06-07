@@ -14,7 +14,7 @@ class MessageDraftsImportsController < ApplicationController
       box: @box
     )
 
-    Drafts::ParseImportJob.perform_later(import, author: Current.user)
+    Govbox::Drafts::ParseImportJob.perform_later(import, author: Current.user)
 
     redirect_to upvs_message_drafts_path
   end

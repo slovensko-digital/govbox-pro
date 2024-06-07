@@ -1,13 +1,13 @@
 require 'csv'
 
-class Drafts::ParseImportJob < ApplicationJob
+class Govbox::Drafts::ParseImportJob < ApplicationJob
   class << self
     delegate :uuid, to: SecureRandom
   end
 
   DEFAULT_SKTALK_CLASS = 'EGOV_APPLICATION'
 
-  def perform(import, author:, jobs_batch: GoodJob::Batch.new, load_content_job: Drafts::LoadContentJob, on_success_job: Drafts::FinishImportJob)
+  def perform(import, author:, jobs_batch: GoodJob::Batch.new, load_content_job: Govbox::Drafts::LoadContentJob, on_success_job: Govbox::Drafts::FinishImportJob)
     extracted_import_path = unzip_import(import)
 
     raise "Invalid import" unless import.valid?
@@ -19,7 +19,7 @@ class Drafts::ParseImportJob < ApplicationJob
 
       Dir.each_child(extracted_import_path) do |entry_name|
         if File.directory?(File.join(extracted_import_path, entry_name))
-          message_draft = MessageDraft.where(import: import).where("metadata ->> 'import_subfolder' = ?", File.basename(entry_name)).take
+          message_draft = Upvs::MessageDraft.where(import: import).where("metadata ->> 'import_subfolder' = ?", File.basename(entry_name)).take
 
           unless message_draft
             message_draft = create_draft_with_thread(import, message_subject: File.basename(entry_name), author: author)
@@ -86,7 +86,7 @@ class Drafts::ParseImportJob < ApplicationJob
       last_message_delivered_at: Time.now
     )
 
-    MessageDraft.create(
+    Upvs::MessageDraft.create(
       uuid: uuid,
       thread: message_thread,
       title: message_subject,
