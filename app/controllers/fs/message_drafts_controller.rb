@@ -1,6 +1,6 @@
 class Fs::MessageDraftsController < ApplicationController
   def new
-    @message = MessageDraft.new
+    @message = Fs::MessageDraft.new
     @boxes = Current.tenant&.boxes.where(type: 'Fs::Box')
     @box = Current.box
 

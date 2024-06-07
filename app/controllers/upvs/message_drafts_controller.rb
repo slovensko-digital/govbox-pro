@@ -14,7 +14,7 @@ class Upvs::MessageDraftsController < ApplicationController
   def new
     @templates_list = MessageTemplate.tenant_templates_list(Current.tenant)
     @message_template = MessageTemplate.default_template
-    @message = MessageDraft.new
+    @message = Upvs::MessageDraft.new
     @boxes = Current.tenant&.boxes.where(type: 'Upvs::Box')
     @box = Current.box
     @recipients_list = @message_template&.recipients&.pluck(:institution_name, :institution_uri)&.map { |name, uri| { uri: uri, name: name }}
@@ -27,7 +27,7 @@ class Upvs::MessageDraftsController < ApplicationController
   end
 
   def create
-    @message = MessageDraft.new
+    @message = Upvs::MessageDraft.new
     authorize @message
 
     @user_is_signer = Current.user.signer?
@@ -74,8 +74,8 @@ class Upvs::MessageDraftsController < ApplicationController
   end
 
   def load_message_drafts
-    authorize MessageDraft
-    @messages = policy_scope(MessageDraft)
+    authorize Upvs::MessageDraft
+    @messages = policy_scope(Upvs::MessageDraft)
   end
 
   def load_original_message
@@ -91,7 +91,7 @@ class Upvs::MessageDraftsController < ApplicationController
   end
 
   def load_message_draft
-    @message = policy_scope(MessageDraft).find(params[:id])
+    @message = policy_scope(Upvs::MessageDraft).find(params[:id])
   end
 
   def message_draft_params

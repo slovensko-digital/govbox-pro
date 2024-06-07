@@ -24,7 +24,7 @@ module Govbox
     private
 
     def destroy_associated_message_draft(govbox_message)
-      message_draft = MessageDraft.where(uuid: govbox_message.message_id).joins(:thread).where(thread: { box_id: govbox_message.box.id }).take
+      message_draft = Upvs::MessageDraft.where(uuid: govbox_message.message_id).joins(:thread).where(thread: { box_id: govbox_message.box.id }).take
       message_draft&.destroy
     end
 
