@@ -10,7 +10,7 @@
           <p class="w-[100px] text-base text-left text-gray-900">Adresát:</p>
           <p class="text-base font-semibold text-left text-gray-900"><%= @message.recipient_name || "Neznámy" %></p>
         </div>
-        <% if @message.form_object.tags.present? %>
+        <% if @message.form_object&.tags&.present? %>
           <div class="flex flex-wrap gap-1">
             <% SigningTagsHelper.sort_tags(@message.form_object.tags).each do |tag| %>
               <%= render Common::TagComponent.new(tag) %>
