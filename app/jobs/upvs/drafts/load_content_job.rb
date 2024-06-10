@@ -1,6 +1,6 @@
 require 'csv'
 
-class Govbox::Drafts::LoadContentJob < ApplicationJob
+class Upvs::Drafts::LoadContentJob < ApplicationJob
   class << self
     delegate :uuid, to: SecureRandom
   end

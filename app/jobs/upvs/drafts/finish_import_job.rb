@@ -1,4 +1,4 @@
-class Govbox::Drafts::FinishImportJob < ApplicationJob
+class Upvs::Drafts::FinishImportJob < ApplicationJob
   def perform(batch, params)
     import = batch.properties[:import]
 

@@ -1,13 +1,13 @@
 require 'csv'
 
-class Govbox::Drafts::ParseImportJob < ApplicationJob
+class Upvs::Drafts::ParseImportJob < ApplicationJob
   class << self
     delegate :uuid, to: SecureRandom
   end
 
   DEFAULT_SKTALK_CLASS = 'EGOV_APPLICATION'
 
-  def perform(import, author:, jobs_batch: GoodJob::Batch.new, load_content_job: Govbox::Drafts::LoadContentJob, on_success_job: Govbox::Drafts::FinishImportJob)
+  def perform(import, author:, jobs_batch: GoodJob::Batch.new, load_content_job: Upvs::Drafts::LoadContentJob, on_success_job: Upvs::Drafts::FinishImportJob)
     extracted_import_path = unzip_import(import)
 
     raise "Invalid import" unless import.valid?
