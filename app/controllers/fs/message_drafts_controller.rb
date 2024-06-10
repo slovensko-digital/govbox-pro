@@ -10,6 +10,8 @@ class Fs::MessageDraftsController < ApplicationController
   def create
     authorize ::Fs::MessageDraft
 
+    redirect_back fallback_location: new_fs_message_draft_path, alert: 'Nahrajte súbory' and return unless message_draft_params[:content].present?
+
     messages = ::Fs::MessageDraft.create_and_validate_with_fs_form(form_files: message_draft_params[:content])
 
     if messages.none?(nil)
