@@ -122,12 +122,12 @@
       <% end %>
     <% end %>
 
-    <% if Current.box && Current.tenant.feature_enabled?(:template_messages) %>
+    <% if Current.box %>
       <%
-        if Current.box.is_a?(Fs::Box)
+        if Current.box.is_a?(Fs::Box) && Current.tenant.feature_enabled?(:fs_api)
           path = new_fs_message_draft_path
           button_text = "Nahrať nové správy"
-        else
+        elsif Current.box.is_a?(Upvs::Box)
           path = new_upvs_message_draft_path
           button_text = "Napísať novú správu"
         end
