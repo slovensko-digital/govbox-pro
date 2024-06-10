@@ -39,7 +39,7 @@ class Fs::FormRelatedDocumentsDownloader < ::Utils::Downloader
       document_type: type,
       language: 'sk'
     ).tap do |form_related_document|
-      form_related_document.data = download(SOURCE_URL + "#{@fs_form.slug}/1.0/#{path}")
+      form_related_document.data = download(SOURCE_URL + "/#{@fs_form.slug}/1.0/#{path}")
       form_related_document.touch if form_related_document.persisted?
       form_related_document.save!
     end
