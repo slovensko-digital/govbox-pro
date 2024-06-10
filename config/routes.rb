@@ -203,12 +203,12 @@ Rails.application.routes.draw do
     post :recipient_selected
   end
 
-  resources :message_drafts_imports, only: :create do
-    get :upload_new, path: 'novy', on: :collection
-  end
-
   namespace :upvs do
     get :allowed_recipient_services
+
+    resources :message_drafts_imports, only: :create do
+      get :upload_new, path: 'novy', on: :collection
+    end
   end
 
   resources :sessions do

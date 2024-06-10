@@ -1,4 +1,4 @@
-class MessageDraftsImportsController < ApplicationController
+class Upvs::MessageDraftsImportsController < ApplicationController
   before_action :load_box, only: :create
 
   def create

@@ -9,7 +9,7 @@
     <%= render Common::BoxLabelComponent.new(@box) %>
     <%= @box.name %>
   </div>
-  <%= form_tag message_drafts_imports_path, method: :post, multipart: true do %>
+  <%= form_tag upvs_message_drafts_imports_path, method: :post, multipart: true do %>
     <%= text_field_tag :box_id, @box.id, hidden: true %>
     <%= label_tag :content, 'Import' %>
     <%= file_field_tag :content, accept: "application/zip" %>
