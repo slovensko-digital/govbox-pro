@@ -1,5 +1,5 @@
 class Fs::FormRelatedDocumentsDownloader < ::Utils::Downloader
-  SOURCE_URL = "#{ENV['FORMS_STORAGE_API_URL']}/fs/"
+  SOURCE_URL = ENV['FS_FORMS_STORAGE_API_URL']
   XSD_PATH = 'schema.xsd'
 
   attr_reader :fs_form
@@ -48,7 +48,7 @@ class Fs::FormRelatedDocumentsDownloader < ::Utils::Downloader
   private
 
   def download_xml_manifest
-    manifest_content = download(SOURCE_URL + "#{@fs_form.slug}/1.0/META-INF/manifest.xml")
+    manifest_content = download(SOURCE_URL + "/#{@fs_form.slug}/1.0/META-INF/manifest.xml")
     Nokogiri::XML(manifest_content)
   end
 end
