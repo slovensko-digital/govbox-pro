@@ -7,3 +7,7 @@ finance_basic_user:
 everything_ssd_admins:
   tag: ssd_everything
   group: ssd_admins
+
+drafts_accountants_basic_user:
+  tag: accountants_basic_user_drafts
+  group: accountants_basic_user

@@ -23,3 +23,7 @@ ssd_admin_admin:
 solver_other_user_other_user:
   user: solver_other
   group: solver_other_user
+
+accountants_basic_user:
+  user: accountants_basic
+  group: accountants_basic_user

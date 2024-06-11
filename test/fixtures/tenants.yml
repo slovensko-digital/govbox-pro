@@ -2,7 +2,10 @@
 
 ssd:
   name: SSD
-  feature_flags: ["audit_log", "archive", "api"]
+  feature_flags:
+    - audit_log
+    - archive
+    - api
   api_token_public_key: "-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAMIpyOBmP6R5hkFzBlNIbhX4t2CpAaoE\nyDDRzog4rvycPQNXnvZXuIm1shVq0XCrx+2nMWNHFrKqH3QViQR0QGMCAwEAAQ==\n-----END PUBLIC KEY-----"
 
 solver:
@@ -13,3 +16,9 @@ solver:
 
 google:
   name: Google
+
+accountants:
+  name: Účtovná spoločnosť
+  feature_flags:
+    - fs_api
+
