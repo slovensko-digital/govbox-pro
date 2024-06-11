@@ -12,7 +12,7 @@ class Fs::MessageDraftsController < ApplicationController
 
     redirect_back fallback_location: new_fs_message_draft_path, alert: 'Nahrajte súbory' and return unless message_draft_params[:content].present?
 
-    messages = ::Fs::MessageDraft.create_and_validate_with_fs_form(form_files: message_draft_params[:content])
+    messages = ::Fs::MessageDraft.create_and_validate_with_fs_form(form_files: message_draft_params[:content], author: Current.user)
 
     if messages.none?(nil)
       redirect_path = messages.size == 1 ? message_thread_path(messages.first.thread) : message_threads_path

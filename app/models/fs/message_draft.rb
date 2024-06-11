@@ -26,7 +26,7 @@ class Fs::MessageDraft < MessageDraft
     MessageDraftPolicy
   end
 
-  def self.create_and_validate_with_fs_form(form_files: [])
+  def self.create_and_validate_with_fs_form(form_files: [], author:)
     messages = []
 
     form_files.each do |form_file|
@@ -51,7 +51,8 @@ class Fs::MessageDraft < MessageDraft
         metadata: {
           'status': 'being_loaded',
           'fs_form_id': fs_form.id
-        }
+        },
+        author: author
       )
 
       message.thread = box.message_threads&.find_or_build_by_merge_uuid(
