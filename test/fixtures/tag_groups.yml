@@ -7,3 +7,19 @@ finance_basic_user:
 everything_ssd_admins:
   tag: ssd_everything
   group: ssd_admins
+
+ssd_signer_user_signature_requested:
+  tag: ssd_signer_user_signature_requested
+  group: ssd_signer_user
+
+ssd_signer_user2_signature_requested:
+  tag: ssd_signer_user2_signature_requested
+  group: ssd_signer_user2
+
+finance_ssd_signer_user:
+  tag: ssd_finance
+  group: ssd_signer_user
+
+finance_ssd_signer_user2:
+  tag: ssd_finance
+  group: ssd_signer_user2

@@ -47,3 +47,47 @@ ssd_main_draft_only_other:
 ssd_main_draft_only_finance:
   message_thread: ssd_main_draft_only
   tag: ssd_finance
+
+ssd_main_draft_to_be_signed_everything:
+  message_thread: ssd_main_draft_to_be_signed
+  tag: ssd_everything
+
+ssd_main_draft_to_be_signed_finance:
+  message_thread: ssd_main_draft_to_be_signed
+  tag: ssd_finance
+
+ssd_main_draft_to_be_signed_ssd_signature_requested:
+  message_thread: ssd_main_draft_to_be_signed
+  tag: ssd_signature_requested
+
+ssd_main_draft_to_be_signed_ssd_signer_user_signature_requested:
+  message_thread: ssd_main_draft_to_be_signed
+  tag: ssd_signer_user_signature_requested
+
+ssd_main_draft_to_be_signed2_finance:
+  message_thread: ssd_main_draft_to_be_signed2
+  tag: ssd_finance
+
+ssd_main_draft_to_be_signed2_legal:
+  message_thread: ssd_main_draft_to_be_signed2
+  tag: ssd_legal
+
+ssd_main_draft_to_be_signed2_external:
+  message_thread: ssd_main_draft_to_be_signed2
+  tag: ssd_external
+
+ssd_main_draft_to_be_signed2_other:
+  message_thread: ssd_main_draft_to_be_signed2
+  tag: ssd_other
+
+ssd_main_draft_to_be_signed2_everything:
+  message_thread: ssd_main_draft_to_be_signed2
+  tag: ssd_everything
+
+ssd_main_draft_to_be_signed2_ssd_signature_requested:
+  message_thread: ssd_main_draft_to_be_signed2
+  tag: ssd_signature_requested
+
+ssd_main_draft_to_be_signed2_ssd_signer_user_signature_requested:
+  message_thread: ssd_main_draft_to_be_signed2
+  tag: ssd_signer_user_signature_requested

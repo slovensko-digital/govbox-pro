@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+ssd_main_draft_to_be_signed_draft_one_form_signature_requested:
+  message_object: ssd_main_draft_to_be_signed_draft_one_form
+  tag: ssd_signer_user_signature_requested
+
+ssd_main_draft_to_be_signed_draft_two_form_signature_requested:
+  message_object: ssd_main_draft_to_be_signed_draft_two_form
+  tag: ssd_signer_user_signature_requested
+
+ssd_main_draft_to_be_signed2_draft_form_signature_requested:
+  message_object: ssd_main_draft_to_be_signed2_draft_form
+  tag: ssd_signer_user_signature_requested
