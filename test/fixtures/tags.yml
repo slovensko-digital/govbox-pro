@@ -203,3 +203,11 @@ accountants_basic_user_drafts:
   type: DraftTag
   visible: false
   tenant: accountants
+
+accountants_basic_user_signature_requested:
+  name: 'Na podpis: Basic user 2'
+  type: SignatureRequestedFromTag
+  visible: true
+  tenant: ssd
+  icon: pencil
+  color: yellow

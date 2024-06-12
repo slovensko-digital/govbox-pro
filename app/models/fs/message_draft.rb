@@ -74,8 +74,8 @@ class Fs::MessageDraft < MessageDraft
       message.thread.box.tenant.signed_externally_tag!.assign_to_message_object(form_object) if form_object.is_signed?
 
       if form_object.to_be_signed && !form_object.is_signed?
-        Current.user.signature_requested_from_tag&.assign_to_message_object(form_object)
-        Current.user.signature_requested_from_tag&.assign_to_thread(message.thread)
+        author.signature_requested_from_tag&.assign_to_message_object(form_object)
+        author.signature_requested_from_tag&.assign_to_thread(message.thread)
       end
 
       MessageObjectDatum.create(
