@@ -169,7 +169,7 @@ module RelationChanges
       signers_ids = signers_scope.pluck(:id)
 
       # TODO do in one query
-      tag_id_to_user_id_map = signers_scope.map { |user| [user.signature_requested_from_tag.id, user.id] }.to_h
+      tag_id_to_signer_group_id_map = signers_scope.map { |group| [group.signature_requested_from_tag.id, group.id] }.to_h
 
       init_assignments = signers_ids.map { |tag_id| [tag_id.to_s, REMOVE_SIGN] }.to_h
 
@@ -179,7 +179,7 @@ module RelationChanges
         where(message_object: message_objects).pluck(:tag_id, :message_object_id).group_by(&:first)
 
       assigned_thread_by_tag.each do |tag_id, values|
-        init_assignments[tag_id_to_user_id_map.fetch(tag_id).to_s] = values.length == message_objects.length ? ADD_SIGN : KEEP_SIGN
+        init_assignments[tag_id_to_signer_group_id_map.fetch(tag_id).to_s] = values.length == message_objects.length ? ADD_SIGN : KEEP_SIGN
       end
 
       {
@@ -212,18 +212,18 @@ module RelationChanges
       @diff = Diff.build_from_assignments(@assignments, @signers_scope)
     end
 
-    def signer_users
+    def signer_groups
       @signers_scope
     end
 
     def save(message_objects)
       MessageObjectsTag.transaction do
-        @diff.to_add.each do |user|
-          message_objects.each { |message_object| message_object.add_signature_requested_from_user(user) }
+        @diff.to_add.each do |user_group|
+          message_objects.each { |message_object| message_object.add_signature_requested_from_user_group(user_group) }
         end
 
-        @diff.to_remove.each do |user|
-          message_objects.each { |message_object| message_object.remove_signature_requested_from_user(user) }
+        @diff.to_remove.each do |user_group|
+          message_objects.each { |message_object| message_object.remove_signature_requested_from_user_group(user_group) }
         end
       end
     end
