@@ -84,6 +84,6 @@ class MessageThreadsBulkSignTest < ApplicationSystemTestCase
 
     click_button "Podpísať"
 
-    assert_text "Vybrané vlákna obsahujú 4 dokumenty na podpis."
+    assert_text "Vybrané vlákna obsahujú 3 dokumenty na podpis."
   end
 end

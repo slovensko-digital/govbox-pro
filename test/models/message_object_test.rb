@@ -303,4 +303,16 @@ class MessageObjectTest < ActiveSupport::TestCase
     assert thread_with_signatures_requested_from_other_users.tags.include?(another_user.tenant.signature_requested_tag)
     assert thread_with_signatures_requested_from_other_users.tags.include?(another_user.signature_requested_from_tag)
   end
+
+  test "mark_signed_by_user removes SignatureRequestedFrom user, SignatureRequested Tags, adds SignedBy, Signed Tags and keeps SignatureRequestedFrom SignerGroup Tags on other objects" do
+    message_object = message_objects(:ssd_main_draft_to_be_signed3_draft_two_form)
+    user = users(:ssd_signer2)
+
+    message_object.mark_signed_by_user(user)
+
+    assert message_object.tags.include?(user.signed_by_tag)
+    assert message_object.message.thread.tags.include?(user.signed_by_tag)
+    assert message_object.message.thread.tags.include?(user.tenant.signature_requested_tag)
+    assert message_object.message.thread.tags.include?(user.tenant.signer_group.signature_requested_from_tag)
+  end
 end

@@ -119,7 +119,7 @@ class MessageThread < ApplicationRecord
     unless has_tag_in_message_objects?(user.signature_requested_from_tag)
       assign_tag(user.signed_by_tag)
       unassign_tag(user.signature_requested_from_tag)
-      unassign_tag(user.tenant.signer_group.signature_requested_from_tag)
+      unassign_tag(user.tenant.signer_group.signature_requested_from_tag) unless has_tag_in_message_objects?({ id: user.tenant.signer_group.signature_requested_from_tag.id })
     end
 
     # signed_tag
