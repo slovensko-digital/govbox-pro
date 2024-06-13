@@ -33,7 +33,7 @@ class MessageThreadsBulkSignTest < ApplicationSystemTestCase
     assert_text "Vybrané vlákna obsahujú 3 dokumenty na podpis."
   end
 
-  test "another signer user cant sign multiple message objects if other SignatureRequestedFrom Tag is assigned" do
+  test "user can not sign multiple message objects unless their SignatureRequestedFrom Tag is assigned" do
     sign_in_as(:ssd_signer2)
 
     visit message_threads_path
@@ -61,7 +61,7 @@ class MessageThreadsBulkSignTest < ApplicationSystemTestCase
     assert_text "Vo vybraných vláknach sa nenašli žiadne dokumenty so žiadosťou na podpis"
   end
 
-  test "another signer user can sign multiple message objects if SignatureRequestedFrom SignerGroup Tag is assigned" do
+  test "user can sign multiple message objects with assigned SignatureRequestedFrom SignerGroup Tag" do
     visit message_threads_path
 
     thread1 = message_threads(:ssd_main_draft_to_be_signed3)
@@ -84,6 +84,6 @@ class MessageThreadsBulkSignTest < ApplicationSystemTestCase
 
     click_button "Podpísať"
 
-    assert_text "Vybrané vlákna obsahujú 2 dokumenty na podpis."
+    assert_text "Vybrané vlákna obsahujú 4 dokumenty na podpis."
   end
 end

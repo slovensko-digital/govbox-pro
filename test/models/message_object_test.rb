@@ -261,4 +261,46 @@ class MessageObjectTest < ActiveSupport::TestCase
 
     assert_not_equal nil, message_object.prepare_pdf_visualization
   end
+
+  test "mark_signed_by_user removes SignatureRequestedFrom SignerGroup, SignatureRequested Tags and adds SignedBy, Signed Tags after message object is signed by a signer user" do
+    message_object = message_objects(:ssd_main_draft_to_be_signed4_draft_form)
+    user = users(:ssd_signer)
+
+    message_object.mark_signed_by_user(user)
+
+    assert_not message_object.tags.include?(user.tenant.signer_group.signature_requested_from_tag)
+    assert_not message_object.message.thread.tags.include?(user.tenant.signature_requested_tag)
+    assert_not message_object.message.thread.tags.include?(user.tenant.signer_group.signature_requested_from_tag)
+
+    assert message_object.tags.include?(user.signed_by_tag)
+    assert message_object.message.thread.tags.include?(user.signed_by_tag)
+    assert message_object.message.thread.tags.include?(user.tenant.signed_tag)
+  end
+
+  test "mark_signed_by_user removes SignatureRequestedFrom SignerGroup, SignatureRequested Tags, adds SignedBy, Signed Tags and keeps SignatureRequestedFrom specific users Tags" do
+    message_objects_to_be_signed = [
+      message_objects(:ssd_main_draft_to_be_signed3_draft_two_attachment),
+      message_objects(:ssd_main_draft_to_be_signed3_draft_two_attachment2),
+      message_objects(:ssd_main_draft_to_be_signed4_draft_form),
+    ]
+    user = users(:ssd_signer)
+    another_user = users(:ssd_signer2)
+
+    message_objects_to_be_signed.each do |message_object|
+      message_object.mark_signed_by_user(user)
+
+      assert message_object.tags.include?(user.signed_by_tag)
+      assert message_object.message.thread.tags.include?(user.signed_by_tag)
+    end
+
+    thread_with_signatures_requested_from_other_users = message_objects_to_be_signed.first.message.thread
+    thread_with_signatures_requested_from_signer_group_only = message_objects_to_be_signed.last.message.thread
+
+    assert_not thread_with_signatures_requested_from_signer_group_only.tags.include?(user.tenant.signer_group.signature_requested_from_tag)
+    assert_not thread_with_signatures_requested_from_signer_group_only.tags.include?(user.tenant.signature_requested_tag)
+
+    assert_not thread_with_signatures_requested_from_other_users.tags.include?(user.tenant.signer_group.signature_requested_from_tag)
+    assert thread_with_signatures_requested_from_other_users.tags.include?(another_user.tenant.signature_requested_tag)
+    assert thread_with_signatures_requested_from_other_users.tags.include?(another_user.signature_requested_from_tag)
+  end
 end

@@ -90,6 +90,18 @@ ssd_main_draft_to_be_signed3_draft_two_form:
   mimetype: application/x-eform-xml
   object_type: FORM
 
+ssd_main_draft_to_be_signed3_draft_two_attachment:
+  message: ssd_main_draft_to_be_signed3_draft_two
+  name: MyString
+  mimetype: application/x-eform-xml
+  object_type: ATTACHMENT
+
+ssd_main_draft_to_be_signed3_draft_two_attachment2:
+  message: ssd_main_draft_to_be_signed3_draft_two
+  name: MyString
+  mimetype: application/x-eform-xml
+  object_type: ATTACHMENT
+
 ssd_main_draft_to_be_signed4_draft_form:
   message: ssd_main_draft_to_be_signed4_draft
   name: MyString

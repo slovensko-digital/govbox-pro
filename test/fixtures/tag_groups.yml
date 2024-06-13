@@ -20,6 +20,14 @@ ssd_signers_signature_requested:
   tag: ssd_signers_signature_requested
   group: ssd_signers
 
+ssd_signer_user_ssd_signer_user_signed:
+  tag: ssd_signer_user_signed
+  group: ssd_signer_user
+
+ssd_signer_user2_ssd_signer_user2_signed:
+  tag: ssd_signer_user2_signed
+  group: ssd_signer_user2
+
 finance_ssd_signer_user:
   tag: ssd_finance
   group: ssd_signer_user

@@ -104,6 +104,10 @@ ssd_main_draft_to_be_signed3_ssd_signature_requested:
   message_thread: ssd_main_draft_to_be_signed3
   tag: ssd_signature_requested
 
+ssd_main_draft_to_be_signed3_ssd_signer2_signature_requested:
+  message_thread: ssd_main_draft_to_be_signed3
+  tag: ssd_signer_user2_signature_requested
+
 ssd_main_draft_to_be_signed3_ssd_signers_signature_requested:
   message_thread: ssd_main_draft_to_be_signed3
   tag: ssd_signers_signature_requested

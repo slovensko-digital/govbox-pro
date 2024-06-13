@@ -133,6 +133,22 @@ ssd_basic_user_signed:
   icon: fingerprint
   color: green
 
+ssd_signer_user_signed:
+  name: 'Podpísané: Signer user'
+  type: SignedByTag
+  visible: true
+  tenant: ssd
+  icon: fingerprint
+  color: green
+
+ssd_signer_user2_signed:
+  name: 'Podpísané: Signer user 2'
+  type: SignedByTag
+  visible: true
+  tenant: ssd
+  icon: fingerprint
+  color: green
+
 ssd_archived:
   name: Archivovane
   type: ArchivedTag
