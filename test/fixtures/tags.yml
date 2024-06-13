@@ -109,6 +109,14 @@ ssd_signer_user2_signature_requested:
   icon: pencil
   color: yellow
 
+ssd_signers_signature_requested:
+  name: 'Na podpis: Podpisovatelia'
+  type: SignatureRequestedFromTag
+  visible: true
+  tenant: ssd
+  icon: pencil
+  color: yellow
+
 ssd_signed:
   name: Podpísané
   type: SignedTag

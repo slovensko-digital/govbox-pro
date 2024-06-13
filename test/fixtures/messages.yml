@@ -223,6 +223,42 @@ ssd_main_draft_to_be_signed2_draft:
     status: created
   author: basic
 
+ssd_main_draft_to_be_signed3_draft:
+  type: MessageDraft
+  uuid: <%= SecureRandom.uuid %>
+  title: MyStringDraft4
+  html_visualization: MyString
+  delivered_at: 2023-05-18 16:19:26
+  thread: ssd_main_draft_to_be_signed3
+  replyable: false
+  metadata:
+    status: created
+  author: basic
+
+ssd_main_draft_to_be_signed3_draft_two:
+  type: MessageDraft
+  uuid: <%= SecureRandom.uuid %>
+  title: MyStringDraft5
+  html_visualization: MyString
+  delivered_at: 2023-05-18 16:19:26
+  thread: ssd_main_draft_to_be_signed3
+  replyable: false
+  metadata:
+    status: created
+  author: basic
+
+ssd_main_draft_to_be_signed4_draft:
+  type: MessageDraft
+  uuid: <%= SecureRandom.uuid %>
+  title: MyStringDraft5
+  html_visualization: MyString
+  delivered_at: 2023-05-18 16:19:26
+  thread: ssd_main_draft_to_be_signed4
+  replyable: false
+  metadata:
+    status: created
+  author: basic
+
 solver_main_delivery_notification_one:
   uuid: bbff2617-3430-44c6-b827-519059ff1e90
   title: Authorized Delivery notification
