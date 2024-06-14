@@ -129,32 +129,32 @@ class MessageThread < ApplicationRecord
     end
   end
 
-  def add_signature_requested_from_user_group(user_group)
+  def add_signature_requested_from_group(group)
     # user_signature_requested_tag
-    assign_tag(user_group.signature_requested_from_tag)
-    unassign_tag(user_group.signed_by_tag)
+    assign_tag(group.signature_requested_from_tag)
+    unassign_tag(group.signed_by_tag)
 
     # signature_requested_tag
-    assign_tag(user_group.tenant.signature_requested_tag)
-    unassign_tag(user_group.tenant.signed_tag)
+    assign_tag(group.tenant.signature_requested_tag)
+    unassign_tag(group.tenant.signed_tag)
   end
 
-  def remove_signature_requested_from_user_group(user_group)
+  def remove_signature_requested_from_group(group)
     # user_signature_requested_tag
-    unless has_tag_in_message_objects?(user_group.signature_requested_from_tag)
-      unassign_tag(user_group.signature_requested_from_tag)
+    unless has_tag_in_message_objects?(group.signature_requested_from_tag)
+      unassign_tag(group.signature_requested_from_tag)
 
-      if has_tag_in_message_objects?(user_group.signed_by_tag)
-        assign_tag(user_group.signed_by_tag)
+      if has_tag_in_message_objects?(group.signed_by_tag)
+        assign_tag(group.signed_by_tag)
       end
     end
 
     # signature_requested_tag
     unless has_tag_in_message_objects?({ type: SignatureRequestedFromTag.to_s })
-      unassign_tag(user_group.tenant.signature_requested_tag)
+      unassign_tag(group.tenant.signature_requested_tag)
 
       if has_tag_in_message_objects?({ type: SignedByTag.to_s })
-        assign_tag(user_group.tenant.signed_tag)
+        assign_tag(group.tenant.signed_tag)
       end
     end
   end

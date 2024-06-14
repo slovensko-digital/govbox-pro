@@ -65,18 +65,18 @@ class MessageObject < ApplicationRecord
     thread.mark_signed_by_user(user)
   end
 
-  def add_signature_requested_from_user_group(user_group)
-    return if has_tag?(user_group.signed_by_tag)
+  def add_signature_requested_from_group(group)
+    return if has_tag?(group.signed_by_tag)
 
-    assign_tag(user_group.signature_requested_from_tag)
-    thread.add_signature_requested_from_user_group(user_group)
+    assign_tag(group.signature_requested_from_tag)
+    thread.add_signature_requested_from_group(group)
   end
 
-  def remove_signature_requested_from_user_group(user_group)
-    return unless has_tag?(user_group.signature_requested_from_tag)
+  def remove_signature_requested_from_group(group)
+    return unless has_tag?(group.signature_requested_from_tag)
 
-    unassign_tag(user_group.signature_requested_from_tag)
-    thread.remove_signature_requested_from_user_group(user_group)
+    unassign_tag(group.signature_requested_from_tag)
+    thread.remove_signature_requested_from_group(group)
   end
 
   def content

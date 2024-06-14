@@ -218,12 +218,12 @@ module RelationChanges
 
     def save(message_objects)
       MessageObjectsTag.transaction do
-        @diff.to_add.each do |user_group|
-          message_objects.each { |message_object| message_object.add_signature_requested_from_user_group(user_group) }
+        @diff.to_add.each do |group|
+          message_objects.each { |message_object| message_object.add_signature_requested_from_group(group) }
         end
 
-        @diff.to_remove.each do |user_group|
-          message_objects.each { |message_object| message_object.remove_signature_requested_from_user_group(user_group) }
+        @diff.to_remove.each do |group|
+          message_objects.each { |message_object| message_object.remove_signature_requested_from_group(group) }
         end
       end
     end

@@ -17,13 +17,13 @@ class MessageObjectTest < ActiveSupport::TestCase
     assert_equal [], object.tags.reload
     assert_equal [], object.message.thread.tags.signing_tags.reload
 
-    object.add_signature_requested_from_user_group(@user_one)
+    object.add_signature_requested_from_group(@user_one.user_group)
     assert_equal [@user_one.signature_requested_from_tag].to_set,
                  object.tags.reload.to_set
     assert_equal [@user_one.signature_requested_from_tag, tenant.signature_requested_tag!].to_set,
                  object.message.thread.tags.signing_tags.reload.to_set
 
-    object.add_signature_requested_from_user_group(@user_one)
+    object.add_signature_requested_from_group(@user_one.user_group)
     assert_equal [@user_one.signature_requested_from_tag].to_set,
                  object.tags.reload.to_set
     assert_equal [@user_one.signature_requested_from_tag, tenant.signature_requested_tag!].to_set,
@@ -37,13 +37,13 @@ class MessageObjectTest < ActiveSupport::TestCase
     assert_equal [], object.tags.reload
     assert_equal [], object.message.thread.tags.signing_tags.reload
 
-    object.add_signature_requested_from_user_group(@user_one)
+    object.add_signature_requested_from_group(@user_one.user_group)
     assert_equal [@user_one.signature_requested_from_tag].to_set,
                  object.tags.reload.to_set
     assert_equal [@user_one.signature_requested_from_tag, tenant.signature_requested_tag!].to_set,
                  object.message.thread.tags.signing_tags.reload.to_set
 
-    object.add_signature_requested_from_user_group(@user_two)
+    object.add_signature_requested_from_group(@user_two.user_group)
     assert_equal [@user_one.signature_requested_from_tag, @user_two.signature_requested_from_tag].to_set,
                  object.tags.reload.to_set
     assert_equal [@user_one.signature_requested_from_tag, @user_two.signature_requested_from_tag, tenant.signature_requested_tag!].to_set,
@@ -61,7 +61,7 @@ class MessageObjectTest < ActiveSupport::TestCase
     assert_equal [@user_one.signed_by_tag, tenant.signed_tag!].to_set,
                  object.message.thread.tags.signing_tags.reload.to_set
 
-    object.add_signature_requested_from_user_group(@user_one)
+    object.add_signature_requested_from_group(@user_one.user_group)
 
     assert_equal [@user_one.signed_by_tag].to_set,
                  object.tags.reload.to_set
@@ -77,9 +77,9 @@ class MessageObjectTest < ActiveSupport::TestCase
     user_1_signature_requested_tag = @user_one.signature_requested_from_tag
     user_2_signature_requested_tag = @user_two.signature_requested_from_tag
 
-    object_1.add_signature_requested_from_user_group(@user_one)
-    object_1.add_signature_requested_from_user_group(@user_two)
-    object_2.add_signature_requested_from_user_group(@user_one)
+    object_1.add_signature_requested_from_group(@user_one.user_group)
+    object_1.add_signature_requested_from_group(@user_two.user_group)
+    object_2.add_signature_requested_from_group(@user_one.user_group)
 
     assert_equal [user_1_signature_requested_tag, user_2_signature_requested_tag].to_set,
                  object_1.tags.reload.to_set
@@ -88,7 +88,7 @@ class MessageObjectTest < ActiveSupport::TestCase
     assert_equal [user_1_signature_requested_tag, user_2_signature_requested_tag, tenant.signature_requested_tag!].to_set,
                  object_1.message.thread.tags.signing_tags.reload.to_set
 
-    object_1.remove_signature_requested_from_user_group(@user_one)
+    object_1.remove_signature_requested_from_group(@user_one.user_group)
 
     assert_equal [user_2_signature_requested_tag].to_set,
                  object_1.tags.reload.to_set
@@ -97,7 +97,7 @@ class MessageObjectTest < ActiveSupport::TestCase
     assert_equal [user_1_signature_requested_tag, user_2_signature_requested_tag, tenant.signature_requested_tag!].to_set,
                  object_1.message.thread.tags.signing_tags.reload.to_set
 
-    object_2.remove_signature_requested_from_user_group(@user_one)
+    object_2.remove_signature_requested_from_group(@user_one.user_group)
 
     assert_equal [user_2_signature_requested_tag].to_set,
                  object_1.tags.reload.to_set
@@ -105,7 +105,7 @@ class MessageObjectTest < ActiveSupport::TestCase
     assert_equal [user_2_signature_requested_tag, tenant.signature_requested_tag!].to_set,
                  object_1.message.thread.tags.signing_tags.reload.to_set
 
-    object_1.remove_signature_requested_from_user_group(@user_two)
+    object_1.remove_signature_requested_from_group(@user_two.user_group)
 
     assert_equal [], object_1.tags.reload
     assert_equal [], object_2.tags.reload
@@ -117,9 +117,9 @@ class MessageObjectTest < ActiveSupport::TestCase
     object_1 = message_objects(:ssd_main_general_one_attachment)
     object_2 = message_objects(:ssd_main_general_two_form)
 
-    object_1.add_signature_requested_from_user_group(@user_one)
-    object_1.add_signature_requested_from_user_group(@user_two)
-    object_2.add_signature_requested_from_user_group(@user_one)
+    object_1.add_signature_requested_from_group(@user_one.user_group)
+    object_1.add_signature_requested_from_group(@user_two.user_group)
+    object_2.add_signature_requested_from_group(@user_one.user_group)
 
     assert_equal [@user_one.signature_requested_from_tag, @user_two.signature_requested_from_tag].to_set,
                  object_1.tags.reload.to_set
@@ -171,7 +171,7 @@ class MessageObjectTest < ActiveSupport::TestCase
     assert_equal [@user_one.signed_by_tag, @user_two.signed_by_tag, tenant.signed_tag!].to_set,
                  object_1.message.thread.tags.signing_tags.reload.to_set
 
-    object_1.add_signature_requested_from_user_group(@user_two)
+    object_1.add_signature_requested_from_group(@user_two.user_group)
     assert_equal [@user_one.signed_by_tag, @user_two.signature_requested_from_tag].to_set,
                  object_1.tags.reload.to_set
     assert_equal [@user_two.signed_by_tag].to_set,
@@ -179,7 +179,7 @@ class MessageObjectTest < ActiveSupport::TestCase
     assert_equal [@user_one.signed_by_tag, @user_two.signature_requested_from_tag, tenant.signature_requested_tag!].to_set,
                  object_1.message.thread.tags.signing_tags.reload.to_set
 
-    object_1.remove_signature_requested_from_user_group(@user_two)
+    object_1.remove_signature_requested_from_group(@user_two.user_group)
     assert_equal [@user_one.signed_by_tag].to_set,
                  object_1.tags.reload.to_set
     assert_equal [@user_two.signed_by_tag].to_set,

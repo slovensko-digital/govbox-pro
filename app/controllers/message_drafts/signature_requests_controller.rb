@@ -47,12 +47,12 @@ module MessageDrafts
 
     def signers_scope
       signer_groups_ids = (Current.tenant.signer_group.users.map(&:user_group) + [Current.tenant.signer_group]).map(&:id)
-      Group.where(id: signer_groups_ids).order(name: :asc)
+      Current.tenant.groups.where(id: signer_groups_ids).order(name: :asc)
     end
 
     def signer_scope
       signer_groups_ids = (Current.tenant.signer_group.users.map(&:user_group) + [Current.tenant.signer_group]).map(&:id)
-      Group.where(id: signer_groups_ids).order(:name)
+      Current.tenant.groups.where(id: signer_groups_ids).order(:name)
     end
 
     def message_object_policy_scope
