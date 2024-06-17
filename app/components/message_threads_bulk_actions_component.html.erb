@@ -140,10 +140,12 @@
           <%= link_to "Napísať novú správu na slovensko.sk", new_upvs_message_draft_path,
                          class: "w-full text-gray-700 group flex items-center px-4 py-2 text-sm hover:bg-gray-100 hover:text-gray-900", data: { turbo_frame: "_top" }, role: "menuitem" %>
         </div>
-        <div class="py-1" role="none">
-          <%= link_to "Vytvoriť novú správu na finančnú správu", new_fs_message_draft_path,
-                      class: "w-full text-gray-700 group flex items-center px-4 py-2 text-sm hover:bg-gray-100 hover:text-gray-900", data: { turbo_frame: "_top" }, role: "menuitem" %>
-        </div>
+        <% if Current.tenant.feature_enabled?(:fs_api) %>
+          <div class="py-1" role="none">
+            <%= link_to "Vytvoriť novú správu na finančnú správu", new_fs_message_draft_path,
+                        class: "w-full text-gray-700 group flex items-center px-4 py-2 text-sm hover:bg-gray-100 hover:text-gray-900", data: { turbo_frame: "_top" }, role: "menuitem" %>
+          </div>
+        <% end %>
       </div>
     </div>
 
