@@ -24,11 +24,11 @@ class MessageTemplate < ApplicationRecord
     '*'
   end
 
-  def create_message(message, author:, box:, recipient_uri:)
+  def create_message(author:, box:, recipient_uri:)
     raise NotImplementedError
   end
 
-  def create_message_reply(message, original_message:, author:)
+  def create_message_reply(original_message:, author:)
     raise NotImplementedError
   end
 

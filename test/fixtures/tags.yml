@@ -215,3 +215,42 @@ solver_signed_externally:
   type: SignedExternallyTag
   visible: false
   tenant: solver
+
+accountants_drafts:
+  name: Rozpracované
+  type: DraftTag
+  visible: true
+  tenant: accountants
+
+accountants_everything:
+  name: Everything
+  type: EverythingTag
+  visible: false
+  tenant: accountants
+
+accountants_externally:
+  name: SignedExternally
+  type: SignedExternallyTag
+  visible: false
+  tenant: accountants
+
+accountants_submitted:
+  name: Odoslané na spracovanie
+  type: SubmittedTag
+  visible: true
+  tenant: accountants
+
+accountants_basic_user_drafts:
+  name: Drafts-Basic user
+  owner: accountants_basic
+  type: DraftTag
+  visible: false
+  tenant: accountants
+
+accountants_basic_user_signature_requested:
+  name: 'Na podpis: Basic user 2'
+  type: SignatureRequestedFromTag
+  visible: true
+  tenant: ssd
+  icon: pencil
+  color: yellow

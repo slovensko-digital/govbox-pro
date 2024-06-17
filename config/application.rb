@@ -27,6 +27,10 @@ module GovboxPro
 
     config.autoload_paths += Dir[File.join(Rails.root, 'app', 'models', 'validators')]
 
+    config.active_record.encryption.primary_key = ENV['ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY']
+    config.active_record.encryption.deterministic_key = ENV['ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY']
+    config.active_record.encryption.key_derivation_salt = ENV['ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT']
+
     config.active_job.queue_adapter = :good_job
     config.active_job.default_queue_name = :medium_priority
     config.action_mailer.deliver_later_queue_name = :high_priority
@@ -52,6 +56,12 @@ module GovboxPro
       cron: "30 3 * * *",  # run every day at 3:30 am
       class: "Archivation::ArchiveAllArchivedMessageThreadsJob",
       description: "Regular job to archive message_threads"
+    }
+
+    config.good_job.cron['fetch_fs_forms'] = {
+      cron: "0 */12 * * *",  # run every 12 hours
+      class: "Fs::FetchFormsJob",
+      description: "Regular job to fetch Fs::Forms"
     }
 
     config.good_job.cron['fetch_upvs_forms_related_documents'] = {

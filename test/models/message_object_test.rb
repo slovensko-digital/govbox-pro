@@ -218,7 +218,7 @@ class MessageObjectTest < ActiveSupport::TestCase
     assert attachment_object.message.thread.tags.include?(signed_by_tag)
     assert attachment_object.message.thread.tags.include?(tenant.signed_tag!)
 
-    form_object = attachment_object.message.form
+    form_object = attachment_object.message.form_object
     form_object.mark_signed_by_user(signer)
 
     assert form_object.tags.include?(signed_by_tag)

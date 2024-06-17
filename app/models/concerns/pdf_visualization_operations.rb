@@ -3,11 +3,11 @@
 module PdfVisualizationOperations
   extend ActiveSupport::Concern
 
-  FORM_IDENTIFIER_PATTERN = /([^\/]+)\/(\d+\.\d+)\z/
+  UPVS_FORM_IDENTIFIER_PATTERN = /([^\/]+)\/(\d+\.\d+)\z/
 
   included do
     def prepare_pdf_visualization
-      return unless upvs_form&.xsl_fo
+      return unless form&.xsl_fo
       return unless unsigned_content
       return unless xml?
 
@@ -17,7 +17,7 @@ module PdfVisualizationOperations
         xml_file.rewind
 
         xsl_file = Tempfile.new("#{id}.fo.xsl")
-        xsl_file.write(upvs_form.xsl_fo.to_s)
+        xsl_file.write(form.xsl_fo.to_s)
         xsl_file.rewind
 
         pdf_file = Tempfile.new("#{id}.pdf")
@@ -50,23 +50,23 @@ module PdfVisualizationOperations
       document
     end
 
-    def upvs_form
+    def form
       return unless xml?
 
       xml_document = xml_unsigned_content
-      posp_id, posp_version = xml_document&.root&.namespace&.href&.match(FORM_IDENTIFIER_PATTERN)&.captures
+      posp_id, posp_version = xml_document&.root&.namespace&.href&.match(UPVS_FORM_IDENTIFIER_PATTERN)&.captures
 
       ::Upvs::Form.find_by(
         identifier: posp_id,
         version: posp_version
-      )
+      ) if posp_id && posp_version
     end
 
-    def find_or_create_upvs_form
+    def find_or_create_form
       return unless xml?
 
       xml_document = xml_unsigned_content
-      posp_id, posp_version = xml_document&.root&.namespace&.href&.match(FORM_IDENTIFIER_PATTERN)&.captures
+      posp_id, posp_version = xml_document&.root&.namespace&.href&.match(UPVS_FORM_IDENTIFIER_PATTERN)&.captures
 
       ::Upvs::Form.find_or_create_by(
         identifier: posp_id,
@@ -75,7 +75,7 @@ module PdfVisualizationOperations
     end
 
     def downloadable_as_pdf?
-      xml? && upvs_form&.xsl_fo&.present?
+      xml? && form&.xsl_fo&.present?
     end
 
     def xml?

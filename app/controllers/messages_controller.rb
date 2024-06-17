@@ -14,10 +14,9 @@ class MessagesController < ApplicationController
   def reply
     authorize @message
 
-    @message_reply = MessageDraft.new
-    authorize @message_reply
+    @message_reply = MessageTemplate.reply_template.create_message_reply(original_message: @message, author: Current.user)
 
-    MessageTemplate.reply_template.create_message_reply(@message_reply, original_message: @message, author: Current.user)
+    authorize @message_reply
   end
 
   def update

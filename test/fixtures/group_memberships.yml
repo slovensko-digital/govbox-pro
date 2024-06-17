@@ -47,3 +47,7 @@ ssd_signers_ssd_signer2:
 solver_other_user_other_user:
   user: solver_other
   group: solver_other_user
+
+accountants_basic_user:
+  user: accountants_basic
+  group: accountants_basic_user

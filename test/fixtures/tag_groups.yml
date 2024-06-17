@@ -35,3 +35,7 @@ finance_ssd_signer_user:
 finance_ssd_signer_user2:
   tag: ssd_finance
   group: ssd_signer_user2
+
+drafts_accountants_basic_user:
+  tag: accountants_basic_user_drafts
+  group: accountants_basic_user

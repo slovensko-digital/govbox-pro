@@ -159,7 +159,7 @@ class MessageThreadsTest < ApplicationSystemTestCase
         assert_text "The Collapsed Message"
       end
 
-      within("#message_draft_#{draft_one.id}") do
+      within("#upvs_message_draft_#{draft_one.id}") do
         within_frame(find("iframe")) do
           assert_text "Reply to something"
         end

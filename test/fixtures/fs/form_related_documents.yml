@@ -1,0 +1,1062 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+VP_DANv24_xsd:
+  document_type: CLS_F_XSD_EDOC
+  language: sk
+  form: VP_DANv24
+  data: <?xml version="1.0" encoding="UTF-8"?>
+    <!-- Vseobecne podanie pre FS - sprava dani, ver.2024 -->
+    <xs:schema elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <!-- Retazec - lubovolny retazec -->
+    <xs:simpleType name="ldt_Retazec">
+    <xs:restriction base="xs:string"/>
+    </xs:simpleType>
+
+    <!-- RadioButton - hodnoty 0 a 1 -->
+    <xs:simpleType name="ldt_RadioButton">
+    <xs:restriction base="xs:string">
+    <xs:pattern value="[01]" />
+    </xs:restriction>
+    </xs:simpleType>
+
+    <!-- Druh prilohy - hodnoty 0, 1 a 2 -->
+    <xs:simpleType name="ldt_DruhPrilohy">
+    <xs:restriction base="xs:string">
+    <xs:pattern value="[012]" />
+    </xs:restriction>
+    </xs:simpleType>
+
+    <!-- ICO -->
+    <xs:simpleType name="ldt_ICO">
+    <xs:restriction base="xs:string">
+    <xs:pattern value="\d{8}|\d{12}"></xs:pattern>
+    </xs:restriction>
+    </xs:simpleType>
+
+    <!-- DIC -->
+    <xs:simpleType name="ldt_DIC">
+    <xs:restriction base="xs:string">
+    <xs:pattern value="|\d{10}" />
+    <xs:maxLength value="10" />
+    </xs:restriction>
+    </xs:simpleType>
+
+    <!-- RodneCislo - s lomitkom, bez lomitka -->
+    <xs:simpleType name="ldt_RodneCislo">
+    <xs:restriction base="xs:string">
+    <xs:pattern value="|\d{6}\/\d{3,4}|\d{9,10}" />
+    <xs:maxLength value="11" />
+    </xs:restriction>
+    </xs:simpleType>
+
+    <!-- Datum -->
+    <xs:simpleType name="ldt_Datum">
+    <xs:restriction base="xs:date"/>
+    </xs:simpleType>
+
+    <!-- PSC -->
+    <xs:simpleType name="ldt_PSC">
+    <xs:restriction base="xs:string">
+    <xs:maxLength value="10" />
+    </xs:restriction>
+    </xs:simpleType>
+
+    <!-- Telefonne cislo -->
+    <xs:simpleType name="ldt_Telefon">
+    <xs:restriction base="xs:string">
+    <xs:pattern value="|0\d{9}|0\d{10}|0\d{11}|0\d{12}|0\d{13}" />
+    <xs:maxLength value="14" />
+    </xs:restriction>
+    </xs:simpleType>
+
+    <!-- Email -->
+    <xs:simpleType name="ldt_Email">
+    <xs:restriction base="xs:string">
+    <xs:maxLength value="254" />
+    </xs:restriction>
+    </xs:simpleType>
+
+    <!-- Cislo domu -->
+    <xs:simpleType name="ldt_CisloDomu">
+    <xs:restriction base="xs:string">
+    <xs:maxLength value="8" />
+    </xs:restriction>
+    </xs:simpleType>
+
+    <!-- TextArea - viacriadkovy dlhy text max. 2000 znakov -->
+    <xs:simpleType name="ldt_TextArea">
+    <xs:restriction base="xs:string">
+    <xs:maxLength value="2000" />
+    </xs:restriction>
+    </xs:simpleType>
+
+    <!-- Evidencne cislo suvisiaceho dokumentu -->
+    <xs:simpleType name="ldt_EvCisloSuvDok">
+    <xs:restriction base="xs:string">
+    <xs:pattern value="|\d{1,9}" />
+    <xs:maxLength value="9" />
+    </xs:restriction>
+    </xs:simpleType>
+
+    <!-- Rok -->
+    <xs:simpleType name="ldt_Rok">
+    <xs:restriction base="xs:string">
+    <xs:pattern value="|\d{4}" />
+    <xs:maxLength value="4" />
+    </xs:restriction>
+    </xs:simpleType>
+
+    <!-- Checkbox -->
+    <xs:simpleType name="LDT_Checkbox">
+    <xs:restriction base="xs:boolean">
+    </xs:restriction>
+    </xs:simpleType>
+
+
+    <xs:element name="dokument">
+    <xs:complexType>
+    <xs:sequence>
+    <xs:element name="secNazov" minOccurs="0">
+    <xs:complexType>
+    <xs:sequence>
+    <xs:element name="valNazov" type="ldt_Retazec" minOccurs="0" nillable="true"/>
+    </xs:sequence>
+    </xs:complexType>
+    </xs:element>
+    <xs:element name="secEvidencneCisloSuvisiacehoDOkumentu" minOccurs="0">
+    <xs:complexType>
+    <xs:sequence>
+    <xs:element name="valEvidencneCisloSuvisiacehoDokumentu" type="ldt_EvCisloSuvDok" minOccurs="0" nillable="true"/>
+    <xs:element name="valECSDRok" type="ldt_Rok" minOccurs="0" nillable="true"/>
+    </xs:sequence>
+    </xs:complexType>
+    </xs:element>
+    <xs:element name="secAdresovanieVP" minOccurs="0">
+    <xs:complexType>
+    <xs:sequence>
+    <xs:element name="valOrganFS" type="ldt_Retazec" minOccurs="1"/>
+    <xs:element name="secAdresatDU" minOccurs="0">
+    <xs:complexType>
+    <xs:sequence>
+    <xs:element name="valDanovyUrad" type="ldt_Retazec" minOccurs="1"/>
+    <xs:element name="valPracoviskoDU" type="ldt_Retazec" minOccurs="0" nillable="true"/>
+    </xs:sequence>
+    </xs:complexType>
+    </xs:element>
+    </xs:sequence>
+    </xs:complexType>
+    </xs:element>
+    <xs:element name="secOblastPodania" minOccurs="0">
+    <xs:complexType>
+    <xs:sequence>
+    <xs:element name="valOblastPodania" type="ldt_Retazec" minOccurs="1"/>
+    <xs:element name="valAgenda" type="ldt_Retazec" minOccurs="1"/>
+    </xs:sequence>
+    </xs:complexType>
+    </xs:element>
+    <xs:element name="secTypPodania" minOccurs="0">
+    <xs:complexType>
+    <xs:sequence>
+    <xs:element name="valTypSluzby1" type="ldt_Retazec" minOccurs="1"/>
+    <xs:element name="valTypPodania" type="ldt_Retazec" minOccurs="1"/>
+    </xs:sequence>
+    </xs:complexType>
+    </xs:element>
+    <xs:element name="secDanSubjekt" minOccurs="0">
+    <xs:complexType>
+    <xs:sequence>
+    <xs:element name="valFormaDanovehoSubjektu" type="ldt_RadioButton" minOccurs="1">
+    <xs:annotation>
+    <xs:documentation>Hodnoty 0-Fyzická osoba, 1-Právnicka osoba</xs:documentation>
+    </xs:annotation>
+    </xs:element>
+    <xs:element name="valDicDanSubj" type="ldt_DIC" minOccurs="0" nillable="true"/>
+    <xs:element name="secDanSubjFO" minOccurs="0">
+    <xs:complexType>
+    <xs:sequence>
+    <xs:element name="valIcoFO" type="ldt_ICO" minOccurs="0" nillable="true"/>
+    <xs:element name="valObchMenoDanSubjFO" type="ldt_Retazec" minOccurs="0" nillable="true"/>
+    <xs:element name="secDoplUdajeFO" minOccurs="0">
+    <xs:complexType>
+    <xs:sequence>
+    <xs:element name="valTitulPredDanSubjFO" type="ldt_Retazec" minOccurs="0" nillable="true"/>
+    <xs:element name="valMenoDanSubjFO" type="ldt_Retazec" minOccurs="1"/>
+    <xs:element name="valPriezvDanSubjFO" type="ldt_Retazec" minOccurs="1"/>
+    <xs:element name="valTitulZaDanSubjFO" type="ldt_Retazec" minOccurs="0" nillable="true"/>
+    <xs:element name="valRodneCisloDanSubjFO" type="ldt_RodneCislo" minOccurs="0" nillable="true"/>
+    <xs:element name="valDatumNarodeniaDanSubjFO" type="ldt_Datum" minOccurs="0" nillable="true"/>
+    </xs:sequence>
+    </xs:complexType>
+    </xs:element>
+    </xs:sequence>
+    </xs:complexType>
+    </xs:element>
+    <xs:element name="secDanSubjPO" minOccurs="0">
+    <xs:complexType>
+    <xs:sequence>
+    <xs:element name="valIcoPO" type="ldt_ICO" minOccurs="0" nillable="true"/>
+    <xs:element name="valObchMenoDanSubjPO" type="ldt_Retazec" minOccurs="1"/>
+    <xs:element name="secDoplUdajePO" minOccurs="0">
+    <xs:complexType>
+    <xs:sequence>
+    <xs:element name="valPravnaFormaDanSubjPO" type="ldt_Retazec" minOccurs="0" nillable="true"/>
+    </xs:sequence>
+    </xs:complexType>
+    </xs:element>
+    </xs:sequence>
+    </xs:complexType>
+    </xs:element>
+    </xs:sequence>
+    </xs:complexType>
+    </xs:element>
+    <xs:element name="secSidlo" minOccurs="0">
+    <xs:complexType>
+    <xs:sequence>
+    <xs:element name="valUlica" type="ldt_Retazec" minOccurs="0" nillable="true"/>
+    <xs:element name="valCislo" type="ldt_CisloDomu" minOccurs="1"/>
+    <xs:element name="valPsc" type="ldt_PSC" minOccurs="1"/>
+    <xs:element name="valObec" type="ldt_Retazec" minOccurs="1"/>
+    <xs:element name="valStat" type="ldt_Retazec" minOccurs="1"/>
+    <xs:element name="valTelefon" type="ldt_Telefon" minOccurs="0" nillable="true"/>
+    <xs:element name="valEmail" type="ldt_Email" minOccurs="0" nillable="true"/>
+    </xs:sequence>
+    </xs:complexType>
+    </xs:element>
+    <xs:element name="secUdajeSpoplatnenePodanie" minOccurs="0">
+    <xs:complexType>
+    <xs:sequence>
+    <xs:element name="ID_sluzby" type="ldt_Retazec" minOccurs="0"/>
+    <xs:element name="valSadzobnikPoplatkov" type="ldt_Retazec" minOccurs="1"/>
+    <xs:element name="valNazovSluzby" type="ldt_Retazec" minOccurs="1"/>
+    <xs:element name="secPomocna" minOccurs="0">
+    <xs:complexType>
+    <xs:sequence>
+    <xs:element name="valVystupSluzby" type="ldt_Retazec" minOccurs="0" nillable="true"/>
+    <xs:element name="valJednokovaCena" type="ldt_Retazec" minOccurs="0" nillable="true"/>
+    <xs:element name="secPomocna2" minOccurs="0">
+    <xs:complexType>
+    <xs:sequence>
+    <xs:element name="valOslobodenie" type="LDT_Checkbox" minOccurs="0" nillable="true"/>
+    </xs:sequence>
+    </xs:complexType>
+    </xs:element>
+    </xs:sequence>
+    </xs:complexType>
+    </xs:element>
+    <xs:element name="valDovodOslobodenia" type="ldt_Retazec" minOccurs="0" nillable="true"/>
+    <xs:element name="secSchrankaAP" minOccurs="0">
+    <xs:complexType>
+    <xs:sequence>
+    <xs:element name="schrankaAP" type="ldt_Retazec" minOccurs="0" nillable="true"/>
+    </xs:sequence>
+    </xs:complexType>
+    </xs:element>
+    <xs:element name="secSchrankaSubjektu" minOccurs="0">
+    <xs:complexType>
+    <xs:sequence>
+    <xs:element name="schrankaSubjektu" type="ldt_Retazec" minOccurs="0" nillable="true"/>
+    </xs:sequence>
+    </xs:complexType>
+    </xs:element>
+    </xs:sequence>
+    </xs:complexType>
+    </xs:element>
+    <xs:element name="secDruhPrilohy" minOccurs="0">
+    <xs:complexType>
+    <xs:sequence>
+    <xs:element name="valDruhPrilohy" type="ldt_DruhPrilohy" minOccurs="1">
+    <xs:annotation>
+    <xs:documentation>Hodnoty 0-Súčasťou podania nie je príloha, 1-Podanie je tvorené súborom dokumentov, 2-Súčasťou podania je príloha</xs:documentation>
+    </xs:annotation>
+    </xs:element>
+    </xs:sequence>
+    </xs:complexType>
+    </xs:element>
+    <xs:element name="secObsah" minOccurs="0">
+    <xs:complexType>
+    <xs:sequence>
+    <xs:element name="valTextPodania" type="ldt_TextArea" minOccurs="1"/>
+    </xs:sequence>
+    </xs:complexType>
+    </xs:element>
+    <xs:element name="secDokumentyPodania" minOccurs="0">
+    <xs:complexType>
+    <xs:sequence>
+    <xs:element name="secDokumentPodania" minOccurs="1" maxOccurs="999">
+    <xs:complexType>
+    <xs:sequence>
+    <xs:element name="valPopisDokumentu" type="ldt_Retazec" minOccurs="1"/>
+    <xs:element name="valSposobDoruceniaDokumentu" type="ldt_Retazec" minOccurs="1"/>
+    </xs:sequence>
+    </xs:complexType>
+    </xs:element>
+    </xs:sequence>
+    </xs:complexType>
+    </xs:element>
+    <xs:element name="secPrilohyPodania" minOccurs="0">
+    <xs:complexType>
+    <xs:sequence>
+    <xs:element name="secPrilohaPodania" minOccurs="1" maxOccurs="999">
+    <xs:complexType>
+    <xs:sequence>
+    <xs:element name="valPopisPrilohy" type="ldt_Retazec" minOccurs="1"/>
+    <xs:element name="valSposobDoruceniaPrilohy" type="ldt_Retazec" minOccurs="1"/>
+    </xs:sequence>
+    </xs:complexType>
+    </xs:element>
+    </xs:sequence>
+    </xs:complexType>
+    </xs:element>
+    <xs:element name="secDatumPodania" minOccurs="0">
+    <xs:complexType>
+    <xs:sequence>
+    <xs:element name="valDatumPodania" type="ldt_Datum" minOccurs="1"/>
+    </xs:sequence>
+    </xs:complexType>
+    </xs:element>
+    </xs:sequence>
+    </xs:complexType>
+    </xs:element>
+    </xs:schema>
+
+VP_DANv24_txt_xslt:
+  document_type: CLS_F_XSLT_TXT_SGN
+  language: sk
+  form: VP_DANv24
+  data: |
+    <?xml version="1.0" encoding="UTF-8"?>
+    <xsl:stylesheet version="1.0"
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:fo="http://www.w3.org/1999/XSL/Format">
+    <xsl:output method="text" omit-xml-declaration="yes" encoding="UTF-8"/>
+    <xsl:template match="/">
+    Všeobecné podanie - správa daní
+
+    Evidenčné číslo súvisiaceho dokumentu:
+      <xsl:value-of select="/dokument/secEvidencneCisloSuvisiacehoDOkumentu/valEvidencneCisloSuvisiacehoDokumentu"/>/
+      <xsl:value-of select="/dokument/secEvidencneCisloSuvisiacehoDOkumentu/valECSDRok"/>
+      <xsl:for-each select="/dokument/secAdresovanieVP">
+
+      Adresát podania
+    Orgán finančnej správy:
+      <xsl:choose>
+      <xsl:when test="valOrganFS = 'FRSR'">Finančné riaditeľstvo SR</xsl:when>
+      <xsl:when test="valOrganFS = 'DU'">Daňový úrad</xsl:when>
+      <xsl:otherwise>
+      <xsl:value-of select="valOrganFS"/>
+      </xsl:otherwise>
+      </xsl:choose>
+      <xsl:for-each select="secAdresatDU">
+      <xsl:if test="valDanovyUrad">
+    Daňový úrad:
+      <xsl:choose>
+      <xsl:when test="valDanovyUrad = 600">Banská Bystrica</xsl:when>
+      <xsl:when test="valDanovyUrad = 100">Bratislava</xsl:when>
+      <xsl:when test="valDanovyUrad = 800">Košice</xsl:when>
+      <xsl:when test="valDanovyUrad = 400">Nitra</xsl:when>
+      <xsl:when test="valDanovyUrad = 700">Prešov</xsl:when>
+      <xsl:when test="valDanovyUrad = 300">Trenčín</xsl:when>
+      <xsl:when test="valDanovyUrad = 200">Trnava</xsl:when>
+      <xsl:when test="valDanovyUrad = 500">Žilina</xsl:when>
+      <xsl:when test="valDanovyUrad = 900">pre vybrané daňové subjekty</xsl:when>
+      <xsl:otherwise>
+      <xsl:value-of select="valDanovyUrad"/>
+      </xsl:otherwise>
+      </xsl:choose>
+      </xsl:if>
+      </xsl:for-each>
+      </xsl:for-each>
+      <xsl:for-each select="/dokument/secOblastPodania">
+    Oblasť podania:
+      <xsl:choose>
+      <xsl:when test="valOblastPodania = 'REG'">Register</xsl:when>
+      <xsl:when test="valOblastPodania = 'DAN'">Správa daní</xsl:when>
+      <xsl:when test="valOblastPodania = 'KON'">Kontrola</xsl:when>
+      <xsl:when test="valOblastPodania = 'EXE'">Daňová exekúcia</xsl:when>
+      <xsl:otherwise>
+      <xsl:value-of select="valOblastPodania"/>
+      </xsl:otherwise>
+      </xsl:choose>
+    Agenda:
+      <xsl:choose>
+      <xsl:when test="valAgenda = 'DAN_FO'">Daň z príjmov fyzickej osoby</xsl:when>
+      <xsl:when test="valAgenda = 'DAN_PO'">Daň z príjmov právnickej osoby</xsl:when>
+      <xsl:when test="valAgenda = 'DAN_PH'">Daň z pridanej hodnoty</xsl:when>
+      <xsl:when test="valAgenda = 'DAN_ZC'">Daň zo závislej činnosti</xsl:when>
+      <xsl:when test="valAgenda = 'DAN_MV'">Daň z motorových vozidiel</xsl:when>
+      <xsl:when test="valAgenda = 'DAN_POI'">Daň z poistenia</xsl:when>
+      <xsl:when test="valAgenda = 'DAN_DZ'">Daň vyberaná zrážkou</xsl:when>
+      <xsl:when test="valAgenda = 'DAN_PR'">Odvody</xsl:when>
+      <xsl:when test="valAgenda = 'DAN_PHO'">Osobitná správa dane z pridanej hodnoty</xsl:when>
+      <xsl:when test="valAgenda = 'KON_FO'">Daň z príjmov fyzickej osoby</xsl:when>
+      <xsl:when test="valAgenda = 'KON_PO'">Daň z príjmov právnickej osoby</xsl:when>
+      <xsl:when test="valAgenda = 'KON_PH'">Daň z pridanej hodnoty</xsl:when>
+      <xsl:when test="valAgenda = 'KON_ZC'">Daň zo závislej činnosti</xsl:when>
+      <xsl:when test="valAgenda = 'KON_MV'">Daň z motorových vozidiel</xsl:when>
+      <xsl:when test="valAgenda = 'KON_POI'">Daň z poistenia</xsl:when>
+      <xsl:when test="valAgenda = 'KON_DZ'">Daň vyberaná zrážkou</xsl:when>
+      <xsl:when test="valAgenda = 'KON_PR'">Odvody</xsl:when>
+      <xsl:when test="valAgenda = 'KON_PHO'">Osobitná správa dane z pridanej hodnoty</xsl:when>
+      <xsl:when test="valAgenda = 'EXE_PR'">Dane a odvody</xsl:when>
+      <xsl:when test="valAgenda = 'REG_DAN'">Registrácia na daň z príjmov, daň z pridanej hodnoty a daň z poistenia</xsl:when>
+      <xsl:when test="valAgenda = 'REG_EKK'">Pokladnica e-kasa klient</xsl:when>
+      <xsl:when test="valAgenda = 'REG_OZ'">Oznámenie zmien</xsl:when>
+      <xsl:when test="valAgenda = 'FR_DAN_FO'">Daň z príjmov fyzickej osoby</xsl:when>
+      <xsl:when test="valAgenda = 'FR_DAN_PO'">Daň z príjmov právnickej osoby</xsl:when>
+      <xsl:when test="valAgenda = 'FR_DAN_PH'">Daň z pridanej hodnoty</xsl:when>
+      <xsl:when test="valAgenda = 'FR_DAN_ZC'">Daň zo závislej činnosti</xsl:when>
+      <xsl:when test="valAgenda = 'FR_DAN_MV'">Daň z motorových vozidiel</xsl:when>
+      <xsl:when test="valAgenda = 'FR_DAN_POI'">Daň z poistenia</xsl:when>
+      <xsl:when test="valAgenda = 'FR_DAN_PR'">Odvody</xsl:when>
+      <xsl:when test="valAgenda = 'FR_DAN_PHO'">Osobitná správa dane z pridanej hodnoty</xsl:when>
+      <xsl:when test="valAgenda = 'FR_DAN_OK'">Odvolacie konanie</xsl:when>
+      <xsl:when test="valAgenda = 'FR_DAN_DZ'">Daň vyberaná zrážkou</xsl:when>
+      <xsl:otherwise>
+      <xsl:value-of select="valAgenda"/>
+      </xsl:otherwise>
+      </xsl:choose>
+      </xsl:for-each>
+      <xsl:for-each select="/dokument/secTypPodania">
+    Typ služby:
+      <xsl:choose>
+      <xsl:when test="valTypSluzby1 = '1'">Podlieha správnemu poplatku</xsl:when>
+      <xsl:when test="valTypSluzby1 = '2'">Nepodlieha správnemu poplatku</xsl:when>
+      <xsl:otherwise>
+      <xsl:value-of select="valTypSluzby1"/>
+      </xsl:otherwise>
+      </xsl:choose>
+    Typ podania:
+      <xsl:choose>
+      <xsl:when test="valTypPodania = 'ZIA'" >Žiadosť</xsl:when>
+      <xsl:when test="valTypPodania = 'ZVP'" >Žiadosť o vydanie potvrdenia</xsl:when>
+      <xsl:when test="valTypPodania = 'OZS'" >Oznámenie</xsl:when>
+      <xsl:when test="valTypPodania = 'ODV'" >Odvolanie</xsl:when>
+      <xsl:when test="valTypPodania = 'POT'" >Potvrdenie</xsl:when>
+      <xsl:when test="valTypPodania = 'VVY'" >Vysvetlenie, vyjadrenie</xsl:when>
+      <xsl:when test="valTypPodania = 'ODP'" >Odpoveď na výzvu</xsl:when>
+      <xsl:when test="valTypPodania = 'NAM'" >Námietka</xsl:when>
+      <xsl:when test="valTypPodania = 'POD'" >Podnet</xsl:when>
+      <xsl:when test="valTypPodania = 'PNZ'" >Plnomocenstvo na zastupovanie</xsl:when>
+      <xsl:when test="valTypPodania = 'SVZ'" >Späťvzatie žiadosti</xsl:when>
+      <xsl:when test="valTypPodania = 'INE'" >Iné</xsl:when>
+      <xsl:when test="valTypPodania = 'HLA'" >Hlásenie</xsl:when>
+      <xsl:when test="valTypPodania = 'NZA'" >Námietka zaujatosti</xsl:when>
+      <xsl:otherwise>
+      <xsl:value-of select="valTypPodania"/>
+      </xsl:otherwise>
+      </xsl:choose>
+      </xsl:for-each>
+      <xsl:for-each select="/dokument/secDanSubjekt">
+      <xsl:for-each select="/dokument/secDanSubjekt/secIdentifCisla">
+
+      Identifikačné číslo
+    IČ DPH (VAT Identification Number):
+      <xsl:value-of select="VAT_IdentificationNumber"/>
+    VOES Number:
+      <xsl:value-of select="VOES_Number"/>
+    IOSS VAT Identification Number:
+      <xsl:value-of select="IOSS_VAT_IdentificationNumber"/>
+    Intermediary Number:
+      <xsl:value-of select="IntermediaryNumber"/>
+      </xsl:for-each>
+      <!-- FO -->
+      <xsl:if test="secDanSubjFO">
+
+      Fyzická osoba
+
+      <xsl:for-each select="secDanSubjFO">
+    Daňové identifikačné číslo:
+      <xsl:value-of select="/dokument/secDanSubjekt/valDicDanSubj"/>
+    IČO:
+      <xsl:value-of select="valIcoFO"/>
+    Obchodné meno / názov:
+      <xsl:value-of select="valObchMenoDanSubjFO"/>
+    Titul pred menom:
+      <xsl:value-of select="secDoplUdajeFO/valTitulPredDanSubjFO"/>
+    Meno:
+      <xsl:value-of select="secDoplUdajeFO/valMenoDanSubjFO"/>
+    Priezvisko:
+      <xsl:value-of select="secDoplUdajeFO/valPriezvDanSubjFO"/>
+    Titul za menom:
+      <xsl:value-of select="secDoplUdajeFO/valTitulZaDanSubjFO"/>
+    Rodné číslo:
+      <xsl:value-of select="secDoplUdajeFO/valRodneCisloDanSubjFO"/>
+    Dátum narodenia:
+      <xsl:value-of select="concat(substring(secDoplUdajeFO/valDatumNarodeniaDanSubjFO,9,2),'.',substring(secDoplUdajeFO/valDatumNarodeniaDanSubjFO,6,2),'.',substring(secDoplUdajeFO/valDatumNarodeniaDanSubjFO,1,4))"/>
+      </xsl:for-each>
+      </xsl:if>
+      <!-- PO -->
+      <xsl:if test="secDanSubjPO">
+
+      Právnická osoba
+
+      <xsl:for-each select="secDanSubjPO">
+    Daňové identifikačné číslo:
+      <xsl:value-of select="/dokument/secDanSubjekt/valDicDanSubj"/>
+    IČO:
+      <xsl:value-of select="valIcoPO"/>
+    Obchodné meno / názov:
+      <xsl:value-of select="valObchMenoDanSubjPO"/>
+    Právna forma:
+      <xsl:choose>
+      <xsl:when test="/dokument/secDanSubjekt/secDanSubjPO/secDoplUdajePO/valPravnaFormaDanSubjPO = ''"></xsl:when>
+      <xsl:when test="/dokument/secDanSubjekt/secDanSubjPO/secDoplUdajePO/valPravnaFormaDanSubjPO = '121'">Akciová spoločnosť</xsl:when>
+      <xsl:when test="/dokument/secDanSubjekt/secDanSubjPO/secDoplUdajePO/valPravnaFormaDanSubjPO = '312'">Banka-štátny peňažný ústav</xsl:when>
+      <xsl:when test="/dokument/secDanSubjekt/secDanSubjPO/secDoplUdajePO/valPravnaFormaDanSubjPO = '721'">Cirkevná organizácia</xsl:when>
+      <xsl:when test="/dokument/secDanSubjekt/secDanSubjPO/secDoplUdajePO/valPravnaFormaDanSubjPO = '434'">Doplnková dôchodková poisťovňa</xsl:when>
+      <xsl:when test="/dokument/secDanSubjekt/secDanSubjPO/secDoplUdajePO/valPravnaFormaDanSubjPO = '205'">Družstvo</xsl:when>
+      <xsl:when test="/dokument/secDanSubjekt/secDanSubjPO/secDoplUdajePO/valPravnaFormaDanSubjPO = '123'">Európska spoločnosť</xsl:when>
+      <xsl:when test="/dokument/secDanSubjekt/secDanSubjPO/secDoplUdajePO/valPravnaFormaDanSubjPO = '124'">Európske družstvo</xsl:when>
+      <xsl:when test="/dokument/secDanSubjekt/secDanSubjPO/secDoplUdajePO/valPravnaFormaDanSubjPO = '122'">Európske zoskupenie hospodárskych záujmov</xsl:when>
+      <xsl:when test="/dokument/secDanSubjekt/secDanSubjPO/secDoplUdajePO/valPravnaFormaDanSubjPO = '804'">Európske zoskupenie územnej spolupráce</xsl:when>
+      <xsl:when test="/dokument/secDanSubjekt/secDanSubjPO/secDoplUdajePO/valPravnaFormaDanSubjPO = '381'">Fondy</xsl:when>
+      <xsl:when test="/dokument/secDanSubjekt/secDanSubjPO/secDoplUdajePO/valPravnaFormaDanSubjPO = '383'">Iná organizácia verejnej správy</xsl:when>
+      <xsl:when test="/dokument/secDanSubjekt/secDanSubjPO/secDoplUdajePO/valPravnaFormaDanSubjPO = '125'">Jednoduchá spoločnosť na akcie</xsl:when>
+      <xsl:when test="/dokument/secDanSubjekt/secDanSubjPO/secDoplUdajePO/valPravnaFormaDanSubjPO = '113'">Komanditná spoločnosť</xsl:when>
+      <xsl:when test="/dokument/secDanSubjekt/secDanSubjPO/secDoplUdajePO/valPravnaFormaDanSubjPO = '445'">Komoditná burza</xsl:when>
+      <xsl:when test="/dokument/secDanSubjekt/secDanSubjPO/secDoplUdajePO/valPravnaFormaDanSubjPO = '745'">Komora (s výnimkou profesných komôr)</xsl:when>
+      <xsl:when test="/dokument/secDanSubjekt/secDanSubjPO/secDoplUdajePO/valPravnaFormaDanSubjPO = '921'">Medzinárodné organizácie a združenia</xsl:when>
+      <xsl:when test="/dokument/secDanSubjekt/secDanSubjPO/secDoplUdajePO/valPravnaFormaDanSubjPO = '951'">Miestna jednotka bez právnej spôsobilosti</xsl:when>
+      <xsl:when test="/dokument/secDanSubjekt/secDanSubjPO/secDoplUdajePO/valPravnaFormaDanSubjPO = '117'">Nadácia</xsl:when>
+      <xsl:when test="/dokument/secDanSubjekt/secDanSubjPO/secDoplUdajePO/valPravnaFormaDanSubjPO = '311'">Národná banka Slovenska</xsl:when>
+      <xsl:when test="/dokument/secDanSubjekt/secDanSubjPO/secDoplUdajePO/valPravnaFormaDanSubjPO = '118'">Neinvestičný fond</xsl:when>
+      <xsl:when test="/dokument/secDanSubjekt/secDanSubjPO/secDoplUdajePO/valPravnaFormaDanSubjPO = '995'">Nešpecifikovaná právna forma</xsl:when>
+      <xsl:when test="/dokument/secDanSubjekt/secDanSubjPO/secDoplUdajePO/valPravnaFormaDanSubjPO = '119'">Nezisková organizácia</xsl:when>
+      <xsl:when test="/dokument/secDanSubjekt/secDanSubjPO/secDoplUdajePO/valPravnaFormaDanSubjPO = '120'">Nezisková organizácia poskytujúca všeobecne prospešné služby</xsl:when>
+      <xsl:when test="/dokument/secDanSubjekt/secDanSubjPO/secDoplUdajePO/valPravnaFormaDanSubjPO = '801'">Obec (obecný úrad), mesto (mestský úrad)</xsl:when>
+      <xsl:when test="/dokument/secDanSubjekt/secDanSubjPO/secDoplUdajePO/valPravnaFormaDanSubjPO = '711'">Politická strana, politické hnutie</xsl:when>
+      <xsl:when test="/dokument/secDanSubjekt/secDanSubjPO/secDoplUdajePO/valPravnaFormaDanSubjPO = '331'">Príspevková organizácia</xsl:when>
+      <xsl:when test="/dokument/secDanSubjekt/secDanSubjPO/secDoplUdajePO/valPravnaFormaDanSubjPO = '321'">Rozpočtová organizácia</xsl:when>
+      <xsl:when test="/dokument/secDanSubjekt/secDanSubjPO/secDoplUdajePO/valPravnaFormaDanSubjPO = '803'">Samosprávny kraj (úrad samosprávneho kraja)</xsl:when>
+      <xsl:when test="/dokument/secDanSubjekt/secDanSubjPO/secDoplUdajePO/valPravnaFormaDanSubjPO = '433'">Sociálna a zdravotné poisťovne</xsl:when>
+      <xsl:when test="/dokument/secDanSubjekt/secDanSubjPO/secDoplUdajePO/valPravnaFormaDanSubjPO = '271'">Spoločenstvá vlastníkov pozemkov, bytov a pod.</xsl:when>
+      <xsl:when test="/dokument/secDanSubjekt/secDanSubjPO/secDoplUdajePO/valPravnaFormaDanSubjPO = '112'">Spoločnosť s ručením obmedzeným</xsl:when>
+      <xsl:when test="/dokument/secDanSubjekt/secDanSubjPO/secDoplUdajePO/valPravnaFormaDanSubjPO = '741'">Stavovská organizácia - profesná komora</xsl:when>
+      <xsl:when test="/dokument/secDanSubjekt/secDanSubjPO/secDoplUdajePO/valPravnaFormaDanSubjPO = '301'">Štátny podnik</xsl:when>
+      <xsl:when test="/dokument/secDanSubjekt/secDanSubjPO/secDoplUdajePO/valPravnaFormaDanSubjPO = '111'">Verejná obchodná spoločnosť</xsl:when>
+      <xsl:when test="/dokument/secDanSubjekt/secDanSubjPO/secDoplUdajePO/valPravnaFormaDanSubjPO = '333'">Verejná výskumná inštitúcia</xsl:when>
+      <xsl:when test="/dokument/secDanSubjekt/secDanSubjPO/secDoplUdajePO/valPravnaFormaDanSubjPO = '382'">Verejnoprávna inštitúcia</xsl:when>
+      <xsl:when test="/dokument/secDanSubjekt/secDanSubjPO/secDoplUdajePO/valPravnaFormaDanSubjPO = '422'">Zahraničná osoba, fyzická osoba s bydliskom mimo územia SR</xsl:when>
+      <xsl:when test="/dokument/secDanSubjekt/secDanSubjPO/secDoplUdajePO/valPravnaFormaDanSubjPO = '421'">Zahraničná osoba, právnická osoba so sídlom mimo územia SR</xsl:when>
+      <xsl:when test="/dokument/secDanSubjekt/secDanSubjPO/secDoplUdajePO/valPravnaFormaDanSubjPO = '911'">Zahraničné kultúrne, informačné stredisko, rozhlasová, tlačová a televízna agentúra</xsl:when>
+      <xsl:when test="/dokument/secDanSubjekt/secDanSubjPO/secDoplUdajePO/valPravnaFormaDanSubjPO = '931'">Zastúpenie zahraničnej právnickej osoby</xsl:when>
+      <xsl:when test="/dokument/secDanSubjekt/secDanSubjPO/secDoplUdajePO/valPravnaFormaDanSubjPO = '901'">Zastupiteľské orgány iných štátov</xsl:when>
+      <xsl:when test="/dokument/secDanSubjekt/secDanSubjPO/secDoplUdajePO/valPravnaFormaDanSubjPO = '752'">Záujmové združenie fyzických osôb bez právnej spôsobilosti</xsl:when>
+      <xsl:when test="/dokument/secDanSubjekt/secDanSubjPO/secDoplUdajePO/valPravnaFormaDanSubjPO = '751'">Záujmové združenie právnických osôb</xsl:when>
+      <xsl:when test="/dokument/secDanSubjekt/secDanSubjPO/secDoplUdajePO/valPravnaFormaDanSubjPO = '701'">Združenie (zväz, spolok, spoločnosť, klub ai.)</xsl:when>
+      <xsl:otherwise>
+      <xsl:value-of select="/dokument/secDanSubjekt/secDanSubjPO/secDoplUdajePO/valPravnaFormaDanSubjPO"/>
+      </xsl:otherwise>
+      </xsl:choose>
+      </xsl:for-each>
+      </xsl:if>
+      </xsl:for-each>
+
+      Adresa trvalého pobytu fyzickej osoby/adresa sídla právnickej osoby
+
+    Ulica:
+      <xsl:value-of select="/dokument/secSidlo/valUlica"/>
+    Číslo:
+      <xsl:value-of select="/dokument/secSidlo/valCislo"/>
+    PSČ:
+      <xsl:value-of select="/dokument/secSidlo/valPsc"/>
+    Obec:
+      <xsl:value-of select="/dokument/secSidlo/valObec"/>
+    Štát:
+      <xsl:choose>
+      <xsl:when test="/dokument/secSidlo/valStat = ''"></xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Afganistan'">Afganistan</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Alandy'">Alandy</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Albánsko'">Albánsko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Alžírsko'">Alžírsko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Americká Samoa'">Americká Samoa</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Americké Panenské ostrovy'">Americké Panenské ostrovy</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Andorra'">Andorra</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Angola'">Angola</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Anguilla'">Anguilla</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Antarktída'">Antarktída</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Antigua a Barbuda'">Antigua a Barbuda</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Argentína'">Argentína</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Arménsko'">Arménsko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Aruba'">Aruba</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Austrália'">Austrália</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Azerbajdžan'">Azerbajdžan</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Bahamy'">Bahamy</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Bahrajn'">Bahrajn</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Bangladéš'">Bangladéš</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Barbados'">Barbados</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Belgicko'">Belgicko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Belize'">Belize</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Benin'">Benin</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Bermudy'">Bermudy</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Bhután'">Bhután</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Bielorusko'">Bielorusko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Bolívia'">Bolívia</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Bonaire, Svätý Eustach a Saba'">Bonaire, Svätý Eustach a Saba</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Bosna a Hercegovina'">Bosna a Hercegovina</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Botswana'">Botswana</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Bouvetov ostrov'">Bouvetov ostrov</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Brazília'">Brazília</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Britské indickooceánske územie'">Britské indickooceánske územie</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Britské Panenské ostrovy'">Britské Panenské ostrovy</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Brunej'">Brunej</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Bulharsko'">Bulharsko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Burkina'">Burkina</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Burundi'">Burundi</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Cookove ostrovy'">Cookove ostrovy</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Curaçao'">Curaçao</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Cyprus'">Cyprus</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Čad'">Čad</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Česko'">Česko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Čierna Hora'">Čierna Hora</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Čile'">Čile</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Čína'">Čína</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Dánsko'">Dánsko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Dominika'">Dominika</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Dominikánska republika'">Dominikánska republika</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Džibutsko'">Džibutsko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Egypt'">Egypt</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Ekvádor'">Ekvádor</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Eritrea'">Eritrea</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Estónsko'">Estónsko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Etiópia'">Etiópia</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Faerské ostrovy'">Faerské ostrovy</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Falklandy'">Falklandy</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Fidži'">Fidži</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Filipíny'">Filipíny</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Fínsko'">Fínsko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Francúzska Guyana'">Francúzska Guyana</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Francúzska Polynézia'">Francúzska Polynézia</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Francúzske južné územia'">Francúzske južné územia</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Francúzsko'">Francúzsko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Gabon'">Gabon</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Gambia'">Gambia</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Ghana'">Ghana</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Gibraltár'">Gibraltár</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Grécko'">Grécko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Grenada'">Grenada</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Grónsko'">Grónsko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Gruzínsko'">Gruzínsko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Guadeloupe'">Guadeloupe</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Guam'">Guam</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Guatemala'">Guatemala</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Guernsey'">Guernsey</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Guinea'">Guinea</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Guinea-Bissau'">Guinea-Bissau</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Guyana'">Guyana</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Haiti'">Haiti</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Heardov ostrov a Macdonaldove ostrovy'">Heardov ostrov a Macdonaldove ostrovy</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Holandsko'">Holandsko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Honduras'">Honduras</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Hongkong'">Hongkong</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Chorvátsko'">Chorvátsko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'India'">India</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Indonézia'">Indonézia</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Irak'">Irak</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Irán'">Irán</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Írsko'">Írsko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Island'">Island</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Izrael'">Izrael</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Jamajka'">Jamajka</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Japonsko'">Japonsko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Jemen'">Jemen</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Jersey'">Jersey</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Jordánsko'">Jordánsko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Južná Afrika'">Južná Afrika</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Južná Georgia a Južné Sandwichove ostrovy'">Južná Georgia a Južné Sandwichove ostrovy</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Južný Sudán'">Južný Sudán</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Kajmanie ostrovy'">Kajmanie ostrovy</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Kambodža'">Kambodža</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Kamerun'">Kamerun</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Kanada'">Kanada</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Kapverdy'">Kapverdy</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Katar'">Katar</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Kazachstan'">Kazachstan</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Keňa'">Keňa</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Kirgizsko'">Kirgizsko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Kiribati'">Kiribati</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Kokosové ostrovy'">Kokosové ostrovy</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Kolumbia'">Kolumbia</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Komory'">Komory</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Kongo'">Kongo</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Kongo (býv. Zair)'">Kongo (býv. Zair)</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Kórejská ľudovodemokratická republika'">Kórejská ľudovodemokratická republika</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Kórejská republika'">Kórejská republika</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Kostarika'">Kostarika</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Kuba'">Kuba</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Kuvajt'">Kuvajt</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Laos'">Laos</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Lesotho'">Lesotho</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Libanon'">Libanon</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Libéria'">Libéria</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Líbya'">Líbya</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Lichtenštajnsko'">Lichtenštajnsko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Litva'">Litva</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Lotyšsko'">Lotyšsko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Luxembursko'">Luxembursko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Macao'">Macao</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Macedónsko'">Macedónsko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Madagaskar'">Madagaskar</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Maďarsko'">Maďarsko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Malajzia'">Malajzia</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Malawi'">Malawi</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Maldivy'">Maldivy</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Mali'">Mali</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Malta'">Malta</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Man'">Man</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Maroko'">Maroko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Marshallove ostrovy'">Marshallove ostrovy</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Martinik'">Martinik</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Maurícius'">Maurícius</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Mauritánia'">Mauritánia</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Mayotte'">Mayotte</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Menšie odľahlé ostrovy USA'">Menšie odľahlé ostrovy USA</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Mexiko'">Mexiko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Mikronézia'">Mikronézia</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Mjanmarsko'">Mjanmarsko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Moldavsko'">Moldavsko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Monako'">Monako</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Mongolsko'">Mongolsko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Montserrat'">Montserrat</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Mozambik'">Mozambik</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Namíbia'">Namíbia</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Nauru'">Nauru</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Nemecko'">Nemecko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Nepál'">Nepál</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Niger'">Niger</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Nigéria'">Nigéria</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Nikaragua'">Nikaragua</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Niue'">Niue</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Norfolk'">Norfolk</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Nórsko'">Nórsko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Nová Kaledónia'">Nová Kaledónia</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Nový Zéland'">Nový Zéland</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Omán'">Omán</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Pakistan'">Pakistan</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Palau'">Palau</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Palestína'">Palestína</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Panama'">Panama</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Papua-Nová Guinea'">Papua-Nová Guinea</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Paraguaj'">Paraguaj</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Peru'">Peru</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Pitcairnove ostrovy'">Pitcairnove ostrovy</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Pobrežie Slonoviny'">Pobrežie Slonoviny</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Poľsko'">Poľsko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Portoriko'">Portoriko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Portugalsko'">Portugalsko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Rakúsko'">Rakúsko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Réunion'">Réunion</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Rovníková Guinea'">Rovníková Guinea</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Rumunsko'">Rumunsko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Rusko'">Rusko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Rwanda'">Rwanda</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Saint Pierre a Miquelon'">Saint Pierre a Miquelon</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Salvádor'">Salvádor</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Samoa'">Samoa</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'San Maríno'">San Maríno</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Saudská Arábia'">Saudská Arábia</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Senegal'">Senegal</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Severné Mariány'">Severné Mariány</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Seychely'">Seychely</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Sierra Leone'">Sierra Leone</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Singapur'">Singapur</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Slovensko'">Slovensko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Slovinsko'">Slovinsko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Somálsko'">Somálsko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Spojené arabské emiráty'">Spojené arabské emiráty</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Spojené kráľovstvo'">Spojené kráľovstvo</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Spojené štáty, USA'">Spojené štáty, USA</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Srbsko'">Srbsko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Srí Lanka'">Srí Lanka</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Stredoafrická republika'">Stredoafrická republika</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Sudán'">Sudán</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Surinam'">Surinam</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Svalbard a Jan Mayen'">Svalbard a Jan Mayen</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Svazijsko'">Svazijsko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Svätá Helena, Ascension'">Svätá Helena, Ascension</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Svätá Lucia'">Svätá Lucia</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Svätý Bartolomej'">Svätý Bartolomej</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Svätý Krištof a Nevis'">Svätý Krištof a Nevis</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Svätý Martin (francúzska časť)'">Svätý Martin (francúzska časť)</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Svätý Martin (holandská časť)'">Svätý Martin (holandská časť)</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Svätý Tomáš a Princov ostrov'">Svätý Tomáš a Princov ostrov</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Svätý Vincent a Grenadíny'">Svätý Vincent a Grenadíny</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Sýria'">Sýria</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Šalamúnove ostrovy'">Šalamúnove ostrovy</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Španielsko'">Španielsko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Švajčiarsko'">Švajčiarsko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Švédsko'">Švédsko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Tadžikistan'">Tadžikistan</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Taiwan'">Taiwan</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Taliansko'">Taliansko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Tanzánia'">Tanzánia</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Thajsko'">Thajsko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Togo'">Togo</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Tokelau'">Tokelau</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Tonga'">Tonga</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Trinidad a Tobago'">Trinidad a Tobago</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Tunisko'">Tunisko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Turecko'">Turecko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Turkménsko'">Turkménsko</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Turks a Caicos'">Turks a Caicos</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Tuvalu'">Tuvalu</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Uganda'">Uganda</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Ukrajina'">Ukrajina</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Uruguaj'">Uruguaj</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Uzbekistan'">Uzbekistan</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Vanuatu'">Vanuatu</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Vatikán'">Vatikán</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Venezuela'">Venezuela</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Vianočný ostrov'">Vianočný ostrov</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Vietnam'">Vietnam</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Východný Timor'">Východný Timor</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Wallis a Futuna'">Wallis a Futuna</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Zambia'">Zambia</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Západná Sahara'">Západná Sahara</xsl:when>
+      <xsl:when test="/dokument/secSidlo/valStat = 'Zimbabwe'">Zimbabwe</xsl:when>
+      <xsl:otherwise>
+      <xsl:value-of select="/dokument/secSidlo/valStat"/>
+      </xsl:otherwise>
+      </xsl:choose>
+    Číslo telefónu:
+      <xsl:value-of select="/dokument/secSidlo/valTelefon"/>
+    E-mailová adresa:
+      <xsl:value-of select="/dokument/secSidlo/valEmail"/>
+
+      Údaje k spoplatnenému podaniu
+
+      <xsl:if test="/dokument/secUdajeSpoplatnenePodanie">
+      <xsl:for-each select="/dokument/secUdajeSpoplatnenePodanie">
+    ID služby:
+      <xsl:value-of select="ID_sluzby"/>
+    Sadzobník poplatkov:
+      <xsl:choose>
+      <xsl:when test="valSadzobnikPoplatkov = ''"></xsl:when>
+      <xsl:when test="valSadzobnikPoplatkov = 'DAN_Z19.1.1'">19.1.1. Vydanie rozhodnutia - položka 143a (o deleg.miest. prísluš.,o predĺžení,odpust.lehoty,o povolení odkladu platenia dane,úľavy dane)</xsl:when>
+      <xsl:when test="valSadzobnikPoplatkov = 'DAN_V19.1.2'">19.1.2. Vydanie potvrdenia - položka 143b (o stave osob.účtu, o stave nedoplatkov, o úhrade daň.záväzkov, neexistencii pohľadávok)</xsl:when>
+      <xsl:when test="valSadzobnikPoplatkov = 'DAN_V19.1.3'">19.1.3. Doplnenie údajov na predtlačenom tlačive - položka 143c</xsl:when>
+      <xsl:when test="valSadzobnikPoplatkov = 'DAN_Z19.1.4'">19.1.4. Zápis DKP do náhr.knihy, osvedč. o registr. ako náhrady, súhlas s naklad. zálož.práva, preruš.daň.konania - položka 144a, d, e, f</xsl:when>
+      <xsl:when test="valSadzobnikPoplatkov = 'DAN_Z19.1.5'">19.1.5. Súhlas správcu dane s výmazom z Obch. reg., povolenie úľavy zo sankcie alebo jej odpustenie - položka  144 b, c </xsl:when>
+      <xsl:when test="valSadzobnikPoplatkov = 'DAN_V19.1.6'">19.1.6. Vyhotovenie a osvedčenie rovnopisov, oznámenia o registrácii z.č. 563/2009 Z.z. - položka 2a, 2c </xsl:when>
+      <xsl:when test="valSadzobnikPoplatkov = 'DAN_P19.2.1'">19.2.1. Návrh na obnovu konania, podnet na preskúmanie rohodnutia  z.č. 563/2009 Z.z. - položka 1 bod. 1 a 2 </xsl:when>
+      <xsl:when test="valSadzobnikPoplatkov = 'DAN_P19.2.2'">19.2.2. Návrh na obnovu konania, podnet na preskúmanie rohodnutia  z.č. 71/1967 Z.z. - položka 1 bod. 1 a 2 </xsl:when>
+      <xsl:when test="valSadzobnikPoplatkov = 'DAN_Z19.2.3'">19.2.3. Vydanie preukazu (osvedčenia), predĺženie platnosti preukazu podľa osobitných predpisov - položka 6 </xsl:when>
+      <xsl:when test="valSadzobnikPoplatkov = 'DAN_V19.2.4'">19.2.4. Osvedčenie podpisu, odtlačku úrad. pečiatky,vyhotovenie a osvedč. odpisu,výpisu podľa osobit. predpisov - položka 3,1.bod,, pism. a), b) položka 2 o) </xsl:when>
+      <xsl:when test="valSadzobnikPoplatkov = 'DAN_Z19.2.4'">19.2.4. Osvedčenie podpisu, odtlačku úrad. pečiatky,vyhotovenie a osvedč. odpisu,výpisu podľa osobit. predpisov - položka 3,1.bod,, pism. a), b) položka 2 o) </xsl:when>
+      <xsl:when test="valSadzobnikPoplatkov = 'DAN_V19.3.1'">19.3.1. Agenda Colných a Daňových úradov  - úkon vykonaný v elektronickej podobe</xsl:when>
+      <xsl:when test="valSadzobnikPoplatkov = 'DAN_Z19.3.1'">19.3.1. Agenda Colných a Daňových úradov  - úkon vykonaný v elektronickej podobe</xsl:when>
+      <xsl:when test="valSadzobnikPoplatkov = 'REG_Z19.1.1'">19.1.1. Vydanie rozhodnutia - položka 143a (o deleg.miest. prísluš.,o predĺžení,odpust.lehoty,o povolení odkladu platenia dane,úľavy dane)</xsl:when>
+      <xsl:when test="valSadzobnikPoplatkov = 'REG_V19.1.3'">19.1.3. Doplnenie údajov na predtlačenom tlačive - položka 143c</xsl:when>
+      <xsl:when test="valSadzobnikPoplatkov = 'REG_Z19.1.4'">19.1.4. Zápis DKP do náhr.knihy, osvedč. o registr. ako náhrady, súhlas s naklad. zálož.práva, preruš.daň.konania - položka 144a, d, e, f</xsl:when>
+      <xsl:when test="valSadzobnikPoplatkov = 'REG_Z19.1.5'">19.1.5. Súhlas správcu dane s výmazom z Obch. reg., povolenie úľavy zo sankcie alebo jej odpustenie - položka  144 b, c </xsl:when>
+      <xsl:when test="valSadzobnikPoplatkov = 'REG_V19.1.6'">19.1.6. Vyhotovenie a osvedčenie odpisov, oznámenia o registrácii z.č. 563/2009 Z.z. - položka 2a, 2c </xsl:when>
+      <xsl:when test="valSadzobnikPoplatkov = 'REG_Z19.1.6'">19.1.6. Vyhotovenie a osvedčenie odpisov, oznámenia o registrácii z.č. 563/2009 Z.z. - položka 2a, 2c </xsl:when>
+      <xsl:when test="valSadzobnikPoplatkov = 'REG_P19.2.1'">19.2.1. Návrh na obnovu konania, podnet na preskúmanie rohodnutia  z.č. 563/2009 Z.z. - položka 1 bod. 1 a 2 </xsl:when>
+      <xsl:when test="valSadzobnikPoplatkov = 'REG_Z19.2.4'">19.2.4. Osvedčenie podpisu, odtlačku úrad. pečiatky,vyhotovenie a osvedč. odpisu,výpisu podľa osobit. predpisov - položka 3,1.bod,, pism. a), b) položka 2 o) </xsl:when>
+      <xsl:when test="valSadzobnikPoplatkov = 'REG_V19.3.1'">19.3.1. Agenda Colných a Daňových úradov  - úkon vykonaný v elektronickej podobe</xsl:when>
+      <xsl:when test="valSadzobnikPoplatkov = 'REG_Z19.3.1'">19.3.1. Agenda Colných a Daňových úradov  - úkon vykonaný v elektronickej podobe</xsl:when>
+      <xsl:when test="valSadzobnikPoplatkov = 'KON_Z19.1.1'">19.1.1. Vydanie rozhodnutia - položka 143a (o deleg.miest. prísluš.,o predĺžení,odpust.lehoty,o povolení odkladu platenia dane,úľavy dane)</xsl:when>
+      <xsl:when test="valSadzobnikPoplatkov = 'KON_Z19.1.4'">19.1.4. Zápis DKP do náhr.knihy, osvedč. o registr. ako náhrady, súhlas s naklad. zálož.práva, preruš.daň.konania - položka 144a, d, e, f</xsl:when>
+      <xsl:when test="valSadzobnikPoplatkov = 'KON_V19.1.6'">19.1.6. Vyhotovenie a osvedčenie odpisov, oznámenia o registrácii z.č. 563/2009 Z.z. - položka 2a, 2c </xsl:when>
+      <xsl:when test="valSadzobnikPoplatkov = 'KON_P19.2.1'">19.2.1. Návrh na obnovu konania, podnet na preskúmanie rohodnutia  z.č. 563/2009 Z.z. - položka 1 bod. 1 a 2 </xsl:when>
+      <xsl:when test="valSadzobnikPoplatkov = 'KON_P19.2.2'">19.2.2. Návrh na obnovu konania, podnet na preskúmanie rohodnutia  z.č. 71/1967 Z.z. - položka 1 bod. 1 a 2 </xsl:when>
+      <xsl:when test="valSadzobnikPoplatkov = 'KON_Z19.2.4'">19.2.4. Osvedčenie podpisu, odtlačku úrad. pečiatky,vyhotovenie a osvedč. odpisu,výpisu podľa osobit. predpisov - položka 3,1.bod,, pism. a), b) položka 2 o) </xsl:when>
+      <xsl:when test="valSadzobnikPoplatkov = 'KON_V19.3.1'">19.3.1. Agenda Colných a Daňových úradov  - úkon vykonaný v elektronickej podobe</xsl:when>
+      <xsl:when test="valSadzobnikPoplatkov = 'KON_Z19.3.1'">19.3.1. Agenda Colných a Daňových úradov  - úkon vykonaný v elektronickej podobe</xsl:when>
+      <xsl:when test="valSadzobnikPoplatkov = 'EXE_Z19.1.4'">19.1.4. Zápis DKP do náhr.knihy, osvedč. o registr. ako náhrady, súhlas s naklad. zálož.práva, preruš.daň.konania - položka 144a, d, e, f</xsl:when>
+      <xsl:when test="valSadzobnikPoplatkov = 'EXE_V19.1.6'">19.1.6. Vyhotovenie a osvedčenie odpisov, oznámenia o registrácii z.č. 563/2009 Z.z. - položka 2a, 2c </xsl:when>
+      <xsl:when test="valSadzobnikPoplatkov = 'EXE_P19.2.1'">19.2.1. Návrh na obnovu konania, podnet na preskúmanie rohodnutia  z.č. 563/2009 Z.z. - položka 1 bod. 1 a 2 </xsl:when>
+      <xsl:when test="valSadzobnikPoplatkov = 'EXE_Z19.2.4'">19.2.4. Osvedčenie podpisu, odtlačku úrad. pečiatky,vyhotovenie a osvedč. odpisu,výpisu podľa osobit. predpisov - položka 3,1.bod,, pism. a), b) položka 2 o) </xsl:when>
+      <xsl:when test="valSadzobnikPoplatkov = 'EXE_V19.3.1'">19.3.1. Agenda Colných a Daňových úradov  - úkon vykonaný v elektronickej podobe</xsl:when>
+      <xsl:when test="valSadzobnikPoplatkov = 'EXE_Z19.3.1'">19.3.1. Agenda Colných a Daňových úradov  - úkon vykonaný v elektronickej podobe</xsl:when>
+      <xsl:when test="valSadzobnikPoplatkov = 'FRI_Z19.1.1'">19.1.1. Vydanie rozhodnutia - položka 143a (o deleg.miest. prísluš.,o predĺžení,odpust.lehoty,o povolení odkladu platenia dane,úľavy dane)</xsl:when>
+      <xsl:when test="valSadzobnikPoplatkov = 'FRI_V19.1.6'">19.1.6. Vyhotovenie a osvedčenie odpisov, oznámenia o registrácii z.č. 563/2009 Z.z. - položka 2a, 2c </xsl:when>
+      <xsl:when test="valSadzobnikPoplatkov = 'FRI_P19.2.1'">19.2.1. Návrh na obnovu konania, podnet na preskúmanie rohodnutia  z.č. 563/2009 Z.z. - položka 1 bod. 1 a 2 </xsl:when>
+      <xsl:when test="valSadzobnikPoplatkov = 'FRI_P19.2.2'">19.2.2. Návrh na obnovu konania, podnet na preskúmanie rohodnutia  z.č. 71/1967 Z.z. - položka 1 bod. 1 a 2 </xsl:when>
+      <xsl:when test="valSadzobnikPoplatkov = 'FRI_Z19.2.4'">19.2.4. Osvedčenie podpisu, odtlačku úrad. pečiatky,vyhotovenie a osvedč. odpisu,výpisu podľa osobit. predpisov - položka 3,1.bod,, pism. a), b) položka 2 o) </xsl:when>
+      <xsl:when test="valSadzobnikPoplatkov = 'FRI_V19.3.1'">19.3.1. Agenda Colných a Daňových úradov  - úkon vykonaný v elektronickej podobe</xsl:when>
+      <xsl:otherwise>
+      <xsl:value-of select="valSadzobnikPoplatkov"/>
+      </xsl:otherwise>
+      </xsl:choose>
+    Názov služby:
+      <xsl:choose>
+      <xsl:when test = "valNazovSluzby = ''"></xsl:when>
+      <xsl:when test = "valNazovSluzby = 'DAN_ZE1054/P1054'">19.1.1.2. Vydanie rozhodnutia o predĺžení lehoty - z. č. 563/2009 Z. z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'DAN_ZE1055/P1055'">19.1.1.3. Vydanie rozhodnutia o odpustení zmeškanej lehoty - z. č. 563/2009 Z. z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'DAN_ZE1060/P1060'">19.1.1.4. Vydanie rozhodnutia o povolení odkladu platenia dane alebo platenia dane v splátkach na žiadosť DS - z. č. 563/2009 Z. z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'DAN_ZE1063/P1063'">19.1.1.5. Vydanie rozhodnutia o povolení úľavy na dani alebo odpustení daňového nedoplatku v daňovom konaní  - z. č. 563/2009 Z. z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'DAN_VE1058/P1058'">19.1.2.1. Vydanie potvrdenia o stave osobného účtu na žiadosť DS - z. č. 563/2009 Z. z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'DAN_VE1070/P1070'">19.1.2.2. Vydanie potvrdenia orgánom finančnej správy podľa osobitného predpisu - z. č. 563/2009 Z. z., z. č. 71/1967 Zb.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'DAN_VE1086/P1086'">19.1.2.4. Vydanie potvrdenia o úhrade daň. záväzkov pre účely žiadosti o obnov. povolenia na prechodný pobyt podľa zákona č. 404/2011 Z.z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'DAN_VE1088/P1088'">19.1.3.1. Doplnenie údajov na predtlačenom tlačive, ktoré predloží žiadateľ - podľa osobitného predpisu</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'DAN_ZE1061/P1061'">19.1.4.4. Žiadosť o prerušenie daňového konania - z. č. 563/2009 Z. z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'DAN_ZE1069/P1069'">19.1.5.2. Povolenie úľavy zo sankcie alebo odpustenie sankcie podľa osobitného predpisu - z. č. 563/2009 Z. z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'DAN_VE0000/P1052'">19.1.6.1. Vyhotovenie odpisu  (fotokópie), listinnej podoby elektron. dokumentu, výpisu   zo spisového materiálu, za každú aj začatú stranu</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'DAN_VE0000/P1053'">19.1.6.2. Osvedčenie odpisu  (fotokópie), listinnej podoby elektron. dokumentu, výpisu   zo spisového materiálu v SJ, za každú aj začatú stranu</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'DAN_PE1064/P1064'">19.2.1.1. Návrh na obnovu konania - ak návrh podáva FO - z. č. 563/2009 Z. z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'DAN_PE1065/P1065'">19.2.1.2. Návrh na obnovu konania - ak návrh podáva PO alebo FO oprávnená na podnikanie - z. č. 563/2009 Z. z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'DAN_PE1066/P1066'">19.2.1.3. Podnet na preskúmanie rozhodnutia mimo odvolacieho konania, ak tento podáva FO - z. č. 563/2009 Z. z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'DAN_PE1067/P1067'">19.2.1.4. Podnet na preskúm. rozhodnutia mimo odvolacieho konania, ak tento podáva PO alebo FO opráv. na podnikanie - z. č. 563/2009 Z.z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'DAN_PE1073/P1073'">19.2.2.1. Návrh na obnovu konania - ak návrh podáva FO - z. č. 71/1967 Z. z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'DAN_PE1074/P1074'">19.2.2.2. Návrh na obnovu konania - ak návrh podáva PO alebo FO oprávnená na podnikanie - z. č. 71/1967 Z. z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'DAN_PE1075/P1075'">19.2.2.3. Podnet na preskúmanie rozhodnutia mimo odvolacieho konania, ak tento podáva FO - z. č. 71/1967 Z. z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'DAN_PE1076/P1076'">19.2.2.4. Podnet na presk. rozhodnutia mimo odvolacieho konania, ak tento podáva PO alebo FO opráv. na podnikanie - z. č. 71/1967 Z. z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'DAN_ZE1092/P1092'">19.2.3.1. Vydanie preukazu (osvedčenia), ak nejde o úkon spoplatňovaný podľa inej položky sadzobníka - podľa osobitného predpisu</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'DAN_ZE1093/P1093'">19.2.3.2. Vydanie preukazu (osvedč.) ako náhrady za zničený, stratený, odcudzený, pošk. preukaz, ak nejde o úkon spopl. podľa inej pol.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'DAN_ZE1094/P1094'">19.2.3.3. Predĺženie platnosti preukazu (osvedčenia), ak nejde o úkon spoplat. podľa inej položky sadzobníka</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'DAN_ZE1095/P1095'">19.2.3.4. Vydanie preukazu (osved.) ako náhrady za stratený, zničený, odcudzený, poškodený preukaz, opakovane v priebehu dvoch po sebe nasledujúcich rokoch</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'DAN_VE1090/P1090'">19.2.4.1. Osvedčenie podpisu na listine alebo na jej rovnopise, za každý podpis - podľa osobitného predpisu</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'DAN_VE1091/P1091'">19.2.4.2. Osvedčenie odtlačku úradnej pečiatky a úradného podpisu, za každý odtlačok a za každý podpis - podľa osobitného predpisu</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'DAN_ZE0000/P2545'">19.2.4.3. Vyhotovenie fotokópie listiny,  ktorá je súčasť. podania na zač. kon. na správ. orgáne podľa osobit. predpisov za každé aj začaté dve strany</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'DAN_VE2533/P0000'">19.3.1.1. Vyhotovenie odpisu (fotokópie), listinnej podoby elektron. dokumentu, výpisu zo spisového materiálu, za každú aj začatú stranu</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'DAN_VE2534/P0000'">19.3.1.2. Osvedčenie odpisu (fotokópie), listinnej podoby elektron. dokumentu, výpisu zo spisového materiálu v SJ, za každú aj začatú stranu</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'DAN_ZE2535/P0000'">19.3.1.3. Oznámenie, či určitý DS je registrovaný, alebo aké číslo mu bolo pridelené pri registrácii, na žiadosť DS - z. č. 563/2009 Z. z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'KON_ZE1054/P1054'">19.1.1.2. Vydanie rozhodnutia o predĺžení lehoty - z. č. 563/2009 Z. z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'KON_ZE1055/P1055'">19.1.1.3. Vydanie rozhodnutia o odpustení zmeškanej lehoty - z. č. 563/2009 Z. z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'KON_ZE1061/P1061'">19.1.4.4. Žiadosť o prerušenie daňového konania - z. č. 563/2009 Z. z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'KON_VE0000/P1052'">19.1.6.1. Vyhotovenie odpisu  (fotokópie), listinnej podoby elektron. dokumentu, výpisu   zo spisového materiálu, za každú aj začatú stranu</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'KON_VE0000/P1053'">19.1.6.2. Osvedčenie odpisu  (fotokópie), listinnej podoby elektron. dokumentu, výpisu   zo spisového materiálu v SJ, za každú aj začatú stranu</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'KON_PE1064/P1064'">19.2.1.1. Návrh na obnovu konania - ak návrh podáva FO - z. č. 563/2009 Z. z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'KON_PE1065/P1065'">19.2.1.2. Návrh na obnovu konania - ak návrh podáva PO alebo FO oprávnená na podnikanie - z. č. 563/2009 Z. z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'KON_PE1066/P1066'">19.2.1.3. Podnet na preskúmanie rozhodnutia mimo odvolacieho konania, ak tento podáva FO - z. č. 563/2009 Z. z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'KON_PE1067/P1067'">19.2.1.4. Podnet na preskúm. rozhodnutia mimo odvolacieho konania, ak tento podáva PO alebo FO opráv. na podnikanie - z. č. 563/2009 Z.z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'KON_PE1073/P1073'">19.2.2.1. Návrh na obnovu konania - ak návrh podáva FO - z. č. 71/1967 Z. z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'KON_PE1074/P1074'">19.2.2.2. Návrh na obnovu konania - ak návrh podáva PO alebo FO oprávnená na podnikanie - z. č. 71/1967 Z. z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'KON_PE1075/P1075'">19.2.2.3. Podnet na preskúmanie rozhodnutia mimo odvolacieho konania, ak tento podáva FO - z. č. 71/1967 Z. z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'KON_PE1076/P1076'">19.2.2.4. Podnet na presk. rozhodnutia mimo odvolacieho konania, ak tento podáva PO alebo FO opráv. na podnikanie - z. č. 71/1967 Z. z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'KON_ZE0000/P2545'">19.2.4.3. Vyhotovenie fotokópie listiny,  ktorá je súčasť. podania na zač. kon. na správ. orgáne podľa osobit. predpisov za každé aj začaté dve strany</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'KON_VE2533/P0000'">19.3.1.1. Vyhotovenie odpisu (fotokópie), listinnej podoby elektron. dokumentu, výpisu zo spisového materiálu, za každú aj začatú stranu</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'KON_VE2534/P0000'">19.3.1.2. Osvedčenie odpisu (fotokópie), listinnej podoby elektron. dokumentu, výpisu zo spisového materiálu v SJ, za každú aj začatú stranu</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'KON_ZE2535/P0000'">19.3.1.3. Oznámenie, či určitý DS je registrovaný, alebo aké číslo mu bolo pridelené pri registrácii, na žiadosť DS - z. č. 563/2009 Z. z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'EXE_ZE1068/P1068'">19.1.4.3. Udelenie súhlasu s nakladaním s predmetom záložného práva - z. č. 563/2009 Z. z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'EXE_VE0000/P1052'">19.1.6.1. Vyhotovenie odpisu  (fotokópie), listinnej podoby elektron. dokumentu, výpisu   zo spisového materiálu, za každú aj začatú stranu</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'EXE_VE0000/P1053'">19.1.6.2. Osvedčenie odpisu  (fotokópie), listinnej podoby elektron. dokumentu, výpisu   zo spisového materiálu v SJ, za každú aj začatú stranu</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'EXE_PE1064/P1064'">19.2.1.1. Návrh na obnovu konania - ak návrh podáva FO - z. č. 563/2009 Z. z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'EXE_PE1065/P1065'">19.2.1.2. Návrh na obnovu konania - ak návrh podáva PO alebo FO oprávnená na podnikanie - z. č. 563/2009 Z. z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'EXE_PE1066/P1066'">19.2.1.3. Podnet na preskúmanie rozhodnutia mimo odvolacieho konania, ak tento podáva FO - z. č. 563/2009 Z. z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'EXE_PE1067/P1067'">19.2.1.4. Podnet na preskúm. rozhodnutia mimo odvolacieho konania, ak tento podáva PO alebo FO opráv. na podnikanie - z. č. 563/2009 Z.z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'EXE_ZE0000/P2545'">19.2.4.3. Vyhotovenie fotokópie listiny,  ktorá je súčasť. podania na zač. kon. na správ. orgáne podľa osobit. predpisov za každé aj začaté dve strany</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'EXE_VE2533/P0000'">19.3.1.1. Vyhotovenie odpisu (fotokópie), listinnej podoby elektron. dokumentu, výpisu zo spisového materiálu, za každú aj začatú stranu</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'EXE_VE2534/P0000'">19.3.1.2. Osvedčenie odpisu (fotokópie), listinnej podoby elektron. dokumentu, výpisu zo spisového materiálu v SJ, za každú aj začatú stranu</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'EXE_ZE2535/P0000'">19.3.1.3. Oznámenie, či určitý DS je registrovaný, alebo aké číslo mu bolo pridelené pri registrácii, na žiadosť DS - z. č. 563/2009 Z. z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'REG_ZE1054/P1054'">19.1.1.2. Vydanie rozhodnutia o predĺžení lehoty - z. č. 563/2009 Z. z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'REG_ZE1055/P1055'">19.1.1.3. Vydanie rozhodnutia o odpustení zmeškanej lehoty - z. č. 563/2009 Z. z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'REG_VE1088/P1088'">19.1.3.1. Doplnenie údajov na predtlačenom tlačive, ktoré predloží žiadateľ - podľa osobitného predpisu</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'REG_ZE1062/P1062'">19.1.4.2. Vydanie osvedčenia o registrácii ako náhrady za stratené, zničené, poškodené alebo odcudzené osvedčenie - z. č. 563/2009 Z. z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'REG_ZE1061/P1061'">19.1.4.4. Žiadosť o prerušenie daňového konania - z. č. 563/2009 Z. z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'REG_ZE1069/P1069'">19.1.5.2. Povolenie úľavy zo sankcie alebo odpustenie sankcie podľa osobitného predpisu - z. č. 563/2009 Z. z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'REG_VE0000/P1052'">19.1.6.1. Vyhotovenie odpisu  (fotokópie), listinnej podoby elektron. dokumentu, výpisu   zo spisového materiálu, za každú aj začatú stranu</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'REG_VE0000/P1053'">19.1.6.2. Osvedčenie odpisu  (fotokópie), listinnej podoby elektron. dokumentu, výpisu   zo spisového materiálu v SJ, za každú aj začatú stranu</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'REG_ZE0000/P1056'">19.1.6.3. Oznámenie, či určitý DS je registrovaný, alebo aké číslo mu bolo pridelené pri registrácii, na žiadosť DS - z. č. 563/2009 Z.z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'REG_PE1064/P1064'">19.2.1.1. Návrh na obnovu konania - ak návrh podáva FO - z. č. 563/2009 Z. z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'REG_PE1065/P1065'">19.2.1.2. Návrh na obnovu konania - ak návrh podáva PO alebo FO oprávnená na podnikanie - z. č. 563/2009 Z. z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'REG_PE1066/P1066'">19.2.1.3. Podnet na preskúmanie rozhodnutia mimo odvolacieho konania, ak tento podáva FO - z. č. 563/2009 Z. z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'REG_PE1067/P1067'">19.2.1.4. Podnet na preskúm. rozhodnutia mimo odvolacieho konania, ak tento podáva PO alebo FO opráv. na podnikanie - z. č. 563/2009 Z.z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'REG_ZE0000/P2545'">19.2.4.3. Vyhotovenie fotokópie listiny,  ktorá je súčasť. podania na zač. kon. na správ. orgáne podľa osobit. predpisov za každé aj začaté dve strany</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'REG_VE2533/P0000'">19.3.1.1. Vyhotovenie odpisu (fotokópie), listinnej podoby elektron. dokumentu, výpisu zo spisového materiálu, za každú aj začatú stranu</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'REG_VE2534/P0000'">19.3.1.2. Osvedčenie odpisu (fotokópie), listinnej podoby elektron. dokumentu, výpisu zo spisového materiálu v SJ, za každú aj začatú stranu</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'REG_ZE2535/P0000'">19.3.1.3. Oznámenie, či určitý DS je registrovaný, alebo aké číslo mu bolo pridelené pri registrácii, na žiadosť DS - z. č. 563/2009 Z. z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'FRI_ZE1051/P1051'">19.1.1.1. Vydanie rozhodnutia o delegovaní miestnej príslušnosti na iného správcu dane na návrh daň. subjektu (DS) - z. č. 563/2009 Z. z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'FRI_VE0000/P1052'">19.1.6.1. Vyhotovenie odpisu  (fotokópie), listinnej podoby elektron. dokumentu, výpisu   zo spisového materiálu, za každú aj začatú stranu</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'FRI_VE0000/P1053'">19.1.6.2. Osvedčenie odpisu  (fotokópie), listinnej podoby elektron. dokumentu, výpisu   zo spisového materiálu v SJ, za každú aj začatú stranu</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'FRI_PE1064/P1064'">19.2.1.1. Návrh na obnovu konania - ak návrh podáva FO - z. č. 563/2009 Z. z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'FRI_PE1065/P1065'">19.2.1.2. Návrh na obnovu konania - ak návrh podáva PO alebo FO oprávnená na podnikanie - z. č. 563/2009 Z. z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'FRI_PE1066/P1066'">19.2.1.3. Podnet na preskúmanie rozhodnutia mimo odvolacieho konania, ak tento podáva FO - z. č. 563/2009 Z. z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'FRI_PE1067/P1067'">19.2.1.4. Podnet na preskúm. rozhodnutia mimo odvolacieho konania, ak tento podáva PO alebo FO opráv. na podnikanie - z. č. 563/2009 Z.z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'FRI_PE1073/P1073'">19.2.2.1. Návrh na obnovu konania - ak návrh podáva FO - z. č. 71/1967 Z. z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'FRI_PE1074/P1074'">19.2.2.2. Návrh na obnovu konania - ak návrh podáva PO alebo FO oprávnená na podnikanie - z. č. 71/1967 Z. z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'FRI_PE1075/P1075'">19.2.2.3. Podnet na preskúmanie rozhodnutia mimo odvolacieho konania, ak tento podáva FO - z. č. 71/1967 Z. z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'FRI_PE1076/P1076'">19.2.2.4. Podnet na presk. rozhodnutia mimo odvolacieho konania, ak tento podáva PO alebo FO opráv. na podnikanie - z. č. 71/1967 Z. z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'FRI_ZE0000/P2545'">19.2.4.3. Vyhotovenie fotokópie listiny,  ktorá je súčasť. podania na zač. kon. na správ. orgáne podľa osobit. predpisov za každé aj začaté dve strany</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'FRI_VE2536/P1057'">19.1.6.4. Oznámenie, či iná osoba je registrovaná na daň z pridanej hodnoty v inom členskom štáte na žiadosť DS - z. č. 563/2009 Z. z.</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'FRI_VE2533/P0000'">19.3.1.1. Vyhotovenie odpisu (fotokópie), listinnej podoby elektron. dokumentu, výpisu zo spisového materiálu, za každú aj začatú stranu</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'FRI_VE2534/P0000'">19.3.1.2. Osvedčenie odpisu (fotokópie), listinnej podoby elektron. dokumentu, výpisu zo spisového materiálu v SJ, za každú aj začatú stranu</xsl:when>
+      <xsl:when test = "valNazovSluzby = 'FRI_ZE2535/P0000'">19.3.1.3. Oznámenie, či určitý DS je registrovaný, alebo aké číslo mu bolo pridelené pri registrácii, na žiadosť DS - z. č. 563/2009 Z. z.</xsl:when>
+      <xsl:otherwise>
+      <xsl:value-of select="valNazovSluzby"/>
+      </xsl:otherwise>
+      </xsl:choose>
+    Spôsob spracovania výstupu služby:
+      <xsl:choose>
+      <xsl:when test = "secPomocna/valVystupSluzby = ''"></xsl:when>
+      <xsl:when test = "secPomocna/valVystupSluzby = 'E'">V elektronickej podobe</xsl:when>
+      <xsl:when test = "secPomocna/valVystupSluzby = 'P'">V papierovej podobe</xsl:when>
+      <xsl:otherwise>
+      <xsl:value-of select="secPomocna/valVystupSluzby"/>
+      </xsl:otherwise>
+      </xsl:choose>
+    Jednotková suma za službu:
+      <xsl:value-of select="secPomocna/valJednokovaCena"/>
+    Oslobodenie:
+      <xsl:value-of select="secPomocna/secPomocna2/valOslobodenie"/>
+    Dôvod oslobodenia:
+      <xsl:value-of select="valDovodOslobodenia"/>
+    Elektronická schránka prijímateľa:
+      <xsl:value-of select="secSchrankaAP/schrankaAP"/>
+    Elektronická schránka platiteľa:
+      <xsl:value-of select="secSchrankaSubjektu/schrankaSubjektu"/>
+      </xsl:for-each>
+      </xsl:if>
+      <xsl:for-each select="/dokument/secDruhPrilohy">
+
+    Druh prílohy:
+      <xsl:choose>
+      <xsl:when test="valDruhPrilohy = '0'" >Súčasťou podania nie je príloha</xsl:when>
+      <xsl:when test="valDruhPrilohy = '1'" >Podanie je tvorené súborom dokumentov</xsl:when>
+      <xsl:when test="valDruhPrilohy = '2'" >Súčasťou podania je príloha</xsl:when>
+      <xsl:otherwise>
+      <xsl:value-of select="valDruhPrilohy"/>
+      </xsl:otherwise>
+      </xsl:choose>
+      </xsl:for-each>
+
+      Obsah podania
+    Text podania:
+      <xsl:value-of select="/dokument/secObsah/valTextPodania"/>
+      <!-- dokumenty podania -->
+      <xsl:if test="/dokument/secDokumentyPodania/secDokumentPodania">
+
+      Dokumenty podania
+
+      <xsl:for-each select="/dokument/secDokumentyPodania/secDokumentPodania">
+    Popis dokumentu:
+      <xsl:value-of select="valPopisDokumentu"/>
+    Spôsob doručenia:
+      <xsl:choose>
+      <xsl:when test="valSposobDoruceniaDokumentu = 'SD_ESP'" >Elektronicky – súčasť podania</xsl:when>
+      <xsl:when test="valSposobDoruceniaDokumentu = 'SD_POS'" >Poštou</xsl:when>
+      <xsl:when test="valSposobDoruceniaDokumentu = 'SD_OSO'" >Osobne</xsl:when>
+      <xsl:otherwise>
+      <xsl:value-of select="valSposobDoruceniaDokumentu"/>
+      </xsl:otherwise>
+      </xsl:choose>
+      </xsl:for-each>
+      </xsl:if>
+      <!-- prilohy podania -->
+      <xsl:if test="/dokument/secPrilohyPodania/secPrilohaPodania">
+
+      Prílohy podania
+
+      <xsl:for-each select="/dokument/secPrilohyPodania/secPrilohaPodania">
+    Popis prílohy:
+      <xsl:value-of select="valPopisPrilohy"/>
+    Spôsob doručenia:
+      <xsl:choose>
+      <xsl:when test="valSposobDoruceniaPrilohy = 'SD_ESP'" >Elektronicky – súčasť podania</xsl:when>
+      <xsl:when test="valSposobDoruceniaPrilohy = 'SD_POS'" >Poštou</xsl:when>
+      <xsl:when test="valSposobDoruceniaPrilohy = 'SD_OSO'" >Osobne</xsl:when>
+      <xsl:otherwise>
+      <xsl:value-of select="valSposobDoruceniaPrilohy"/>
+      </xsl:otherwise>
+      </xsl:choose>
+      </xsl:for-each>
+      </xsl:if>
+
+    Dátum podania:
+      <xsl:for-each select="/dokument/secDatumPodania">
+      <xsl:value-of select="concat(substring(valDatumPodania,9,2),'.',substring(valDatumPodania,6,2),'.',substring(valDatumPodania,1,4))"/>
+      </xsl:for-each>
+      </xsl:template>
+      </xsl:stylesheet>
+

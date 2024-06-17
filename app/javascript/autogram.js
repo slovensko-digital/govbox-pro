@@ -101,6 +101,7 @@ const prepareSingingRequestBody = (messageObjectData, batchId = null) => {
       containerXmlns: messageObjectData.container_xmlns,
       transformation: messageObjectData.transformation,
       autoLoadEform: autoLoadEform,
+      fsFormId: messageObjectData.fs_form_id
     },
     payloadMimeType: payloadMimeType
   }
