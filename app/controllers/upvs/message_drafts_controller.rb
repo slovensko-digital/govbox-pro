@@ -26,8 +26,6 @@ class Upvs::MessageDraftsController < ApplicationController
   end
 
   def create
-    @user_is_signer = Current.user.signer?
-
     @message = @message_template&.create_message(
       author: Current.user,
       box: @box,
