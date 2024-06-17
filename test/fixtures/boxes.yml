@@ -42,3 +42,12 @@ google_box_with_sk_api_api_connection_with_obo_support:
   tenant: google
   short_name: box4
   api_connection: sk_api_api_connection_with_obo_support
+
+fs_accountants:
+  name: Accountants main FS
+  uri: dic://sk/1122334455
+  tenant: accountants
+  short_name: MY2
+  api_connection: fs_api_connection1
+  settings: {"dic": "1122334455"}
+  type: 'Fs::Box'

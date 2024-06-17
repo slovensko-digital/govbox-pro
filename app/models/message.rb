@@ -22,6 +22,7 @@
 #  message_thread_id  :bigint           not null
 #
 class Message < ApplicationRecord
+  include MessageHelper
   include MessageExportOperations
 
   belongs_to :thread, class_name: 'MessageThread', foreign_key: :message_thread_id, inverse_of: :messages
@@ -63,8 +64,12 @@ class Message < ApplicationRecord
     false
   end
 
-  def form
+  def form_object
     objects.select { |o| o.form? }&.first
+  end
+
+  def destroyable?
+    true
   end
 
   def submittable?
@@ -80,7 +85,7 @@ class Message < ApplicationRecord
   end
 
   def visualizable_body?
-    html_visualization.present? || (form && form.nested_message_objects.count > 1)
+    html_visualization.present? || (form_object && form_object.nested_message_objects.count > 1)
   end
 
   def can_be_authorized?
@@ -92,7 +97,7 @@ class Message < ApplicationRecord
   end
 
   # TODO remove UPVS stuff from core domain
-  def upvs_form
+  def form
     ::Upvs::Form.find_by(
       identifier: all_metadata['posp_id'],
       version: all_metadata['posp_version']
@@ -104,7 +109,7 @@ class Message < ApplicationRecord
       html_visualization: build_html_visualization
     )
 
-    form&.update(
+    form_object&.update(
       visualizable: html_visualization.present?
     )
   end
@@ -112,11 +117,11 @@ class Message < ApplicationRecord
   def build_html_visualization
     return self.html_visualization if self.html_visualization.present?
 
-    return unless upvs_form&.xslt_html
-    return unless form&.unsigned_content
+    return unless form&.xslt_html
+    return unless form_object&.unsigned_content
 
-    template = Nokogiri::XSLT(upvs_form.xslt_html)
-    template.transform(form.xml_unsigned_content)
+    template = Nokogiri::XSLT(form.xslt_html)
+    template.transform(form_object.xml_unsigned_content)
   end
 
   def all_metadata

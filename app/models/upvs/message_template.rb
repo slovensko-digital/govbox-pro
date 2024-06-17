@@ -23,8 +23,8 @@ class Upvs::MessageTemplate < ::MessageTemplate
     Upvs::ServiceWithFormAllowRule.all_institutions_with_template_support(self)
   end
 
-  def create_message(message, author:, box:, recipient_name:, recipient_uri:)
-    message.update(
+  def create_message(author:, box:, recipient_name:, recipient_uri:)
+    message = Upvs::MessageDraft.create(
       uuid: SecureRandom.uuid,
       delivered_at: Time.current,
       read: true,
@@ -61,12 +61,14 @@ class Upvs::MessageTemplate < ::MessageTemplate
 
       create_form_object(message)
     end
+
+    message
   end
 
-  def create_message_reply(message, original_message:, author:)
+  def create_message_reply(original_message:, author:)
     message_title = "Odpoveď: #{original_message.title}"
 
-    message.update(
+    message = Upvs::MessageDraft.create(
       uuid: SecureRandom.uuid,
       delivered_at: Time.current,
       read: true,
@@ -91,9 +93,9 @@ class Upvs::MessageTemplate < ::MessageTemplate
     message.thread = original_message.thread
     message.save!
 
-    message.add_cascading_tag(author.draft_tag)
-
     create_form_object(message)
+
+    message
   end
 
   def build_message_from_template(message)
@@ -104,13 +106,13 @@ class Upvs::MessageTemplate < ::MessageTemplate
       filled_content.gsub!(template_item[:placeholder], message.metadata['data'][template_item[:name]].to_s)
     end
 
-    if message.form.message_object_datum
-      message.form.message_object_datum.update(
+    if message.form_object.message_object_datum
+      message.form_object.message_object_datum.update(
         blob: filled_content
       )
     else
-      message.form.message_object_datum = MessageObjectDatum.create(
-        message_object: message.form,
+      message.form_object.message_object_datum = MessageObjectDatum.create(
+        message_object: message.form_object,
         blob: filled_content
       )
     end

@@ -7,8 +7,8 @@
       <p class="text-sm text-gray-500">
         <% if @message.reason_for_readonly == :form_signed %>
           <%= t "message_draft.form_signed" %>
-        <% elsif @message.reason_for_readonly == :form_submitted %>
-          <%= t "message_draft.form_submitted" %>
+        <% elsif @message.reason_for_readonly == :submitted %>
+          <%= t "message_draft.submitted" %>
         <% else %>
           <%= t "message_draft.read_only_agenda" %>
         <% end %>

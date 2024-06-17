@@ -1,0 +1,29 @@
+<meta id="authenticity-token" name="authenticity-token" content="<%= form_authenticity_token %>">
+
+<h2>Drafty</h2>
+
+<div>
+  <%= link_to "Nahrať import", upload_new_upvs_message_drafts_imports_path %>
+</div>
+
+<% if @messages.any? %>
+  <br />
+  <h3>Podania</h3>
+  <div>
+    <table>
+      <tr>
+        <th>Podanie</th>
+        <th>Balík</th>
+        <th>Stav</th>
+      </tr>
+
+      <% @messages.each do |message| %>
+        <tr>
+          <td><%= link_to message.title, upvs_message_draft_path(message) %></td>
+          <td><%= " #{message.import&.base_name || '-'}" %></td>
+          <td><%= " #{message.metadata["status"]}" %></td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
+<% end %>
