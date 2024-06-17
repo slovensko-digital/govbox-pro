@@ -41,7 +41,7 @@ class Upvs::MessageDraftsController < ApplicationController
       @templates_list = MessageTemplate.tenant_templates_list(Current.tenant)
       @message_template ||= MessageTemplate.default_template
       @boxes = Current.tenant&.boxes.where(type: 'Upvs::Box')
-      @box = Current.box if Current.box || @boxes.first
+      @box ||= Current.box if Current.box || @boxes.first
 
       @recipients_list = @message_template&.recipients&.pluck(:institution_name, :institution_uri)&.map { |name, uri| { uri: uri, name: name }}
 

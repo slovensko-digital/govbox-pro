@@ -33,7 +33,6 @@ class Upvs::MessageDraft < MessageDraft
     message_draft.validates :recipient_name, presence: true
     message_draft.validate :validate_metadata_with_template
     message_draft.validate :validate_form_object
-    message_draft.validate :validate_allow_rules
   end
 
   def self.load_from_params(message_params, box:)
