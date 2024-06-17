@@ -22,6 +22,7 @@
 #  message_thread_id  :bigint           not null
 #
 class Message < ApplicationRecord
+  include MessageHelper
   include MessageExportOperations
 
   belongs_to :thread, class_name: 'MessageThread', foreign_key: :message_thread_id, inverse_of: :messages
