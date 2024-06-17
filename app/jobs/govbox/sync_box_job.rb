@@ -3,7 +3,7 @@ module Govbox
     queue_as :default
 
     def perform(box, upvs_client: UpvsEnvironment.upvs_client)
-      return unless box.is_a?(Upvs::Box)
+      raise unless box.is_a?(Upvs::Box)
       return unless box.syncable?
 
       edesk_api = upvs_client.api(box).edesk
