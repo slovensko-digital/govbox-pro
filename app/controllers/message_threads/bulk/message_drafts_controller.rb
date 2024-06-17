@@ -8,7 +8,7 @@ module MessageThreads
 
         message_threads = message_thread_policy_scope.where(id: ids).includes(:messages)
         message_threads.transaction do
-          submission_results = [Govbox::SubmitMessageDraftsAction.run(message_threads), Fs::SubmitMessageDraftsAction.run(message_threads)].flatten
+          submission_results = SubmitMessageDraftsAction.run(message_threads)
           if submission_results
             redirect_back fallback_location: message_threads_path, notice: "Správy vo vláknach boli zaradené na odoslanie", status: 303
           else
