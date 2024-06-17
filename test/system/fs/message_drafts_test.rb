@@ -8,7 +8,8 @@ class Fs::MessageDraftsTest < ApplicationSystemTestCase
   test "user can upload a message draft" do
     visit message_threads_path
 
-    click_link "Nahrať nové správy"
+    click_button "Vytvoriť novú správu"
+    click_link "Vytvoriť novú správu na finančnú správu"
 
     attach_file "content[]", file_fixture("fs/dic1122334455_fs3055_781__sprava_dani_2023.xml")
 
@@ -28,7 +29,8 @@ class Fs::MessageDraftsTest < ApplicationSystemTestCase
   test "user can upload multiple message drafts at once" do
     visit message_threads_path
 
-    click_link "Nahrať nové správy"
+    click_button "Vytvoriť novú správu"
+    click_link "Vytvoriť novú správu na finančnú správu"
 
     attach_file "content[]", [
       file_fixture("fs/dic1122334455_fs3055_781__sprava_dani_2023.xml"),
