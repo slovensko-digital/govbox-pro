@@ -86,7 +86,7 @@ module Fs
 
     def fs_credentials_header
       key = OpenSSL::PKey::RSA.new(Base64.decode64 get_public_key)
-      token = Base64.strict_encode64 key.public_encrypt(Base64.strict_encode64 @fs_credentials)
+      token = Base64.strict_encode64 key.encrypt(Base64.strict_encode64 @fs_credentials)
 
       { "X-FS-Authorization": "Bearer #{token}" }
     end
