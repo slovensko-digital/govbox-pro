@@ -10,6 +10,7 @@
 #
 class GroupMembership < ApplicationRecord
   include AuditableEvents
+  include TagCreation
 
   belongs_to :group
   belongs_to :user
@@ -41,19 +42,5 @@ class GroupMembership < ApplicationRecord
   def destroy_all_signature_requests!
     tag = group.tenant.signature_requested_from_tags.find_tag_containing_group(user.user_group)
     tag.destroy if tag
-  end
-
-
-  def find_or_create_signing_tag(tags_scope:, user_group:, tag_name:, color:, icon:)
-    tag = tags_scope.find_tag_containing_group(user_group) || tags_scope.find_or_initialize_by(
-      name: tag_name
-    )
-
-    tag.name = tag_name
-    tag.visible = true
-    tag.groups = [user_group]
-    tag.color = color
-    tag.icon = icon
-    tag.save!
   end
 end
