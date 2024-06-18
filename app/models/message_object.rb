@@ -60,23 +60,22 @@ class MessageObject < ApplicationRecord
   def mark_signed_by_user(user)
     assign_tag(user.signed_by_tag)
     unassign_tag(user.signature_requested_from_tag)
-    unassign_tag(user.tenant.signer_group.signature_requested_from_tag)
 
     thread.mark_signed_by_user(user)
   end
 
-  def add_signature_requested_from_group(group)
-    return if has_tag?(group.signed_by_tag)
+  def add_signature_requested_from_user(user)
+    return if has_tag?(user.signed_by_tag)
 
-    assign_tag(group.signature_requested_from_tag)
-    thread.add_signature_requested_from_group(group)
+    assign_tag(user.signature_requested_from_tag)
+    thread.add_signature_requested_from_user(user)
   end
 
-  def remove_signature_requested_from_group(group)
-    return unless has_tag?(group.signature_requested_from_tag)
+  def remove_signature_requested_from_user(user)
+    return unless has_tag?(user.signature_requested_from_tag)
 
-    unassign_tag(group.signature_requested_from_tag)
-    thread.remove_signature_requested_from_group(group)
+    unassign_tag(user.signature_requested_from_tag)
+    thread.remove_signature_requested_from_user(user)
   end
 
   def content

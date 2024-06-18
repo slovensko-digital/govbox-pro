@@ -87,33 +87,6 @@ ssd_basic_user_signature_requested:
   type: SignatureRequestedFromTag
   visible: true
   tenant: ssd
-  owner: basic
-  icon: pencil
-  color: yellow
-
-ssd_signer_user_signature_requested:
-  name: 'Na podpis: Signer user'
-  type: SignatureRequestedFromTag
-  visible: true
-  tenant: ssd
-  owner: ssd_signer
-  icon: pencil
-  color: yellow
-
-ssd_signer_user2_signature_requested:
-  name: 'Na podpis: Signer user 2'
-  type: SignatureRequestedFromTag
-  visible: true
-  tenant: ssd
-  owner: ssd_signer2
-  icon: pencil
-  color: yellow
-
-ssd_signers_signature_requested:
-  name: 'Na podpis: Podpisovatelia'
-  type: SignatureRequestedFromTag
-  visible: true
-  tenant: ssd
   icon: pencil
   color: yellow
 
@@ -127,22 +100,6 @@ ssd_signed:
 
 ssd_basic_user_signed:
   name: 'Podpísané: Another user'
-  type: SignedByTag
-  visible: true
-  tenant: ssd
-  icon: fingerprint
-  color: green
-
-ssd_signer_user_signed:
-  name: 'Podpísané: Signer user'
-  type: SignedByTag
-  visible: true
-  tenant: ssd
-  icon: fingerprint
-  color: green
-
-ssd_signer_user2_signed:
-  name: 'Podpísané: Signer user 2'
   type: SignedByTag
   visible: true
   tenant: ssd

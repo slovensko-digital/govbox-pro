@@ -20,30 +20,6 @@ ssd_admin_admin:
   user: admin
   group: ssd_admins
 
-ssd_signer_all:
-  user: ssd_signer
-  group: ssd_all
-
-ssd_signer2_all:
-  user: ssd_signer2
-  group: ssd_all
-
-ssd_signer_user_ssd_signer_user:
-  user: ssd_signer
-  group: ssd_signer_user
-
-ssd_signer_user_ssd_signer_user2:
-  user: ssd_signer2
-  group: ssd_signer_user2
-
-ssd_signers_ssd_signer:
-  user: ssd_signer
-  group: ssd_signers
-
-ssd_signers_ssd_signer2:
-  user: ssd_signer2
-  group: ssd_signers
-
 solver_other_user_other_user:
   user: solver_other
   group: solver_other_user
