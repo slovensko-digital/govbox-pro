@@ -2,31 +2,34 @@
   <%= hidden_field_tag "assignments[init][#{tag_id}]", value %>
 <% end %>
 
-<% if @signers_changes.signer_groups.any? %>
-  <% @signers_changes.signer_groups.each do |group| %>
+<% if @signers_changes.signer_users.exists? %>
+  <% @signers_changes.signer_users.each do |signer_user| %>
   <div class="flex px-2 py-4 border-b border-gray-200 items-center">
     <div class="mx-1 flex h-6 items-center">
-      <%= hidden_field_tag "assignments[new][#{group.id}]", RelationChanges::REMOVE_SIGN, id: nil %>
+      <%= hidden_field_tag "assignments[new][#{signer_user.id}]", RelationChanges::REMOVE_SIGN, id: nil %>
 
-      <% checkbox = RelationChanges::Checkbox.new(assignments: @signers_changes.assignments, record_id: group.id.to_s) %>
+      <% checkbox = RelationChanges::Checkbox.new(assignments: @signers_changes.assignments, record_id: signer_user.id.to_s) %>
       <% if checkbox.indeterminate? %>
-        <%= check_box_tag "assignments[new][#{group.id}]",
+        <%= check_box_tag "assignments[new][#{signer_user.id}]",
                           checkbox.value, checkbox.checked?,
                           data: { controller: "tri-state-checkbox", action: "click->tri-state-checkbox#nextState", "tri-state-checkbox-checked-value": RelationChanges::ADD_SIGN, "tri-state-checkbox-indeterminate-value": RelationChanges::KEEP_SIGN },
                           onchange: "this.form.requestSubmit();",
-                          id: "new_assignments_#{group.id}",
+                          id: "new_assignments_#{signer_user.id}",
                           class: "h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer" %>
       <% else %>
-        <%= check_box_tag "assignments[new][#{group.id}]", checkbox.value, checkbox.checked?, id: "new_assignments_#{group.id}", class: "h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer", onchange: "this.form.requestSubmit();" %>
+        <%= check_box_tag "assignments[new][#{signer_user.id}]", checkbox.value, checkbox.checked?, id: "new_assignments_#{signer_user.id}", class: "h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer", onchange: "this.form.requestSubmit();" %>
       <% end %>
     </div>
-    <%= label_tag "new_assignments_#{group.id}", class: "px-2 select-none text-gray-900 cursor-pointer flex gap-2 items-center" do %>
+    <%= label_tag "new_assignments_#{signer_user.id}", class: "px-2 select-none text-gray-900 cursor-pointer flex gap-2 items-center" do %>
       <div class="inline-flex items-center justify-center w-12 h-12 overflow-hidden bg-blue-600 rounded-full">
-        <span class="text-white text-xl font-normal"><%= group.name[0] %></span>
+        <span class="text-white text-xl font-normal"><%= signer_user.name[0] %></span>
       </div>
       <div>
         <div class="text-gray-900 text-sm font-medium">
-          <%= group.name %>
+          <%= signer_user.name %>
+        </div>
+        <div class="text-gray-500 text-sm">
+          <%= signer_user.email %>
         </div>
       </div>
     <% end %>

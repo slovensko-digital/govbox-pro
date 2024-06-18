@@ -25,16 +25,6 @@ ssd_admin_user:
   type: UserGroup
   tenant: ssd
 
-ssd_signer_user:
-  name: Signer user
-  type: UserGroup
-  tenant: ssd
-
-ssd_signer_user2:
-  name: Signer user 2
-  type: UserGroup
-  tenant: ssd
-
 ssd_custom:
   name: Custom group
   type: CustomGroup

@@ -35,30 +35,9 @@ ssd_main_with_application:
   delivered_at: 2023-05-18 18:15:22
   last_message_delivered_at: 2023-05-18 18:16:22
 
-ssd_main_draft_to_be_signed:
+ssd_main_draft_only:
   box: ssd_main
-  title: Draft to be signed
-  original_title: MyString
-  delivered_at: 2023-05-18 18:15:22
-  last_message_delivered_at: 2023-05-18 18:16:22
-
-ssd_main_draft_to_be_signed2:
-  box: ssd_main
-  title: Draft to be signed 2
-  original_title: MyString
-  delivered_at: 2023-05-18 18:15:22
-  last_message_delivered_at: 2023-05-18 18:16:22
-
-ssd_main_draft_to_be_signed3:
-  box: ssd_main
-  title: Draft to be signed 3
-  original_title: MyString
-  delivered_at: 2023-05-18 18:15:22
-  last_message_delivered_at: 2023-05-18 18:16:22
-
-ssd_main_draft_to_be_signed4:
-  box: ssd_main
-  title: Draft to be signed 4
+  title: With message draft
   original_title: MyString
   delivered_at: 2023-05-18 18:15:22
   last_message_delivered_at: 2023-05-18 18:16:22

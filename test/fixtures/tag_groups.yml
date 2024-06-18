@@ -8,34 +8,6 @@ everything_ssd_admins:
   tag: ssd_everything
   group: ssd_admins
 
-ssd_signer_user_signature_requested:
-  tag: ssd_signer_user_signature_requested
-  group: ssd_signer_user
-
-ssd_signer_user2_signature_requested:
-  tag: ssd_signer_user2_signature_requested
-  group: ssd_signer_user2
-
-ssd_signers_signature_requested:
-  tag: ssd_signers_signature_requested
-  group: ssd_signers
-
-ssd_signer_user_ssd_signer_user_signed:
-  tag: ssd_signer_user_signed
-  group: ssd_signer_user
-
-ssd_signer_user2_ssd_signer_user2_signed:
-  tag: ssd_signer_user2_signed
-  group: ssd_signer_user2
-
-finance_ssd_signer_user:
-  tag: ssd_finance
-  group: ssd_signer_user
-
-finance_ssd_signer_user2:
-  tag: ssd_finance
-  group: ssd_signer_user2
-
 drafts_accountants_basic_user:
   tag: accountants_basic_user_drafts
   group: accountants_basic_user
