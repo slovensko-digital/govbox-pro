@@ -49,7 +49,7 @@ class Box < ApplicationRecord
   end
 
   def self.sync_all
-    raise NotImplementedError
+    find_each(&:sync)
   end
 
   private

@@ -31,6 +31,9 @@ class Fs::Box < Box
     api_connection.boxes.create!(params.except(:api_connection).merge(type: 'Fs::Box'))
   end
 
+  def sync
+  end
+
   store_accessor :settings, :dic, prefix: true
   store_accessor :settings, :subject_id, prefix: true
 end

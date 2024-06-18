@@ -36,8 +36,4 @@ class Upvs::Box < Box
   def sync
     Govbox::SyncBoxJob.perform_later(self)
   end
-
-  def self.sync_all
-    find_each(&:sync)
-  end
 end
