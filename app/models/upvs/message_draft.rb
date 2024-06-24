@@ -28,13 +28,6 @@ class Upvs::MessageDraft < MessageDraft
 
   validate :validate_correlation_id
 
-  with_options on: :create_from_template do |message_draft|
-    message_draft.validates :sender_name, presence: true
-    message_draft.validates :recipient_name, presence: true
-    message_draft.validate :validate_metadata_with_template
-    message_draft.validate :validate_form_object
-  end
-
   def self.load_from_params(message_params, box:)
     message_params = message_params.permit(
       :type,
