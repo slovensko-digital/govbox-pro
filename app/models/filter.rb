@@ -7,7 +7,7 @@
 #  name       :string           not null
 #  position   :integer          not null
 #  query      :string
-#  type       :string
+#  type       :string           not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #  author_id  :bigint           not null
@@ -19,7 +19,7 @@ class Filter < ApplicationRecord
 
   belongs_to :author, class_name: 'User'
   belongs_to :tenant
-  has_many :user_item_visibilities, inverse_of: :user_item, dependent: :destroy
+  has_many :user_filter_visibilities, inverse_of: :filter, dependent: :destroy
 
   validates :tenant_id, :author_id, :name, presence: true
 
@@ -27,6 +27,8 @@ class Filter < ApplicationRecord
 
   scope :pinned, -> { where(is_pinned: true) }
   scope :not_pinned, -> { where(is_pinned: false) }
+
+  acts_as_list scope: :tenant_id
 
   def fill_position
     return if position.present?

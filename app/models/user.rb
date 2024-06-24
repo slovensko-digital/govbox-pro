@@ -13,7 +13,7 @@
 #  tenant_id                    :bigint
 #
 class User < ApplicationRecord
-  include Pundit
+  include Pundit::Authorization
   include AuditableEvents
 
   belongs_to :tenant
@@ -27,7 +27,7 @@ class User < ApplicationRecord
   has_many :filters, foreign_key: :author_id
   has_many :filter_subscriptions
   has_many :notifications
-  has_many :user_item_visibilities, dependent: :destroy
+  has_many :user_filter_visibilities, dependent: :destroy
 
   validates_presence_of :name, :email
   validates_uniqueness_of :name, :email, scope: :tenant_id, case_sensitive: false
@@ -80,16 +80,14 @@ class User < ApplicationRecord
     end
   end
 
-  def build_filter_visibilities!
-    user_items = policy_scope(Filter, policy_scope_class: FilterPolicy::ScopeShowable).order(:position)
-    visibilities = user_item_visibilities.where(user_item_type: "Filter").order(:position)
-    build_user_item_visibilities(user_items, visibilities)
+  def visible_filters
+    build_filter_visibilities!.where(visible: true).map(&:filter)
   end
 
-  def build_tag_visibilities!
-    user_items = policy_scope(Tag, policy_scope_class: TagPolicy::ScopeListable).where(visible: true).order(:name)
-    visibilities = user_item_visibilities.where(user_item_type: "Tag").order(:position)
-    build_user_item_visibilities(user_items, visibilities)
+  def build_filter_visibilities!
+    filters = policy_scope(Filter, policy_scope_class: FilterPolicy::ScopeShowable).order(:position)
+    visibilities = user_filter_visibilities.order(:position)
+    build_user_filter_visibilities(filters, visibilities)
   end
 
   def pundit_user
@@ -98,16 +96,16 @@ class User < ApplicationRecord
 
   private
 
-  def build_user_item_visibilities(user_items, visibilities)
-    user_items_without_visibilities = user_items.where.not(id: visibilities.pluck(:user_item_id))
-    new_visibilities = user_items_without_visibilities.map.with_index do |user_item, i|
+  def build_user_filter_visibilities(filters, visibilities)
+    user_filters_without_visibilities = filters.where.not(id: visibilities.pluck(:filter_id))
+    new_visibilities = user_filters_without_visibilities.map.with_index do |filter, i|
       last_position = visibilities.last&.position || 0
-      user_item_visibilities.new(user_item: user_item, visible: true, position: last_position + 1 + i)
+      user_filter_visibilities.new(filter: filter, visible: true, position: last_position + 1 + i)
     end
 
     all_visibilities = visibilities.to_a + new_visibilities
     all_visibilities.map(&:save!)
-    user_item_visibilities.where(id: all_visibilities).order(:position)
+    user_filter_visibilities.where(id: all_visibilities).order(:position)
   end
 
 

@@ -22,9 +22,7 @@ Rails.application.routes.draw do
     end
     resources :tags
     resource :profile
-    resources :filter_visibilities
-    resources :tag_visibilities
-    resources :user_item_visibilities do
+    resources :user_filter_visibilities do
       member do
         post :move_higher
         post :move_lower

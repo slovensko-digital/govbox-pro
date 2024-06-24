@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_23_123432) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_24_114024) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -187,7 +187,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_23_123432) do
     t.integer "position", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "type"
+    t.string "type", null: false
     t.bigint "tag_id"
     t.boolean "is_pinned", default: false, null: false
     t.index ["author_id"], name: "index_filters_on_author_id"
@@ -583,15 +583,15 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_23_123432) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "user_item_visibilities", force: :cascade do |t|
+  create_table "user_filter_visibilities", force: :cascade do |t|
     t.bigint "user_id", null: false
-    t.string "user_item_type", null: false
-    t.bigint "user_item_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "visible", default: true, null: false
     t.integer "position"
-    t.index ["user_id"], name: "index_user_item_visibilities_on_user_id"
+    t.bigint "filter_id", null: false
+    t.index ["filter_id"], name: "index_user_filter_visibilities_on_filter_id"
+    t.index ["user_id"], name: "index_user_filter_visibilities_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -663,6 +663,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_23_123432) do
   add_foreign_key "tags", "tenants"
   add_foreign_key "tags", "users", column: "owner_id"
   add_foreign_key "upvs_form_related_documents", "upvs_forms"
-  add_foreign_key "user_item_visibilities", "users"
+  add_foreign_key "user_filter_visibilities", "filters"
+  add_foreign_key "user_filter_visibilities", "users"
   add_foreign_key "users", "tenants"
 end

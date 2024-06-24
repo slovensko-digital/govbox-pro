@@ -13,8 +13,7 @@ class ApplicationController < ActionController::Base
   def set_menu_context
     return unless Current.user
 
-    @tags = Current.user.build_tag_visibilities!.where(visible: true).map(&:user_item)
-    @filters = Current.user.build_filter_visibilities!.where(visible: true).map(&:user_item)
+    @filters = Current.user.visible_filters
     @menu = SidebarMenu.new(controller_name, action_name, tags: @tags, filters: @filters).menu
     @current_tenant_boxes_count = Current.tenant.boxes.count
   end

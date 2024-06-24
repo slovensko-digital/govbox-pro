@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-class UserItemVisibilityPolicy < ApplicationPolicy
-  attr_reader :user, :user_item_visible
+class UserFilterVisibilityPolicy < ApplicationPolicy
+  attr_reader :user, :user_filter_visibility
 
-  def initialize(user, user_item_visible)
+  def initialize(user, user_filter_visibility)
     @user = user
-    @user_item_visible = user_item_visible
+    @user_filter_visibility = user_filter_visibility
   end
 
   class Scope < Scope
@@ -41,6 +41,6 @@ class UserItemVisibilityPolicy < ApplicationPolicy
   private
 
   def owner?
-    @user_item_visible.user == Current.user
+    @user_filter_visibility.user == Current.user
   end
 end
