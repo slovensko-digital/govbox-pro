@@ -66,4 +66,13 @@ class Fs::MessageDraftsTest < ApplicationSystemTestCase
       end
     end
   end
+
+  test "user can upload message draft only if any FS box exists & :fs_api feature is enabled" do
+    sign_in_as(:basic)
+
+    visit message_threads_path
+
+    click_button "Vytvoriť novú správu"
+    assert_not has_link? "Vytvoriť novú správu na finančnú správu"
+  end
 end
