@@ -49,6 +49,14 @@ google_box_with_sk_api_api_connection_with_obo_support:
   api_connection: sk_api_api_connection_with_obo_support
   type: 'Upvs::Box'
 
+google_box_with_govbox_api_connection_with_obo_support_without_obo_value:
+  name: Box with GovBox API connection with OBO support without OBO value
+  uri: google_box_with_govbox_api_connection_with_obo_support_without_obo_value_uri
+  tenant: google
+  short_name: box5
+  api_connection: govbox_api_api_connection_with_obo_support
+  type: 'Upvs::Box'
+
 fs_accountants:
   name: Accountants main FS
   uri: dic://sk/1122334455

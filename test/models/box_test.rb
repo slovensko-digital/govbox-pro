@@ -38,6 +38,38 @@ class BoxTest < ActiveSupport::TestCase
     assert_enqueued_jobs Upvs::Box.where(syncable: true).count
   end
 
+  test "should not be valid if same obo value present in other boxes within connection" do
+    box = boxes(:google_box_with_govbox_api_connection_with_obo_support)
+
+    new_box = Box.create(
+      name: SecureRandom.hex,
+      short_name: SecureRandom.hex,
+      uri: SecureRandom.hex,
+      tenant: box.tenant,
+      api_connection: box.api_connection,
+      settings_obo: box.settings_obo
+    )
+
+    assert_not new_box.valid?
+    assert_equal :settings_obo, new_box.errors.first.attribute
+  end
+
+  test "should not be valid if no obo value already present in other boxes within connection" do
+    box = boxes(:google_box_with_govbox_api_connection_with_obo_support_without_obo_value)
+
+    new_box = Box.create(
+      name: SecureRandom.hex,
+      short_name: SecureRandom.hex,
+      uri: SecureRandom.hex,
+      tenant: box.tenant,
+      api_connection: box.api_connection,
+      settings_obo: ''
+    )
+
+    assert_not new_box.valid?
+    assert_equal :settings_obo, new_box.errors.first.attribute
+  end
+
   test "after_destroy callback destroys api_connection if Govbox::ApiConnection without any boxes" do
     box = boxes(:google_box_with_govbox_api_connection)
     api_connection = box.api_connection
