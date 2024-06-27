@@ -26,3 +26,8 @@ five:
   automation_rule: four
   type: Automation::BoxCondition
   condition_object: ssd_main (Box)
+
+six:
+  automation_rule: five
+  type: Automation::AttachmentContentCondition
+  value: Test string

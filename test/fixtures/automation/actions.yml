@@ -22,3 +22,13 @@ four:
   automation_rule: four
   type: Automation::AddMessageThreadTagAction
   action_object: ssd_external_visible (Tag)
+
+five:
+  automation_rule: five
+  type: Automation::AddMessageThreadTagAction
+  action_object: ssd_attachment_matched (Tag)
+
+six:
+  automation_rule: five
+  type: Automation::ChangeMessageThreadTitleAction
+  value: "New title - ${title}"

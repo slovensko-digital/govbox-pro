@@ -13,6 +13,7 @@
 class NestedMessageObject < ApplicationRecord
   include PdfVisualizationOperations
   include MessageExportOperations
+  include ContentMatchingOperations
 
   belongs_to :message_object, inverse_of: :nested_message_objects
 
@@ -45,5 +46,9 @@ class NestedMessageObject < ApplicationRecord
 
   def unsigned_content
     content
+  end
+
+  def pdf?
+    mimetype == Utils::PDF_MIMETYPE
   end
 end

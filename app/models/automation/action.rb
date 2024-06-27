@@ -41,4 +41,17 @@ module Automation
       object.tags << tag if tag && object.tags.exclude?(tag)
     end
   end
+
+  class ChangeMessageThreadTitleAction < Action
+    def run!(thing)
+      object = if thing.respond_to? :thread
+                 thing.thread
+               else
+                 thing
+               end
+      new_value = value.gsub("${title}", object.title)
+      object.title = new_value
+      object.save!
+    end
+  end
 end

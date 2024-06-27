@@ -15,6 +15,7 @@
 #
 class MessageObject < ApplicationRecord
   include PdfVisualizationOperations
+  include ContentMatchingOperations
 
   belongs_to :message, inverse_of: :objects
   has_one :message_object_datum, dependent: :destroy
@@ -113,6 +114,14 @@ class MessageObject < ApplicationRecord
 
   def assign_tag(tag)
     message_objects_tags.find_or_create_by!(tag: tag)
+  end
+
+  def pdf?
+    mimetype == Utils::PDF_MIMETYPE
+  end
+
+  def xml?
+    mimetype == Utils::XML_MIMETYPE
   end
 
   private

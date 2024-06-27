@@ -172,3 +172,9 @@ solver_signed_externally:
   type: SignedExternallyTag
   visible: false
   tenant: solver
+
+ssd_attachment_matched:
+  name: AttachmentMatched
+  type: SimpleTag
+  visible: true
+  tenant: ssd

@@ -76,8 +76,28 @@ module Automation
     end
 
     def cleanup_record
-      self.value = nil
-      self.attr = 'box'
+      self.condition_object = nil
     end
+  end
+
+  class AttachmentContentCondition < Automation::Condition
+    validates_associated :condition_object
+    VALID_ATTR_LIST = ['search_condition'].freeze
+
+    def satisfied?(thing)
+      thing.objects.each do |message_object|
+        return true if message_object.content_match?(value)
+
+        message_object.nested_message_objects.each do |nested_message_object|
+          return true if nested_message_object.content_match?(value)
+        end
+      end
+      false
+    end
+  end
+
+  def cleanup_record
+    self.value = nil
+    self.attr = 'box'
   end
 end

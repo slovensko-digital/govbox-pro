@@ -23,3 +23,9 @@ four:
   tenant: ssd
   name: BoxConditionAddMessageThreadTagTagFive
   trigger_event: message_thread_created
+
+five:
+  user: basic
+  tenant: ssd
+  name: AttachmentContentCondition
+  trigger_event: message_created
