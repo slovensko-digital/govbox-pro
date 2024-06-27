@@ -13,7 +13,7 @@ V2Pv21:
 VP_DANv24:
   identifier: '3055_781'
   name: Podanie pre FS (Správa daní) - platné od 1.4.2024
-  group_name: Správa daní/Podanie pre FS - Správa daní/Všeobecné podanie - Správa daní (platné od 1.4.2024)
+  group_name: Správa daní/Podanie pre FS - Správa daní/Všeobecné podanie - Správa daní (platné od 1.4.2024)
   subtype_name: Žiadosť o potvrdenie
   signature_required: true
   ez_signature: true
