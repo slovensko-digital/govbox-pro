@@ -10,6 +10,16 @@ basic_two:
   email: anotheruser@email.com
   tenant: ssd
 
+ssd_signer:
+  name: Signer user
+  email: signeruser@email.com
+  tenant: ssd
+
+ssd_signer2:
+  name: Signer user 2
+  email: signeruser2@email.com
+  tenant: ssd
+
 admin:
   name: Admin user
   email: admin_user@email.com
