@@ -72,8 +72,12 @@ class MessageThreadsTest < ApplicationSystemTestCase
   test "user can use fulltext search to filter threads" do
     visit message_threads_path
 
+    assert_no_selector "#next_page_area"
+
     fill_in "search", with: "Social Department"
     find("#search").send_keys(:enter)
+
+    assert_no_selector "#next_page_area"
 
     thread_general = message_threads(:ssd_main_general)
     thread_issue = message_threads(:ssd_main_issue)
