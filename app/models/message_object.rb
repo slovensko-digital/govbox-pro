@@ -121,7 +121,7 @@ class MessageObject < ApplicationRecord
   end
 
   def xml?
-    mimetype == Utils::XML_MIMETYPE
+    Utils::XML_MIMETYPES.any? { |xml_mimetype| xml_mimetype == Utils.mimetype_without_optional_params(mimetype) }
   end
 
   private
