@@ -6,7 +6,7 @@ class MessageThreadsTest < ApplicationSystemTestCase
 
     silence_warnings do
       @old_value = MessageThreadCollection.const_get("PER_PAGE")
-      MessageThreadCollection.const_set("PER_PAGE", 10)
+      MessageThreadCollection.const_set("PER_PAGE", 1)
     end
 
     sign_in_as(:basic)
