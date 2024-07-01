@@ -17,7 +17,7 @@ module Automation
     belongs_to :action_object, polymorphic: true, optional: true
     attr_accessor :delete_record
 
-    ACTION_LIST = ['Automation::AddMessageThreadTagAction'].freeze
+    ACTION_LIST = ['Automation::AddMessageThreadTagAction', 'Automation::ChangeMessageThreadTitleAction'].freeze
 
     def tag_list
       automation_rule.tenant.tags.pluck(:name, :id)
@@ -42,7 +42,7 @@ module Automation
     end
   end
 
-  class ChangeMessageThreadTitleAction < Action
+  class ChangeMessageThreadTitleAction < Automation::Action
     def run!(thing)
       object = if thing.respond_to? :thread
                  thing.thread

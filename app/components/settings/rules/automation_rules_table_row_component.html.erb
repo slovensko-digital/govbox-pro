@@ -20,8 +20,12 @@
     <p class="flex-grow-0 flex-shrink-0 text-base text-left text-gray-500">
       <% @automation_rule.actions.each_with_index do |action, index| %>
         <span class="flex-grow-0 flex-shrink-0 text-base text-left text-gray-500"><%= t action.type %></span>
-        <span class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-gray-500"><%= action.action_object.name %></span>
-        <%if index < @automation_rule.actions.length - 1%><%= ', '%><% end %>
+        <% if action.type == 'Automation::AddMessageThreadTagAction' %>
+          <span class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-gray-500"><%= action.action_object.name %></span>
+        <% else %>
+          <span class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-gray-500"><%= action.value %></span>
+        <% end %>
+        <% if index < @automation_rule.actions.length - 1 %><%= ', ' %><% end %>
       <% end %>
     </p>
   </div>
