@@ -110,6 +110,7 @@ paths:
           description: Vlákno nenájdené
       security:
         - "Tenant_Token": []
+
   /api/messages/{id}:
     get:
       tags: [Správy]
@@ -152,6 +153,10 @@ paths:
                     description: Dátum a čas doručenia správy
                     type: string
                     format: date-time
+                  status:
+                    description: Aktuálny stav správy
+                    type: string
+                    enum: ["being_loaded", "being_validated", "invalid", "created", "being_submitted", "temporary_submit_fail", "submit_fail", "submitted"]
                   message_objects:
                     description: Zoznam objektov správy
                     type: array
@@ -225,6 +230,10 @@ paths:
                     description: Dátum a čas doručenia správy
                     type: string
                     format: date-time
+                  status:
+                    description: Aktuálny stav správy
+                    type: string
+                    enum: [ "being_loaded", "being_validated", "invalid", "created", "being_submitted", "temporary_submit_fail", "submit_fail", "submitted" ]
                   message_objects:
                     description: Zoznam objektov správy
                     type: array
@@ -459,6 +468,10 @@ paths:
                       description: Dátum a čas doručenia správy
                       type: string
                       format: date-time
+                    status:
+                      description: Aktuálny stav správy
+                      type: string
+                      enum: [ "being_loaded", "being_validated", "invalid", "created", "being_submitted", "temporary_submit_fail", "submit_fail", "submitted" ]
                     message_objects:
                       description: Zoznam objektov správy
                       type: array

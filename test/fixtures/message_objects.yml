@@ -5,6 +5,7 @@ ssd_main_general_one_attachment:
   name: MyString
   mimetype: MyString
   object_type: ATTACHMENT
+  is_signed: false
 
 ssd_main_general_two_form:
   message: ssd_main_general_two
