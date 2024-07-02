@@ -248,6 +248,7 @@ Rails.application.routes.draw do
       end
     end
     resources :messages, only: [:show] do
+      get :search, on: :collection
       post :message_drafts, on: :collection
       get :sync, on: :collection
     end
