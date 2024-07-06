@@ -35,7 +35,9 @@ class MessageThreadsController < ApplicationController
     if params[:filter_id].present?
       @filter = policy_scope(Filter, policy_scope_class: FilterPolicy::ScopeShowable).find_by(id: params[:filter_id])
     else
-      @filter = Current.user.visible_filters.first
+      if Current.user.visible_filters.any?
+        redirect_to message_threads_path(filter_id: Current.user.visible_filters.first.id)
+      end
     end
 
     @query = search_params[:q]
