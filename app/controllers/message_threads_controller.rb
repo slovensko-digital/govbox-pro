@@ -32,7 +32,12 @@ class MessageThreadsController < ApplicationController
   def index
     authorize MessageThread
 
-    @filter = policy_scope(Filter, policy_scope_class: FilterPolicy::ScopeShowable).find_by(id: params[:filter_id]) if params[:filter_id].present?
+    if params[:filter_id].present?
+      @filter = policy_scope(Filter, policy_scope_class: FilterPolicy::ScopeShowable).find_by(id: params[:filter_id])
+    else
+      @filter = Current.user.visible_filters.first
+    end
+
     @query = search_params[:q]
   end
 
