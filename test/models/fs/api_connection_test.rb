@@ -10,19 +10,40 @@ class Fs::ApiConnectionTest < ActiveSupport::TestCase
     api_connection = api_connections(:fs_api_connection1)
     box = boxes(:fs_accountants)
 
-    [
-      'Juraj Jánošík',
-      'Ján Jánošík',
-      'Ján Jabĺčko',
-      'Juraj Jabĺčko'
-    ].each_with_index do |new_box_name, i|
-      new_box = box.dup
-      new_box.name = new_box_name
-      new_box.uri = SecureRandom.hex
-      new_box.short_name = api_connection.send(:generate_short_name_from_name, new_box_name)
-      new_box.save
+    new_box = box.dup
+    new_box.name = 'Juraj Jánošík'
+    new_box.uri = SecureRandom.hex
+    new_box.short_name = api_connection.send(:generate_short_name_from_name, 'Juraj Jánošík')
+    new_box.save
 
-      assert_equal "FSJJ#{i + 1}", new_box.short_name
-    end
+    assert_equal "FSJJ1", new_box.short_name
+
+
+    new_box = box.dup
+    new_box.name = 'Ján Jánošík'
+    new_box.uri = SecureRandom.hex
+    new_box.short_name = api_connection.send(:generate_short_name_from_name, 'Ján Jánošík')
+    new_box.save
+
+    assert_equal "FSJJ2", new_box.short_name
+
+
+    # skips number 3 which is already used
+    new_box = box.dup
+    new_box.name = 'Ján Jabĺčko'
+    new_box.uri = SecureRandom.hex
+    new_box.short_name = api_connection.send(:generate_short_name_from_name, 'Ján Jabĺčko')
+    new_box.save
+
+    assert_equal "FSJJ4", new_box.short_name
+
+
+    new_box = box.dup
+    new_box.name = 'Juraj Jabĺčko'
+    new_box.uri = SecureRandom.hex
+    new_box.short_name = api_connection.send(:generate_short_name_from_name, 'Juraj Jabĺčko')
+    new_box.save
+
+    assert_equal "FSJJ5", new_box.short_name
   end
 end

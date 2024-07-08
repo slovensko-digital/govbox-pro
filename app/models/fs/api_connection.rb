@@ -72,9 +72,14 @@ class Fs::ApiConnection < ::ApiConnection
   private
 
   def generate_short_name_from_name(name)
-    generated_short_name = "FS" + name.split.map(&:first).join.upcase
-    boxes_with_same_short_name_count = tenant.boxes.where("short_name ~ ?", "#{generated_short_name}(%d)*").count
-    generated_short_name += boxes_with_same_short_name_count.to_s if boxes_with_same_short_name_count > 0
+    generated_base_short_name = "FS" + name.split.map(&:first).join.upcase
+    generated_short_name = generated_base_short_name
+
+    1.step do |i|
+      break if tenant.boxes.where("short_name ~ ?", "#{generated_short_name}(%d)*").empty?
+
+      generated_short_name = generated_base_short_name + i.to_s
+    end
 
     generated_short_name
   end
