@@ -47,11 +47,20 @@
       <%= render MessageTemplateComponent.new(message: @message, is_last: @is_last) %>
     <% else %>
       <% if @message.metadata['validation_errors']&.any? %>
-        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative w-full" role="alert">
-          <% @message.metadata['validation_errors'].each do |error| %>
-            <strong class="font-bold"><%= simple_format(error) %></strong>
-          <% end %>
-        </div>
+        <% if @message.metadata['validation_errors']['result'] == 'FAIL' %>
+          <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative w-full" role="alert">
+            <% @message.metadata['validation_errors']['message'].each do |error| %>
+              <strong class="font-bold"><%= simple_format(error) %></strong>
+            <% end %>
+          </div>
+        <% elsif @message.metadata['validation_errors']['result'] == 'WARN' %>
+          <div class="bg-orange-100 border border-orange-500 text-orange-700 px-4 py-3 rounded relative w-full" role="alert">
+            <strong>Upozornenie:</strong>
+            <% @message.metadata['validation_errors']['message'].each do |error| %>
+              <p><%= simple_format(error) %></p>
+            <% end %>
+          </div>
+        <% end %>
       <% end %>
 
       <% if @message.html_visualization.present? %>
