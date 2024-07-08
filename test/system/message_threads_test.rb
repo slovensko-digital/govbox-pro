@@ -21,6 +21,8 @@ class MessageThreadsTest < ApplicationSystemTestCase
   test "user can see threads he has access to" do
     visit message_threads_path
 
+    assert_no_selector "#next_page_area"
+
     thread_general = message_threads(:ssd_main_general)
     thread_issue = message_threads(:ssd_main_issue)
 
@@ -118,6 +120,8 @@ class MessageThreadsTest < ApplicationSystemTestCase
   test "user can go to a thread detail of the thread he has access to" do
     visit message_threads_path
 
+    assert_no_selector "#next_page_area"
+
     thread_general = message_threads(:ssd_main_general)
     message_one = messages(:ssd_main_general_one)
     message_two = messages(:ssd_main_general_two)
@@ -182,6 +186,9 @@ class MessageThreadsTest < ApplicationSystemTestCase
     message_two = messages(:ssd_main_issue_two)
 
     visit message_thread_path thread_issue
+
+    assert_no_selector "#next_page_area"
+
     within_message_in_thread message_two do
       click_button "Odpovedať"
     end
