@@ -14,6 +14,7 @@ class Fs::ValidateMessageDraftResultJob < ApplicationJob
       result: response[:body]['result'],
       message: [response[:body]['message']]
     }
+    message_draft.add_cascading_tag(message_draft.tenant.submission_error_tag) if message_draft.metadata[:validation_errors].present?
     message_draft.save
   end
 end
