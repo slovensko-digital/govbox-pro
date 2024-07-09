@@ -53,7 +53,16 @@ fs_accountants:
   name: Accountants main FS
   uri: dic://sk/1122334455
   tenant: accountants
-  short_name: MY2
+  short_name: FSJJ
   api_connection: fs_api_connection1
   settings: {"dic": "1122334455"}
+  type: 'Fs::Box'
+
+fs_accountants2:
+  name: Accountants main FS
+  uri: dic://sk/1122334456
+  tenant: accountants
+  short_name: FSJJ3
+  api_connection: fs_api_connection1
+  settings: {"dic": "1122334456"}
   type: 'Fs::Box'

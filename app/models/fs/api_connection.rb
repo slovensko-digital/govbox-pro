@@ -58,7 +58,7 @@ class Fs::ApiConnection < ::ApiConnection
           api_connection: self,
           tenant: tenant,
           name: "FS " + subject["name"],
-          short_name: "FS" + subject["name"].split.map(&:first).join.upcase,
+          short_name: generate_short_name_from_name(subject["name"]),
           uri: "dic://sk/#{subject['dic']}",
           syncable: false
         )
@@ -67,5 +67,19 @@ class Fs::ApiConnection < ::ApiConnection
     end
 
     count
+  end
+
+  private
+
+  def generate_short_name_from_name(name)
+    generated_base_name = "FS" + name.split.map(&:first).join.upcase
+
+    return generated_base_name unless tenant.boxes.where(short_name: generated_base_name).present?
+
+    1.step do |i|
+      generated_short_name = "#{generated_base_name}#{i}"
+
+      return generated_short_name unless tenant.boxes.where(short_name: generated_short_name).present?
+    end
   end
 end
