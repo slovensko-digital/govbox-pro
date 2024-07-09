@@ -55,14 +55,14 @@ fs_accountants:
   tenant: accountants
   short_name: FSJJ
   api_connection: fs_api_connection1
-  settings: {"dic": "1122334455"}
+  settings: {"dic": "1122334455", "subject_id": "df2f9373-30b7-4a44-9738-5b4e24e4866c"}
   type: 'Fs::Box'
 
 fs_accountants2:
-  name: Accountants main FS
+  name: Accountants main FS 2
   uri: dic://sk/1122334456
   tenant: accountants
   short_name: FSJJ3
   api_connection: fs_api_connection1
-  settings: {"dic": "1122334456"}
+  settings: {"dic": "1122334456", "subject_id": "387cf7da-2cff-40e0-8ad2-650030429994"}
   type: 'Fs::Box'
