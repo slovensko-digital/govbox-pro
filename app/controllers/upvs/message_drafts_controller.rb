@@ -15,8 +15,10 @@ class Upvs::MessageDraftsController < ApplicationController
     @message_template = MessageTemplate.default_template
     @message = Upvs::MessageDraft.new
     @boxes = Current.tenant&.boxes.where(type: 'Upvs::Box')
-    @box = Current.box
+    @box = Current.box if Current.box.is_a?(Upvs::Box) || @boxes.first
     @recipients_list = @message_template&.recipients&.pluck(:institution_name, :institution_uri)&.map { |name, uri| { uri: uri, name: name }}
+
+    redirect_to message_threads_path unless @boxes.any?
 
     authorize @message
   end
