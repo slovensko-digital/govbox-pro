@@ -10,11 +10,15 @@ class Fs::ValidateMessageDraftResultJob < ApplicationJob
       raise RuntimeError.new("Unexpected response status: #{response[:status]}")
     end
 
-    message_draft.metadata[:validation_errors] = {
-      result: response[:body]['result'],
-      message: [response[:body]['message']]
-    }
-    message_draft.add_cascading_tag(message_draft.tenant.submission_error_tag) if message_draft.metadata[:validation_errors].present?
+    unless response[:body]['result'] == 'OK'
+      message_draft.metadata[:validation_errors] = {
+        result: response[:body]['result'],
+        errors: response[:body]['problems']&.select { |problem| problem['level'] == 'error' }&.map{ |problem| problem['message'] },
+        warnings: response[:body]['problems']&.select { |problem| problem['level'] == 'warning' }&.map{ |problem| problem['message'] }
+      }
+      message_draft.add_cascading_tag(message_draft.tenant.submission_error_tag)
+    end
+
     message_draft.save
   end
 end
