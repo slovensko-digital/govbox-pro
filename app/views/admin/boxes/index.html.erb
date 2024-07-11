@@ -16,7 +16,7 @@
               <%= render Common::BoxLabelComponent.new(box, "items-start justify-start gap-0" ) %>
             </div>
             <div class="text-center text-gray-500 text-base font-normal leading-normal">
-              <%= box.name %>, <%= box.uri %>
+              <%= box.name %>, URI: <%= box.uri %>
             </div>
           </div>
           <div class="justify-start items-start gap-2 flex">
@@ -47,7 +47,7 @@
                 <%= render Common::BoxLabelComponent.new(box, "items-start justify-start gap-0" ) %>
               </div>
               <div class="text-center text-gray-500 text-base font-normal leading-normal">
-                <%= box.name %>, <%= box.uri %>
+                <%= box.name %>, DIČ: <%= box.settings_dic %>
               </div>
             </div>
             <div class="justify-start items-start gap-2 flex">

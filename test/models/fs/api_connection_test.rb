@@ -1,6 +1,63 @@
 require "test_helper"
 
 class Fs::ApiConnectionTest < ActiveSupport::TestCase
+  test ".boxify saves only one box with given DIČ in the tenant" do
+    original_fs_boxes_count = Fs::Box.count
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :get_subjects, [
+      {"name" => "SSD s.r.o." , "dic" => "2120515056" , "subject_id" => SecureRandom.uuid, "authorization_type" => "6"},
+      {"name" => "SSD s.r.o. (oblasť SPD)" , "dic" => "2120515056" , "subject_id" => SecureRandom.uuid, "authorization_type" => "6"},
+      {"name" => "SSD s.r.o. (oblasť XYZ)" , "dic" => "2120515056" , "subject_id" => SecureRandom.uuid, "authorization_type" => "6"}
+    ]
+
+    api_connection = api_connections(:fs_api_connection1)
+
+    FsEnvironment.fs_client.stub :api, fs_api do
+      api_connection.boxify
+    end
+
+    assert_equal original_fs_boxes_count + 1, Fs::Box.count
+  end
+
+  test ".boxify ignores duplicated boxes with different authorization type" do
+    original_fs_boxes_count = Fs::Box.count
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :get_subjects, [
+      {"name" => "SSD s.r.o." , "dic" => "2120515056" , "subject_id" => "7e4faaa3-c130-4032-b4c1-d0892e9a4611", "authorization_type" => "6"},
+      {"name" => "SSD s.r.o." , "dic" => "2120515056" , "subject_id" => "7e4faaa3-c130-4032-b4c1-d0892e9a4611", "authorization_type" => "1"},
+      {"name" => "SSD s.r.o." , "dic" => "2120515056" , "subject_id" => "7e4faaa3-c130-4032-b4c1-d0892e9a4611", "authorization_type" => "4"}
+    ]
+
+    api_connection = api_connections(:fs_api_connection1)
+
+    FsEnvironment.fs_client.stub :api, fs_api do
+      api_connection.boxify
+    end
+
+    assert_equal original_fs_boxes_count + 1, Fs::Box.count
+  end
+
+  test ".boxify updates name on existing boxes if changed" do
+    original_fs_boxes_count = Fs::Box.count
+    existing_box = boxes(:fs_accountants2)
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :get_subjects, [
+      {"name" => "Accountants main FS 2 new name" , "dic" => existing_box.settings_dic , "subject_id" => existing_box.settings_subject_id, "authorization_type" => "6"},
+    ]
+
+    api_connection = api_connections(:fs_api_connection1)
+
+    FsEnvironment.fs_client.stub :api, fs_api do
+      api_connection.boxify
+    end
+
+    assert_equal existing_box.reload.name, "FS Accountants main FS 2 new name"
+    assert_equal original_fs_boxes_count, Fs::Box.count
+  end
+
   test ".generate_short_name_from_name generates short name without number if unique" do
     api_connection = api_connections(:fs_api_connection1)
     assert_equal 'FSJH', api_connection.send(:generate_short_name_from_name, 'Janko Hraško')
