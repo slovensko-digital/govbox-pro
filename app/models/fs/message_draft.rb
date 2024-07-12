@@ -31,7 +31,7 @@ class Fs::MessageDraft < MessageDraft
 
     form_files.each do |form_file|
       form_content = form_file.read.force_encoding("UTF-8")
-      form_information = fs_client.api.parse_form(Base64.strict_encode64(form_content))
+      form_information = fs_client.api.parse_form(form_content)
       dic = form_information['subject']
       fs_form_identifier = form_information['form_identifier']
 

@@ -16,7 +16,7 @@ class Fs::MessageDraftsTest < ApplicationSystemTestCase
       "subject" => "1122334455",
       "form_identifier" => "3055_781"
     },
-    [Base64.strict_encode64(file_fixture("fs/dic1122334455_fs3055_781__sprava_dani_2023.xml").read)]
+    [file_fixture("fs/dic1122334455_fs3055_781__sprava_dani_2023.xml").read]
 
     FsEnvironment.fs_client.stub :api, fs_api do
       attach_file "content[]", file_fixture("fs/dic1122334455_fs3055_781__sprava_dani_2023.xml")
@@ -45,12 +45,12 @@ class Fs::MessageDraftsTest < ApplicationSystemTestCase
       "subject" => "1122334455",
       "form_identifier" => "3055_781"
     },
-    [Base64.strict_encode64(file_fixture("fs/dic1122334455_fs3055_781__sprava_dani_2023.xml").read)]
+    [file_fixture("fs/dic1122334455_fs3055_781__sprava_dani_2023.xml").read]
     fs_api.expect :parse_form, {
       "subject" => "1122334455",
       "form_identifier" => "2682_712"
     },
-    [Base64.strict_encode64(file_fixture("fs/dic1122334455_fs2682_712__v2py_2021.xml").read)]
+    [file_fixture("fs/dic1122334455_fs2682_712__v2py_2021.xml").read]
 
     FsEnvironment.fs_client.stub :api, fs_api do
       attach_file "content[]", [

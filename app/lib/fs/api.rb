@@ -16,8 +16,8 @@ module Fs
       request(:get, "forms", **args)
     end
 
-    def parse_form(encoded_content)
-      request(:post, "forms/parse", { content: encoded_content })[:body]
+    def parse_form(content)
+      request(:post, "forms/parse", { content: Base64.strict_encode64(content) })[:body]
     end
 
     def get_public_key(**args)
