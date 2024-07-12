@@ -16,6 +16,10 @@ module Fs
       request(:get, "forms", **args)
     end
 
+    def parse_form(encoded_content)
+      request(:post, "forms/parse", { content: encoded_content })[:body]
+    end
+
     def get_public_key(**args)
       @fs_public_key ||= request(:get, "public-key")[:body]["public_key_b64"]
     end
