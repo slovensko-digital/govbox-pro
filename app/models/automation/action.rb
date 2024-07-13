@@ -49,7 +49,7 @@ module Automation
                else
                  thing
                end
-      new_value = value.gsub("${title}", object.title)
+      new_value = value.gsub("{{title}}", object.title)
       object.title = new_value
       object.save!
     end

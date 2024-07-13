@@ -27,5 +27,5 @@ four:
 five:
   user: basic
   tenant: ssd
-  name: AttachmentContentCondition
+  name: AttachmentContentContainsCondition
   trigger_event: message_created

@@ -31,4 +31,4 @@ five:
 six:
   automation_rule: five
   type: Automation::ChangeMessageThreadTitleAction
-  value: "New title - ${title}"
+  value: "New title - {{title}}"

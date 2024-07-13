@@ -29,5 +29,5 @@ five:
 
 six:
   automation_rule: five
-  type: Automation::AttachmentContentCondition
+  type: Automation::AttachmentContentContainsCondition
   value: Test string

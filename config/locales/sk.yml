@@ -263,7 +263,7 @@ sk:
     sync_all_requested: "Sťahovanie nových správ bolo spustené."
   message_created: "Nová správa"
   "Automation::ContainsCondition": "obsahuje"
-  "Automation::AttachmentContentCondition": "obsahuje"
+  "Automation::AttachmentContentContainsCondition": "obsahuje"
   "Automation::MetadataValueCondition": "v metadátach obsahuje"
   "Automation::BoxCondition": "je"
   "Automation::AddMessageThreadTagAction": "Pridaj štítok na vlákno"

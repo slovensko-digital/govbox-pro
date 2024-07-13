@@ -81,7 +81,7 @@ module Automation
     end
   end
 
-  class AttachmentContentCondition < Automation::Condition
+  class AttachmentContentContainsCondition < Automation::Condition
     validates :value, presence: true
     VALID_ATTR_LIST = ['attachment'].freeze
 
