@@ -1,6 +1,8 @@
 require "test_helper"
 
 class BoxTest < ActiveSupport::TestCase
+  include ActiveJob::TestHelper
+
   test "should not be valid if obo value present in settings when api_connection is a Govbox::ApiConnection without tenant" do
     box = boxes(:google_box_with_govbox_api_connection)
     assert box.valid?
@@ -26,6 +28,14 @@ class BoxTest < ActiveSupport::TestCase
     box.api_connection.update(obo: SecureRandom.uuid)
 
     assert_not box.valid?
+  end
+
+  test "sync_all schedules sync of all boxes" do
+    assert_enqueued_with(job: Govbox::SyncBoxJob) do
+      Box.sync_all
+    end
+
+    assert_enqueued_jobs Upvs::Box.where(syncable: true).count
   end
 
   test "after_destroy callback destroys api_connection if Govbox::ApiConnection without any boxes" do

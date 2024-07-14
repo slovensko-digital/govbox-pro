@@ -35,8 +35,23 @@ Rails.application.routes.draw do
         resources :group_memberships do
         end
       end
+
       resources :users
-      resources :boxes, except: :destroy
+
+      resources :boxes, only: :index
+      namespace :boxes do
+        resources :upvs_boxes, except: [:index, :destroy]
+        resources :fs_boxes, except: [:index, :destroy]
+      end
+
+      resources :api_connections, only: [:index, :destroy]
+      namespace :api_connections do
+        resources :upvs_api_connections, except: [:index, :destroy]
+        resources :fs_api_connections, except: [:index, :destroy] do
+          post :boxify, on: :member
+        end
+      end
+
       resources :tags
       resources :tag_groups
     end
@@ -129,7 +144,22 @@ Rails.application.routes.draw do
     resources :filter_subscriptions
   end
 
-  resources :message_drafts do
+  namespace :upvs do
+    resources :message_drafts
+  end
+
+  namespace :fs do
+    resources :message_drafts
+
+    namespace :forms do
+      get :form_selector
+      get :forms_list
+      post :search_forms_list
+      post :form_selected
+    end
+  end
+
+  resources :message_drafts, only: [:update, :destroy] do
     member do
       post :confirm_unlock
       post :unlock
@@ -173,12 +203,12 @@ Rails.application.routes.draw do
     post :recipient_selected
   end
 
-  resources :message_drafts_imports, only: :create do
-    get :upload_new, path: 'novy', on: :collection
-  end
-
   namespace :upvs do
     get :allowed_recipient_services
+
+    resources :message_drafts_imports, only: :create do
+      get :upload_new, path: 'novy', on: :collection
+    end
   end
 
   resources :sessions do
@@ -190,7 +220,14 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :site_admin do
       resources :tenants, only: [:create, :destroy] do
-        resources :boxes, only: :create
+        namespace :upvs do
+          resources :boxes, only: :create
+        end
+
+        namespace :fs do
+          resources :boxes, only: :create
+        end
+
         resources :api_connections, only: :create
       end
 
@@ -211,6 +248,7 @@ Rails.application.routes.draw do
       end
     end
     resources :messages, only: [:show] do
+      get :search, on: :collection
       post :message_drafts, on: :collection
       get :sync, on: :collection
     end

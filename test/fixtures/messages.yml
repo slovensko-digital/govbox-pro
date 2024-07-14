@@ -14,6 +14,7 @@ ssd_main_general_one:
     authorized: true
     sender_uri: SenderURI
     correlation_id: <%= SecureRandom.uuid %>
+    status: created
     delivery_notification:
       delivery_period_end_at: <%= DateTime.current - 1.day %>
 
@@ -61,7 +62,7 @@ ssd_main_fs_one:
     message_type: Elektronický úradný dokument finančnej správy
 
 ssd_main_general_draft_one:
-  type: MessageDraft
+  type: Upvs::MessageDraft
   uuid: <%= SecureRandom.uuid %>
   title: Title is not shown
   html_visualization: Reply to something
@@ -70,10 +71,11 @@ ssd_main_general_draft_one:
   replyable: false
   metadata:
     status: created
+    correlation_id: <%= SecureRandom.uuid %>
   author: basic
 
 ssd_main_general_draft_two:
-  type: MessageDraft
+  type: Upvs::MessageDraft
   uuid: <%= SecureRandom.uuid %>
   title: MyStringDraft2
   html_visualization: MyString
@@ -91,7 +93,7 @@ ssd_main_general_draft_two:
   author: basic
 
 ssd_main_general_draft_three:
-  type: MessageDraft
+  type: Upvs::MessageDraft
   uuid: <%= SecureRandom.uuid %>
   title: MyStringDraft3
   html_visualization: MyString
@@ -109,7 +111,7 @@ ssd_main_general_draft_three:
   author: basic
 
 ssd_main_delivery_draft:
-  type: MessageDraft
+  type: Upvs::MessageDraft
   uuid: <%= SecureRandom.uuid %>
   title: MyStringDraft3
   html_visualization: MyString
@@ -118,6 +120,7 @@ ssd_main_delivery_draft:
   replyable: false
   metadata:
     status: created
+    correlation_id: <%= SecureRandom.uuid %>
   author: basic
 
 ssd_main_delivery_one:
@@ -132,7 +135,7 @@ ssd_main_delivery_one:
   author: basic
 
 ssd_main_draft:
-  type: MessageDraft
+  type: Upvs::MessageDraft
   uuid: <%= SecureRandom.uuid %>
   title: MyStringDraft5
   html_visualization: MyString
@@ -141,6 +144,7 @@ ssd_main_draft:
   replyable: false
   metadata:
     status: created
+    correlation_id: <%= SecureRandom.uuid %>
   author: basic
 
 ssd_main_issue_one:
@@ -180,6 +184,84 @@ ssd_main_collapsed_two:
   thread: ssd_main_with_application
   metadata:
     collapsed: true
+
+ssd_main_draft_to_be_signed_draft_one:
+  type: MessageDraft
+  uuid: <%= SecureRandom.uuid %>
+  title: Title is not shown
+  html_visualization: Reply to something
+  delivered_at: 2023-05-18 16:18:26
+  thread: ssd_main_draft_to_be_signed
+  replyable: false
+  metadata:
+    status: created
+  author: basic
+
+ssd_main_draft_to_be_signed_draft_two:
+  type: MessageDraft
+  uuid: <%= SecureRandom.uuid %>
+  title: MyStringDraft2
+  html_visualization: MyString
+  delivered_at: 2023-05-18 16:18:26
+  thread: ssd_main_draft_to_be_signed
+  replyable: false
+  metadata:
+    status: created
+    sktalk_class: EGOV_APPLICATION
+    posp_id: App.GeneralAgenda
+    posp_version: 1.9
+    message_type: App.GeneralAgenda
+    correlation_id: <%= SecureRandom.uuid %>
+    recipient_uri: ico://sk/12345678
+  author: basic
+
+ssd_main_draft_to_be_signed2_draft:
+  type: MessageDraft
+  uuid: <%= SecureRandom.uuid %>
+  title: MyStringDraft3
+  html_visualization: MyString
+  delivered_at: 2023-05-18 16:19:26
+  thread: ssd_main_draft_to_be_signed2
+  replyable: false
+  metadata:
+    status: created
+  author: basic
+
+ssd_main_draft_to_be_signed3_draft:
+  type: MessageDraft
+  uuid: <%= SecureRandom.uuid %>
+  title: MyStringDraft4
+  html_visualization: MyString
+  delivered_at: 2023-05-18 16:19:26
+  thread: ssd_main_draft_to_be_signed3
+  replyable: false
+  metadata:
+    status: created
+  author: basic
+
+ssd_main_draft_to_be_signed3_draft_two:
+  type: MessageDraft
+  uuid: <%= SecureRandom.uuid %>
+  title: MyStringDraft5
+  html_visualization: MyString
+  delivered_at: 2023-05-18 16:19:26
+  thread: ssd_main_draft_to_be_signed3
+  replyable: false
+  metadata:
+    status: created
+  author: basic
+
+ssd_main_draft_to_be_signed4_draft:
+  type: MessageDraft
+  uuid: <%= SecureRandom.uuid %>
+  title: MyStringDraft5
+  html_visualization: MyString
+  delivered_at: 2023-05-18 16:19:26
+  thread: ssd_main_draft_to_be_signed4
+  replyable: false
+  metadata:
+    status: created
+  author: basic
 
 solver_main_delivery_notification_one:
   uuid: bbff2617-3430-44c6-b827-519059ff1e90

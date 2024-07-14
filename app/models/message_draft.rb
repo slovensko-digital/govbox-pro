@@ -33,6 +33,7 @@ class MessageDraft < Message
 
   after_create do
     add_cascading_tag(thread.box.tenant.draft_tag!)
+    add_cascading_tag(author.draft_tag) if author
   end
   after_update_commit ->(message) { EventBus.publish(:message_draft_changed, message) }
 
@@ -57,15 +58,10 @@ class MessageDraft < Message
     message_draft.validates :sender_name, presence: true
     message_draft.validates :recipient_name, presence: true
     message_draft.validate :validate_metadata_with_template
-    message_draft.validate :validate_form
   end
 
   with_options on: :validate_data do |message_draft|
-    message_draft.validate :validate_uuid_uniqueness
-    message_draft.validate :validate_metadata
-    message_draft.validate :validate_form
-    message_draft.validate :validate_objects
-    message_draft.validate :validate_with_message_template
+    message_draft.validate :validate_data
   end
 
   with_options on: :validate_uuid_uniqueness do |message_draft|
@@ -80,6 +76,10 @@ class MessageDraft < Message
     reload
   end
 
+  def submit
+    raise NotImplementedError
+  end
+
   def draft?
     true
   end
@@ -89,21 +89,37 @@ class MessageDraft < Message
   end
 
   def editable?
-    custom_visualization? && !form&.is_signed? && not_yet_submitted?
+    created_from_template? && !form_object&.is_signed? && not_yet_submitted?
+  end
+
+  def destroyable?
+    true
   end
 
   def reason_for_readonly
     return :read_only_agenda unless template.present?
-    return :form_submitted if submitted? || being_submitted?
-    return :form_signed if form.is_signed?
+    return :submitted if submitted? || being_submitted?
+    return :form_signed if form_object.is_signed?
   end
 
-  def custom_visualization?
+  def created_from_template?
     template.present?
   end
 
   def submittable?
-    form.content.present? && objects.to_be_signed.all? { |o| o.is_signed? } && correctly_created? && valid?(:validate_data)
+    form_object.content.present? && objects.to_be_signed.all? { |o| o.is_signed? } && correctly_created? && valid?(:validate_data)
+  end
+
+  def not_submittable_errors
+    return [] if submittable?
+
+    errors = []
+    errors << 'Vyplňte obsah správy' unless form_object.content.present?
+    errors << 'Pred odoslaním podpíšte všetky dokumenty na podpis' unless objects.to_be_signed.all? { |o| o.is_signed? }
+    errors << 'Obsah správy nie je validný' if invalid? || !valid?(:validate_data)
+    errors << 'Správu bude možné odoslať až po ukončení validácie' if being_validated?
+
+    errors
   end
 
   def correctly_created?
@@ -115,7 +131,11 @@ class MessageDraft < Message
   end
 
   def not_yet_submitted?
-    metadata["status"].in?(%w[created invalid])
+    metadata["status"].in?(%w[created invalid being_validated])
+  end
+
+  def being_validated?
+    metadata["status"] == "being_validated"
   end
 
   def being_submitted?
@@ -152,6 +172,10 @@ class MessageDraft < Message
     EventBus.publish(:message_draft_submitted, self)
   end
 
+  def attachments_allowed?
+    true
+  end
+
   def original_message
     Message.find(metadata["original_message_id"]) if metadata["original_message_id"]
   end
@@ -161,48 +185,22 @@ class MessageDraft < Message
   end
 
   def remove_form_signature
-    return false unless form
-    return false unless form.is_signed?
+    return false unless form_object
+    return false unless form_object.is_signed?
 
-    form.destroy
+    form_object.destroy
     reload
     template&.create_form_object(self)
     reload
   end
 
-  def create_form_object
-    # TODO: clean the domain (no UPVS stuff)
-    objects.create!(
-      name: "form.xml",
-      mimetype: "application/x-eform-xml",
-      object_type: "FORM",
-      is_signed: false
-    )
-  end
-
-  # TODO remove UPVS stuff from core domain
-  def validate_form
-    return if errors[:metadata].any?
-
-    unless ::Upvs::ServiceWithFormAllowRule.matching_metadata(all_metadata).where(institution_uri: metadata['recipient_uri']).any?
-      errors.add(:base, :disallowed_form_for_recipient)
-      return
-    end
-
-    raise "Missing XSD schema" unless upvs_form&.xsd_schema
-
-    return unless form&.unsigned_content
-
-    document = form.xml_unsigned_content
-    form_errors = document.errors
-
-    schema = Nokogiri::XML::Schema(upvs_form.xsd_schema)
-    form_errors += schema.validate(document)
-
-    errors.add(:base, :invalid_form) if form_errors.any?
-  end
-
   private
+
+  def validate_data
+    validate_form_object
+    validate_objects
+    validate_with_message_template
+  end
 
   def validate_uuid
     if uuid
@@ -214,6 +212,23 @@ class MessageDraft < Message
 
   def validate_uuid_uniqueness
     errors.add(:uuid, "Message with given UUID already exists") if uuid && box.messages.excluding(self).where(uuid: uuid).any?
+  end
+
+  def validate_form_object
+    return if errors[:metadata].any?
+
+    raise "Missing XSD schema" unless form&.xsd_schema
+
+    return unless form_object&.unsigned_content
+
+    document = form_object.xml_unsigned_content
+    form_errors = document.errors
+
+    schema = Nokogiri::XML::Schema(form.xsd_schema)
+
+    form_errors += schema.validate(document)
+
+    errors.add(:base, :invalid_form) if form_errors.any?
   end
 
   def validate_objects
@@ -229,15 +244,6 @@ class MessageDraft < Message
 
     forms = objects.select { |o| o.form? }
     errors.add(:objects, "Message has to contain exactly one form object") if forms.size != 1
-  end
-
-  def validate_metadata
-    errors.add(:metadata, "No recipient URI") unless all_metadata&.dig("recipient_uri")
-    errors.add(:metadata, "No posp ID") unless all_metadata&.dig("posp_id")
-    errors.add(:metadata, "No posp version") unless all_metadata&.dig("posp_version")
-    errors.add(:metadata, "No message type") unless all_metadata&.dig("message_type")
-
-    errors.add(:metadata, "Reference ID must be UUID") if all_metadata&.dig("reference_id") && !all_metadata&.dig("reference_id")&.match?(Utils::UUID_PATTERN)
   end
 
   def validate_with_message_template

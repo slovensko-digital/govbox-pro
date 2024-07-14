@@ -43,7 +43,7 @@ class Tenant < ApplicationRecord
 
   validates_presence_of :name
 
-  AVAILABLE_FEATURE_FLAGS = [:audit_log, :archive, :api, :message_draft_import, :template_messages]
+  AVAILABLE_FEATURE_FLAGS = [:audit_log, :archive, :api, :message_draft_import, :fs_api]
 
   def draft_tag!
     draft_tag || raise(ActiveRecord::RecordNotFound, "`DraftTag` not found in tenant: #{id}")
@@ -110,6 +110,7 @@ class Tenant < ApplicationRecord
     create_archived_tag!(name: "Archivované", color: "green", icon: "archive-box", visible: true)
     create_signature_requested_tag!(name: "Na podpis", visible: true, color: "yellow", icon: "pencil")
     create_signed_tag!(name: "Podpísané", visible: true, color: "green", icon: "fingerprint")
+    signer_group.create_signature_requested_tag!
     create_signed_externally_tag!(name: "Externe podpísané", visible: false, color: "purple", icon: "shield-check")
     create_submitted_tag!(name: 'Odoslané na spracovanie')
     create_submission_error_tag!(name: 'Problémové')

@@ -31,7 +31,7 @@ class MessageObject < ApplicationRecord
   validates :name, presence: { message: "Name can't be blank" }, on: :validate_data
   validate :allowed_mimetype?, on: :validate_data
 
-  after_create ->(message_object) { message_object.update(name: message_object.name + Utils.file_extension_by_mimetype(message_object.mimetype).to_s) if Utils.file_name_without_extension?(message_object) }
+  after_create ->(message_object) { message_object.fill_missing_info }
   after_update ->(message_object) { EventBus.publish(:message_object_changed, message_object) }
   before_destroy :remove_object_related_tags_from_thread, prepend: true
 
@@ -61,22 +61,23 @@ class MessageObject < ApplicationRecord
   def mark_signed_by_user(user)
     assign_tag(user.signed_by_tag)
     unassign_tag(user.signature_requested_from_tag)
+    unassign_tag(user.tenant.signer_group.signature_requested_from_tag)
 
     thread.mark_signed_by_user(user)
   end
 
-  def add_signature_requested_from_user(user)
-    return if has_tag?(user.signed_by_tag)
+  def add_signature_requested_from_group(group)
+    return if has_tag?(group.signed_by_tag)
 
-    assign_tag(user.signature_requested_from_tag)
-    thread.add_signature_requested_from_user(user)
+    assign_tag(group.signature_requested_from_tag)
+    thread.add_signature_requested_from_group(group)
   end
 
-  def remove_signature_requested_from_user(user)
-    return unless has_tag?(user.signature_requested_from_tag)
+  def remove_signature_requested_from_group(group)
+    return unless has_tag?(group.signature_requested_from_tag)
 
-    unassign_tag(user.signature_requested_from_tag)
-    thread.remove_signature_requested_from_user(user)
+    unassign_tag(group.signature_requested_from_tag)
+    thread.remove_signature_requested_from_group(group)
   end
 
   def content
@@ -85,7 +86,7 @@ class MessageObject < ApplicationRecord
 
   def unsigned_content(mimetypes: Utils::XML_MIMETYPES)
     if is_signed
-      nested_message_objects&.where("mimetype ILIKE ANY ( array[?] )", mimetypes.map {|val| "#{val}%" })&.first&.content
+      nested_message_objects&.where("mimetype ILIKE ANY ( array[?] )", mimetypes.map { |val| "#{val}%" })&.first&.content
     else
       content
     end
@@ -96,7 +97,7 @@ class MessageObject < ApplicationRecord
   end
 
   def asice?
-    mimetype == 'application/vnd.etsi.asic-e+zip'
+    Utils::ASICE_MIMETYPES.include?(mimetype)
   end
 
   def destroyable?
@@ -114,6 +115,11 @@ class MessageObject < ApplicationRecord
 
   def assign_tag(tag)
     message_objects_tags.find_or_create_by!(tag: tag)
+  end
+
+  def fill_missing_info
+    update(name: name + Utils.file_extension_by_mimetype(mimetype).to_s) if Utils.file_name_without_extension?(self)
+    update(mimetype: Utils.file_mimetype_by_name(entry_name: name)) if mimetype == Utils::OCTET_STREAM_MIMETYPE
   end
 
   def pdf?

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_30_112350) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_13_095110) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -57,6 +57,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_30_112350) do
     t.datetime "updated_at", null: false
     t.string "type"
     t.bigint "tenant_id"
+    t.jsonb "settings"
     t.index ["tenant_id"], name: "index_api_connections_on_tenant_id"
   end
 
@@ -160,6 +161,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_30_112350) do
     t.enum "color", enum_type: "color"
     t.bigint "api_connection_id"
     t.jsonb "settings"
+    t.string "type"
     t.index "tenant_id, api_connection_id, ((settings ->> 'obo'::text))", name: "api_connection_box_settings_obo", unique: true
     t.index ["api_connection_id"], name: "index_boxes_on_api_connection_id"
     t.index ["tenant_id", "short_name"], name: "index_boxes_on_tenant_id_and_short_name", unique: true
@@ -198,6 +200,30 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_30_112350) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["box_id"], name: "index_folders_on_box_id"
+  end
+
+  create_table "fs_form_related_documents", force: :cascade do |t|
+    t.bigint "fs_form_id", null: false
+    t.string "data", null: false
+    t.string "language", null: false
+    t.string "document_type", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["fs_form_id", "language", "document_type"], name: "index_fs_related_documents_on_template_id_and_language_and_type", unique: true
+    t.index ["fs_form_id"], name: "index_fs_form_template_related_documents_on_fs_form_template_id"
+  end
+
+  create_table "fs_forms", force: :cascade do |t|
+    t.string "identifier", null: false
+    t.string "name", null: false
+    t.string "group_name"
+    t.string "subtype_name"
+    t.boolean "signature_required"
+    t.boolean "ez_signature"
+    t.string "slug"
+    t.integer "number_identifier"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "good_job_batches", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -610,6 +636,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_30_112350) do
   add_foreign_key "filters", "tenants", on_delete: :cascade
   add_foreign_key "filters", "users", column: "author_id", on_delete: :cascade
   add_foreign_key "folders", "boxes"
+  add_foreign_key "fs_form_related_documents", "fs_forms"
   add_foreign_key "govbox_folders", "govbox_folders", column: "parent_folder_id"
   add_foreign_key "govbox_messages", "govbox_folders", column: "folder_id"
   add_foreign_key "group_memberships", "groups"

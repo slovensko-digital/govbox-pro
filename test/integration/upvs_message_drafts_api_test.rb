@@ -1146,7 +1146,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
 
     json_response = JSON.parse(response.body)
-    assert_equal 'Objects is not valid, MimeType of Attachment.txt object is disallowed, allowed mimetypes: application/x-eform-xml, application/xml, application/msword, application/pdf, application/vnd.etsi.asic-e+zip, application/vnd.etsi.asic-s+zip, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/x-xades_zep, application/x-zip-compressed, image/jpg, image/jpeg, image/png, image/tiff, application/pkix-cert', json_response['message']
+    assert json_response['message'].start_with? 'Objects is not valid, MimeType of Attachment.txt object is disallowed, allowed mimetypes:'
 
     assert_equal Message.count, @before_request_messages_count
   end

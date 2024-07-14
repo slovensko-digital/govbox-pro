@@ -1,6 +1,6 @@
 module Upvs
   class FormRelatedDocumentsDownloader < ::Utils::Downloader
-    SOURCE_URL = ENV['FORMS_STORAGE_API_URL']
+    SOURCE_URL = ENV['UPVS_FORMS_STORAGE_API_URL']
     XSD_PATH = 'schema.xsd'
 
     attr_reader :upvs_form
@@ -38,7 +38,7 @@ module Upvs
         document_type: type,
         language: 'sk'
       ).tap do |form_related_document|
-        form_related_document.data = download(SOURCE_URL + "/#{upvs_form.identifier}/#{upvs_form.version}/#{path}")
+        form_related_document.data = download(SOURCE_URL + "/#{@upvs_form.identifier}/#{@upvs_form.version}/#{path}")
         form_related_document.touch if form_related_document.persisted?
         form_related_document.save!
       end

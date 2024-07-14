@@ -81,6 +81,11 @@ const prepareSingingRequestBody = (messageObjectData, batchId = null) => {
       autoLoadEform = true
       payloadMimeType = "application/xml;base64"
       break
+    case 'application/vnd.etsi.asic-e+zip':
+      autoLoadEform = true
+      signatureLevel = null
+      signatureContainer = null
+      break
     case 'application/msword':
     case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
       payloadMimeType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64"
@@ -101,6 +106,7 @@ const prepareSingingRequestBody = (messageObjectData, batchId = null) => {
       containerXmlns: messageObjectData.container_xmlns,
       transformation: messageObjectData.transformation,
       autoLoadEform: autoLoadEform,
+      fsFormId: messageObjectData.fs_form_id
     },
     payloadMimeType: payloadMimeType
   }

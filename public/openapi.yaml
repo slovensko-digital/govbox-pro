@@ -110,6 +110,7 @@ paths:
           description: Vlákno nenájdené
       security:
         - "Tenant_Token": []
+
   /api/messages/{id}:
     get:
       tags: [Správy]
@@ -152,6 +153,87 @@ paths:
                     description: Dátum a čas doručenia správy
                     type: string
                     format: date-time
+                  status:
+                    description: Aktuálny stav správy
+                    type: string
+                    enum: ["being_loaded", "being_validated", "invalid", "created", "being_submitted", "temporary_submit_fail", "submit_fail", "submitted"]
+                  message_objects:
+                    description: Zoznam objektov správy
+                    type: array
+                    items:
+                      description: Objekt správy
+                      type: object
+                      properties:
+                        name:
+                          description: Názov objektu
+                          type: string
+                        mimetype:
+                          description: Typ súboru objektu
+                          type: string
+                        object_type:
+                          description: Typ objektu
+                          type: string
+                          enum: ["FORM", "ATTACHMENT"]
+                        updated_at:
+                          description: Dátum poslednej zmeny (pridanie, podpísanie, ...) objektu
+                          type: string
+                          format: date-time
+                        is_signed:
+                          description: Príznak, či je objekt podpísaný
+                          type: boolean
+                        data:
+                          description: Samotný objektu zakódovaný ako Base64 text
+                          type: string
+                          format: byte
+      security:
+        - "Tenant_Token": []
+
+  /api/messages/search:
+    get:
+      tags: [Správy]
+      summary: Vráti konkrétnu správu podľa vyhľadávacích kritérií vrátane jej objektov
+      description: |
+        Vráti konkrétnu správu podľa vyhľadávacích kritérií vrátane jej objektov.
+      parameters:
+        - name: uuid
+          in: query
+          description: UUID správy
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Úspešné získanie údajov správy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    description: Identifikátor správy v systéme Govbox Pro
+                    type: integer
+                  uuid:
+                    description: UUID správy
+                    type: string
+                    format: uuid
+                  title:
+                    description: Predmet správy
+                    type: string
+                  sender_name:
+                    description: Odosielateľ správy
+                    type: string
+                  recipient_name:
+                    description: Prijímateľ správy
+                    type: string
+                  delivered_at:
+                    description: Dátum a čas doručenia správy
+                    type: string
+                    format: date-time
+                  status:
+                    description: Aktuálny stav správy
+                    type: string
+                    enum: [ "being_loaded", "being_validated", "invalid", "created", "being_submitted", "temporary_submit_fail", "submit_fail", "submitted" ]
                   message_objects:
                     description: Zoznam objektov správy
                     type: array
@@ -386,6 +468,10 @@ paths:
                       description: Dátum a čas doručenia správy
                       type: string
                       format: date-time
+                    status:
+                      description: Aktuálny stav správy
+                      type: string
+                      enum: [ "being_loaded", "being_validated", "invalid", "created", "being_submitted", "temporary_submit_fail", "submit_fail", "submitted" ]
                     message_objects:
                       description: Zoznam objektov správy
                       type: array
@@ -456,12 +542,12 @@ paths:
       security:
         - "Site_Admin_Token": []
 
-  /api/site_admin/tenant/{id}/box:
+  /api/site_admin/tenant/{id}/upvs/boxes:
     post:
       tags: [Správa tenantov (Administrácia)]
-      summary: Založí novú schránku v rámci tenanta
+      summary: Založí novú ÚPVS schránku v rámci tenanta
       description: |
-        Založí novú schránku v rámci tenanta. Pre korektné fungovanie musí schránka existovať na slovensko.sk
+        Založí novú ÚPVS schránku v rámci tenanta. Pre korektné fungovanie musí schránka existovať na slovensko.sk
       parameters:
         - name: id
           in: path
@@ -489,7 +575,103 @@ paths:
                   type: string
                   example: "MF"
                 color:
-                  description: Farba z palety tailwind farieb použitá v štítku pre dlíšenie vlákien/správ z rôznych schránok v používateľskom rozhraní
+                  description: Farba z palety tailwind farieb použitá v štítku pre odlíšenie vlákien/správ z rôznych schránok v používateľskom rozhraní
+                  type: string
+                  enum:
+                    [
+                      "slate",
+                      "gray",
+                      "zinc",
+                      "neutral",
+                      "stone",
+                      "red",
+                      "orange",
+                      "amber",
+                      "yellow",
+                      "lime",
+                      "green",
+                      "emerald",
+                      "teal",
+                      "cyan",
+                      "sky",
+                      "blue",
+                      "indigo",
+                      "violet",
+                      "purple",
+                      "fuchsia",
+                      "pink",
+                      "rose",
+                    ]
+                  example: "red"
+                settings_obo:
+                      description: V prípade použitia spoločného prístupu k schránke OBO identifikátor
+                      type: string
+                api_connection_id:
+                  type: integer
+                  description: V prípade použitia spoločného prístupu k schránke identifikátor pripojenia v systéme Govbox Pro
+                api_connection:
+                  type: object
+                  description: Parametre pripojenia na ÚPVS
+                  properties:
+                    sub:
+                      description: V prípade pripojenia cez legacy GovBox API sa používa identifikátor subjektu
+                      type: string
+                    api_token_private_key:
+                      description: Privátny kľúč k pripojeniu na ÚPVS cez legacy GovBox API
+                      type: string
+              required:
+                - name
+                - uri
+                - short_name
+                - color
+      responses:
+        200:
+          description: Úspešne založená schránka v systéme
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    description: Identifikátor založenej schránky v systéme Govbox Pro
+                    type: integer
+      security:
+        - "Site_Admin_Token": []
+
+  /api/site_admin/tenant/{id}/fs/boxes:
+    post:
+      tags: [Správa tenantov (Administrácia)]
+      summary: Založí novú FS schránku v rámci tenanta
+      description: |
+        Založí novú FS schránku v rámci tenanta. Pre korektné fungovanie musí schránka existovať na finančnej správe
+      parameters:
+        - name: id
+          in: path
+          description: Identifikátor tenanta
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  description: Názov schránky, typicky názov spoločnosti
+                  type: string
+                  example: "Moja firma s.r.o."
+                uri:
+                  description: URI schránky v tvare dic://<dič>, pričom <dič> je potrebné nahradiť DIČom spoločnosti
+                  type: string
+                  example: "dic://12345678"
+                short_name:
+                  description: Skrátený názov pre odlíšenie vlákien/správ z rôznych schránok v používateľskom rozhraní. Odporúčame maximálne 3 znaky
+                  type: string
+                  example: "FS1"
+                color:
+                  description: Farba z palety tailwind farieb použitá v štítku pre odlíšenie vlákien/správ z rôznych schránok v používateľskom rozhraní
                   type: string
                   enum:
                     [
@@ -523,19 +705,35 @@ paths:
                     obo:
                       description: V prípade použitia spoločného prístupu k schránke OBO identifikátor
                       type: string
+                    dic:
+                      description: DIČ identifikátor subjektu
+                      type: string
+                    subject_id:
+                      description: Identifikátor subjektu
+                      type: string
                 api_connection_id:
                   type: integer
                   description: V prípade použitia spoločného prístupu k schránke identifikátor pripojenia v systéme Govbox Pro
                 api_connection:
                   type: object
-                  description: Parametre pripojenia na ÚPVS
+                  description: Parametre pripojenia na FS
                   properties:
                     sub:
-                      description: V prípade pripojenia cez legacy GovBox API sa používa identifikátor subjektu.
+                      description: Identifikátor subjektu (ľubovoľná hodnota)
                       type: string
                     api_token_private_key:
-                      description: Privátny kľúč k pripojeniu na ÚPVS cez legacy GovBox API.
+                      description: Privátny kľúč k pripojeniu na FS cez legacy FS API
                       type: string
+                    settings:
+                      type: object
+                      description: Nastavenia API prepojenia
+                      properties:
+                        username:
+                          description: Používateľské meno k účtu na finančnej správe
+                          type: string
+                        password:
+                          description: Heslo k účtu na finančnej správe
+                          type: string
               required:
                 - name
                 - uri
