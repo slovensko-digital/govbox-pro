@@ -58,9 +58,11 @@
               <div class="ml-3">
                 <h3 class="text-sm font-medium text-red-800">Chyba</h3>
                 <div class="mt-2 text-sm text-red-700">
-                  <% @message.metadata['validation_errors']['errors'].each do |error| %>
-                    <p class="font-bold"><%= simple_format(error) %></p>
-                  <% end %>
+                  <ul role="list" class="list-disc space-y-1 pl-5">
+                    <% @message.metadata['validation_errors']['errors'].each do |error| %>
+                      <li class="font-bold"><%= simple_format(error) %></li>
+                    <% end %>
+                  </ul>
                 </div>
               </div>
             </div>
@@ -77,9 +79,11 @@
               <div class="ml-3">
                 <h3 class="text-sm font-medium text-yellow-800">Upozornenie</h3>
                 <div class="mt-2 text-sm text-yellow-700">
-                  <% @message.metadata['validation_errors']['warnings'].each do |error| %>
-                    <p><%= simple_format(error) %></p>
-                  <% end %>
+                  <ul role="list" class="list-disc space-y-1 pl-5">
+                    <% @message.metadata['validation_errors']['warnings'].each do |error| %>
+                      <li><%= simple_format(error) %></li>
+                    <% end %>
+                  </ul>
                 </div>
               </div>
             </div>
