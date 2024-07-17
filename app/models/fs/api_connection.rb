@@ -56,12 +56,13 @@ class Fs::ApiConnection < ::ApiConnection
         api_connection: self,
         settings: {
           dic: subject["dic"],
-          subject_id: subject["subject_id"]
+          subject_id: subject["subject_id"],
+          message_drafts_import_enabled: Fs::Box::DISABLED_MESSAGE_DRAFTS_IMPORT_KEYWORDS.none? { |keyword| subject["name"].include?(keyword) }
         }
       ).tap do |box|
         box.name = "FS " + subject["name"]
         box.short_name ||= generate_short_name_from_name(subject["name"])
-        box.uri = "dic://sk/#{subject['dic']}"
+        box.uri = "dic://sk/#{subject['dic']}_#{subject["name"]}"
         box.syncable = false
       end
 
