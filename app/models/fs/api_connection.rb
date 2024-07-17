@@ -56,7 +56,8 @@ class Fs::ApiConnection < ::ApiConnection
         api_connection: self,
         settings: {
           dic: subject["dic"],
-          subject_id: subject["subject_id"]
+          subject_id: subject["subject_id"],
+          message_drafts_import_enabled: Fs::Box::DISABLED_MESSAGE_DRAFTS_IMPORT_KEYWORDS.none? { |keyword| subject["name"].include?(keyword) }
         }
       ).tap do |box|
         box.name = "FS " + subject["name"]
