@@ -35,7 +35,6 @@ class Box < ApplicationRecord
   before_create { self.color = Box.colors.keys[name.hash % Box.colors.size] if color.blank? }
 
   validates_presence_of :name, :short_name, :uri
-  validates_uniqueness_of :name, :short_name, :uri, scope: :tenant_id
   validate :validate_box_with_api_connection
 
   store_accessor :settings, :obo, prefix: true # TODO: move to Govbox::Box superclass?

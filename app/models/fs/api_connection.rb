@@ -62,7 +62,7 @@ class Fs::ApiConnection < ::ApiConnection
       ).tap do |box|
         box.name = "FS " + subject["name"]
         box.short_name ||= generate_short_name_from_name(subject["name"])
-        box.uri = "dic://sk/#{subject['dic']}_#{subject["name"]}"
+        box.uri = "dic://sk/#{subject['dic']}"
         box.syncable = false
       end
 
