@@ -10,7 +10,7 @@
           <% if @message.correctly_created? %>
             <div class="gap-2 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
             <div id="<%= dom_id(@message, :submission) %>" is="turbo-frame" class="flex gap-2">
-              <%= form_with(url: submit_message_draft_path(@message), method: :post, data: { turbo_frame: "_top" }, local: true) do |form| %>
+              <%= form_with(url: submit_message_draft_path(@message), method: :post, data: { turbo_frame: "_top", turbo_confirm: ("Naozaj chcete odoslať správu aj bez vyžiadaných podpisov?" if @message.objects.any?{|message_object| message_object.tags.where(type: SignatureRequestedFromTag.to_s).any?}) }, local: true) do |form| %>
                 <%= form.submit "Odoslať", class: "flex justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6 text-white font-medium rounded-lg text-sm px-3.5 py-2.5 bg-blue-700 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 focus:outline-none dark:focus:ring-blue-800" %>
               <% end %>
 
