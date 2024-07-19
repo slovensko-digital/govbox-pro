@@ -43,4 +43,35 @@ export default class extends Controller {
     const lastDraft = drafts[drafts.length - 1];
     lastDraft.scrollIntoView();
   }
+
+  bulkSubmit = async () => {
+    const signaturesInfo = await this.getPendingRequestedSignaturesInfo();
+
+    if (signaturesInfo['pending_requested_signatures'] === true) {
+      alert("Správy ešte neboli podpísané všetkými podpismi. Naozaj chcete odoslať správy aj bez nich?");
+    }
+    else {
+      alert("Naozaj chcete odoslať rozpracované správy v označených vláknach?");
+    }
+  }
+
+  getPendingRequestedSignaturesInfo = async () => {
+    const threadIds = this.data.get("threadIds");
+    const authenticityToken = this.data.get("authenticityToken");
+
+    const response = await fetch(`/message_threads/bulk/message_drafts/pending_requested_signatures`,{
+      method: "POST",
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        message_thread_ids: threadIds,
+        authenticity_token: authenticityToken
+      })
+    })
+
+    if (response.ok) {
+      return await response.json()
+    }
+
+    throw new Error('getPendingRequestedSignaturesInfo failed')
+  }
 }

@@ -60,4 +60,8 @@ class MessageThreadPolicy < ApplicationPolicy
   def archive?
     true
   end
+
+  def pending_requested_signatures?
+    true
+  end
 end

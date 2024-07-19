@@ -36,6 +36,15 @@ module MessageThreads
         end
       end
 
+      def pending_requested_signatures
+        authorize MessageThread
+        @ids = params[:message_thread_ids] || []
+
+        message_threads = MessageThread.where(id: @ids)
+
+        render status: :ok, json: { "pending_requested_signatures": message_threads.any? { |message_thread| message_thread.any_objects_with_requested_signature? } }
+      end
+
       private
 
       def message_thread_policy_scope

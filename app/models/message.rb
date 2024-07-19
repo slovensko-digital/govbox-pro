@@ -125,7 +125,7 @@ class Message < ApplicationRecord
   end
 
   def any_objects_with_requested_signature?
-    objects.any?{|message_object| message_object.tags.where(type: SignatureRequestedFromTag.to_s).any?}
+    objects.any? { |message_object| message_object.tags.where(type: SignatureRequestedFromTag.to_s).any? }
   end
 
   def all_metadata

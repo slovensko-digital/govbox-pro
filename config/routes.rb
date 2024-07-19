@@ -84,6 +84,8 @@ Rails.application.routes.draw do
           post :submit
           delete :destroy
         end
+
+        post :pending_requested_signatures
       end
 
       resource :authorize_deliveries, only: [:update]
