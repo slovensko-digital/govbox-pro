@@ -29,10 +29,10 @@ module Automation
 
     accepts_nested_attributes_for :conditions, :actions, allow_destroy: true
 
-    def run!(thing, _event)
+    def run!(thing, event)
       return unless conditions_met?(thing)
 
-      actions.each { |action| action.run!(thing) }
+      actions.each { |action| action.run!(thing, event) }
     end
 
     def conditions_met?(thing)
@@ -50,7 +50,7 @@ module Automation
     end
 
     def recast_conditions(attributes)
-      attributes['conditions_attributes'].each do |_index, condition|
+      attributes['conditions_attributes']&.each do |_index, condition|
         next if condition['id'].blank?
 
         old_condition = conditions.find(condition['id'])
@@ -59,7 +59,7 @@ module Automation
     end
 
     def recast_actions(attributes)
-      attributes['actions_attributes'].each do |_index, action|
+      attributes['actions_attributes']&.each do |_index, action|
         next if action['id'].blank?
 
         old_action = actions.find(action['id'])

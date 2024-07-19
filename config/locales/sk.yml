@@ -27,6 +27,11 @@ sk:
             base:
               restrict_dependent_destroy:
                 has_many: "Štítok je použitý v automatizačných pravidlách, nie je ho možné vymazať. Upravte najskôr pravidlá"
+        automation/webhook:
+          attributes:
+            base:
+              restrict_dependent_destroy:
+                has_many: "Webhook je použitý v automatizačných pravidlách, nie je ho možné vymazať. Upravte najskôr pravidlá"
         message_draft:
           attributes:
             metadata:
@@ -261,11 +266,21 @@ sk:
   boxes:
     sync_all_requested: "Sťahovanie nových správ bolo spustené."
   message_created: "Nová správa"
+  message_thread_created: "Nové vlákno"
+  message_updated: "Upravená správa"
+  message_thread_changed: "Zmena vo vlákne správ"
   "Automation::ContainsCondition": "obsahuje"
   "Automation::MetadataValueCondition": "v metadátach obsahuje"
   "Automation::BoxCondition": "je"
   "Automation::AddMessageThreadTagAction": "Pridaj štítok na vlákno"
   "Automation::AddTagAction": "Pridaj štítok"
+  "Automation::FireWebhookAction": "Spusti webhook"
+  webhooks:
+    request_types:
+      plain: Prázdny POST
+      standard: Standard Webhook POST
+    auth_types:
+      none: Žiadny
   group:
     names:
       all: "Všetci"

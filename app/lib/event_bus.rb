@@ -29,7 +29,9 @@ EventBus.reset!
 
 # automation
 EventBus.subscribe_job :message_thread_created, Automation::MessageThreadCreatedJob
+EventBus.subscribe_job :message_thread_changed, Automation::MessageThreadChangedJob
 EventBus.subscribe_job :message_created, Automation::MessageCreatedJob
+EventBus.subscribe_job :message_updated, Automation::MessageUpdatedJob
 
 # notifications
 EventBus.subscribe :message_thread_changed, ->(thread) {

@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  url: MyString
+  request_type: plain
+  tenant_id: 1
+  secret: MyString
+  auth: MyString
+
+two:
+  name: MyString
+  url: MyString
+  request_type: plain
+  tenant_id: 1
+  secret: MyString
+  auth: MyString
