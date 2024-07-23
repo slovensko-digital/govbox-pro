@@ -124,6 +124,10 @@ class Message < ApplicationRecord
     template.transform(form_object.xml_unsigned_content)
   end
 
+  def any_objects_with_requested_signature?
+    objects.any?{|message_object| message_object.tags.where(type: SignatureRequestedFromTag.to_s).any?}
+  end
+
   def all_metadata
     metadata.merge(template&.metadata || {})
   end
