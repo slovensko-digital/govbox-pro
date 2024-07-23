@@ -1,11 +1,11 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  name: MyString
-  url: MyString
-  tenant_id: 1
+  name: Webhook 1
+  url: https://example.com/webhook1
+  tenant: ssd
 
 two:
-  name: MyString2
-  url: MyString2
-  tenant_id: 1
+  name: Webhook 2
+  url: https://example.com/webhook2
+  tenant: ssd

@@ -1,7 +1,7 @@
 require "test_helper"
 
-class Automation::WebhookTest < ActiveSupport::TestCase
-  test "should POST the url with correct payload when fired" do
+class Automation::FireWebhookJobTest < ActiveJob::TestCase
+  test "should call webhook.fire! and POST the url with correct payload" do
     message1 = messages(:ssd_main_draft)
     event = :event
     timestamp = DateTime.now
@@ -19,6 +19,10 @@ class Automation::WebhookTest < ActiveSupport::TestCase
     downloader.expect :post, true, [webhook.url, data], content_type: 'application/json'
 
     webhook.fire! message1, event, timestamp, downloader: downloader
+
+    Faraday.stub :post, downloader do
+      Automation::FireWebhookJob.new.perform(webhook, message1, event, timestamp)
+    end
 
     assert_mock downloader
   end
