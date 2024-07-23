@@ -2,8 +2,6 @@ module Govbox
   class SyncFolderJob < ApplicationJob
     queue_as :default
 
-    include GoodJob::ActiveJobExtensions::Batches
-
     def perform(folder, upvs_client: UpvsEnvironment.upvs_client, batch_size: 1000)
       edesk_api = upvs_client.api(folder.box).edesk
       new_messages_ids = []
@@ -36,13 +34,7 @@ module Govbox
       end
 
       new_messages_ids.each do |edesk_message_id|
-        if self.batch
-          self.batch.add do
-            DownloadMessageJob.set(priority: self.batch.properties.dig(:priority)).perform_later(folder, edesk_message_id)
-          end
-        else
-          DownloadMessageJob.perform_later(folder, edesk_message_id)
-        end
+        DownloadMessageJob.set(priority: self.priority).perform_later(folder, edesk_message_id)
       end
     end
   end

@@ -4,15 +4,13 @@ module Govbox
   class ProcessMessageJob < ApplicationJob
     queue_as :default
 
-    include GoodJob::ActiveJobExtensions::Batches
-
     retry_on ::ApplicationRecord::FailedToAcquireLockError, wait: :polynomially_longer, attempts: Float::INFINITY
 
     def perform(govbox_message)
       processed_message = ::Message.where(type: [nil, 'Message']).where(uuid: govbox_message.message_id).joins(:thread).where(thread: { box_id: govbox_message.box.id }).take
 
       ActiveRecord::Base.transaction do
-        message = Govbox::Message.create_message_with_thread!(govbox_message, priority: self.batch&.properties&.dig(:priority))
+        message = Govbox::Message.create_message_with_thread!(govbox_message, priority: self.priority)
 
         destroy_associated_message_draft(govbox_message)
         mark_delivery_notification_authorized(govbox_message)
@@ -102,7 +100,7 @@ module Govbox
         next if message_object.form&.related_documents.present?
 
         upvs_form = message_object.find_or_create_form
-        ::Upvs::DownloadFormRelatedDocumentsJob.set(priority: self.batch&.properties&.dig(:priority)).perform_later(upvs_form) if upvs_form
+        ::Upvs::DownloadFormRelatedDocumentsJob.set(priority: self.priority).perform_later(upvs_form) if upvs_form
       end
     end
   end

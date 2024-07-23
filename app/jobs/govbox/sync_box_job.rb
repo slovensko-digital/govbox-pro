@@ -13,20 +13,13 @@ module Govbox
 
       raise "Unable to fetch folders" if response_status != 200
 
+      jobs_priority = initial_import ? INITIAL_IMPORT_PRIORITY : self.priority
+
       raw_folders = raw_folders.index_by {|f| f["id"]}
       raw_folders.each_value do |folder_hash|
         folder = find_or_create_folder_with_parent(folder_hash, raw_folders, box)
 
-        if initial_import
-          batch = GoodJob::Batch.new
-          batch.properties[:priority] = INITIAL_IMPORT_PRIORITY
-
-          batch.add do
-            SyncFolderJob.set(priority: batch.properties[:priority]).perform_later(folder) unless folder.bin? || folder.drafts?
-          end
-        else
-          SyncFolderJob.perform_later(folder) unless folder.bin? || folder.drafts?
-        end
+        SyncFolderJob.set(priority: jobs_priority).perform_later(folder) unless folder.bin? || folder.drafts?
       end
     end
 

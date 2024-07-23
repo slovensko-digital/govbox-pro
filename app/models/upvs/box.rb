@@ -16,6 +16,9 @@
 #  tenant_id         :bigint           not null
 #
 class Upvs::Box < Box
+
+  USER_INITIATED_SYNC_JOB_PRIORITY = -1000
+
   def self.policy_class
     BoxPolicy
   end
@@ -36,6 +39,6 @@ class Upvs::Box < Box
   end
 
   def sync
-    Govbox::SyncBoxJob.perform_later(self)
+    Govbox::SyncBoxJob.set(priority: USER_INITIATED_SYNC_JOB_PRIORITY).perform_later(self)
   end
 end
