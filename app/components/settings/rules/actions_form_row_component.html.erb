@@ -3,7 +3,7 @@
     <%= @form.hidden_field :id %>
     <div class="flex gap-1">
       <p class="text-base font-medium text-left text-gray-900"><%= t @form.object.type %></p>
-      <% if @form.object.type == "Automation::AddMessageThreadTagAction" %>
+      <% if @form.object.object_based? %>
         <p class="text-base text-left text-gray-900"><%= @form.object.action_object.name %></p>
         <%= @form.hidden_field :value %>
       <% else %>

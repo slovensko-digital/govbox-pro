@@ -30,4 +30,4 @@ five:
 six:
   automation_rule: five
   type: Automation::AttachmentContentContainsCondition
-  value: Test string
+  value: "Test\\s*string"

@@ -22,6 +22,10 @@ module Automation
     def tag_list
       automation_rule.tenant.tags.pluck(:name, :id)
     end
+
+    def object_based?
+      OBJECT_BASED
+    end
   end
 
   # deprecated, fully replaced by AddMessageThreadTagAction
@@ -29,6 +33,7 @@ module Automation
   end
 
   class AddMessageThreadTagAction < Automation::Action
+    OBJECT_BASED = true
     def run!(thing)
       tag = action_object
       return if thing.tenant != tag.tenant
@@ -43,6 +48,7 @@ module Automation
   end
 
   class ChangeMessageThreadTitleAction < Automation::Action
+    OBJECT_BASED = false
     def run!(thing)
       object = if thing.respond_to? :thread
                  thing.thread

@@ -15,7 +15,6 @@
 #
 class MessageObject < ApplicationRecord
   include PdfVisualizationOperations
-  include ContentMatchingOperations
 
   belongs_to :message, inverse_of: :objects
   has_one :message_object_datum, dependent: :destroy

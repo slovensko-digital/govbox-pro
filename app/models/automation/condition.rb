@@ -87,10 +87,10 @@ module Automation
 
     def satisfied?(thing)
       thing.objects.each do |message_object|
-        return true if message_object.content_match?(value)
+        return true if content_match?(message_object, value)
 
         message_object.nested_message_objects.each do |nested_message_object|
-          return true if nested_message_object.content_match?(value)
+          return true if content_match?(nested_message_object, value)
         end
       end
       false
@@ -98,6 +98,32 @@ module Automation
 
     def cleanup_record
       self.condition_object = nil
+    end
+
+    private
+
+    def content_match?(object, value)
+      blob = object.message_object_datum.blob
+      if object.pdf?
+        pdf_match?(blob, value)
+      elsif object.xml?
+        blob.match?(value)
+      end
+    end
+
+    def pdf_match?(object, value)
+      io = StringIO.new
+      io.set_encoding Encoding::BINARY
+      io.write object
+      pdf_string = ""
+      PDF::Reader.open(io) do |pdf|
+        pdf.pages.each do |page|
+          pdf_string += page.text
+          last_page_text = page.text
+        end
+      end
+      io.close
+      pdf_string.match?(value)
     end
   end
 end
