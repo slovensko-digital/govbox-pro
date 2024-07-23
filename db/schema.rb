@@ -18,10 +18,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_18_084836) do
 
   # Custom types defined in this database.
   # Note that some types may not work with other database engines. Be careful if changing database.
-  create_enum "auth_type", ["hmac", "ed25519", "jwt", "basic"]
   create_enum "color", ["slate", "gray", "zinc", "neutral", "stone", "red", "orange", "amber", "yellow", "lime", "green", "emerald", "teal", "cyan", "sky", "blue", "indigo", "violet", "purple", "fuchsia", "pink", "rose"]
   create_enum "group_type", ["ALL", "USER", "CUSTOM", "ADMIN"]
-  create_enum "request_type", ["plain", "standard"]
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -153,14 +151,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_18_084836) do
   end
 
   create_table "automation_webhooks", force: :cascade do |t|
+    t.bigint "tenant_id", null: false
     t.string "name", null: false
     t.string "url", null: false
-    t.string "request_type", null: false
-    t.string "secret"
-    t.string "auth"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "tenant_id", null: false
     t.index ["tenant_id"], name: "index_automation_webhooks_on_tenant_id"
   end
 
@@ -642,7 +637,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_18_084836) do
   add_foreign_key "automation_conditions", "automation_rules"
   add_foreign_key "automation_rules", "tenants"
   add_foreign_key "automation_rules", "users"
-  add_foreign_key "automation_webhooks", "tenants"
+  add_foreign_key "automation_webhooks", "tenants", on_delete: :cascade
   add_foreign_key "boxes", "api_connections"
   add_foreign_key "boxes", "tenants"
   add_foreign_key "filter_subscriptions", "filters"

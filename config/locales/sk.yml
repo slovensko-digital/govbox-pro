@@ -31,7 +31,7 @@ sk:
           attributes:
             base:
               restrict_dependent_destroy:
-                has_many: "Webhook je použitý v automatizačných pravidlách, nie je ho možné vymazať. Upravte najskôr pravidlá"
+                has_many: "Integrácia je použitá v automatizačných pravidlách, nie je možné ju vymazať. Upravte najskôr pravidlá"
         message_draft:
           attributes:
             metadata:
@@ -269,18 +269,13 @@ sk:
   message_thread_created: "Nové vlákno"
   message_updated: "Upravená správa"
   message_thread_changed: "Zmena vo vlákne správ"
+  message_draft_submitted: "Odoslaná správa"
   "Automation::ContainsCondition": "obsahuje"
   "Automation::MetadataValueCondition": "v metadátach obsahuje"
   "Automation::BoxCondition": "je"
   "Automation::AddMessageThreadTagAction": "Pridaj štítok na vlákno"
   "Automation::AddTagAction": "Pridaj štítok"
-  "Automation::FireWebhookAction": "Spusti webhook"
-  webhooks:
-    request_types:
-      plain: Prázdny POST
-      standard: Standard Webhook POST
-    auth_types:
-      none: Žiadny
+  "Automation::FireWebhookAction": "Zavolaj integráciu"
   group:
     names:
       all: "Všetci"

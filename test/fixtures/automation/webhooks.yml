@@ -3,15 +3,9 @@
 one:
   name: MyString
   url: MyString
-  request_type: plain
   tenant_id: 1
-  secret: MyString
-  auth: MyString
 
 two:
-  name: MyString
-  url: MyString
-  request_type: plain
+  name: MyString2
+  url: MyString2
   tenant_id: 1
-  secret: MyString
-  auth: MyString

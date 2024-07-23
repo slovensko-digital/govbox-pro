@@ -3,7 +3,6 @@
 module Admin
   class AutomationWebhooksController < ApplicationController
     before_action :set_webhook, except: [:index, :new, :create]
-    before_action :set_list_values, only: [:new, :edit]
 
     def index
       authorize [:admin, ::Automation::Webhook]
@@ -45,7 +44,6 @@ module Admin
       else
         redirect_to admin_tenant_automation_webhooks_path(Current.tenant), alert: @webhook.errors.full_messages[0]
       end
-
     end
 
     private
@@ -55,15 +53,7 @@ module Admin
     end
 
     def webhook_params
-      params.require(:automation_webhook).permit(:secret, :auth, :name, :url, :request_type)
-    end
-
-    def set_list_values
-      @request_types = [
-        [t('webhooks.request_types.plain'), 'plain'],
-        [t('webhooks.request_types.standard'), 'standard']
-      ]
-      @auth_types = [[t('webhooks.auth_types.none'), 'none']]
+      params.require(:automation_webhook).permit(:name, :url)
     end
   end
 end
