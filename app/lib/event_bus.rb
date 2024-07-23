@@ -28,8 +28,12 @@ EventBus.reset!
 # wiring
 
 # automation
-EventBus.subscribe_job :message_thread_created, Automation::MessageThreadCreatedJob
-EventBus.subscribe_job :message_created, Automation::MessageCreatedJob
+EventBus.subscribe :message_thread_created, ->(message_thread, priority=nil) do
+  Automation::MessageThreadCreatedJob.set(priority: priority).perform_later(message_thread)
+end
+EventBus.subscribe :message_created, ->(message, priority=nil) do
+  Automation::MessageCreatedJob.set(priority: priority).perform_later(message)
+end
 
 # notifications
 EventBus.subscribe :message_thread_changed, ->(thread) {

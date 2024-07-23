@@ -2,7 +2,9 @@ module Govbox
   class SyncBoxJob < ApplicationJob
     queue_as :default
 
-    def perform(box, upvs_client: UpvsEnvironment.upvs_client)
+    INITIAL_IMPORT_PRIORITY = 100
+
+    def perform(box, upvs_client: UpvsEnvironment.upvs_client, initial_import: false)
       raise unless box.is_a?(Upvs::Box)
       return unless box.syncable?
 
@@ -14,7 +16,17 @@ module Govbox
       raw_folders = raw_folders.index_by {|f| f["id"]}
       raw_folders.each_value do |folder_hash|
         folder = find_or_create_folder_with_parent(folder_hash, raw_folders, box)
-        SyncFolderJob.perform_later(folder) unless folder.bin? || folder.drafts?
+
+        if initial_import
+          batch = GoodJob::Batch.new
+          batch.properties[:priority] = INITIAL_IMPORT_PRIORITY
+
+          batch.add do
+            SyncFolderJob.set(priority: batch.properties[:priority]).perform_later(folder) unless folder.bin? || folder.drafts?
+          end
+        else
+          SyncFolderJob.perform_later(folder) unless folder.bin? || folder.drafts?
+        end
       end
     end
 
