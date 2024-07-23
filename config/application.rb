@@ -36,6 +36,8 @@ module GovboxPro
     config.action_mailer.deliver_later_queue_name = :high_priority
 
     config.good_job.enable_cron = true
+    config.good_job.smaller_number_is_higher_priority = true
+
     if ENV['AUTO_SYNC_BOXES'] == "ON"
       config.good_job.cron = {
         sync_boxes: {
@@ -62,7 +64,8 @@ module GovboxPro
       config.good_job.cron['fetch_fs_forms'] = {
         cron: "0 */12 * * *",  # run every 12 hours
         class: "Fs::FetchFormsJob",
-        description: "Regular job to fetch Fs::Forms"
+        description: "Regular job to fetch Fs::Forms",
+        set: { priority: 200 }
       }
     end
 
@@ -70,7 +73,8 @@ module GovboxPro
       config.good_job.cron['fetch_upvs_forms_related_documents'] = {
         cron: "0 */12 * * *",  # run every 12 hours
         class: "Upvs::FetchFormRelatedDocumentsJob",
-        description: "Regular job to fetch Upvs::FormRelatedDocuments"
+        description: "Regular job to fetch Upvs::FormRelatedDocuments",
+        set: { priority: 200 }
       }
     end
 

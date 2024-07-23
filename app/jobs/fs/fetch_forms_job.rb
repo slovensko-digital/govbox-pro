@@ -1,5 +1,9 @@
 class Fs::FetchFormsJob < ApplicationJob
-  def perform(fs_client: FsEnvironment.fs_client, download_related_documents_job: ::Fs::DownloadFormRelatedDocumentsJob)
+  queue_as :default
+
+  DEFAULT_JOB_PRIORITY = 1000
+
+  def perform(fs_client: FsEnvironment.fs_client, download_related_documents_job: ::Fs::DownloadFormRelatedDocumentsJob, priority: DEFAULT_JOB_PRIORITY)
     fs_forms_list = fs_client.api.fetch_forms[:body]
 
     fs_forms_list.each do |fs_form_data|
@@ -17,7 +21,7 @@ class Fs::FetchFormsJob < ApplicationJob
         )
       end
 
-      download_related_documents_job.perform_later(fs_form)
+      download_related_documents_job.set(priority: priority).perform_later(fs_form)
     end
   end
 end
