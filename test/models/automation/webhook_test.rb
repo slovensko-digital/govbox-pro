@@ -6,7 +6,7 @@ class Automation::WebhookTest < ActiveSupport::TestCase
     event = :event
     timestamp = DateTime.now
     data = {
-      type: "#{message1.class.name}.#{event}",
+      type: "#{message1.class.name.underscore}.#{event}",
       timestamp: timestamp,
       data: {
         message_id: message1.id,

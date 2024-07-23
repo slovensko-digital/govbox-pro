@@ -1,6 +1,6 @@
 require "test_helper"
 
-class Automation::EventTriggeredJobTest < ActiveJob::TestCase
+class Automation::ApplyRulesForEventJobTest < ActiveJob::TestCase
   test "should call thing.automation_rules_for_event event" do
     event = :event
     thing = Minitest::Mock.new
@@ -8,7 +8,7 @@ class Automation::EventTriggeredJobTest < ActiveJob::TestCase
     rule.expect :run!, nil, [thing, event]
     thing.expect :automation_rules_for_event, [rule], [event]
 
-    Automation::EventTriggeredJob.new.perform(event, thing)
+    Automation::ApplyRulesForEventJob.new.perform(event, thing)
     assert_mock thing
     assert_mock rule
   end

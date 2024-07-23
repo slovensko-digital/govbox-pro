@@ -1,5 +1,5 @@
 module Automation
-  class EventTriggeredJob < ApplicationJob
+  class ApplyRulesForEventJob < ApplicationJob
     queue_as :automation
 
     def perform(event, thing)

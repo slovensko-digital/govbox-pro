@@ -18,7 +18,7 @@ module Automation
 
     def fire!(message, event, timestamp, downloader: Faraday)
       data = {
-        type: "#{message.class.name}.#{event}",
+        type: "#{message.class.name.underscore}.#{event}",
         timestamp: timestamp,
         data: {
           message_id: message.id,

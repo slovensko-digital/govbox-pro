@@ -29,7 +29,7 @@ EventBus.reset!
 
 # automation
 [:message_thread_created, :message_created, :message_draft_submitted].each do |event|
-  EventBus.subscribe_job event, Automation::EventTriggeredJob
+  EventBus.subscribe_job event, Automation::ApplyRulesForEventJob
 end
 
 # notifications
