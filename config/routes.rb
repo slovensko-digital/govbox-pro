@@ -54,6 +54,7 @@ Rails.application.routes.draw do
 
       resources :tags
       resources :tag_groups
+      resources :automation_webhooks
     end
     resources :audit_logs, only: :index do
       get :scroll, on: :collection

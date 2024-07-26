@@ -21,7 +21,7 @@ class AutomationTest < ApplicationSystemTestCase
     click_button "Pridať akciu"
     click_button "Uložiť zmeny"
 
-    assert_text "Správy, kde Schránka správy je"
+    assert_text "Nová správa, kde Schránka správy je"
     assert_text "Pridaj štítok na vlákno"
   end
 

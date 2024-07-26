@@ -150,6 +150,15 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_26_131027) do
     t.index ["user_id"], name: "index_automation_rules_on_user_id"
   end
 
+  create_table "automation_webhooks", force: :cascade do |t|
+    t.bigint "tenant_id", null: false
+    t.string "name", null: false
+    t.string "url", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tenant_id"], name: "index_automation_webhooks_on_tenant_id"
+  end
+
   create_table "boxes", force: :cascade do |t|
     t.string "name", null: false
     t.string "uri", null: false
@@ -628,6 +637,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_26_131027) do
   add_foreign_key "automation_conditions", "automation_rules"
   add_foreign_key "automation_rules", "tenants"
   add_foreign_key "automation_rules", "users"
+  add_foreign_key "automation_webhooks", "tenants", on_delete: :cascade
   add_foreign_key "boxes", "api_connections"
   add_foreign_key "boxes", "tenants"
   add_foreign_key "filter_subscriptions", "filters"
