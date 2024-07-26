@@ -31,6 +31,6 @@ class Govbox::ApiConnection < ::ApiConnection
   private
 
   def invalid_obo?(box)
-    box.settings && box.settings["obo"].present?
+    box.settings && box.settings_obo.present?
   end
 end

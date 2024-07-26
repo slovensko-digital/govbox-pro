@@ -27,7 +27,7 @@ class SkApi::ApiConnectionWithOboSupport < ::ApiConnection
 
   def validate_box(box)
     box.errors.add(:settings_obo, :not_allowed) if invalid_obo?(box)
-    box.errors.add(:settings_obo, :invalid) if boxes.where.not(id: box.id).where("settings ->> 'obo' = ?", box.settings_obo).exists?
+    box.errors.add(:settings_obo, :invalid) if boxes.where.not(id: box.id).where("settings @> ?", { obo: box.settings_obo }.to_json).exists?
   end
 
   private

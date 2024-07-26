@@ -40,6 +40,12 @@ govbox_api_api_connection2:
   api_token_private_key: private_key
   type: 'Govbox::ApiConnection'
 
+govbox_api_api_connection3:
+  sub: sub2
+  obo: <%= SecureRandom.uuid %>
+  api_token_private_key: private_key
+  type: 'Govbox::ApiConnection'
+
 govbox_api_api_connection_with_obo_support:
   sub: sub3
   api_token_private_key: private_key
