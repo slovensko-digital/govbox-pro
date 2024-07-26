@@ -16,6 +16,12 @@
 #  tenant_id         :bigint           not null
 #
 class Fs::Box < Box
+  DISABLED_MESSAGE_DRAFTS_IMPORT_KEYWORDS = ['(oblasť SPD)']
+
+  scope :with_enabled_message_drafts_import, -> { where("(settings ->> 'message_drafts_import_enabled')::boolean = ?", true) }
+
+  validates_uniqueness_of :name, :short_name, scope: :tenant_id
+
   def self.policy_class
     BoxPolicy
   end

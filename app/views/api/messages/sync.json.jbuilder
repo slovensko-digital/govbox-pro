@@ -6,6 +6,7 @@ json.array! @messages do |message|
   json.sender_name message.sender_name
   json.recipient_name message.recipient_name
   json.delivered_at message.delivered_at
+  json.status message.metadata.dig('status') if message.metadata.dig('status').present?
 
   json.objects message.objects do |object|
     json.name object.name

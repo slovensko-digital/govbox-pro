@@ -26,13 +26,16 @@ class Fs::MessageDraft < MessageDraft
     MessageDraftPolicy
   end
 
-  def self.create_and_validate_with_fs_form(form_files: [], author:)
+  def self.create_and_validate_with_fs_form(form_files: [], author:, fs_client: FsEnvironment.fs_client)
     messages = []
 
     form_files.each do |form_file|
-      dic, fs_form_identifier = Utils::FsInformationParser.parse_info_from_filename(form_file.original_filename)
+      form_content = form_file.read.force_encoding("UTF-8")
+      form_information = fs_client.api.parse_form(form_content)
+      dic = form_information['subject']
+      fs_form_identifier = form_information['form_identifier']
 
-      box = Fs::Box.find_by("settings ->> 'dic' = ?", dic)
+      box = Fs::Box.with_enabled_message_drafts_import.find_by("settings ->> 'dic' = ?", dic)
       fs_form = Fs::Form.find_by(identifier: fs_form_identifier)
 
       unless box && fs_form
@@ -80,7 +83,7 @@ class Fs::MessageDraft < MessageDraft
 
       MessageObjectDatum.create(
         message_object: form_object,
-        blob: form_file.read.force_encoding("UTF-8")
+        blob: form_content
       )
 
       messages << message

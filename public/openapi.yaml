@@ -110,6 +110,7 @@ paths:
           description: Vlákno nenájdené
       security:
         - "Tenant_Token": []
+
   /api/messages/{id}:
     get:
       tags: [Správy]
@@ -152,6 +153,87 @@ paths:
                     description: Dátum a čas doručenia správy
                     type: string
                     format: date-time
+                  status:
+                    description: Aktuálny stav správy
+                    type: string
+                    enum: ["being_loaded", "being_validated", "invalid", "created", "being_submitted", "temporary_submit_fail", "submit_fail", "submitted"]
+                  message_objects:
+                    description: Zoznam objektov správy
+                    type: array
+                    items:
+                      description: Objekt správy
+                      type: object
+                      properties:
+                        name:
+                          description: Názov objektu
+                          type: string
+                        mimetype:
+                          description: Typ súboru objektu
+                          type: string
+                        object_type:
+                          description: Typ objektu
+                          type: string
+                          enum: ["FORM", "ATTACHMENT"]
+                        updated_at:
+                          description: Dátum poslednej zmeny (pridanie, podpísanie, ...) objektu
+                          type: string
+                          format: date-time
+                        is_signed:
+                          description: Príznak, či je objekt podpísaný
+                          type: boolean
+                        data:
+                          description: Samotný objektu zakódovaný ako Base64 text
+                          type: string
+                          format: byte
+      security:
+        - "Tenant_Token": []
+
+  /api/messages/search:
+    get:
+      tags: [Správy]
+      summary: Vráti konkrétnu správu podľa vyhľadávacích kritérií vrátane jej objektov
+      description: |
+        Vráti konkrétnu správu podľa vyhľadávacích kritérií vrátane jej objektov.
+      parameters:
+        - name: uuid
+          in: query
+          description: UUID správy
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Úspešné získanie údajov správy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    description: Identifikátor správy v systéme Govbox Pro
+                    type: integer
+                  uuid:
+                    description: UUID správy
+                    type: string
+                    format: uuid
+                  title:
+                    description: Predmet správy
+                    type: string
+                  sender_name:
+                    description: Odosielateľ správy
+                    type: string
+                  recipient_name:
+                    description: Prijímateľ správy
+                    type: string
+                  delivered_at:
+                    description: Dátum a čas doručenia správy
+                    type: string
+                    format: date-time
+                  status:
+                    description: Aktuálny stav správy
+                    type: string
+                    enum: [ "being_loaded", "being_validated", "invalid", "created", "being_submitted", "temporary_submit_fail", "submit_fail", "submitted" ]
                   message_objects:
                     description: Zoznam objektov správy
                     type: array
@@ -386,6 +468,10 @@ paths:
                       description: Dátum a čas doručenia správy
                       type: string
                       format: date-time
+                    status:
+                      description: Aktuálny stav správy
+                      type: string
+                      enum: [ "being_loaded", "being_validated", "invalid", "created", "being_submitted", "temporary_submit_fail", "submit_fail", "submitted" ]
                     message_objects:
                       description: Zoznam objektov správy
                       type: array

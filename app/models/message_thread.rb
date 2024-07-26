@@ -119,6 +119,7 @@ class MessageThread < ApplicationRecord
     unless has_tag_in_message_objects?(user.signature_requested_from_tag)
       assign_tag(user.signed_by_tag)
       unassign_tag(user.signature_requested_from_tag)
+      unassign_tag(user.tenant.signer_group.signature_requested_from_tag) unless has_tag_in_message_objects?({ id: user.tenant.signer_group.signature_requested_from_tag.id })
     end
 
     # signed_tag
@@ -128,32 +129,32 @@ class MessageThread < ApplicationRecord
     end
   end
 
-  def add_signature_requested_from_user(user)
+  def add_signature_requested_from_group(group)
     # user_signature_requested_tag
-    assign_tag(user.signature_requested_from_tag)
-    unassign_tag(user.signed_by_tag)
+    assign_tag(group.signature_requested_from_tag)
+    unassign_tag(group.signed_by_tag)
 
     # signature_requested_tag
-    assign_tag(user.tenant.signature_requested_tag)
-    unassign_tag(user.tenant.signed_tag)
+    assign_tag(group.tenant.signature_requested_tag)
+    unassign_tag(group.tenant.signed_tag)
   end
 
-  def remove_signature_requested_from_user(user)
+  def remove_signature_requested_from_group(group)
     # user_signature_requested_tag
-    unless has_tag_in_message_objects?(user.signature_requested_from_tag)
-      unassign_tag(user.signature_requested_from_tag)
+    unless has_tag_in_message_objects?(group.signature_requested_from_tag)
+      unassign_tag(group.signature_requested_from_tag)
 
-      if has_tag_in_message_objects?(user.signed_by_tag)
-        assign_tag(user.signed_by_tag)
+      if has_tag_in_message_objects?(group.signed_by_tag)
+        assign_tag(group.signed_by_tag)
       end
     end
 
     # signature_requested_tag
     unless has_tag_in_message_objects?({ type: SignatureRequestedFromTag.to_s })
-      unassign_tag(user.tenant.signature_requested_tag)
+      unassign_tag(group.tenant.signature_requested_tag)
 
       if has_tag_in_message_objects?({ type: SignedByTag.to_s })
-        assign_tag(user.tenant.signed_tag)
+        assign_tag(group.tenant.signed_tag)
       end
     end
   end
