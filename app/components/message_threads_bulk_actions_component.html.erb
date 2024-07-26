@@ -101,12 +101,12 @@
             <%= content_tag(:div,
               {
                 "data-controller": "message-drafts",
-                "data-message-drafts-thread-ids": @ids,
+                "data-message-drafts-thread-ids": @ids.to_s,
                 "data-message-drafts-authenticity-token": form_authenticity_token,
                 "class": "py-1"
               }
             ) do %>
-              <%= button_tag "data-action": "click->message-drafts#bulkSubmit",
+              <%= button_tag type: "button", "data-action": "click->message-drafts#bulkSubmit",
                              class: "w-full text-gray-700 group flex items-center px-4 py-2 text-sm hover:bg-gray-100 hover:text-gray-900" do %>
                 <%= render Common::IconComponent.new("paper-airplane", classes: "mr-2 sm:mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500") %>
                 Odoslať

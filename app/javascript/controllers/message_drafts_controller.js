@@ -63,7 +63,7 @@ export default class extends Controller {
       method: "POST",
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
-        message_thread_ids: threadIds,
+        message_thread_ids: JSON.parse(threadIds),
         authenticity_token: authenticityToken
       })
     })

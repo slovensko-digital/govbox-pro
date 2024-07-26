@@ -3,6 +3,9 @@ class Settings::Rules::RuleHeaderFormComponent < ViewComponent::Base
     @form = form
   end
   def before_render
-    @trigger_events_list = [[t('message_created'), 'message_created']]
+    @trigger_events_list = [
+      [t('message_created'), 'message_created'],
+      [t('message_draft_submitted'), 'message_draft_submitted'],
+    ]
   end
 end
