@@ -62,8 +62,7 @@ class BoxTest < ActiveSupport::TestCase
       short_name: SecureRandom.hex,
       uri: SecureRandom.hex,
       tenant: box.tenant,
-      api_connection: box.api_connection,
-      settings_obo: ''
+      api_connection: box.api_connection
     )
 
     assert_not new_box.valid?

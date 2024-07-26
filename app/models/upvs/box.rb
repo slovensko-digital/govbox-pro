@@ -22,6 +22,10 @@ class Upvs::Box < Box
 
   store_accessor :settings, :obo, prefix: true
 
+  validate :validate_settings_obo
+
+  after_initialize :initialize_defaults, :if => :new_record?
+
   def self.create_with_api_connection!(params)
     if params[:api_connection]
       api_connection = Govbox::ApiConnection.create!(params[:api_connection])
@@ -35,5 +39,14 @@ class Upvs::Box < Box
 
   def sync
     Govbox::SyncBoxJob.perform_later(self)
+  end
+
+  private
+  def initialize_defaults
+    self.settings_obo ||= nil
+  end
+
+  def validate_settings_obo
+    errors.add(:settings_obo, "OBO must be in UUID format") if settings_obo.present? && !settings_obo.match?(Utils::UUID_PATTERN)
   end
 end
