@@ -123,9 +123,9 @@
     <% end %>
 
     <% if Current.tenant.boxes.where(type: 'Upvs::Box').any? || (Current.tenant.feature_enabled?(:fs_api) && Current.tenant.boxes.where(type: 'Fs::Box').any?) %>
-      <div data-controller="dropdown" class="relative hidden sm:inline-block text-left">
+      <div data-controller="dropdown" data-action="click->dropdown#toggle click@window->dropdown#hide" class="relative hidden sm:inline-block text-left">
       <div>
-        <button type="button" data-action="dropdown#toggle click@window->dropdown#hide" class="inline-flex w-full justify-center items-center gap-x-1.5 rounded-md bg-white px-2 py-1 sm:px-3 sm:py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" id="menu-button" aria-expanded="true" aria-haspopup="true">
+        <button data-dropdown-target="button" type="button" class="inline-flex w-full justify-center items-center gap-x-1.5 rounded-md bg-white px-2 py-1 sm:px-3 sm:py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" id="menu-button" aria-expanded="true" aria-haspopup="true">
           Vytvoriť novú správu
           <%= render Icons::ChevronDownComponent.new(css_classes: "w-4 h-4 text-gray-400", stroke_width: 2) %>
         </button>
