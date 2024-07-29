@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_13_095110) do
+ActiveRecord::Schema[7.1].define(version: 2024_07_18_084836) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -148,6 +148,15 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_13_095110) do
     t.bigint "user_id", null: false
     t.index ["tenant_id"], name: "index_automation_rules_on_tenant_id"
     t.index ["user_id"], name: "index_automation_rules_on_user_id"
+  end
+
+  create_table "automation_webhooks", force: :cascade do |t|
+    t.bigint "tenant_id", null: false
+    t.string "name", null: false
+    t.string "url", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tenant_id"], name: "index_automation_webhooks_on_tenant_id"
   end
 
   create_table "boxes", force: :cascade do |t|
@@ -628,6 +637,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_13_095110) do
   add_foreign_key "automation_conditions", "automation_rules"
   add_foreign_key "automation_rules", "tenants"
   add_foreign_key "automation_rules", "users"
+  add_foreign_key "automation_webhooks", "tenants", on_delete: :cascade
   add_foreign_key "boxes", "api_connections"
   add_foreign_key "boxes", "tenants"
   add_foreign_key "filter_subscriptions", "filters"

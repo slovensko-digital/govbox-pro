@@ -1,4 +1,4 @@
-openapi: 3.0.3
+openapi: 3.1.0
 
 info:
   title: GovBox Pro API
@@ -873,7 +873,49 @@ paths:
       security:
         - "Site_Admin_Token": []
 
+webhooks:
+  automationWebhook:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StandardWebhookRequestBody"
+      responses:
+        200:
+          description: OK
+
 components:
+  schemas:
+    StandardWebhookRequestBody:
+      description: Telo requestu podľa [Standard Webhooks](https://github.com/standard-webhooks/standard-webhooks/blob/main/spec/standard-webhooks.md) špecifikácie.
+      properties:
+        type:
+          type: string
+          description: Typ udalosti spúšťajúcej webhook. Je v tvare `[objekt].[event]`. Objekt môže byť `message` alebo `upvs/message_draft`. Event môže byť `message_created` alebo `message_draft_submitted`.
+          example: message.message_created
+        timestamp:
+          type: string
+          format: date-time
+          description: Čas udalosti spúštajúcej webhook
+          example: 2024-07-19T10:32:49.129+02:00
+        data:
+          type: object
+          description: Dáta o objekte spúšťajúcom webhook
+          properties:
+            message_id:
+              type: integer
+              description: Identifikátor správy
+              example: 725
+            message_thread_id:
+              type: integer
+              description: Identifikátor vlákna
+              example: 251
+      required:
+        - type
+        - timestamp
+        - data
+
   securitySchemes:
     Tenant_Token:
       description: |

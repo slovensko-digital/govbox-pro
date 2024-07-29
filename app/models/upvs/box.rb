@@ -20,6 +20,8 @@ class Upvs::Box < Box
     BoxPolicy
   end
 
+  validates_uniqueness_of :name, :short_name, :uri, scope: :tenant_id
+
   store_accessor :settings, :obo, prefix: true
 
   def self.create_with_api_connection!(params)

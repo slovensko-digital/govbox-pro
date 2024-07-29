@@ -1,7 +1,7 @@
 require "test_helper"
 
 class Fs::ApiConnectionTest < ActiveSupport::TestCase
-  test ".boxify saves only one box with given DIČ in the tenant" do
+  test ".boxify sets message_drafts_import_enabled attribute in settings" do
     original_fs_boxes_count = Fs::Box.count
 
     fs_api = Minitest::Mock.new
@@ -17,7 +17,10 @@ class Fs::ApiConnectionTest < ActiveSupport::TestCase
       api_connection.boxify
     end
 
-    assert_equal original_fs_boxes_count + 1, Fs::Box.count
+    assert_equal original_fs_boxes_count + 3, Fs::Box.count
+    assert_equal true, Fs::Box.find_by(name: 'FS SSD s.r.o.').settings['message_drafts_import_enabled']
+    assert_equal false, Fs::Box.find_by(name: 'FS SSD s.r.o. (oblasť SPD)').settings['message_drafts_import_enabled']
+    assert_equal true, Fs::Box.find_by(name: 'FS SSD s.r.o. (oblasť XYZ)').settings['message_drafts_import_enabled']
   end
 
   test ".boxify ignores duplicated boxes with different authorization type" do

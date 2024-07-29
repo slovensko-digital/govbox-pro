@@ -18,7 +18,7 @@ class EventBusTest < ActiveSupport::TestCase
     subscriber1.expect :call, true, [1, 2, 3]
 
     subscriber2 = Minitest::Mock.new
-    subscriber2.expect :perform_later, true, [1, 2, 3]
+    subscriber2.expect :perform_later, true, [:event1, 1, 2, 3]
 
     subscriber3 = Minitest::Mock.new
 

@@ -1,7 +1,9 @@
 <div class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6" id="<%= dom_id(@automation_rule) %>">
   <div class="flex flex-col justify-start items-start flex-grow relative gap-1">
     <p class="flex-grow-0 flex-shrink-0 text-lg text-left text-gray-900">
-      <span class="flex-grow-0 flex-shrink-0 text-lg text-left text-gray-900">Správy, kde</span>
+      <span class="flex-grow-0 flex-shrink-0 text-lg text-left text-gray-900">
+        <%= t(@automation_rule.trigger_event)=%><% unless @automation_rule.conditions.empty? %>, kde<% end %>
+      </span>
       <% @automation_rule.conditions.each_with_index do |condition, index| %>
         <% if condition.type == 'Automation::BoxCondition' %>
           <span class="flex-grow-0 flex-shrink-0 text-lg font-medium text-left text-gray-900"><%= t condition.attr %></span>
@@ -21,7 +23,7 @@
       <% @automation_rule.actions.each_with_index do |action, index| %>
         <span class="flex-grow-0 flex-shrink-0 text-base text-left text-gray-500"><%= t action.type %></span>
         <% if action.object_based? %>
-          <span class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-gray-500"><%= action.action_object.name %></span>
+          <span class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-gray-500"><%= action.action_object&.name %></span>
         <% else %>
           <span class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-gray-500"><%= action.value %></span>
         <% end %>

@@ -35,7 +35,7 @@ class Fs::MessageDraft < MessageDraft
       dic = form_information['subject']
       fs_form_identifier = form_information['form_identifier']
 
-      box = Fs::Box.find_by("settings ->> 'dic' = ?", dic)
+      box = Fs::Box.with_enabled_message_drafts_import.find_by("settings ->> 'dic' = ?", dic)
       fs_form = Fs::Form.find_by(identifier: fs_form_identifier)
 
       unless box && fs_form
