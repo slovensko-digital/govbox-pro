@@ -117,10 +117,7 @@ module Automation
       io.write object
       pdf_string = ""
       PDF::Reader.open(io) do |pdf|
-        pdf.pages.each do |page|
-          pdf_string += page.text
-          last_page_text = page.text
-        end
+        pdf_string = pdf.pages.map(&:text).join(" ")
       end
       io.close
       pdf_string.match?(value)
