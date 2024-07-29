@@ -47,7 +47,7 @@ module Automation
   end
 
   class ChangeMessageThreadTitleAction < Automation::Action
-    def run!(thing)
+    def run!(thing, _event)
       object = if thing.respond_to? :thread
                  thing.thread
                else
