@@ -72,7 +72,7 @@ module Automation
     end
 
     def object_based?
-      false
+      true
     end
   end
 end
