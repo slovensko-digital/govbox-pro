@@ -903,6 +903,10 @@ components:
           type: object
           description: Dáta o objekte spúšťajúcom webhook
           properties:
+            message_uuid:
+              description: UUID správy
+              type: string
+              format: uuid
             message_id:
               type: integer
               description: Identifikátor správy

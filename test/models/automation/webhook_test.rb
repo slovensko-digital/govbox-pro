@@ -9,6 +9,7 @@ class Automation::WebhookTest < ActiveSupport::TestCase
       type: "#{message1.class.name.underscore}.#{event}",
       timestamp: timestamp,
       data: {
+        message_uuid: message1.uuid,
         message_id: message1.id,
         message_thread_id: message1.thread.id
       }

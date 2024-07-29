@@ -21,6 +21,7 @@ module Automation
         type: "#{message.class.name.underscore}.#{event}",
         timestamp: timestamp,
         data: {
+          message_uuid: message.uuid,
           message_id: message.id,
           message_thread_id: message.thread.id
         }
