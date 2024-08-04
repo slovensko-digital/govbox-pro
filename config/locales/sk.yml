@@ -277,7 +277,7 @@ sk:
   "Automation::BoxCondition": "je"
   "Automation::AddMessageThreadTagAction": "Pridaj štítok na vlákno"
   "Automation::AddTagAction": "Pridaj štítok"
-  "Automation::ChangeMessageThreadTitleAction": "Premenuj vlákno"
+  "Automation::ChangeMessageThreadTitleAction": "Premenuj vlákno na"
   "Automation::FireWebhookAction": "Zavolaj integráciu"
   group:
     names:
