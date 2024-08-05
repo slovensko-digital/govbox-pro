@@ -254,3 +254,9 @@ accountants_basic_user_signature_requested:
   tenant: ssd
   icon: pencil
   color: yellow
+
+ssd_attachment_matched:
+  name: AttachmentMatched
+  type: SimpleTag
+  visible: true
+  tenant: ssd
