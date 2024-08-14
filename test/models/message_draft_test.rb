@@ -57,7 +57,9 @@ class MessageDraftTest < ActiveSupport::TestCase
 
   test 'being_submitted! keeps DraftTag if drafts not in submission process present' do
     message_draft = messages(:ssd_main_delivery_draft)
+
     message_draft2 = message_draft.dup
+    message_draft2.update(uuid: SecureRandom.uuid)
     message_draft2.save
 
     message_draft.being_submitted!
@@ -109,6 +111,7 @@ class MessageDraftTest < ActiveSupport::TestCase
     message_draft.being_submitted!
 
     message_draft2 = message_draft.dup
+    message_draft2.update(uuid: SecureRandom.uuid)
     message_draft2.save
 
     message_thread = message_draft.thread
