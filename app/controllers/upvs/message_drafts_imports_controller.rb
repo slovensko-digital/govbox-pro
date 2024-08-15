@@ -1,8 +1,17 @@
 class Upvs::MessageDraftsImportsController < ApplicationController
+  before_action :ensure_drafts_import_enabled
   before_action :load_box, only: :create
+
+  def new
+    @box = Current.box if Current.box
+    @box = Current.tenant.boxes.first if Current.tenant.boxes.count == 1
+    authorize MessageDraftsImport
+  end
 
   def create
     authorize MessageDraftsImport
+
+    redirect_back fallback_location: new_upvs_message_drafts_import_path, alert: 'Nahrajte import' and return unless params[:content].present?
 
     zip_content = params[:content]
     import_name = "#{Time.now.to_i}_#{zip_content.original_filename}"
@@ -16,16 +25,14 @@ class Upvs::MessageDraftsImportsController < ApplicationController
 
     Upvs::Drafts::ParseImportJob.perform_later(import, author: Current.user)
 
-    redirect_to upvs_message_drafts_path
-  end
-
-  def upload_new
-    @box = Current.box if Current.box
-    @box = Current.tenant.boxes.first if Current.tenant.boxes.count == 1
-    authorize MessageDraftsImport
+    redirect_to message_threads_path(q: "label:(#{Current.tenant.draft_tag.name})")
   end
 
   private
+
+  def ensure_drafts_import_enabled
+    redirect_to message_threads_path(q: "label:(#{Current.tenant.draft_tag.name})") unless Current.tenant.feature_enabled?(:message_draft_import)
+  end
 
   def import_path(import_name)
     File.join(String(@box.id), import_name)

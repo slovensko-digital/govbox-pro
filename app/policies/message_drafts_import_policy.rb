@@ -11,7 +11,7 @@ class MessageDraftsImportPolicy < ApplicationPolicy
     true # TODO decide according to user rights
   end
 
-  def upload_new?
+  def new?
     create?
   end
 end
