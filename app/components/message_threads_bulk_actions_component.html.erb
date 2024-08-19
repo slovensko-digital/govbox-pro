@@ -16,7 +16,7 @@
       <% end %>
     </span>
     <% if @ids.present? %>
-      <%= form_with url: bulk_merge_message_threads_path, data: { turbo_frame: "_top" } do %>
+      <%= form_with url: bulk_merge_message_threads_path, id: 'bulk_actions_form', data: { turbo_frame: "_top" } do %>
         <% @ids.each do |id| %>
           <%= hidden_field_tag("message_thread_ids[]", id) %>
         <% end %>
@@ -102,13 +102,28 @@
               {
                 "data-controller": "message-drafts",
                 "data-message-drafts-thread-ids": @ids.to_s,
+                "data-message-drafts-submit-button-id": "confirmed_submit_button",
+                "data-message-drafts-submit-form-id": "bulk_actions_form",
                 "data-message-drafts-authenticity-token": form_authenticity_token,
-                "class": "py-1"
+                "class": "py-1",
+                "role": "none"
               }
             ) do %>
-              <%= button_tag type: "button", "data-action": "click->message-drafts#bulkSubmit",
-                             class: "w-full text-gray-700 group flex items-center px-4 py-2 text-sm hover:bg-gray-100 hover:text-gray-900" do %>
+              <%= button_tag type: "button",
+                             "data-action": "click->message-drafts#bulkSubmit",
+                              class: "w-full text-gray-700 group flex items-center px-4 py-2 text-sm hover:bg-gray-100 hover:text-gray-900",
+                              data: { turbo_frame: "_top" },
+                              role: "menuitem" do %>
                 <%= render Common::IconComponent.new("paper-airplane", classes: "mr-2 sm:mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500") %>
+                Odoslať
+              <% end %>
+
+
+              <%= button_tag "submit_drafts", type: "submit",
+                             id: "confirmed_submit_button",
+                             formaction: submit_message_threads_bulk_message_drafts_path,
+                             formmethod: :post,
+                             class: "hidden", role: "menuitem" do %>
                 Odoslať
               <% end %>
             <% end %>
@@ -157,6 +172,5 @@
       </div>
     </div>
     <% end %>
-
   </div>
 <% end %>

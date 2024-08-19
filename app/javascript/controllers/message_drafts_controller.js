@@ -45,14 +45,37 @@ export default class extends Controller {
   }
 
   bulkSubmit = async () => {
+    const submitButtonId = this.data.get("submitButtonId");
+    const submitFormId = this.data.get("submitFormId");
+
     const signaturesInfo = await this.getPendingRequestedSignaturesInfo();
 
     if (signaturesInfo['pending_requested_signatures'] === true) {
-      alert("Správy ešte neboli podpísané všetkými podpismi. Naozaj chcete odoslať správy aj bez nich?");
+      if (confirm("Správy ešte neboli podpísané všetkými podpismi. Naozaj chcete odoslať správy aj bez nich?")) {
+        const submitter = document.getElementById(submitButtonId);
+        document.getElementById(submitFormId).requestSubmit(submitter);
+      }
     }
     else {
-      alert("Naozaj chcete odoslať rozpracované správy v označených vláknach?");
+      if (confirm("Naozaj chcete odoslať rozpracované správy v označených vláknach?")) {
+        const submitter = document.getElementById(submitButtonId)
+        document.getElementById(submitFormId).requestSubmit(submitter);
+      }
     }
+  }
+
+  submitDrafts = async () => {
+    const threadIds = this.data.get("threadIds");
+    const authenticityToken = this.data.get("authenticityToken");
+
+    return await post(`/message_threads/bulk/message_drafts/submit`,{
+      headers: {'Content-Type': 'application/json'},
+      responseKind: "turbo-stream",
+      body: JSON.stringify({
+        message_thread_ids: JSON.parse(threadIds),
+        authenticity_token: authenticityToken
+      })
+    })
   }
 
   getPendingRequestedSignaturesInfo = async () => {
