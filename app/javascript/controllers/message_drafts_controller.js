@@ -64,20 +64,6 @@ export default class extends Controller {
     }
   }
 
-  submitDrafts = async () => {
-    const threadIds = this.data.get("threadIds");
-    const authenticityToken = this.data.get("authenticityToken");
-
-    return await post(`/message_threads/bulk/message_drafts/submit`,{
-      headers: {'Content-Type': 'application/json'},
-      responseKind: "turbo-stream",
-      body: JSON.stringify({
-        message_thread_ids: JSON.parse(threadIds),
-        authenticity_token: authenticityToken
-      })
-    })
-  }
-
   getPendingRequestedSignaturesInfo = async () => {
     const threadIds = this.data.get("threadIds");
     const authenticityToken = this.data.get("authenticityToken");
