@@ -52,12 +52,13 @@ module Fs
       request(:delete, "validations/#{validation_id}", {}, jwt_header, accept_negative: true)
     end
 
-    def post_submission(form_identifier, content, is_signed = true, mime_type = 'application/vnd.etsi.asic-e+zip', obo: @obo)
+    def post_submission(form_identifier, content, allow_warn_status: false, is_signed: true, mime_type: 'application/vnd.etsi.asic-e+zip', obo: @obo)
       request(:post, "submissions", {
         is_signed: is_signed,
         mime_type: mime_type,
         form_identifier: form_identifier,
-        content: content
+        content: content,
+        allow_warn_status: allow_warn_status
       }, jwt_header(obo).merge(fs_credentials_header))
     end
 
