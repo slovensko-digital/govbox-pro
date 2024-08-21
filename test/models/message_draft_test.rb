@@ -18,7 +18,7 @@ class MessageDraftTest < ActiveSupport::TestCase
     subscriber1.expect :call, true, [message]
 
     subscriber2 = Minitest::Mock.new
-    subscriber2.expect :perform_later, true, [message.thread]
+    subscriber2.expect :perform_later, true, [:message_thread_created, message.thread]
 
     EventBus.subscribe(:message_created, subscriber1)
     EventBus.subscribe_job(:message_thread_created, subscriber2)

@@ -85,7 +85,7 @@ class MessageObject < ApplicationRecord
 
   def unsigned_content(mimetypes: Utils::XML_MIMETYPES)
     if is_signed
-      nested_message_objects&.where("mimetype ILIKE ANY ( array[?] )", mimetypes.map {|val| "#{val}%" })&.first&.content
+      nested_message_objects&.where("mimetype ILIKE ANY ( array[?] )", mimetypes.map { |val| "#{val}%" })&.first&.content
     else
       content
     end
@@ -117,8 +117,16 @@ class MessageObject < ApplicationRecord
   end
 
   def fill_missing_info
-    self.update(name: name + Utils.file_extension_by_mimetype(mimetype).to_s) if Utils.file_name_without_extension?(self)
-    self.update(mimetype: Utils.file_mimetype_by_name(entry_name: name)) if mimetype == Utils::OCTET_STREAM_MIMETYPE
+    update(name: name + Utils.file_extension_by_mimetype(mimetype).to_s) if Utils.file_name_without_extension?(self)
+    update(mimetype: Utils.file_mimetype_by_name(entry_name: name)) if mimetype == Utils::OCTET_STREAM_MIMETYPE
+  end
+
+  def pdf?
+    mimetype == Utils::PDF_MIMETYPE
+  end
+
+  def xml?
+    Utils::XML_MIMETYPES.any? { |xml_mimetype| xml_mimetype == Utils.mimetype_without_optional_params(mimetype) }
   end
 
   private

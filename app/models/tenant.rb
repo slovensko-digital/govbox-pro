@@ -36,6 +36,7 @@ class Tenant < ApplicationRecord
   has_many :automation_rules, class_name: "Automation::Rule", dependent: :destroy
   has_many :filters
   has_many :filter_subscriptions
+  has_many :automation_webhooks, class_name: "Automation::Webhook", dependent: :destroy
   has_many :message_threads, through: :boxes
   has_many :messages, through: :message_threads
 

@@ -8,7 +8,7 @@ class EventBus
   end
 
   def self.subscribe_job(event, active_job_class)
-    subscribe(event, ->(*args) { active_job_class.perform_later(*args) })
+    subscribe(event, ->(*args) { active_job_class.perform_later(event, *args) })
   end
 
   def self.publish(event, *args)
@@ -28,11 +28,8 @@ EventBus.reset!
 # wiring
 
 # automation
-EventBus.subscribe :message_thread_created, ->(message_thread, priority=nil) do
-  Automation::MessageThreadCreatedJob.set(priority: priority).perform_later(message_thread)
-end
-EventBus.subscribe :message_created, ->(message, priority=nil) do
-  Automation::MessageCreatedJob.set(priority: priority).perform_later(message)
+[:message_thread_created, :message_created, :message_draft_submitted].each do |event|
+  EventBus.subscribe_job event, Automation::ApplyRulesForEventJob
 end
 
 # notifications

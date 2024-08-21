@@ -46,4 +46,8 @@ class NestedMessageObject < ApplicationRecord
   def unsigned_content
     content
   end
+
+  def pdf?
+    mimetype == Utils::PDF_MIMETYPE
+  end
 end
