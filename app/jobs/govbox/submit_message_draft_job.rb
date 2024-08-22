@@ -39,7 +39,7 @@ class Govbox::SubmitMessageDraftJob < ApplicationJob
     if success
       message_draft.remove_cascading_tag(message_draft.tenant.submission_error_tag)
       message_draft.submitted!
-      Govbox::SyncBoxJob.set(wait: 3.minutes).perform_later(box) unless bulk_submit
+      Govbox::SyncBoxJob.set(wait: 3.minutes, queue: self.queue_name).perform_later(box) unless bulk_submit
     else
       handle_submit_fail(message_draft, response_status, response_body.dig("message"))
     end

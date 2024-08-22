@@ -68,8 +68,8 @@ class Upvs::MessageDraft < MessageDraft
     message
   end
 
-  def submit
-    Govbox::SubmitMessageDraftAction.run(self)
+  def submit(priority_level: :medium_priority)
+    Govbox::SubmitMessageDraftAction.run(self, priority_level: priority_level)
   end
 
   private
