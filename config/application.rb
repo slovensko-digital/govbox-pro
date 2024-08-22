@@ -65,7 +65,7 @@ module GovboxPro
         cron: "0 */12 * * *",  # run every 12 hours
         class: "Fs::FetchFormsJob",
         description: "Regular job to fetch Fs::Forms",
-        set: { priority: 1000 }
+        set: { queue: :lowest_priority }
       }
     end
 
@@ -74,7 +74,7 @@ module GovboxPro
         cron: "0 */12 * * *",  # run every 12 hours
         class: "Upvs::FetchFormRelatedDocumentsJob",
         description: "Regular job to fetch Upvs::FormRelatedDocuments",
-        set: { priority: 1000 }
+        set: { queue: :lowest_priority }
       }
     end
 

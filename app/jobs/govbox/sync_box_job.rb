@@ -1,8 +1,6 @@
 module Govbox
   class SyncBoxJob < ApplicationJob
-    queue_as :default
-
-    INITIAL_IMPORT_PRIORITY = 100
+    INITIAL_IMPORT_QUEUE_NAME = :low_priority
 
     def perform(box, upvs_client: UpvsEnvironment.upvs_client, initial_import: false)
       raise unless box.is_a?(Upvs::Box)
@@ -13,13 +11,13 @@ module Govbox
 
       raise "Unable to fetch folders" if response_status != 200
 
-      jobs_priority = initial_import ? INITIAL_IMPORT_PRIORITY : self.priority
+      jobs_queue_name = initial_import ? INITIAL_IMPORT_QUEUE_NAME : self.queue_name
 
       raw_folders = raw_folders.index_by {|f| f["id"]}
       raw_folders.each_value do |folder_hash|
         folder = find_or_create_folder_with_parent(folder_hash, raw_folders, box)
 
-        SyncFolderJob.set(priority: jobs_priority).perform_later(folder) unless folder.bin? || folder.drafts?
+        SyncFolderJob.set(queue: jobs_queue_name).perform_later(folder) unless folder.bin? || folder.drafts?
       end
     end
 

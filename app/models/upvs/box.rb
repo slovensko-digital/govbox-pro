@@ -17,7 +17,7 @@
 #
 class Upvs::Box < Box
 
-  USER_INITIATED_SYNC_JOB_PRIORITY = -1000
+  USER_INITIATED_SYNC_JOB_QUEUE_NAME = :highest_priority
 
   def self.policy_class
     BoxPolicy
@@ -39,6 +39,6 @@ class Upvs::Box < Box
   end
 
   def sync
-    Govbox::SyncBoxJob.set(priority: USER_INITIATED_SYNC_JOB_PRIORITY).perform_later(self)
+    Govbox::SyncBoxJob.set(queue: USER_INITIATED_SYNC_JOB_QUEUE_NAME).perform_later(self)
   end
 end
