@@ -145,6 +145,10 @@ ssd_main_draft:
   metadata:
     status: created
     correlation_id: <%= SecureRandom.uuid %>
+    recipient_uri: ico://sk/12345678
+    posp_id: App.GeneralAgenda
+    posp_version: 1.9
+    message_type: App.GeneralAgenda
   author: basic
 
 ssd_main_issue_one:

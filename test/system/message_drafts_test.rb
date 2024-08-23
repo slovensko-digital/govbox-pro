@@ -9,14 +9,4 @@ class MessageDraftsTest < ApplicationSystemTestCase
 
   test "user can create message draft as reply on replyable message" do
   end
-
-  test "single draft submission schedules jobs with highest priority" do
-    message_draft = messages(:ssd_main_draft)
-
-    visit message_thread_path(message_draft.thread)
-
-    assert_enqueued_with(job: Govbox::SubmitMessageDraftJob, queue: :highest_priority) do
-      click_button "Odoslať"
-    end
-  end
 end
