@@ -1,10 +1,8 @@
 class Upvs::MessageDraftsController < ApplicationController
-  before_action :ensure_drafts_import_enabled, only: :index
-  before_action :load_message_drafts, only: :index
   before_action :load_original_message, only: :create
   before_action :load_box, only: :create
   before_action :load_message_template, only: :create
-  before_action :load_message_draft, except: [:new, :index, :create]
+  before_action :load_message_draft, except: [:new, :create]
 
   include ActionView::RecordIdentifier
   include MessagesConcern
@@ -21,10 +19,6 @@ class Upvs::MessageDraftsController < ApplicationController
     redirect_to message_threads_path unless @boxes.any?
 
     authorize @message
-  end
-
-  def index
-    @messages = @messages.order(created_at: :desc)
   end
 
   def create
@@ -61,15 +55,6 @@ class Upvs::MessageDraftsController < ApplicationController
   end
 
   private
-
-  def ensure_drafts_import_enabled
-    redirect_to message_threads_path(q: "label:(#{Current.tenant.draft_tag.name})") unless Current.tenant.feature_enabled?(:message_draft_import)
-  end
-
-  def load_message_drafts
-    authorize Upvs::MessageDraft
-    @messages = policy_scope(Upvs::MessageDraft)
-  end
 
   def load_original_message
     @original_message = policy_scope(Message).find(params[:original_message_id]) if params[:original_message_id]

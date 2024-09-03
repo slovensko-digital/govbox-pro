@@ -207,9 +207,7 @@ Rails.application.routes.draw do
   namespace :upvs do
     get :allowed_recipient_services
 
-    resources :message_drafts_imports, only: :create do
-      get :upload_new, path: 'novy', on: :collection
-    end
+    resources :message_drafts_imports, only: [:new, :create]
   end
 
   resources :sessions do
