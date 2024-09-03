@@ -49,6 +49,13 @@ class MessageDraftsController < ApplicationController
     authorize @message
   end
 
+  def pending_requested_signatures
+    authorize @message
+
+    render status: :ok, json: { "pending_requested_signatures": @message.any_objects_with_requested_signature? }
+  end
+
+
   private
 
   def load_message_draft

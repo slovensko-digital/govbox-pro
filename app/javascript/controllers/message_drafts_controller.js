@@ -48,7 +48,7 @@ export default class extends Controller {
     const submitButtonId = this.data.get("submitButtonId");
     const submitFormId = this.data.get("submitFormId");
 
-    const signaturesInfo = await this.getPendingRequestedSignaturesInfo();
+    const signaturesInfo = await this.getBulkPendingRequestedSignaturesInfo();
 
     if (signaturesInfo['pending_requested_signatures'] === true) {
       if (confirm("Správy ešte neboli podpísané všetkými podpismi. Naozaj chcete odoslať správy aj bez nich?")) {
@@ -64,7 +64,25 @@ export default class extends Controller {
     }
   }
 
-  getPendingRequestedSignaturesInfo = async () => {
+  submit = async () => {
+    const submitButtonId = this.data.get("submitButtonId");
+    const submitFormId = this.data.get("submitFormId");
+
+    const signaturesInfo = await this.getPendingRequestedSignaturesInfo();
+
+    if (signaturesInfo['pending_requested_signatures'] === true) {
+      if (confirm("Správa ešte nebola podpísaná všetkými podpismi. Naozaj chcete odoslať správu aj bez nich?")) {
+        const submitter = document.getElementById(submitButtonId);
+        document.getElementById(submitFormId).requestSubmit(submitter);
+      }
+    }
+    else {
+      const submitter = document.getElementById(submitButtonId)
+      document.getElementById(submitFormId).requestSubmit(submitter);
+    }
+  }
+
+  getBulkPendingRequestedSignaturesInfo = async () => {
     const threadIds = this.data.get("threadIds");
     const authenticityToken = this.data.get("authenticityToken");
 
@@ -73,6 +91,25 @@ export default class extends Controller {
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
         message_thread_ids: JSON.parse(threadIds),
+        authenticity_token: authenticityToken
+      })
+    })
+
+    if (response.ok) {
+      return await response.json()
+    }
+
+    throw new Error('getBulkPendingRequestedSignaturesInfo failed')
+  }
+
+  getPendingRequestedSignaturesInfo = async () => {
+    const messageId = this.data.get("messageId");
+    const authenticityToken = this.data.get("authenticityToken");
+
+    const response = await fetch(`/message_drafts/${messageId}/pending_requested_signatures`,{
+      method: "POST",
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
         authenticity_token: authenticityToken
       })
     })

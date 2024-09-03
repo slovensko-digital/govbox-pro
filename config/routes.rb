@@ -167,6 +167,7 @@ Rails.application.routes.draw do
       post :confirm_unlock
       post :unlock
       post :submit
+      post :pending_requested_signatures
     end
 
     scope module: 'message_drafts' do
