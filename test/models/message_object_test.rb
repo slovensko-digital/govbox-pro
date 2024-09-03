@@ -215,7 +215,7 @@ class MessageObjectTest < ActiveSupport::TestCase
     assert_equal false, message_thread.tags.reload.include?(message_thread.tenant.signature_requested_tag!)
   end
 
-  test "before_destroy callback keeps object related tags for message thread after object removal (if another objects with the tag present in the message)" do
+  test "before_destroy callback keeps object related tags for message thread (if another objects with the tag present in the message)" do
     tenant = tenants(:ssd)
     signer = users(:basic_two)
     signed_by_tag = tags(:ssd_basic_user_signed)
@@ -239,7 +239,7 @@ class MessageObjectTest < ActiveSupport::TestCase
     assert attachment_object.message.thread.tags.include?(tenant.signed_tag!)
   end
 
-  test "before_destroy callback keeps object related tags for message thread after object removal (if objects with the tag present in another message in the thread)" do
+  test "before_destroy callback keeps object related tags for message thread (if objects with the tag present in another message in the thread)" do
     tenant = tenants(:ssd)
     signer = users(:basic_two)
     signed_by_tag = tags(:ssd_basic_user_signed)
@@ -261,6 +261,17 @@ class MessageObjectTest < ActiveSupport::TestCase
 
     assert attachment_object.message.thread.tags.reload.include?(signed_by_tag)
     assert attachment_object.message.thread.tags.include?(tenant.signed_tag!)
+  end
+
+  test "before_destroy callback deletes SignatureRequested tag from message thread (if no more objects with requested signature present in the thread)" do
+    signature_requested_tag = tags(:ssd_signature_requested)
+    form_object = message_objects(:ssd_main_draft_to_be_signed4_draft_form)
+
+    assert form_object.message.thread.tags.include?(signature_requested_tag)
+
+    form_object.destroy
+
+    assert_not form_object.message.thread.tags.reload.include?(signature_requested_tag)
   end
 
   test "prepares PDF visualization" do
