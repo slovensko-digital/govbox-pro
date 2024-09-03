@@ -219,3 +219,25 @@ solver_delivery_notification:
         signed: true
         class: MyClass
         content: MyContent
+
+ssd_general_agenda_with_lorem_pdf:
+  message_id: <%= SecureRandom.uuid %>
+  correlation_id: a50cbb56-4da8-4499-b57c-e53c41b44930
+  edesk_message_id: 10
+  delivered_at: <%= DateTime.current %>
+  edesk_class: TEST
+  folder: ssd_one
+  payload:
+    message_id: <%= SecureRandom.uuid %>
+    subject: MySubject
+    sender_name: MySender
+    sender_uri: MySenderURI
+    recipient_name: MyRecipient
+    delivered_at: <%= DateTime.current.to_s %>
+    original_html: MyHtml
+    objects:
+      - name: MyName
+        mime_type: application/pdf
+        signed: true
+        class: MyClass
+        content: Dummy
