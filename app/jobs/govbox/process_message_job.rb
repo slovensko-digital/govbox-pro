@@ -10,9 +10,10 @@ module Govbox
       processed_message = ::Message.where(type: [nil, 'Message']).where(uuid: govbox_message.message_id).joins(:thread).where(thread: { box_id: govbox_message.box.id }).take
 
       ActiveRecord::Base.transaction do
+        destroy_associated_message_draft(govbox_message)
+
         message = Govbox::Message.create_message_with_thread!(govbox_message)
 
-        destroy_associated_message_draft(govbox_message)
         mark_delivery_notification_authorized(govbox_message)
         mark_associated_delivery_notification_authorized(govbox_message)
         collapse_referenced_outbox_message(message)

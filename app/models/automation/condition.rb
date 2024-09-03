@@ -21,7 +21,7 @@ module Automation
     attr_accessor :delete_record
 
     # when adding items, check defaults in condition_form_component.rb
-    ATTR_LIST = %i[box sender_name recipient_name title sender_uri recipient_uri].freeze
+    ATTR_LIST = %i[box sender_name recipient_name title sender_uri recipient_uri attachment].freeze
 
     def valid_condition_type_list_for_attr
       Automation::Condition.subclasses.map do |subclass|
@@ -78,6 +78,48 @@ module Automation
     def cleanup_record
       self.value = nil
       self.attr = 'box'
+    end
+  end
+
+  class AttachmentContentContainsCondition < Automation::Condition
+    validates :value, presence: true
+    VALID_ATTR_LIST = ['attachment'].freeze
+
+    def satisfied?(thing)
+      thing.objects.each do |message_object|
+        return true if content_match?(message_object, value)
+
+        message_object.nested_message_objects.each do |nested_message_object|
+          return true if content_match?(nested_message_object, value)
+        end
+      end
+      false
+    end
+
+    def cleanup_record
+      self.condition_object = nil
+    end
+
+    private
+
+    def content_match?(object, value)
+      if object.pdf?
+        pdf_match?(object.content, value)
+      elsif object.xml?
+        object.content.match?(value)
+      end
+    end
+
+    def pdf_match?(object, value)
+      io = StringIO.new
+      io.set_encoding Encoding::BINARY
+      io.write object
+      pdf_string = ""
+      PDF::Reader.open(io) do |pdf|
+        pdf_string = pdf.pages.map(&:text).join(" ")
+      end
+      io.close
+      pdf_string.match?(value)
     end
   end
 end
