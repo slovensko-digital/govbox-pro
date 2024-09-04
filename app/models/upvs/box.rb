@@ -20,13 +20,16 @@ class Upvs::Box < Box
     BoxPolicy
   end
 
-  validates_uniqueness_of :name, :short_name, :uri, scope: :tenant_id
+  store_accessor :settings, :obo, prefix: true # TODO: move to Govbox::Box superclass?
 
-  store_accessor :settings, :obo, prefix: true
+  validates_uniqueness_of :name, :short_name, :uri, scope: :tenant_id
 
   validate :validate_settings_obo
 
-  after_initialize :initialize_defaults, :if => :new_record?
+  normalizes :settings, with: -> (settings) {
+    settings["obo"] = settings.dig('obo').presence
+    settings
+  }
 
   def self.create_with_api_connection!(params)
     if params[:api_connection]
@@ -44,9 +47,6 @@ class Upvs::Box < Box
   end
 
   private
-  def initialize_defaults
-    self.settings_obo ||= nil
-  end
 
   def validate_settings_obo
     errors.add(:settings_obo, "OBO must be in UUID format") if settings_obo.present? && !settings_obo.match?(Utils::UUID_PATTERN)

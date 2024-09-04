@@ -27,6 +27,5 @@ class Admin::Boxes::UpvsBoxesController < Admin::BoxesController
 
   def box_params
     params.require(:upvs_box).permit(:api_connection_id, :name, :uri, :short_name, :color, :settings_obo)
-          .transform_values! { |value| value.present? ? value : nil }
   end
 end

@@ -37,8 +37,6 @@ class Box < ApplicationRecord
   validates_presence_of :name, :short_name, :uri
   validate :validate_box_with_api_connection
 
-  store_accessor :settings, :obo, prefix: true # TODO: move to Govbox::Box superclass?
-
   def self.create_with_api_connection!(params)
     raise NotImplementedError
   end

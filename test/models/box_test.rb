@@ -78,6 +78,15 @@ class BoxTest < ActiveSupport::TestCase
     assert api_connection.destroyed?
   end
 
+  test "before_save callback normalizes settings_obo attribute" do
+    box = boxes(:google_box_with_govbox_api_connection).dup
+    box.settings_obo = ''
+
+    box.save
+
+    assert_nil box.settings_obo
+  end
+
   test "after_destroy callback does not destroy api_connection if Govbox::ApiConnectionWithOboSupport" do
     box = boxes(:google_box_with_govbox_api_connection_with_obo_support)
     api_connection = box.api_connection
