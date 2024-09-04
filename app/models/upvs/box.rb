@@ -20,7 +20,7 @@ class Upvs::Box < Box
     BoxPolicy
   end
 
-  store_accessor :settings, :obo, prefix: true # TODO: move to Govbox::Box superclass?
+  store_accessor :settings, :obo, prefix: true
 
   validates_uniqueness_of :name, :short_name, :uri, scope: :tenant_id
 
