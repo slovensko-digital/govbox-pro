@@ -41,7 +41,7 @@ class BoxTest < ActiveSupport::TestCase
   test "should not be valid if same obo value present in other boxes within connection" do
     box = boxes(:google_box_with_govbox_api_connection_with_obo_support)
 
-    new_box = Box.create(
+    new_box = Upvs::Box.create(
       name: SecureRandom.hex,
       short_name: SecureRandom.hex,
       uri: SecureRandom.hex,
@@ -57,7 +57,7 @@ class BoxTest < ActiveSupport::TestCase
   test "should not be valid if no obo value already present in other boxes within connection" do
     box = boxes(:google_box_with_govbox_api_connection_with_obo_support_without_obo_value)
 
-    new_box = Box.create(
+    new_box = Upvs::Box.create(
       name: SecureRandom.hex,
       short_name: SecureRandom.hex,
       uri: SecureRandom.hex,
