@@ -103,11 +103,10 @@ module Automation
     private
 
     def content_match?(object, value)
-      blob = object.message_object_datum.blob
       if object.pdf?
-        pdf_match?(blob, value)
+        pdf_match?(object.content, value)
       elsif object.xml?
-        blob.match?(value)
+        object.content.match?(value)
       end
     end
 
