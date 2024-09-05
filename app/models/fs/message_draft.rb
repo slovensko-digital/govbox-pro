@@ -94,8 +94,8 @@ class Fs::MessageDraft < MessageDraft
     messages
   end
 
-  def submit(priority_level: :medium_priority)
-    Fs::SubmitMessageDraftAction.run(self, priority_level: priority_level)
+  def submit(priority: :default)
+    Fs::SubmitMessageDraftAction.run(self, priority: priority)
   end
 
   def attachments_allowed?

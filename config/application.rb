@@ -32,7 +32,7 @@ module GovboxPro
     config.active_record.encryption.key_derivation_salt = ENV['ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT']
 
     config.active_job.queue_adapter = :good_job
-    config.active_job.default_queue_name = :medium_priority
+    config.active_job.default_queue_name = :default
     config.action_mailer.deliver_later_queue_name = :high_priority
 
     config.good_job.enable_cron = true

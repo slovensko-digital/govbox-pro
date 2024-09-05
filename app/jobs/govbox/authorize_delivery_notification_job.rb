@@ -1,5 +1,5 @@
 class Govbox::AuthorizeDeliveryNotificationJob < ApplicationJob
-  queue_as :highest_priority
+  queue_as :asap
 
   def perform(message, upvs_client: UpvsEnvironment.upvs_client)
     return if message.metadata["authorized"] == true
@@ -21,6 +21,6 @@ class Govbox::AuthorizeDeliveryNotificationJob < ApplicationJob
 
     # folder is not available in UPVS get_message response, therefore we're using corresponding inbox as target folder
     folder = Govbox::Folder.where(box: message.thread.box, name: "Inbox", system: true).first
-    Govbox::DownloadMessageJob.set(queue: self.queue_name).perform_later(folder, target_message_id)
+    Govbox::DownloadMessageJob.set(queue: :asap).perform_later(folder, target_message_id)
   end
 end

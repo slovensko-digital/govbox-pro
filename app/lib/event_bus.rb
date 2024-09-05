@@ -28,16 +28,16 @@ EventBus.reset!
 # wiring
 
 # automation
-EventBus.subscribe :message_thread_created, ->(message_thread, queue_name = :medium_priority) do
-  Automation::ApplyRulesForEventJob.set(queue: queue_name).perform_later(:message_thread_created, message_thread)
+EventBus.subscribe :message_thread_created, ->(message_thread, priority = :default) do
+  Automation::ApplyRulesForEventJob.set(queue: priority).perform_later(:message_thread_created, message_thread)
 end
 
-EventBus.subscribe :message_created, ->(message, queue_name = :medium_priority) do
-  Automation::ApplyRulesForEventJob.set(queue: queue_name).perform_later(:message_created, message)
+EventBus.subscribe :message_created, ->(message, priority = :default) do
+  Automation::ApplyRulesForEventJob.set(queue: priority).perform_later(:message_created, message)
 end
 
-EventBus.subscribe :message_draft_submitted, ->(message, queue_name = :medium_priority) do
-  Automation::ApplyRulesForEventJob.set(queue: queue_name).perform_later(:message_draft_submitted, message)
+EventBus.subscribe :message_draft_submitted, ->(message, priority = :default) do
+  Automation::ApplyRulesForEventJob.set(queue: priority).perform_later(:message_draft_submitted, message)
 end
 
 # notifications
