@@ -7,6 +7,8 @@ ssd_main:
   short_name: MY1
   api_connection: govbox_api_api_connection1
   type: 'Upvs::Box'
+  settings:
+    obo:
 
 ssd_other:
   name: SSD other
@@ -15,14 +17,18 @@ ssd_other:
   short_name: MY2
   api_connection: govbox_api_api_connection1
   type: 'Upvs::Box'
+  settings:
+    obo: cf703e1a-cc4a-4445-9c76-08eae349505f
 
 solver_main:
   name: Solver main
   uri: SolverMainURI
   tenant: solver
   short_name: MY1
-  api_connection: govbox_api_api_connection1
+  api_connection: govbox_api_api_connection3
   type: 'Upvs::Box'
+  settings:
+    obo:
 
 google_box_with_govbox_api_connection:
   name: Box with GovBox API connection
@@ -31,6 +37,8 @@ google_box_with_govbox_api_connection:
   short_name: box2
   api_connection: govbox_api_api_connection2
   type: 'Upvs::Box'
+  settings:
+    obo:
 
 google_box_with_govbox_api_connection_with_obo_support:
   name: Box with GovBox API connection with OBO support
@@ -38,8 +46,9 @@ google_box_with_govbox_api_connection_with_obo_support:
   tenant: google
   short_name: box3
   api_connection: govbox_api_api_connection_with_obo_support
-  settings: {"obo": 1123-1123}
   type: 'Upvs::Box'
+  settings:
+    obo: cf703e1a-cc4a-4445-9c76-08eae349505f
 
 google_box_with_sk_api_api_connection_with_obo_support:
   name: Box with SkAPi API connection with OBO support
@@ -48,6 +57,18 @@ google_box_with_sk_api_api_connection_with_obo_support:
   short_name: box4
   api_connection: sk_api_api_connection_with_obo_support
   type: 'Upvs::Box'
+  settings:
+    obo:
+
+google_box_with_govbox_api_connection_with_obo_support_without_obo_value:
+  name: Box with GovBox API connection with OBO support without OBO value
+  uri: google_box_with_govbox_api_connection_with_obo_support_without_obo_value_uri
+  tenant: google
+  short_name: box5
+  api_connection: govbox_api_api_connection_with_obo_support
+  type: 'Upvs::Box'
+  settings:
+    obo:
 
 fs_accountants:
   name: Accountants main FS
