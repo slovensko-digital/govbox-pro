@@ -27,7 +27,7 @@ class Upvs::Box < Box
   validate :validate_settings_obo
 
   normalizes :settings, with: -> (settings) {
-    settings["obo"] = settings.dig('obo').presence
+    settings['obo'] = settings['obo'].presence
     settings
   }
 
@@ -49,6 +49,7 @@ class Upvs::Box < Box
   private
 
   def validate_settings_obo
-    errors.add(:settings_obo, "OBO must be in UUID format") if settings_obo.present? && !settings_obo.match?(Utils::UUID_PATTERN)
+    return unless settings_obo.present?
+    errors.add(:settings_obo, "OBO must be in UUID format") unless settings_obo.match?(Utils::UUID_PATTERN)
   end
 end
