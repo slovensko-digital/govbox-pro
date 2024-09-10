@@ -10,18 +10,18 @@
 #  type       :string           not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
-#  author_id  :bigint           not null
+#  author_id  :bigint
 #  tag_id     :bigint
 #  tenant_id  :bigint           not null
 #
 class Filter < ApplicationRecord
   include AuditableEvents
 
-  belongs_to :author, class_name: 'User'
+  belongs_to :author, class_name: 'User', optional: true
   belongs_to :tenant
   has_many :user_filter_visibilities, inverse_of: :filter, dependent: :destroy
 
-  validates :tenant_id, :author_id, :name, presence: true
+  validates :tenant_id, :name, presence: true
 
   before_create :fill_position
 

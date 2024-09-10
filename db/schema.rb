@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_24_114024) do
+ActiveRecord::Schema[7.1].define(version: 2024_09_10_112424) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -181,7 +181,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_24_114024) do
 
   create_table "filters", force: :cascade do |t|
     t.bigint "tenant_id", null: false
-    t.bigint "author_id", null: false
+    t.bigint "author_id"
     t.string "name", null: false
     t.string "query"
     t.integer "position", null: false

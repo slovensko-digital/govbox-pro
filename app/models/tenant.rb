@@ -112,5 +112,7 @@ class Tenant < ApplicationRecord
     create_signed_externally_tag!(name: "Externe podpísané", visible: false, color: "purple", icon: "shield-check")
 
     make_admins_see_everything!
+  rescue => ex
+    binding.pry
   end
 end
