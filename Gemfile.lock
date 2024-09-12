@@ -236,6 +236,8 @@ GEM
     nokogiri (1.16.2)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
+    nokogiri (1.16.2-aarch64-linux)
+      racc (~> 1.4)
     nokogiri (1.16.2-arm64-darwin)
       racc (~> 1.4)
     nokogiri (1.16.2-x86_64-darwin)
@@ -264,9 +266,9 @@ GEM
     omniauth-rails_csrf_protection (1.0.1)
       actionpack (>= 4.2)
       omniauth (~> 2.0)
-    omniauth-saml (2.1.0)
-      omniauth (~> 2.0)
-      ruby-saml (~> 1.12)
+    omniauth-saml (2.2.1)
+      omniauth (~> 2.1)
+      ruby-saml (~> 1.17)
     parallel (1.24.0)
     parser (3.3.0.5)
       ast (~> 2.4.1)
@@ -396,7 +398,7 @@ GEM
       sorbet-runtime (>= 0.5.9897)
     ruby-progressbar (1.13.0)
     ruby-rc4 (0.1.5)
-    ruby-saml (1.16.0)
+    ruby-saml (1.17.0)
       nokogiri (>= 1.13.10)
       rexml
     rubyzip (2.3.2)
@@ -443,6 +445,8 @@ GEM
       railties (>= 6.0.0)
     stringio (3.1.0)
     tailwindcss-rails (2.3.0)
+      railties (>= 6.0.0)
+    tailwindcss-rails (2.3.0-aarch64-linux)
       railties (>= 6.0.0)
     tailwindcss-rails (2.3.0-arm64-darwin)
       railties (>= 6.0.0)
@@ -516,7 +520,7 @@ DEPENDENCIES
   listen
   omniauth-google-oauth2
   omniauth-rails_csrf_protection
-  omniauth-saml (~> 2.1.0)
+  omniauth-saml (~> 2.2.1)
   pdf-reader
   pg (~> 1.5)
   pg_search
