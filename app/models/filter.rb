@@ -17,9 +17,11 @@
 #
 class Filter < ApplicationRecord
   include AuditableEvents
+  include Iconized
 
   belongs_to :author, class_name: 'User', optional: true
   belongs_to :tenant
+  belongs_to :tag, optional: true
   has_many :user_filter_visibilities, inverse_of: :filter, dependent: :destroy
 
   validates :tenant_id, :name, presence: true

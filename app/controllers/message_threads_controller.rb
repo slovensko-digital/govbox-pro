@@ -31,12 +31,11 @@ class MessageThreadsController < ApplicationController
 
   def index
     authorize MessageThread
-
-    if params[:filter_id].present?
-      @filter = policy_scope(Filter, policy_scope_class: FilterPolicy::ScopeShowable).find_by(id: params[:filter_id])
+    if search_params[:filter_id].present?
+      @filter = policy_scope(Filter, policy_scope_class: FilterPolicy::ScopeShowable).find_by(id: search_params[:filter_id])
     else
       if Current.user.visible_filters.any?
-        redirect_to message_threads_path(filter_id: Current.user.visible_filters.first.id)
+        redirect_to message_threads_path(search_params.merge(filter_id: Current.user.visible_filters.first.id))
       end
     end
 
@@ -81,7 +80,7 @@ class MessageThreadsController < ApplicationController
 
   def load_threads
     query = Searchable::QueryBuilder.new(
-      filter_id: params[:filter_id],
+      filter_id: search_params[:filter_id],
       query: search_params[:q],
     ).build
 
@@ -148,7 +147,7 @@ class MessageThreadsController < ApplicationController
   end
 
   def search_params
-    params.permit(:q, :format, cursor: MessageThreadCollection::CURSOR_PARAMS)
+    params.permit(:q, :format, :filter_id, cursor: MessageThreadCollection::CURSOR_PARAMS)
   end
 
   def set_thread_tags

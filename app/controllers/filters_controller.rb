@@ -11,10 +11,10 @@ class FiltersController < ApplicationController
     authorize Filter
 
     if params[:query].present?
-      @filter = Filter.new(query: params[:query])
+      @filter = FulltextFilter.new(query: params[:query])
       render :new_in_modal
     else
-      @filter = Filter.new
+      @filter = FulltextFilter.new
       render :new
     end
   end
@@ -81,7 +81,7 @@ class FiltersController < ApplicationController
   private
 
   def filter_params
-    params.require(:filter).permit(:name, :query)
+    params.require(:filter).permit(:name, :query, :icon, :type)
   end
 
   def set_filter
@@ -89,6 +89,6 @@ class FiltersController < ApplicationController
   end
 
   def filter_scope
-    policy_scope(Filter, policy_scope_class: FilterPolicy::ScopeEditable).order(:position)
+    policy_scope(Filter, policy_scope_class: FilterPolicy::ScopeEditable).includes(:tag).order(:position)
   end
 end

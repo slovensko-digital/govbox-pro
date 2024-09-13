@@ -105,7 +105,7 @@ class User < ApplicationRecord
 
     all_visibilities = visibilities.to_a + new_visibilities
     all_visibilities.map(&:save!)
-    user_filter_visibilities.where(id: all_visibilities).order(:position)
+    user_filter_visibilities.where(id: all_visibilities).includes(filter: :tag).order(:position)
   end
 
 

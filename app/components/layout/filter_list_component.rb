@@ -8,9 +8,13 @@ class Layout::FilterListComponent < ViewComponent::Base
   end
 
   def icon_for(filter)
-    case filter
-    when TagFilter then Icons::TagComponent.new
-    else Icons::BookmarkComponent.new
+    return Common::IconComponent.new(filter.icon) if filter.icon.present?
+
+    if filter.is_a?(TagFilter)
+      return Common::IconComponent.new(filter.tag.icon) if filter.tag.icon.present?
+      return Icons::TagComponent.new
     end
+
+    Icons::BookmarkComponent.new
   end
 end

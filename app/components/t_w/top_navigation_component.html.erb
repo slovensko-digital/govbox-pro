@@ -10,6 +10,7 @@
 <div class="flex justify-start items-stretch grow relative gap-3 rounded-md bg-white">
   <%= form_with url: message_threads_path, method: :get, html: { class: 'relative flex flex-1' } do |f| %>
     <%= render Icons::MagnifyingGlassComponent.gray %>
+    <%= f.hidden_field :filter_id, value: query_params[:filter_id] %>
     <%= f.search_field :q, id: "search", value: query, placeholder: 'Vyhľadaj správu', class: 'block h-full w-full border-0 py-0 pr-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-base' %>
   <% end %>
   <% if query.present? %>
