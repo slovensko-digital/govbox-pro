@@ -153,9 +153,7 @@ Rails.application.routes.draw do
       patch :unpin
     end
 
-    collection do
-      patch :sort
-    end
+    patch :sort, on: :collection
 
     resources :filter_subscriptions
   end
