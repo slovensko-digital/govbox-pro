@@ -1,6 +1,6 @@
 module Upvs
   class FormRelatedDocumentsDownloader < ::Utils::Downloader
-    SOURCE_URL = ENV['FORMS_STORAGE_API_URL']
+    SOURCE_URL = ENV['UPVS_FORMS_STORAGE_API_URL']
     XSD_PATH = 'schema.xsd'
 
     attr_reader :upvs_form
@@ -19,7 +19,9 @@ module Upvs
         related_document_path = XSD_PATH
         related_document_type = 'CLS_F_XSD_EDOC'
       when :xslt_html
-        related_document_path = xml_manifest.xpath('//manifest:file-entry[@media-destination="screen" or @media-destination="view"]')&.first['full-path']
+        related_document_path = xml_manifest.xpath('//manifest:file-entry[@media-destination="view"]')&.first
+        related_document_path = xml_manifest.xpath('//manifest:file-entry[@media-destination="screen"]')&.first unless related_document_path.present?
+        related_document_path = related_document_path['full-path']
         related_document_path&.gsub!(/\\/, '/')
         related_document_type = 'CLS_F_XSLT_HTML'
       when :xsl_fo
@@ -36,7 +38,7 @@ module Upvs
         document_type: type,
         language: 'sk'
       ).tap do |form_related_document|
-        form_related_document.data = download(SOURCE_URL + "/#{upvs_form.identifier}/#{upvs_form.version}/#{path}")
+        form_related_document.data = download(SOURCE_URL + "/#{@upvs_form.identifier}/#{@upvs_form.version}/#{path}")
         form_related_document.touch if form_related_document.persisted?
         form_related_document.save!
       end

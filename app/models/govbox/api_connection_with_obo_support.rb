@@ -5,6 +5,7 @@
 #  id                    :bigint           not null, primary key
 #  api_token_private_key :string           not null
 #  obo                   :uuid
+#  settings              :jsonb
 #  sub                   :string           not null
 #  type                  :string
 #  created_at            :datetime         not null
@@ -26,6 +27,6 @@ class Govbox::ApiConnectionWithOboSupport < ::ApiConnection
 
   def validate_box(box)
     box.errors.add(:settings_obo, :not_allowed) if obo.present?
-    box.errors.add(:settings_obo, :invalid) if boxes.where.not(id: box.id).where("settings ->> 'obo' = ?", box.settings_obo).exists?
+    box.errors.add(:settings_obo, :invalid) if boxes.where.not(id: box.id).where("settings @> ?", { obo: box.settings_obo }.to_json).exists?
   end
 end

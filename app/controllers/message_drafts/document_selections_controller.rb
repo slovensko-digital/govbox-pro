@@ -14,7 +14,7 @@ module MessageDrafts
     private
 
     def set_message_draft
-      @message_draft = policy_scope(MessageDraft).includes(objects: :tags).find(params[:message_draft_id])
+      @message_draft = policy_scope(Message).includes(objects: :tags).find(params[:message_draft_id])
     end
 
     def set_next_step

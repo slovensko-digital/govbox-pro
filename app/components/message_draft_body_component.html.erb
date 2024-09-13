@@ -10,9 +10,9 @@
           <p class="w-[100px] text-base text-left text-gray-900">Adresát:</p>
           <p class="text-base font-semibold text-left text-gray-900"><%= @message.recipient_name || "Neznámy" %></p>
         </div>
-        <% if @message.form.tags.present? %>
+        <% if @message.form_object&.tags&.present? %>
           <div class="flex flex-wrap gap-1">
-            <% SigningTagsHelper.sort_tags(@message.form.tags).each do |tag| %>
+            <% SigningTagsHelper.sort_tags(@message.form_object.tags).each do |tag| %>
               <%= render Common::TagComponent.new(tag) %>
             <% end %>
           </div>
@@ -25,12 +25,14 @@
               <p class="flex-grow-0 flex-shrink-0 text-sm text-left text-red-600">Správu sa nepodarilo odoslať</p>
             <% end %>
           </div>
-        <% elsif @message.being_submitted? || @message.submitted? %>
+        <% elsif @message.being_validated? || @message.being_submitted? || @message.submitted? %>
           <div class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-1.5 px-1.5 py-0.5 rounded-md bg-purple-50 border border-purple-300">
-            <% if @message.submitted? %>
-              <p class="flex-grow-0 flex-shrink-0 text-sm text-left text-purple-600">Správa bola odoslaná</p>
+            <% if @message.being_validated? %>
+              <p class="flex-grow-0 flex-shrink-0 text-sm text-left text-purple-600">Prebieha validácia správy</p>
             <% elsif @message.being_submitted? %>
               <p class="flex-grow-0 flex-shrink-0 text-sm text-left text-purple-600">Správa sa odosiela</p>
+            <% elsif @message.submitted? %>
+              <p class="flex-grow-0 flex-shrink-0 text-sm text-left text-purple-600">Správa bola odoslaná</p>
             <% end %>
           </div>
         <% end %>
@@ -41,22 +43,69 @@
   </div>
 
   <div class="flex flex-col justify-stretch items-start relative gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
-    <% if @message.custom_visualization? %>
+    <% if @message.created_from_template? %>
       <%= render MessageTemplateComponent.new(message: @message, is_last: @is_last) %>
-    <% elsif @message.html_visualization.present? %>
-      <div class="w-full">
-        <%= tag.iframe class: "relative border-none overflow-hidden h-full w-full", srcdoc: @message.html_visualization, onload: "(
-            function(iframe) {
-              iframe.contentWindow.document.body.style['height'] = 'unset';
-              iframe.contentWindow.document.body.style['min-height'] = 'unset';
-
-              iframe.parentElement.style.height = iframe.contentWindow.document.body.scrollHeight + 20 + 'px';
-            }
-            (this)
-          )" %>
-      </div>
     <% else %>
-      <p>Správu nie je možné vizualizovať.</p>
+      <% if @message.metadata['validation_errors']&.any? %>
+        <% if @message.metadata['validation_errors']['errors']&.any? %>
+          <div class="rounded-md bg-red-50 p-4 w-full">
+            <div class="flex">
+              <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
+                </svg>
+              </div>
+              <div class="ml-3">
+                <h3 class="text-sm font-medium text-red-800">Chyba</h3>
+                <div class="mt-2 text-sm text-red-700">
+                  <ul role="list" class="list-disc space-y-1 pl-5">
+                    <% @message.metadata['validation_errors']['errors'].each do |error| %>
+                      <li class="font-bold"><%= simple_format(error) %></li>
+                    <% end %>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+        <% if @message.metadata['validation_errors']['warnings']&.any? %>
+          <div class="rounded-md bg-yellow-50 p-4 w-full">
+            <div class="flex">
+              <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                  <path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+                </svg>
+              </div>
+              <div class="ml-3">
+                <h3 class="text-sm font-medium text-yellow-800">Upozornenie</h3>
+                <div class="mt-2 text-sm text-yellow-700">
+                  <ul role="list" class="list-disc space-y-1 pl-5">
+                    <% @message.metadata['validation_errors']['warnings'].each do |error| %>
+                      <li><%= simple_format(error) %></li>
+                    <% end %>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+
+      <% if @message.html_visualization.present? %>
+        <div class="w-full">
+          <%= tag.iframe class: "relative border-none overflow-hidden h-full w-full", srcdoc: @message.format_html_visualization, onload: "(
+              function(iframe) {
+                iframe.contentWindow.document.body.style['height'] = 'unset';
+                iframe.contentWindow.document.body.style['min-height'] = 'unset';
+
+                iframe.parentElement.style.height = iframe.contentWindow.document.body.scrollHeight + 20 + 'px';
+              }
+              (this)
+            )" %>
+        </div>
+      <% else %>
+        <p>Správu nie je možné vizualizovať.</p>
+      <% end %>
     <% end %>
   </div>
 </div>

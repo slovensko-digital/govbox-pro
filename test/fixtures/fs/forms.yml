@@ -1,0 +1,22 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+V2Pv21:
+  identifier: '2682_712'
+  name: Vyhlásenie o poukázaní sumy do výšky 2% (3%) zaplatenej dane za zdaňovacie obdobie 2021
+  group_name: Správa daní/Daň z príjmov fyzickej osoby/Vyhlásenie o poukázaní sumy do výšky 2% (3%) zaplatenej dane za zdaňovacie obdobie 2021, 2022, 2023
+  subtype_name: Vyhlásenie
+  signature_required: true
+  ez_signature: true
+  slug: V2Pv21
+  number_identifier: 527
+
+VP_DANv24:
+  identifier: '3055_781'
+  name: Podanie pre FS (Správa daní) - platné od 1.4.2024
+  group_name: Správa daní/Podanie pre FS - Správa daní/Všeobecné podanie - Správa daní (platné od 1.4.2024)
+  subtype_name: Žiadosť o potvrdenie
+  signature_required: true
+  ez_signature: true
+  slug: VP_DANv24
+  number_identifier: 583
+

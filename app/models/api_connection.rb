@@ -5,6 +5,7 @@
 #  id                    :bigint           not null, primary key
 #  api_token_private_key :string           not null
 #  obo                   :uuid
+#  settings              :jsonb
 #  sub                   :string           not null
 #  type                  :string
 #  created_at            :datetime         not null
@@ -25,6 +26,26 @@ class ApiConnection < ApplicationRecord
 
   def validate_box(box)
     raise NotImplementedError
+  end
+
+  def name
+    "#{type} - #{sub}"
+  end
+
+  def editable?
+    false
+  end
+
+  def destroyable?
+    false
+  end
+
+  def upvs_type?
+    true
+  end
+
+  def fs_type?
+    false
   end
 
   private

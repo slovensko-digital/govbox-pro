@@ -18,7 +18,7 @@ class EventBusTest < ActiveSupport::TestCase
     subscriber1.expect :call, true, [1, 2, 3]
 
     subscriber2 = Minitest::Mock.new
-    subscriber2.expect :perform_later, true, [1, 2, 3]
+    subscriber2.expect :perform_later, true, [:event1, 1, 2, 3]
 
     subscriber3 = Minitest::Mock.new
 
@@ -31,5 +31,10 @@ class EventBusTest < ActiveSupport::TestCase
     assert_mock subscriber1
     assert_mock subscriber2
     assert_mock subscriber3
+
+    # remove callbacks
+    EventBus.class_variable_get(:@@subscribers_map)[:event1].pop
+    EventBus.class_variable_get(:@@subscribers_map)[:event1].pop
+    EventBus.class_variable_get(:@@subscribers_map)[:event2].pop
   end
 end

@@ -1,4 +1,4 @@
-openapi: 3.0.3
+openapi: 3.1.0
 
 info:
   title: GovBox Pro API
@@ -22,7 +22,7 @@ servers:
 paths:
   /api/message_threads/{id}:
     get:
-      tags: [ Vlákna ]
+      tags: [Vlákna]
       summary: Vráti konkrétne komunikačné vlákno a odkazy na príslušné správy
       description: |
         Vráti konkrétne komunikačné vlákno a odkazy na príslušné správy. Predpokladom je, že konzument disponuje identifikátorom vlákna, napr. z na to vytvoreného subscription na udalosť vytvorenia nového komunikačného vlákna.
@@ -57,11 +57,63 @@ paths:
                       format: url
       security:
         - "Tenant_Token": []
-
+  /api/message_threads/{id}/tags:
+    post:
+      tags: [Vlákna, Štítky]
+      summary: Pridá štítky k vláknu
+      description: Pridá štítky k vláknu. V prípade, že štítok neexistuje, vytvorí nový
+      parameters:
+        - name: id
+          description: Id vlákna
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: tags
+          description: Zoznam názvov štítkov
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        204:
+          description: Úspešné pridanie štítkov k vláknu
+        404:
+          description: Vlákno nenájdené
+      security:
+        - "Tenant_Token": []
+    delete:
+      tags: [Vlákna, Štítky]
+      summary: Odoberie štítky z vlákna
+      description: Odoberie štítky z vlákna
+      parameters:
+        - name: id
+          description: Id vlákna
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: tags
+          description: Zoznam názvov štítkov
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        204:
+          description: Úspešné odobranie štítkov z vlákna
+        404:
+          description: Vlákno nenájdené
+      security:
+        - "Tenant_Token": []
 
   /api/messages/{id}:
     get:
-      tags: [ Správy ]
+      tags: [Správy]
       summary: Vráti konkrétnu správu vrátane jej objektov
       description: |
         Vráti konkrétnu správu vrátane jej objektov.
@@ -101,6 +153,10 @@ paths:
                     description: Dátum a čas doručenia správy
                     type: string
                     format: date-time
+                  status:
+                    description: Aktuálny stav správy
+                    type: string
+                    enum: ["being_loaded", "being_validated", "invalid", "created", "being_submitted", "temporary_submit_fail", "submit_fail", "submitted"]
                   message_objects:
                     description: Zoznam objektov správy
                     type: array
@@ -117,7 +173,84 @@ paths:
                         object_type:
                           description: Typ objektu
                           type: string
-                          enum: [ "FORM", "ATTACHMENT" ]
+                          enum: ["FORM", "ATTACHMENT"]
+                        updated_at:
+                          description: Dátum poslednej zmeny (pridanie, podpísanie, ...) objektu
+                          type: string
+                          format: date-time
+                        is_signed:
+                          description: Príznak, či je objekt podpísaný
+                          type: boolean
+                        data:
+                          description: Samotný objektu zakódovaný ako Base64 text
+                          type: string
+                          format: byte
+      security:
+        - "Tenant_Token": []
+
+  /api/messages/search:
+    get:
+      tags: [Správy]
+      summary: Vráti konkrétnu správu podľa vyhľadávacích kritérií vrátane jej objektov
+      description: |
+        Vráti konkrétnu správu podľa vyhľadávacích kritérií vrátane jej objektov.
+      parameters:
+        - name: uuid
+          in: query
+          description: UUID správy
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Úspešné získanie údajov správy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    description: Identifikátor správy v systéme Govbox Pro
+                    type: integer
+                  uuid:
+                    description: UUID správy
+                    type: string
+                    format: uuid
+                  title:
+                    description: Predmet správy
+                    type: string
+                  sender_name:
+                    description: Odosielateľ správy
+                    type: string
+                  recipient_name:
+                    description: Prijímateľ správy
+                    type: string
+                  delivered_at:
+                    description: Dátum a čas doručenia správy
+                    type: string
+                    format: date-time
+                  status:
+                    description: Aktuálny stav správy
+                    type: string
+                    enum: [ "being_loaded", "being_validated", "invalid", "created", "being_submitted", "temporary_submit_fail", "submit_fail", "submitted" ]
+                  message_objects:
+                    description: Zoznam objektov správy
+                    type: array
+                    items:
+                      description: Objekt správy
+                      type: object
+                      properties:
+                        name:
+                          description: Názov objektu
+                          type: string
+                        mimetype:
+                          description: Typ súboru objektu
+                          type: string
+                        object_type:
+                          description: Typ objektu
+                          type: string
+                          enum: ["FORM", "ATTACHMENT"]
                         updated_at:
                           description: Dátum poslednej zmeny (pridanie, podpísanie, ...) objektu
                           type: string
@@ -134,7 +267,7 @@ paths:
 
   /api/messages/message_drafts:
     post:
-      tags: [ Správy ]
+      tags: [Správy]
       summary: Vytvorí novú rozpracovanú správu vrátane jej objektov
       description: |
         Vytvorí novú rozpracovanú správu vrátane jej objektov.
@@ -240,8 +373,7 @@ paths:
                       object_type:
                         description: Typ objektu
                         type: string
-                        format:
-                          enum: [ FORM, ATTACHMENT ]
+                        enum: ["FORM", "ATTACHMENT"]
                       content:
                         description: Obsah objektu zakódovaný podľa Base64
                         type: string
@@ -287,10 +419,85 @@ paths:
       responses:
         201:
           description: Úspešné vytvorenie správy
+        409:
+          description: Duplicitná správa (UUID už existuje)
         422:
           description: Nevalidný obsah správy
       security:
-        - "Tenant_Token": [ ]
+        - "Tenant_Token": []
+  /api/messages/sync:
+    get:
+      tags: [Správy]
+      summary: Vráti zoznam správ od určeného ID
+      description: Vráti zoznam správ od poslednej synchronizácie, t.j. od posledného prijatého ID. Určené na synchronizáciu do iných alpikácií. Počet správ vrátený v jednom volaní je obmedzený na 200
+      parameters:
+        - name: lastId
+          in: query
+          schema:
+            type: integer
+      responses:
+        204:
+          description: Úspešne vrátený zoznam správ
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      description: Identifikátor správy v systéme Govbox Pro
+                      type: integer
+                    thread_id:
+                      description: Identifikátor vlákna, ktorému prislúcha správa
+                      type: integer
+                    uuid:
+                      description: UUID správy
+                      type: string
+                      format: uuid
+                    title:
+                      description: Predmet správy
+                      type: string
+                    sender_name:
+                      description: Odosielateľ správy
+                      type: string
+                    recipient_name:
+                      description: Prijímateľ správy
+                      type: string
+                    delivered_at:
+                      description: Dátum a čas doručenia správy
+                      type: string
+                      format: date-time
+                    status:
+                      description: Aktuálny stav správy
+                      type: string
+                      enum: [ "being_loaded", "being_validated", "invalid", "created", "being_submitted", "temporary_submit_fail", "submit_fail", "submitted" ]
+                    message_objects:
+                      description: Zoznam objektov správy
+                      type: array
+                      items:
+                        description: Objekt správy
+                        type: object
+                        properties:
+                          name:
+                            description: Názov objektu
+                            type: string
+                          mimetype:
+                            description: Typ súboru objektu
+                            type: string
+                          object_type:
+                            description: Typ objektu
+                            type: string
+                            enum: ["FORM", "ATTACHMENT"]
+                          updated_at:
+                            description: Dátum poslednej zmeny (pridanie, podpísanie, ...) objektu
+                            type: string
+                            format: date-time
+                          is_signed:
+                            description: Príznak, či je objekt podpísaný
+                            type: boolean
+      security:
+        - "Tenant_Token": []
 
   /api/site_admin/tenant/:
     post:
@@ -335,12 +542,12 @@ paths:
       security:
         - "Site_Admin_Token": []
 
-  /api/site_admin/tenant/{id}/box:
+  /api/site_admin/tenant/{id}/upvs/boxes:
     post:
       tags: [Správa tenantov (Administrácia)]
-      summary: Založí novú schránku v rámci tenanta
+      summary: Založí novú ÚPVS schránku v rámci tenanta
       description: |
-        Založí novú schránku v rámci tenanta. Pre korektné fungovanie musí schránka existovať na slovensko.sk
+        Založí novú ÚPVS schránku v rámci tenanta. Pre korektné fungovanie musí schránka existovať na slovensko.sk
       parameters:
         - name: id
           in: path
@@ -368,7 +575,103 @@ paths:
                   type: string
                   example: "MF"
                 color:
-                  description: Farba z palety tailwind farieb použitá v štítku pre dlíšenie vlákien/správ z rôznych schránok v používateľskom rozhraní
+                  description: Farba z palety tailwind farieb použitá v štítku pre odlíšenie vlákien/správ z rôznych schránok v používateľskom rozhraní
+                  type: string
+                  enum:
+                    [
+                      "slate",
+                      "gray",
+                      "zinc",
+                      "neutral",
+                      "stone",
+                      "red",
+                      "orange",
+                      "amber",
+                      "yellow",
+                      "lime",
+                      "green",
+                      "emerald",
+                      "teal",
+                      "cyan",
+                      "sky",
+                      "blue",
+                      "indigo",
+                      "violet",
+                      "purple",
+                      "fuchsia",
+                      "pink",
+                      "rose",
+                    ]
+                  example: "red"
+                settings_obo:
+                      description: V prípade použitia spoločného prístupu k schránke OBO identifikátor
+                      type: string
+                api_connection_id:
+                  type: integer
+                  description: V prípade použitia spoločného prístupu k schránke identifikátor pripojenia v systéme Govbox Pro
+                api_connection:
+                  type: object
+                  description: Parametre pripojenia na ÚPVS
+                  properties:
+                    sub:
+                      description: V prípade pripojenia cez legacy GovBox API sa používa identifikátor subjektu
+                      type: string
+                    api_token_private_key:
+                      description: Privátny kľúč k pripojeniu na ÚPVS cez legacy GovBox API
+                      type: string
+              required:
+                - name
+                - uri
+                - short_name
+                - color
+      responses:
+        200:
+          description: Úspešne založená schránka v systéme
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    description: Identifikátor založenej schránky v systéme Govbox Pro
+                    type: integer
+      security:
+        - "Site_Admin_Token": []
+
+  /api/site_admin/tenant/{id}/fs/boxes:
+    post:
+      tags: [Správa tenantov (Administrácia)]
+      summary: Založí novú FS schránku v rámci tenanta
+      description: |
+        Založí novú FS schránku v rámci tenanta. Pre korektné fungovanie musí schránka existovať na finančnej správe
+      parameters:
+        - name: id
+          in: path
+          description: Identifikátor tenanta
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  description: Názov schránky, typicky názov spoločnosti
+                  type: string
+                  example: "Moja firma s.r.o."
+                uri:
+                  description: URI schránky v tvare dic://<dič>, pričom <dič> je potrebné nahradiť DIČom spoločnosti
+                  type: string
+                  example: "dic://12345678"
+                short_name:
+                  description: Skrátený názov pre odlíšenie vlákien/správ z rôznych schránok v používateľskom rozhraní. Odporúčame maximálne 3 znaky
+                  type: string
+                  example: "FS1"
+                color:
+                  description: Farba z palety tailwind farieb použitá v štítku pre odlíšenie vlákien/správ z rôznych schránok v používateľskom rozhraní
                   type: string
                   enum:
                     [
@@ -402,19 +705,35 @@ paths:
                     obo:
                       description: V prípade použitia spoločného prístupu k schránke OBO identifikátor
                       type: string
+                    dic:
+                      description: DIČ identifikátor subjektu
+                      type: string
+                    subject_id:
+                      description: Identifikátor subjektu
+                      type: string
                 api_connection_id:
                   type: integer
                   description: V prípade použitia spoločného prístupu k schránke identifikátor pripojenia v systéme Govbox Pro
                 api_connection:
                   type: object
-                  description: Parametre pripojenia na ÚPVS
+                  description: Parametre pripojenia na FS
                   properties:
                     sub:
-                      description: V prípade pripojenia cez legacy GovBox API sa používa identifikátor subjektu.
+                      description: Identifikátor subjektu (ľubovoľná hodnota)
                       type: string
                     api_token_private_key:
-                      description: Privátny kľúč k pripojeniu na ÚPVS cez legacy GovBox API.
+                      description: Privátny kľúč k pripojeniu na FS cez legacy FS API
                       type: string
+                    settings:
+                      type: object
+                      description: Nastavenia API prepojenia
+                      properties:
+                        username:
+                          description: Používateľské meno k účtu na finančnej správe
+                          type: string
+                        password:
+                          description: Heslo k účtu na finančnej správe
+                          type: string
               required:
                 - name
                 - uri
@@ -554,7 +873,49 @@ paths:
       security:
         - "Site_Admin_Token": []
 
+webhooks:
+  automationWebhook:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StandardWebhookRequestBody"
+      responses:
+        200:
+          description: OK
+
 components:
+  schemas:
+    StandardWebhookRequestBody:
+      description: Telo requestu podľa [Standard Webhooks](https://github.com/standard-webhooks/standard-webhooks/blob/main/spec/standard-webhooks.md) špecifikácie.
+      properties:
+        type:
+          type: string
+          description: Typ udalosti spúšťajúcej webhook. Je v tvare `[objekt].[event]`. Objekt môže byť `message` alebo `upvs/message_draft`. Event môže byť `message_created` alebo `message_draft_submitted`.
+          example: message.message_created
+        timestamp:
+          type: string
+          format: date-time
+          description: Čas udalosti spúštajúcej webhook
+          example: 2024-07-19T10:32:49.129+02:00
+        data:
+          type: object
+          description: Dáta o objekte spúšťajúcom webhook
+          properties:
+            message_id:
+              type: integer
+              description: Identifikátor správy
+              example: 725
+            message_thread_id:
+              type: integer
+              description: Identifikátor vlákna
+              example: 251
+      required:
+        - type
+        - timestamp
+        - data
+
   securitySchemes:
     Tenant_Token:
       description: |
@@ -596,32 +957,32 @@ components:
     Site_Admin_Token:
       description: |
         Požaduje API token vytvorený treťou stranou, ktorý:
-  
+
         - je zakodovaný algoritmom RS256,
         - je podpísaný privátnym kľúčom tretej strany,
         - má nastavený `exp` claim na čas expirácie, ktorý vyprší o 5 minút alebo skôr od vytvorenia tokenu,
         - má nastavený `jti` claim na identifikátor, ktorý je unikátny počas 5 minút.
-  
+
         Príklad `header` segmentu:
-  
+
               {
                 "alg": "RS256"
               }
-  
+
         Príklad `payload` segmentu:
-  
+
               {
                 "exp": 1543437976,
                 "jti": "4dee8618-abbe-4dc3-83ba-e984d1396f9f"
               }
-  
+
         API token musí byť prítomný buď:
-  
+
         - v hlavičke požiadavky ako `Authorization: Bearer <api-token>`,
         - alebo v URL parametri požiadavky ako `?token=<api-token>`.
-  
+
         Poznámky:
-  
+
         - hodnota `exp` sa odporúča nastaviť na čo najkratší možný čas od vytvorenia tokenu,
         - hodnota `exp` sa kontroluje ako počet sekúnd od 1970-01-01T00:00:00 UTC,
         - hodnota `jti` sa kontroluje podľa regulárneho výrazu `/\A[0-9a-z\-_]{32,256}\z/i`,

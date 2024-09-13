@@ -7,7 +7,6 @@ class ApiController < ActionController::API
     if error.message == 'Nil JSON web token'
       render_bad_request(RuntimeError.new(:no_credentials))
     else
-      # key = error.message == 'obo' ? "obo : :credentials
       render_unauthorized(error.message)
     end
   end
@@ -19,6 +18,8 @@ class ApiController < ActionController::API
   rescue_from ArgumentError, with: :render_unprocessable_entity
 
   private
+
+  API_PAGE_SIZE = 200
 
   def authenticity_token
     (ActionController::HttpAuthentication::Token.token_and_options(request)&.first || params[:token])&.squish.presence
@@ -88,6 +89,10 @@ class ApiController < ActionController::API
 
   def render_service_unavailable_error
     render status: :service_unavailable, json: { message: "Service unavailable" }
+  end
+
+  def render_conflict(message)
+    render status: :conflict, json: { message: message }
   end
 
   def render_unprocessable_entity(message)

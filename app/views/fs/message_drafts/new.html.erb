@@ -1,0 +1,10 @@
+<div id="new_message" is="turbo-frame" class="w-full">
+  <div class="w-full p-4 flex-col justify-start items-start gap-4 inline-flex">
+    <div class="self-stretch bg-white rounded-md border border-gray-200 flex-col justify-start items-start flex">
+      <div class="self-stretch p-6 border-b border-gray-200 justify-start items-center gap-4 inline-flex">
+        <div class="grow shrink basis-0 text-gray-900 text-xl font-semibold leading-[35px]">Nahrajte nové správy</div>
+      </div>
+      <%= render partial: 'new_form', locals: { form_id: 'create_draft' } %>
+    </div>
+  </div>
+</div>

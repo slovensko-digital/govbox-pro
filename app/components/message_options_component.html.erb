@@ -1,12 +1,12 @@
-<% if @message.form.present? %>
+<% if @message.form_object.present? %>
   <%= render Common::OptionsComponent.new(id: "message-options") do |options| %>
     <% options.with_menu_content do %>
-      <%= link_to download_message_message_object_path(@message, @message.form), data: { turbo_frame: '_top', turbo: false }, class: 'whitespace-nowrap flex gap-3', role: 'menu-item', tabindex: -1 do %>
+      <%= link_to download_message_message_object_path(@message, @message.form_object), data: { turbo_frame: '_top', turbo: false }, class: 'whitespace-nowrap flex gap-3', role: 'menu-item', tabindex: -1 do %>
         <%= render Icons::ArrowDownTrayComponent.new(css_classes: "w-5 h-5") %>
         Stiahnuť správu
       <% end %>
-      <% if Current.tenant.feature_enabled?(:pdf_transformation) && @message.form&.downloadable_as_pdf? %>
-        <%= link_to download_pdf_message_message_object_path(@message, @message.form), data: { turbo_frame: '_top', turbo: false }, class: 'whitespace-nowrap flex gap-3', role: 'menu-item', tabindex: -1 do %>
+      <% if @message.form_object&.downloadable_as_pdf? %>
+        <%= link_to download_pdf_message_message_object_path(@message, @message.form_object), data: { turbo_frame: '_top', turbo: false }, class: 'whitespace-nowrap flex gap-3', role: 'menu-item', tabindex: -1 do %>
           <%= render Common::IconComponent.new("document-arrow-down", classes: "w-5 h-5") %>
           Stiahnuť ako PDF
         <% end %>
@@ -15,8 +15,8 @@
         <%= render Common::IconComponent.new("folder-arrow-down", classes: "w-5 h-5") %>
         Exportovať správu
       <% end %>
-      <% if @message.form&.downloadable_archived_object? %>
-        <%= link_to download_archived_message_message_object_path(@message, @message.form), class: "flex gap-3", role: "menuitem", tabindex: "-1" do %>
+      <% if @message.form_object&.downloadable_archived_object? %>
+        <%= link_to download_archived_message_message_object_path(@message, @message.form_object), class: "flex gap-3", role: "menuitem", tabindex: "-1" do %>
           <%= render Icons::ArrowDownTrayComponent.new(css_classes: "h-5 w-5") %>
           Stiahnuť archivovanú správu
         <% end %>

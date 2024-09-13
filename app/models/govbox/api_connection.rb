@@ -5,6 +5,7 @@
 #  id                    :bigint           not null, primary key
 #  api_token_private_key :string           not null
 #  obo                   :uuid
+#  settings              :jsonb
 #  sub                   :string           not null
 #  type                  :string
 #  created_at            :datetime         not null
@@ -30,6 +31,6 @@ class Govbox::ApiConnection < ::ApiConnection
   private
 
   def invalid_obo?(box)
-    box.settings && box.settings["obo"].present?
+    box.settings && box.settings_obo.present?
   end
 end
