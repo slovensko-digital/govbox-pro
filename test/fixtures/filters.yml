@@ -4,16 +4,24 @@ one:
   tenant: ssd
   author: basic
   name: With General text
-  query: general
   position: 1
-  type: 'FulltextFilter'
+  type: 'TagFilter'
+  tag: solver_everything
 
 two:
+  tenant: ssd
+  author: basic
+  name: With General text
+  query: general
+  position: 2
+  type: 'FulltextFilter'
+
+three:
   tenant: ssd
   author: admin
   name: With Legal text
   query: Legal
-  position: 2
+  position: 3
   type: 'FulltextFilter'
 
 solver_one:
@@ -21,5 +29,5 @@ solver_one:
   author: solver_other
   name: Urgent
   query: urgent
-  position: 3
+  position: 4
   type: 'FulltextFilter'

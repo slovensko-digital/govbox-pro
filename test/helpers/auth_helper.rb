@@ -6,7 +6,13 @@ module AuthHelper
 
     click_on "Prihlásiť cez Google"
 
-    assert_text "Správy v schránke"
+    filter = Filter.where(tenant_id: users(user_fixture_name).tenant).order(:position).first
+
+    if filter
+      assert_text "Správy z filtra '#{filter.name}'"
+    else
+      assert_text "Správy v schránke"
+    end
   end
 
   def mock_omni_auth_with_user(user_fixture_name)
