@@ -10,7 +10,7 @@ class FilterPolicy < ApplicationPolicy
 
   class ScopeEditable < Scope
     def resolve
-      scoped = scope.where(tenant_id: Current.tenant)
+      scoped = scope.where(tenant_id: Current.tenant).visible_for(@user)
 
       return scoped if @user.admin?
 

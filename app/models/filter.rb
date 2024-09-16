@@ -30,6 +30,9 @@ class Filter < ApplicationRecord
 
   scope :pinned, -> { where(is_pinned: true) }
   scope :not_pinned, -> { where(is_pinned: false) }
+  scope :visible_for, -> (user) { joins(:user_filter_visibilities)
+    .where(user_filter_visibilities: { visible: true, user: user})
+    .where(is_pinned: false) }
 
   acts_as_list scope: :tenant_id
 
