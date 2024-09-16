@@ -6,6 +6,7 @@ one:
   name: With General text
   query: general
   position: 1
+  type: 'FulltextFilter'
 
 two:
   tenant: ssd
@@ -13,6 +14,7 @@ two:
   name: With Legal text
   query: Legal
   position: 2
+  type: 'FulltextFilter'
 
 solver_one:
   tenant: solver
@@ -20,3 +22,4 @@ solver_one:
   name: Urgent
   query: urgent
   position: 3
+  type: 'FulltextFilter'
