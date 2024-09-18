@@ -21,6 +21,7 @@ class Govbox::Message < ApplicationRecord
   EGOV_DOCUMENT_CLASS = 'EGOV_DOCUMENT'
   EGOV_NOTIFICATION_CLASS = 'EGOV_NOTIFICATION'
   COLLAPSED_BY_DEFAULT_MESSAGE_CLASSES = ['ED_DELIVERY_REPORT', 'POSTING_CONFIRMATION', 'POSTING_INFORMATION']
+  GENERAL_AGENDA_SCHEMA = 'http://schemas.gov.sk/form/App.GeneralAgenda/1.9'
 
   DELIVERY_NOTIFICATION_TAG = 'delivery_notification'
 
@@ -51,7 +52,9 @@ class Govbox::Message < ApplicationRecord
   end
 
   def replyable?
-    folder.inbox? && [EGOV_DOCUMENT_CLASS, EGOV_NOTIFICATION_CLASS].include?(payload["class"])
+    folder.inbox? &&
+      [EGOV_DOCUMENT_CLASS, EGOV_NOTIFICATION_CLASS].include?(payload["class"]) &&
+      Upvs::ServiceWithFormAllowRule.where(institution_uri: payload["sender_uri"]).where(schema_url: GENERAL_AGENDA_SCHEMA).any?
   end
 
   def collapsed?

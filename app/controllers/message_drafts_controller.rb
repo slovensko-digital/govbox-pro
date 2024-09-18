@@ -22,6 +22,8 @@ class MessageDraftsController < ApplicationController
     authorize @message
 
     @message.update_content(message_draft_params)
+
+    flash[:notice] = 'Zmeny boli uložené'
   end
 
   def destroy

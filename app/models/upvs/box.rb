@@ -20,9 +20,16 @@ class Upvs::Box < Box
     BoxPolicy
   end
 
+  store_accessor :settings, :obo, prefix: true
+
   validates_uniqueness_of :name, :short_name, :uri, scope: :tenant_id
 
-  store_accessor :settings, :obo, prefix: true
+  validate :validate_settings_obo
+
+  normalizes :settings, with: -> (settings) {
+    settings['obo'] = settings['obo'].presence
+    settings
+  }
 
   def self.create_with_api_connection!(params)
     if params[:api_connection]
@@ -37,5 +44,12 @@ class Upvs::Box < Box
 
   def sync
     Govbox::SyncBoxJob.set(queue: :asap).perform_later(self)
+  end
+
+  private
+
+  def validate_settings_obo
+    return unless settings_obo.present?
+    errors.add(:settings_obo, "OBO must be in UUID format") unless settings_obo.match?(Utils::UUID_PATTERN)
   end
 end

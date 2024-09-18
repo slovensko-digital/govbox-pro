@@ -7,7 +7,6 @@ class ApiController < ActionController::API
     if error.message == 'Nil JSON web token'
       render_bad_request(RuntimeError.new(:no_credentials))
     else
-      # key = error.message == 'obo' ? "obo : :credentials
       render_unauthorized(error.message)
     end
   end
