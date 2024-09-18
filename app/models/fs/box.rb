@@ -40,6 +40,10 @@ class Fs::Box < Box
   def sync
   end
 
+  def communication_to_multiple_subjects?
+    false
+  end
+
   store_accessor :settings, :dic, prefix: true
   store_accessor :settings, :subject_id, prefix: true
 end

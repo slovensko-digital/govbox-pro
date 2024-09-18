@@ -46,6 +46,10 @@ class Upvs::Box < Box
     Govbox::SyncBoxJob.perform_later(self)
   end
 
+  def communication_to_multiple_subjects?
+    true
+  end
+
   private
 
   def validate_settings_obo
