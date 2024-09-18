@@ -1,5 +1,5 @@
 class Fs::SubmitMessageDraftAction
-  def self.run(message, bulk: false, priority: :default)
+  def self.run(message, bulk: false, priority: :asap)
     is_submittable = message.submittable?
 
     if is_submittable

@@ -94,7 +94,7 @@ class Fs::MessageDraft < MessageDraft
     messages
   end
 
-  def submit(priority: :default)
+  def submit(priority: :asap)
     Fs::SubmitMessageDraftAction.run(self, priority: priority)
   end
 

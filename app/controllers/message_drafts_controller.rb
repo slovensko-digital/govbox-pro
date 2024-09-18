@@ -10,7 +10,7 @@ class MessageDraftsController < ApplicationController
 
     render :update_body and return unless @message.valid?(:validate_data)
 
-    if @message.submit(priority: :asap)
+    if @message.submit
       redirect_to message_thread_path(@message.thread), notice: "Správa bola zaradená na odoslanie"
     else
       # TODO FIX: Tato hlaska sa zobrazuje aj ked je object oznaceny ako to_be_signed, ale nebol este podpisany

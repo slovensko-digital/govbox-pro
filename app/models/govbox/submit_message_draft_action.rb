@@ -1,5 +1,5 @@
 class Govbox::SubmitMessageDraftAction
-  def self.run(message, jobs_batch: nil, priority: :default)
+  def self.run(message, jobs_batch: nil, priority: :asap)
     is_submittable = message.submittable?
 
     if is_submittable

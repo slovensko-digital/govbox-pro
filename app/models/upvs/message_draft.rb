@@ -68,7 +68,7 @@ class Upvs::MessageDraft < MessageDraft
     message
   end
 
-  def submit(priority: :default)
+  def submit(priority: :asap)
     Govbox::SubmitMessageDraftAction.run(self, priority: priority)
   end
 

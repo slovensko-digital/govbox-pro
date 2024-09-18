@@ -1,11 +1,11 @@
 class Govbox::SubmitMessageDraftsAction
-  def self.run(message_threads)
+  def self.run(message_threads, priority: :default)
     jobs_batch = GoodJob::Batch.new
 
     messages = []
     message_threads.each { |thread| messages << thread.messages.where(type: 'Upvs::MessageDraft') }
 
-    results = messages.flatten.map { |message| ::Govbox::SubmitMessageDraftAction.run(message, jobs_batch: jobs_batch) }
+    results = messages.flatten.map { |message| ::Govbox::SubmitMessageDraftAction.run(message, jobs_batch: jobs_batch, priority: priority) }
     submittable_messages = results.select { |value| value }.present?
 
     if submittable_messages

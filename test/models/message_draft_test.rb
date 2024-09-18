@@ -139,7 +139,7 @@ class MessageDraftTest < ActiveSupport::TestCase
     message_draft = messages(:ssd_main_draft)
 
     assert_enqueued_with(job: Govbox::SubmitMessageDraftJob, queue: :asap) do
-      message_draft.submit(priority: :asap)
+      message_draft.submit
     end
   end
 end
