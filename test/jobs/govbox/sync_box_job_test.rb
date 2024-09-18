@@ -34,7 +34,7 @@ class Govbox::SyncBoxJobTest < ActiveJob::TestCase
     ]]
 
     ::Upvs::GovboxApi::Edesk.stub :new, edesk_api_mock do
-      assert_enqueued_with(job: Govbox::SyncFolderJob, priority: 100) do
+      assert_enqueued_with(job: Govbox::SyncFolderJob, priority: 1000) do
         Govbox::SyncBoxJob.new.perform(box, initial_import: true)
       end
       end

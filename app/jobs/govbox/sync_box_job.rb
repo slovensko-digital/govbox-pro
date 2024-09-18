@@ -1,6 +1,6 @@
 module Govbox
   class SyncBoxJob < ApplicationJob
-    INITIAL_IMPORT_QUEUE = :low_priority
+    INITIAL_IMPORT_QUEUE = :later
 
     def perform(box, upvs_client: UpvsEnvironment.upvs_client, initial_import: false)
       raise unless box.is_a?(Upvs::Box)

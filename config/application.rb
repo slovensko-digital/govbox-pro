@@ -33,7 +33,7 @@ module GovboxPro
 
     config.active_job.queue_adapter = :good_job
     config.active_job.default_queue_name = :default
-    config.action_mailer.deliver_later_queue_name = :high_priority
+    config.action_mailer.deliver_later_queue_name = :asap
 
     config.good_job.enable_cron = true
     config.good_job.smaller_number_is_higher_priority = true
@@ -65,7 +65,7 @@ module GovboxPro
         cron: "0 */12 * * *",  # run every 12 hours
         class: "Fs::FetchFormsJob",
         description: "Regular job to fetch Fs::Forms",
-        set: { queue: :lowest_priority }
+        set: { queue: :later }
       }
     end
 
@@ -74,7 +74,7 @@ module GovboxPro
         cron: "0 */12 * * *",  # run every 12 hours
         class: "Upvs::FetchFormRelatedDocumentsJob",
         description: "Regular job to fetch Upvs::FormRelatedDocuments",
-        set: { queue: :lowest_priority }
+        set: { queue: :later }
       }
     end
 

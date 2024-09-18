@@ -6,10 +6,8 @@ class ApplicationJob < ActiveJob::Base
   queue_with_priority do
     case queue_name.to_sym
     when :asap then -1000
-    when :high_priority then -100
     when :default then 0
-    when :low_priority then 100
-    when :lowest_priority then 1000
+    when :later then 1000
     else
       raise "Unable to assign default priority to a job on #{queue_name} queue"
     end
