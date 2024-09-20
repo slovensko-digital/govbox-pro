@@ -10,8 +10,9 @@ class NotificationsTest < ApplicationSystemTestCase
     visit message_threads_path
 
     click_link "With General text"
-
-    click_link "Nastaviť notifikácie"
+    safe_click do
+      click_link "Nastaviť notifikácie"
+    end
 
     check "Nová konverzácia"
     check "Nová správa"

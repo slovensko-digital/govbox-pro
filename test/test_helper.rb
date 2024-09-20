@@ -22,6 +22,13 @@ def generate_api_token(sub: 'site_admin', exp: 5.minutes.since(Time.now).to_i, j
   JWT.encode(payload.merge(sub: sub, exp: exp, jti: jti).compact, key_pair, 'RS256')
 end
 
+def safe_click
+  5.times do
+    element = yield.inspect
+    break if element != "Obsolete #<Capybara::Node::Element>"
+  end
+end
+
 private
 
 def default_key_pair
