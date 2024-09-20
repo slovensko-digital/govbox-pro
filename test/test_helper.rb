@@ -8,10 +8,6 @@ require "minitest/mock"
 
 Rails.application.eager_load! # see https://github.com/simplecov-ruby/simplecov?tab=readme-ov-file#want-to-use-spring-with-simplecov
 
-Capybara.configure do |config|
-  config.default_max_wait_time = 5
-end
-
 class ActiveSupport::TestCase
   # Run tests in parallel with specified workers
   parallelize(workers: :number_of_processors)
@@ -24,13 +20,6 @@ end
 
 def generate_api_token(sub: 'site_admin', exp: 5.minutes.since(Time.now).to_i, jti: SecureRandom.uuid, key_pair: default_key_pair, **payload)
   JWT.encode(payload.merge(sub: sub, exp: exp, jti: jti).compact, key_pair, 'RS256')
-end
-
-def safe_click
-  5.times do
-    element = yield.inspect
-    break if element != "Obsolete #<Capybara::Node::Element>"
-  end
 end
 
 private
