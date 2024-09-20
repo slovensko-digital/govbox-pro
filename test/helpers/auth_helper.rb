@@ -9,7 +9,7 @@ module AuthHelper
     filter = Filter.where(tenant_id: users(user_fixture_name).tenant).order(:position).first
 
     if filter
-      assert_text "Správy z filtra '#{filter.name}'"
+      assert_text filter.name
     else
       assert_text "Správy v schránke"
     end

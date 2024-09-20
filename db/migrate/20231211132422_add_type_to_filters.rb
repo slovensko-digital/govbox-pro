@@ -1,5 +1,6 @@
 class AddTypeToFilters < ActiveRecord::Migration[7.1]
   def up
+    add_column :filters, :icon, :string, null: true
     add_column :filters, :type, :string, null: true
 
     Filter.where(type: nil).update_all(type: 'FulltextFilter')
@@ -12,6 +13,7 @@ class AddTypeToFilters < ActiveRecord::Migration[7.1]
   def down
     Filter.where.not(type: 'FulltextFilter').delete_all
 
+    remove_column :filters, :icon
     remove_column :filters, :type
   end
 end

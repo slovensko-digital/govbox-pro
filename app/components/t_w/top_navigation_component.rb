@@ -5,6 +5,7 @@ class TW::TopNavigationComponent < ViewComponent::Base
     Searchable::QueryBuilder.new(
       filter_id: query_params[:filter_id],
       query: query_params[:q],
+      user: Current.user
     ).build
   end
 

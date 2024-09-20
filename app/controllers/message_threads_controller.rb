@@ -82,6 +82,7 @@ class MessageThreadsController < ApplicationController
     query = Searchable::QueryBuilder.new(
       filter_id: search_params[:filter_id],
       query: search_params[:q],
+      user: Current.user,
     ).build
 
     cursor = MessageThreadCollection.init_cursor(search_params[:cursor])

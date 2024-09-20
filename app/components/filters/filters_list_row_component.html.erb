@@ -22,7 +22,7 @@
     <%= link_to edit_filter_path(@filter), title: "Upraviť filter" do %>
       <%= render Common::EditButtonComponent.new %>
     <% end %>
-    <%= link_to filter_path(@filter), title: "Zmazať filter", data: { turbo_confirm: "Naozaj?", turbo_method: :delete } do %>
+    <%= button_to filter_path(@filter), title: "Zmazať filter", method: :delete, data: { turbo_confirm: "Naozaj chcete zmazať filter?" } do %>
       <%= render Common::DeleteButtonComponent.new %>
     <% end %>
   </div>

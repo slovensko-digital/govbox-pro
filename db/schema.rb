@@ -198,10 +198,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_10_112424) do
     t.integer "position", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "icon"
     t.string "type", null: false
     t.bigint "tag_id"
     t.boolean "is_pinned", default: false, null: false
-    t.string "icon"
     t.index ["author_id"], name: "index_filters_on_author_id"
     t.index ["is_pinned"], name: "index_filters_on_is_pinned"
     t.index ["tag_id"], name: "index_filters_on_tag_id"

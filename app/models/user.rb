@@ -100,7 +100,8 @@ class User < ApplicationRecord
     user_filters_without_visibilities = filters.where.not(id: visibilities.pluck(:filter_id))
     new_visibilities = user_filters_without_visibilities.map.with_index do |filter, i|
       last_position = visibilities.last&.position || 0
-      user_filter_visibilities.new(filter: filter, visible: true, position: last_position + 1 + i)
+      visible = filter.is_a?(FulltextFilter) || filter.author_id.nil?
+      user_filter_visibilities.new(filter:, visible:, position: last_position + 1 + i)
     end
 
     all_visibilities = visibilities.to_a + new_visibilities

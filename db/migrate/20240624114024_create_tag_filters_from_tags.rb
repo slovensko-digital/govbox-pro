@@ -25,5 +25,6 @@ class CreateTagFiltersFromTags < ActiveRecord::Migration[7.1]
 
   def down
     TagFilter.destroy_all
+    EverythingFilter.destroy_all
   end
 end

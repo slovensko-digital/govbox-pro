@@ -1,14 +1,13 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
+ssd_all:
   tenant: ssd
-  author: basic
-  name: With General text
+  name: Everything
   position: 1
-  type: 'TagFilter'
-  tag: solver_everything
+  type: 'EverythingFilter'
+  tag: ssd_everything
 
-two:
+ssd_general:
   tenant: ssd
   author: basic
   name: With General text
@@ -16,15 +15,53 @@ two:
   position: 2
   type: 'FulltextFilter'
 
-three:
+ssd_legal:
   tenant: ssd
-  author: admin
+  author: basic
   name: With Legal text
   query: Legal
   position: 3
   type: 'FulltextFilter'
 
-solver_one:
+ssd_without_author:
+  tenant: ssd
+  name: Other
+  position: 4
+  tag: ssd_other
+  type: 'TagFilter'
+
+ssd_hidden:
+  tenant: ssd
+  author: basic
+  name: Hidden
+  position: 5
+  tag: ssd_construction
+  type: 'TagFilter'
+
+ssd_external:
+  tenant: ssd
+  author: basic
+  name: External
+  position: 6
+  tag: ssd_external
+  type: 'TagFilter'
+
+ssd_general_two:
+  tenant: ssd
+  author: ssd_signer
+  name: With General text
+  query: general
+  position: 6
+  type: 'FulltextFilter'
+
+solver_all:
+  tenant: solver
+  name: Everything
+  position: 1
+  type: 'EverythingFilter'
+  tag: solver_everything
+
+solver_urgent:
   tenant: solver
   author: solver_other
   name: Urgent

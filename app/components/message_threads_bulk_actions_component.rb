@@ -9,6 +9,7 @@ class MessageThreadsBulkActionsComponent < ViewComponent::Base
 
   def title
     return t(:selected_message, count: @ids.count) if @ids.present?
+    return @filter.name if @filter.present? && @filter.is_a?(EverythingFilter)
     return "Správy z filtra '#{@filter.name}'" if @filter.present?
     return "Hľadaný výraz '#{@query}'" if @query.present?
 

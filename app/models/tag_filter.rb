@@ -18,7 +18,9 @@
 class TagFilter < Filter
   belongs_to :tag, optional: false
 
-  delegate :name, to: :tag
+  def name
+    self[:name] || tag.name
+  end
 
   def self.model_name
     Filter.model_name

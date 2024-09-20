@@ -42,6 +42,12 @@ class Tag < ApplicationRecord
   scope :archived, -> { where(type: ArchivedTag.to_s) }
 
   after_update_commit ->(tag) { EventBus.publish(:tag_renamed, tag) if previous_changes.key?("name") }
+  after_update_commit ->(tag) do
+    tag.filters.each do |filter|
+      filter.user_filter_visibilities.update_all(visible: false)
+    end if previous_changes.key?("visible") && !tag.visible
+  end
+
   after_create ->(tag) do
     TagFilter.create!(
       tenant: tag.tenant,
