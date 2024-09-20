@@ -59,3 +59,8 @@ accountants_basic_user:
   name: Basic user 2
   type: UserGroup
   tenant: accountants
+
+accountants_signers:
+  name: Accountants signers
+  type: SignerGroup
+  tenant: accountants

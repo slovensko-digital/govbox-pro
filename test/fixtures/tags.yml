@@ -228,6 +228,22 @@ accountants_everything:
   visible: false
   tenant: accountants
 
+accountants_signature_requested:
+  name: Na podpis
+  type: SignatureRequestedTag
+  visible: true
+  tenant: accountants
+  icon: pencil
+  color: yellow
+
+accountants_signers_signature_requested:
+  name: 'Na podpis: Podpisovatelia'
+  type: SignatureRequestedFromTag
+  visible: true
+  tenant: accountants
+  icon: pencil
+  color: yellow
+
 accountants_externally:
   name: SignedExternally
   type: SignedExternallyTag
