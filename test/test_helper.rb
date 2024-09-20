@@ -8,6 +8,10 @@ require "minitest/mock"
 
 Rails.application.eager_load! # see https://github.com/simplecov-ruby/simplecov?tab=readme-ov-file#want-to-use-spring-with-simplecov
 
+Capybara.configure do |config|
+  config.default_max_wait_time = 5
+end
+
 class ActiveSupport::TestCase
   # Run tests in parallel with specified workers
   parallelize(workers: :number_of_processors)
