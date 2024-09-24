@@ -47,7 +47,7 @@ class Upvs::Box < Box
   end
 
   def single_recipient?
-    true
+    false
   end
 
   private

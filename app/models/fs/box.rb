@@ -41,7 +41,7 @@ class Fs::Box < Box
   end
 
   def single_recipient?
-    false
+    true
   end
 
   store_accessor :settings, :dic, prefix: true
