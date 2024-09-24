@@ -49,7 +49,7 @@ class Box < ApplicationRecord
     find_each(&:sync)
   end
 
-  def communication_to_multiple_subjects?
+  def single_recipient?
     raise NotImplementedError
   end
 

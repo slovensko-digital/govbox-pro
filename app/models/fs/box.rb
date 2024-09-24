@@ -40,7 +40,7 @@ class Fs::Box < Box
   def sync
   end
 
-  def communication_to_multiple_subjects?
+  def single_recipient?
     false
   end
 

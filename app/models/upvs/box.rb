@@ -46,7 +46,7 @@ class Upvs::Box < Box
     Govbox::SyncBoxJob.perform_later(self)
   end
 
-  def communication_to_multiple_subjects?
+  def single_recipient?
     true
   end
 
