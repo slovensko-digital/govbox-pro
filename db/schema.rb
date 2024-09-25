@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_08_20_143244) do
+ActiveRecord::Schema[7.1].define(version: 2024_09_25_134557) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -201,9 +201,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_20_143244) do
     t.string "icon"
     t.string "type", null: false
     t.bigint "tag_id"
-    t.boolean "is_pinned", default: false, null: false
     t.index ["author_id"], name: "index_filters_on_author_id"
-    t.index ["is_pinned"], name: "index_filters_on_is_pinned"
     t.index ["tag_id"], name: "index_filters_on_tag_id"
     t.index ["tenant_id"], name: "index_filters_on_tenant_id"
     t.index ["type"], name: "index_filters_on_type"

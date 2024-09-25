@@ -4,7 +4,6 @@
 #
 #  id         :bigint           not null, primary key
 #  icon       :string
-#  is_pinned  :boolean          default(FALSE), not null
 #  name       :string           not null
 #  position   :integer          not null
 #  query      :string
@@ -28,11 +27,8 @@ class Filter < ApplicationRecord
 
   before_create :fill_position
 
-  scope :pinned, -> { where(is_pinned: true) }
-  scope :not_pinned, -> { where(is_pinned: false) }
   scope :visible_for, -> (user) { joins(:user_filter_visibilities)
-    .where(user_filter_visibilities: { visible: true, user: user})
-    .where(is_pinned: false) }
+    .where(user_filter_visibilities: { visible: true, user: user}) }
 
   acts_as_list scope: :tenant_id
 
