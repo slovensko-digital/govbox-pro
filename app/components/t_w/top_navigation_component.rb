@@ -3,7 +3,7 @@ class TW::TopNavigationComponent < ViewComponent::Base
 
   def query
     Searchable::QueryBuilder.new(
-      filter_id: query_params[:filter_id],
+      filter_id: nil,
       query: query_params[:q],
       user: Current.user
     ).build

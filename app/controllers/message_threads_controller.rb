@@ -80,6 +80,7 @@ class MessageThreadsController < ApplicationController
 
   def load_threads
     query = Searchable::QueryBuilder.new(
+      filter: @filter,
       filter_id: search_params[:filter_id],
       query: search_params[:q],
       user: Current.user,

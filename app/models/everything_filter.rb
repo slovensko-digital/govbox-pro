@@ -23,6 +23,10 @@ class EverythingFilter < TagFilter
     Filter.model_name
   end
 
+  def query
+    nil
+  end
+
   private
 
   def set_everything_tag

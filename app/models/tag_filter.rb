@@ -22,6 +22,10 @@ class TagFilter < Filter
     self[:name] || tag.name
   end
 
+  def query
+    "label:(#{tag.name})"
+  end
+
   def self.model_name
     Filter.model_name
   end
