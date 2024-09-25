@@ -11,10 +11,10 @@ class FiltersController < ApplicationController
     authorize Filter
 
     if params[:query].present?
-      @filter = Filter.new(query: params[:query])
+      @filter = FulltextFilter.new(query: params[:query])
       render :new_in_modal
     else
-      @filter = Filter.new
+      @filter = FulltextFilter.new
       render :new
     end
   end
@@ -22,17 +22,17 @@ class FiltersController < ApplicationController
   def create
     authorize Filter
 
-    @filter = Current.tenant.filters.build(filter_params.merge({author_id: Current.user.id}))
+    @filter = Current.tenant.filters.build(filter_params.merge({ author_id: Current.user.id }))
     if @filter.save
       flash[:notice] = 'Filter bol úspešne vytvorený'
       if params[:to] == 'search'
-        redirect_to message_threads_path(q: @filter.query)
+        redirect_to helpers.filtered_message_threads_path(filter: @filter)
       else
         redirect_to filters_path
       end
     else
       if params[:to] == 'search'
-        redirect_to message_threads_path(q: @filter.query), alert: 'Filter sa nepodarilo vytvoriť :('
+        redirect_to helpers.filtered_message_threads_path(query: @filter.query), alert: 'Filter sa nepodarilo vytvoriť :('
       else
         render :new
       end
@@ -59,10 +59,29 @@ class FiltersController < ApplicationController
     redirect_to filters_path, notice: 'Filter bol úspešne odstránený'
   end
 
+  def sort
+    filters = filter_scope
+      .where(id: params[:filter_ids])
+      .reorder('')
+      .in_order_of(:id, params[:filter_ids])
+
+    filters.map do |filter|
+      authorize filter
+    end
+
+    Filter.transaction do
+      filters.map.with_index do |filter, i|
+        filter.update!(position: i + 1)
+      end
+    end
+
+    redirect_back fallback_location: filters_path
+  end
+
   private
 
   def filter_params
-    params.require(:filter).permit(:name, :query)
+    params.require(:filter).permit(:name, :query, :icon, :type)
   end
 
   def set_filter
@@ -70,6 +89,6 @@ class FiltersController < ApplicationController
   end
 
   def filter_scope
-    policy_scope(Filter, policy_scope_class: FilterPolicy::ScopeEditable).order(:position)
+    policy_scope(Filter, policy_scope_class: FilterPolicy::ScopeEditable).includes(:tag).order(:position)
   end
 end

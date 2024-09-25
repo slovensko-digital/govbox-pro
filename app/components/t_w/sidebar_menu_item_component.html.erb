@@ -1,6 +1,19 @@
-<%= link_to @url, class: "items-center text-gray-700 hover:text-indigo-600 hover:bg-gray-50 w-full group flex gap-x-3 rounded-md p-4 leading-6 font-semibold data-[active=true]:bg-gray-50 data-[active=true]:text-indigo-600", data: { active: current_page?(@url, check_parameters: true) } do %>
-  <% if @icon_component %>
-    <%= render @icon_component %>
+<div
+  class="flex items-center text-gray-700 hover:text-indigo-600 hover:bg-gray-50 w-full group rounded-md leading-6 font-semibold data-[active=true]:bg-gray-50 data-[active=true]:text-indigo-600 <%= @classes %>"
+  <%= tag.attributes(data: { active: current_page?(@url, check_parameters: true) } ) %>
+>
+  <% if leading %>
+    <%= leading %>
   <% end %>
-  <%= @name %>
-<% end %>
+  <%= link_to \
+        @url,
+        class: "w-full flex gap-x-3 py-4 grow" do %>
+    <% if @icon_component %>
+      <%= render @icon_component %>
+    <% end %>
+    <span class="truncate text-base <%= light? ? 'font-medium' : '' %>"><%= @name %></span>
+  <% end %>
+  <% if trailing %>
+    <%= trailing %>
+  <% end %>
+</div>

@@ -22,6 +22,12 @@ Rails.application.routes.draw do
     end
     resources :tags
     resource :profile
+    resources :user_filter_visibilities do
+      member do
+        post :move_higher
+        post :move_lower
+      end
+    end
   end
 
   namespace :admin do
@@ -142,6 +148,13 @@ Rails.application.routes.draw do
   end
 
   resources :filters do
+    member do
+      patch :pin
+      patch :unpin
+    end
+
+    patch :sort, on: :collection
+
     resources :filter_subscriptions
   end
 

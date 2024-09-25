@@ -13,6 +13,7 @@
 #  tenant_id                    :bigint
 #
 class User < ApplicationRecord
+  include Pundit::Authorization
   include AuditableEvents
 
   belongs_to :tenant
@@ -26,6 +27,7 @@ class User < ApplicationRecord
   has_many :filters, foreign_key: :author_id
   has_many :filter_subscriptions
   has_many :notifications
+  has_many :user_filter_visibilities, dependent: :destroy
 
   validates_presence_of :name, :email
   validates_uniqueness_of :name, :email, scope: :tenant_id, case_sensitive: false
@@ -48,10 +50,10 @@ class User < ApplicationRecord
   def accessible_tags
     Tag.where(
       TagGroup.select(1)
-              .joins(:group_memberships)
-              .where("tag_groups.tag_id = tags.id")
-              .where(group_memberships: { user_id: id })
-              .arel.exists
+        .joins(:group_memberships)
+        .where("tag_groups.tag_id = tags.id")
+        .where(group_memberships: { user_id: id })
+        .arel.exists
     )
   end
 
@@ -78,7 +80,35 @@ class User < ApplicationRecord
     end
   end
 
+  def visible_filters
+    build_filter_visibilities!.where(visible: true).map(&:filter)
+  end
+
+  def build_filter_visibilities!
+    filters = policy_scope(Filter, policy_scope_class: FilterPolicy::ScopeShowable).order(:position)
+    visibilities = user_filter_visibilities.order(:position)
+    build_user_filter_visibilities(filters, visibilities)
+  end
+
+  def pundit_user
+    self
+  end
+
   private
+
+  def build_user_filter_visibilities(filters, visibilities)
+    user_filters_without_visibilities = filters.where.not(id: visibilities.pluck(:filter_id))
+    new_visibilities = user_filters_without_visibilities.map.with_index do |filter, i|
+      last_position = visibilities.last&.position || 0
+      visible = filter.is_a?(FulltextFilter) || filter.author_id.nil?
+      user_filter_visibilities.new(filter:, visible:, position: last_position + 1 + i)
+    end
+
+    all_visibilities = visibilities.to_a + new_visibilities
+    all_visibilities.map(&:save!)
+    user_filter_visibilities.where(id: all_visibilities).includes(filter: :tag).order(:position)
+  end
+
 
   def delete_user_group
     user_group.destroy

@@ -3,7 +3,7 @@ require "application_system_test_case"
 class FiltersTest < ApplicationSystemTestCase
   setup do
     Searchable::MessageThread.reindex_all
-    sign_in_as(:basic)
+    sign_in_as(:ssd_signer)
   end
 
   test "user can create a filter" do
@@ -41,7 +41,7 @@ class FiltersTest < ApplicationSystemTestCase
     assert_text "General"
 
     accept_alert do
-      click_link "Zmazať filter"
+      click_button "Zmazať filter"
     end
 
     assert_no_text "General"

@@ -3,7 +3,7 @@ require "test_helper"
 class FilterSubscriptionTest < ActiveSupport::TestCase
   test "new thread matching subscription fires event" do
     user = users(:admin)
-    filter = filters(:one)
+    filter = filters(:ssd_general)
     s = FilterSubscription.create!(tenant: user.tenant, user: user, filter: filter, events: ["Notifications::NewMessageThread", "Notifications::NewMessage"])
 
     m = Govbox::Message.create_message_with_thread!(govbox_messages(:one))

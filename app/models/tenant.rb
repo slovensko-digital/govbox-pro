@@ -106,8 +106,8 @@ class Tenant < ApplicationRecord
     create_admin_group!(name: "admins")
     create_signer_group!(name: "signers")
 
-    create_draft_tag!(name: "Rozpracované", visible: true)
     create_everything_tag!(name: "Všetky správy", visible: false)
+    create_draft_tag!(name: "Rozpracované", visible: true)
     create_archived_tag!(name: "Archivované", color: "green", icon: "archive-box", visible: true)
     create_signature_requested_tag!(name: "Na podpis", visible: true, color: "yellow", icon: "pencil")
     create_signed_tag!(name: "Podpísané", visible: true, color: "green", icon: "fingerprint")
