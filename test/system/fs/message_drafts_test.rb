@@ -70,7 +70,7 @@ class Fs::MessageDraftsTest < ApplicationSystemTestCase
 
       within_thread_in_listing(message1.thread) do
         assert_text "Podanie pre FS (Správa daní) - platné od 1.4.2024"
-        assert_text "Finančná správa"
+        assert_text "Od: #{message1.thread.box.name}"
 
         within_tags do
           assert_text "Rozpracované"
@@ -79,7 +79,7 @@ class Fs::MessageDraftsTest < ApplicationSystemTestCase
 
       within_thread_in_listing(message2.thread) do
         assert_text "Vyhlásenie o poukázaní sumy do výšky 2% (3%) zaplatenej dane za zdaňovacie obdobie 2021"
-        assert_text "Finančná správa"
+        assert_text "Od: #{message2.thread.box.name}"
 
         within_tags do
           assert_text "Rozpracované"

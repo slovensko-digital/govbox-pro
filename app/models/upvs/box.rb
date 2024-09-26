@@ -46,6 +46,10 @@ class Upvs::Box < Box
     Govbox::SyncBoxJob.perform_later(self)
   end
 
+  def single_recipient?
+    false
+  end
+
   private
 
   def validate_settings_obo

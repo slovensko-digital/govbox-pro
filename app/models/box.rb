@@ -49,6 +49,10 @@ class Box < ApplicationRecord
     find_each(&:sync)
   end
 
+  def single_recipient?
+    raise NotImplementedError
+  end
+
   private
 
   def validate_box_with_api_connection
