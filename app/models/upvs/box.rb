@@ -43,7 +43,7 @@ class Upvs::Box < Box
   end
 
   def sync
-    Govbox::SyncBoxJob.perform_later(self)
+    Govbox::SyncBoxJob.set(queue: :asap).perform_later(self)
   end
 
   def single_recipient?

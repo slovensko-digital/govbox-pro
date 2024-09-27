@@ -1,7 +1,5 @@
 module Upvs
   class DownloadFormRelatedDocumentsJob < ApplicationJob
-    queue_as :default
-
     def perform(upvs_form, downloader: ::Upvs::FormRelatedDocumentsDownloader)
       upvs_form_downloader = downloader.new(upvs_form)
 
