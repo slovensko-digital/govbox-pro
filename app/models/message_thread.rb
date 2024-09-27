@@ -167,6 +167,10 @@ class MessageThread < ApplicationRecord
     message_threads_tags.find_by(tag: tag)&.destroy
   end
 
+  def any_objects_with_requested_signature?
+    messages.any? { |message| message.any_objects_with_requested_signature? }
+  end
+
   private
 
   def has_tag?(tag)

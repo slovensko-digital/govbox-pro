@@ -65,4 +65,8 @@ class MessageDraftPolicy < ApplicationPolicy
   def unlock?
     create?
   end
+
+  def pending_requested_signatures?
+    show?
+  end
 end
