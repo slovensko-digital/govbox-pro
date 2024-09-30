@@ -27,6 +27,8 @@ class Govbox::Message < ApplicationRecord
 
   def self.create_message_with_thread!(govbox_message)
     message = nil
+    message_draft = Upvs::MessageDraft.where(uuid: govbox_message.message_id).joins(:thread).where(thread: { box_id: govbox_message.box.id }).take
+    tags_to_migrate = message_draft&.tags_to_migrate_to_message
 
     MessageThread.with_advisory_lock!(govbox_message.correlation_id, transaction: true, timeout_seconds: 10) do
       message = create_message(govbox_message)
@@ -38,12 +40,17 @@ class Govbox::Message < ApplicationRecord
         delivered_at: govbox_message.delivered_at
       )
 
+      message_draft&.destroy
       message.save!
 
       add_upvs_related_tags(message, govbox_message)
     end
 
     create_message_objects(message, govbox_message.payload)
+
+    migrate_tags_from_draft(message, tags_to_migrate) if tags_to_migrate
+
+    MessageObject.mark_message_objects_externally_signed(message.objects)
 
     EventBus.publish(:message_thread_created, message.thread) if message.thread.previously_new_record?
     EventBus.publish(:message_created, message)
@@ -103,15 +110,14 @@ class Govbox::Message < ApplicationRecord
     raw_message["objects"].each do |raw_object|
       message_object_type = raw_object["class"]
       visualizable = (message_object_type == "FORM" && message.html_visualization.present?) ? true : nil
-      tags = raw_object["signed"] ? [message.thread.box.tenant.signed_externally_tag!] : []
 
       message_object = message.objects.create!(
+        uuid: raw_object["id"],
         name: raw_object["name"],
         mimetype: raw_object["mime_type"],
         is_signed: raw_object["signed"],
         object_type: message_object_type,
-        visualizable: visualizable,
-        tags: tags
+        visualizable: visualizable
       )
 
       if raw_object["encoding"] == "Base64"
@@ -138,6 +144,23 @@ class Govbox::Message < ApplicationRecord
     message.add_cascading_tag(upvs_tag)
 
     add_delivery_notification_tag(message) if message.can_be_authorized?
+  end
+
+  def self.migrate_tags_from_draft(message, tags_to_migrate)
+    tags_to_migrate[:objects].each do |object_data|
+      object = message.objects.find_by(uuid: object_data[:uuid])
+      object_data[:tags].each do |object_tag_id|
+        object.assign_tag(Tag.find(object_tag_id))
+      end
+    end
+
+    tags_to_migrate[:message].each do |message_tag_id|
+      message.tags.add_cascading_tag(Tag.find(message_tag_id))
+    end
+
+    tags_to_migrate[:thread].each do |thread_tag_id|
+      message.thread.assign_tag(Tag.find(thread_tag_id))
+    end
   end
 
   def self.add_delivery_notification_tag(message)
