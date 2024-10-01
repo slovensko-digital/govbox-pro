@@ -51,7 +51,7 @@ class Govbox::SubmitMessageDraftJob < ApplicationJob
     objects = []
     message_draft.objects.each do |object|
       objects << {
-        id: SecureRandom.uuid,
+        id: object.uuid,
         name: object.name,
         encoding: "Base64",
         signed: object.is_signed,
