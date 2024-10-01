@@ -28,6 +28,9 @@ application.register("form", FormController)
 import MessageDraftsController from "./message_drafts_controller"
 application.register("message-drafts", MessageDraftsController)
 
+import FsMessageDraftsController from "./fs_message_drafts_controller"
+application.register("fs-message-drafts", FsMessageDraftsController)
+
 import TriStateCheckboxController from "./tri_state_checkbox_controller"
 application.register("tri-state-checkbox", TriStateCheckboxController)
 

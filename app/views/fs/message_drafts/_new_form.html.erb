@@ -1,9 +1,24 @@
 <%= form_with url: fs_message_drafts_path, id: form_id, multipart: true, class: 'w-full' do |f| %>
   <div class="self-stretch px-6 pt-6 flex-col justify-start items-start flex">
     <div class="mb-4 w-full">
-      <div>
-        <label for="content[]" class="block mb-2 text-base font-medium text-gray-900">XML obsah správ</label>
-        <%= file_field_tag 'content[]', multiple: true %>
+      <div class="col-span-full">
+        <label for="cover-photo" class="block text-sm font-medium leading-6 text-gray-900">XML obsah správ</label>
+        <div id="dropzone" class="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
+          <%= content_tag(:div, {
+            "data-controller": "fs-message-drafts",
+            class: "text-center mt-6"
+          }) do %>
+            <%= render Common::IconComponent.new("document-text", classes: "mx-auto h-12 w-12 text-gray-300") %>
+            <div class="mt-4 text-sm leading-6 text-gray-600">
+              <label for="content[]" class="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500">
+                <span>Nahrajte súbory</span>
+                <input id="content[]" name="content[]" type="file" class="sr-only" multiple>
+              </label>
+              <p class="pl-1">alebo ich sem presuňte</p>
+            </div>
+            <div class="mt-6 text-center" id="fileList"></div>
+          <% end %>
+        </div>
       </div>
     </div>
   </div>
