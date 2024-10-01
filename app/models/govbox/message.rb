@@ -150,7 +150,7 @@ class Govbox::Message < ApplicationRecord
     tags_to_migrate[:objects].each do |object_data|
       object = message.objects.find_by(uuid: object_data[:uuid])
       object_data[:tags].each do |object_tag_id|
-        object.assign_tag(Tag.find(object_tag_id))
+        object&.assign_tag(Tag.find(object_tag_id))
       end
     end
 
