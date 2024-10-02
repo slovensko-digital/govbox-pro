@@ -63,6 +63,13 @@ ssd_main_draft_to_be_signed4:
   delivered_at: 2023-05-18 18:15:22
   last_message_delivered_at: 2023-05-18 18:16:22
 
+ssd_main_empty_draft:
+  box: ssd_main
+  title: Empty Draft
+  original_title: MyString
+  delivered_at: 2023-05-18 16:05:00
+  last_message_delivered_at: 2023-05-18 16:05:00
+
 solver_main_general_agenda:
   box: solver_main
   title: General agenda Solver

@@ -175,7 +175,7 @@ solver_everything:
   visible: false
   tenant: solver
 
-solver_basic_user_drafts:
+ssd_basic_user_drafts:
   name: Drafts-Basic user
   owner: basic
   type: DraftTag
