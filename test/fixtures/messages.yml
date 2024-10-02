@@ -263,6 +263,20 @@ ssd_main_draft_to_be_signed4_draft:
     status: created
   author: basic
 
+ssd_main_empty_draft:
+  type: Upvs::MessageDraft
+  uuid: <%= SecureRandom.uuid %>
+  title: Všeobecná agenda
+  delivered_at: 2023-05-18 16:05:00
+  thread: ssd_main_empty_draft
+  replyable: false
+  metadata:
+    status: created
+    template_id: 2
+    recipient_uri: ico://sk/83369723
+    correlation_id: <%= SecureRandom.uuid %>
+  author: basic
+
 solver_main_delivery_notification_one:
   uuid: bbff2617-3430-44c6-b827-519059ff1e90
   title: Authorized Delivery notification
