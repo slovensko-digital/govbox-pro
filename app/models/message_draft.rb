@@ -70,7 +70,6 @@ class MessageDraft < Message
 
   def update_content(parameters)
     metadata["data"] = parameters.to_h
-    self.html_visualization = format_html_visualization
     save!
 
     template.build_message_from_template(self)

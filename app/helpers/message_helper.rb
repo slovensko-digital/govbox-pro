@@ -6,10 +6,6 @@ module MessageHelper
   def format_html_visualization
     return ActionController::Base.helpers.simple_format(html_visualization) if is_a?(Fs::MessageDraft)
 
-    return metadata["data"].map do |k,v|
-      "#{k}: #{v}"
-    end.join(', ') if template.present?
-
     html_visualization
   end
 end
