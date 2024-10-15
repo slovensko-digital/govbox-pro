@@ -44,7 +44,7 @@
         <%= render Upvs::DeliveryNotificationFictionMessageBodyComponent.new(message: @message) %>
       <% elsif @message.html_visualization %>
         <div class="w-full invisible h-[150px] transition-all">
-            <%= tag.iframe class: "relative border-none overflow-hidden h-full w-full", scrolling: "no", srcdoc: @message.html_visualization, onload: "(
+            <%= tag.iframe class: "relative border-none overflow-hidden h-full w-full", scrolling: "no", srcdoc: @message.format_html_visualization, onload: "(
             function(iframe) {
               iframe.contentWindow.document.body.style['height'] = 'unset';
               iframe.contentWindow.document.body.style['min-height'] = 'unset';

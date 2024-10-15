@@ -12,6 +12,10 @@ module Utils
 
   MIMETYPE_WITHOUT_OPTIONAL_PARAMS_REGEXP = /^[^;]*/
 
+  def unzip(zipped_content)
+    ActiveSupport::Gzip.decompress(zipped_content)
+  end
+
   def file_directory(file_path)
     File.dirname(file_path)
   end
@@ -100,7 +104,6 @@ module Utils
 
   # TODO use UPVS API to detect if document is signed
   def is_signed?(entry_name:, content:)
-
     case File.extname(entry_name).downcase
     when '.asice', '.asics', '.xzep'
       true

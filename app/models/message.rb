@@ -101,7 +101,7 @@ class Message < ApplicationRecord
     ::Upvs::Form.find_by(
       identifier: all_metadata['posp_id'],
       version: all_metadata['posp_version']
-    )
+    ) || (::Fs::Form.find(metadata['fs_form_id']) if metadata['fs_form_id'].present?)
   end
 
   def update_html_visualization

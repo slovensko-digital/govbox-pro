@@ -4,6 +4,7 @@ class Fs::SubmitMessageDraftResultJob < ApplicationJob
 
     if 200 == response[:status]
       message_draft.metadata[:status] = 'submitted'
+      message_draft.metadata[:fs_message_id] = response[:body]['sent_message_id']
       message_draft.save
     elsif [400, 422].include?(response[:status])
       message_draft.metadata[:status] = 'submit_fail'
