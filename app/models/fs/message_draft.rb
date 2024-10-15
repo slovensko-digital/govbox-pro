@@ -32,7 +32,7 @@ class Fs::MessageDraft < MessageDraft
     form_files.each do |form_file|
       form_content = form_file.read.force_encoding("UTF-8")
       form_information = fs_client.api.parse_form(form_content)
-      dic = form_information['subject']
+      dic = form_information['subject']&.strip
       fs_form_identifier = form_information['form_identifier']
 
       box = Fs::Box.with_enabled_message_drafts_import.find_by("settings ->> 'dic' = ?", dic)
