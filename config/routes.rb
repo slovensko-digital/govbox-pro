@@ -85,6 +85,8 @@ Rails.application.routes.draw do
           post :submit
           delete :destroy
         end
+
+        post :pending_requested_signatures
       end
 
       resource :authorize_deliveries, only: [:update]
@@ -165,6 +167,7 @@ Rails.application.routes.draw do
       post :confirm_unlock
       post :unlock
       post :submit
+      post :pending_requested_signatures
     end
 
     scope module: 'message_drafts' do

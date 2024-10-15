@@ -9,10 +9,11 @@ module MessageThreads
         message_threads = message_thread_policy_scope.where(id: ids).includes(:messages)
         message_threads.transaction do
           submission_results = SubmitMessageDraftsAction.run(message_threads)
-          if submission_results
-            redirect_back fallback_location: message_threads_path, notice: "Správy vo vláknach boli zaradené na odoslanie", status: 303
-          else
+
+          if submission_results.none?(true)
             redirect_back fallback_location: message_threads_path, alert: "Vo vláknach sa nenašli žiadne správy na odoslanie", status: 303
+          else
+            redirect_back fallback_location: message_threads_path, notice: "Správy vo vláknach boli zaradené na odoslanie", status: 303
           end
         end
       end
@@ -34,6 +35,15 @@ module MessageThreads
         else
           redirect_back fallback_location: message_threads_path, alert: "Vo vláknach sa nenašli žiadne rozpracované správy na zahodenie", status: 303
         end
+      end
+
+      def pending_requested_signatures
+        authorize MessageThread
+        @ids = params[:message_thread_ids] || []
+
+        message_threads = MessageThread.where(id: @ids)
+
+        render status: :ok, json: { "pending_requested_signatures": message_threads.any? { |message_thread| message_thread.any_objects_with_requested_signature? } }
       end
 
       private
