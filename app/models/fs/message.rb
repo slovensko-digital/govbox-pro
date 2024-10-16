@@ -116,22 +116,12 @@ class Fs::Message
 
   def self.update_html_visualization(message)
     message.update(
-      html_visualization: self.build_html_visualization(message)
+      html_visualization: Fs::MessageHelper.build_html_visualization(message)
     )
 
     message.form_object&.update(
       visualizable: message.html_visualization.present?
     )
-  end
-
-  def self.build_html_visualization(message)
-    return message.html_visualization if message.html_visualization.present?
-
-    return unless message.form&.xslt_txt
-    return unless message.form_object&.unsigned_content
-
-    template = Nokogiri::XSLT(message.form.xslt_txt)
-    template.transform(message.form_object.xml_unsigned_content)
   end
 
   def self.collapsed?
