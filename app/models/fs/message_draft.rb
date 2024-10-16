@@ -53,7 +53,8 @@ class Fs::MessageDraft < MessageDraft
         delivered_at: Time.now,
         metadata: {
           'status': 'being_loaded',
-          'fs_form_id': fs_form.id
+          'fs_form_id': fs_form.id,
+          'correlation_id': SecureRandom.uuid
         },
         author: author
       )
