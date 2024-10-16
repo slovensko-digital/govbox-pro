@@ -106,6 +106,10 @@ class Upvs::MessageTemplate < ::MessageTemplate
       filled_content.gsub!(template_item[:placeholder], message.metadata['data'][template_item[:name]].to_s)
     end
 
+    message.update(
+      html_visualization: message.metadata["data"].map { _1.join(": ") }.join(", ")
+    ) if message.metadata["data"]
+
     if message.form_object.message_object_datum
       message.form_object.message_object_datum.update(
         blob: filled_content
