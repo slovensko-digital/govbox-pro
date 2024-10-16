@@ -1,11 +1,29 @@
 class Fs::Message
   FS_SUBJECT_NAME = 'Finančná správa'
 
-  def self.create_outbox_message_with_thread!(box, raw_message, associated_message_draft: nil)
+  def self.create_inbox_message_with_thread!(raw_message, box:)
     message = nil
+    associated_outbox_message = box.messages.where("metadata ->> 'fs_message_id' = ?", raw_message['sent_message_id']).take
 
-    # TODO ako zistit ktory merge identifier patri k tomuto draftu? Co ak bude mergnutych dokopy viac vlakien?
-    merge_identifier = associated_message_draft&.thread&.merge_identifiers&.first&.uuid || SecureRandom.uuid
+    MessageThread.with_advisory_lock!(associated_outbox_message.metadata['correlation_id'], transaction: true, timeout_seconds: 10) do
+      message = create_inbox_message(raw_message)
+
+      message.thread = associated_outbox_message.thread
+
+      message.save!
+    end
+
+    create_message_objects(message, raw_message)
+    update_html_visualization(message)
+
+    EventBus.publish(:message_created, message)
+  end
+
+  def self.create_outbox_message_with_thread!(raw_message, box:)
+    message = nil
+    associated_message_draft = box.messages.where(type: 'Fs::MessageDraft').where("metadata ->> 'fs_message_id' = ?", raw_message['message_id']).take
+
+    merge_identifier = associated_message_draft.metadata['correlation_id']
 
     MessageThread.with_advisory_lock!(merge_identifier, transaction: true, timeout_seconds: 10) do
       message = create_outbox_message(raw_message)
@@ -17,23 +35,39 @@ class Fs::Message
         delivered_at: message.delivered_at
       )
 
-      associated_message_draft&.destroy
+      associated_message_draft.destroy
 
       message.save!
     end
 
     create_message_objects(message, raw_message)
+    update_html_visualization(message)
 
     EventBus.publish(:message_created, message)
   end
 
-
-  def collapsed?
-    # TODO odoslana sprava s potvrdenkou by mohla byt collapsed
-    true
-  end
-
   private
+
+  def self.create_inbox_message(raw_message)
+    Message.create(
+      uuid: SecureRandom.uuid,
+      title: raw_message['message_type_name'],
+      recipient_name: FS_SUBJECT_NAME,
+      sender_name: raw_message['subject'],
+      delivered_at: Time.parse(raw_message['created_at']),
+      replyable: false,
+      collapsed: collapsed?,
+      outbox: false,
+      metadata: {
+        # TODO: Toto je problem pri prijatych spravach, je tam typ podania (outbox message)
+        "fs_form_id": nil,
+        "fs_message_id": raw_message['message_id'],
+        "fs_status": raw_message['status'],
+        "fs_submission_status": raw_message['submission_status'],
+        "dic": raw_message['dic']
+      },
+    )
+  end
 
   def self.create_outbox_message(raw_message, associated_message_draft: nil)
     Message.create(
@@ -46,34 +80,29 @@ class Fs::Message
       collapsed: collapsed?,
       outbox: true,
       metadata: {
-        "fs_form_id": (associated_message_draft.metadata['fs_form_id'] if associated_message_draft),
+        "fs_form_id": (associated_message_draft.metadata['fs_form_id'] if associated_message_draft) || Fs::Form.where("identifier LIKE '#{raw_message['submission_type_id']}_%'")&.take&.id,
+        "fs_message_id": raw_message['message_id'],
+        "fs_status": raw_message['status'],
         "dic": raw_message['dic']
       },
     )
   end
 
   def self.create_message_objects(message, raw_message)
-    raw_message["objects"].each do |raw_object|
-      # TODO mozu byt aj ine typy objektov? asi ano, vieme to identifikovat?
-      message_object_type = 'FORM'
-      visualizable = (message_object_type == "FORM" && message.html_visualization.present?) ? true : nil
+    raw_message.dig('message_container', 'objects').each do |raw_object|
       tags = raw_object["signed"] ? [message.thread.box.tenant.signed_externally_tag!] : []
 
       message_object = message.objects.create!(
+        # uuid: raw_object["id"], TODO uncomment when GO-130 is closed
+        is_signed: raw_object["is_signed"],
         mimetype: raw_object["mime_type"],
-        is_signed: false, # TODO nejako detegovat
-        object_type: message_object_type,
-        visualizable: visualizable,
+        name: raw_object["name"],
+        object_type: raw_object["class"],
         tags: tags
       )
 
-      # TODO toto je unsigned_content, presunut logiku tam a co ma byt ulozene tu?
       if raw_object["encoding"] == "Base64"
-        unzipped_message_object_content = ::Utils.unzip(Base64.decode64(raw_object["xml_data"]))
-        xml_content = Nokogiri::XML(Base64.decode64(unzipped_message_object_content))
-        message_object_content = xml_content.xpath('*:XMLDataContainer/*:XMLData/*').to_xml do |config|
-          config.noblanks
-        end if xml_content.xpath('*:XMLDataContainer/*:XMLData').any?
+        message_object_content = Base64.decode64(raw_object["data"])
       else
         message_object_content = raw_object["xml_data"]
       end
@@ -83,5 +112,30 @@ class Fs::Message
         message_object_id: message_object.id
       )
     end
+  end
+
+  def self.update_html_visualization(message)
+    message.update(
+      html_visualization: self.build_html_visualization(message)
+    )
+
+    message.form_object&.update(
+      visualizable: message.html_visualization.present?
+    )
+  end
+
+  def self.build_html_visualization(message)
+    return message.html_visualization if message.html_visualization.present?
+
+    return unless message.form&.xslt_txt
+    return unless message.form_object&.unsigned_content
+
+    template = Nokogiri::XSLT(message.form.xslt_txt)
+    template.transform(message.form_object.xml_unsigned_content)
+  end
+
+  def self.collapsed?
+    # TODO odoslana sprava s potvrdenkou by mohla byt collapsed
+    false
   end
 end
