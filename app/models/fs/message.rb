@@ -23,7 +23,7 @@ class Fs::Message
     message = nil
     associated_message_draft = box.messages.where(type: 'Fs::MessageDraft').where("metadata ->> 'fs_message_id' = ?", raw_message['message_id']).take
 
-    merge_identifier = associated_message_draft.metadata['correlation_id']
+    merge_identifier = (associated_message_draft.metadata['correlation_id'] if associated_message_draft) || SecureRandom.uuid
 
     MessageThread.with_advisory_lock!(merge_identifier, transaction: true, timeout_seconds: 10) do
       message = create_outbox_message(raw_message)
@@ -35,7 +35,7 @@ class Fs::Message
         delivered_at: message.delivered_at
       )
 
-      associated_message_draft.destroy
+      associated_message_draft.destroy if associated_message_draft
 
       message.save!
     end
@@ -71,7 +71,7 @@ class Fs::Message
 
   def self.create_outbox_message(raw_message, associated_message_draft: nil)
     Message.create(
-      uuid: associated_message_draft&.uuid || SecureRandom.uuid,
+      uuid: (associated_message_draft.uuid if associated_message_draft) || SecureRandom.uuid,
       title: raw_message['submission_type_name'],
       sender_name: raw_message['subject'],
       recipient_name: FS_SUBJECT_NAME,
