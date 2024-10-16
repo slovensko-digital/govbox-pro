@@ -107,10 +107,8 @@ class Upvs::MessageTemplate < ::MessageTemplate
     end
 
     message.update(
-      html_visualization: message.metadata["data"]&.map do |k,v|
-        "#{k}: #{v}"
-      end&.join(', ')
-    )
+      html_visualization: message.metadata["data"].map { _1.join(": ") }.join(", ")
+    ) if message.metadata["data"]
 
     if message.form_object.message_object_datum
       message.form_object.message_object_datum.update(
