@@ -33,15 +33,16 @@ module Fs
     end
 
     def fetch_sent_message(message_id, obo: @obo)
-      request(:get, "sent-messages/#{message_id}", {}, jwt_header(obo).merge(fs_credentials_header))[:body]
+      request(:get, "sent-messages/#{CGI.escape(message_id)}", {}, jwt_header(obo).merge(fs_credentials_header))[:body]
     end
 
-    def fetch_received_messages(page: 1, count: 100, obo: @obo)
-      request(:get, "received-messages", {}, jwt_header(obo).merge(fs_credentials_header))[:body]
+    def fetch_received_messages(page: 1, count: 100, sent_message_id: nil, obo: @obo)
+      query = "?sent_message_id=#{CGI.escape(sent_message_id)}" if sent_message_id
+      request(:get, "received-messages#{query}", {}, jwt_header(obo).merge(fs_credentials_header))[:body]
     end
 
     def fetch_received_message(message_id, obo: @obo)
-      request(:get, "received-messages/#{message_id}", {}, jwt_header(obo).merge(fs_credentials_header))[:body]
+      request(:get, "received-messages/#{CGI.escape(message_id)}", {}, jwt_header(obo).merge(fs_credentials_header))[:body]
     end
 
     def post_validation(form_identifier, content)
