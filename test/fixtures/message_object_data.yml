@@ -12,6 +12,10 @@ draft_two:
   message_object: ssd_main_general_draft_two_form
   blob: <GeneralAgenda xmlns="http://schemas.gov.sk/form/App.GeneralAgenda/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><subject>predmet</subject><text>text</text></GeneralAgenda>
 
+ssd_main_draft_form_data:
+  message_object: ssd_main_draft_form
+  blob: <GeneralAgenda xmlns="http://schemas.gov.sk/form/App.GeneralAgenda/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><subject>predmet</subject><text>text</text></GeneralAgenda>
+
 fs_one:
   message_object: ssd_main_fs_one_form
   blob: <n0:ElectronicOfficialDocument	xmlns:n0="http://schemas.gov.sk/form/42499500.FS_EUD_v1_0.sk/1.6">	<n0:Sender>		<n0:PersonData>			<n0:CorporateBody>				<n0:FinancialAdministrationAuthority>Daňový úrad Bratislava</n0:FinancialAdministrationAuthority>			</n0:CorporateBody>			<n0:PhysicalAddress>				<n0:AddressLine>Ševčenkova 32, 850 00  Bratislava</n0:AddressLine>			</n0:PhysicalAddress>		</n0:PersonData>	</n0:Sender>	<n0:Document>		<n0:DocumentReference>000000000/2022</n0:DocumentReference>		<n0:ContactPerson>Mgr. X Y</n0:ContactPerson>		<n0:PhoneNumber>02/00000000</n0:PhoneNumber>		<n0:EmailAddress>x.y@FINANCNASPRAVA.SK</n0:EmailAddress>		<n0:IssuePlace>Bratislava</n0:IssuePlace>		<n0:IssueDate>2022-04-19</n0:IssueDate>		<n0:Subject>Rozhodnutie</n0:Subject>	</n0:Document></n0:ElectronicOfficialDocument>
