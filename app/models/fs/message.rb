@@ -52,8 +52,8 @@ class Fs::Message
     Message.create(
       uuid: SecureRandom.uuid,
       title: raw_message['message_type_name'],
-      recipient_name: FS_SUBJECT_NAME,
-      sender_name: raw_message['subject'],
+      sender_name: FS_SUBJECT_NAME,
+      recipient_name: raw_message['subject'],
       delivered_at: Time.parse(raw_message['created_at']),
       replyable: false,
       collapsed: collapsed?,
@@ -62,8 +62,11 @@ class Fs::Message
         # TODO: Toto je problem pri prijatych spravach, je tam typ podania (outbox message)
         "fs_form_id": nil,
         "fs_message_id": raw_message['message_id'],
+        "fs_sent_message_id": raw_message['sent_message_id'],
         "fs_status": raw_message['status'],
+        "fs_submitting_subject": raw_message['submitting_subject'],
         "fs_submission_status": raw_message['submission_status'],
+        "fs_submission_created_at": raw_message['submission_created_at'],
         "dic": raw_message['dic']
       },
     )
@@ -83,6 +86,7 @@ class Fs::Message
         "fs_form_id": (associated_message_draft.metadata['fs_form_id'] if associated_message_draft) || Fs::Form.where("identifier LIKE '#{raw_message['submission_type_id']}_%'")&.take&.id,
         "fs_message_id": raw_message['message_id'],
         "fs_status": raw_message['status'],
+        "submitting_subject": raw_message['submitting_subject'],
         "dic": raw_message['dic']
       },
     )
