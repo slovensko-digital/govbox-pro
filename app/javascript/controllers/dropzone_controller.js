@@ -30,7 +30,8 @@ export default class extends Controller {
   }
 
   handleFiles(files) {
-    fileList.innerHTML = '';
+    const fileInput = document.getElementById('content[]');
+    fileInput.files = files;
 
     for (const file of files) {
       const listItem = document.createElement('div');
