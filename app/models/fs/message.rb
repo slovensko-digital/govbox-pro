@@ -54,19 +54,17 @@ class Fs::Message
       title: raw_message['message_type_name'],
       sender_name: FS_SUBJECT_NAME,
       recipient_name: raw_message['subject'],
-      delivered_at: Time.parse(raw_message['created_at']),
+      delivered_at: Time.parse(raw_message['created_at']).getlocal,
       replyable: false,
       collapsed: collapsed?,
       outbox: false,
       metadata: {
-        # TODO: Toto je problem pri prijatych spravach, je tam typ podania (outbox message)
-        "fs_form_id": nil,
         "fs_message_id": raw_message['message_id'],
         "fs_sent_message_id": raw_message['sent_message_id'],
         "fs_status": raw_message['status'],
         "fs_submitting_subject": raw_message['submitting_subject'],
         "fs_submission_status": raw_message['submission_status'],
-        "fs_submission_created_at": raw_message['submission_created_at'],
+        "fs_submission_created_at": Time.parse(raw_message['submission_created_at']).getlocal,
         "dic": raw_message['dic']
       },
     )
@@ -78,7 +76,7 @@ class Fs::Message
       title: raw_message['submission_type_name'],
       sender_name: raw_message['subject'],
       recipient_name: FS_SUBJECT_NAME,
-      delivered_at: Time.parse(raw_message['created_at']),
+      delivered_at: Time.parse(raw_message['created_at']).getlocal,
       replyable: false,
       collapsed: collapsed?,
       outbox: true,
@@ -98,7 +96,7 @@ class Fs::Message
 
       message_object = message.objects.create!(
         # uuid: raw_object["id"], TODO uncomment when GO-130 is closed
-        is_signed: raw_object["is_signed"],
+        is_signed: raw_object["signed"],
         mimetype: raw_object["mime_type"],
         name: raw_object["name"],
         object_type: raw_object["class"],
@@ -106,14 +104,14 @@ class Fs::Message
       )
 
       if raw_object["encoding"] == "Base64"
-        message_object_content = Base64.decode64(raw_object["data"])
+        message_object_content = Base64.decode64(raw_object["content"])
       else
-        message_object_content = raw_object["xml_data"]
+        message_object_content = raw_object["content"]
       end
 
       MessageObjectDatum.create!(
         blob: message_object_content,
-        message_object_id: message_object.id
+        message_object: message_object
       )
     end
   end
@@ -129,7 +127,7 @@ class Fs::Message
   end
 
   def self.collapsed?
-    # TODO odoslana sprava s potvrdenkou by mohla byt collapsed
+    # TODO urcit podmienky: odoslana sprava s potvrdenkou by mohla byt collapsed
     false
   end
 end
