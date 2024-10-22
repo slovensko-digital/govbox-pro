@@ -12,10 +12,6 @@ module Utils
 
   MIMETYPE_WITHOUT_OPTIONAL_PARAMS_REGEXP = /^[^;]*/
 
-  def unzip(zipped_content)
-    ActiveSupport::Gzip.decompress(zipped_content)
-  end
-
   def file_directory(file_path)
     File.dirname(file_path)
   end

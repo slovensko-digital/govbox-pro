@@ -7,7 +7,7 @@ module PdfVisualizationOperations
 
   included do
     def prepare_pdf_visualization
-      prepare_pdf_visualization_from_template.presence || prepare_pdf_visualization_from_html
+      prepare_pdf_visualization_from_template || prepare_pdf_visualization_from_html
     end
 
     def prepare_pdf_visualization_from_template

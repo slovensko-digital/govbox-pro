@@ -1,12 +1,15 @@
 module Fs::MessageHelper
   def self.build_html_visualization(message)
-    return [ActionController::Base.new.render_to_string('fs/_html_visualization_submission', layout: false, locals: { message: message }), build_html_visualization_from_form(message)].compact.join('<hr>') if message.outbox?
+    return [ActionController::Base.new.render_to_string('fs/messages/_submission', layout: false, locals: { message: message }), build_html_visualization_from_form(message)].compact.join('<hr>') if message.outbox?
 
-    if message.title.in?(['Informácia o podaní', 'Informácia o odmietnutí podania'])
-      ActionController::Base.new.render_to_string('fs/_html_visualization_delivery_report', layout: false, locals: { message: message })
-    else
-      ActionController::Base.new.render_to_string('fs/_html_visualization_generic', layout: false, locals: { message: message })
-    end
+    # TODO: Vieme aj lepsie identifikovat? Nejake dalsie typy v tejto kategorii neexistuju?
+    template = if message.title.in?(['Informácia o podaní', 'Informácia o odmietnutí podania'])
+                 'fs/messages/_delivery_report'
+               else
+                 'fs/messages/_generic_message'
+               end
+
+    ActionController::Base.new.render_to_string(template, layout: false, locals: { message: message })
   end
 
   def self.build_html_visualization_from_form(message)
