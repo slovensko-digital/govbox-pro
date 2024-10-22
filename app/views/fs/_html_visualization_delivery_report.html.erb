@@ -1,0 +1,88 @@
+<style>
+  th {
+    font-weight: normal;
+    text-align: left;
+  }
+  th, td {
+    padding: 0.25rem 2rem 0.25rem 0;
+  }
+</style>
+
+<table class="min-w-full divide-y divide-gray-300">
+  <tbody class="divide-y divide-gray-200">
+  <tr>
+    <th>Typ dokumentu:</th>
+    <td>
+      <b><%= message.title %></b>
+    </td>
+  </tr>
+  <tr>
+    <th>Daňový subjekt:</th>
+    <td>
+      <b><%= message.recipient_name %></b>
+    </td>
+  </tr>
+  <tr>
+    <th>Identifikátor subjektu:</th>
+    <td>
+      <b><%= message.metadata['dic'] %></b>
+    </td>
+  </tr>
+  <tr>
+    <th>Odosielateľ podania:</th>
+    <td>
+      <b><%= message.metadata['fs_submitting_subject'] %></b>
+    </td>
+  </tr>
+  <tr>
+    <th>Evidenčné číslo podania:</th>
+    <td>
+      <b><%= message.metadata['fs_sent_message_id'] %></b>
+    </td>
+  </tr>
+  <tr>
+    <th>Evidenčné číslo potvrdenia:</th>
+    <td>
+      <b><%= message.metadata['fs_message_id'] %></b>
+    </td>
+  </tr>
+  <tr>
+    <th>Dátum a čas prijatia EP:</th>
+    <td>
+      <b>
+        <time class="md:hidden" datetime="<%= message.metadata['fs_submission_created_at'] %>">
+          <%= ApplicationController.helpers.nice_datetime_with_time(Time.parse(message.metadata['fs_submission_created_at']).getlocal, keep_year: true) %>
+        </time>
+      </b>
+    </td>
+  </tr>
+  <tr>
+    <th>Dátum a čas vystavenia potvrdenky:</th>
+    <td>
+      <b>
+        <time class="md:hidden" datetime="<%= message.delivered_at %>">
+          <%= ApplicationController.helpers.nice_datetime_with_time(message.delivered_at, keep_year: true) %>
+        </time>
+      </b>
+    </td>
+  </tr>
+  <tr>
+    <th>Obdobie:</th>
+    <td>
+      <b><!--TODO zistit co tu byva vyplnene (zatial sme videli iba prazdne)--></b>
+    </td>
+  </tr>
+  <tr>
+    <th>Stav spracovania:</th>
+    <td>
+      <b><%= message.metadata['fs_submission_status'] %></b>
+    </td>
+  </tr>
+  <tr>
+    <th>Dôvod zmeny stavu podania:</th>
+    <td>
+      <b><!--TODO tato informacia z API neprichadza, nachadza sa to vsak vo vnutri, v XML (vyplnene to je napr. v pripade odmietnuteho podania). Parsovat/neparsovat, kde?--></b>
+    </td>
+  </tr>
+  </tbody>
+</table>

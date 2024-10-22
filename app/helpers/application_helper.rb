@@ -9,10 +9,10 @@ module ApplicationHelper
     end
   end
 
-  def nice_datetime_with_time(datetime)
+  def nice_datetime_with_time(datetime, keep_year: false)
     if datetime.today?
       l(datetime, format: '%H:%M')
-    elsif datetime.year == Date.current.year
+    elsif datetime.year == Date.current.year && !keep_year
       l(datetime, format: '%e. %b %H:%M')
     else
       l(datetime, format: '%e. %b %Y %H:%M')
