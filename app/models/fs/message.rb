@@ -81,7 +81,7 @@ class Fs::Message
       collapsed: collapsed?,
       outbox: true,
       metadata: {
-        "fs_form_id": (associated_message_draft.metadata['fs_form_id'] if associated_message_draft) || Fs::Form.where("identifier LIKE '#{raw_message['submission_type_id']}_%'")&.take&.id,
+        "fs_form_id": (associated_message_draft.metadata['fs_form_id'] if associated_message_draft) || Fs::Form.find_by(submission_type_identifier: raw_message['submission_type_id'])&.id,
         "fs_message_id": raw_message['message_id'],
         "fs_status": raw_message['status'],
         "submitting_subject": raw_message['submitting_subject'],
