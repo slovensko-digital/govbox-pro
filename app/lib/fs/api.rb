@@ -29,7 +29,7 @@ module Fs
     end
 
     def fetch_sent_messages(page: 1, count: 100, obo: @obo)
-      request(:get, "sent-messages", {}, jwt_header(obo).merge(fs_credentials_header))[:body]
+      request(:get, "sent-messages?page=#{page}&per_page=#{count}", {}, jwt_header(obo).merge(fs_credentials_header))[:body]
     end
 
     def fetch_sent_message(message_id, obo: @obo)
@@ -37,8 +37,8 @@ module Fs
     end
 
     def fetch_received_messages(page: 1, count: 100, sent_message_id: nil, obo: @obo)
-      query = "?sent_message_id=#{CGI.escape(sent_message_id)}" if sent_message_id
-      request(:get, "received-messages#{query}", {}, jwt_header(obo).merge(fs_credentials_header))[:body]
+      additional_query_params = "&sent_message_id=#{CGI.escape(sent_message_id)}" if sent_message_id
+      request(:get, "received-messages?page=#{page}&per_page=#{count}#{additional_query_params}", {}, jwt_header(obo).merge(fs_credentials_header))[:body]
     end
 
     def fetch_received_message(message_id, obo: @obo)
