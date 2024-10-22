@@ -7,6 +7,10 @@ module PdfVisualizationOperations
 
   included do
     def prepare_pdf_visualization
+      prepare_pdf_visualization_from_template.presence || prepare_pdf_visualization_from_html
+    end
+
+    def prepare_pdf_visualization_from_template
       return unless form&.xsl_fo
       return unless unsigned_content
       return unless xml?
@@ -37,6 +41,13 @@ module PdfVisualizationOperations
         xsl_file.unlink
         pdf_file.unlink
       end
+    end
+
+    def prepare_pdf_visualization_from_html
+      return unless form?
+      return unless message.html_visualization.present?
+
+      Grover.new(full_html_document_from_body_content(message.html_visualization), format: 'A4', margin: {top: '15px', bottom: '15px', left: '15px', right: '15px'}).to_pdf
     end
 
     def xml_unsigned_content
@@ -75,7 +86,7 @@ module PdfVisualizationOperations
     end
 
     def downloadable_as_pdf?
-      xml? && form&.xsl_fo&.present?
+      (xml? && form&.xsl_fo&.present?) || (form? && message.html_visualization.present?)
     end
 
     def xml?
@@ -84,6 +95,19 @@ module PdfVisualizationOperations
       else
         Utils::XML_MIMETYPES.any? { |xml_mimetype| xml_mimetype == Utils.mimetype_without_optional_params(mimetype) }
       end
+    end
+
+    def full_html_document_from_body_content(body_content)
+      <<-HTML
+      <html>
+        <head>
+            <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        </head>
+        <body>
+          #{body_content}
+        </body>
+      </html>
+    HTML
     end
   end
 end

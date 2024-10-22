@@ -270,7 +270,7 @@ class MessageObjectTest < ActiveSupport::TestCase
 
     skip('Test needs to be run in docker')
 
-    assert_not_equal nil, message_object.prepare_pdf_visualization
+    assert_not_equal nil, message_object.prepare_pdf_visualization_from_template
   end
 
   test "mark_signed_by_user removes SignatureRequestedFrom SignerGroup, SignatureRequested Tags and adds SignedBy, Signed Tags after message object is signed by a signer user" do

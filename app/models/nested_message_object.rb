@@ -16,7 +16,7 @@ class NestedMessageObject < ApplicationRecord
 
   belongs_to :message_object, inverse_of: :nested_message_objects
 
-  delegate :message, to: :message_object
+  delegate :message, :form?, to: :message_object
 
   validates :name, presence: true, on: :validate_data
 
