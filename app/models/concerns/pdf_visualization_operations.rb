@@ -86,7 +86,9 @@ module PdfVisualizationOperations
     end
 
     def downloadable_as_pdf?
-      (xml? && form&.xsl_fo&.present?) || (form? && message.html_visualization.present?)
+      return true if xml? && form&.xsl_fo&.present?
+      return true if form? && message.html_visualization.present?
+      false
     end
 
     def xml?
