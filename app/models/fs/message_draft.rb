@@ -104,7 +104,7 @@ class Fs::MessageDraft < MessageDraft
   end
 
   def build_html_visualization
-    Fs::MessageHelper.build_html_visualization(self)
+    Fs::MessageHelper.build_html_visualization_from_form(self)
   end
 
   def form
