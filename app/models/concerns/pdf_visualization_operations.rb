@@ -55,7 +55,8 @@ module PdfVisualizationOperations
           bottom: '15px',
           left: '15px',
           right: '15px'
-        }
+        },
+        display_url: ENV['PDF_DISPLAY_URL']
       ).to_pdf
     end
 
