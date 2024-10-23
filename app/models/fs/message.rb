@@ -44,6 +44,8 @@ class Fs::Message
     update_html_visualization(message)
 
     EventBus.publish(:message_created, message)
+
+    message
   end
 
   private

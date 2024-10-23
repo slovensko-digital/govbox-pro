@@ -34,7 +34,7 @@
       <td>
         <b>
           <time class="md:hidden" datetime="<%= message.delivered_at %>">
-            <%= ApplicationController.helpers.nice_datetime_with_time(message.delivered_at, keep_year: true) %>
+            <%= ApplicationController.helpers.nice_datetime_with_time(message.delivered_at, full_date: true) %>
           </time>
         </b>
       </td>

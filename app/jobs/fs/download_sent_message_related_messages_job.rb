@@ -6,9 +6,9 @@ module Fs
       0.step do |k|
         received_messages = fs_api.fetch_received_messages(sent_message_id: outbox_message.metadata['fs_message_id'], page: k + 1, count: batch_size, from: from, to: to)
 
-      received_messages['messages'].each do |received_message|
-        ::Fs::DownloadReceivedMessageJob.perform_later(received_message['message_id'], box: outbox_message.box)
-      end
+        received_messages['messages'].each do |received_message|
+          ::Fs::DownloadReceivedMessageJob.perform_later(received_message['message_id'], box: outbox_message.box)
+        end
 
         break if received_messages['messages'].size < batch_size
       end
