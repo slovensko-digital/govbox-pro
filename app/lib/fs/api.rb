@@ -36,9 +36,16 @@ module Fs
       request(:get, "sent-messages/#{CGI.escape(message_id)}", {}, jwt_header(obo).merge(fs_credentials_header))[:body]
     end
 
-    def fetch_received_messages(page: 1, count: 100, sent_message_id: nil, obo: @obo)
-      additional_query_params = "&sent_message_id=#{CGI.escape(sent_message_id)}" if sent_message_id
-      request(:get, "received-messages?page=#{page}&per_page=#{count}#{additional_query_params}", {}, jwt_header(obo).merge(fs_credentials_header))[:body]
+    def fetch_received_messages(sent_message_id: nil, page: 1, count: 100, from: nil, to: nil, obo: @obo)
+      query = {
+        sent_message_id: sent_message_id,
+        page: page,
+        per_page: count,
+        from: from,
+        to: to
+      }.compact.to_query
+
+      request(:get, "received-messages?#{query}", {}, jwt_header(obo).merge(fs_credentials_header))[:body]
     end
 
     def fetch_received_message(message_id, obo: @obo)
