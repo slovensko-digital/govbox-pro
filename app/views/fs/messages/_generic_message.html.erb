@@ -3,6 +3,7 @@
     font-weight: normal;
     text-align: left;
   }
+
   th, td {
     padding: 0.25rem 2rem 0.25rem 0;
   }
@@ -52,7 +53,7 @@
         <b>
           <time class="md:hidden" datetime="<%= message.metadata['fs_submission_created_at'] %>">
             <%= ApplicationController.helpers.nice_datetime_with_time(Time.parse(message.metadata['fs_submission_created_at']), keep_year: true) %>
-            </time>
+          </time>
         </b>
     </tr>
     <tr>

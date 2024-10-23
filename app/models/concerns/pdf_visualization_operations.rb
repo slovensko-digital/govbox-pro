@@ -47,7 +47,16 @@ module PdfVisualizationOperations
       return unless form?
       return unless message.html_visualization.present?
 
-      Grover.new(full_html_document_from_body_content(message.html_visualization), format: 'A4', margin: {top: '15px', bottom: '15px', left: '15px', right: '15px'}).to_pdf
+      Grover.new(
+        full_html_document_from_body_content(message.html_visualization),
+        format: 'A4',
+        margin: {
+          top: '15px',
+          bottom: '15px',
+          left: '15px',
+          right: '15px'
+        }
+      ).to_pdf
     end
 
     def xml_unsigned_content
@@ -103,7 +112,7 @@ module PdfVisualizationOperations
       <<-HTML
       <html>
         <head>
-            <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+          <meta http-equiv="content-type" content="text/html; charset=utf-8" />
         </head>
         <body>
           #{body_content}
