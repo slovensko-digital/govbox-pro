@@ -108,3 +108,9 @@ ssd_main_draft_to_be_signed4_draft_form:
   name: MyString
   mimetype: MyString
   object_type: FORM
+
+ssd_main_empty_draft_form:
+  message: ssd_main_empty_draft
+  name: MyString
+  mimetype: MyString
+  object_type: FORM
