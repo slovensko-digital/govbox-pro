@@ -100,7 +100,6 @@ module Utils
 
   # TODO use UPVS API to detect if document is signed
   def is_signed?(entry_name:, content:)
-
     case File.extname(entry_name).downcase
     when '.asice', '.asics', '.xzep'
       true

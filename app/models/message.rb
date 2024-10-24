@@ -96,8 +96,10 @@ class Message < ApplicationRecord
     metadata["delivery_notification"] && metadata["authorized"] == true
   end
 
-  # TODO remove UPVS stuff from core domain
+  # TODO remove UPVS, FS stuff from core domain
   def form
+    return ::Fs::Form.find(metadata['fs_form_id']) if metadata['fs_form_id'].present?
+
     ::Upvs::Form.find_by(
       identifier: all_metadata['posp_id'],
       version: all_metadata['posp_version']

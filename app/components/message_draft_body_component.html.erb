@@ -93,7 +93,7 @@
 
       <% if @message.html_visualization.present? %>
         <div class="w-full">
-          <%= tag.iframe class: "relative border-none overflow-hidden h-full w-full", srcdoc: @message.format_html_visualization, onload: "(
+          <%= tag.iframe class: "relative border-none overflow-hidden h-full w-full", srcdoc: @message.html_visualization, onload: "(
               function(iframe) {
                 iframe.contentWindow.document.body.style['height'] = 'unset';
                 iframe.contentWindow.document.body.style['min-height'] = 'unset';
