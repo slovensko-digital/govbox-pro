@@ -149,17 +149,17 @@ class Govbox::Message < ApplicationRecord
   def self.migrate_tags_from_draft(message, tags_to_migrate)
     tags_to_migrate[:objects].each do |object_data|
       object = message.objects.find_by(uuid: object_data[:uuid])
-      object_data[:tags].each do |object_tag_id|
-        object&.assign_tag(Tag.find(object_tag_id))
+      object_data[:tags].each do |object_tag|
+        object&.assign_tag(object_tag)
       end
     end
 
-    tags_to_migrate[:message].each do |message_tag_id|
-      message.tags.add_cascading_tag(Tag.find(message_tag_id))
+    tags_to_migrate[:message].each do |message_tag|
+      message.tags.add_cascading_tag(message_tag)
     end
 
-    tags_to_migrate[:thread].each do |thread_tag_id|
-      message.thread.assign_tag(Tag.find(thread_tag_id))
+    tags_to_migrate[:thread].each do |thread_tag|
+      message.thread.assign_tag(thread_tag)
     end
   end
 

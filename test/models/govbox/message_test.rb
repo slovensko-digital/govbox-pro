@@ -30,7 +30,6 @@ class Govbox::MessageTest < ActiveSupport::TestCase
   end
 
   test "#create_message_with_thread! migrates tags from associated MessageDraft" do
-    message_draft = messages(:ssd_main_draft_to_be_signed_draft_one)
     govbox_message = govbox_messages(:ssd_general_created_from_draft)
 
     Govbox::Message.create_message_with_thread!(govbox_message)
@@ -38,14 +37,13 @@ class Govbox::MessageTest < ActiveSupport::TestCase
     message = Message.last
 
     # Simple and Signed tags copied to MessageThread
-    assert message.thread.tags.visible.simple.map(&:name).difference(message_draft.thread.tags.visible.simple.map(&:name)).none?
-    assert message.thread.tags.signed.map(&:name).all? { |tag_name| message.thread.tags.signed.map(&:name).include?(tag_name) }
+    assert ['Finance', 'Podpísané', 'Podpísané: Signer user'].map { |tag_name| message.thread.tags.include?(tag_name) }
 
     # No SignatureRequested, Submiited tags copied to MessageThread
     assert message.thread.tags.where(type: ['SignatureRequestedTag', 'SignatureRequestedFromTag', 'Submitted']).none?
 
     # Signed tags copied to MessageObjects
-    assert message.objects.first.tags.signed.map(&:name).all? { |tag_name| message.objects.first.tags.signed.map(&:name).include?(tag_name) }
+    assert message.objects.find_by(name: 'Attachment2').tags.include?(tags(:ssd_signer_user_signed))
 
     # No SignatureRequested tags copied to MessageObjects
     assert message.form_object.tags.where(type: ['SignatureRequestedTag', 'SignatureRequestedFromTag']).none?

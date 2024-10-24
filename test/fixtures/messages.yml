@@ -195,6 +195,7 @@ ssd_main_draft_to_be_signed_draft_one:
   replyable: false
   metadata:
     status: created
+    correlation_id: 7a364355-882c-41d2-b1b3-e215644f805b
   author: basic
 
 ssd_main_draft_to_be_signed_draft_two:
@@ -203,7 +204,7 @@ ssd_main_draft_to_be_signed_draft_two:
   title: MyStringDraft2
   html_visualization: MyString
   delivered_at: 2023-05-18 16:18:26
-  thread: ssd_main_draft_to_be_signed
+  thread: ssd_main_draft_to_be_signed2
   replyable: false
   metadata:
     status: created

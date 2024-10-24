@@ -85,11 +85,11 @@ class MessageDraft < Message
 
     migration_list[:objects] = objects.map do |object| {
       uuid: object.uuid,
-      tags: object.tags.signed.map(&:id)
+      tags: object.tags.signed.to_a
     } if object.tags.signed.any?
     end.compact
-    migration_list[:message] = tags.simple.or(tags.signed).map(&:id)
-    migration_list[:thread] = (thread.tags.simple + thread.tags.signed).map(&:id)
+    migration_list[:message] = tags.simple.or(tags.signed).to_a
+    migration_list[:thread] = (thread.tags.simple + thread.tags.signed).to_a
 
     migration_list
   end

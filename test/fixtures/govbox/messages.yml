@@ -141,7 +141,7 @@ ssd_referring_to_outbox_message:
 
 ssd_general_created_from_draft:
   message_id: 9b1b718a-c06c-487c-86c2-b68b8606aa5c
-  correlation_id: <%= SecureRandom.uuid %>
+  correlation_id: 7a364355-882c-41d2-b1b3-e215644f805b
   edesk_message_id: 7
   delivered_at: <%= DateTime.current %>
   edesk_class: TEST
@@ -161,7 +161,7 @@ ssd_general_created_from_draft:
         class: FORM
         content: MyContent
       - id: af0e1c11-d226-45b7-8816-a5c24e139d35
-        name: Attachment2
+        name: Attachment
         mime_type: MyString
         class: ATTACHMENT
         content: MyContent
