@@ -8,6 +8,7 @@
 #  name         :string
 #  object_type  :string           not null
 #  to_be_signed :boolean          default(FALSE), not null
+#  uuid         :uuid
 #  visualizable :boolean
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
@@ -54,6 +55,14 @@ class MessageObject < ApplicationRecord
         message_object: message_object,
         blob: message_object_content
       )
+    end
+  end
+
+  def self.mark_message_objects_externally_signed(objects)
+    objects.find_each do |object|
+      next unless object.is_signed?
+
+      object.assign_tag(object.message.tenant.signed_externally_tag!) unless object.tags.signed_internally.present?
     end
   end
 
@@ -117,6 +126,7 @@ class MessageObject < ApplicationRecord
   end
 
   def fill_missing_info
+    update(uuid: SecureRandom.uuid) unless uuid.present?
     update(name: name + Utils.file_extension_by_mimetype(mimetype).to_s) if Utils.file_name_without_extension?(self)
     update(mimetype: Utils.file_mimetype_by_name(entry_name: name)) if mimetype == Utils::OCTET_STREAM_MIMETYPE
   end

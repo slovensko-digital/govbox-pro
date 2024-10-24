@@ -4,6 +4,10 @@ ssd_main_draft_to_be_signed_draft_one_form_signature_requested:
   message_object: ssd_main_draft_to_be_signed_draft_one_form
   tag: ssd_signer_user_signature_requested
 
+ssd_main_draft_to_be_signed_draft_one_attachment2_signed_ssd_signer:
+  message_object: ssd_main_draft_to_be_signed_draft_one_attachment2
+  tag: ssd_signer_user_signed
+
 ssd_main_draft_to_be_signed_draft_two_form_signature_requested:
   message_object: ssd_main_draft_to_be_signed_draft_two_form
   tag: ssd_signer_user_signature_requested
