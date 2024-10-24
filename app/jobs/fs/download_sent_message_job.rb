@@ -1,7 +1,7 @@
 module Fs
   class DownloadSentMessageJob < ApplicationJob
     def perform(fs_message_id, box:, fs_client: FsEnvironment.fs_client)
-      return if box.messages.where.not(type: 'Fs::MessageDraft').where("metadata ->> 'fs_message_id' = ?", fs_message_id).any?
+      return if box.messages.where(type: [nil, 'Message']).where("metadata ->> 'fs_message_id' = ?", fs_message_id).any?
 
       fs_api = fs_client.api(api_connection: box.api_connection, box: box)
 
