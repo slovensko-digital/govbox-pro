@@ -127,3 +127,7 @@ ssd_main_draft_to_be_signed4_ssd_signature_requested:
 ssd_main_draft_to_be_signed4_ssd_signers_signature_requested:
   message_thread: ssd_main_draft_to_be_signed4
   tag: ssd_signers_signature_requested
+
+ssd_main_empty_draft_ssd_basic_user_drafts:
+  message_thread: ssd_main_empty_draft
+  tag: ssd_basic_user_drafts

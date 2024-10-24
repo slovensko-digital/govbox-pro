@@ -8,6 +8,10 @@ Rails.application.config.middleware.use OmniAuth::Builder do
     # Respond to saml, saml/callback, saml/metadata, saml/slo, and saml/spslo under path prefix.
     config.path_prefix = '/auth'
 
+    config.on_failure do |env|
+      SessionsController.action(:destroy).call(env)
+    end
+
     # Use default application logger.
     config.logger = Rails.logger
   end
