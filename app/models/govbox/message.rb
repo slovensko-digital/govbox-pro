@@ -32,7 +32,7 @@ class Govbox::Message < ApplicationRecord
     MessageThread.with_advisory_lock!(govbox_message.correlation_id, transaction: true, timeout_seconds: 10) do
       message = create_message(govbox_message)
 
-      message.thread = message_draft.thread if message_draft || govbox_message.box.message_threads.find_or_create_by_merge_uuid!(
+      message.thread = (message_draft.thread if message_draft) || govbox_message.box.message_threads.find_or_create_by_merge_uuid!(
         box: govbox_message.box,
         merge_uuid: govbox_message.correlation_id,
         title: message.metadata.dig("delivery_notification", "consignment", "subject").presence || message.title,

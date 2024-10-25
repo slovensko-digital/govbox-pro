@@ -38,6 +38,7 @@ class Tag < ApplicationRecord
   scope :visible, -> { where(visible: true) }
   scope :signing_tags, -> { where(type: ["SignedTag", "SignedByTag", "SignatureRequestedTag", "SignatureRequestedFromTag"]) }
   scope :signed, -> { where(type: ["SignedTag", "SignedByTag", "SignedExternallyTag"]) }
+  scope :signed_by, -> { where(type: "SignedByTag") }
   scope :signed_internally, -> { where(type: ["SignedTag", "SignedByTag"]) }
   scope :archived, -> { where(type: ArchivedTag.to_s) }
 
