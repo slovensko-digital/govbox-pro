@@ -17,6 +17,7 @@ module Fs::MessageHelper
     return unless message.form_object&.unsigned_content
 
     template = Nokogiri::XSLT(message.form.xslt_txt)
-    ActionController::Base.helpers.simple_format(template.transform(message.form_object.xml_unsigned_content).to_s)
+
+    ActionController::Base.new.render_to_string('fs/messages/_style', layout: false, locals: { message: message }) + ActionController::Base.helpers.simple_format(template.transform(message.form_object.xml_unsigned_content).to_s)
   end
 end
