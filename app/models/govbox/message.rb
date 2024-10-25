@@ -28,29 +28,28 @@ class Govbox::Message < ApplicationRecord
   def self.create_message_with_thread!(govbox_message)
     message = nil
     message_draft = Upvs::MessageDraft.where(uuid: govbox_message.message_id).joins(:thread).where(thread: { box_id: govbox_message.box.id }).take
-    tags_to_migrate = message_draft&.tags_to_migrate_to_message
 
     MessageThread.with_advisory_lock!(govbox_message.correlation_id, transaction: true, timeout_seconds: 10) do
       message = create_message(govbox_message)
 
-      message.thread = govbox_message.box.message_threads.find_or_create_by_merge_uuid!(
+      message.thread = message_draft.thread if message_draft || govbox_message.box.message_threads.find_or_create_by_merge_uuid!(
         box: govbox_message.box,
         merge_uuid: govbox_message.correlation_id,
         title: message.metadata.dig("delivery_notification", "consignment", "subject").presence || message.title,
         delivered_at: govbox_message.delivered_at
       )
 
-      message_draft&.destroy
       message.save!
 
+      create_message_objects(message, govbox_message.payload)
+
       add_upvs_related_tags(message, govbox_message)
+      migrate_tags_from_draft(message, message_draft) if message_draft
+
+      MessageObject.mark_message_objects_externally_signed(message.objects)
+
+      message_draft.destroy if message_draft
     end
-
-    create_message_objects(message, govbox_message.payload)
-
-    migrate_tags_from_draft(message, tags_to_migrate) if tags_to_migrate
-
-    MessageObject.mark_message_objects_externally_signed(message.objects)
 
     EventBus.publish(:message_thread_created, message.thread) if message.thread.previously_new_record?
     EventBus.publish(:message_created, message)
@@ -146,21 +145,13 @@ class Govbox::Message < ApplicationRecord
     add_delivery_notification_tag(message) if message.can_be_authorized?
   end
 
-  def self.migrate_tags_from_draft(message, tags_to_migrate)
-    tags_to_migrate[:objects].each do |object_data|
-      object = message.objects.find_by(uuid: object_data[:uuid])
-      object_data[:tags].each do |object_tag|
-        object&.assign_tag(object_tag)
-      end
+  def self.migrate_tags_from_draft(message, message_draft)
+    message_draft.objects.map do |message_draft_object|
+      message_object = message.objects.find_by(uuid: message_draft_object.uuid)
+      message_draft_object.tags.signed.each { |tag| message_object.assign_tag(tag) }
     end
 
-    tags_to_migrate[:message].each do |message_tag|
-      message.tags.add_cascading_tag(message_tag)
-    end
-
-    tags_to_migrate[:thread].each do |thread_tag|
-      message.thread.assign_tag(thread_tag)
-    end
+    (message_draft.tags.simple + message_draft.tags.signed).each { |tag| message.assign_tag(tag) }
   end
 
   def self.add_delivery_notification_tag(message)
