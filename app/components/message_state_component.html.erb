@@ -1,11 +1,17 @@
 <% if @message.form_object&.is_signed? || @message.form_object.present? || @message.authorized?  %>
-  <div class="w-fit flex flex-col gap-1 <%= @classes %>">
-    <% if @message.form_object&.is_signed? %>
+  <div class="w-fit flex flex-row gap-1 <%= @classes %>">
+    <% if @message.form_object&.tags&.signed_by&.any? %>
+      <% @message.form_object.tags.signed_by.each do |tag| %>
+        <%= render Common::BadgeComponent.new(tag.name, "green", "fingerprint") %>
+      <% end %>
+    <% elsif @message.form_object&.is_signed? %>
       <%= render Common::BadgeComponent.new("Podpísané", "green", "fingerprint") %>
     <% end %>
+
     <% if @message.authorized? %>
       <%= render Common::BadgeComponent.new("Prevzatá doručenka", "purple") %>
     <% end %>
+
     <% if @message.thread.archived? %>
       <%= render ArchivedObjectTagComponent.new(@message.form_object&.archived_object) %>
     <% end %>
