@@ -32,7 +32,8 @@ class Govbox::Message < ApplicationRecord
     MessageThread.with_advisory_lock!(govbox_message.correlation_id, transaction: true, timeout_seconds: 10) do
       message = create_message(govbox_message)
 
-      message.thread = (message_draft.thread if message_draft) || govbox_message.box.message_threads.find_or_create_by_merge_uuid!(
+      message.thread = message_draft&.thread
+      message.thread ||= govbox_message.box.message_threads.find_or_create_by_merge_uuid!(
         box: govbox_message.box,
         merge_uuid: govbox_message.correlation_id,
         title: message.metadata.dig("delivery_notification", "consignment", "subject").presence || message.title,
@@ -44,11 +45,13 @@ class Govbox::Message < ApplicationRecord
       create_message_objects(message, govbox_message.payload)
 
       add_upvs_related_tags(message, govbox_message)
-      migrate_tags_from_draft(message, message_draft) if message_draft
+
+      if message_draft
+        copy_tags_from_draft(message, message_draft)
+        message_draft.destroy
+      end
 
       MessageObject.mark_message_objects_externally_signed(message.objects)
-
-      message_draft.destroy if message_draft
     end
 
     EventBus.publish(:message_thread_created, message.thread) if message.thread.previously_new_record?
@@ -145,7 +148,7 @@ class Govbox::Message < ApplicationRecord
     add_delivery_notification_tag(message) if message.can_be_authorized?
   end
 
-  def self.migrate_tags_from_draft(message, message_draft)
+  def self.copy_tags_from_draft(message, message_draft)
     message_draft.objects.map do |message_draft_object|
       message_object = message.objects.find_by(uuid: message_draft_object.uuid)
       message_draft_object.tags.signed.each { |tag| message_object.assign_tag(tag) }
