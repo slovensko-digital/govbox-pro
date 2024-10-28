@@ -168,7 +168,7 @@ class MessageThread < ApplicationRecord
   end
 
   def any_objects_with_requested_signature?
-    messages.any? { |message| message.any_objects_with_requested_signature? }
+    tags.signature_requesting.any?
   end
 
   private
