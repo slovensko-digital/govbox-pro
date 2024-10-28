@@ -97,7 +97,7 @@ class Message < ApplicationRecord
   end
 
   def any_objects_with_requested_signature?
-    objects.any? { |message_object| message_object.tags.where(type: SignatureRequestedFromTag.to_s).any? }
+    MessageObjectsTag.where(message_object: objects, tag: tenant.tags.signature_requesting).exists?
   end
 
   # TODO remove UPVS stuff from core domain

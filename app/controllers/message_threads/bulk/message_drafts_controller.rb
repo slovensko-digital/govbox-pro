@@ -45,7 +45,7 @@ module MessageThreads
       end
 
       def any_missing_signature?(message_threads)
-        message_threads.any? { |thread| thread.any_objects_with_requested_signature? }
+        MessageThreadsTag.where(message_thread: message_threads, tag: Current.tenant.tags.signature_requesting).exists?
       end
     end
   end
