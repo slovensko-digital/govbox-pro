@@ -96,6 +96,10 @@ class Message < ApplicationRecord
     metadata["delivery_notification"] && metadata["authorized"] == true
   end
 
+  def any_objects_with_requested_signature?
+    objects.any? { |message_object| message_object.tags.where(type: SignatureRequestedFromTag.to_s).any? }
+  end
+
   # TODO remove UPVS stuff from core domain
   def form
     ::Upvs::Form.find_by(

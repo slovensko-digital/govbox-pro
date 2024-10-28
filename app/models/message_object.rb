@@ -153,11 +153,11 @@ class MessageObject < ApplicationRecord
 
   def remove_object_related_tags_from_thread
     tags.each do |tag|
-      message.thread.unassign_tag(tag) unless other_thread_objects_include_tag?(tag)
+      thread.unassign_tag(tag) unless other_thread_objects_include_tag?(tag)
     end
 
-    message.thread.unassign_tag(message.tenant.signed_tag!) unless message.thread.tags.reload.where(type: SignedByTag.to_s).any?
-    message.thread.unassign_tag(message.tenant.signature_requested_tag!) unless message.thread.tags.reload.where(type: SignatureRequestedFromTag.to_s).any?
+    thread.unassign_tag(message.tenant.signed_tag!) unless thread.tags.reload.where(type: SignedByTag.to_s).any?
+    thread.unassign_tag(message.tenant.signature_requested_tag!) unless thread.tags.reload.where(type: SignatureRequestedFromTag.to_s).any?
   end
 
   def other_thread_objects_include_tag?(tag)
