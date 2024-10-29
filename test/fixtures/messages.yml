@@ -186,8 +186,8 @@ ssd_main_collapsed_two:
     collapsed: true
 
 ssd_main_draft_to_be_signed_draft_one:
-  type: MessageDraft
-  uuid: <%= SecureRandom.uuid %>
+  type: Upvs::MessageDraft
+  uuid: 9b1b718a-c06c-487c-86c2-b68b8606aa5c
   title: Title is not shown
   html_visualization: Reply to something
   delivered_at: 2023-05-18 16:18:26
@@ -195,6 +195,7 @@ ssd_main_draft_to_be_signed_draft_one:
   replyable: false
   metadata:
     status: created
+    correlation_id: 7a364355-882c-41d2-b1b3-e215644f805b
   author: basic
 
 ssd_main_draft_to_be_signed_draft_two:
@@ -203,7 +204,7 @@ ssd_main_draft_to_be_signed_draft_two:
   title: MyStringDraft2
   html_visualization: MyString
   delivered_at: 2023-05-18 16:18:26
-  thread: ssd_main_draft_to_be_signed
+  thread: ssd_main_draft_to_be_signed2
   replyable: false
   metadata:
     status: created

@@ -19,3 +19,8 @@ ssd_main_issue_one:
   message_thread: ssd_main_issue
   uuid: <%= SecureRandom.uuid %>
   box: ssd_main
+
+ssd_main_draft_to_be_signed:
+  message_thread: ssd_main_draft_to_be_signed
+  uuid: 7a364355-882c-41d2-b1b3-e215644f805b
+  box: ssd_main

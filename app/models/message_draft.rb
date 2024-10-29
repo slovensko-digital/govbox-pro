@@ -79,7 +79,6 @@ class MessageDraft < Message
   def submit
     raise NotImplementedError
   end
-
   def draft?
     true
   end

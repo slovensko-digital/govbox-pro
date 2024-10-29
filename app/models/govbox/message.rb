@@ -27,11 +27,13 @@ class Govbox::Message < ApplicationRecord
 
   def self.create_message_with_thread!(govbox_message)
     message = nil
+    message_draft = Upvs::MessageDraft.where(uuid: govbox_message.message_id).joins(:thread).where(thread: { box_id: govbox_message.box.id }).take
 
     MessageThread.with_advisory_lock!(govbox_message.correlation_id, transaction: true, timeout_seconds: 10) do
       message = create_message(govbox_message)
 
-      message.thread = govbox_message.box.message_threads.find_or_create_by_merge_uuid!(
+      message.thread = message_draft&.thread
+      message.thread ||= govbox_message.box.message_threads.find_or_create_by_merge_uuid!(
         box: govbox_message.box,
         merge_uuid: govbox_message.correlation_id,
         title: message.metadata.dig("delivery_notification", "consignment", "subject").presence || message.title,
@@ -40,10 +42,17 @@ class Govbox::Message < ApplicationRecord
 
       message.save!
 
-      add_upvs_related_tags(message, govbox_message)
-    end
+      create_message_objects(message, govbox_message.payload)
 
-    create_message_objects(message, govbox_message.payload)
+      add_upvs_related_tags(message, govbox_message)
+
+      if message_draft
+        copy_tags_from_draft(message, message_draft)
+        message_draft.destroy
+      end
+
+      MessageObject.mark_message_objects_externally_signed(message.objects)
+    end
 
     EventBus.publish(:message_thread_created, message.thread) if message.thread.previously_new_record?
     EventBus.publish(:message_created, message)
@@ -103,15 +112,14 @@ class Govbox::Message < ApplicationRecord
     raw_message["objects"].each do |raw_object|
       message_object_type = raw_object["class"]
       visualizable = (message_object_type == "FORM" && message.html_visualization.present?) ? true : nil
-      tags = raw_object["signed"] ? [message.thread.box.tenant.signed_externally_tag!] : []
 
       message_object = message.objects.create!(
+        uuid: raw_object["id"],
         name: raw_object["name"],
         mimetype: raw_object["mime_type"],
         is_signed: raw_object["signed"],
         object_type: message_object_type,
-        visualizable: visualizable,
-        tags: tags
+        visualizable: visualizable
       )
 
       if raw_object["encoding"] == "Base64"
@@ -138,6 +146,15 @@ class Govbox::Message < ApplicationRecord
     message.add_cascading_tag(upvs_tag)
 
     add_delivery_notification_tag(message) if message.can_be_authorized?
+  end
+
+  def self.copy_tags_from_draft(message, message_draft)
+    message_draft.objects.map do |message_draft_object|
+      message_object = message.objects.find_by(uuid: message_draft_object.uuid)
+      message_draft_object.tags.signed.each { |tag| message_object.assign_tag(tag) }
+    end
+
+    (message_draft.tags.simple + message_draft.tags.signed).each { |tag| message.assign_tag(tag) }
   end
 
   def self.add_delivery_notification_tag(message)
