@@ -7,7 +7,6 @@
 #  mimetype     :string
 #  name         :string
 #  object_type  :string           not null
-#  to_be_signed :boolean          default(FALSE), not null
 #  visualizable :boolean
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
@@ -24,8 +23,6 @@ class MessageObject < ApplicationRecord
   has_one :archived_object, dependent: :destroy
 
   scope :unsigned, -> { where(is_signed: false) }
-  scope :to_be_signed, -> { where(to_be_signed: true) }
-  scope :should_be_signed, -> { where(to_be_signed: true, is_signed: false) }
 
   validates :name, presence: { message: "Name can't be blank" }, on: :validate_data
   validate :allowed_mimetype?, on: :validate_data
