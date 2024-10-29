@@ -207,7 +207,7 @@ class MessageObjectTest < ActiveSupport::TestCase
   end
 
   test "before_destroy callback deletes SignatureRequested Tag from message thread (if no more objects with SignatureRequestedFromTag present)" do
-    message_object = message_objects(:ssd_main_draft_to_be_signed2_draft_form)
+    message_object = message_objects(:ssd_main_draft_form)
     message_thread = message_object.message.thread
 
     message_object.destroy
