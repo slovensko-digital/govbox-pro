@@ -56,4 +56,19 @@ class MessageDraftsTest < ApplicationSystemTestCase
     refute_selector(thread_in_listing_selector(thread_general))
     refute_selector(thread_in_listing_selector(thread_issue))
   end
+
+  test "message is not submitted and flash message is shown when user tries to send message without requested signatures present" do
+    message_thread = message_threads(:ssd_main_draft_to_be_signed2)
+    message_draft = messages(:ssd_main_draft_to_be_signed2_draft)
+
+    visit message_thread_path(message_thread)
+
+    within("#upvs_message_draft_#{message_draft.id}") do
+      assert_button "Odoslať"
+
+      click_button "Odoslať"
+    end
+
+    assert_text "Pred odoslaním podpíšte všetky dokumenty na podpis"
+  end
 end

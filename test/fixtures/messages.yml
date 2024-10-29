@@ -217,7 +217,7 @@ ssd_main_draft_to_be_signed_draft_two:
   author: basic
 
 ssd_main_draft_to_be_signed2_draft:
-  type: MessageDraft
+  type: Upvs::MessageDraft
   uuid: <%= SecureRandom.uuid %>
   title: MyStringDraft3
   html_visualization: MyString
@@ -226,6 +226,13 @@ ssd_main_draft_to_be_signed2_draft:
   replyable: false
   metadata:
     status: created
+    sktalk_class: EGOV_APPLICATION
+    posp_id: App.GeneralAgenda
+    posp_version: 1.9
+    message_type: App.GeneralAgenda
+    correlation_id: <%= SecureRandom.uuid %>
+    recipient_uri:
+      ico://sk/12345678
   author: basic
 
 ssd_main_draft_to_be_signed3_draft:

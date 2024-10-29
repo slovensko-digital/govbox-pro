@@ -106,7 +106,7 @@ class MessageDraft < Message
   end
 
   def submittable?
-    form_object.content.present? && objects.to_be_signed.all? { |o| o.is_signed? } && correctly_created? && valid?(:validate_data)
+    form_object&.content&.present? && correctly_created? && valid?(:validate_data) && !any_objects_with_requested_signature?
   end
 
   def not_submittable_errors
@@ -114,7 +114,7 @@ class MessageDraft < Message
 
     errors = []
     errors << 'Vyplňte obsah správy' unless form_object.content.present?
-    errors << 'Pred odoslaním podpíšte všetky dokumenty na podpis' unless objects.to_be_signed.all? { |o| o.is_signed? }
+    errors << 'Pred odoslaním podpíšte všetky dokumenty na podpis' if any_objects_with_requested_signature?
     errors << 'Obsah správy nie je validný' if invalid? || !valid?(:validate_data)
     errors << 'Správu bude možné odoslať až po ukončení validácie' if being_validated?
 
