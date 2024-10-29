@@ -96,6 +96,10 @@ class Message < ApplicationRecord
     metadata["delivery_notification"] && metadata["authorized"] == true
   end
 
+  def any_objects_with_requested_signature?
+    MessageObjectsTag.where(message_object: objects, tag: tenant.tags.signature_requesting).exists?
+  end
+
   # TODO remove UPVS, FS stuff from core domain
   def form
     return ::Fs::Form.find(metadata['fs_form_id']) if metadata['fs_form_id'].present?

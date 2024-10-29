@@ -49,16 +49,32 @@ ssd_main_fs_one_form:
   mimetype: application/x-eform-xml
   object_type: FORM
 
+ssd_main_draft_form:
+  message: ssd_main_draft
+  name: MyString
+  mimetype: application/x-eform-xml
+  object_type: FORM
+
 ssd_main_draft_to_be_signed_draft_one_form:
+  uuid: 6a0f716a-c284-4680-ad7e-ed2bde769dd2
   message: ssd_main_draft_to_be_signed_draft_one
   name: MyString
   mimetype: MyString
   object_type: FORM
 
 ssd_main_draft_to_be_signed_draft_one_attachment:
+  uuid: af0e1c11-d226-45b7-8816-a5c24e139d35
   message: ssd_main_draft_to_be_signed_draft_one
   name: Attachment
   mimetype: MyString
+  object_type: ATTACHMENT
+
+ssd_main_draft_to_be_signed_draft_one_attachment2:
+  uuid: 57c9954c-93e2-470c-833c-fd2bc6d8c70f
+  message: ssd_main_draft_to_be_signed_draft_one
+  name: Attachment2
+  mimetype: MyString
+  is_signed: true
   object_type: ATTACHMENT
 
 ssd_main_draft_to_be_signed_draft_two_form:
@@ -70,7 +86,7 @@ ssd_main_draft_to_be_signed_draft_two_form:
 ssd_main_draft_to_be_signed2_draft_form:
   message: ssd_main_draft_to_be_signed2_draft
   name: MyString
-  mimetype: MyString
+  mimetype: application/x-eform-xml
   object_type: FORM
 
 ssd_main_draft_to_be_signed3_draft_one_form:

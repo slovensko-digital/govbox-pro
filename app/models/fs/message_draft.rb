@@ -71,13 +71,12 @@ class Fs::MessageDraft < MessageDraft
       form_object = message.objects.create(
         object_type: 'FORM',
         name: form_file.original_filename,
-        mimetype: form_file.content_type,
-        to_be_signed: fs_form.signature_required
+        mimetype: form_file.content_type
       )
       form_object.update(is_signed: form_object.asice?)
       message.thread.box.tenant.signed_externally_tag!.assign_to_message_object(form_object) if form_object.is_signed?
 
-      if form_object.to_be_signed && !form_object.is_signed?
+      if fs_form.signature_required && !form_object.is_signed?
         message.thread.box.tenant.signer_group.signature_requested_from_tag&.assign_to_message_object(form_object)
         message.thread.box.tenant.signer_group.signature_requested_from_tag&.assign_to_thread(message.thread)
       end

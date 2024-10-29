@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_10_22_135615) do
+ActiveRecord::Schema[7.1].define(version: 2024_10_29_064753) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -388,8 +388,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_22_135615) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "is_signed"
-    t.boolean "to_be_signed", default: false, null: false
     t.boolean "visualizable"
+    t.uuid "uuid"
     t.index ["message_id"], name: "index_message_objects_on_message_id"
   end
 
@@ -487,6 +487,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_22_135615) do
     t.index ["author_id"], name: "index_messages_on_author_id"
     t.index ["import_id"], name: "index_messages_on_import_id"
     t.index ["message_thread_id"], name: "index_messages_on_message_thread_id"
+    t.unique_constraint ["uuid", "message_thread_id"], deferrable: :deferred
   end
 
   create_table "messages_tags", force: :cascade do |t|
