@@ -13,7 +13,7 @@ module Fs::MessageHelper
   end
 
   def self.build_html_visualization_from_form(message)
-    return unless message.form&.xslt_txt
+    raise 'Missing Fs::Form XSLT' unless message.form&.xslt_txt
     return unless message.form_object&.unsigned_content
 
     template = Nokogiri::XSLT(message.form.xslt_txt)

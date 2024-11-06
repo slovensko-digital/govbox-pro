@@ -1,6 +1,9 @@
 module Fs
   class DownloadSentMessageRelatedMessagesJob < ApplicationJob
     def perform(outbox_message, from: nil, to: nil, fs_client: FsEnvironment.fs_client, batch_size: 25)
+      raise unless outbox_message.box.is_a?(Fs::Box)
+      return unless outbox_message.box.syncable?
+
       fs_api = fs_client.api(api_connection: outbox_message.box.api_connection, box: outbox_message.box)
 
       0.step do |k|
