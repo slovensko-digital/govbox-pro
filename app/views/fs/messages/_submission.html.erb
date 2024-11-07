@@ -44,7 +44,19 @@
     </tr>
     <tr>
       <th>Obdobie:</th>
-      <td><!--TODO zistit co tu byva vyplnene (zatial sme videli iba prazdne)--></td>
+      <td>
+        <b><%= message.metadata['fs_period'] %></b>
+      </td>
     </tr>
+    <% if message.metadata['fs_other_attributes']&.present? %>
+    <%# message.metadata['fs_other_attributes'].each do |k, v| %>
+<!--      <tr>-->
+<!--        <th><%#= k %>:</th>-->
+<!--        <td>-->
+<!--          <b><%#= v %></b>-->
+<!--        </td>-->
+<!--      </tr>-->
+    <%# end %>
+  <% end %>
   </tbody>
 </table>

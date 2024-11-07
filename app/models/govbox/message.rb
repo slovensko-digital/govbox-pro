@@ -47,7 +47,7 @@ class Govbox::Message < ApplicationRecord
       add_upvs_related_tags(message, govbox_message)
 
       if message_draft
-        copy_tags_from_draft(message, message_draft)
+        message.copy_tags_from_draft(message_draft)
         message_draft.destroy
       end
 

@@ -61,7 +61,7 @@
     <tr>
       <th>Obdobie:</th>
       <td>
-        <b><!--TODO zistit co tu byva vyplnene (zatial sme videli iba prazdne)--></b>
+        <b><%= message.metadata['fs_period'] %></b>
       </td>
     </tr>
     <tr>
@@ -73,8 +73,18 @@
     <tr>
       <th>Dôvod zmeny stavu podania:</th>
       <td>
-        <b><!--TODO tato informacia z API neprichadza, nachadza sa to vsak vo vnutri, v XML (vyplnene to je napr. v pripade odmietnuteho podania). Parsovat/neparsovat, kde?--></b>
+        <b><%= message.metadata['fs_dismissal_reason'] %></b>
       </td>
     </tr>
+    <% if message.metadata['fs_other_attributes']&.present? %>
+      <%# message.metadata['fs_other_attributes'].each do |k, v| %>
+<!--        <tr>-->
+<!--          <th><%#= k %>:</th>-->
+<!--          <td>-->
+<!--            <b><%#= v %></b>-->
+<!--          </td>-->
+<!--        </tr>-->
+      <%# end %>
+    <% end %>
   </tbody>
 </table>

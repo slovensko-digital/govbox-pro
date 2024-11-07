@@ -11,10 +11,10 @@ class Fs::Message
       message.thread = associated_outbox_message.thread
 
       message.save!
-    end
 
-    create_message_objects(message, raw_message)
-    update_html_visualization(message)
+      create_message_objects(message, raw_message)
+      update_html_visualization(message)
+    end
 
     EventBus.publish(:message_created, message)
   end
@@ -28,20 +28,24 @@ class Fs::Message
     MessageThread.with_advisory_lock!(merge_identifier, transaction: true, timeout_seconds: 10) do
       message = create_outbox_message(raw_message)
 
-      message.thread = box.message_threads.find_or_create_by_merge_uuid!(
+      message.thread = associated_message_draft&.thread
+      message.thread ||= box.message_threads.find_or_create_by_merge_uuid!(
         box: box,
         merge_uuid: merge_identifier,
         title: message.title,
         delivered_at: message.delivered_at
       )
 
-      associated_message_draft.destroy if associated_message_draft
-
       message.save!
-    end
 
-    create_message_objects(message, raw_message)
-    update_html_visualization(message)
+      create_message_objects(message, raw_message)
+      update_html_visualization(message)
+
+      if associated_message_draft
+        message.copy_tags_from_draft(associated_message_draft)
+        associated_message_draft.destroy
+      end
+    end
 
     EventBus.publish(:message_created, message)
 
@@ -52,7 +56,7 @@ class Fs::Message
 
   def self.create_inbox_message(raw_message)
     Message.create(
-      uuid: SecureRandom.uuid,
+      uuid: raw_message.dig('message_container', 'message_id'),
       title: raw_message['message_type_name'],
       sender_name: FS_SUBJECT_NAME,
       recipient_name: raw_message['subject'],
@@ -66,7 +70,11 @@ class Fs::Message
         "fs_status": raw_message['status'],
         "fs_submitting_subject": raw_message['submitting_subject'],
         "fs_submission_status": raw_message['submission_status'],
+        "fs_submission_type_id": raw_message['submission_type_id'], # TODO kde pouzit? asi napr. pri vytvarani nazvu suboru pri exporte
         "fs_submission_created_at": Time.parse(raw_message['submission_created_at']).getlocal,
+        "fs_period": raw_message['period'],
+        "fs_dismissal_reason": raw_message['dismissal_reason'],
+        "fs_other_attributes": raw_message['other_attributes'],
         "dic": raw_message['dic']
       },
     )
@@ -74,7 +82,7 @@ class Fs::Message
 
   def self.create_outbox_message(raw_message, associated_message_draft: nil)
     Message.create(
-      uuid: (associated_message_draft.uuid if associated_message_draft) || SecureRandom.uuid,
+      uuid: raw_message.dig('message_container', 'message_id'),
       title: raw_message['submission_type_name'],
       sender_name: raw_message['subject'],
       recipient_name: FS_SUBJECT_NAME,
@@ -86,7 +94,10 @@ class Fs::Message
         "fs_form_id": (associated_message_draft.metadata['fs_form_id'] if associated_message_draft) || Fs::Form.find_by(submission_type_identifier: raw_message['submission_type_id'])&.id,
         "fs_message_id": raw_message['message_id'],
         "fs_status": raw_message['status'],
-        "submitting_subject": raw_message['submitting_subject'],
+        "fs_submitting_subject": raw_message['submitting_subject'],
+        "fs_period": raw_message['period'],
+        "fs_dismissal_reason": raw_message['dismissal_reason'],
+        "fs_other_attributes": raw_message['other_attributes'],
         "dic": raw_message['dic']
       },
     )
@@ -97,7 +108,7 @@ class Fs::Message
       tags = raw_object["signed"] ? [message.thread.box.tenant.signed_externally_tag!] : []
 
       message_object = message.objects.create!(
-        # uuid: raw_object["id"], TODO uncomment when GO-130 is closed
+        uuid: raw_object["id"],
         is_signed: raw_object["signed"],
         mimetype: raw_object["mime_type"],
         name: raw_object["name"],

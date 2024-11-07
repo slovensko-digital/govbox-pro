@@ -53,5 +53,15 @@
         <b><%= message.metadata['fs_submission_status'] %></b>
       </td>
     </tr>
+    <% if message.metadata['fs_other_attributes']&.present? %>
+    <%# message.metadata['fs_other_attributes'].each do |k, v| %>
+<!--      <tr>-->
+<!--        <th><%#= k %>:</th>-->
+<!--        <td>-->
+<!--          <b><%#= v %></b>-->
+<!--        </td>-->
+<!--      </tr>-->
+    <%# end %>
+  <% end %>
   </tbody>
 </table>

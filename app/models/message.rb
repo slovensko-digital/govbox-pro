@@ -130,6 +130,19 @@ class Message < ApplicationRecord
     template.transform(form_object.xml_unsigned_content)
   end
 
+  def copy_tags_from_draft(message_draft)
+    message_draft.objects.map do |message_draft_object|
+      message_object = message.objects.find_by(uuid: message_draft_object.uuid)
+      message_draft_object.tags.signed.each { |tag| message_object.assign_tag(tag) }
+    end
+
+    (message_draft.tags.simple + message_draft.tags.signed).each { |tag| assign_tag(tag) }
+  end
+
+  def assign_tag(tag)
+    messages_tags.find_or_create_by!(tag: tag)
+  end
+
   def all_metadata
     metadata.merge(template&.metadata || {})
   end
