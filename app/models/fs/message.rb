@@ -14,6 +14,8 @@ class Fs::Message
 
       create_message_objects(message, raw_message)
       update_html_visualization(message)
+
+      MessageObject.mark_message_objects_externally_signed(message.objects)
     end
 
     EventBus.publish(:message_thread_created, message.thread) if message.thread.previously_new_record?
@@ -74,6 +76,7 @@ class Fs::Message
         "fs_status": raw_message['status'],
         "fs_submitting_subject": raw_message['submitting_subject'],
         "fs_submission_status": raw_message['submission_status'],
+        "fs_message_type": raw_message.dig('message_container', 'message_type'),
         "fs_submission_type_id": raw_message['submission_type_id'], # TODO kde pouzit? asi napr. pri vytvarani nazvu suboru pri exporte
         "fs_submission_created_at": Time.parse(raw_message['submission_created_at']).getlocal,
         "fs_period": raw_message['period'],
