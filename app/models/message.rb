@@ -132,7 +132,7 @@ class Message < ApplicationRecord
 
   def copy_tags_from_draft(message_draft)
     message_draft.objects.map do |message_draft_object|
-      message_object = message.objects.find_by(uuid: message_draft_object.uuid)
+      message_object = objects.find_by(uuid: message_draft_object.uuid)
       message_draft_object.tags.signed.each { |tag| message_object.assign_tag(tag) }
     end
 

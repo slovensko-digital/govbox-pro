@@ -16,6 +16,7 @@ class Fs::Message
       update_html_visualization(message)
     end
 
+    EventBus.publish(:message_thread_created, message.thread) if message.thread.previously_new_record?
     EventBus.publish(:message_created, message)
   end
 
@@ -26,7 +27,7 @@ class Fs::Message
     merge_identifier = (associated_message_draft.metadata['correlation_id'] if associated_message_draft) || SecureRandom.uuid
 
     MessageThread.with_advisory_lock!(merge_identifier, transaction: true, timeout_seconds: 10) do
-      message = create_outbox_message(raw_message)
+      message = create_outbox_message(raw_message, associated_message_draft: associated_message_draft)
 
       message.thread = associated_message_draft&.thread
       message.thread ||= box.message_threads.find_or_create_by_merge_uuid!(
@@ -45,8 +46,11 @@ class Fs::Message
         message.copy_tags_from_draft(associated_message_draft)
         associated_message_draft.destroy
       end
+
+      MessageObject.mark_message_objects_externally_signed(message.objects)
     end
 
+    EventBus.publish(:message_thread_created, message.thread) if message.thread.previously_new_record?
     EventBus.publish(:message_created, message)
 
     message

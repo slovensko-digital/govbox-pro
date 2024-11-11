@@ -6,11 +6,13 @@ module Fs
 
       return if box.messages.where("metadata ->> 'fs_message_id' = ?", fs_message_id).any?
 
-      fs_api = fs_client.api(api_connection: box.api_connection, box: box)
+      ActiveRecord::Base.transaction do
+        fs_api = fs_client.api(api_connection: box.api_connection, box: box)
 
-      raw_message = fs_api.fetch_received_message(fs_message_id)
+        raw_message = fs_api.fetch_received_message(fs_message_id)
 
-      Fs::Message.create_inbox_message_with_thread!(raw_message, box: box)
+        Fs::Message.create_inbox_message_with_thread!(raw_message, box: box)
+      end
     end
   end
 end
