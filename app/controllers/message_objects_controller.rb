@@ -27,7 +27,7 @@ class MessageObjectsController < ApplicationController
   def download
     authorize @message_object
 
-    EventBus.publish(:form_object_downloaded, @message_object.message) if @message_object.form?
+    EventBus.publish(:message_object_downloaded, @message_object)
 
     send_data @message_object.content, filename: MessageObjectHelper.displayable_name(@message_object), type: @message_object.mimetype, disposition: :download
   end
@@ -37,7 +37,7 @@ class MessageObjectsController < ApplicationController
 
     pdf_content = @message_object.prepare_pdf_visualization
     if pdf_content
-      EventBus.publish(:form_object_downloaded, @message_object.message) if @message_object.form?
+      EventBus.publish(:message_object_downloaded, @message_object)
 
       send_data pdf_content, filename: MessageObjectHelper.pdf_name(@message_object), type: 'application/pdf', disposition: :download
     else

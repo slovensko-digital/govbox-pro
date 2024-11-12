@@ -21,7 +21,7 @@ module Automation
     attr_accessor :delete_record
 
     # when adding items, check defaults in condition_form_component.rb
-    ATTR_LIST = %i[box sender_name recipient_name title sender_uri recipient_uri attachment fs_submission_status fs_message_type].freeze
+    ATTR_LIST = %i[box sender_name recipient_name title sender_uri recipient_uri attachment fs_submission_status fs_message_type object_type].freeze
 
     def valid_condition_type_list_for_attr
       Automation::Condition.subclasses.map do |subclass|
@@ -36,7 +36,7 @@ module Automation
 
   class ContainsCondition < Automation::Condition
     validates :value, presence: true
-    VALID_ATTR_LIST = %w[sender_name recipient_name title].freeze
+    VALID_ATTR_LIST = %w[sender_name recipient_name title object_type].freeze
     validates :attr, inclusion: { in: VALID_ATTR_LIST }
 
     def satisfied?(thing)
@@ -78,6 +78,20 @@ module Automation
     def cleanup_record
       self.value = nil
       self.attr = 'box'
+    end
+  end
+
+  class MessageMetadataValueCondition < Automation::Condition
+    validates :value, presence: true
+    VALID_ATTR_LIST = %w[fs_message_type].freeze
+    validates :attr, inclusion: { in: VALID_ATTR_LIST }
+
+    def satisfied?(thing)
+      thing.message.metadata && thing.message.metadata[attr]&.match?(value)
+    end
+
+    def cleanup_record
+      self.condition_object = nil
     end
   end
 

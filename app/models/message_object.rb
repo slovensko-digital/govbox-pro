@@ -23,6 +23,8 @@ class MessageObject < ApplicationRecord
   has_many :tags, through: :message_objects_tags
   has_one :archived_object, dependent: :destroy
 
+  delegate :tenant, to: :message
+
   scope :unsigned, -> { where(is_signed: false) }
 
   validates :name, presence: { message: "Name can't be blank" }, on: :validate_data
@@ -85,6 +87,10 @@ class MessageObject < ApplicationRecord
     thread.remove_signature_requested_from_group(group)
   end
 
+  def automation_rules_for_event(event)
+    tenant.automation_rules.where(trigger_event: event)
+  end
+
   def content
     message_object_datum&.blob
   end
@@ -136,6 +142,10 @@ class MessageObject < ApplicationRecord
     Utils::XML_MIMETYPES.any? { |xml_mimetype| xml_mimetype == Utils.mimetype_without_optional_params(mimetype) }
   end
 
+  def thread
+    message.thread
+  end
+
   private
 
   def allowed_mimetype?
@@ -152,10 +162,6 @@ class MessageObject < ApplicationRecord
 
   def unassign_tag(tag)
     message_objects_tags.find_by(tag: tag)&.destroy
-  end
-
-  def thread
-    message.thread
   end
 
   def remove_object_related_tags_from_thread
