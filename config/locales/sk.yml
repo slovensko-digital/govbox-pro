@@ -273,6 +273,7 @@ sk:
   message_updated: "Upravená správa"
   message_thread_changed: "Zmena vo vlákne správ"
   message_draft_submitted: "Odoslaná správa"
+  form_object_downloaded: "Stiahnutá správa"
   "Automation::ContainsCondition": "obsahuje"
   "Automation::AttachmentContentContainsCondition": "obsahuje"
   "Automation::MetadataValueCondition": "v metadátach obsahuje"
