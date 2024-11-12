@@ -1,7 +1,7 @@
 FROM ruby:3.3.0
 
 # Install packages
-RUN apt-get update && apt-get install -y build-essential nodejs libpq-dev npm fop=1:2.* libsaxon-java libsaxonb-java
+RUN apt-get update && apt-get install -y build-essential nodejs libpq-dev npm fop=1:2.* libsaxon-java libsaxonb-java chromium
 
 # Setup FOP to use saxon xslt parser
 RUN sed -i '/find_jars/i \
