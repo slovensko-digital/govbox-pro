@@ -1,5 +1,1308 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
+V2Pv21_xsd:
+  document_type: CLS_F_XSD_EDOC
+  language: sk
+  form: V2Pv21
+  data: |
+    <?xml version="1.0" encoding="UTF-8" ?>
+    <!-- Vyhlasenie o poukazani podielu zaplatenej dane z prijmov fyzickej osoby podla par. 50, ktorej bolo vykonane rocne zuctovanie preddavkov na dan - 2021-->
+    <!-- Potvrdenie o zaplateni dane z prijmov zo zavislej cinnosti na ucely vyhlasenia o poukazani 2 alebo 3 percent zaplatenej dane FO-->
+    <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+    <xs:annotation>
+    <xs:documentation>V2Pv21 vyhlasenie a potvrdenie</xs:documentation>
+    </xs:annotation>
+    <!--  prazdny retazec  -->
+    <xs:simpleType name="emptyStrType">
+    <xs:restriction base="xs:string">
+    <xs:enumeration value=""/>
+    </xs:restriction>
+    </xs:simpleType>
+    <!--  povinny datum v tvare: (d)d.(m)m.rrrr  -->
+    <xs:simpleType name="oneFieldDateType">
+    <xs:restriction base="xs:string">
+    <xs:pattern value="\d?\d\.\d?\d\.\d\d\d\d"/>
+    </xs:restriction>
+    </xs:simpleType>
+    <!--  nepovinny datum v tvare: (d)d.(m)m.rrrr  -->
+    <xs:simpleType name="optOneFieldDateType">
+    <xs:union memberTypes="oneFieldDateType emptyStrType"/>
+    </xs:simpleType>
+    <!--  povinny den/mesiac v tvare: (d)d/(m)m  -->
+    <xs:simpleType name="dayMonthType">
+    <xs:restriction base="xs:decimal">
+    <xs:pattern value="\d?\d"/>
+    </xs:restriction>
+    </xs:simpleType>
+    <!--  nepovinny den/mesiac v tvare: (d)d/(m)m  -->
+    <xs:simpleType name="optDayMonthType">
+    <xs:union memberTypes="dayMonthType emptyStrType"/>
+    </xs:simpleType>
+    <!--  povinny rok  -->
+    <xs:simpleType name="yearType">
+    <xs:restriction base="xs:decimal">
+    <xs:pattern value="\d\d\d\d"/>
+    </xs:restriction>
+    </xs:simpleType>
+    <!--  nepovinny rok  -->
+    <xs:simpleType name="optYearType">
+    <xs:union memberTypes="yearType emptyStrType"/>
+    </xs:simpleType>
+    <!--  nepovinne realne cislo  -->
+    <xs:simpleType name="optDouble">
+    <xs:union memberTypes="xs:double emptyStrType"/>
+    </xs:simpleType>
+    <!-- nepovinny checkbox -->
+    <xs:simpleType name="only_0_1">
+    <xs:restriction base="xs:decimal">
+    <xs:totalDigits value="1"/>
+    <xs:pattern value="[0-1]"/>
+    </xs:restriction>
+    </xs:simpleType>
+    <!--  retazec na max. 6 znakov  -->
+    <xs:simpleType name="string6">
+    <xs:restriction base="xs:string">
+    <xs:maxLength value="6"/>
+    </xs:restriction>
+    </xs:simpleType>
+    <!--  retazec na max. 4 znaky  -->
+    <xs:simpleType name="string4">
+    <xs:restriction base="xs:string">
+    <xs:maxLength value="4"/>
+    </xs:restriction>
+    </xs:simpleType>
+    <!--  korenovy element  -->
+    <xs:element name="dokument">
+    <xs:complexType>
+    <xs:sequence>
+    <xs:element name="hlavicka" type="hlavicka"/>
+    <xs:element name="potvrdenie" type="potvrdenieType" minOccurs="0"/>
+    </xs:sequence>
+    </xs:complexType>
+    </xs:element>
+    <!--  hlavicka  -->
+    <xs:complexType name="hlavicka">
+    <xs:sequence>
+    <xs:element name="rodneCislo" type="rodneCisloType"/>
+    <xs:element name="datumNarodenia" type="optOneFieldDateType"/>
+    <xs:element name="zaRok" type="yearType"/>
+    <xs:element name="danovnik" type="danovnikType"/>
+    <xs:element name="prijimatel" type="prijimatelType"/>
+    <xs:element name="suhlas" type="only_0_1"/>
+    <xs:element name="datumVyhlasenia" type="optOneFieldDateType"/>
+    <xs:element name="podpis" type="only_0_1"/>
+    </xs:sequence>
+    </xs:complexType>
+    <!--  danovnik  -->
+    <xs:complexType name="danovnikType">
+    <xs:sequence>
+    <xs:element name="priezvisko" type="xs:string"/>
+    <xs:element name="meno" type="xs:string"/>
+    <xs:element name="titulPred" type="xs:string"/>
+    <xs:element name="titulZa" type="xs:string"/>
+    <xs:element name="adresa" type="adresaType"/>
+    <xs:element name="telefon" type="xs:string"/>
+    <xs:element name="zaplatenaDan" type="optDec"/>
+    <xs:element name="sumaZDane" type="optDec"/>
+    <xs:element name="datumZaplatenia" type="optOneFieldDateType"/>
+    <xs:element name="splnam3perc" type="only_0_1"/>
+    </xs:sequence>
+    </xs:complexType>
+    <!--  prijimatel -->
+    <xs:complexType name="prijimatelType">
+    <xs:sequence>
+    <xs:element name="ico" type="optIcoStrType12"/>
+    <xs:element name="obchodneMeno" type="obchodneMenoType"/>
+    </xs:sequence>
+    </xs:complexType>
+    <!--  sidlo  -->
+    <xs:complexType name="adresaType">
+    <xs:sequence>
+    <xs:element name="ulica" type="xs:string"/>
+    <xs:element name="supisneOrientacneCislo" type="xs:string"/>
+    <xs:element name="psc" type="xs:string"/>
+    <xs:element name="obec" type="xs:string"/>
+    <xs:element name="stat" type="xs:string"/>
+    </xs:sequence>
+    </xs:complexType>
+    <!--  povinne dic  -->
+    <xs:simpleType name="dicType">
+    <xs:restriction base="xs:decimal">
+    <xs:pattern value="\d{10}"/>
+    </xs:restriction>
+    </xs:simpleType>
+    <!--  nepovinne dic  -->
+    <xs:simpleType name="optDicType">
+    <xs:union memberTypes="dicType emptyStrType"/>
+    </xs:simpleType>
+    <!--  povinne ico  -->
+    <xs:simpleType name="icoType">
+    <xs:restriction base="xs:string">
+    <xs:pattern value="\d{8}"/>
+    </xs:restriction>
+    </xs:simpleType>
+    <!--  nepovinne ico  -->
+    <xs:simpleType name="optIcoType">
+    <xs:union memberTypes="icoType emptyStrType"/>
+    </xs:simpleType>
+    <!--  nepovinne ico  max. na 12 -->
+    <xs:simpleType name="optIcoStrType12">
+    <xs:restriction base="xs:string">
+    <xs:maxLength value="12"/>
+    </xs:restriction>
+    </xs:simpleType>
+    <!--  nepovinne decimal cislo  na 2 desat.miesta -->
+    <xs:simpleType name="optDec">
+    <xs:union memberTypes="suma13 emptyStrType"/>
+    </xs:simpleType>
+    <!-- suma 13.2 -->
+    <xs:simpleType name="suma13">
+    <xs:restriction base="xs:decimal">
+    <xs:totalDigits value="13"/>
+    <xs:fractionDigits value="2"/>
+    </xs:restriction>
+    </xs:simpleType>
+    <!--  obchodne meno  -->
+    <xs:complexType name="obchodneMenoType">
+    <xs:sequence>
+    <xs:element name="riadok" type="xs:string" maxOccurs="2"/>
+    </xs:sequence>
+    </xs:complexType>
+    <!--  obchodne meno  1 r. -->
+    <xs:complexType name="obchodneMenoType1">
+    <xs:sequence>
+    <xs:element name="riadok" type="xs:string"/>
+    </xs:sequence>
+    </xs:complexType>
+    <!--  sidlo  -->
+    <xs:complexType name="sidloType">
+    <xs:sequence>
+    <xs:element name="ulica" type="xs:string"/>
+    <xs:element name="supisneOrientacneCislo" type="xs:string"/>
+    <xs:element name="psc" type="xs:string"/>
+    <xs:element name="obec" type="xs:string"/>
+    </xs:sequence>
+    </xs:complexType>
+    <!--  rodne cislo na 2 casti  -->
+    <xs:complexType name="rodneCisloType">
+    <xs:sequence>
+    <xs:element name="rcPredLom" type="string6"/>
+    <xs:element name="rcZaLom" type="string4"/>
+    </xs:sequence>
+    </xs:complexType>
+    <!--  potvrdenie  -->
+    <xs:complexType name="potvrdenieType">
+    <xs:sequence>
+    <xs:element name="rodneCislo" type="rodneCisloType"/>
+    <xs:element name="datumNarodenia" type="optOneFieldDateType"/>
+    <xs:element name="zaRok" type="yearType"/>
+    <xs:element name="zamestnanec" type="zamestnanecType"/>
+    <xs:element name="zamestnavatel" type="zamestnavatelType"/>
+    <xs:element name="udajeOZaplateni" type="udajeOZaplateniType"/>
+    <xs:element name="vypracoval" type="vypracovalType"/>
+    </xs:sequence>
+    </xs:complexType>
+    <!--  zamestnanec-->
+    <xs:complexType name="zamestnanecType">
+    <xs:sequence>
+    <xs:element name="priezvisko" type="xs:string"/>
+    <xs:element name="meno" type="xs:string"/>
+    <xs:element name="titulPred" type="xs:string"/>
+    <xs:element name="titulZa" type="xs:string"/>
+    <xs:element name="adresa" type="adresaType"/>
+    </xs:sequence>
+    </xs:complexType>
+    <!--  zamestnavatel-->
+    <xs:complexType name="zamestnavatelType">
+    <xs:sequence>
+    <xs:element name="dic" type="optDicType"/>
+    <xs:element name="fyzickaOsoba" type="fyzickaOsobaType"/>
+    <xs:element name="obchodneMeno" type="obchodneMenoType1"/>
+    <xs:element name="trvalyPobyt" type="adresaType"/>
+    </xs:sequence>
+    </xs:complexType>
+    <!--  udajeOZaplateni -->
+    <xs:complexType name="udajeOZaplateniType">
+    <xs:sequence>
+    <xs:element name="danPar15" type="optDec"/>
+    <xs:element name="danBonus" type="optDec"/>
+    <xs:element name="danBonusUroky" type="optDec"/>
+    <xs:element name="danZnizena" type="optDec"/>
+    <xs:element name="danNaUhradu" type="optDec"/>
+    <xs:element name="danZaplatena" type="optDec"/>
+    <xs:element name="datumZaplatenia" type="optOneFieldDateType"/>
+    </xs:sequence>
+    </xs:complexType>
+    <!--  fyzicka osoba  -->
+    <xs:complexType name="fyzickaOsobaType">
+    <xs:sequence>
+    <xs:element name="priezvisko" type="xs:string"/>
+    <xs:element name="meno" type="xs:string"/>
+    <xs:element name="titulPred" type="xs:string"/>
+    <xs:element name="titulZa" type="xs:string"/>
+    </xs:sequence>
+    </xs:complexType>
+    <!--  vypracoval  -->
+    <xs:complexType name="vypracovalType">
+    <xs:sequence>
+    <xs:element name="vypr" type="xs:string"/>
+    <xs:element name="dna" type="optOneFieldDateType"/>
+    <xs:element name="podpis" type="only_0_1"/>
+    </xs:sequence>
+    </xs:complexType>
+    </xs:schema>
+
+V2Pv21_txt_xslt:
+  document_type: CLS_F_XSLT_TXT_SGN
+  language: sk
+  form: V2Pv21
+  data: |
+    <?xml version="1.0" encoding="UTF-8"?>
+    <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+    <xsl:output method="text" indent="yes" omit-xml-declaration="yes"/>
+    <xsl:strip-space elements="*"/>
+    <xsl:template match="dokument">
+    <xsl:text>V2Pv21</xsl:text>
+    <xsl:apply-templates/>
+    </xsl:template>
+    <xsl:template match="dokument/hlavicka">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>VYHLÁSENIE</xsl:text>
+    <xsl:apply-templates/>
+    </xsl:template>
+    <xsl:template match="dokument/hlavicka/rodneCislo">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>[01] - Rodné číslo</xsl:text>
+    <xsl:apply-templates/>
+    </xsl:template>
+    <xsl:template match="dokument/hlavicka/rodneCislo/rcPredLom">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>Pred lomítkom:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/hlavicka/rodneCislo/rcZaLom">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>Za lomítkom:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/hlavicka/datumNarodenia">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>[02] - Dátum narodenia:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/hlavicka/zaRok">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>Rok:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/hlavicka/danovnik">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>I. ODDIEL - ÚDAJE O DAŇOVNÍKOVI</xsl:text>
+    <xsl:apply-templates/>
+    </xsl:template>
+    <xsl:template match="dokument/hlavicka/danovnik/priezvisko">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>[03] - Priezvisko:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/hlavicka/danovnik/meno">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>[04] - Meno:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/hlavicka/danovnik/titulPred">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>[05] - Titul pred menom:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/hlavicka/danovnik/titulZa">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>[05] - Titul za priezviskom:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/hlavicka/danovnik/adresa">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>Adresa trvalého pobytu</xsl:text>
+    <xsl:apply-templates/>
+    </xsl:template>
+    <xsl:template match="dokument/hlavicka/danovnik/adresa/ulica">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>[06] - Ulica:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/hlavicka/danovnik/adresa/supisneOrientacneCislo">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>[07] - Súpisné/orientačné číslo:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/hlavicka/danovnik/adresa/psc">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>[08] - PSČ:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/hlavicka/danovnik/adresa/obec">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>[09] - Obec:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/hlavicka/danovnik/adresa/stat">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>[10] - Štát:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/hlavicka/danovnik/telefon">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>[11] - Telefónne číslo:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/hlavicka/danovnik/zaplatenaDan">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>[12] - Zaplatená daň, z ktorej sa vypočíta suma do výšky 2 % resp. 3 % 1) zaplatenej dane:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/hlavicka/danovnik/sumaZDane">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>[13] - Suma do výšky 2 % resp. 3 % 1) zo zaplatenej dane z r. 12 (min. 3 eurá):</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/hlavicka/danovnik/datumZaplatenia">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>[14] - Dátum zaplatenia dane:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/hlavicka/danovnik/splnam3perc">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>spĺňam podmienky na poukázanie 3% z dane:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/hlavicka/prijimatel">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>II. ODDIEL - ÚDAJE O PRIJÍMATEĽOVI</xsl:text>
+    <xsl:apply-templates/>
+    </xsl:template>
+    <xsl:template match="dokument/hlavicka/prijimatel/ico">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>[15] - IČO:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/hlavicka/prijimatel/obchodneMeno">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>[16] - Obchodné meno (názov)</xsl:text>
+    <xsl:apply-templates/>
+    </xsl:template>
+    <xsl:template match="dokument/hlavicka/prijimatel/obchodneMeno/riadok">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>riadok:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/hlavicka/suhlas">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>súhlasím so zaslaním údajov (meno, priezvisko a trvalý pobyt) mnou určenému príjmateľovi podielu
+    zaplatenej dane uvedenému v II. oddiele podľa § 50 ods. 8 zákona:
+    </xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/hlavicka/datumVyhlasenia">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>Dátum:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/hlavicka/podpis">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>Vyhlasujem, že uvedené údaje v tomto vyhlásení sú pravdivé:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/potvrdenie">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>POTVRDENIE</xsl:text>
+    <xsl:apply-templates/>
+    </xsl:template>
+    <xsl:template match="dokument/potvrdenie/rodneCislo">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>[01] - Rodné číslo</xsl:text>
+    <xsl:apply-templates/>
+    </xsl:template>
+    <xsl:template match="dokument/potvrdenie/rodneCislo/rcPredLom">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>Pred lomítkom:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/potvrdenie/rodneCislo/rcZaLom">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>Za lomítkom:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/potvrdenie/datumNarodenia">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>[02] - Dátum narodenia:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/potvrdenie/zaRok">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>Rok:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/potvrdenie/zamestnanec">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>I. ÚDAJE O ZAMESTNANCOVI</xsl:text>
+    <xsl:apply-templates/>
+    </xsl:template>
+    <xsl:template match="dokument/potvrdenie/zamestnanec/priezvisko">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>[03] - Priezvisko:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/potvrdenie/zamestnanec/meno">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>[04] - Meno:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/potvrdenie/zamestnanec/titulPred">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>[05] - Titul pred menom:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/potvrdenie/zamestnanec/titulZa">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>[05] - Titul za priezviskom:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/potvrdenie/zamestnanec/adresa">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>Adresa trvalého pobytu</xsl:text>
+    <xsl:apply-templates/>
+    </xsl:template>
+    <xsl:template match="dokument/potvrdenie/zamestnanec/adresa/ulica">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>[06] - Ulica:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/potvrdenie/zamestnanec/adresa/supisneOrientacneCislo">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>[07] - Súpisné/orientačné číslo:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/potvrdenie/zamestnanec/adresa/psc">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>[08] - PSČ:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/potvrdenie/zamestnanec/adresa/obec">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>[09] - Obec:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/potvrdenie/zamestnanec/adresa/stat">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>[10] - Štát:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/potvrdenie/zamestnavatel">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>II. ÚDAJE O ZAMESTNÁVATEĽOVI</xsl:text>
+    <xsl:apply-templates/>
+    </xsl:template>
+    <xsl:template match="dokument/potvrdenie/zamestnavatel/dic">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>[11] - Daňové identifikačné číslo:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/potvrdenie/zamestnavatel/fyzickaOsoba">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>Fyzická osoba</xsl:text>
+    <xsl:apply-templates/>
+    </xsl:template>
+    <xsl:template match="dokument/potvrdenie/zamestnavatel/fyzickaOsoba/priezvisko">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>[12] - Priezvisko:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/potvrdenie/zamestnavatel/fyzickaOsoba/meno">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>[13] - Meno:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/potvrdenie/zamestnavatel/fyzickaOsoba/titulPred">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>[14] - Titul pred menom:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/potvrdenie/zamestnavatel/fyzickaOsoba/titulZa">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>[14] - Titul za priezviskom:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/potvrdenie/zamestnavatel/obchodneMeno">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>[15] - Obchodné meno alebo názov</xsl:text>
+    <xsl:apply-templates/>
+    </xsl:template>
+    <xsl:template match="dokument/potvrdenie/zamestnavatel/obchodneMeno/riadok">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>riadok:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/potvrdenie/zamestnavatel/trvalyPobyt">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>Trvalý pobyt (fyzická osoba) alebo sídlo (právnická osoba)</xsl:text>
+    <xsl:apply-templates/>
+    </xsl:template>
+    <xsl:template match="dokument/potvrdenie/zamestnavatel/trvalyPobyt/ulica">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>[16] - Ulica:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/potvrdenie/zamestnavatel/trvalyPobyt/supisneOrientacneCislo">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>[17] - Súpisné/orientačné číslo:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/potvrdenie/zamestnavatel/trvalyPobyt/psc">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>[18] - PSČ:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/potvrdenie/zamestnavatel/trvalyPobyt/obec">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>[19] - Obec:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/potvrdenie/zamestnavatel/trvalyPobyt/stat">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>[20] - Štát:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/potvrdenie/udajeOZaplateni">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>III. ÚDAJE O ZAPLATENÍ DANE Z PRÍJMOV ZO ZÁVISLEJ ČINNOSTI - v eurách</xsl:text>
+    <xsl:apply-templates/>
+    </xsl:template>
+    <xsl:template match="dokument/potvrdenie/udajeOZaplateni/danPar15">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>[21] - Daň – podľa § 15 zákona (z r. 06 ročného zúčtovania preddavkov na daň):</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/potvrdenie/udajeOZaplateni/danBonus">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>[22] - Nárok na daňový bonus podľa § 33 zákona (z r. 09 ročného zúčtovania preddavkov na daň):</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/potvrdenie/udajeOZaplateni/danBonusUroky">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>[23] - Nárok na daňový bonus na zaplatené úroky podľa § 33a zákona (z r. 15 ročného zúčtovania preddavkov na daň):</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/potvrdenie/udajeOZaplateni/danZnizena">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>[24] - Daň znížená o daňový bonus (§ 33 zákona) a daňový bonus na zaplatené úroky (§ 33a zákona) (r. 21 - r. 22 - r. 23 ) &gt; 0:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/potvrdenie/udajeOZaplateni/danNaUhradu">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>[25] - Daň na úhradu (z r. 21 ročného zúčtovania preddavkov na daň):</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/potvrdenie/udajeOZaplateni/danZaplatena">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>[26] - Daň na úhradu (z r. 25 tohto potvrdenia), zrazená zamestnancovi alebo zaplatená zamestnancom v lehote do podania vyhlásenia o poukázaní podielu zaplatenej dane z príjmov fyzickej osoby v úhrnnej sume:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/potvrdenie/udajeOZaplateni/datumZaplatenia">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>Dňa:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/potvrdenie/vypracoval">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>Vypracoval</xsl:text>
+    <xsl:apply-templates/>
+    </xsl:template>
+    <xsl:template match="dokument/potvrdenie/vypracoval/vypr">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>Potvrdenie vypracoval(a):</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/potvrdenie/vypracoval/dna">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>Dátum:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template match="dokument/potvrdenie/vypracoval/podpis">
+    <xsl:if test="./text()">
+    <xsl:text>&#xA;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>&#09;</xsl:text>
+    <xsl:text>Potvrdzujeme týmto, že údaje uvedené v potvrdení sú pravdivé:</xsl:text>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="."/>
+    <xsl:with-param name="replace" select="'&#10;'"/>
+    <xsl:with-param name="by" select="'&#13;&#10;&#09;&#09;&#09;'"/>
+    </xsl:call-template>
+    </xsl:if>
+    </xsl:template>
+
+    <xsl:template name="formatAnyUri">
+    <xsl:param name="anyUri"/>
+    <xsl:variable name="anyUriString" select="string($anyUri)"/>
+    <xsl:variable name="anyUriSubString">
+    <xsl:choose>
+    <xsl:when test="$anyUriString != '' and contains($anyUriString, 'mailto:') and contains($anyUriString, '@')">
+    <xsl:value-of select="substring($anyUriString, 8, string-length($anyUriString))"/>
+    </xsl:when>
+    <xsl:when test="$anyUriString != '' and contains($anyUriString, 'http://')">
+    <xsl:value-of select="substring($anyUriString, 8, string-length($anyUriString))"/>
+    </xsl:when>
+    <xsl:when test="$anyUriString != '' and contains($anyUriString, 'https://')">
+    <xsl:value-of select="substring($anyUriString, 9, string-length($anyUriString))"/>
+    </xsl:when>
+    <xsl:otherwise>
+    <xsl:value-of select="$anyUriString"></xsl:value-of>
+    </xsl:otherwise>
+    </xsl:choose>
+    </xsl:variable>
+    <xsl:value-of select="$anyUriSubString"/>
+    </xsl:template>
+    <xsl:template name="booleanCheckboxToString">
+    <xsl:param name="boolValue"/>
+    <xsl:variable name="boolValueString" select="string($boolValue)"/>
+    <xsl:choose>
+    <xsl:when test="$boolValueString = 'true' ">
+    <xsl:text>Áno</xsl:text>
+    </xsl:when>
+    <xsl:when test="$boolValueString = '1' ">
+    <xsl:text>Áno</xsl:text>
+    </xsl:when>
+    <xsl:when test="$boolValueString = 'false' ">
+    <xsl:text>Nie</xsl:text>
+    </xsl:when>
+    <xsl:when test="$boolValueString = '0' ">
+    <xsl:text>Nie</xsl:text>
+    </xsl:when>
+    <xsl:otherwise>
+    <xsl:value-of select="$boolValueString"></xsl:value-of>
+    </xsl:otherwise>
+    </xsl:choose>
+    </xsl:template>
+    <xsl:template name="string-replace-all">
+    <xsl:param name="text"/>
+    <xsl:param name="replace"/>
+    <xsl:param name="by"/>
+    <xsl:choose>
+    <xsl:when test="contains($text, $replace)">
+    <xsl:value-of select="substring-before($text,$replace)"/>
+    <xsl:value-of select="$by"/>
+    <xsl:call-template name="string-replace-all">
+    <xsl:with-param name="text" select="substring-after($text,$replace)"/>
+    <xsl:with-param name="replace" select="$replace"/>
+    <xsl:with-param name="by" select="$by"/>
+    </xsl:call-template>
+    </xsl:when>
+    <xsl:otherwise>
+    <xsl:value-of select="$text"/>
+    </xsl:otherwise>
+    </xsl:choose>
+    </xsl:template>
+    <xsl:template name="formatToSkDate">
+    <xsl:param name="date"/>
+    <xsl:variable name="dateString" select="string($date)"/>
+    <xsl:choose>
+    <xsl:when
+    test="$dateString != '' and string-length($dateString)=10 and string(number(substring($dateString, 1, 4))) != 'NaN' ">
+    <xsl:value-of
+    select="concat(substring($dateString, 9, 2), '.', substring($dateString, 6, 2), '.', substring($dateString, 1, 4))"/>
+    </xsl:when>
+    <xsl:otherwise>
+    <xsl:value-of select="$dateString"></xsl:value-of>
+    </xsl:otherwise>
+    </xsl:choose>
+    </xsl:template>
+    <xsl:template name="formatTimeTrimMinutes">
+    <xsl:param name="time"/>
+    <xsl:variable name="timeString" select="string($time)"/>
+    <xsl:if test="$timeString != ''">
+    <xsl:value-of select="substring($timeString, 1, 5)"/>
+    </xsl:if>
+    </xsl:template>
+    <xsl:template name="formatToSkDateTime">
+    <xsl:param name="dateTime"/>
+    <xsl:variable name="dateSubstring" select="substring($dateTime, 1, 10)"/>
+    <xsl:variable name="timeSubstring" select="substring($dateTime, 12, 8)"/>
+    <xsl:variable name="dateString">
+    <xsl:choose>
+    <xsl:when
+    test="$dateSubstring != '' and string-length($dateSubstring)=10 and string(number(substring($dateSubstring, 1, 4))) != 'NaN' ">
+    <xsl:value-of
+    select="concat(substring($dateSubstring, 9, 2), '.', substring($dateSubstring, 6, 2), '.', substring($dateSubstring, 1, 4))"/>
+    </xsl:when>
+    <xsl:otherwise>
+    <xsl:value-of select="$dateSubstring"></xsl:value-of>
+    </xsl:otherwise>
+    </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="timeString">
+    <xsl:if test="$timeSubstring != ''">
+    <xsl:value-of select="substring($timeSubstring, 1, 5)"/>
+    </xsl:if>
+    </xsl:variable>
+    <xsl:value-of select="concat($dateString,' ',$timeString)"/>
+    </xsl:template>
+    </xsl:stylesheet>
+
 VP_DANv24_xsd:
   document_type: CLS_F_XSD_EDOC
   language: sk
