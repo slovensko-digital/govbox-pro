@@ -7,6 +7,8 @@ class Fs::SubmitMessageDraftJob < ApplicationJob
     response = fs_api.post_submission(
       message_draft.form.identifier,
       Base64.strict_encode64(message_draft.form_object.content),
+      message_uuid: message_draft.uuid,
+      form_object_uuid: message_draft.form_object.uuid,
       allow_warn_status: true,
       is_signed: message_draft.form_object.is_signed,
       mime_type: message_draft.form_object.mimetype

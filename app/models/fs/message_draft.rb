@@ -53,7 +53,8 @@ class Fs::MessageDraft < MessageDraft
         delivered_at: Time.now,
         metadata: {
           'status': 'being_loaded',
-          'fs_form_id': fs_form.id
+          'fs_form_id': fs_form.id,
+          'correlation_id': SecureRandom.uuid
         },
         author: author
       )
@@ -102,13 +103,7 @@ class Fs::MessageDraft < MessageDraft
   end
 
   def build_html_visualization
-    return self.html_visualization if self.html_visualization.present?
-
-    return unless form&.xslt_txt
-    return unless form_object&.unsigned_content
-
-    template = Nokogiri::XSLT(form.xslt_txt)
-    template.transform(form_object.xml_unsigned_content)
+    Fs::MessageHelper.build_html_visualization_from_form(self)
   end
 
   def form

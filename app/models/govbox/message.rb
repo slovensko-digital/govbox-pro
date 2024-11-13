@@ -43,11 +43,10 @@ class Govbox::Message < ApplicationRecord
       message.save!
 
       create_message_objects(message, govbox_message.payload)
-
       add_upvs_related_tags(message, govbox_message)
 
       if message_draft
-        copy_tags_from_draft(message, message_draft)
+        message.copy_tags_from_draft(message_draft)
         message_draft.destroy
       end
 
@@ -146,15 +145,6 @@ class Govbox::Message < ApplicationRecord
     message.add_cascading_tag(upvs_tag)
 
     add_delivery_notification_tag(message) if message.can_be_authorized?
-  end
-
-  def self.copy_tags_from_draft(message, message_draft)
-    message_draft.objects.map do |message_draft_object|
-      message_object = message.objects.find_by(uuid: message_draft_object.uuid)
-      message_draft_object.tags.signed.each { |tag| message_object.assign_tag(tag) }
-    end
-
-    (message_draft.tags.simple + message_draft.tags.signed).each { |tag| message.assign_tag(tag) }
   end
 
   def self.add_delivery_notification_tag(message)

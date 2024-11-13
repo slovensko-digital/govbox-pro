@@ -35,77 +35,9 @@
       "note": ""
     },
     {
-      "warning_type": "Dynamic Render Path",
-      "warning_code": 15,
-      "fingerprint": "206fab310dd6225cc18046a3fa3d8d2e15898077ebf7140753f6104ac8952297",
-      "check_name": "Render",
-      "message": "Render path contains parameter value",
-      "file": "app/views/admin/boxes/show.html.erb",
-      "line": 6,
-      "link": "https://brakemanscanner.org/docs/warning_types/dynamic_render_path/",
-      "code": "render(action => policy_scope([:admin, Box]).find(params[:id]), {})",
-      "render_path": [
-        {
-          "type": "controller",
-          "class": "Admin::BoxesController",
-          "method": "show",
-          "line": 12,
-          "file": "app/controllers/admin/boxes_controller.rb",
-          "rendered": {
-            "name": "admin/boxes/show",
-            "file": "app/views/admin/boxes/show.html.erb"
-          }
-        }
-      ],
-      "location": {
-        "type": "template",
-        "template": "admin/boxes/show"
-      },
-      "user_input": "params[:id]",
-      "confidence": "Weak",
-      "cwe_id": [
-        22
-      ],
-      "note": ""
-    },
-    {
-      "warning_type": "Dynamic Render Path",
-      "warning_code": 15,
-      "fingerprint": "b8a2fb69d5ae58b1a2ef3054ed2a602436392f1db28b5ef31c0ec249e0fec16a",
-      "check_name": "Render",
-      "message": "Render path contains parameter value",
-      "file": "app/views/admin/tenants/show.html.erb",
-      "line": 14,
-      "link": "https://brakemanscanner.org/docs/warning_types/dynamic_render_path/",
-      "code": "render(action => policy_scope([:admin, Tenant]).find(params[:id]), {})",
-      "render_path": [
-        {
-          "type": "controller",
-          "class": "Admin::TenantsController",
-          "method": "show",
-          "line": 14,
-          "file": "app/controllers/admin/tenants_controller.rb",
-          "rendered": {
-            "name": "admin/tenants/show",
-            "file": "app/views/admin/tenants/show.html.erb"
-          }
-        }
-      ],
-      "location": {
-        "type": "template",
-        "template": "admin/tenants/show"
-      },
-      "user_input": "params[:id]",
-      "confidence": "Weak",
-      "cwe_id": [
-        22
-      ],
-      "note": ""
-    },
-    {
       "warning_type": "Command Injection",
       "warning_code": 14,
-      "fingerprint": "c1018a403b5a7f84904363f04760e551a83a6bca134e1db236f9d671e4e6ca91",
+      "fingerprint": "fe57f090ca3980a1ef5fd94f8a3634bb41c543d20c13d72dd32409eef5e433f4",
       "check_name": "Execute",
       "message": "Possible command injection",
       "file": "app/models/concerns/pdf_visualization_operations.rb",
@@ -116,7 +48,7 @@
       "location": {
         "type": "method",
         "class": "PdfVisualizationOperations",
-        "method": "prepare_pdf_visualization"
+        "method": "prepare_pdf_visualization_from_template"
       },
       "user_input": "Tempfile.new(\"#{id}.xml\").path",
       "confidence": "Medium",
@@ -126,6 +58,6 @@
       "note": ""
     }
   ],
-  "updated": "2024-05-07 14:18:46 +0200",
-  "brakeman_version": "6.1.2"
+  "updated": "2024-10-23 11:37:22 +0200",
+  "brakeman_version": "6.2.1"
 }

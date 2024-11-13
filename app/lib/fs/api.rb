@@ -29,19 +29,27 @@ module Fs
     end
 
     def fetch_sent_messages(page: 1, count: 100, obo: @obo)
-      request(:get, "sent-messages", {}, jwt_header(obo).merge(fs_credentials_header))[:body]
+      request(:get, "sent-messages?page=#{page}&per_page=#{count}", {}, jwt_header(obo).merge(fs_credentials_header))[:body]
     end
 
     def fetch_sent_message(message_id, obo: @obo)
-      request(:get, "sent-messages/#{message_id}", {}, jwt_header(obo).merge(fs_credentials_header))[:body]
+      request(:get, "sent-messages/#{CGI.escape(message_id)}", {}, jwt_header(obo).merge(fs_credentials_header))[:body]
     end
 
-    def fetch_received_messages(page: 1, count: 100, obo: @obo)
-      request(:get, "received-messages", {}, jwt_header(obo).merge(fs_credentials_header))[:body]
+    def fetch_received_messages(sent_message_id: nil, page: 1, count: 100, from: nil, to: nil, obo: @obo)
+      query = {
+        sent_message_id: sent_message_id,
+        page: page,
+        per_page: count,
+        from: from,
+        to: to
+      }.compact.to_query
+
+      request(:get, "received-messages?#{query}", {}, jwt_header(obo).merge(fs_credentials_header))[:body]
     end
 
     def fetch_received_message(message_id, obo: @obo)
-      request(:get, "received-messages/#{message_id}", {}, jwt_header(obo).merge(fs_credentials_header))[:body]
+      request(:get, "received-messages/#{CGI.escape(message_id)}", {}, jwt_header(obo).merge(fs_credentials_header))[:body]
     end
 
     def post_validation(form_identifier, content)
@@ -52,8 +60,10 @@ module Fs
       request(:delete, "validations/#{validation_id}", {}, jwt_header, accept_negative: true)
     end
 
-    def post_submission(form_identifier, content, allow_warn_status: true, is_signed: true, mime_type: 'application/vnd.etsi.asic-e+zip', obo: @obo)
+    def post_submission(form_identifier, content, allow_warn_status: true, message_uuid:, form_object_uuid:, is_signed: true, mime_type: 'application/vnd.etsi.asic-e+zip', obo: @obo)
       request(:post, "submissions", {
+        message_container_message_id: message_uuid,
+        message_container_form_object_id: form_object_uuid,
         is_signed: is_signed,
         mime_type: mime_type,
         form_identifier: form_identifier,
