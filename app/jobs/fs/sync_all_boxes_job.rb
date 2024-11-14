@@ -5,7 +5,6 @@ module Fs
         SyncBoxJob.perform_later(box)
       end
 
-      # TODO ponastavovat v BetterUptime
       BetterUptimeApi.ping_heartbeat('FS_SYNC')
     end
   end
