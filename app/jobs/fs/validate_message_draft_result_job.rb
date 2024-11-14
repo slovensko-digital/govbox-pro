@@ -25,7 +25,7 @@ class Fs::ValidateMessageDraftResultJob < ApplicationJob
 
     message_draft.save
   end
-  
+
   private
 
   def log(message)
