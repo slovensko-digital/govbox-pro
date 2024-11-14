@@ -4,7 +4,7 @@ module Fs
       raise unless box.is_a?(Fs::Box)
       return unless box.syncable?
 
-      return if box.messages.where(type: [nil, 'Message']).where("metadata ->> 'fs_message_id' = ?", fs_message_id).any?
+      return if box.messages.except_drafts.where("metadata ->> 'fs_message_id' = ?", fs_message_id).any?
 
       ActiveRecord::Base.transaction do
         fs_api = fs_client.api(api_connection: box.api_connection, box: box)
