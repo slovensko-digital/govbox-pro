@@ -63,3 +63,11 @@ sk_api_api_connection_with_obo_support:
   sub: sub4
   api_token_private_key: private_key
   type: 'SkApi::ApiConnectionWithOboSupport'
+
+fs_api_connection2:
+  sub: fs_sub2
+  api_token_private_key: private_key
+  type: 'Fs::ApiConnection'
+  tenant: solver
+  settings: {"username": "7654321", "password": "fs_password"}
+
