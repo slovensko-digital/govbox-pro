@@ -96,4 +96,27 @@ class Fs::MessageDraftsTest < ApplicationSystemTestCase
     click_button "Vytvoriť novú správu"
     assert_not has_link? "Vytvoriť novú správu na finančnú správu"
   end
+
+  test "user can upload a message draft only to the tenant's boxes" do
+    sign_in_as(:solver_other)
+
+    visit message_threads_path
+
+    click_button "Vytvoriť novú správu"
+    click_link "Vytvoriť novú správu na finančnú správu"
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :parse_form, {
+      "subject" => "1122334455",
+      "form_identifier" => "3055_781"
+    },
+    [file_fixture("fs/dic1122334455_fs3055_781__sprava_dani_2023.xml").read]
+
+    FsEnvironment.fs_client.stub :api, fs_api do
+      attach_file "content[]", file_fixture("fs/dic1122334455_fs3055_781__sprava_dani_2023.xml")
+      click_button "Nahrať správy"
+
+      assert_text "Nahratie správ nebolo úspešné"
+    end
+  end
 end
