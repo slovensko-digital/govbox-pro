@@ -7,7 +7,7 @@ module Govbox
     retry_on ::ApplicationRecord::FailedToAcquireLockError, wait: :polynomially_longer, attempts: Float::INFINITY
 
     def perform(govbox_message)
-      processed_message = ::Message.except_drafts.where(uuid: govbox_message.message_id).joins(:thread).where(thread: { box_id: govbox_message.box.id }).take
+      processed_message = ::Message.not_drafts.where(uuid: govbox_message.message_id).joins(:thread).where(thread: { box_id: govbox_message.box.id }).take
 
       ActiveRecord::Base.transaction do
         message = Govbox::Message.create_message_with_thread!(govbox_message)

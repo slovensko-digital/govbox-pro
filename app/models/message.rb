@@ -40,9 +40,9 @@ class Message < ApplicationRecord
   delegate :tenant, to: :thread
   delegate :box, to: :thread
 
-  scope :except_drafts, -> { where(type: [nil, 'Message']) }
+  scope :not_drafts, -> { where(type: [nil, 'Message']) }
   scope :outbox, -> { where(outbox: true) }
-  scope :inbox, -> { except_drafts.where.not(outbox: true) }
+  scope :inbox, -> { not_drafts.where.not(outbox: true) }
 
   after_update_commit ->(message) { EventBus.publish(:message_changed, message) }
   after_destroy_commit ->(message) { EventBus.publish(:message_destroyed, message) }
