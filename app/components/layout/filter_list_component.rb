@@ -10,7 +10,7 @@ class Layout::FilterListComponent < ViewComponent::Base
   def icon_for(filter)
     return Common::IconComponent.new(filter.icon) if filter.icon.present?
 
-    if filter.tag_id.present?
+    if filter.tag.present?
       return Common::IconComponent.new(filter.tag.icon) if filter.tag.icon.present?
       return Icons::TagComponent.new
     end

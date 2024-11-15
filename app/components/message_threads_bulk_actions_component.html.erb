@@ -24,7 +24,7 @@
           <div>
             <button type="button" data-action="dropdown#toggle click@window->dropdown#hide" class="inline-flex w-full justify-center items-center gap-x-1.5 rounded-md bg-white px-2 py-1 sm:px-3 sm:py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" id="menu-button" aria-expanded="true" aria-haspopup="true">
               Hromadné akcie
-              <%= render Icons::ChevronDownComponent.new(css_classes: "w-4 h-4 text-gray-400", stroke_width: 2) %>
+              <%= render Icons::IconComponent.new('chevron-down', classes: "w-4 h-4 text-gray-400", stroke_width: 2) %>
             </button>
           </div>
 
@@ -126,7 +126,7 @@
       <div>
         <button type="button" data-action="dropdown#toggle click@window->dropdown#hide" class="inline-flex w-full justify-center items-center gap-x-1.5 rounded-md bg-white px-2 py-1 sm:px-3 sm:py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" id="menu-button" aria-expanded="true" aria-haspopup="true">
           Vytvoriť novú správu
-          <%= render Icons::ChevronDownComponent.new(css_classes: "w-4 h-4 text-gray-400", stroke_width: 2) %>
+          <%= render Common::IconComponent.new('chevron-down', classes: "w-4 h-4 text-gray-400", stroke_width: 2) %>
         </button>
       </div>
 

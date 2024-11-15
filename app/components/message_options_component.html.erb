@@ -32,12 +32,12 @@
       <% if @mode == :thread_view && @message.collapsible? %>
         <% if @message.collapsed %>
           <%= button_to message_path(@message), params: { collapsed: false }, method: :patch, class: 'whitespace-nowrap flex gap-3', role: 'menu-item', tabindex: -1 do %>
-              <%= render Icons::ChevronDownComponent.new(css_classes: "w-5 h-5") %>
+              <%= render Common::IconComponent.new("chevron-down", classes: "w-5 h-5") %>
               Vždy zobrazovať
           <% end %>
         <% else %>
           <%= button_to message_path(@message), params: { collapsed: true }, method: :patch, class: 'whitespace-nowrap flex gap-3', role: 'menu-item', tabindex: -1 do %>
-            <%= render Icons::ChevronUpComponent.new(css_classes: "w-5 h-5") %>
+            <%= render Common::IconComponent.new("chevron-up", classes: "w-5 h-5") %>
             Zbaliť a už nerozbaľovať
           <% end %>
         <% end %>
