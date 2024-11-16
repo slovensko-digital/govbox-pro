@@ -70,7 +70,7 @@ class FilterSubscription < ApplicationRecord
     end
 
     scope = scope.where.not("tag_ids && ARRAY[?]", query[:filter_out_tag_ids]) if query[:filter_out_tag_ids].present?
-    scope = scope.fulltext_search(query[:fulltext]) if query[:fulltext].present?
+    scope = scope.fulltext_search(query[:fulltext], prefix_search: query[:prefix_search]) if query[:fulltext].present?
 
     scope
   end
