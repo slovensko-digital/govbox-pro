@@ -15,6 +15,8 @@ module Govbox
         moved_edesk_message_ids = []
 
         raw_messages.each do |raw_message|
+          next if folder.box.settings['sync_since'].present? && (Date.parse(raw_message['delivered_at']) < Date.parse(folder.box.settings['sync_since']))
+
           edesk_message_id = raw_message['id']
           old_folder_id = edesk_message_ids_to_folder_ids[edesk_message_id]
 
