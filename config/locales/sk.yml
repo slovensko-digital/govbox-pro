@@ -323,12 +323,15 @@ sk:
     signing:
       nothing_to_sign: "Vo vybraných vláknach sa nenašli žiadne dokumenty so žiadosťou na podpis"
   blank_results:
-    empty:
-      text1: "Žiadne záznamy"
-      text2: "Zatiaľ nie sú vytvorené žiadne záznamy"
+    filters:
+      text1: "Žiadne filtre"
+      text2: 'Zatiaľ nie sú vytvorené žiadne filtre. Vytvorte prvý stlačením tlačidla "Vytvoriť filter".'
+    tags:
+      text1: "Žiadne štítky"
+      text2: 'Zatiaľ nie sú vytvorené žiadne štítky. Vytvorte prvý stlačením tlačidla "Vytvoriť štítok".'
+    rules:
+      text1: "Žiadne pravidlá"
+      text2: 'Zatiaľ nie sú vytvorené žiadne pravidlá. Vytvorte prvé stlačením tlačidla "Vytvoriť pravidlo".'
     not_found:
       text1: "Žiadne výsledky"
       text2: "Skúste zmeniť filter alebo vyhľadávané slová"
-    all_done:
-      text1: "Všetko je hotové"
-      text2: "Nemáte žiadnu novú správu"

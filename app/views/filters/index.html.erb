@@ -1,7 +1,7 @@
 <%= render Filters::FiltersListComponent.new(@filters) do |component| %>
   <% if @filters.empty? %>
     <% component.with_blank_results_area do %>
-      <%= render Common::BlankResultsComponent.new(:empty) %>
+      <%= render Common::BlankResultsComponent.new(:filters) %>
     <% end %>
   <% end %>
 <% end %>

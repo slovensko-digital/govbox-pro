@@ -15,11 +15,7 @@
     <% end %>
   <% else %>
     <% component.with_blank_results_area do %>
-      <% if params[:referrer] == "menu" %>
-        <%= render Common::BlankResultsComponent.new(:all_done) %>
-      <% else %>
-        <%= render Common::BlankResultsComponent.new(:not_found) %>
-      <% end %>
+      <%= render Common::BlankResultsComponent.new(:not_found) %>
     <% end %>
   <% end %>
 <% end %>

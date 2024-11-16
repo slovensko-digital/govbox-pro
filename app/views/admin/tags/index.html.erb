@@ -1,7 +1,7 @@
 <%= render Admin::Tags::TagsListComponent.new(simple_tags: @simple_tags) do |component| %>
   <% if @simple_tags.empty? %>
     <% component.with_blank_results_area do %>
-      <%= render Common::BlankResultsComponent.new(:empty) %>
+      <%= render Common::BlankResultsComponent.new(:tags) %>
     <% end %>
   <% end %>
 <% end %>
