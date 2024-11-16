@@ -43,7 +43,7 @@ class Upvs::Box < Box
   end
 
   def sync
-    Govbox::SyncBoxJob.set(queue: :asap).perform_later(self)
+    Govbox::SyncBoxJob.set(job_context: :asap).perform_later(self)
   end
 
   private

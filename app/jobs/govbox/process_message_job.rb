@@ -10,7 +10,7 @@ module Govbox
       ActiveRecord::Base.transaction do
         destroy_associated_message_draft(govbox_message)
 
-        message = Govbox::Message.create_message_with_thread!(govbox_message, priority: self.queue_name)
+        message = Govbox::Message.create_message_with_thread!(govbox_message)
 
         mark_delivery_notification_authorized(govbox_message)
         mark_associated_delivery_notification_authorized(govbox_message)
@@ -99,7 +99,7 @@ module Govbox
         next if message_object.form&.related_documents.present?
 
         upvs_form = message_object.find_or_create_form
-        ::Upvs::DownloadFormRelatedDocumentsJob.set(queue: self.queue_name).perform_later(upvs_form) if upvs_form
+        ::Upvs::DownloadFormRelatedDocumentsJob.perform_later(upvs_form) if upvs_form
       end
     end
   end

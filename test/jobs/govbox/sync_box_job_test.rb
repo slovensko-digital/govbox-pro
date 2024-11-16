@@ -35,9 +35,9 @@ class Govbox::SyncBoxJobTest < ActiveJob::TestCase
 
     ::Upvs::GovboxApi::Edesk.stub :new, edesk_api_mock do
       assert_enqueued_with(job: Govbox::SyncFolderJob, priority: 1000) do
-        Govbox::SyncBoxJob.new.perform(box, initial_import: true)
+        Govbox::SyncBoxJob.set(job_context: :later).perform_now(box)
       end
-      end
+    end
   end
 
   test "schedules Govbox::SyncFolderJob with no priority unless initial box sync" do
@@ -74,7 +74,7 @@ class Govbox::SyncBoxJobTest < ActiveJob::TestCase
 
     ::Upvs::GovboxApi::Edesk.stub :new, edesk_api_mock do
       assert_enqueued_with(job: Govbox::SyncFolderJob, priority: nil) do
-        Govbox::SyncBoxJob.new.perform(box)
+        Govbox::SyncBoxJob.perform_now(box)
       end
     end
   end

@@ -25,7 +25,7 @@ class Govbox::Message < ApplicationRecord
 
   DELIVERY_NOTIFICATION_TAG = 'delivery_notification'
 
-  def self.create_message_with_thread!(govbox_message, priority: :default)
+  def self.create_message_with_thread!(govbox_message)
     message = nil
 
     MessageThread.with_advisory_lock!(govbox_message.correlation_id, transaction: true, timeout_seconds: 10) do
@@ -45,8 +45,8 @@ class Govbox::Message < ApplicationRecord
 
     create_message_objects(message, govbox_message.payload)
 
-    EventBus.publish(:message_thread_created, message.thread, priority) if message.thread.previously_new_record?
-    EventBus.publish(:message_created, message, priority)
+    EventBus.publish(:message_thread_created, message.thread) if message.thread.previously_new_record?
+    EventBus.publish(:message_created, message)
 
     message
   end

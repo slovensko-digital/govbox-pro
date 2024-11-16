@@ -16,7 +16,7 @@ module Govbox
         govbox_message.payload = raw_message
       end
 
-      ProcessMessageJob.set(queue: self.queue_name).perform_later(govbox_message)
+      ProcessMessageJob.perform_later(govbox_message)
     end
   end
 end

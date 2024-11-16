@@ -3,7 +3,7 @@ class Fs::SubmitMessageDraftAction
     is_submittable = message.submittable?
 
     if is_submittable
-      Fs::SubmitMessageDraftJob.set(queue: priority).perform_later(message, bulk_submit: bulk)
+      Fs::SubmitMessageDraftJob.set( priority).perform_later(message, bulk_submit: bulk)
       message.being_submitted!
     end
 

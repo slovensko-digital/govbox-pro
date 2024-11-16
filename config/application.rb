@@ -51,7 +51,8 @@ module GovboxPro
     config.good_job.cron['check_messages_mapping'] = {
       cron: "30 7 * * *",  # run every day at 7:30 am
       class: "Govbox::CheckMessagesMappingJob",
-      description: "Regular job to check messages mapping"
+      description: "Regular job to check messages mapping",
+      set: { job_context: :later }
     }
 
     config.good_job.cron['check_archived_documents'] = {
@@ -65,7 +66,7 @@ module GovboxPro
         cron: "0 */12 * * *",  # run every 12 hours
         class: "Fs::FetchFormsJob",
         description: "Regular job to fetch Fs::Forms",
-        set: { queue: :later }
+        set: { job_context: :later }
       }
     end
 
@@ -74,7 +75,7 @@ module GovboxPro
         cron: "0 */12 * * *",  # run every 12 hours
         class: "Upvs::FetchFormRelatedDocumentsJob",
         description: "Regular job to fetch Upvs::FormRelatedDocuments",
-        set: { queue: :later }
+        set: { job_context: :later }
       }
     end
 

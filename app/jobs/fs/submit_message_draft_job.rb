@@ -20,6 +20,6 @@ class Fs::SubmitMessageDraftJob < ApplicationJob
 
     raise RuntimeError.new("Response status is not 202. Message #{response[:body][:errors]}") unless response[:status] == 202
 
-    Fs::SubmitMessageDraftStatusJob.set(queue: self.queue_name).perform_later(message_draft, response[:headers][:location])
+    Fs::SubmitMessageDraftStatusJob.set( self.queue_name).perform_later(message_draft, response[:headers][:location])
   end
 end

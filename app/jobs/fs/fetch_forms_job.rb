@@ -17,7 +17,7 @@ class Fs::FetchFormsJob < ApplicationJob
         )
       end
 
-      download_related_documents_job.set(queue: self.queue_name).perform_later(fs_form)
+      download_related_documents_job.perform_later(fs_form)
     end
   end
 end
