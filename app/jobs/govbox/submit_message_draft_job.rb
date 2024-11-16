@@ -7,6 +7,10 @@ class Govbox::SubmitMessageDraftJob < ApplicationJob
 
   retry_on TemporarySubmissionError, wait: 2.minutes, attempts: 5
 
+  retry_on SubmissionError, attempts: 1 do |_job, _error|
+    # no-op
+  end
+
   def perform(message_draft, bulk_submit: false, upvs_client: UpvsEnvironment.upvs_client)
     raise "Invalid message!" unless message_draft.valid?(:validate_data)
 
