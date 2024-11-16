@@ -2,12 +2,13 @@
 #
 # Table name: message_objects_tags
 #
-#  id                :bigint           not null, primary key
+#  id                :integer          not null, primary key
+#  message_object_id :integer          not null
+#  tag_id            :integer          not null
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
-#  message_object_id :bigint           not null
-#  tag_id            :bigint           not null
 #
+
 class MessageObjectsTag < ApplicationRecord
   belongs_to :message_object
   belongs_to :tag

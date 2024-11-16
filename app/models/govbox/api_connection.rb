@@ -2,16 +2,17 @@
 #
 # Table name: api_connections
 #
-#  id                    :bigint           not null, primary key
-#  api_token_private_key :string           not null
-#  obo                   :uuid
-#  settings              :jsonb
+#  id                    :integer          not null, primary key
 #  sub                   :string           not null
-#  type                  :string
+#  obo                   :uuid
+#  api_token_private_key :string           not null
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
-#  tenant_id             :bigint
+#  type                  :string
+#  tenant_id             :integer
+#  settings              :jsonb
 #
+
 class Govbox::ApiConnection < ::ApiConnection
   validates :tenant_id, absence: true
 

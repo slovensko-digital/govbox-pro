@@ -2,13 +2,14 @@
 #
 # Table name: automation_webhooks
 #
-#  id         :bigint           not null, primary key
+#  id         :integer          not null, primary key
+#  tenant_id  :integer          not null
 #  name       :string           not null
 #  url        :string           not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
-#  tenant_id  :bigint           not null
 #
+
 module Automation
   class Webhook < ApplicationRecord
     belongs_to :tenant

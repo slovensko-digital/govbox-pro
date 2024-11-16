@@ -2,12 +2,13 @@
 #
 # Table name: tag_groups
 #
-#  id         :bigint           not null, primary key
+#  id         :integer          not null, primary key
+#  group_id   :integer          not null
+#  tag_id     :integer          not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
-#  group_id   :bigint           not null
-#  tag_id     :bigint           not null
 #
+
 class TagGroup < ApplicationRecord
   include AuditableEvents
 

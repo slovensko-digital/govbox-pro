@@ -2,14 +2,15 @@
 #
 # Table name: automation_rules
 #
-#  id            :bigint           not null, primary key
+#  id            :integer          not null, primary key
+#  tenant_id     :integer          not null
 #  name          :string           not null
 #  trigger_event :string           not null
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
-#  tenant_id     :bigint           not null
-#  user_id       :bigint           not null
+#  user_id       :integer          not null
 #
+
 module Automation
   class Rule < ApplicationRecord
     include AuditableEvents

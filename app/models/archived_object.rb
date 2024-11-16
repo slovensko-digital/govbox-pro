@@ -2,13 +2,14 @@
 #
 # Table name: archived_objects
 #
-#  id                :bigint           not null, primary key
-#  signature_level   :string
+#  id                :integer          not null, primary key
+#  message_object_id :integer          not null
 #  validation_result :string           not null
+#  signature_level   :string
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
-#  message_object_id :bigint           not null
 #
+
 class ArchivedObject < ApplicationRecord
   has_many :archived_object_versions
   belongs_to :message_object

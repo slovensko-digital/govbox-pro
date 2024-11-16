@@ -2,16 +2,17 @@
 #
 # Table name: notifications
 #
-#  id                     :bigint           not null, primary key
-#  filter_name            :string           not null
+#  id                     :integer          not null, primary key
 #  type                   :string           not null
+#  user_id                :integer          not null
+#  message_thread_id      :integer          not null
+#  message_id             :integer
+#  filter_subscription_id :integer
+#  filter_name            :string           not null
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
-#  filter_subscription_id :bigint
-#  message_id             :bigint
-#  message_thread_id      :bigint           not null
-#  user_id                :bigint           not null
 #
+
 module Notifications
   class MessageThreadNoteChanged < ::Notification
     def self.create_notifications!(subscription, thread, _)

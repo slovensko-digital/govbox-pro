@@ -2,14 +2,15 @@
 #
 # Table name: nested_message_objects
 #
-#  id                :bigint           not null, primary key
-#  content           :binary           not null
-#  mimetype          :string
+#  id                :integer          not null, primary key
 #  name              :string
+#  mimetype          :string
+#  content           :binary           not null
+#  message_object_id :integer          not null
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
-#  message_object_id :bigint           not null
 #
+
 class NestedMessageObject < ApplicationRecord
   include PdfVisualizationOperations
   include MessageExportOperations

@@ -2,12 +2,13 @@
 #
 # Table name: group_memberships
 #
-#  id         :bigint           not null, primary key
+#  id         :integer          not null, primary key
+#  group_id   :integer          not null
+#  user_id    :integer          not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
-#  group_id   :bigint           not null
-#  user_id    :bigint           not null
 #
+
 class GroupMembership < ApplicationRecord
   include AuditableEvents
   include TagCreation

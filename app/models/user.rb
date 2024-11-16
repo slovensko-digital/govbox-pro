@@ -2,16 +2,17 @@
 #
 # Table name: users
 #
-#  id                           :bigint           not null, primary key
+#  id                           :integer          not null, primary key
+#  tenant_id                    :integer
 #  email                        :string           not null
 #  name                         :string           not null
-#  notifications_last_opened_at :datetime
-#  notifications_reset_at       :datetime
-#  saml_identifier              :string
 #  created_at                   :datetime         not null
 #  updated_at                   :datetime         not null
-#  tenant_id                    :bigint
+#  saml_identifier              :string
+#  notifications_last_opened_at :datetime
+#  notifications_reset_at       :datetime
 #
+
 class User < ApplicationRecord
   include AuditableEvents
 

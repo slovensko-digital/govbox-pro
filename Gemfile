@@ -2,13 +2,13 @@ source 'https://rubygems.org'
 
 ruby '3.3.0'
 
-gem 'rails', '~> 7.1'
+gem 'rails', '~> 8.0.0'
 gem 'rails-i18n'
 
-gem 'pg', '~> 1.5'
+gem 'pg'
 gem 'with_advisory_lock'
 
-gem 'puma', '~> 6.4'
+gem 'puma', ">= 5.0"
 
 gem 'turbo-rails'
 
@@ -17,9 +17,6 @@ gem 'sprockets-rails'
 gem 'importmap-rails'
 gem 'tailwindcss-rails'
 gem 'view_component'
-
-# Schedulers
-gem 'clockwork'
 
 # Workers
 gem 'good_job'
@@ -48,7 +45,7 @@ gem 'rollbar'
 gem 'pg_search'
 
 # Reduces boot times through caching; required in config/boot.rb
-gem 'bootsnap', '>= 1.4.4', require: false
+gem 'bootsnap', require: false
 
 group :development, :test do
   gem "brakeman"

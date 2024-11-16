@@ -44,8 +44,9 @@ if Rails.env.development?
       'format_rdoc'                 => 'false',
       'format_yard'                 => 'false',
       'format_markdown'             => 'false',
-      'sort'                        => 'true',
-      'force'                       => 'false',
+
+      'classified_sort'             => 'true',
+      'force'                       => 'true',
       'frozen'                      => 'false',
       'classified_sort'             => 'true',
       'trace'                       => 'false',

@@ -2,12 +2,13 @@
 #
 # Table name: message_object_data
 #
-#  id                :bigint           not null, primary key
+#  id                :integer          not null, primary key
+#  message_object_id :integer          not null
 #  blob              :binary           not null
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
-#  message_object_id :bigint           not null
 #
+
 class MessageObjectDatum < ApplicationRecord
   belongs_to :message_object
 

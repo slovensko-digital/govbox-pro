@@ -2,21 +2,22 @@
 #
 # Table name: audit_logs
 #
-#  id                 :bigint           not null, primary key
-#  actor_name         :string
-#  changeset          :jsonb
+#  id                 :integer          not null, primary key
+#  type               :string           not null
+#  tenant_id          :integer
 #  happened_at        :datetime         not null
-#  new_value          :string
+#  actor_name         :string
+#  actor_id           :integer
 #  previous_value     :string
+#  new_value          :string
+#  changeset          :jsonb
+#  message_thread_id  :integer
 #  thread_id_archived :integer
 #  thread_title       :string
-#  type               :string           not null
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
-#  actor_id           :bigint
-#  message_thread_id  :bigint
-#  tenant_id          :bigint
 #
+
 require "csv"
 
 class AuditLog < ApplicationRecord

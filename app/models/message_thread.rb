@@ -2,16 +2,17 @@
 #
 # Table name: message_threads
 #
-#  id                        :bigint           not null, primary key
-#  delivered_at              :datetime         not null
-#  last_message_delivered_at :datetime         not null
-#  original_title            :string           not null
+#  id                        :integer          not null, primary key
+#  folder_id                 :integer
 #  title                     :string           not null
+#  original_title            :string           not null
+#  delivered_at              :datetime         not null
 #  created_at                :datetime         not null
 #  updated_at                :datetime         not null
-#  box_id                    :bigint           not null
-#  folder_id                 :bigint
+#  last_message_delivered_at :datetime         not null
+#  box_id                    :integer          not null
 #
+
 class MessageThread < ApplicationRecord
   belongs_to :folder, optional: true # do not use, will be removed
   belongs_to :box

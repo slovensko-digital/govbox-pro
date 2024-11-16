@@ -2,14 +2,15 @@
 #
 # Table name: groups
 #
-#  id         :bigint           not null, primary key
-#  group_type :enum
+#  id         :integer          not null, primary key
 #  name       :string           not null
-#  type       :string           not null
+#  tenant_id  :integer          not null
+#  group_type :enum
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
-#  tenant_id  :bigint           not null
+#  type       :string           not null
 #
+
 class Group < ApplicationRecord
   include AuditableEvents
 

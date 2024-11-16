@@ -2,16 +2,17 @@
 #
 # Table name: automation_conditions
 #
-#  id                    :bigint           not null, primary key
+#  id                    :integer          not null, primary key
 #  attr                  :string
-#  condition_object_type :string
 #  type                  :string
 #  value                 :string
+#  automation_rule_id    :integer          not null
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
-#  automation_rule_id    :bigint           not null
-#  condition_object_id   :bigint
+#  condition_object_type :string
+#  condition_object_id   :integer
 #
+
 module Automation
   class Condition < ApplicationRecord
     belongs_to :automation_rule, class_name: 'Automation::Rule'

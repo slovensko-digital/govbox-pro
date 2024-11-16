@@ -2,12 +2,13 @@
 #
 # Table name: message_threads_tags
 #
-#  id                :bigint           not null, primary key
+#  id                :integer          not null, primary key
+#  message_thread_id :integer          not null
+#  tag_id            :integer          not null
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
-#  message_thread_id :bigint           not null
-#  tag_id            :bigint           not null
 #
+
 class MessageThreadsTag < ApplicationRecord
   include AuditableEvents
 
