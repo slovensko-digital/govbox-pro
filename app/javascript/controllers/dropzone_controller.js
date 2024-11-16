@@ -5,6 +5,7 @@ export default class extends Controller {
     const dropzone = document.getElementById('dropzone');
     const fileInput = document.getElementById('content[]');
     const fileList = document.getElementById('fileList');
+    const fileCount = document.getElementById('fileCount');
 
     dropzone.addEventListener('dragover', (e) => {
       e.preventDefault();
@@ -38,6 +39,9 @@ export default class extends Controller {
       listItem.textContent = `${file.name} (${this.formatBytes(file.size)})`;
       fileList.appendChild(listItem);
     }
+
+    fileCount.parentElement.classList.remove('hidden');
+    fileCount.textContent = `${parseInt(fileCount.textContent) + files.length}`;
   }
 
   formatBytes(bytes) {
