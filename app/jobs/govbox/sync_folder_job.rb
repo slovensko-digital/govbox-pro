@@ -1,7 +1,5 @@
 module Govbox
   class SyncFolderJob < ApplicationJob
-    queue_as :default
-
     def perform(folder, upvs_client: UpvsEnvironment.upvs_client, batch_size: 1000)
       edesk_api = upvs_client.api(folder.box).edesk
       new_messages_ids = []

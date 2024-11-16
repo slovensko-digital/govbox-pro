@@ -1,7 +1,5 @@
 module Govbox
   class DownloadMessageJob < ApplicationJob
-    queue_as :default
-
     def perform(govbox_folder, edesk_message_id, upvs_client: UpvsEnvironment.upvs_client)
       edesk_api = upvs_client.api(govbox_folder.box).edesk
       response_status, raw_message = edesk_api.fetch_message(edesk_message_id)

@@ -1,6 +1,8 @@
 require "test_helper"
 
 class MessageDraftTest < ActiveSupport::TestCase
+  include ActiveJob::TestHelper
+
   test "created! method publishes events on EventBus" do
     box = boxes(:ssd_main)
     message = MessageDraft.create(
@@ -131,5 +133,13 @@ class MessageDraftTest < ActiveSupport::TestCase
     message_draft.destroy
 
     assert message_thread.destroyed?
+  end
+
+  test "single draft submission schedules jobs with highest priority" do
+    message_draft = messages(:ssd_main_draft)
+
+    assert_enqueued_with(job: Govbox::SubmitMessageDraftJob, priority: -1000) do
+      message_draft.submit
+    end
   end
 end
