@@ -25,7 +25,6 @@ class ApplicationJob < ActiveJob::Base
   before_enqueue do |job|
     job.job_context = Thread.current[:job_context] if Thread.current[:job_context].present?
     job.queue_name = job.job_context if job.job_context.present?
-    puts 1
   end
 
   around_perform do |job, block|
