@@ -87,3 +87,12 @@ fs_accountants2:
   api_connection: fs_api_connection1
   settings: {"dic": "1122334456", "subject_id": "387cf7da-2cff-40e0-8ad2-650030429994", "message_drafts_import_enabled": true}
   type: 'Fs::Box'
+
+fs_solver:
+  name: Solver main FS
+  uri: dic://sk/9988776655
+  tenant: solver
+  short_name: SFS
+  api_connection: fs_api_connection2
+  settings: {"dic": "1122334456", "subject_id": SecureRandom.uuid, "message_drafts_import_enabled": true}
+  type: 'Fs::Box'

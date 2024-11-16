@@ -1,0 +1,62 @@
+<%= render partial: "fs/messages/style" %>
+
+<table>
+  <tbody>
+    <tr>
+      <th>Identifikátor subjektu:</th>
+      <td>
+        <b><%= message.metadata['dic'] %></b>
+      </td>
+    </tr>
+    <tr>
+      <th>Daňový subjekt:</th>
+      <td>
+        <b><%= message.recipient_name %></b>
+      </td>
+    </tr>
+    <tr>
+      <th>Evidenčné číslo podania:</th>
+      <td>
+        <b><%= message.metadata['fs_message_id'] %></b>
+      </td>
+    </tr>
+    <tr>
+      <th>Dátum podania:</th>
+      <td>
+        <b>
+          <time class="md:hidden" datetime="<%= message.delivered_at %>">
+            <%= ApplicationController.helpers.nice_datetime_with_time(message.delivered_at, full_date: true) %>
+          </time>
+        </b>
+      </td>
+    </tr>
+    <tr>
+      <th>Typ podania:</th>
+      <td>
+        <b><%= message.title %></b>
+      </td>
+    </tr>
+    <tr>
+      <th>Stav spracovania:</th>
+      <td>
+        <b><%= message.metadata['fs_status'] %></b>
+      </td>
+    </tr>
+    <tr>
+      <th>Obdobie:</th>
+      <td>
+        <b><%= message.metadata['fs_period'] %></b>
+      </td>
+    </tr>
+    <% if message.metadata['fs_other_attributes']&.present? %>
+    <%# message.metadata['fs_other_attributes'].each do |k, v| %>
+<!--      <tr>-->
+<!--        <th><%#= k %>:</th>-->
+<!--        <td>-->
+<!--          <b><%#= v %></b>-->
+<!--        </td>-->
+<!--      </tr>-->
+    <%# end %>
+  <% end %>
+  </tbody>
+</table>

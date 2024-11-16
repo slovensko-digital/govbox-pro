@@ -1,5 +1,9 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
+drafts_basic_user:
+  tag: ssd_basic_user_drafts
+  group: ssd_basic_user
+
 finance_basic_user:
   tag: ssd_finance
   group: ssd_basic_user

@@ -32,10 +32,10 @@ class Fs::MessageDraft < MessageDraft
     form_files.each do |form_file|
       form_content = form_file.read.force_encoding("UTF-8")
       form_information = fs_client.api.parse_form(form_content)
-      dic = form_information['subject']
+      dic = form_information['subject']&.strip
       fs_form_identifier = form_information['form_identifier']
 
-      box = Fs::Box.with_enabled_message_drafts_import.find_by("settings ->> 'dic' = ?", dic)
+      box = author.tenant.boxes.with_enabled_message_drafts_import.find_by("settings ->> 'dic' = ?", dic)
       fs_form = Fs::Form.find_by(identifier: fs_form_identifier)
 
       unless box && fs_form
@@ -53,7 +53,8 @@ class Fs::MessageDraft < MessageDraft
         delivered_at: Time.now,
         metadata: {
           'status': 'being_loaded',
-          'fs_form_id': fs_form.id
+          'fs_form_id': fs_form.id,
+          'correlation_id': SecureRandom.uuid
         },
         author: author
       )
@@ -70,13 +71,12 @@ class Fs::MessageDraft < MessageDraft
       form_object = message.objects.create(
         object_type: 'FORM',
         name: form_file.original_filename,
-        mimetype: form_file.content_type,
-        to_be_signed: fs_form.signature_required
+        mimetype: form_file.content_type
       )
       form_object.update(is_signed: form_object.asice?)
       message.thread.box.tenant.signed_externally_tag!.assign_to_message_object(form_object) if form_object.is_signed?
 
-      if form_object.to_be_signed && !form_object.is_signed?
+      if fs_form.signature_required && !form_object.is_signed?
         message.thread.box.tenant.signer_group.signature_requested_from_tag&.assign_to_message_object(form_object)
         message.thread.box.tenant.signer_group.signature_requested_from_tag&.assign_to_thread(message.thread)
       end
@@ -103,13 +103,7 @@ class Fs::MessageDraft < MessageDraft
   end
 
   def build_html_visualization
-    return self.html_visualization if self.html_visualization.present?
-
-    return unless form&.xslt_txt
-    return unless form_object&.unsigned_content
-
-    template = Nokogiri::XSLT(form.xslt_txt)
-    template.transform(form_object.xml_unsigned_content)
+    Fs::MessageHelper.build_html_visualization_from_form(self)
   end
 
   def form

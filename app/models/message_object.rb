@@ -7,7 +7,7 @@
 #  mimetype     :string
 #  name         :string
 #  object_type  :string           not null
-#  to_be_signed :boolean          default(FALSE), not null
+#  uuid         :uuid
 #  visualizable :boolean
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
@@ -23,9 +23,9 @@ class MessageObject < ApplicationRecord
   has_many :tags, through: :message_objects_tags
   has_one :archived_object, dependent: :destroy
 
+  delegate :tenant, to: :message
+
   scope :unsigned, -> { where(is_signed: false) }
-  scope :to_be_signed, -> { where(to_be_signed: true) }
-  scope :should_be_signed, -> { where(to_be_signed: true, is_signed: false) }
 
   validates :name, presence: { message: "Name can't be blank" }, on: :validate_data
   validate :allowed_mimetype?, on: :validate_data
@@ -57,6 +57,14 @@ class MessageObject < ApplicationRecord
     end
   end
 
+  def self.mark_message_objects_externally_signed(objects)
+    objects.find_each do |object|
+      next unless object.is_signed?
+
+      object.assign_tag(object.message.tenant.signed_externally_tag!) unless object.tags.signed_internally.present?
+    end
+  end
+
   def mark_signed_by_user(user)
     assign_tag(user.signed_by_tag)
     unassign_tag(user.signature_requested_from_tag)
@@ -77,6 +85,10 @@ class MessageObject < ApplicationRecord
 
     unassign_tag(group.signature_requested_from_tag)
     thread.remove_signature_requested_from_group(group)
+  end
+
+  def automation_rules_for_event(event)
+    tenant.automation_rules.where(trigger_event: event)
   end
 
   def content
@@ -117,6 +129,7 @@ class MessageObject < ApplicationRecord
   end
 
   def fill_missing_info
+    update(uuid: SecureRandom.uuid) unless uuid.present?
     update(name: name + Utils.file_extension_by_mimetype(mimetype).to_s) if Utils.file_name_without_extension?(self)
     update(mimetype: Utils.file_mimetype_by_name(entry_name: name)) if mimetype == Utils::OCTET_STREAM_MIMETYPE
   end
@@ -127,6 +140,10 @@ class MessageObject < ApplicationRecord
 
   def xml?
     Utils::XML_MIMETYPES.any? { |xml_mimetype| xml_mimetype == Utils.mimetype_without_optional_params(mimetype) }
+  end
+
+  def thread
+    message.thread
   end
 
   private
@@ -147,17 +164,13 @@ class MessageObject < ApplicationRecord
     message_objects_tags.find_by(tag: tag)&.destroy
   end
 
-  def thread
-    message.thread
-  end
-
   def remove_object_related_tags_from_thread
     tags.each do |tag|
-      message.thread.unassign_tag(tag) unless other_thread_objects_include_tag?(tag)
+      thread.unassign_tag(tag) unless other_thread_objects_include_tag?(tag)
     end
 
-    message.thread.unassign_tag(message.tenant.signed_tag!) unless message.thread.tags.reload.where(type: SignedByTag.to_s).any?
-    message.thread.unassign_tag(message.tenant.signature_requested_tag!) unless message.thread.tags.reload.where(type: SignatureRequestedFromTag.to_s).any?
+    thread.unassign_tag(message.tenant.signed_tag!) unless thread.tags.reload.where(type: SignedByTag.to_s).any?
+    thread.unassign_tag(message.tenant.signature_requested_tag!) unless thread.tags.reload.where(type: SignatureRequestedFromTag.to_s).any?
   end
 
   def other_thread_objects_include_tag?(tag)
