@@ -11,21 +11,22 @@ class Fs::BoxTest < ActiveSupport::TestCase
       name: 'Test box',
       short_name: 'FS TB',
       uri: 'dic://sk/0246802',
-      type: 'Fs::Box'
+      type: 'Fs::Box',
+      api_connection: api_connections(:fs_api_connection1)
     )
 
     assert box.reload.syncable
   end
 
   test "#after_create callback sets syncable value to false if tenant fs_sync feature is disabled" do
-    tenant = tenants(:ssd)
-    tenant.disable_feature(:fs_sync)
+    tenant = tenants(:solver)
 
     box = tenant.boxes.create(
       name: 'Test box',
       short_name: 'FS TB',
       uri: 'dic://sk/0246802',
-      type: 'Fs::Box'
+      type: 'Fs::Box',
+      api_connection: api_connections(:fs_api_connection2)
     )
 
     assert_not box.reload.syncable
