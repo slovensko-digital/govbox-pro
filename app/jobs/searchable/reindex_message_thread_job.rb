@@ -1,6 +1,4 @@
 class Searchable::ReindexMessageThreadJob < ApplicationJob
-  queue_as :default
-
   include GoodJob::ActiveJobExtensions::Concurrency
 
   good_job_control_concurrency_with(

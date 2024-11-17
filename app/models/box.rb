@@ -27,6 +27,8 @@ class Box < ApplicationRecord
   has_many :message_drafts_imports, dependent: :destroy
   has_many :automation_conditions, as: :condition_object
 
+  scope :with_enabled_message_drafts_import, -> { where("(settings ->> 'message_drafts_import_enabled')::boolean = ?", true) }
+
   after_destroy do |box|
     api_connection.destroy if api_connection.destroy_with_box?
     EventBus.publish(:box_destroyed, box.id)
@@ -47,6 +49,10 @@ class Box < ApplicationRecord
 
   def self.sync_all
     find_each(&:sync)
+  end
+
+  def single_recipient?
+    raise NotImplementedError
   end
 
   private

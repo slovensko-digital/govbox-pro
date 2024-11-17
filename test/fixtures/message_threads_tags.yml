@@ -64,6 +64,18 @@ ssd_main_draft_to_be_signed_ssd_signer_user_signature_requested:
   message_thread: ssd_main_draft_to_be_signed
   tag: ssd_signer_user_signature_requested
 
+ssd_main_draft_to_be_signed_ssd_signer_user_signed:
+  message_thread: ssd_main_draft_to_be_signed
+  tag: ssd_signer_user_signed
+
+ssd_main_draft_to_be_signed_ssd_signed:
+  message_thread: ssd_main_draft_to_be_signed
+  tag: ssd_signed
+
+ssd_main_draft_to_be_signed_ssd_submitted:
+  message_thread: ssd_main_draft_to_be_signed
+  tag: ssd_submitted
+
 ssd_main_draft_to_be_signed2_finance:
   message_thread: ssd_main_draft_to_be_signed2
   tag: ssd_finance
@@ -127,3 +139,7 @@ ssd_main_draft_to_be_signed4_ssd_signature_requested:
 ssd_main_draft_to_be_signed4_ssd_signers_signature_requested:
   message_thread: ssd_main_draft_to_be_signed4
   tag: ssd_signers_signature_requested
+
+ssd_main_empty_draft_ssd_basic_user_drafts:
+  message_thread: ssd_main_empty_draft
+  tag: ssd_basic_user_drafts

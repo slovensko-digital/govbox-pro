@@ -28,7 +28,7 @@ EventBus.reset!
 # wiring
 
 # automation
-[:message_thread_created, :message_created, :message_draft_submitted].each do |event|
+[:message_thread_created, :message_created, :message_draft_submitted, :message_object_downloaded].each do |event|
   EventBus.subscribe_job event, Automation::ApplyRulesForEventJob
 end
 

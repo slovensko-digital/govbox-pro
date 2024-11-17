@@ -351,7 +351,7 @@ paths:
                         description: Indikátor či je obsah objektu podpísaný
                         type: boolean
                       to_be_signed:
-                        description: Indikátor či obsah objektu má byť podpísaný
+                        description: Indikátor či obsah objektu má byť podpísaný. V prípade hodnoty true je vyžiadaný podpis na danom objekte
                         type: boolean
                       mimetype:
                         description: Typ internetového média v súlade s typom a obsahom objektu

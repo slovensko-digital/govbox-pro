@@ -18,8 +18,6 @@
 class Fs::Box < Box
   DISABLED_MESSAGE_DRAFTS_IMPORT_KEYWORDS = ['(oblasť SPD)']
 
-  scope :with_enabled_message_drafts_import, -> { where("(settings ->> 'message_drafts_import_enabled')::boolean = ?", true) }
-
   validates_uniqueness_of :name, :short_name, scope: :tenant_id
 
   def self.policy_class
@@ -38,6 +36,10 @@ class Fs::Box < Box
   end
 
   def sync
+  end
+
+  def single_recipient?
+    true
   end
 
   store_accessor :settings, :dic, prefix: true

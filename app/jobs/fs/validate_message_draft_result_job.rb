@@ -14,9 +14,13 @@ class Fs::ValidateMessageDraftResultJob < ApplicationJob
       message_draft.metadata[:validation_errors] = {
         result: response[:body]['result'],
         errors: response[:body]['problems']&.select { |problem| problem['level'] == 'error' }&.map{ |problem| problem['message'] },
-        warnings: response[:body]['problems']&.select { |problem| problem['level'] == 'warning' }&.map{ |problem| problem['message'] }
+        warnings: response[:body]['problems']&.select { |problem| problem['level'] == 'warning' }&.map{ |problem| problem['message'] },
       }
-      message_draft.add_cascading_tag(message_draft.tenant.submission_error_tag)
+
+      diff = response[:body]['problems']&.select { |problem| problem['level'] == 'diff' }
+      Rails.logger.info("Message draft DIFF: #{diff.map{ |problem| problem['message']}.join(', ')}") if diff.any?
+
+      message_draft.add_cascading_tag(message_draft.tenant.submission_error_tag) if message_draft.metadata[:validation_errors][:errors].any? || message_draft.metadata[:validation_errors][:warnings].any?
     end
 
     message_draft.save

@@ -1,7 +1,5 @@
 module Govbox
   class SyncBoxJob < ApplicationJob
-    queue_as :default
-
     def perform(box, upvs_client: UpvsEnvironment.upvs_client)
       raise unless box.is_a?(Upvs::Box)
       return unless box.syncable?
@@ -14,6 +12,7 @@ module Govbox
       raw_folders = raw_folders.index_by {|f| f["id"]}
       raw_folders.each_value do |folder_hash|
         folder = find_or_create_folder_with_parent(folder_hash, raw_folders, box)
+
         SyncFolderJob.perform_later(folder) unless folder.bin? || folder.drafts?
       end
     end

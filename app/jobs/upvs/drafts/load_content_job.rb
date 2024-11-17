@@ -39,11 +39,15 @@ class Upvs::Drafts::LoadContentJob < ApplicationJob
         mimetype: Utils.file_mimetype_by_name(entry_name: file_name, is_form: is_form),
         object_type: is_form ? "FORM" : "ATTACHMENT",
         is_signed: signed,
-        to_be_signed: to_be_signed,
         message: message_draft,
         visualizable: is_form ? false : nil,
         tags: tags
       )
+
+      if to_be_signed
+        message_draft_object.message.tenant.signer_group.signature_requested_from_tag&.assign_to_message_object(message_draft_object)
+        message_draft_object.message.tenant.signer_group.signature_requested_from_tag&.assign_to_thread(message_draft_object.message.thread)
+      end
 
       MessageObjectDatum.create(
         message_object: message_draft_object,

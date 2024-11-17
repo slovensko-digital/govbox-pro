@@ -31,6 +31,9 @@ application.register("message-drafts", MessageDraftsController)
 import SortableController from "./sortable_controller"
 application.register("sortable", SortableController)
 
+import DropzoneController from "./dropzone_controller"
+application.register("dropzone", DropzoneController)
+
 import TriStateCheckboxController from "./tri_state_checkbox_controller"
 application.register("tri-state-checkbox", TriStateCheckboxController)
 
@@ -39,3 +42,6 @@ application.register("turbo-content", TurboContentController)
 
 import ContentWithSeparator from "./content_with_separator"
 application.register("content-with-separator", ContentWithSeparator)
+
+import VisitedLinks from "./visited_links_controller"
+application.register("visited-links", VisitedLinks)

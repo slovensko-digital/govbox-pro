@@ -7,6 +7,7 @@ class Fs::FetchFormsJob < ApplicationJob
         identifier: fs_form_data['identifier'],
       ).tap do |form|
         form.update(
+          submission_type_identifier: fs_form_data['submission_type_identifier'],
           name: fs_form_data['name'],
           group_name: fs_form_data['form_group_name'],
           subtype_name: fs_form_data['subtype_name'],

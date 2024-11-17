@@ -40,8 +40,9 @@ class Message < ApplicationRecord
   delegate :tenant, to: :thread
   delegate :box, to: :thread
 
+  scope :not_drafts, -> { where(type: [nil, 'Message']) }
   scope :outbox, -> { where(outbox: true) }
-  scope :inbox, -> { where.not(outbox: true).where(type: [nil, 'Message']) }
+  scope :inbox, -> { not_drafts.where.not(outbox: true) }
 
   after_update_commit ->(message) { EventBus.publish(:message_changed, message) }
   after_destroy_commit ->(message) { EventBus.publish(:message_destroyed, message) }
@@ -96,8 +97,14 @@ class Message < ApplicationRecord
     metadata["delivery_notification"] && metadata["authorized"] == true
   end
 
-  # TODO remove UPVS stuff from core domain
+  def any_objects_with_requested_signature?
+    MessageObjectsTag.where(message_object: objects, tag: tenant.tags.signature_requesting).exists?
+  end
+
+  # TODO remove UPVS, FS stuff from core domain
   def form
+    return ::Fs::Form.find(metadata['fs_form_id']) if metadata['fs_form_id'].present?
+
     ::Upvs::Form.find_by(
       identifier: all_metadata['posp_id'],
       version: all_metadata['posp_version']
@@ -122,6 +129,19 @@ class Message < ApplicationRecord
 
     template = Nokogiri::XSLT(form.xslt_html)
     template.transform(form_object.xml_unsigned_content)
+  end
+
+  def copy_tags_from_draft(message_draft)
+    message_draft.objects.map do |message_draft_object|
+      message_object = objects.find_by(uuid: message_draft_object.uuid)
+      message_draft_object.tags.signed.each { |tag| message_object.assign_tag(tag) }
+    end
+
+    (message_draft.tags.simple + message_draft.tags.signed).each { |tag| assign_tag(tag) }
+  end
+
+  def assign_tag(tag)
+    messages_tags.find_or_create_by!(tag: tag)
   end
 
   def all_metadata

@@ -2,17 +2,18 @@
 #
 # Table name: fs_forms
 #
-#  id                 :bigint           not null, primary key
-#  ez_signature       :boolean
-#  group_name         :string
-#  identifier         :string           not null
-#  name               :string           not null
-#  number_identifier  :integer
-#  signature_required :boolean
-#  slug               :string
-#  subtype_name       :string
-#  created_at         :datetime         not null
-#  updated_at         :datetime         not null
+#  id                         :bigint           not null, primary key
+#  ez_signature               :boolean
+#  group_name                 :string
+#  identifier                 :string           not null
+#  name                       :string           not null
+#  number_identifier          :integer
+#  signature_required         :boolean
+#  slug                       :string
+#  submission_type_identifier :string
+#  subtype_name               :string
+#  created_at                 :datetime         not null
+#  updated_at                 :datetime         not null
 #
 class Fs::Form < ApplicationRecord
   has_many :related_documents, class_name: 'Fs::FormRelatedDocument', foreign_key: 'fs_form_id', dependent: :destroy

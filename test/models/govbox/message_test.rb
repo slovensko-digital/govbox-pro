@@ -1,7 +1,7 @@
 require "test_helper"
 
 class Govbox::MessageTest < ActiveSupport::TestCase
-  test "should create message, its objects and not visible tag" do
+  test "#create_message_with_thread! should create message, its objects and not visible tag" do
     govbox_message = govbox_messages(:one)
 
     Govbox::Message.create_message_with_thread!(govbox_message)
@@ -29,7 +29,27 @@ class Govbox::MessageTest < ActiveSupport::TestCase
     assert_equal message.tags.first, message.thread.tags.simple.first
   end
 
-  test "should take name from box as recipient_name if no recipient_name in govbox message" do
+  test "#create_message_with_thread! migrates tags from associated MessageDraft" do
+    govbox_message = govbox_messages(:ssd_general_created_from_draft)
+
+    Govbox::Message.create_message_with_thread!(govbox_message)
+
+    message = Message.last
+
+    # Simple and Signed tags copied to MessageThread
+    assert ['Finance', 'Podpísané', 'Podpísané: Signer user'].map { |tag_name| message.thread.tags.include?(tag_name) }
+
+    # No SignatureRequested, Submiited tags copied to MessageThread
+    assert message.thread.tags.where(type: ['SignatureRequestedTag', 'SignatureRequestedFromTag', 'Submitted']).none?
+
+    # Signed tags copied to MessageObjects
+    assert message.objects.find_by(name: 'Attachment2').tags.include?(tags(:ssd_signer_user_signed))
+
+    # No SignatureRequested tags copied to MessageObjects
+    assert message.form_object.tags.where(type: ['SignatureRequestedTag', 'SignatureRequestedFromTag']).none?
+  end
+
+  test "#create_message_with_thread! should take name from box as recipient_name if no recipient_name in govbox message" do
     govbox_message = govbox_messages(:ssd_without_recipient_name)
 
     Govbox::Message.create_message_with_thread!(govbox_message)
@@ -41,7 +61,7 @@ class Govbox::MessageTest < ActiveSupport::TestCase
     assert_equal message.recipient_name, "SSD main"
   end
 
-  test "should include general agenda subject in message title" do
+  test "#create_message_with_thread! should include general agenda subject in message title" do
     govbox_message = govbox_messages(:ssd_general_agenda)
 
     Govbox::Message.create_message_with_thread!(govbox_message)
@@ -51,7 +71,7 @@ class Govbox::MessageTest < ActiveSupport::TestCase
     assert_equal message.title, "Všeobecná Agenda - Rozhodnutie ..."
   end
 
-  test "should not create new tag if already exists" do
+  test "#create_message_with_thread! should not create new tag if already exists" do
     govbox_message = govbox_messages(:one)
 
     tag = SimpleTag.create!(external_name: "slovensko.sk:#{govbox_message.folder.name}", name: "slovensko.sk:#{govbox_message.folder.name}", tenant: govbox_message.folder.box.tenant, visible: false)
@@ -66,7 +86,7 @@ class Govbox::MessageTest < ActiveSupport::TestCase
     assert_equal tag, message.thread.tags.simple.first
   end
 
-  test "should not duplicate message thread tags" do
+  test "#create_message_with_thread! should not duplicate message thread tags" do
     govbox_message1 = govbox_messages(:one)
     govbox_message2 = govbox_messages(:three)
 
@@ -88,7 +108,7 @@ class Govbox::MessageTest < ActiveSupport::TestCase
     assert_equal tag, message2.thread.tags.simple.first
   end
 
-  test "should not use delivery notification title for message thread title" do
+  test "#create_message_with_thread! should not use delivery notification title for message thread title" do
     govbox_message = govbox_messages(:solver_delivery_notification)
 
     Govbox::Message.create_message_with_thread!(govbox_message)

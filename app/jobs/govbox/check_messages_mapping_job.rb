@@ -1,7 +1,5 @@
 module Govbox
   class CheckMessagesMappingJob < ApplicationJob
-    queue_as :default
-
     def perform
       unmapped_govbox_message_ids = ::Govbox::Message.joins(:folder).where.not(
         ::Message.select(1).joins(:thread)

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_09_25_134557) do
+ActiveRecord::Schema[7.1].define(version: 2024_11_06_152337) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -237,6 +237,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_25_134557) do
     t.integer "number_identifier"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "submission_type_identifier"
   end
 
   create_table "good_job_batches", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -391,8 +392,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_25_134557) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "is_signed"
-    t.boolean "to_be_signed", default: false, null: false
     t.boolean "visualizable"
+    t.uuid "uuid"
     t.index ["message_id"], name: "index_message_objects_on_message_id"
   end
 
@@ -487,10 +488,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_25_134557) do
     t.bigint "author_id"
     t.boolean "collapsed", default: false, null: false
     t.boolean "outbox", default: false, null: false
+    t.index "((metadata ->> 'fs_message_id'::text))", name: "index_messages_on_metadata_fs_message_id", using: :hash
     t.index ["author_id"], name: "index_messages_on_author_id"
     t.index ["import_id"], name: "index_messages_on_import_id"
     t.index ["message_thread_id"], name: "index_messages_on_message_thread_id"
-    t.index ["uuid", "message_thread_id"], name: "index_messages_on_uuid_and_message_thread_id", unique: true
+    t.unique_constraint ["uuid", "message_thread_id"], deferrable: :deferred
   end
 
   create_table "messages_tags", force: :cascade do |t|
