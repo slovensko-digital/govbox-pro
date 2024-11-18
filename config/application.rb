@@ -54,6 +54,12 @@ module GovboxPro
       }
     end
 
+    config.good_job.cron['autoload_fs_boxes'] = {
+      cron: "00 6 * * *",  # run every day at 6:00 am
+      class: "Fs::BoxifyAllApiConnectionsJob",
+      description: "Regular job to autoload FS boxes"
+    }
+
     config.good_job.cron['check_messages_mapping'] = {
       cron: "30 7 * * *",  # run every day at 7:30 am
       class: "Govbox::CheckMessagesMappingJob",
