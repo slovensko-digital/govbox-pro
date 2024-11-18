@@ -322,3 +322,19 @@ sk:
   bulk:
     signing:
       nothing_to_sign: "Vo vybraných vláknach sa nenašli žiadne dokumenty so žiadosťou na podpis"
+  blank_results:
+    filters:
+      header: "Žiadne filtre"
+      description: "Nemáte vytvorené žiadne filtre."
+    tags:
+      header: "Žiadne štítky"
+      description: 'Zatiaľ nie sú vytvorené žiadne štítky.'
+    rules:
+      header: "Žiadne pravidlá"
+      description: 'Zatiaľ nie sú vytvorené žiadne pravidlá.'
+    boxes:
+      header: "Žiadne schránky"
+      description: 'Zatiaľ nie sú vytvorené žiadne schránky.'
+    not_found:
+      header: "Žiadne správy"
+      description: "Zvolenému vyhľadávaniu nevyhovuje žiadna správa, skúste vybrať iný štítok alebo zmeniť vyhľadávací výraz."
