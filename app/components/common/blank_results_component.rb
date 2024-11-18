@@ -4,25 +4,17 @@ module Common
       @reason = reason
     end
 
-    def before_render # rubocop:disable Metrics/MethodLength
-      case @reason
-      when :filters
-        @text1 = t "blank_results.filters.text1"
-        @text2 = t "blank_results.filters.text2"
-        @icon = "bookmark-slash"
-      when :rules
-        @text1 = t "blank_results.rules.text1"
-        @text2 = t "blank_results.rules.text2"
-        @icon = "funnel-slash"
-      when :tags
-        @text1 = t "blank_results.tags.text1"
-        @text2 = t "blank_results.tags.text2"
-        @icon = "tag-slash"
-      when :not_found
-        @text1 = t "blank_results.not_found.text1"
-        @text2 = t "blank_results.not_found.text2"
-        @icon = "magnifying-glass"
-      end
+    def before_render
+      icon_mappings = {
+        filters: "bookmark-slash",
+        rules: "funnel-slash",
+        tags: "tag-slash",
+        not_found: "magnifying-glass"
+      }
+
+      @header = t "blank_results.#{@reason}.header"
+      @description = t "blank_results.#{@reason}.description"
+      @icon = icon_mappings[@reason]
     end
   end
 end

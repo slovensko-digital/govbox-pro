@@ -1,9 +1,6 @@
-<div class="flex flex-col justify-start items-start self-stretch flex-grow-0 flex-shrink-0">
-  <div class="flex flex-col justify-center items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-6 px-6 py-12 bg-white">
-    <%= render Common::IconComponent.new(@icon, classes: "size-32 text-gray-500") %>
-    <div class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 relative gap-1">
-      <p class="flex-grow-0 flex-shrink-0 text-base font-semibold text-center text-gray-500"><%= @text1 %></p>
-      <p class="flex-grow-0 flex-shrink-0 text-base text-center text-gray-500"><%= @text2 %></p>
-    </div>
-  </div>
+<div class="mx-auto text-center p-12">
+  <%= render Common::IconComponent.new(@icon, classes: "mx-auto size-20 text-gray-400") %>
+
+  <h3 class="mt-2 text-sm font-semibold text-gray-900"><%= @header %></h3>
+  <p class="mt-1 text-sm text-gray-500 max-w-md mx-auto"><%= @description %></p>
 </div>
