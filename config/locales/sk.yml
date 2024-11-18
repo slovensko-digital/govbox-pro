@@ -332,6 +332,9 @@ sk:
     rules:
       header: "Žiadne pravidlá"
       description: 'Zatiaľ nie sú vytvorené žiadne pravidlá.'
+    boxes:
+      header: "Žiadne schránky"
+      description: 'Zatiaľ nie sú vytvorené žiadne schránky.'
     not_found:
       header: "Žiadne správy"
       description: "Zvolenému vyhľadávaniu nevyhovuje žiadna správa, skúste vybrať iný štítok alebo zmeniť vyhľadávací výraz."

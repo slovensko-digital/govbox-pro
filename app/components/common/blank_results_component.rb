@@ -9,7 +9,8 @@ module Common
         filters: "bookmark-slash",
         rules: "funnel-slash",
         tags: "tag-slash",
-        not_found: "magnifying-glass"
+        not_found: "magnifying-glass",
+        boxes: "inbox-stack",
       }
 
       @header = t "blank_results.#{@reason}.header"
