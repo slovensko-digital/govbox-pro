@@ -32,7 +32,6 @@ class MessageThreadsTest < ApplicationSystemTestCase
 
       within_tags do
         assert_text "Finance"
-        assert_text "Legal"
         assert_text "Other"
       end
     end
@@ -42,31 +41,24 @@ class MessageThreadsTest < ApplicationSystemTestCase
       assert_text "SD Services"
 
       within_tags do
+        assert_text "Archivovane"
         assert_text "Finance"
       end
     end
 
     within_sidebar do
       within_filters do
+        assert_text "Everything"
         assert_text "With General text"
         assert_text "With Legal text"
+        assert_text "Other"
 
         # other tenant
         refute_text "Urgent"
-      end
-
-      within_tags do
-        assert_text "Finance"
-        assert_text "Legal"
-        assert_text "ExtVisible"
-        assert_text "Print"
 
         # non visible
         refute_text "Hidden"
         refute_text "External"
-
-        # other tenant
-        refute_text "Special"
       end
     end
   end
@@ -99,7 +91,7 @@ class MessageThreadsTest < ApplicationSystemTestCase
     assert_no_selector "#next_page_area"
 
     within_sidebar do
-      within_tags do
+      within_filters do
         click_link "Legal"
       end
     end

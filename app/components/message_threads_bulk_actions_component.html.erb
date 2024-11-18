@@ -1,8 +1,7 @@
 <%= tag.turbo_frame id: "bulk_actions" do %>
   <div class="flex justify-stretch items-center gap-4 px-4 lg:py-4 border-t-0 border-r-0 border-b border-l-0 border-gray-200 min-h-[3rem] sm:min-h-[5rem]">
     <%= check_box_tag("", nil, false, { class: "hidden sm:block h-4 w-4 rounded border-gray-300 text-blue-500 focus:ring-0", type: "checkbox", id: "checkbox-all", data: { action: "all-checkboxes#toggle", "all-checkboxes-target": "checkbox" } }) %>
-
-    <span class="grow sm:text-xl text-base font-semibold text-left text-gray-900"><%= @ids.present? ? t(:selected_message, count: @ids.count) : "Správy v schránke" %>
+    <span class="grow sm:text-xl text-base font-semibold text-left text-gray-900"><%= title %>
       <% if @filter %>
         <% if @filter_subscription %>
           <%= link_to edit_filter_filter_subscription_path(@filter, @filter_subscription), title: "Nastaviť notifikácie", "data-turbo-frame": :modal, form_class: "inline" do %>
@@ -25,7 +24,7 @@
           <div>
             <button type="button" data-action="dropdown#toggle click@window->dropdown#hide" class="inline-flex w-full justify-center items-center gap-x-1.5 rounded-md bg-white px-2 py-1 sm:px-3 sm:py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" id="menu-button" aria-expanded="true" aria-haspopup="true">
               Hromadné akcie
-              <%= render Icons::ChevronDownComponent.new(css_classes: "w-4 h-4 text-gray-400", stroke_width: 2) %>
+              <%= render Common::IconComponent.new('chevron-down', classes: "w-4 h-4 text-gray-400", stroke_width: 2) %>
             </button>
           </div>
 
@@ -127,7 +126,7 @@
       <div>
         <button type="button" data-action="dropdown#toggle click@window->dropdown#hide" class="inline-flex w-full justify-center items-center gap-x-1.5 rounded-md bg-white px-2 py-1 sm:px-3 sm:py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" id="menu-button" aria-expanded="true" aria-haspopup="true">
           Vytvoriť novú správu
-          <%= render Icons::ChevronDownComponent.new(css_classes: "w-4 h-4 text-gray-400", stroke_width: 2) %>
+          <%= render Common::IconComponent.new('chevron-down', classes: "w-4 h-4 text-gray-400", stroke_width: 2) %>
         </button>
       </div>
 

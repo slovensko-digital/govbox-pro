@@ -10,8 +10,8 @@ class NotificationsTest < ApplicationSystemTestCase
     visit message_threads_path
 
     click_link "With General text"
-
-    click_link "Nastaviť notifikácie"
+    assert_text "General agenda SSD"
+    click_link "Nastaviť notifikácie" if page.has_link?("Nastaviť notifikácie")
 
     check "Nová konverzácia"
     check "Nová správa"

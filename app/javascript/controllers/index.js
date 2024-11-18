@@ -28,6 +28,9 @@ application.register("form", FormController)
 import MessageDraftsController from "./message_drafts_controller"
 application.register("message-drafts", MessageDraftsController)
 
+import SortableController from "./sortable_controller"
+application.register("sortable", SortableController)
+
 import DropzoneController from "./dropzone_controller"
 application.register("dropzone", DropzoneController)
 

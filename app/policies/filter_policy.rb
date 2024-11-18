@@ -10,7 +10,7 @@ class FilterPolicy < ApplicationPolicy
 
   class ScopeEditable < Scope
     def resolve
-      scoped = scope.where(tenant_id: Current.tenant)
+      scoped = scope.where(tenant_id: Current.tenant).visible_for(@user)
 
       return scoped if @user.admin?
 
@@ -20,7 +20,19 @@ class FilterPolicy < ApplicationPolicy
 
   class ScopeShowable < Scope
     def resolve
-      scope.where(tenant_id: Current.tenant)
+      scoped = scope.where(tenant_id: Current.tenant)
+
+      return scoped if @user.admin?
+
+      scoped.left_joins(:tag)
+        .where(
+          TagGroup
+            .select(1)
+            .joins(:group_memberships)
+            .where("tag_groups.tag_id = tags.id")
+            .where(group_memberships: { user_id: @user.id })
+            .arel.exists)
+        .or(scoped.where(author_id: [nil, @user.id]))
     end
   end
 
@@ -46,6 +58,10 @@ class FilterPolicy < ApplicationPolicy
 
   def destroy?
     @user.admin? || is_author_current_user?
+  end
+
+  def sort?
+    is_author_current_user?
   end
 
   private

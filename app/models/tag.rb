@@ -30,6 +30,8 @@ class Tag < ApplicationRecord
   has_many :automation_actions, class_name: "Automation::Action", as: :action_object, dependent: :restrict_with_error
   has_many :message_objects_tags, dependent: :destroy
   has_many :message_objects, through: :message_objects_tags
+  has_many :filters, dependent: :destroy
+  has_many :user_filter_visibilities, through: :filters
 
   validates :name, presence: true
   validates :name, uniqueness: { scope: :tenant_id, case_sensitive: false }
@@ -44,6 +46,20 @@ class Tag < ApplicationRecord
   scope :archived, -> { where(type: ArchivedTag.to_s) }
 
   after_update_commit ->(tag) { EventBus.publish(:tag_renamed, tag) if previous_changes.key?("name") }
+  after_update_commit ->(tag) do
+    tag.filters.each do |filter|
+      filter.user_filter_visibilities.update_all(visible: false)
+    end if previous_changes.key?("visible") && !tag.visible
+  end
+
+  after_create ->(tag) do
+    TagFilter.create!(
+      tenant: tag.tenant,
+      author: tag.owner,
+      name: tag.name,
+      tag:,
+    )
+  end
 
   def assign_to_message_object(message_object)
     message_object.assign_tag(self)
