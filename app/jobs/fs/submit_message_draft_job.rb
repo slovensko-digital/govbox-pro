@@ -1,4 +1,14 @@
 class Fs::SubmitMessageDraftJob < ApplicationJob
+  include GoodJob::ActiveJobExtensions::Concurrency
+
+  good_job_control_concurrency_with(
+    # Maximum number of unfinished jobs to allow with the concurrency key
+    # Can be an Integer or Lambda/Proc that is invoked in the context of the job
+    total_limit: 1,
+
+    key: -> { "Fs::SubmitMessageDraftJob-#{arguments.first.try(:id)}" }
+  )
+
   def perform(message_draft, bulk_submit: false, fs_client: FsEnvironment.fs_client)
     raise "Invalid message!" unless message_draft.valid?(:validate_data)
 
