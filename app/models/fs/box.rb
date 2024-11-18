@@ -18,7 +18,7 @@
 class Fs::Box < Box
   DISABLED_MESSAGE_DRAFTS_IMPORT_KEYWORDS = ['(oblasť SPD)']
 
-  after_create { update(syncable: tenant.feature_enabled?(:fs_sync)) }
+  before_create { self.syncable = tenant.feature_enabled?(:fs_sync) }
 
   validates_uniqueness_of :name, :short_name, scope: :tenant_id
 
