@@ -4,7 +4,7 @@ require "test_helper"
 require "active_support/all"
 
 class Fs::MessageTest < ActiveSupport::TestCase
-  test "#create_inbox_messages save datetime attributes with the needed timezone" do
+  test "#create_inbox_messages creates new message with delivered_at and fs_submission_created_at values in same format" do
     raw_message = {
       "created_at" => "2024-06-05T10:27:03.105Z",
       "message_id" => "12345689/2024",
