@@ -1,6 +1,6 @@
 module Common
   class BlankResultsComponent < ViewComponent::Base
-    def initialize (reason = :not_found)
+    def initialize(reason = :not_found)
       @reason = reason
     end
 
@@ -11,6 +11,7 @@ module Common
         tags: "tag-slash",
         not_found: "magnifying-glass",
         boxes: "inbox-stack",
+        notifications: "bell-slash"
       }
 
       @header = t "blank_results.#{@reason}.header"
