@@ -51,7 +51,7 @@ class Tenant < ApplicationRecord
   end
 
   def signed_externally_tag!
-    signed_externally_tag || raise(ActiveRecord::RecordNotFound, "`SignedExternallyTag` not found in tenant: #{self.id}")
+    signed_externally_tag || raise(ActiveRecord::RecordNotFound, "`SignedExternallyTag` not found in tenant: #{id}")
   end
 
   def signature_requested_tag!
@@ -86,6 +86,10 @@ class Tenant < ApplicationRecord
 
     feature_flags.delete_if { |f| f == feature.to_s }
     save!
+  end
+
+  def list_features
+    AVAILABLE_FEATURE_FLAGS
   end
 
   def make_admins_see_everything!

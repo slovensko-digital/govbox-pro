@@ -37,6 +37,8 @@ Rails.application.routes.draw do
       end
 
       resources :users
+      get "/feature_flags/", to: "feature_flags#index"
+      patch "/feature_flags/", to: "feature_flags#update"
 
       resources :boxes, only: :index
       namespace :boxes do

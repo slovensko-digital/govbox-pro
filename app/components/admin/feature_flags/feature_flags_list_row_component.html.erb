@@ -1,0 +1,8 @@
+<div class="self-stretch p-6 border-b border-gray-200 items-center gap-4 inline-flex">
+  <div class="grow shrink basis-0 gap-1">
+    <div class="text-gray-900 text-lg font-medium leading-loose w-fit">
+      <%= render Admin::FeatureFlags::FeatureFlagComponent.new(@feature_flag) %>
+    </div>
+  </div>
+  <%= render Admin::FeatureFlags::VisibilityToggleComponent.new(@feature_flag) %>
+</div>

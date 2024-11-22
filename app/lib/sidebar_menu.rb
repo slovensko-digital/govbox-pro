@@ -11,7 +11,7 @@ class SidebarMenu
   private
 
   def initial_structure(controller, _action)
-    return admin_menu + site_admin_menu if controller.in? %w[groups users tags tag_groups automation_rules boxes api_connections filters automation_webhooks]
+    return admin_menu + site_admin_menu if controller.in? %w[groups users tags tag_groups automation_rules boxes api_connections filters automation_webhooks feature_flags]
 
     default_main_menu
   end
@@ -40,7 +40,8 @@ class SidebarMenu
       TW::SidebarMenuItemComponent.new(name: 'API Prepojenia', url: admin_tenant_api_connections_path(Current.tenant), icon: Icons::RectangleStackComponent.new),
       TW::SidebarMenuItemComponent.new(name: 'Skupiny', url: admin_tenant_groups_path(Current.tenant), icon: Icons::UserGroupsComponent.new),
       TW::SidebarMenuItemComponent.new(name: 'Štítky', url: admin_tenant_tags_path(Current.tenant), icon: Icons::TagComponent.new),
-      TW::SidebarMenuItemComponent.new(name: 'Integrácie', url: admin_tenant_automation_webhooks_path(Current.tenant), icon: Common::IconComponent.new("code-bracket"))
+      TW::SidebarMenuItemComponent.new(name: 'Integrácie', url: admin_tenant_automation_webhooks_path(Current.tenant), icon: Common::IconComponent.new("code-bracket")),
+      TW::SidebarMenuItemComponent.new(name: 'Feature flags', url: admin_tenant_feature_flags_path(Current.tenant), icon: Common::IconComponent.new("flag"))
     ]
   end
 
