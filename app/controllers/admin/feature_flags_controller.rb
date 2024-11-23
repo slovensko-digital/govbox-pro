@@ -2,13 +2,12 @@ class Admin::FeatureFlagsController < ApplicationController
   before_action :set_tenant, only: %i[update]
 
   def index
-    # TODO: make feature flag policy
-    authorize([:admin, User])
+    authorize([:admin, :feature_flag])
     @feature_flags = Current.tenant.list_features
   end
 
   def update
-    authorize([:admin, User])
+    authorize([:admin, :feature_flag])
     @tenant.feature_flags = feature_flags_params["feature_flags"].split(",")
     @tenant.save!
     redirect_to admin_tenant_feature_flags_path
