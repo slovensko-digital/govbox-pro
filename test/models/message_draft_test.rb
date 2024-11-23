@@ -1,8 +1,6 @@
 require "test_helper"
 
 class MessageDraftTest < ActiveSupport::TestCase
-  include ActiveJob::TestHelper
-
   test "created! method publishes events on EventBus" do
     box = boxes(:ssd_main)
     message = MessageDraft.create(

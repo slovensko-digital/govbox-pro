@@ -1,8 +1,6 @@
 require "test_helper"
 
 class Govbox::AuthorizeDeliveryNotificationActionTest < ActiveSupport::TestCase
-  include ActiveJob::TestHelper
-
   test "schedules Govbox::AuthorizeDeliveryNotificationJob with highest priority" do
     message = messages(:solver_main_delivery_notification_two)
 

@@ -1,8 +1,6 @@
 require "test_helper"
 
 class BoxTest < ActiveSupport::TestCase
-  include ActiveJob::TestHelper
-
   test "should not be valid if obo value present in settings when api_connection is a Govbox::ApiConnection without tenant" do
     box = boxes(:google_box_with_govbox_api_connection)
     assert box.valid?
