@@ -5,7 +5,21 @@ class Govbox::SubmitMessageDraftJob < ApplicationJob
   class TemporarySubmissionError < SubmissionError
   end
 
+  include GoodJob::ActiveJobExtensions::Concurrency
+
+  good_job_control_concurrency_with(
+    # Maximum number of unfinished jobs to allow with the concurrency key
+    # Can be an Integer or Lambda/Proc that is invoked in the context of the job
+    total_limit: 1,
+
+    key: -> { "Govbox::SubmitMessageDraftJob-#{arguments.first.try(:id)}" }
+  )
+
   retry_on TemporarySubmissionError, wait: 2.minutes, attempts: 5
+
+  retry_on SubmissionError, attempts: 1 do |_job, _error|
+    # no-op
+  end
 
   def perform(message_draft, bulk_submit: false, upvs_client: UpvsEnvironment.upvs_client)
     raise "Invalid message!" unless message_draft.valid?(:validate_data)

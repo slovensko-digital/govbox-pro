@@ -39,3 +39,6 @@ application.register("turbo-content", TurboContentController)
 
 import ContentWithSeparator from "./content_with_separator"
 application.register("content-with-separator", ContentWithSeparator)
+
+import VisitedLinks from "./visited_links_controller"
+application.register("visited-links", VisitedLinks)

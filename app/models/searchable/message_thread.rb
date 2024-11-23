@@ -22,30 +22,39 @@ class Searchable::MessageThread < ApplicationRecord
   scope :with_tag_id, ->(tag_id) { where("tag_ids && ARRAY[?]", [tag_id]) }
 
   include PgSearch::Model
-  pg_search_scope :pg_search_all,
-                  against: [:title, :content, :note, :tag_names],
-                  using: {
-                    tsearch: {
-                      highlight: {
-                        StartSel: '<span class="bg-yellow-200 text-gray-950">', # if you change classed aad them to view in comment
-                        StopSel: '</span>',
-                        MaxWords: 15,
-                        MinWords: 0,
-                        ShortWord: 1,
-                        HighlightAll: true,
-                        MaxFragments: 2,
-                        FragmentDelimiter: '&hellip;'
-                      }
-                    }
-                  }
+
+
+  pg_search_scope :pg_search_all, lambda { |query, is_prefix = false|
+    {
+      query: query,
+      against: [:title, :content, :note, :tag_names],
+      using: {
+        tsearch: {
+          prefix: is_prefix,
+          highlight: {
+            StartSel: '<span class="bg-yellow-200 text-gray-950">', # if you change classed aad them to view in comment
+            StopSel: '</span>',
+            MaxWords: 15,
+            MinWords: 0,
+            ShortWord: 1,
+            HighlightAll: true,
+            MaxFragments: 2,
+            FragmentDelimiter: '&hellip;'
+          }
+        }
+      }
+    }
+  }
 
   def self.matching(scopeable)
     scopeable.scope_searchable(self) # double dispatch
   end
 
-  def self.fulltext_search(query)
+
+  def self.fulltext_search(query, prefix_search: false)
     pg_search_all(
-      Searchable::IndexHelpers.searchable_string(query)
+      Searchable::IndexHelpers.searchable_string(query),
+      prefix_search
     )
   end
 
@@ -71,7 +80,7 @@ class Searchable::MessageThread < ApplicationRecord
       end
     end
     scope = scope.where.not("tag_ids && ARRAY[?]", query_filter[:filter_out_tag_ids]) if query_filter[:filter_out_tag_ids].present?
-    scope = scope.fulltext_search(query_filter[:fulltext]).with_pg_search_highlight if query_filter[:fulltext].present?
+    scope = scope.fulltext_search(query_filter[:fulltext], prefix_search: query_filter[:prefix_search]).with_pg_search_highlight if query_filter[:fulltext].present?
     scope = scope.select(:message_thread_id, :last_message_delivered_at)
 
     # remove default order rule given by pg_search

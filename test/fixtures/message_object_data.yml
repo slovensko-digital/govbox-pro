@@ -8,10 +8,6 @@ two:
   message_object: ssd_main_general_two_form
   blob: MyText
 
-main_draft:
-  message_object: ssd_main_draft_form
-  blob: <GeneralAgenda xmlns="http://schemas.gov.sk/form/App.GeneralAgenda/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><subject>predmet</subject><text>text</text></GeneralAgenda>
-
 draft_two:
   message_object: ssd_main_general_draft_two_form
   blob: <GeneralAgenda xmlns="http://schemas.gov.sk/form/App.GeneralAgenda/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><subject>predmet</subject><text>text</text></GeneralAgenda>
@@ -23,6 +19,10 @@ draft_three:
 empty_draft:
   message_object: ssd_main_empty_draft_form
   blob: <GeneralAgenda xmlns="http://schemas.gov.sk/form/App.GeneralAgenda/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><subject></subject><text></text></GeneralAgenda>
+
+ssd_main_draft_form_data:
+  message_object: ssd_main_draft_form
+  blob: <GeneralAgenda xmlns="http://schemas.gov.sk/form/App.GeneralAgenda/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><subject>predmet</subject><text>text</text></GeneralAgenda>
 
 fs_one:
   message_object: ssd_main_fs_one_form

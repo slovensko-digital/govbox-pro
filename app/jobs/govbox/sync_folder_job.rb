@@ -1,10 +1,10 @@
 module Govbox
   class SyncFolderJob < ApplicationJob
-    queue_as :default
-
     def perform(folder, upvs_client: UpvsEnvironment.upvs_client, batch_size: 1000)
       edesk_api = upvs_client.api(folder.box).edesk
       new_messages_ids = []
+
+      sync_since = Date.parse(folder.box.settings['sync_since']) if folder.box.settings['sync_since'].present?
 
       0.step do |k|
         response_status, raw_messages = edesk_api.fetch_messages(folder.edesk_folder_id, page: k + 1, count: batch_size)
@@ -15,6 +15,8 @@ module Govbox
         moved_edesk_message_ids = []
 
         raw_messages.each do |raw_message|
+          next if sync_since && (Date.parse(raw_message['delivered_at']) < sync_since)
+
           edesk_message_id = raw_message['id']
           old_folder_id = edesk_message_ids_to_folder_ids[edesk_message_id]
 
