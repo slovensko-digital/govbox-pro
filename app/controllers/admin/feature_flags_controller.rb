@@ -1,9 +1,9 @@
 class Admin::FeatureFlagsController < ApplicationController
-  before_action :set_tenant, only: %i[update]
+  before_action :set_tenant
 
   def index
     authorize([:admin, :feature_flag])
-    @feature_flags = Current.tenant.list_features
+    @feature_flags = @tenant.list_features
   end
 
   def update
@@ -16,7 +16,7 @@ class Admin::FeatureFlagsController < ApplicationController
   private
 
   def set_tenant
-    @tenant = Tenant.find(params[:tenant_id])
+    @tenant = policy_scope([:admin, :feature_flag]).find(params[:tenant_id])
   end
 
   def feature_flags_params

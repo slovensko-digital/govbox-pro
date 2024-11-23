@@ -10,7 +10,7 @@ class Admin::FeatureFlagPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      scope.where(tenant: @user.tenant)
+      Tenant.where(id: @user.tenant)
     end
   end
 
