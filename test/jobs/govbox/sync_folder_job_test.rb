@@ -46,7 +46,7 @@ class Govbox::SyncFolderJobTest < ActiveJob::TestCase
       Govbox::SyncFolderJob.new.perform(folder)
     end
 
-    assert_enqueued_jobs 4
+    assert_equal 4, GoodJob::Job.count
   end
 
   test "does not download older messages than box sync_since value in box settings" do
@@ -96,6 +96,6 @@ class Govbox::SyncFolderJobTest < ActiveJob::TestCase
       Govbox::SyncFolderJob.new.perform(folder)
     end
 
-    assert_enqueued_jobs 2
+    assert_equal 2, GoodJob::Job.count
   end
 end

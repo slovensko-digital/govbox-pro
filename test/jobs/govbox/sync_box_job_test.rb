@@ -34,9 +34,9 @@ class Govbox::SyncBoxJobTest < ActiveJob::TestCase
     ]]
 
     ::Upvs::GovboxApi::Edesk.stub :new, edesk_api_mock do
-      assert_enqueued_with(job: Govbox::SyncFolderJob, priority: 1000) do
-        Govbox::SyncBoxJob.set(job_context: :later).perform_now(box)
-      end
+      Govbox::SyncBoxJob.set(job_context: :later).perform_now(box)
+      assert_equal "Govbox::SyncFolderJob", GoodJob::Job.last.job_class
+      assert_equal 1000, GoodJob::Job.last.priority
     end
   end
 
@@ -73,9 +73,9 @@ class Govbox::SyncBoxJobTest < ActiveJob::TestCase
     ]]
 
     ::Upvs::GovboxApi::Edesk.stub :new, edesk_api_mock do
-      assert_enqueued_with(job: Govbox::SyncFolderJob, priority: nil) do
-        Govbox::SyncBoxJob.perform_now(box)
-      end
+      Govbox::SyncBoxJob.perform_now(box)
+      assert_equal "Govbox::SyncFolderJob", GoodJob::Job.first.job_class
+      assert_equal 0, GoodJob::Job.first.priority
     end
   end
 end

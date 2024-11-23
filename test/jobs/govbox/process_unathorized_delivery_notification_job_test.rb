@@ -19,7 +19,8 @@ class Govbox::ProcessMessageJobTest < ActiveJob::TestCase
       Govbox::ProcessUnauthorizedDeliveryNotificationJob.new.perform(govbox_message)
     end
 
-    assert_enqueued_with(job: Govbox::ProcessUnauthorizedDeliveryNotificationJob, at: Time.parse(govbox_message.delivery_notification['delivery_period_end_at']))
+    assert_equal "Govbox::ProcessUnauthorizedDeliveryNotificationJob", GoodJob::Job.last.job_class
+    assert_equal Time.parse(govbox_message.delivery_notification['delivery_period_end_at']), GoodJob::Job.last.scheduled_at
     assert_equal message.changed?, false
     assert_equal govbox_message.changed?, false
   end

@@ -6,8 +6,8 @@ class Govbox::AuthorizeDeliveryNotificationActionTest < ActiveSupport::TestCase
   test "schedules Govbox::AuthorizeDeliveryNotificationJob with highest priority" do
     message = messages(:solver_main_delivery_notification_two)
 
-    assert_enqueued_with(job: Govbox::AuthorizeDeliveryNotificationJob, priority: -1000) do
-      Govbox::AuthorizeDeliveryNotificationAction.run(message)
-    end
+    Govbox::AuthorizeDeliveryNotificationAction.run(message)
+    assert_equal "Govbox::AuthorizeDeliveryNotificationJob", GoodJob::Job.last.job_class
+    assert_equal -1000, GoodJob::Job.last.priority
   end
 end

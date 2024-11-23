@@ -5,7 +5,7 @@ ruby '3.3.0'
 gem 'rails', '~> 7.1'
 gem 'rails-i18n'
 
-gem 'pg', '~> 1.5'
+gem 'pg'
 gem 'with_advisory_lock'
 
 gem 'puma', '~> 6.4'
@@ -13,8 +13,8 @@ gem 'puma', '~> 6.4'
 gem 'turbo-rails'
 
 # Styles
-gem 'sprockets-rails'
 gem 'importmap-rails'
+gem 'sprockets-rails'
 gem 'tailwindcss-rails'
 gem 'view_component'
 
@@ -22,7 +22,7 @@ gem 'view_component'
 gem 'clockwork'
 
 # Workers
-gem 'good_job'
+gem 'good_job', '3.99' # intermediate version to avoid breaking changes
 
 # Auth
 gem 'omniauth-google-oauth2'

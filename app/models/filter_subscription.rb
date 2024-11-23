@@ -56,7 +56,7 @@ class FilterSubscription < ApplicationRecord
 
     scope = searchable
               .where(tenant_id: tenant)
-              .where("tag_ids && ARRAY[?]", tag_ids)
+              .where("tag_ids && ARRAY[?]::integer[]", tag_ids)
 
     query = Searchable::MessageThreadQuery.labels_to_ids(
       Searchable::MessageThreadQuery.parse(filter.query),
@@ -66,10 +66,10 @@ class FilterSubscription < ApplicationRecord
     if query[:filter_tag_ids].present?
       return scope.none if query[:filter_tag_ids] == :missing_tag
 
-      scope = scope.where("tag_ids @> ARRAY[?]", query[:filter_tag_ids])
+      scope = scope.where("tag_ids @> ARRAY[?]::integer[]", query[:filter_tag_ids])
     end
 
-    scope = scope.where.not("tag_ids && ARRAY[?]", query[:filter_out_tag_ids]) if query[:filter_out_tag_ids].present?
+    scope = scope.where.not("tag_ids && ARRAY[?]::integer[]", query[:filter_out_tag_ids]) if query[:filter_out_tag_ids].present?
     scope = scope.fulltext_search(query[:fulltext], prefix_search: query[:prefix_search]) if query[:fulltext].present?
 
     scope

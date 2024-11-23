@@ -138,8 +138,8 @@ class MessageDraftTest < ActiveSupport::TestCase
   test "single draft submission schedules jobs with highest priority" do
     message_draft = messages(:ssd_main_draft)
 
-    assert_enqueued_with(job: Govbox::SubmitMessageDraftJob, priority: -1000) do
-      message_draft.submit
-    end
+    message_draft.submit
+    assert_equal "Govbox::SubmitMessageDraftJob", GoodJob::Job.first.job_class
+    assert_equal -1000, GoodJob::Job.first.priority
   end
 end
