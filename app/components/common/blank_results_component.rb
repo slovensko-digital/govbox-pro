@@ -1,6 +1,6 @@
 module Common
   class BlankResultsComponent < ViewComponent::Base
-    def initialize(reason = :not_found)
+    def initialize (reason = :not_found)
       @reason = reason
     end
 
