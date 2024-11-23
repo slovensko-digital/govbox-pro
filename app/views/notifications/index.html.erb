@@ -10,6 +10,7 @@
           <%= render Turbo::NextPageAreaComponent.new(id: @next_cursor, url: scroll_notifications_path(cursor: @next_cursor, format: :turbo_stream)) %>
         <% end %>
       </ul>
+
       <% if @notifications.empty? %>
         <%= render Common::BlankResultsComponent.new(:notifications) %>
       <% end %>
