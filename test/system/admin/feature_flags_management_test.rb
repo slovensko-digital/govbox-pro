@@ -5,7 +5,7 @@ class FeatureFlagsManagementTest < ApplicationSystemTestCase
     sign_in_as(:admin)
     visit root_path
     click_link "Nastavenia"
-    click_link "Feature flags"
+    click_link "Aktivácia rozšírení"
   end
 
   test "admin can enable and disable a feature" do

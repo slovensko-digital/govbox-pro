@@ -89,12 +89,7 @@ class Tenant < ApplicationRecord
   end
 
   def list_features
-    AVAILABLE_FEATURE_FLAGS.map do |feature|
-      { name: feature.to_s,
-        enabled: feature_enabled?(feature),
-        features_including: (feature_flags + [feature.to_s]).join(","),
-        features_excluding: (feature_flags - [feature.to_s]).join(",") }
-    end
+    AVAILABLE_FEATURE_FLAGS
   end
 
   def make_admins_see_everything!

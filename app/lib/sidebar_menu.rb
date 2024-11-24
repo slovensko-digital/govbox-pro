@@ -41,7 +41,7 @@ class SidebarMenu
       TW::SidebarMenuItemComponent.new(name: 'Skupiny', url: admin_tenant_groups_path(Current.tenant), icon: Icons::UserGroupsComponent.new),
       TW::SidebarMenuItemComponent.new(name: 'Štítky', url: admin_tenant_tags_path(Current.tenant), icon: Icons::TagComponent.new),
       TW::SidebarMenuItemComponent.new(name: 'Integrácie', url: admin_tenant_automation_webhooks_path(Current.tenant), icon: Common::IconComponent.new("code-bracket")),
-      TW::SidebarMenuItemComponent.new(name: 'Feature flags', url: admin_tenant_feature_flags_path(Current.tenant), icon: Common::IconComponent.new("flag"))
+      TW::SidebarMenuItemComponent.new(name: 'Aktivácia rozšírení', url: admin_tenant_feature_flags_path(Current.tenant), icon: Common::IconComponent.new("puzzle-piece"))
     ]
   end
 

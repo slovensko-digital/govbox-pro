@@ -4,6 +4,7 @@ class Admin::FeatureFlagsController < ApplicationController
   def index
     authorize([:admin, :feature_flag])
     @feature_flags = @tenant.list_features
+    @enabled_features = @tenant.feature_flags
   end
 
   def update
