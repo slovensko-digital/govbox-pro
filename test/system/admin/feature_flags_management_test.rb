@@ -9,7 +9,7 @@ class FeatureFlagsManagementTest < ApplicationSystemTestCase
   end
 
   test "admin can enable and disable a feature" do
-    available_features = users(:admin).tenant.list_features.pluck(:name)
+    available_features = users(:admin).tenant.list_features
     enabled = users(:admin).tenant.feature_enabled?(available_features[0].to_sym)
     click_button available_features[0]
     assert_button available_features[0]
