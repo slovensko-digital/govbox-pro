@@ -338,6 +338,9 @@ sk:
     not_found:
       header: "Žiadne správy"
       description: "Zvolenému vyhľadávaniu nevyhovuje žiadna správa, skúste vybrať iný štítok alebo zmeniť vyhľadávací výraz."
+    notifications:
+      header: "Žiadne notifikácie"
+      description: "Nemáte žiadne notifikácie."
   feature_flags:
     api:
       name: "API"
