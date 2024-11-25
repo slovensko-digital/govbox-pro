@@ -1,5 +1,20 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
+# == Schema Information
+#
+# Table name: message_objects
+#
+#  id           :bigint           not null, primary key
+#  is_signed    :boolean
+#  mimetype     :string
+#  name         :string
+#  object_type  :string           not null
+#  uuid         :uuid
+#  visualizable :boolean
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#  message_id   :bigint           not null
+#
 ssd_main_general_one_attachment:
   message: ssd_main_general_one
   name: MyString

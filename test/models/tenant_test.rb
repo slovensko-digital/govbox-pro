@@ -1,3 +1,14 @@
+# == Schema Information
+#
+# Table name: tenants
+#
+#  id                   :bigint           not null, primary key
+#  api_token_public_key :string
+#  feature_flags        :string           default([]), is an Array
+#  name                 :string           not null
+#  created_at           :datetime         not null
+#  updated_at           :datetime         not null
+#
 require "test_helper"
 
 class TenantTest < ActiveSupport::TestCase

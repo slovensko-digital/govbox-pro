@@ -1,3 +1,17 @@
+# == Schema Information
+#
+# Table name: message_threads
+#
+#  id                        :bigint           not null, primary key
+#  delivered_at              :datetime         not null
+#  last_message_delivered_at :datetime         not null
+#  original_title            :string           not null
+#  title                     :string           not null
+#  created_at                :datetime         not null
+#  updated_at                :datetime         not null
+#  box_id                    :bigint           not null
+#  folder_id                 :bigint
+#
 require "test_helper"
 
 class MessageThreadTest < ActiveSupport::TestCase

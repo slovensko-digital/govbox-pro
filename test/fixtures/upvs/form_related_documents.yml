@@ -1,5 +1,17 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
+# == Schema Information
+#
+# Table name: upvs_form_related_documents
+#
+#  id            :bigint           not null, primary key
+#  data          :string           not null
+#  document_type :string           not null
+#  language      :string           not null
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  upvs_form_id  :bigint           not null
+#
 general_agenda_xsd:
   data: <?xml version="1.0" encoding="UTF-8"?><xs:schema elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://schemas.gov.sk/form/App.GeneralAgenda/1.9" xmlns="http://schemas.gov.sk/form/App.GeneralAgenda/1.9"><xs:simpleType name="textArea"><xs:restriction base="xs:string"></xs:restriction></xs:simpleType><xs:simpleType name="meno"><xs:restriction base="xs:string"></xs:restriction></xs:simpleType><xs:element name="GeneralAgenda"><xs:complexType><xs:sequence><xs:element name="subject" type="meno" minOccurs="0" nillable="true" /><xs:element name="text" type="textArea" minOccurs="0" nillable="true" /></xs:sequence></xs:complexType></xs:element></xs:schema>
   document_type: CLS_F_XSD_EDOC

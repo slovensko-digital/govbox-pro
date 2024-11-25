@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: govbox_folders
+#
+#  id               :bigint           not null, primary key
+#  name             :string           not null
+#  system           :boolean          not null
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#  box_id           :bigint           not null
+#  edesk_folder_id  :integer          not null
+#  parent_folder_id :bigint
+#
 require "test_helper"
 
 class Govbox::FolderTest < ActiveSupport::TestCase

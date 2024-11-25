@@ -1,3 +1,17 @@
+# == Schema Information
+#
+# Table name: api_connections
+#
+#  id                    :bigint           not null, primary key
+#  api_token_private_key :string           not null
+#  obo                   :uuid
+#  settings              :jsonb
+#  sub                   :string           not null
+#  type                  :string
+#  created_at            :datetime         not null
+#  updated_at            :datetime         not null
+#  tenant_id             :bigint
+#
 require "test_helper"
 
 class Fs::ApiConnectionTest < ActiveSupport::TestCase

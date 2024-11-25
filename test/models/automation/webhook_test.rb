@@ -1,3 +1,14 @@
+# == Schema Information
+#
+# Table name: automation_webhooks
+#
+#  id         :bigint           not null, primary key
+#  name       :string           not null
+#  url        :string           not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  tenant_id  :bigint           not null
+#
 require "test_helper"
 
 class Automation::WebhookTest < ActiveSupport::TestCase

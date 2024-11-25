@@ -1,5 +1,15 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
+# == Schema Information
+#
+# Table name: message_object_data
+#
+#  id                :bigint           not null, primary key
+#  blob              :binary           not null
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#  message_object_id :bigint           not null
+#
 one:
   message_object: ssd_main_general_one_attachment
   blob: MyText

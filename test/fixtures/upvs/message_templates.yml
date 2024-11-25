@@ -1,5 +1,19 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
+# == Schema Information
+#
+# Table name: message_templates
+#
+#  id         :bigint           not null, primary key
+#  content    :text             not null
+#  metadata   :jsonb
+#  name       :string           not null
+#  system     :boolean          default(FALSE), not null
+#  type       :string
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  tenant_id  :bigint
+#
 message_reply:
   content: <GeneralAgenda xmlns="http://schemas.gov.sk/form/App.GeneralAgenda/1.9">
     <subject>{{ Predmet:text_field }}</subject>

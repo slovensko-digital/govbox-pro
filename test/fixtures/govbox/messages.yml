@@ -1,5 +1,20 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
+# == Schema Information
+#
+# Table name: govbox_messages
+#
+#  id               :bigint           not null, primary key
+#  delivered_at     :datetime         not null
+#  edesk_class      :string           not null
+#  payload          :json             not null
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#  correlation_id   :uuid             not null
+#  edesk_message_id :bigint           not null
+#  folder_id        :bigint           not null
+#  message_id       :uuid             not null
+#
 one:
   message_id: <%= SecureRandom.uuid %>
   correlation_id: a50cbb56-4da8-4499-b57c-e53c41b44930

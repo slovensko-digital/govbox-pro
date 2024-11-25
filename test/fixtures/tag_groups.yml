@@ -1,5 +1,15 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
+# == Schema Information
+#
+# Table name: tag_groups
+#
+#  id         :bigint           not null, primary key
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  group_id   :bigint           not null
+#  tag_id     :bigint           not null
+#
 drafts_basic_user:
   tag: ssd_basic_user_drafts
   group: ssd_basic_user

@@ -1,3 +1,18 @@
+# == Schema Information
+#
+# Table name: message_objects
+#
+#  id           :bigint           not null, primary key
+#  is_signed    :boolean
+#  mimetype     :string
+#  name         :string
+#  object_type  :string           not null
+#  uuid         :uuid
+#  visualizable :boolean
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#  message_id   :bigint           not null
+#
 require "test_helper"
 
 class MessageObjectTest < ActiveSupport::TestCase

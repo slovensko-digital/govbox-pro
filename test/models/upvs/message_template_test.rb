@@ -1,3 +1,17 @@
+# == Schema Information
+#
+# Table name: message_templates
+#
+#  id         :bigint           not null, primary key
+#  content    :text             not null
+#  metadata   :jsonb
+#  name       :string           not null
+#  system     :boolean          default(FALSE), not null
+#  type       :string
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  tenant_id  :bigint
+#
 require "test_helper"
 
 class Upvs::MessageTemplateTest < ActiveSupport::TestCase

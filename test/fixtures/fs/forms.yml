@@ -1,5 +1,22 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
+# == Schema Information
+#
+# Table name: fs_forms
+#
+#  id                         :bigint           not null, primary key
+#  ez_signature               :boolean
+#  group_name                 :string
+#  identifier                 :string           not null
+#  name                       :string           not null
+#  number_identifier          :integer
+#  signature_required         :boolean
+#  slug                       :string
+#  submission_type_identifier :string
+#  subtype_name               :string
+#  created_at                 :datetime         not null
+#  updated_at                 :datetime         not null
+#
 V2Pv21:
   identifier: '2682_712'
   name: Vyhlásenie o poukázaní sumy do výšky 2% (3%) zaplatenej dane za zdaňovacie obdobie 2021

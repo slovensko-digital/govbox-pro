@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: automation_actions
+#
+#  id                 :bigint           not null, primary key
+#  action_object_type :string
+#  type               :string
+#  value              :string
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
+#  action_object_id   :bigint
+#  automation_rule_id :bigint           not null
+#
 one_one:
   automation_rule: one
   type: Automation::AddMessageThreadTagAction
