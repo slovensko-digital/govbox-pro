@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby '3.3.0'
+ruby '3.3.6'
 
 gem 'rails', '~> 7.1'
 gem 'rails-i18n'

@@ -1,4 +1,4 @@
-FROM ruby:3.3.0
+FROM ruby:3.3.6
 
 # Install packages
 RUN apt-get update && apt-get install -y build-essential nodejs libpq-dev npm fop=1:2.* libsaxon-java libsaxonb-java chromium \
