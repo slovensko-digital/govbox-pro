@@ -149,7 +149,7 @@ class Fs::Message
   end
 
   def self.collapsed?
-    # TODO urcit podmienky: odoslana sprava s potvrdenkou by mohla byt collapsed
+    # TODO urcit podmienky: odoslana sprava s potvrdenkou by mala byt collapsed - zatial riesime pri stiahnuti prijatej spravy, ale ak by sme stahovali cely inbox, nemusi stacit
     false
   end
 end
