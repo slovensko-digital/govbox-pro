@@ -18,6 +18,8 @@ class Fs::Message
       MessageObject.mark_message_objects_externally_signed(message.objects)
     end
 
+    associated_outbox_message.update(collapsed: true)
+
     EventBus.publish(:message_thread_created, message.thread) if message.thread.previously_new_record?
     EventBus.publish(:message_created, message)
   end
@@ -147,7 +149,7 @@ class Fs::Message
   end
 
   def self.collapsed?
-    # TODO urcit podmienky: odoslana sprava s potvrdenkou by mohla byt collapsed
+    # TODO urcit podmienky: odoslana sprava s potvrdenkou by mala byt collapsed - zatial riesime pri stiahnuti prijatej spravy, ale ak by sme stahovali cely inbox, nemusi stacit
     false
   end
 end
