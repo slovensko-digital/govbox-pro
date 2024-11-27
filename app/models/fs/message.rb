@@ -18,6 +18,8 @@ class Fs::Message
       MessageObject.mark_message_objects_externally_signed(message.objects)
     end
 
+    associated_outbox_message.update(collapsed: true)
+
     EventBus.publish(:message_thread_created, message.thread) if message.thread.previously_new_record?
     EventBus.publish(:message_created, message)
   end
