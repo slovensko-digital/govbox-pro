@@ -289,6 +289,16 @@ ssd_main_empty_draft:
     correlation_id: <%= SecureRandom.uuid %>
   author: basic
 
+fs_accountants_outbox:
+  uuid: <%= SecureRandom.uuid %>
+  title: FS podanie
+  delivered_at: <%= 2.hours.ago %>
+  thread: fs_accountants_outbox
+  replyable: false
+  metadata:
+    fs_message_id: 1234/2024
+  author: accountants_basic
+
 solver_main_delivery_notification_one:
   uuid: bbff2617-3430-44c6-b827-519059ff1e90
   title: Authorized Delivery notification

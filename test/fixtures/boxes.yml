@@ -77,6 +77,7 @@ fs_accountants:
   short_name: FSJJ
   api_connection: fs_api_connection1
   settings: {"dic": "1122334455", "subject_id": "df2f9373-30b7-4a44-9738-5b4e24e4866c", "message_drafts_import_enabled": true}
+  syncable: true
   type: 'Fs::Box'
 
 fs_accountants2:
