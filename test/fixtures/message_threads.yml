@@ -70,6 +70,13 @@ ssd_main_empty_draft:
   delivered_at: 2023-05-18 16:05:00
   last_message_delivered_at: 2023-05-18 16:05:00
 
+fs_accountants_outbox:
+  box: fs_accountants
+  title: Podanie
+  original_title: MyString
+  delivered_at: <%= 2.hours.ago %>
+  last_message_delivered_at: <%= 2.hours.ago %>
+
 solver_main_general_agenda:
   box: solver_main
   title: General agenda Solver
