@@ -9,7 +9,7 @@ class Admin::FeatureFlagsController < ApplicationController
 
   def update
     authorize([:admin, :feature_flag])
-    @tenant.feature_flags = feature_flags_params["feature_flags"].split(",")
+    @tenant.feature_flags = feature_flags_params[:enabled] == "true" ? @tenant.feature_flags.union([params[:id]]) : @tenant.feature_flags - [params[:id]]
     @tenant.save!
     redirect_to admin_tenant_feature_flags_path
   end
@@ -21,6 +21,6 @@ class Admin::FeatureFlagsController < ApplicationController
   end
 
   def feature_flags_params
-    params.require(:tenant).permit(:feature_flags)
+    params.require(:tenant).permit(:enabled)
   end
 end
