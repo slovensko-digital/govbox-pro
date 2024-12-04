@@ -45,6 +45,7 @@ class Tenant < ApplicationRecord
   validates_presence_of :name
 
   AVAILABLE_FEATURE_FLAGS = [:audit_log, :archive, :api, :message_draft_import, :fs_api, :fs_sync]
+  ALL_FEATURE_FLAGS = [:audit_log, :archive, :api, :message_draft_import, :fs_api, :fs_sync]
 
   def draft_tag!
     draft_tag || raise(ActiveRecord::RecordNotFound, "`DraftTag` not found in tenant: #{id}")
@@ -88,8 +89,12 @@ class Tenant < ApplicationRecord
     save!
   end
 
-  def list_features
+  def list_available_features
     AVAILABLE_FEATURE_FLAGS
+  end
+
+  def list_all_features
+    ALL_FEATURE_FLAGS
   end
 
   def make_admins_see_everything!
