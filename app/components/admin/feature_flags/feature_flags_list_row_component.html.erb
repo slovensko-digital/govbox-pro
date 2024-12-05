@@ -1,0 +1,21 @@
+<div class="self-stretch p-4 border-b border-gray-200 items-center gap-4 inline-flex">
+  <div class="grow shrink basis-0 gap-1">
+    <div class="text-gray-900 text-lg font-medium leading-loose w-fit">
+      <div class="grow shrink basis-0 flex-col justify-start items-start gap-1 inline-flex">
+        <div class="text-center text-gray-900 text-lg font-medium leading-loose">
+          <%= t "feature_flags.#{@feature_flag}.name"%>
+        </div>
+        <div class="text-center text-gray-500 text-base font-normal leading-normal">
+          <%= t "feature_flags.#{@feature_flag}.description"%>
+        </div>
+      </div>
+    </div>
+  </div>
+  <%= form_with model: Current.tenant, url: admin_tenant_feature_flag_path(Current.tenant, @feature_flag), title: "Toggle feature state", method: :patch do |form| %>
+    <%= form.hidden_field :enabled, value: !@enabled %>
+    <%= form.button name: @feature_flag, class: "#{@enabled ? "bg-indigo-600" : "bg-gray-200"} relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2", role: :switch, aria: { checked: @enabled } do %>
+      <span class="sr-only">Use setting</span>
+      <span aria-hidden="true" class="<%= @enabled ? "translate-x-5" : "translate-x-0" %> pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"></span>
+    <% end %>
+  <% end %>
+</div>

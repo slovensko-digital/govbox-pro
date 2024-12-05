@@ -341,3 +341,22 @@ sk:
     notifications:
       header: "Žiadne notifikácie"
       description: "Nemáte žiadne notifikácie."
+  feature_flags:
+    api:
+      name: "API"
+      description: "Prístup k vybraným funkciám systému a dátam cez API"
+    archive:
+      name: "Archive"
+      description: "Archivácia správ"
+    audit_log:
+      name: "Audit log"
+      description: "Zaznamenávanie a prezeranie auditných záznamov o činnosti používateľov"
+    fs_api:
+      name: "API finančnej správy"
+      description: "Funkčnosť prepojenia s finančnou správou"
+    fs_sync:
+      name: "Synchronizácia schránky z finančnej správy"
+      description: "Synchronizácia schránky z finančnej správy"
+    message_draft_import:
+      name: "Import správ"
+      description: "Funkcionalita pre hromadné zasielanie správ"

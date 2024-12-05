@@ -37,6 +37,7 @@ Rails.application.routes.draw do
       end
 
       resources :users
+      resources :feature_flags, only: [:index, :update]
 
       resources :boxes, only: :index
       namespace :boxes do
