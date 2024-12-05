@@ -44,7 +44,7 @@ class Tenant < ApplicationRecord
 
   validates_presence_of :name
 
-  AVAILABLE_FEATURE_FLAGS = [:audit_log, :archive, :api, :message_draft_import, :fs_api, :fs_sync]
+  AVAILABLE_FEATURE_FLAGS = [:audit_log, :archive, :api, :fs_sync]
   ALL_FEATURE_FLAGS = [:audit_log, :archive, :api, :message_draft_import, :fs_api, :fs_sync]
 
   def draft_tag!
@@ -68,7 +68,7 @@ class Tenant < ApplicationRecord
   end
 
   def feature_enabled?(feature)
-    raise "Unknown feature #{feature}" unless feature.in? AVAILABLE_FEATURE_FLAGS
+    raise "Unknown feature #{feature}" unless feature.in? ALL_FEATURE_FLAGS
 
     feature.to_s.in? feature_flags
   end
