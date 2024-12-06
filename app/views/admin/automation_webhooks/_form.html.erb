@@ -35,7 +35,7 @@
             <%= link_to admin_tenant_automation_webhooks_path(Current.tenant), class: "flex justify-center items-center flex-grow relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300", data: { turbo_frame: "_top" } do %>
               <p class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-gray-900">Zahodiť</p>
             <% end %>
-            <%= form.button class: "flex justify-center items-center flex-grow relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md bg-blue-600", data: { turbo_frame: "_top" } do %>
+            <%= form.button class: "flex justify-center items-center flex-grow relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md bg-blue-600 border", data: { turbo_frame: "_top" } do %>
               <p class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-white"><%= @webhook.new_record? ? 'Vytvoriť' : 'Uložiť' %></p>
             <% end %>
           </div>
