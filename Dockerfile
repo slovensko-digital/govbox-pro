@@ -14,18 +14,27 @@ RUN mkdir /app
 WORKDIR /app
 
 RUN npm i -g yarn
-RUN npm i npx
 
-# Bundle and cache Ruby gems
-COPY Gemfile* ./
-RUN bundle config set deployment true
-RUN bundle config set without development:test
-RUN bundle install
+# Set production environment
+ENV RAILS_ENV="production" \
+    BUNDLE_DEPLOYMENT="1" \
+    BUNDLE_PATH="/usr/local/bundle" \
+    BUNDLE_WITHOUT="development"
+
+COPY Gemfile Gemfile.lock ./
+
+RUN bundle install && \
+    rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
+    bundle exec bootsnap precompile --gemfile
 
 # Cache everything
 COPY . .
 
-RUN SECRET_KEY_BASE=NONE RAILS_ENV=production bundle exec rails assets:precompile
+# Precompile bootsnap code for faster boot times
+RUN bundle exec bootsnap precompile app/ lib/
+
+# Precompiling assets for production without requiring secret RAILS_MASTER_KEY
+RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 
 # Run application by default
 CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]
