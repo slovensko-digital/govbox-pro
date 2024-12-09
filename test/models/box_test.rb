@@ -1,8 +1,23 @@
+# == Schema Information
+#
+# Table name: boxes
+#
+#  id                :bigint           not null, primary key
+#  color             :enum
+#  name              :string           not null
+#  settings          :jsonb
+#  short_name        :string
+#  syncable          :boolean          default(TRUE), not null
+#  type              :string
+#  uri               :string           not null
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#  api_connection_id :bigint
+#  tenant_id         :bigint           not null
+#
 require "test_helper"
 
 class BoxTest < ActiveSupport::TestCase
-  include ActiveJob::TestHelper
-
   test "should not be valid if obo value present in settings when api_connection is a Govbox::ApiConnection without tenant" do
     box = boxes(:google_box_with_govbox_api_connection)
     assert box.valid?
@@ -33,17 +48,16 @@ class BoxTest < ActiveSupport::TestCase
   test "sync method schedules Govbox::SyncBoxJob with highest priority" do
     box = boxes(:ssd_main)
 
-    assert_enqueued_with(job: Govbox::SyncBoxJob, priority: -1000) do
-      box.sync
-    end
+    box.sync
+    assert_equal "Govbox::SyncBoxJob", GoodJob::Job.last.job_class
+    assert_equal -1000, GoodJob::Job.last.priority
   end
 
   test "sync_all schedules sync of all boxes" do
-    assert_enqueued_with(job: Govbox::SyncBoxJob) do
-      Box.sync_all
-    end
+    Box.sync_all
+    assert_equal "Govbox::SyncBoxJob", GoodJob::Job.last.job_class
 
-    assert_enqueued_jobs Upvs::Box.where(syncable: true).count
+    assert_equal Upvs::Box.where(syncable: true).count, GoodJob::Job.count
   end
 
   test "should not be valid if same obo value present in other boxes within connection" do

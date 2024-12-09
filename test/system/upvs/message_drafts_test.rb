@@ -11,17 +11,22 @@ class Upvs::MessageDraftsTest < ApplicationSystemTestCase
   end
 
   test "user can create message draft from Všeobecná agenda MessageTemplate" do
+    skip
   end
 
   test "user can create message draft from CRAC MessageTemplate" do
+    skip
   end
 
   test "user can update message draft content" do
+    skip
   end
 
   test "user can submit message draft" do
+    skip
   end
 
   test "user can delete message draft" do
+    skip
   end
 end

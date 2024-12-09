@@ -1,20 +1,20 @@
 source 'https://rubygems.org'
 
-ruby '3.3.0'
+ruby '3.3.6'
 
-gem 'rails', '~> 7.1'
+gem 'rails', '~> 8.0'
 gem 'rails-i18n'
 
-gem 'pg', '~> 1.5'
+gem 'pg'
 gem 'with_advisory_lock'
 
-gem 'puma', '~> 6.4'
+gem 'puma'
 
 gem 'turbo-rails'
 
 # Styles
-gem 'sprockets-rails'
 gem 'importmap-rails'
+gem 'sprockets-rails'
 gem 'tailwindcss-rails'
 gem 'view_component'
 
@@ -22,11 +22,11 @@ gem 'view_component'
 gem 'clockwork'
 
 # Workers
-gem 'good_job'
+gem 'good_job', '3.99' # intermediate version to avoid breaking changes
 
 # Auth
 gem 'omniauth-google-oauth2'
-gem 'omniauth-saml', '~> 2.2.1'
+gem 'omniauth-saml'
 gem 'omniauth-rails_csrf_protection'
 gem 'pundit'
 
@@ -59,7 +59,7 @@ group :development, :test do
 end
 
 group :development do
-  gem 'annotate'
+  gem 'annotaterb'
   gem 'listen'
   gem 'web-console'
   gem 'solargraph'

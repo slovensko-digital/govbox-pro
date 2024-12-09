@@ -1,9 +1,31 @@
 # frozen_string_literal: true
 
+# == Schema Information
+#
+# Table name: messages
+#
+#  id                 :bigint           not null, primary key
+#  collapsed          :boolean          default(FALSE), not null
+#  delivered_at       :datetime         not null
+#  html_visualization :text
+#  metadata           :json
+#  outbox             :boolean          default(FALSE), not null
+#  read               :boolean          default(FALSE), not null
+#  recipient_name     :string
+#  replyable          :boolean          default(TRUE), not null
+#  sender_name        :string
+#  title              :string
+#  type               :string
+#  uuid               :uuid             not null
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
+#  author_id          :bigint
+#  import_id          :bigint
+#  message_thread_id  :bigint           not null
+#
 require "test_helper"
 
 class Fs::MessageDraftTest < ActiveSupport::TestCase
-  include ActiveJob::TestHelper
   include ActionDispatch::TestProcess::FixtureFile
 
   test "create_and_validate_with_fs_form method schedules Fs::ValidateMessageDraftJob" do
@@ -17,9 +39,8 @@ class Fs::MessageDraftTest < ActiveSupport::TestCase
     [file_fixture("fs/dic1122334455_fs3055_781__sprava_dani_2023.xml").read]
 
     FsEnvironment.fs_client.stub :api, fs_api do
-      assert_enqueued_with(job: Fs::ValidateMessageDraftJob) do
-        Fs::MessageDraft.create_and_validate_with_fs_form(form_files: [fixture_file_upload("fs/dic1122334455_fs3055_781__sprava_dani_2023.xml", "application/xml")], author: author)
-      end
+      Fs::MessageDraft.create_and_validate_with_fs_form(form_files: [fixture_file_upload("fs/dic1122334455_fs3055_781__sprava_dani_2023.xml", "application/xml")], author: author)
+      assert_equal "Fs::ValidateMessageDraftJob", GoodJob::Job.last.job_class
     end
 
     message_draft = Fs::MessageDraft.last

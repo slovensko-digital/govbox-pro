@@ -1,3 +1,17 @@
+# == Schema Information
+#
+# Table name: automation_conditions
+#
+#  id                    :bigint           not null, primary key
+#  attr                  :string
+#  condition_object_type :string
+#  type                  :string
+#  value                 :string
+#  created_at            :datetime         not null
+#  updated_at            :datetime         not null
+#  automation_rule_id    :bigint           not null
+#  condition_object_id   :bigint
+#
 one:
   automation_rule: one
   type: Automation::ContainsCondition

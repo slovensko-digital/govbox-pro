@@ -10,10 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_11_06_152337) do
+ActiveRecord::Schema[8.0].define(version: 2024_11_25_070059) do
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
-  enable_extension "plpgsql"
   enable_extension "unaccent"
 
   # Custom types defined in this database.
@@ -194,13 +194,18 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_06_152337) do
     t.bigint "tenant_id", null: false
     t.bigint "author_id", null: false
     t.string "name", null: false
-    t.string "query", null: false
+    t.string "query"
     t.integer "position", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "type"
+    t.bigint "tag_id"
+    t.boolean "is_pinned", default: false, null: false
     t.index ["author_id"], name: "index_filters_on_author_id"
-    t.index ["tenant_id", "position"], name: "index_filters_on_tenant_id_and_position", unique: true
+    t.index ["is_pinned"], name: "index_filters_on_is_pinned"
+    t.index ["tag_id"], name: "index_filters_on_tag_id"
     t.index ["tenant_id"], name: "index_filters_on_tenant_id"
+    t.index ["type"], name: "index_filters_on_type"
   end
 
   create_table "folders", force: :cascade do |t|
@@ -249,6 +254,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_06_152337) do
     t.datetime "enqueued_at"
     t.datetime "discarded_at"
     t.datetime "finished_at"
+    t.datetime "jobs_finished_at"
   end
 
   create_table "good_job_executions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -262,13 +268,18 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_06_152337) do
     t.datetime "finished_at"
     t.text "error"
     t.integer "error_event", limit: 2
+    t.text "error_backtrace", array: true
+    t.uuid "process_id"
+    t.interval "duration"
     t.index ["active_job_id", "created_at"], name: "index_good_job_executions_on_active_job_id_and_created_at"
+    t.index ["process_id", "created_at"], name: "index_good_job_executions_on_process_id_and_created_at"
   end
 
   create_table "good_job_processes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.jsonb "state"
+    t.integer "lock_type", limit: 2
   end
 
   create_table "good_job_settings", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -301,6 +312,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_06_152337) do
     t.text "job_class"
     t.integer "error_event", limit: 2
     t.text "labels", array: true
+    t.uuid "locked_by_id"
+    t.datetime "locked_at"
     t.index ["active_job_id", "created_at"], name: "index_good_jobs_on_active_job_id_and_created_at"
     t.index ["batch_callback_id"], name: "index_good_jobs_on_batch_callback_id", where: "(batch_callback_id IS NOT NULL)"
     t.index ["batch_id"], name: "index_good_jobs_on_batch_id", where: "(batch_id IS NOT NULL)"
@@ -309,8 +322,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_06_152337) do
     t.index ["cron_key", "cron_at"], name: "index_good_jobs_on_cron_key_and_cron_at_cond", unique: true, where: "(cron_key IS NOT NULL)"
     t.index ["finished_at"], name: "index_good_jobs_jobs_on_finished_at", where: "((retried_good_job_id IS NULL) AND (finished_at IS NOT NULL))"
     t.index ["labels"], name: "index_good_jobs_on_labels", where: "(labels IS NOT NULL)", using: :gin
+    t.index ["locked_by_id"], name: "index_good_jobs_on_locked_by_id", where: "(locked_by_id IS NOT NULL)"
     t.index ["priority", "created_at"], name: "index_good_job_jobs_for_candidate_lookup", where: "(finished_at IS NULL)"
     t.index ["priority", "created_at"], name: "index_good_jobs_jobs_on_priority_created_at_when_unfinished", order: { priority: "DESC NULLS LAST" }, where: "(finished_at IS NULL)"
+    t.index ["priority", "scheduled_at"], name: "index_good_jobs_on_priority_scheduled_at_unfinished_unlocked", where: "((finished_at IS NULL) AND (locked_by_id IS NULL))"
     t.index ["queue_name", "scheduled_at"], name: "index_good_jobs_on_queue_name_and_scheduled_at", where: "(finished_at IS NULL)"
     t.index ["scheduled_at"], name: "index_good_jobs_on_scheduled_at", where: "(finished_at IS NULL)"
   end
@@ -450,7 +465,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_06_152337) do
     t.datetime "delivered_at", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.datetime "last_message_delivered_at", null: false
+    t.datetime "last_message_delivered_at", precision: nil, null: false
     t.bigint "box_id", null: false
     t.index ["folder_id"], name: "index_message_threads_on_folder_id"
   end
@@ -570,12 +585,12 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_06_152337) do
     t.bigint "owner_id"
     t.string "external_name"
     t.string "type", null: false
-    t.string "icon"
-    t.integer "tag_groups_count", default: 0, null: false
     t.enum "color", enum_type: "color"
+    t.integer "tag_groups_count", default: 0, null: false
+    t.string "icon"
     t.index "tenant_id, type, lower((name)::text)", name: "index_tags_on_tenant_id_and_type_and_lowercase_name", unique: true
     t.index ["owner_id"], name: "index_tags_on_owner_id"
-    t.index ["tenant_id", "type"], name: "signings_tags", unique: true, where: "((type)::text = ANY ((ARRAY['SignatureRequestedTag'::character varying, 'SignedTag'::character varying])::text[]))"
+    t.index ["tenant_id", "type"], name: "signings_tags", unique: true, where: "((type)::text = ANY (ARRAY[('SignatureRequestedTag'::character varying)::text, ('SignedTag'::character varying)::text]))"
     t.index ["tenant_id"], name: "index_tags_on_tenant_id"
   end
 
@@ -616,6 +631,17 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_06_152337) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "user_item_visibilities", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "user_item_type", null: false
+    t.bigint "user_item_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "visible", default: true, null: false
+    t.integer "position"
+    t.index ["user_id"], name: "index_user_item_visibilities_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.bigint "tenant_id"
     t.string "email", null: false
@@ -646,6 +672,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_06_152337) do
   add_foreign_key "filter_subscriptions", "filters"
   add_foreign_key "filter_subscriptions", "tenants"
   add_foreign_key "filter_subscriptions", "users"
+  add_foreign_key "filters", "tags"
   add_foreign_key "filters", "tenants", on_delete: :cascade
   add_foreign_key "filters", "users", column: "author_id", on_delete: :cascade
   add_foreign_key "folders", "boxes"
@@ -686,5 +713,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_06_152337) do
   add_foreign_key "tags", "tenants"
   add_foreign_key "tags", "users", column: "owner_id"
   add_foreign_key "upvs_form_related_documents", "upvs_forms"
+  add_foreign_key "user_item_visibilities", "users"
   add_foreign_key "users", "tenants"
 end

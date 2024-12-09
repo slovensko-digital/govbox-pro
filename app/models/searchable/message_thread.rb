@@ -19,7 +19,7 @@ class Searchable::MessageThread < ApplicationRecord
   belongs_to :message_thread, class_name: '::MessageThread'
   belongs_to :tenant, class_name: '::Tenant'
 
-  scope :with_tag_id, ->(tag_id) { where("tag_ids && ARRAY[?]", [tag_id]) }
+  scope :with_tag_id, ->(tag_id) { where("tag_ids && ARRAY[?]::integer[]", [tag_id]) }
 
   include PgSearch::Model
 
@@ -68,7 +68,7 @@ class Searchable::MessageThread < ApplicationRecord
 
     if search_permissions[:tag_ids]
       if search_permissions[:tag_ids].any?
-        scope = scope.where("tag_ids && ARRAY[?]", search_permissions[:tag_ids])
+        scope = scope.where("tag_ids && ARRAY[?]::integer[]", search_permissions[:tag_ids])
       end
     end
 
@@ -76,10 +76,10 @@ class Searchable::MessageThread < ApplicationRecord
       if query_filter[:filter_tag_ids] == :missing_tag
         scope = scope.none
       else
-        scope = scope.where("tag_ids @> ARRAY[?]", query_filter[:filter_tag_ids])
+        scope = scope.where("tag_ids @> ARRAY[?]::integer[]", query_filter[:filter_tag_ids])
       end
     end
-    scope = scope.where.not("tag_ids && ARRAY[?]", query_filter[:filter_out_tag_ids]) if query_filter[:filter_out_tag_ids].present?
+    scope = scope.where.not("tag_ids && ARRAY[?]::integer[]", query_filter[:filter_out_tag_ids]) if query_filter[:filter_out_tag_ids].present?
     scope = scope.fulltext_search(query_filter[:fulltext], prefix_search: query_filter[:prefix_search]).with_pg_search_highlight if query_filter[:fulltext].present?
     scope = scope.select(:message_thread_id, :last_message_delivered_at)
 
@@ -113,7 +113,7 @@ class Searchable::MessageThread < ApplicationRecord
   end
 
   def self.reindex_with_tag_id(tag_id)
-    Searchable::MessageThread.select(:id, :message_thread_id).where("tag_ids && ARRAY[?]", [tag_id]).find_each do |searchable_mt|
+    Searchable::MessageThread.select(:id, :message_thread_id).where("tag_ids && ARRAY[?]::integer[]", [tag_id]).find_each do |searchable_mt|
       Searchable::ReindexMessageThreadJob.perform_later(searchable_mt.message_thread_id)
     end
   end

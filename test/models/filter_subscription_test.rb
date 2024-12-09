@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: filter_subscriptions
+#
+#  id                 :bigint           not null, primary key
+#  events             :string           default([]), not null, is an Array
+#  last_notify_run_at :datetime
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
+#  filter_id          :bigint           not null
+#  tenant_id          :bigint           not null
+#  user_id            :bigint           not null
+#
 require "test_helper"
 
 class FilterSubscriptionTest < ActiveSupport::TestCase

@@ -1,5 +1,16 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
+# == Schema Information
+#
+# Table name: tenants
+#
+#  id                   :bigint           not null, primary key
+#  api_token_public_key :string
+#  feature_flags        :string           default([]), is an Array
+#  name                 :string           not null
+#  created_at           :datetime         not null
+#  updated_at           :datetime         not null
+#
 ssd:
   name: SSD
   feature_flags:

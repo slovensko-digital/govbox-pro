@@ -1,8 +1,29 @@
+# == Schema Information
+#
+# Table name: messages
+#
+#  id                 :bigint           not null, primary key
+#  collapsed          :boolean          default(FALSE), not null
+#  delivered_at       :datetime         not null
+#  html_visualization :text
+#  metadata           :json
+#  outbox             :boolean          default(FALSE), not null
+#  read               :boolean          default(FALSE), not null
+#  recipient_name     :string
+#  replyable          :boolean          default(TRUE), not null
+#  sender_name        :string
+#  title              :string
+#  type               :string
+#  uuid               :uuid             not null
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
+#  author_id          :bigint
+#  import_id          :bigint
+#  message_thread_id  :bigint           not null
+#
 require "test_helper"
 
 class MessageDraftTest < ActiveSupport::TestCase
-  include ActiveJob::TestHelper
-
   test "created! method publishes events on EventBus" do
     box = boxes(:ssd_main)
     message = MessageDraft.create(
@@ -138,8 +159,8 @@ class MessageDraftTest < ActiveSupport::TestCase
   test "single draft submission schedules jobs with highest priority" do
     message_draft = messages(:ssd_main_draft)
 
-    assert_enqueued_with(job: Govbox::SubmitMessageDraftJob, priority: -1000) do
-      message_draft.submit
-    end
+    message_draft.submit
+    assert_equal "Govbox::SubmitMessageDraftJob", GoodJob::Job.first.job_class
+    assert_equal -1000, GoodJob::Job.first.priority
   end
 end

@@ -27,7 +27,7 @@ class TenantApiTest < ActionDispatch::IntegrationTest
 
     assert_response :bad_request
     json_response = JSON.parse(response.body)
-    assert_match "param is missing or the value is empty: admin", json_response["message"]
+    assert_match "param is missing or the value is empty or invalid: admin", json_response["message"]
   end
 
   test "can destroy tenant" do
