@@ -1,7 +1,7 @@
 timeout: 120
 service:
-  externalPort: 80
-  internalPort: 80
+  externalPort: 5000
+  internalPort: 5000
 image:
   secrets:
   - name: skdigital-bonet-registry
@@ -37,7 +37,7 @@ persistence:
 workers:
   worker:
     replicaCount: "1"
-    command: ["bundle", "exec", "good_job", "start"]
+    command: ["bundle", "exec", "good_job", "start", "--probe-port=5000"]
     startupProbe:
       probeType: "httpGet"
       path: "/status/started"
