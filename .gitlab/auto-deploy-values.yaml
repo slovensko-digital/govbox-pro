@@ -1,11 +1,11 @@
 timeout: 120
 service:
-  externalPort: 3000
-  internalPort: 3000
+  externalPort: 80
+  internalPort: 80
 image:
   secrets:
   - name: skdigital-bonet-registry
-application.migrateCommand: ["bundle", "exec", "rails", "db:migrate"]
+application.migrateCommand: ["bin/rails", "db:migrate"]
 ingress:
   annotations:
     nginx.ingress.kubernetes.io/proxy-body-size: 256m
@@ -29,7 +29,7 @@ persistence:
   volumes:
   - name: govbox-pro-storage
     mount:
-      path: /app/storage
+      path: /rails/storage
     claim:
       accessMode: ReadWriteMany
       size: 10Gi

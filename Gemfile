@@ -10,6 +10,9 @@ gem 'with_advisory_lock'
 
 gem 'puma'
 
+# Add HTTP asset caching/compression and X-Sendfile acceleration to Puma [https://github.com/basecamp/thruster/]
+gem "thruster", require: false
+
 gem 'turbo-rails'
 
 # Styles
