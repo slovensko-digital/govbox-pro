@@ -31,3 +31,8 @@ six:
   automation_rule: five
   type: Automation::AttachmentContentContainsCondition
   value: "Test\\s*string"
+
+seven:
+  automation_rule: six
+  type: Automation::AttachmentContentContainsCondition
+  value: "úspešne spracovaná"

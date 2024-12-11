@@ -274,3 +274,28 @@ ssd_general_agenda_with_lorem_pdf:
         signed: true
         class: MyClass
         content: Dummy
+
+ssd_crac:
+  message_id: <%= SecureRandom.uuid %>
+  correlation_id: <%= SecureRandom.uuid %>
+  edesk_message_id: 100
+  delivered_at: <%= DateTime.current %>
+  edesk_class: TEST
+  folder: ssd_one
+  payload:
+    message_id: <%= SecureRandom.uuid %>
+    subject: MySubject
+    sender_name: MySender
+    sender_uri: MySenderURI
+    recipient_name: MyRecipient
+    delivered_at: <%= DateTime.current.to_s %>
+    original_html: MyHtml
+    objects:
+      - name: form
+        mime_type: application/x-eform-xml
+        signed: false
+        class: FORM
+        content: <ns6:InformationMessage xmlns:ns6="http://schemas.gov.sk/form/G2G.InformationMessage/1.3">
+          <ns6:Subject>Spracovanie po&#x17E;iadavky v registri autentifika&#x10D;n&#xFD;ch certifik&#xE1;tov</ns6:Subject>
+          <ns6:Text>&#x17D;iados&#x165; o zmenu z&#xE1;pisu autentifika&#x10D;n&#xE9;ho certifik&#xE1;tu v registri autentifika&#x10D;n&#xFD;ch certifik&#xE1;tov bola &#xFA;spe&#x161;ne spracovan&#xE1; 29.11.2024 13:00.</ns6:Text>
+          </ns6:InformationMessage>
