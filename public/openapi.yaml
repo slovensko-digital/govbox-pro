@@ -431,7 +431,7 @@ paths:
       summary: Vráti zoznam správ od určeného ID
       description: Vráti zoznam správ od poslednej synchronizácie, t.j. od posledného prijatého ID. Určené na synchronizáciu do iných alpikácií. Počet správ vrátený v jednom volaní je obmedzený na 200
       parameters:
-        - name: lastId
+        - name: last_id
           in: query
           schema:
             type: integer
