@@ -103,12 +103,20 @@ class Message < ApplicationRecord
 
   # TODO remove UPVS, FS stuff from core domain
   def form
-    return ::Fs::Form.find(metadata['fs_form_id']) if metadata['fs_form_id'].present?
+    if metadata['fs_form_id'].present?
+      ::Fs::Form.find(metadata['fs_form_id'])
+    elsif all_metadata['posp_id'].present? && all_metadata['posp_version'].present?
+      ::Upvs::Form.find_by(
+        identifier: all_metadata['posp_id'],
+        version: all_metadata['posp_version']
+      )
+    else
+      # TODO forms without posp_id, posp_versions
+      ::Upvs::Form.find_by(
+        identifier: all_metadata['message_type']
+      )
+    end
 
-    ::Upvs::Form.find_by(
-      identifier: all_metadata['posp_id'],
-      version: all_metadata['posp_version']
-    )
   end
 
   def update_html_visualization

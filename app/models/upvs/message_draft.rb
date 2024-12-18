@@ -85,8 +85,6 @@ class Upvs::MessageDraft < MessageDraft
 
   def validate_metadata
     errors.add(:metadata, "No recipient URI") unless all_metadata&.dig("recipient_uri")
-    errors.add(:metadata, "No posp ID") unless all_metadata&.dig("posp_id")
-    errors.add(:metadata, "No posp version") unless all_metadata&.dig("posp_version")
     errors.add(:metadata, "No message type") unless all_metadata&.dig("message_type")
 
     errors.add(:metadata, "Reference ID must be UUID") if all_metadata&.dig("reference_id") && !all_metadata&.dig("reference_id")&.match?(Utils::UUID_PATTERN)
