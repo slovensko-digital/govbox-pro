@@ -13,7 +13,13 @@
 #
 
 class Upvs::ServiceWithFormAllowRule < ApplicationRecord
-  scope :matching_metadata, ->(metadata) { where("schema_url LIKE ?", "%#{metadata['posp_id']}/#{metadata['posp_version']}").or(where("schema_url LIKE ?", "%#{metadata['posp_id']}/*")) }
+  scope :matching_metadata, -> (metadata) do
+    if metadata['posp_id'].present? && metadata['posp_version'].present?
+      where("schema_url LIKE ?", "%#{metadata['posp_id']}/#{metadata['posp_version']}").or(where("schema_url LIKE ?", "%#{metadata['posp_id']}/*"))
+    else
+      where("schema_url LIKE ?", "%#{metadata['message_type']}%")
+    end
+  end
 
   def self.all_institutions_with_template_support(template)
     ::Upvs::ServiceWithFormAllowRule.matching_metadata(template.metadata)
