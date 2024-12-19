@@ -31,7 +31,12 @@ class Fs::MessageDraft < MessageDraft
 
     form_files.each do |form_file|
       form_content = form_file.read.force_encoding("UTF-8")
-      form_information = fs_client.api.parse_form(form_content)
+      begin
+        form_information = fs_client.api.parse_form(form_content)
+      rescue
+        messages << nil
+        next
+      end
       dic = form_information['subject']&.strip
       fs_form_identifier = form_information['form_identifier']
 
