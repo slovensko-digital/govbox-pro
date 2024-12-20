@@ -1,4 +1,5 @@
 json.id @message.id
+json.thread_id @message.message_thread_id
 json.uuid @message.uuid
 json.title @message.title
 json.sender_name @message.sender_name

@@ -136,6 +136,9 @@ paths:
                   id:
                     description: Identifikátor správy v systéme Govbox Pro
                     type: integer
+                  thread_id:
+                    description: Identifikátor vlákna, ktorému prislúcha správa
+                    type: integer
                   uuid:
                     description: UUID správy
                     type: string
@@ -212,6 +215,9 @@ paths:
                 properties:
                   id:
                     description: Identifikátor správy v systéme Govbox Pro
+                    type: integer
+                  thread_id:
+                    description: Identifikátor vlákna, ktorému prislúcha správa
                     type: integer
                   uuid:
                     description: UUID správy
