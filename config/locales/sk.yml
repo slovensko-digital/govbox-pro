@@ -281,6 +281,7 @@ sk:
   "Automation::MessageMetadataValueCondition": "správa v metadátach obsahuje"
   "Automation::BoxCondition": "je"
   "Automation::AddMessageThreadTagAction": "Pridaj štítok na vlákno"
+  "Automation::UnassignMessageThreadTagAction": "Odober štítok z vlákna"
   "Automation::AddTagAction": "Pridaj štítok"
   "Automation::ChangeMessageThreadTitleAction": "Premenuj vlákno na"
   "Automation::FireWebhookAction": "Zavolaj integráciu"
