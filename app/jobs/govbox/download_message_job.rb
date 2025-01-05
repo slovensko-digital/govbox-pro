@@ -1,6 +1,6 @@
 module Govbox
   class DownloadMessageJob < ApplicationJob
-    def perform(govbox_folder, edesk_message_id, upvs_client: UpvsEnvironment.upvs_client)
+    def perform(govbox_folder, edesk_message_id, upvs_client: UpvsEnvironment.upvs_client, notify: false)
       edesk_api = upvs_client.api(govbox_folder.box).edesk
       response_status, raw_message = edesk_api.fetch_message(edesk_message_id)
 
@@ -16,7 +16,7 @@ module Govbox
         govbox_message.payload = raw_message
       end
 
-      ProcessMessageJob.perform_later(govbox_message)
+      ProcessMessageJob.perform_later(govbox_message, notify: notify)
     end
   end
 end

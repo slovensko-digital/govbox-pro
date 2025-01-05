@@ -19,6 +19,6 @@ class Govbox::AuthorizeDeliveryNotificationJob < ApplicationJob
 
     # folder is not available in UPVS get_message response, therefore we're using corresponding inbox as target folder
     folder = Govbox::Folder.where(box: message.thread.box, name: "Inbox", system: true).first
-    Govbox::DownloadMessageJob.perform_later(folder, target_message_id)
+    Govbox::DownloadMessageJob.perform_later(folder, target_message_id, notify: true)
   end
 end
