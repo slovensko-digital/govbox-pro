@@ -44,14 +44,15 @@ class Tenant < ApplicationRecord
 
   validates_presence_of :name
 
-  AVAILABLE_FEATURE_FLAGS = [:audit_log, :archive, :api, :message_draft_import, :fs_api, :fs_sync]
+  AVAILABLE_FEATURE_FLAGS = [:audit_log, :archive, :api, :fs_sync]
+  ALL_FEATURE_FLAGS = [:audit_log, :archive, :api, :message_draft_import, :fs_api, :fs_sync]
 
   def draft_tag!
     draft_tag || raise(ActiveRecord::RecordNotFound, "`DraftTag` not found in tenant: #{id}")
   end
 
   def signed_externally_tag!
-    signed_externally_tag || raise(ActiveRecord::RecordNotFound, "`SignedExternallyTag` not found in tenant: #{self.id}")
+    signed_externally_tag || raise(ActiveRecord::RecordNotFound, "`SignedExternallyTag` not found in tenant: #{id}")
   end
 
   def signature_requested_tag!
@@ -67,7 +68,7 @@ class Tenant < ApplicationRecord
   end
 
   def feature_enabled?(feature)
-    raise "Unknown feature #{feature}" unless feature.in? AVAILABLE_FEATURE_FLAGS
+    raise "Unknown feature #{feature}" unless feature.in? ALL_FEATURE_FLAGS
 
     feature.to_s.in? feature_flags
   end
@@ -86,6 +87,14 @@ class Tenant < ApplicationRecord
 
     feature_flags.delete_if { |f| f == feature.to_s }
     save!
+  end
+
+  def list_available_features
+    AVAILABLE_FEATURE_FLAGS
+  end
+
+  def list_all_features
+    ALL_FEATURE_FLAGS
   end
 
   def make_admins_see_everything!

@@ -68,4 +68,15 @@ class Automation::RuleTest < ActiveSupport::TestCase
     assert_includes message.thread.tags, tags(:ssd_print)
     assert_not_includes message.tags, tags(:ssd_print)
   end
+
+  test 'should run an automation on message created AttachmentContainsConidition AddMessageThreadTagAction' do
+    govbox_message = govbox_messages(:ssd_crac)
+
+    Govbox::Message.create_message_with_thread!(govbox_message)
+    travel_to(15.minutes.from_now) { GoodJob.perform_inline }
+    message = Message.last
+
+    assert_includes message.thread.tags, tags(:ssd_crac_success)
+    assert_not_includes message.tags, tags(:ssd_crac_success)
+  end
 end

@@ -120,7 +120,8 @@ module Automation
       if object.pdf?
         pdf_match?(object.content, value)
       elsif object.xml?
-        object.content.match?(value)
+        # TODO: fix encoding when saving content to DB
+        Nokogiri::XML(object.content, nil, 'UTF-8').to_s.match?(value)
       end
     end
 

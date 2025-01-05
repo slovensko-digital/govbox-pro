@@ -4,6 +4,7 @@
 #
 #  id               :bigint           not null, primary key
 #  name             :string           not null
+#  settings         :jsonb
 #  system           :boolean          not null
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null

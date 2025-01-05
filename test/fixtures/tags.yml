@@ -74,6 +74,12 @@ ssd_print:
   visible: true
   tenant: ssd
 
+ssd_crac_success:
+  name: CRAC vybavené
+  type: SimpleTag
+  visible: true
+  tenant: ssd
+
 ssd_signature_requested:
   name: Na podpis
   type: SignatureRequestedTag

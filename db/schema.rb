@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_11_06_152337) do
+ActiveRecord::Schema[7.1].define(version: 2024_12_09_184812) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -323,6 +323,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_06_152337) do
     t.bigint "box_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.jsonb "settings", default: {}
     t.index ["box_id"], name: "index_govbox_folders_on_box_id"
     t.index ["edesk_folder_id", "box_id"], name: "index_govbox_folders_on_edesk_folder_id_and_box_id", unique: true
     t.index ["parent_folder_id"], name: "index_govbox_folders_on_parent_folder_id"

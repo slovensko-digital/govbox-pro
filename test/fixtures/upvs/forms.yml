@@ -7,3 +7,7 @@ general_agenda:
 fs_eud_v1_0:
   identifier: 42499500.FS_EUD_v1_0.sk
   version: 1.6
+
+orsr_fups:
+  identifier: ks_352538
+  version: 2023.08.21

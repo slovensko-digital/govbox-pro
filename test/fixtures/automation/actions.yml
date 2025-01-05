@@ -32,3 +32,8 @@ six:
   automation_rule: five
   type: Automation::ChangeMessageThreadTitleAction
   value: "New title - {{title}}"
+
+seven:
+  automation_rule: six
+  type: Automation::AddMessageThreadTagAction
+  action_object: ssd_crac_success (Tag)

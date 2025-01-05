@@ -5,3 +5,10 @@ general_agenda:
   institution_uri: ico://sk/12345678
   name: message_reply
   schema_url: schemas.gov.sk/eform/App.GeneralAgenda/1.9
+
+fups:
+  institution_name: Test OVM identity
+  institution_uri: ico://sk/12345678
+  name: sro_zapis
+  schema_url: http://eformulare.justice.sk/schemasAndTransformations/FUPS_ks_352538
+  type: 'Upvs::ServiceWithFormAllowRule'
