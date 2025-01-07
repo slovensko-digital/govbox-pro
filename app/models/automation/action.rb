@@ -30,15 +30,15 @@ module Automation
 
   class UnassignMessageThreadTagAction < Action
     def run!(thing, _event)
-        tag = action_object
-        return if thing.tenant != tag.tenant
+      tag = action_object
+      return if thing.tenant != tag.tenant
 
-        object = if thing.respond_to? :thread
+      object = if thing.respond_to? :thread
                   thing.thread
                  else
                   thing
                  end
-        object.unassign_tag(tag);
+      object.unassign_tag(tag) if tag && object.tags.include?(tag)
     end
     
     def object_based?
