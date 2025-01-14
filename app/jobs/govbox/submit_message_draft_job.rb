@@ -67,6 +67,7 @@ class Govbox::SubmitMessageDraftJob < ApplicationJob
       objects << {
         id: object.uuid,
         name: object.name,
+        description: object.description,
         encoding: "Base64",
         signed: object.is_signed,
         mime_type: object.mimetype,

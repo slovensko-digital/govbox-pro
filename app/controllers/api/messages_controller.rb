@@ -89,6 +89,7 @@ class Api::MessagesController < Api::TenantController
       ],
       objects: [
         :name,
+        :description,
         :is_signed,
         :to_be_signed,
         :mimetype,
