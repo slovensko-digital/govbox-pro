@@ -9,6 +9,10 @@
           <span class="flex-grow-0 flex-shrink-0 text-lg font-medium text-left text-gray-900"><%= t condition.attr %></span>
           <span class="flex-grow-0 flex-shrink-0 text-lg text-left text-gray-900"><%= t condition.type %></span>
           <span class="flex-grow-0 flex-shrink-0 font-medium text-lg text-left text-gray-900"><%= condition.condition_object.name %></span>
+        <% elsif condition.type == 'Automation::BooleanCondition' %>
+          <span class="flex-grow-0 flex-shrink-0 text-lg font-medium text-left text-gray-900"><%= t condition.attr %></span>
+          <span class="flex-grow-0 flex-shrink-0 text-lg text-left text-gray-900"><%= t condition.type %></span>
+          <span class="flex-grow-0 flex-shrink-0 font-medium text-lg text-left text-gray-900"><%= t condition.value %></span>
         <% else %>
           <span class="flex-grow-0 flex-shrink-0 text-lg font-medium text-left text-gray-900"><%= t condition.attr %></span>
           <span class="flex-grow-0 flex-shrink-0 text-lg text-left text-gray-900"><%= t condition.type %></span>

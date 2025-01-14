@@ -21,7 +21,7 @@ module Automation
     attr_accessor :delete_record
 
     # when adding items, check defaults in condition_form_component.rb
-    ATTR_LIST = %i[box sender_name recipient_name title sender_uri recipient_uri attachment fs_submission_status fs_message_type object_type].freeze
+    ATTR_LIST = %i[box sender_name recipient_name title sender_uri recipient_uri outbox attachment edesk_class fs_submission_status fs_message_type object_type].freeze
 
     def valid_condition_type_list_for_attr
       Automation::Condition.subclasses.map do |subclass|
@@ -48,13 +48,41 @@ module Automation
     end
   end
 
+  class BooleanCondition < Automation::Condition
+    validates :value, presence: true
+    VALID_ATTR_LIST = %w[outbox].freeze
+    validates :attr, inclusion: { in: VALID_ATTR_LIST }
+
+    def satisfied?(thing)
+      thing[attr] == ActiveRecord::Type::Boolean.new.cast(value)
+    end
+
+    def cleanup_record
+      self.condition_object = nil
+    end
+  end
+
   class MetadataValueCondition < Automation::Condition
     validates :value, presence: true
-    VALID_ATTR_LIST = %w[sender_uri recipient_uri fs_submission_status fs_message_type].freeze
+    VALID_ATTR_LIST = %w[sender_uri recipient_uri edesk_class fs_submission_status fs_message_type].freeze
     validates :attr, inclusion: { in: VALID_ATTR_LIST }
 
     def satisfied?(thing)
       thing.metadata && thing.metadata[attr]&.match?(value)
+    end
+
+    def cleanup_record
+      self.condition_object = nil
+    end
+  end
+
+  class MetadataValueNotCondition < Automation::Condition
+    validates :value, presence: true
+    VALID_ATTR_LIST = %w[sender_uri recipient_uri edesk_class fs_submission_status fs_message_type].freeze
+    validates :attr, inclusion: { in: VALID_ATTR_LIST }
+
+    def satisfied?(thing)
+      thing.metadata && !thing.metadata[attr]&.match?(value)
     end
 
     def cleanup_record
@@ -83,7 +111,7 @@ module Automation
 
   class MessageMetadataValueCondition < Automation::Condition
     validates :value, presence: true
-    VALID_ATTR_LIST = %w[fs_message_type].freeze
+    VALID_ATTR_LIST = %w[edesk_class fs_message_type].freeze
     validates :attr, inclusion: { in: VALID_ATTR_LIST }
 
     def satisfied?(thing)

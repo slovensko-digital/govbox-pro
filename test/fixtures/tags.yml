@@ -80,6 +80,12 @@ ssd_crac_success:
   visible: true
   tenant: ssd
 
+ssd_done:
+  name: Vybavené
+  type: SimpleTag
+  visible: true
+  tenant: ssd
+
 ssd_signature_requested:
   name: Na podpis
   type: SignatureRequestedTag

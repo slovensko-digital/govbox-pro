@@ -17,7 +17,7 @@ module Automation
     belongs_to :action_object, polymorphic: true, optional: true
     attr_accessor :delete_record
 
-    ACTION_LIST = ['Automation::AddMessageThreadTagAction', 'Automation::FireWebhookAction', 'Automation::ChangeMessageThreadTitleAction'].freeze
+    ACTION_LIST = ['Automation::AddMessageThreadTagAction', 'Automation::UnassignMessageThreadTagAction', 'Automation::FireWebhookAction', 'Automation::ChangeMessageThreadTitleAction'].freeze
 
     def tag_list
       automation_rule.tenant.tags.pluck(:name, :id)
@@ -26,6 +26,24 @@ module Automation
 
   # deprecated, fully replaced by AddMessageThreadTagAction
   class AddTagAction < Action
+  end
+
+  class UnassignMessageThreadTagAction < Action
+    def run!(thing, _event)
+      tag = action_object
+      return if thing.tenant != tag.tenant
+
+      object = if thing.respond_to? :thread
+                 thing.thread
+               else
+                 thing
+               end
+      object.unassign_tag(tag) if tag && object.tags.include?(tag)
+    end
+
+    def object_based?
+      true
+    end
   end
 
   class AddMessageThreadTagAction < Action
