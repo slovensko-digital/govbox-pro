@@ -3,6 +3,7 @@
 # Table name: message_objects
 #
 #  id           :bigint           not null, primary key
+#  description  :string
 #  is_signed    :boolean
 #  mimetype     :string
 #  name         :string
