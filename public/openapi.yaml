@@ -353,6 +353,10 @@ paths:
                         description: Názov objektu
                         type: string
                         nullable: true
+                      description:
+                        description: Popis objektu
+                        type: string
+                        nullable: true
                       is_signed:
                         description: Indikátor či je obsah objektu podpísaný
                         type: boolean
@@ -389,7 +393,6 @@ paths:
                         items:
                           type: string
                     required:
-                      - name
                       - mimetype
                       - is_signed
                       - object_type
