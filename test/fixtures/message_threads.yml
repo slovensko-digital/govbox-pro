@@ -35,6 +35,13 @@ ssd_main_with_application:
   delivered_at: 2023-05-18 18:15:22
   last_message_delivered_at: 2023-05-18 18:16:22
 
+ssd_main_done:
+  box: ssd_main
+  title: General agenda SSD - done
+  original_title: Original title
+  delivered_at: 2023-05-18 16:05:00
+  last_message_delivered_at: 2023-05-18 16:06:00
+
 ssd_main_draft_to_be_signed:
   box: ssd_main
   title: Draft to be signed

@@ -37,3 +37,8 @@ seven:
   automation_rule: six
   type: Automation::AddMessageThreadTagAction
   action_object: ssd_crac_success (Tag)
+
+unassign_done_tag:
+  automation_rule: unassign_done_tag
+  type: Automation::UnassignMessageThreadTagAction
+  action_object: ssd_done (Tag)

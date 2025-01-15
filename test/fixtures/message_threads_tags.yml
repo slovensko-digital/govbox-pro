@@ -36,6 +36,10 @@ ssd_main_delivery_everything:
   message_thread: ssd_main_delivery
   tag: ssd_everything
 
+ssd_main_done_done:
+  message_thread: ssd_main_done
+  tag: ssd_done
+
 ssd_main_draft_only_everything:
   message_thread: ssd_main_draft_only
   tag: ssd_everything

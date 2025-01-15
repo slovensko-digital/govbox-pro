@@ -6,6 +6,10 @@
       <%= @form.select :type, @condition_type_list, {}, class: "mt-2 block rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-400 ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6", disabled: !@enabled %>
       <%= @form.select :condition_object_id, @form.object.box_list, {}, class: "mt-2 block rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-400 ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6", disabled: !@enabled %>
       <%= @form.hidden_field :condition_object_type, value: 'Box' %>
+    <% elsif @form.object.attr.in? ['outbox'] %>
+      <%= @form.select :attr, @attr_list, {}, onchange: "this.form.requestSubmit(this.form.querySelector(\"#rerender\"))", class: "mt-2 block rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-400 ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6", disabled: !@enabled %>
+      <%= @form.select :type, @condition_type_list, {}, class: "mt-2 block rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-400 ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6", disabled: !@enabled %>
+      <%= @form.select :value, [['áno', true], ['nie', false]], {}, class: "mt-2 block rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-400 ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6", disabled: !@enabled %>
     <% else %>
       <%= @form.select :attr, @attr_list, {}, onchange: "this.form.requestSubmit(this.form.querySelector(\"#rerender\"))", class: "mt-2 block rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-400 ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6", disabled: !@enabled %>
       <%= @form.select :type, @condition_type_list, {}, class: "mt-2 block rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-400 ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6", disabled: !@enabled %>

@@ -36,3 +36,15 @@ seven:
   automation_rule: six
   type: Automation::AttachmentContentContainsCondition
   value: "úspešne spracovaná"
+
+is_not_outbox:
+  automation_rule: unassign_done_tag
+  attr: outbox
+  type: Automation::BooleanCondition
+  value: false
+
+is_not_posting_confirmation:
+  automation_rule: unassign_done_tag
+  attr: edesk_class
+  type: Automation::MetadataValueNotCondition
+  value: POSTING_CONFIRMATION

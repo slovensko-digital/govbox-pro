@@ -6,6 +6,10 @@
         <p class="text-base font-medium text-left text-gray-900"><%= t @form.object.attr %></p>
         <p class="text-base text-left text-gray-900"><%= t @form.object.type %></p>
         <p class="text-base font-medium text-left text-gray-900"><%= @form.object&.condition_object&.name %></p>
+      <% elsif @form.object.attr.in? ['outbox'] %>
+        <p class="text-base font-medium text-left text-gray-900"><%= t @form.object.attr %></p>
+        <p class="text-base text-left text-gray-900"><%= t @form.object.type %></p>
+        <p class="text-base font-medium text-left text-gray-900"><%= t @form.object.value %></p>
       <% else %>
         <p class="text-base font-medium text-left text-gray-900"><%= t @form.object.attr %></p>
         <p class="text-base text-left text-gray-900"><%= t @form.object.type %></p>

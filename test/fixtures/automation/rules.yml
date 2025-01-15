@@ -36,3 +36,9 @@ six:
   name: AttachmentContentContainsCondition2
   trigger_event: message_created
 
+unassign_done_tag:
+  user: basic
+  tenant: ssd
+  name: RemoveDoneTagWhenNewInboxMessage
+  trigger_event: message_created
+
