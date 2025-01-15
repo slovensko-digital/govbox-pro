@@ -308,6 +308,9 @@ paths:
                       description: Identifikátor správy, na ktorú sa správa (odpoveď) viaže
                       type: string
                       format: uuid
+                    business_id:
+                      description: Identifikátor, ktorý jednoznačne identifikuje správu, pričom tento identifikátor môže byť v čitateľnom tvare. Jeho formát určuje poskytovateľ služby.
+                      type: string
                     recipient_uri:
                       description: Identifikátor prijímateľa správy
                       type: string

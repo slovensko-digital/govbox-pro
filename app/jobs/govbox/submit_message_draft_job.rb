@@ -34,6 +34,8 @@ class Govbox::SubmitMessageDraftJob < ApplicationJob
       message_type: all_message_metadata["message_type"],
       message_id: message_draft.uuid,
       correlation_id: message_draft.metadata["correlation_id"],
+      reference_id: message_draft.metadata["reference_id"],
+      business_id: message_draft.metadata["business_id"],
       recipient_uri: message_draft.metadata["recipient_uri"],
       message_subject: message_draft.title,
       sender_business_reference: message_draft.metadata["sender_business_reference"],

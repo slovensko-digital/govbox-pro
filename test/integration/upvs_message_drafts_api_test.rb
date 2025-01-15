@@ -18,6 +18,8 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
         posp_version: '1.9',
         message_type: 'App.GeneralAgenda',
         correlation_id: SecureRandom.uuid,
+        reference_id: SecureRandom.uuid,
+        business_id: 'SomeID',
         sender_uri: 'SSDMainURI',
         recipient_uri: 'ico://sk/12345678',
       },

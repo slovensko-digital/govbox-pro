@@ -36,6 +36,7 @@ class Upvs::MessageDraft < MessageDraft
       metadata: [
         :correlation_id,
         :reference_id,
+        :business_id,
         :sender_uri,
         :recipient_uri,
         :sender_business_reference,
