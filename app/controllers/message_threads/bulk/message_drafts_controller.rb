@@ -28,7 +28,7 @@ module MessageThreads
         message_drafts_to_destroy_ids = message_threads.map(&:message_drafts).flatten.map(&:id)
 
         message_threads.transaction do
-          MessageDraft.where(id: message_drafts_to_destroy_ids).destroy_all
+          MessageDraft.not_in_submission_process.where(id: message_drafts_to_destroy_ids).destroy_all
         end
 
         if message_drafts_to_destroy_ids.present?
