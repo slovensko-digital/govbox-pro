@@ -117,7 +117,7 @@ module Fs
       raise StandardError.new(error.response) if error.respond_to?(:response) && error.response
       raise error
     else
-      raise StandardError.new(response.body) unless accept_negative || response.status < 400
+      raise StandardError.new(response.body) if !accept_negative && response.status != 404 && response.status > 400
       return {
         status: response.status,
         body: structure,
