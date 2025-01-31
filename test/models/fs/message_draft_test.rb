@@ -44,4 +44,21 @@ class Fs::MessageDraftTest < ActiveSupport::TestCase
     message_draft = Fs::MessageDraft.last
     assert message_draft.thread.box.eql?(boxes(:fs_accountants))
   end
+
+  test "create_and_validate_with_fs_form method does not raise if XML does not match any FS form" do
+    author = users(:accountants_basic)
+
+    fs_api_handler = Minitest::Mock.new
+    fs_api_handler.expect :public_send, OpenStruct.new(status: 404, headers: nil, body: "null"), [:post, 'https://fsapi.test/api/v1/forms/parse', {:content=> Base64.strict_encode64(file_fixture("fs/random_xml.xml").read) }]
+
+    fs_api_handler_options = Minitest::Mock.new
+    fs_api_handler.expect :options, fs_api_handler_options, []
+    fs_api_handler_options.expect :timeout=, nil, [900000]
+
+    assert_nothing_raised do
+      FsEnvironment.fs_client.stub :api, Fs::Api.new(ENV.fetch('FS_API_URL'), handler: fs_api_handler ) do
+        Fs::MessageDraft.create_and_validate_with_fs_form(form_files: [fixture_file_upload("fs/random_xml.xml", "application/xml")], author: author)
+      end
+    end
+  end
 end
