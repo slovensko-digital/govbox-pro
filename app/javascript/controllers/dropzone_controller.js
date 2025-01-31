@@ -7,6 +7,8 @@ export default class extends Controller {
     const fileList = document.getElementById('fileList');
     const fileCount = document.getElementById('fileCount');
 
+    this.allFiles = new DataTransfer();
+
     dropzone.addEventListener('dragover', (e) => {
       e.preventDefault();
       dropzone.classList.add('border-blue-500', 'border-2');
@@ -32,9 +34,10 @@ export default class extends Controller {
 
   handleFiles(files) {
     const fileInput = document.getElementById('content[]');
-    fileInput.files = files;
 
     for (const file of files) {
+      this.allFiles.items.add(file);
+
       const listItem = document.createElement('div');
       listItem.textContent = `${file.name} (${this.formatBytes(file.size)})`;
       fileList.appendChild(listItem);
@@ -42,6 +45,8 @@ export default class extends Controller {
 
     fileCount.parentElement.classList.remove('hidden');
     fileCount.textContent = `${parseInt(fileCount.textContent) + files.length}`;
+
+    fileInput.files = this.allFiles.files;
   }
 
   formatBytes(bytes) {
