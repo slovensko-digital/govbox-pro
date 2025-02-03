@@ -80,6 +80,7 @@ class Fs::Message
         "fs_submission_status": raw_message['submission_status'],
         "fs_message_type": raw_message.dig('message_container', 'message_type'),
         "fs_submission_type_id": raw_message['submission_type_id'], # TODO kde pouzit? asi napr. pri vytvarani nazvu suboru pri exporte
+        "fs_submission_type_name": raw_message['submission_type_name'],
         "fs_submission_created_at": Time.zone.parse(raw_message['submission_created_at']),
         "fs_period": raw_message['period'],
         "fs_dismissal_reason": raw_message['dismissal_reason'],

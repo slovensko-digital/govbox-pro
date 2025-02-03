@@ -5,7 +5,7 @@
     <tr>
       <th>Typ dokumentu:</th>
       <td>
-        <b><%= message.title %></b>
+        <b><%= message.metadata.dig('fs_submission_type_name') || message.title %></b>
       </td>
     </tr>
     <tr>
