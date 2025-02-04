@@ -20,6 +20,7 @@ class Tenant < ApplicationRecord
 
   has_one :draft_tag, -> { where(owner_id: nil) }
   has_one :everything_tag
+  has_one :inbox_tag
   has_one :signature_requested_tag
   has_one :signed_tag
   has_one :signed_externally_tag
@@ -117,6 +118,7 @@ class Tenant < ApplicationRecord
 
     create_draft_tag!(name: "Rozpracované", visible: true)
     create_everything_tag!(name: "Všetky správy", visible: false)
+    create_inbox_tag!(name: "Doručené", visible: false)
     create_archived_tag!(name: "Archivované", color: "green", icon: "archive-box", visible: true)
     create_signature_requested_tag!(name: "Na podpis", visible: true, color: "yellow", icon: "pencil")
     create_signed_tag!(name: "Podpísané", visible: true, color: "green", icon: "fingerprint")
