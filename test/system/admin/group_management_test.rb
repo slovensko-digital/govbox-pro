@@ -17,7 +17,6 @@ class GroupManagementTest < ApplicationSystemTestCase
     fill_in "name_search", with: "Basi"
 
     click_button "Pridať používateľa do skupiny"
-    click_link "Zatvoriť"
 
     assert_text "Dummy Group"
   end
@@ -31,7 +30,6 @@ class GroupManagementTest < ApplicationSystemTestCase
 
     click_button "Pridať používateľa do skupiny"
     assert_text "Basic"
-    click_link "Zatvoriť"
   end
 
   test "admin can delete a group" do

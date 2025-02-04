@@ -6,7 +6,7 @@
     <div class="text-center text-gray-900 text-lg font-medium leading-loose">
       <% if @group.renamable? %>
         <%= render Common::InlineRenameComponent.new(name: @group.name, model: @group, url: admin_tenant_group_path(@group.tenant, @group)) %>
-    <% else %>
+      <% else %>
         <%= @group.name %>
       <% end %>
     </div>
@@ -18,7 +18,7 @@
   </div>
   <div class="justify-start items-start gap-2 flex">
     <% if @group.editable? %>
-      <%= link_to edit_members_admin_tenant_group_path(@group.tenant, @group), title: "Zmeniť členov skupiny", data: { turbo_frame: "modal" } do %>
+      <%= link_to edit_members_admin_tenant_group_path(@group.tenant, @group), title: "Zmeniť členov skupiny" do %>
         <%= render Common::EditButtonComponent.new %>
       <% end %>
       <% if @group.destroyable? %>
