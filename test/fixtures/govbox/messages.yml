@@ -323,7 +323,7 @@ ssd_done_new:
         class: FORM
         content: Dummy
 
-ssd_posting_confirmation:
+ssd_main_done_posting_confirmation:
   message_id: <%= SecureRandom.uuid %>
   correlation_id: d2d6ab13-347e-49f4-9c3b-0b8390430870
   edesk_message_id: 102
@@ -339,6 +339,98 @@ ssd_posting_confirmation:
     delivered_at: <%= DateTime.current.to_s %>
     original_html: MyHtml
     class: POSTING_CONFIRMATION
+    objects:
+      - name: form
+        mime_type: application/x-eform-xml
+        signed: false
+        class: FORM
+        content: Dummy
+
+ssd_egov_application:
+  message_id: <%= SecureRandom.uuid %>
+  correlation_id: f932fd8b-c996-4eb8-ba6c-af7714ef4069
+  edesk_message_id: 103
+  delivered_at: <%= DateTime.current %>
+  edesk_class: EGOV_APPLICATION
+  folder: ssd_sent
+  payload:
+    message_id: <%= SecureRandom.uuid %>
+    subject: MySubject
+    sender_name: MySender
+    sender_uri: MySenderURI
+    recipient_name: MyRecipient
+    delivered_at: <%= DateTime.current.to_s %>
+    original_html: MyHtml
+    class: EGOV_APPLICATION
+    objects:
+      - name: form
+        mime_type: application/x-eform-xml
+        signed: false
+        class: FORM
+        content: Dummy
+
+ssd_posting_confirmation:
+  message_id: <%= SecureRandom.uuid %>
+  correlation_id: f932fd8b-c996-4eb8-ba6c-af7714ef4069
+  edesk_message_id: 104
+  delivered_at: <%= DateTime.current %>
+  edesk_class: POSTING_CONFIRMATION
+  folder: ssd_one
+  payload:
+    message_id: <%= SecureRandom.uuid %>
+    subject: MySubject
+    sender_name: MySender
+    sender_uri: MySenderURI
+    recipient_name: MyRecipient
+    delivered_at: <%= DateTime.current.to_s %>
+    original_html: MyHtml
+    class: POSTING_CONFIRMATION
+    objects:
+      - name: form
+        mime_type: application/x-eform-xml
+        signed: false
+        class: FORM
+        content: Dummy
+
+ssd_delivery_report:
+  message_id: <%= SecureRandom.uuid %>
+  correlation_id: f932fd8b-c996-4eb8-ba6c-af7714ef4069
+  edesk_message_id: 105
+  delivered_at: <%= DateTime.current %>
+  edesk_class: ED_DELIVERY_REPORT
+  folder: ssd_one
+  payload:
+    message_id: <%= SecureRandom.uuid %>
+    subject: MySubject
+    sender_name: MySender
+    sender_uri: MySenderURI
+    recipient_name: MyRecipient
+    delivered_at: <%= DateTime.current.to_s %>
+    original_html: MyHtml
+    class: ED_DELIVERY_REPORT
+    objects:
+      - name: form
+        mime_type: application/x-eform-xml
+        signed: false
+        class: FORM
+        content: Dummy
+
+ssd_egov_document:
+  message_id: <%= SecureRandom.uuid %>
+  correlation_id: f932fd8b-c996-4eb8-ba6c-af7714ef4069
+  edesk_message_id: 106
+  delivered_at: <%= DateTime.current %>
+  edesk_class: EGOV_DOCUMENT
+  folder: ssd_one
+  payload:
+    message_id: <%= SecureRandom.uuid %>
+    subject: MySubject
+    sender_name: MySender
+    sender_uri: MySenderURI
+    recipient_name: MyRecipient
+    delivered_at: <%= DateTime.current.to_s %>
+    original_html: MyHtml
+    class: EGOV_DOCUMENT
     objects:
       - name: form
         mime_type: application/x-eform-xml

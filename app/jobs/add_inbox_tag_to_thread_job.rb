@@ -6,6 +6,6 @@ class AddInboxTagToThreadJob < ApplicationJob
   private
 
   def significant_inbox_message?(message)
-    !message.outbox? && !Govbox::Message::INFORMATIONAL_MESSAGE_CLASSES.include?(message.metadata.dig('edesk_class'))
+    !message.outbox? && !Govbox::Message::INSIGNIFICANT_MESSAGE_CLASSES.include?(message.metadata.dig('edesk_class'))
   end
 end

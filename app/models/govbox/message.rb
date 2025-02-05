@@ -20,7 +20,7 @@ class Govbox::Message < ApplicationRecord
 
   EGOV_DOCUMENT_CLASS = 'EGOV_DOCUMENT'
   EGOV_NOTIFICATION_CLASS = 'EGOV_NOTIFICATION'
-  INFORMATIONAL_MESSAGE_CLASSES = ['ED_DELIVERY_REPORT', 'POSTING_CONFIRMATION', 'POSTING_INFORMATION']
+  INSIGNIFICANT_MESSAGE_CLASSES = ['ED_DELIVERY_REPORT', 'POSTING_CONFIRMATION', 'POSTING_INFORMATION']
   GENERAL_AGENDA_SCHEMA = 'http://schemas.gov.sk/form/App.GeneralAgenda/1.9'
 
   DELIVERY_NOTIFICATION_TAG = 'delivery_notification'
@@ -75,7 +75,7 @@ class Govbox::Message < ApplicationRecord
   end
 
   def insignificant?
-    payload["class"].in?(INFORMATIONAL_MESSAGE_CLASSES)
+    payload["class"].in?(INSIGNIFICANT_MESSAGE_CLASSES)
   end
 
   def delivery_notification
