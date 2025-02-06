@@ -9,6 +9,7 @@ class Fs::Message
       message = create_inbox_message(raw_message)
 
       message.thread = associated_outbox_message.thread
+      message.thread.assign_tag(message.thread.tenant.inbox_tag)
 
       message.save!
 
