@@ -20,7 +20,7 @@ class Govbox::Message < ApplicationRecord
 
   EGOV_DOCUMENT_CLASS = 'EGOV_DOCUMENT'
   EGOV_NOTIFICATION_CLASS = 'EGOV_NOTIFICATION'
-  COLLAPSED_BY_DEFAULT_MESSAGE_CLASSES = ['ED_DELIVERY_REPORT', 'POSTING_CONFIRMATION', 'POSTING_INFORMATION']
+  INSIGNIFICANT_MESSAGE_CLASSES = ['ED_DELIVERY_REPORT', 'POSTING_CONFIRMATION', 'POSTING_INFORMATION']
   GENERAL_AGENDA_SCHEMA = 'http://schemas.gov.sk/form/App.GeneralAgenda/1.9'
 
   DELIVERY_NOTIFICATION_TAG = 'delivery_notification'
@@ -39,6 +39,7 @@ class Govbox::Message < ApplicationRecord
         title: message.metadata.dig("delivery_notification", "consignment", "subject").presence || message.title,
         delivered_at: govbox_message.delivered_at
       )
+      message.thread.assign_tag(message.thread.tenant.inbox_tag) if !message.outbox? && govbox_message.significant?
 
       message.save!
 
@@ -66,7 +67,15 @@ class Govbox::Message < ApplicationRecord
   end
 
   def collapsed?
-    payload["class"].in?(COLLAPSED_BY_DEFAULT_MESSAGE_CLASSES)
+    !significant?
+  end
+
+  def read?
+    folder.outbox? || !significant?
+  end
+
+  def significant?
+    !payload["class"].in?(INSIGNIFICANT_MESSAGE_CLASSES)
   end
 
   def delivery_notification
@@ -97,6 +106,7 @@ class Govbox::Message < ApplicationRecord
       replyable: govbox_message.replyable?,
       collapsed: govbox_message.collapsed?,
       outbox: govbox_message.folder.outbox?,
+      read: govbox_message.read?,
       metadata: {
         "correlation_id": govbox_message.payload["correlation_id"],
         "reference_id": govbox_message.payload["reference_id"],

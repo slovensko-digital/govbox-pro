@@ -111,7 +111,7 @@ class Automation::RuleTest < ActiveSupport::TestCase
   test 'should not run an automation on message created outbox BooleanCondition, edesk_class MessageMetadataValueNotCondition UnassignMessageThreadTagAction if POSTING_CONFIRMATION delivered' do
     tag = tags(:ssd_done)
     message_thread = message_threads(:ssd_main_done)
-    govbox_message = govbox_messages(:ssd_posting_confirmation)
+    govbox_message = govbox_messages(:ssd_main_done_posting_confirmation)
 
     govbox_message.update_column(:correlation_id, 'd2d6ab13-347e-49f4-9c3b-0b8390430870')
 
