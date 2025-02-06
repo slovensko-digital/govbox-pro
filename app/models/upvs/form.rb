@@ -2,11 +2,12 @@
 #
 # Table name: upvs_forms
 #
-#  id         :bigint           not null, primary key
-#  identifier :string           not null
-#  version    :string           not null
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
+#  id           :bigint           not null, primary key
+#  downloadable :boolean          default(TRUE)
+#  identifier   :string           not null
+#  version      :string           not null
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
 #
 class Upvs::Form < ApplicationRecord
   has_many :related_documents, class_name: 'Upvs::FormRelatedDocument', foreign_key: 'upvs_form_id', dependent: :destroy
