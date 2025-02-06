@@ -309,6 +309,7 @@ fs_accountants_outbox:
   replyable: false
   metadata:
     fs_message_id: 1234/2024
+    correlation_id: 4bc972bb-9364-47de-bb40-23720f24a4ab
   author: accountants_basic
 
 solver_main_delivery_notification_one:
