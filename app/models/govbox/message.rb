@@ -39,7 +39,7 @@ class Govbox::Message < ApplicationRecord
         title: message.metadata.dig("delivery_notification", "consignment", "subject").presence || message.title,
         delivered_at: govbox_message.delivered_at
       )
-      message.thread.assign_tag(message.thread.tenant.inbox_tag) if !message.outbox? && !govbox_message.insignificant?
+      message.thread.assign_tag(message.thread.tenant.inbox_tag) if !message.outbox? && govbox_message.significant?
 
       message.save!
 
@@ -67,15 +67,15 @@ class Govbox::Message < ApplicationRecord
   end
 
   def collapsed?
-    insignificant?
+    !significant?
   end
 
   def read?
-    folder.outbox? || insignificant?
+    folder.outbox? || !significant?
   end
 
-  def insignificant?
-    payload["class"].in?(INSIGNIFICANT_MESSAGE_CLASSES)
+  def significant?
+    !payload["class"].in?(INSIGNIFICANT_MESSAGE_CLASSES)
   end
 
   def delivery_notification
