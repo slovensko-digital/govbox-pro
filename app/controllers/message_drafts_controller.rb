@@ -34,9 +34,9 @@ class MessageDraftsController < ApplicationController
 
     if @message.not_yet_submitted?
       @message.destroy
-      redirect_to redirect_path, notice: "Správa bola zahodená"
+      redirect_to redirect_path, notice: "Správa bola zmazaná"
     else
-      redirect_to redirect_path, alert: "Správu nie je možné zmazať po odoslaní"
+      redirect_to redirect_path, alert: "Správu nie je možné zmazať po zaradení na odoslanie"
     end
   end
 
