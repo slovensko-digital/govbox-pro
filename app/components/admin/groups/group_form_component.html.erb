@@ -23,15 +23,19 @@
           </div>
         <% end %>
       <% end %>
-      <div class="flex flex-col justify-start items-start self-stretch divide-y relative gap-2 p-2 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
-        <% @group.group_memberships.each do |group_membership| %>
-          <div class="self-stretch p-6 flex justify-start items-start gap-6">
-            <% if !@readonly %>
-              <%= render Admin::Groups::MembersListRowComponent.new(group_membership) %>
-            <% else %>
-              <%= render Admin::Groups::MembersListRowViewOnlyComponent.new(group_membership) %>
-            <% end %>
-          </div>
+      <% if @group.group_memberships.any? %>
+        <div class="flex flex-col justify-start items-start self-stretch divide-y relative gap-2 p-2 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
+          <% @group.group_memberships.each do |group_membership| %>
+            <div class="self-stretch p-6 flex justify-start items-start gap-6">
+              <% if !@readonly %>
+                <%= render Admin::Groups::MembersListRowComponent.new(group_membership) %>
+              <% else %>
+                <%= render Admin::Groups::MembersListRowViewOnlyComponent.new(group_membership) %>
+              <% end %>
+            </div>
+          <% end %>
+        <% else %>
+          <%= render Common::BlankResultsComponent.new(:group_users) %>
         <% end %>
       </div>
     </div>
