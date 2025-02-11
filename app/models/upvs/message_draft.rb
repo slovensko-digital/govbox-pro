@@ -57,7 +57,7 @@ class Upvs::MessageDraft < MessageDraft
         }
       )
     )
-    message.update(recipient_name: Upvs::ServiceWithFormAllowRule.matching_metadata(message).where(institution_uri: message.metadata['recipient_uri'])&.take&.institution_name)
+    message.update(recipient_name: Upvs::ServiceWithFormAllowRule.matching_metadata(message.metadata).where(institution_uri: message.metadata['recipient_uri'])&.take&.institution_name)
 
 
     message.thread = box.message_threads&.find_or_build_by_merge_uuid(
