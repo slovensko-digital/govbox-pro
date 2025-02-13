@@ -6,14 +6,14 @@ class MessageDraftsControllerTest < ActionController::TestCase
     Current.user = users(:basic)
     session[:user_id] = Current.user.id
   end
-  test "should destroy draft with status created" do
-    # draft should be destroyed if not yet submitted
+  test "should destroy draft if it was not yet submitted" do
     message_draft = messages(:ssd_main_draft)
     delete :destroy, params: { id: message_draft.id }
     assert_raises(ActiveRecord::RecordNotFound) do
       MessageDraft.find(message_draft.id)
     end
   end
+  
   test "should not destroy draft that is being submitted" do
     message_draft = messages(:ssd_main_draft)
     message_draft.metadata[:status] = "being_submitted"
