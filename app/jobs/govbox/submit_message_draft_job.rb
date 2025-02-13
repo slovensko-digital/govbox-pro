@@ -90,12 +90,12 @@ class Govbox::SubmitMessageDraftJob < ApplicationJob
       message_draft.metadata["status"] = "temporary_submit_fail"
       message_draft.save
 
-      raise TemporarySubmissionError, "#{response_status}, #{response_message}"
+      raise TemporarySubmissionError, "Message #{message_draft.uuid}: #{response_status}, #{response_message}"
     else
       message_draft.metadata["status"] = "submit_fail"
       message_draft.save
 
-      raise SubmissionError, "#{response_status}, #{response_message}"
+      raise SubmissionError, "Message #{message_draft.uuid}: #{response_status}, #{response_message}"
     end
   end
 end
