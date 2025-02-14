@@ -4,7 +4,7 @@ module Govbox
   class ProcessMessageJob < ApplicationJob
     retry_on ::ApplicationRecord::FailedToAcquireLockError, wait: :polynomially_longer, attempts: Float::INFINITY
 
-    def perform(govbox_message)
+    def perform(govbox_message, notify: false)
       processed_message = ::Message.not_drafts.where(uuid: govbox_message.message_id).joins(:thread).where(thread: { box_id: govbox_message.box.id }).take
 
       ActiveRecord::Base.transaction do
@@ -15,6 +15,7 @@ module Govbox
         collapse_referenced_outbox_message(message)
         create_message_relations(message)
         download_upvs_form_related_documents(message)
+        notify_gui_message_created(message) if notify
       end unless processed_message
     end
 
@@ -94,6 +95,10 @@ module Govbox
         upvs_form = message_object.find_or_create_form
         ::Upvs::DownloadFormRelatedDocumentsJob.perform_later(upvs_form) if upvs_form
       end
+    end
+
+    def notify_gui_message_created(message)
+      broadcast_render_later_to message.thread, partial: "messages/new_message_alert", locals: { message: message }
     end
   end
 end

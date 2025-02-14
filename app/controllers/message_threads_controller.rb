@@ -10,8 +10,13 @@ class MessageThreadsController < ApplicationController
   after_action :mark_thread_as_read, only: %i[show history]
   before_action :set_reload
 
+  def index
+    authorize MessageThread
+  end
+
   def show
     authorize @message_thread
+    @notify = params[:notify]
   end
 
   def rename
@@ -27,10 +32,6 @@ class MessageThreadsController < ApplicationController
     else
       render :rename, status: :unprocessable_entity
     end
-  end
-
-  def index
-    authorize MessageThread
   end
 
   def scroll
