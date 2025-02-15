@@ -50,6 +50,18 @@ ssd_main_general_four:
     posp_id: App.GeneralAgenda
     posp_version: 1.9
     message_type: App.GeneralAgenda
+    correlation_id: d2d6ab13-347e-49f4-9c3b-0b8390430870
+
+ssd_main_general_done:
+  uuid: <%= SecureRandom.uuid %>
+  title: The done Message
+  delivered_at: 2023-05-18 16:17:26
+  thread: ssd_main_done
+  metadata:
+    authorized: false
+    posp_id: App.GeneralAgenda
+    posp_version: 1.9
+    message_type: App.GeneralAgenda
 
 ssd_main_fs_one:
   uuid: <%= SecureRandom.uuid %>
@@ -297,6 +309,7 @@ fs_accountants_outbox:
   replyable: false
   metadata:
     fs_message_id: 1234/2024
+    correlation_id: 4bc972bb-9364-47de-bb40-23720f24a4ab
   author: accountants_basic
 
 solver_main_delivery_notification_one:

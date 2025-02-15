@@ -34,6 +34,8 @@ class Govbox::SubmitMessageDraftJob < ApplicationJob
       message_type: all_message_metadata["message_type"],
       message_id: message_draft.uuid,
       correlation_id: message_draft.metadata["correlation_id"],
+      reference_id: message_draft.metadata["reference_id"],
+      business_id: message_draft.metadata["business_id"],
       recipient_uri: message_draft.metadata["recipient_uri"],
       message_subject: message_draft.title,
       sender_business_reference: message_draft.metadata["sender_business_reference"],
@@ -67,6 +69,7 @@ class Govbox::SubmitMessageDraftJob < ApplicationJob
       objects << {
         id: object.uuid,
         name: object.name,
+        description: object.description,
         encoding: "Base64",
         signed: object.is_signed,
         mime_type: object.mimetype,
@@ -87,12 +90,12 @@ class Govbox::SubmitMessageDraftJob < ApplicationJob
       message_draft.metadata["status"] = "temporary_submit_fail"
       message_draft.save
 
-      raise TemporarySubmissionError, "#{response_status}, #{response_message}"
+      raise TemporarySubmissionError, "Message #{message_draft.uuid}: #{response_status}, #{response_message}"
     else
       message_draft.metadata["status"] = "submit_fail"
       message_draft.save
 
-      raise SubmissionError, "#{response_status}, #{response_message}"
+      raise SubmissionError, "Message #{message_draft.uuid}: #{response_status}, #{response_message}"
     end
   end
 end

@@ -299,3 +299,141 @@ ssd_crac:
           <ns6:Subject>Spracovanie po&#x17E;iadavky v registri autentifika&#x10D;n&#xFD;ch certifik&#xE1;tov</ns6:Subject>
           <ns6:Text>&#x17D;iados&#x165; o zmenu z&#xE1;pisu autentifika&#x10D;n&#xE9;ho certifik&#xE1;tu v registri autentifika&#x10D;n&#xFD;ch certifik&#xE1;tov bola &#xFA;spe&#x161;ne spracovan&#xE1; 29.11.2024 13:00.</ns6:Text>
           </ns6:InformationMessage>
+
+ssd_done_new:
+  message_id: <%= SecureRandom.uuid %>
+  correlation_id: d2d6ab13-347e-49f4-9c3b-0b8390430870
+  edesk_message_id: 101
+  delivered_at: <%= DateTime.current %>
+  edesk_class: TEST
+  folder: ssd_one
+  payload:
+    message_id: <%= SecureRandom.uuid %>
+    subject: MySubject
+    sender_name: MySender
+    sender_uri: MySenderURI
+    recipient_name: MyRecipient
+    delivered_at: <%= DateTime.current.to_s %>
+    original_html: MyHtml
+    class: TEST
+    objects:
+      - name: form
+        mime_type: application/x-eform-xml
+        signed: false
+        class: FORM
+        content: Dummy
+
+ssd_main_done_posting_confirmation:
+  message_id: <%= SecureRandom.uuid %>
+  correlation_id: d2d6ab13-347e-49f4-9c3b-0b8390430870
+  edesk_message_id: 102
+  delivered_at: <%= DateTime.current %>
+  edesk_class: POSTING_CONFIRMATION
+  folder: ssd_one
+  payload:
+    message_id: <%= SecureRandom.uuid %>
+    subject: MySubject
+    sender_name: MySender
+    sender_uri: MySenderURI
+    recipient_name: MyRecipient
+    delivered_at: <%= DateTime.current.to_s %>
+    original_html: MyHtml
+    class: POSTING_CONFIRMATION
+    objects:
+      - name: form
+        mime_type: application/x-eform-xml
+        signed: false
+        class: FORM
+        content: Dummy
+
+ssd_egov_application:
+  message_id: <%= SecureRandom.uuid %>
+  correlation_id: f932fd8b-c996-4eb8-ba6c-af7714ef4069
+  edesk_message_id: 103
+  delivered_at: <%= DateTime.current %>
+  edesk_class: EGOV_APPLICATION
+  folder: ssd_sent
+  payload:
+    message_id: <%= SecureRandom.uuid %>
+    subject: MySubject
+    sender_name: MySender
+    sender_uri: MySenderURI
+    recipient_name: MyRecipient
+    delivered_at: <%= DateTime.current.to_s %>
+    original_html: MyHtml
+    class: EGOV_APPLICATION
+    objects:
+      - name: form
+        mime_type: application/x-eform-xml
+        signed: false
+        class: FORM
+        content: Dummy
+
+ssd_posting_confirmation:
+  message_id: <%= SecureRandom.uuid %>
+  correlation_id: f932fd8b-c996-4eb8-ba6c-af7714ef4069
+  edesk_message_id: 104
+  delivered_at: <%= DateTime.current %>
+  edesk_class: POSTING_CONFIRMATION
+  folder: ssd_one
+  payload:
+    message_id: <%= SecureRandom.uuid %>
+    subject: MySubject
+    sender_name: MySender
+    sender_uri: MySenderURI
+    recipient_name: MyRecipient
+    delivered_at: <%= DateTime.current.to_s %>
+    original_html: MyHtml
+    class: POSTING_CONFIRMATION
+    objects:
+      - name: form
+        mime_type: application/x-eform-xml
+        signed: false
+        class: FORM
+        content: Dummy
+
+ssd_delivery_report:
+  message_id: <%= SecureRandom.uuid %>
+  correlation_id: f932fd8b-c996-4eb8-ba6c-af7714ef4069
+  edesk_message_id: 105
+  delivered_at: <%= DateTime.current %>
+  edesk_class: ED_DELIVERY_REPORT
+  folder: ssd_one
+  payload:
+    message_id: <%= SecureRandom.uuid %>
+    subject: MySubject
+    sender_name: MySender
+    sender_uri: MySenderURI
+    recipient_name: MyRecipient
+    delivered_at: <%= DateTime.current.to_s %>
+    original_html: MyHtml
+    class: ED_DELIVERY_REPORT
+    objects:
+      - name: form
+        mime_type: application/x-eform-xml
+        signed: false
+        class: FORM
+        content: Dummy
+
+ssd_egov_document:
+  message_id: <%= SecureRandom.uuid %>
+  correlation_id: f932fd8b-c996-4eb8-ba6c-af7714ef4069
+  edesk_message_id: 106
+  delivered_at: <%= DateTime.current %>
+  edesk_class: EGOV_DOCUMENT
+  folder: ssd_one
+  payload:
+    message_id: <%= SecureRandom.uuid %>
+    subject: MySubject
+    sender_name: MySender
+    sender_uri: MySenderURI
+    recipient_name: MyRecipient
+    delivered_at: <%= DateTime.current.to_s %>
+    original_html: MyHtml
+    class: EGOV_DOCUMENT
+    objects:
+      - name: form
+        mime_type: application/x-eform-xml
+        signed: false
+        class: FORM
+        content: Dummy

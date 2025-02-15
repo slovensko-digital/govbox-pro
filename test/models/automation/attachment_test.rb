@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class Automation::RuleTest < ActiveSupport::TestCase
+class Automation::AttachmentTest < ActiveSupport::TestCase
   test 'should run an automation on message created AttachmentContentContainsCondition ChangeMessageThreadTitleAction and not match' do
     govbox_message = govbox_messages(:ssd_general_agenda_with_lorem_pdf)
     govbox_message.payload["objects"].first["content"] = File.read("test/fixtures/files/lorem_ipsum.pdf")

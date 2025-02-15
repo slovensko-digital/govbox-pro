@@ -36,6 +36,7 @@ class Upvs::MessageDraft < MessageDraft
       metadata: [
         :correlation_id,
         :reference_id,
+        :business_id,
         :sender_uri,
         :recipient_uri,
         :sender_business_reference,
@@ -47,16 +48,17 @@ class Upvs::MessageDraft < MessageDraft
       ]
     )
 
-    message = ::Message.create(message_params.except(:objects, :tags).merge(
+    message = ::Message.build(message_params.except(:objects, :tags).merge(
         {
           sender_name: box.name,
-          # recipient_name: TODO search name in UPVS dataset,
           outbox: true,
           replyable: false,
           delivered_at: Time.now
         }
       )
     )
+    message.recipient_name = Upvs::ServiceWithFormAllowRule.matching_metadata(message.metadata).where(institution_uri: message.metadata['recipient_uri'])&.take&.institution_name
+
 
     message.thread = box.message_threads&.find_or_build_by_merge_uuid(
       box: box,

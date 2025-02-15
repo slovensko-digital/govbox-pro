@@ -79,4 +79,47 @@ class Automation::RuleTest < ActiveSupport::TestCase
     assert_includes message.thread.tags, tags(:ssd_crac_success)
     assert_not_includes message.tags, tags(:ssd_crac_success)
   end
+
+  test 'should run an automation on message created outbox BooleanCondition, edesk_class MessageMetadataValueNotCondition UnassignMessageThreadTagAction if conditions satisfied' do
+    tag = tags(:ssd_done)
+    message_thread = message_threads(:ssd_main_done)
+    govbox_message = govbox_messages(:ssd_done_new)
+
+    assert_includes message_thread.tags, tag
+
+    Govbox::Message.create_message_with_thread!(govbox_message)
+    travel_to(15.minutes.from_now) { GoodJob.perform_inline }
+
+    assert_not_includes message_thread.tags.reload, tag
+  end
+
+  test 'should not run an automation on message created outbox BooleanCondition, edesk_class MessageMetadataValueNotCondition UnassignMessageThreadTagAction if outbox message delivered' do
+    tag = tags(:ssd_done)
+    message_thread = message_threads(:ssd_main_done)
+    govbox_message = govbox_messages(:ssd_outbox)
+
+    govbox_message.update_column(:correlation_id, 'd2d6ab13-347e-49f4-9c3b-0b8390430870')
+
+    assert_includes message_thread.tags, tag
+
+    Govbox::Message.create_message_with_thread!(govbox_message)
+    travel_to(15.minutes.from_now) { GoodJob.perform_inline }
+
+    assert_includes message_thread.tags, tag
+  end
+
+  test 'should not run an automation on message created outbox BooleanCondition, edesk_class MessageMetadataValueNotCondition UnassignMessageThreadTagAction if POSTING_CONFIRMATION delivered' do
+    tag = tags(:ssd_done)
+    message_thread = message_threads(:ssd_main_done)
+    govbox_message = govbox_messages(:ssd_main_done_posting_confirmation)
+
+    govbox_message.update_column(:correlation_id, 'd2d6ab13-347e-49f4-9c3b-0b8390430870')
+
+    assert_includes message_thread.tags, tag
+
+    Govbox::Message.create_message_with_thread!(govbox_message)
+    travel_to(15.minutes.from_now) { GoodJob.perform_inline }
+
+    assert_includes message_thread.tags, tag
+  end
 end

@@ -78,6 +78,7 @@ class Api::MessagesController < Api::TenantController
       metadata: [
         :correlation_id,
         :reference_id,
+        :business_id,
         :sender_uri,
         :recipient_uri,
         :sender_business_reference,
@@ -89,6 +90,7 @@ class Api::MessagesController < Api::TenantController
       ],
       objects: [
         :name,
+        :description,
         :is_signed,
         :to_be_signed,
         :mimetype,

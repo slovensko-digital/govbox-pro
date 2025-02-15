@@ -61,6 +61,34 @@ class Govbox::MessageTest < ActiveSupport::TestCase
     assert_equal message.recipient_name, "SSD main"
   end
 
+  test "#create_message_with_thread! should handle adding inbox tag to thread" do
+    Govbox::Message.create_message_with_thread!(govbox_messages(:ssd_egov_application))
+
+    message_thread = MessageThread.last
+
+    # Inbox tag not added when outbox message processed
+    assert_not message_thread.tags.include?(tags(:ssd_inbox))
+
+    Govbox::Message.create_message_with_thread!(govbox_messages(:ssd_posting_confirmation))
+    # Inbox tag not added when insignificant inbox message processed
+    assert_not message_thread.tags.include?(tags(:ssd_inbox))
+
+    Govbox::Message.create_message_with_thread!(govbox_messages(:ssd_delivery_report))
+    # Inbox tag not added when another insignificant inbox message processed
+    assert_not message_thread.tags.include?(tags(:ssd_inbox))
+
+    # Outbox or insignificant messages are automatically marked read
+    assert message_thread.messages.reload.all?{|m| m.read?}
+
+    Govbox::Message.create_message_with_thread!(govbox_messages(:ssd_egov_document))
+    # Inbox tag is added when significant inbox message processed
+    assert message_thread.tags.include?(tags(:ssd_inbox))
+
+    # Significant inbox messages is marked unread
+    assert_not message_thread.messages.reload.all?{|m| m.read?}
+    assert_not message_thread.messages.last.read?
+  end
+
   test "#create_message_with_thread! should include general agenda subject in message title" do
     govbox_message = govbox_messages(:ssd_general_agenda)
 

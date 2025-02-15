@@ -1,6 +1,8 @@
 module Upvs
   class DownloadFormRelatedDocumentsJob < ApplicationJob
     def perform(upvs_form, downloader: ::Upvs::FormRelatedDocumentsDownloader)
+      return unless upvs_form.downloadable?
+
       upvs_form_downloader = downloader.new(upvs_form)
 
       upvs_form_downloader.download_related_document_by_type(:xsd)

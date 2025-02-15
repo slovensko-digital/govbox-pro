@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_12_09_184812) do
+ActiveRecord::Schema[7.1].define(version: 2025_02_05_125502) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -391,6 +391,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_09_184812) do
     t.boolean "is_signed"
     t.boolean "visualizable"
     t.uuid "uuid"
+    t.string "description"
     t.index ["message_id"], name: "index_message_objects_on_message_id"
   end
 
@@ -604,6 +605,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_09_184812) do
     t.string "version", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "downloadable", default: true
     t.index ["identifier", "version"], name: "index_forms_on_identifier_version", unique: true
   end
 
