@@ -14,10 +14,6 @@ class MessageThreadsController < ApplicationController
     authorize @message_thread
   end
 
-  def index
-    authorize MessageThread
-  end
-
   def rename
     authorize @message_thread
   end
@@ -31,6 +27,10 @@ class MessageThreadsController < ApplicationController
     else
       render :rename, status: :unprocessable_entity
     end
+  end
+
+  def index
+    authorize MessageThread
   end
 
   def scroll
