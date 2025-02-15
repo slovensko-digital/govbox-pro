@@ -11,7 +11,8 @@ module Common
         tags: "tag-slash",
         not_found: "magnifying-glass",
         boxes: "inbox-stack",
-        notifications: "bell-slash"
+        notifications: "bell-slash",
+        group_users: "users"
       }
 
       @header = t "blank_results.#{@reason}.header"

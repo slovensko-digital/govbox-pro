@@ -9,6 +9,7 @@ class Admin::GroupMembershipsController < ApplicationController
     if @group_membership.save
       @group = @group_membership.group
       flash[:notice] = 'Group membership was successfully created'
+      redirect_to edit_members_admin_tenant_group_path(Current.tenant, @group_membership.group)
     else
       render :new, status: :unprocessable_entity
     end
