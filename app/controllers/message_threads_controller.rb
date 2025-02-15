@@ -16,7 +16,6 @@ class MessageThreadsController < ApplicationController
 
   def show
     authorize @message_thread
-    @notify = params[:notify]
   end
 
   def rename
