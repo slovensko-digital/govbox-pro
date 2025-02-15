@@ -9,7 +9,9 @@
         </div>
         <div class="ml-3">
           <p class="text-sm font-medium text-blue-800">
-            <%= link_to "Doručená nová správa, klikni pre prečítanie", message_path(message), class: "underline" %>
+            <%= link_to message_thread_path(message.thread), class: "underline" do %>
+              <%= t "new_message_link" %>
+            <% end %>
           </p>
         </div>
         <div class="ml-auto pl-3">
