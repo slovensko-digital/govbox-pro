@@ -15,7 +15,6 @@ module Govbox
         collapse_referenced_outbox_message(message)
         create_message_relations(message)
         download_upvs_form_related_documents(message)
-        notify_gui_message_created(message)
       end unless processed_message
     end
 
@@ -97,8 +96,4 @@ module Govbox
       end
     end
 
-    def notify_gui_message_created(message)
-      broadcast_render_later_to message.thread, partial: "messages/new_message_alert", locals: { message: message }
-    end
-  end
 end

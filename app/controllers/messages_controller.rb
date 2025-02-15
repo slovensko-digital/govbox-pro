@@ -39,7 +39,7 @@ class MessagesController < ApplicationController
 
     @message.transaction do
       if Govbox::AuthorizeDeliveryNotificationAction.run(@message)
-        redirect_to message_thread_path(@message.thread, notify: true), notice: 'Správa bola zaradená na prevzatie'
+        redirect_to message_thread_path(@message.thread), notice: 'Správa bola zaradená na prevzatie'
       else
         redirect_to message_thread_path(@message.thread), alert: 'Správu nie je možné prevziať'
       end
