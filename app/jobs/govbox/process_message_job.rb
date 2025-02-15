@@ -95,5 +95,5 @@ module Govbox
         ::Upvs::DownloadFormRelatedDocumentsJob.perform_later(upvs_form) if upvs_form
       end
     end
-
+  end
 end
