@@ -32,9 +32,12 @@ class MessageDraftsController < ApplicationController
     # redirect_path = @message.original_message.present? ? message_thread_path(@message.original_message.thread) : message_drafts_path
     redirect_path = @message.original_message.present? ? message_thread_path(@message.original_message.thread) : message_threads_path
 
-    @message.destroy
-
-    redirect_to redirect_path, notice: "Správa bola zahodená"
+    if @message.not_yet_submitted?
+      @message.destroy
+      redirect_to redirect_path, notice: "Správa bola zmazaná"
+    else
+      redirect_to redirect_path, alert: "Správu nie je možné zmazať po zaradení na odoslanie"
+    end
   end
 
   def unlock
