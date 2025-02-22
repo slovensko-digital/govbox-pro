@@ -47,7 +47,7 @@ class Message < ApplicationRecord
   after_update_commit ->(message) { EventBus.publish(:message_changed, message) }
   after_destroy_commit ->(message) { EventBus.publish(:message_destroyed, message) }
   after_create_commit do |message|
-    broadcast_render_later_to message.thread, partial: "messages/new_message_alert", locals: { message: message }
+    broadcast_render_later_to message.thread, partial: "messages/new_message_alert", locals: { message: message }, priority: -1
   end
 
   def automation_rules_for_event(event)

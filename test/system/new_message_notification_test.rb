@@ -10,6 +10,7 @@ class NewMessageNotificationTest < ApplicationSystemTestCase
 
     sign_in_as(:admin)
   end
+
   test 'should notify user on new message' do
     govbox_message = govbox_messages(:one)
 

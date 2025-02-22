@@ -9,18 +9,12 @@
         </div>
         <div class="ml-3">
           <p class="text-sm font-medium text-blue-800">
-            <%= link_to message_thread_path(message.thread), class: "underline" do %>
-              <%= t "new_message_link" %>
-            <% end %>
+            <%= link_to (t "new_message_link"), message_thread_path(message.thread), class: "underline" %>
           </p>
         </div>
         <div class="ml-auto pl-3">
           <div class="-mx-1.5 -my-1.5">
-            <button
-                type="button"
-                data-action="dismissible-alert#dismiss"
-                class="inline-flex rounded-md bg-blue-50 text-blue-500 hover:bg-blue-100 focus:ring-blue-600 focus:ring-offset-blue-50 p-1.5 focus:outline-none focus:ring-2 focus:ring-offset-2"
-              >
+            <button type="button" data-action="dismissible-alert#dismiss" class="inline-flex rounded-md bg-blue-50 text-blue-500 hover:bg-blue-100 focus:ring-blue-600 focus:ring-offset-blue-50 p-1.5 focus:outline-none focus:ring-2 focus:ring-offset-2">
               <span class="sr-only">
                 Dismiss
               </span>

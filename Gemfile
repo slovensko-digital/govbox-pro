@@ -5,7 +5,6 @@ ruby '3.3.0'
 gem 'rails', '~> 7.1'
 gem 'rails-i18n'
 
-gem 'actioncable-enhanced-postgresql-adapter'
 gem 'pg', '~> 1.5'
 gem 'with_advisory_lock'
 
