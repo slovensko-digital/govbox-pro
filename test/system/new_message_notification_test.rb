@@ -20,13 +20,12 @@ class NewMessageNotificationTest < ApplicationSystemTestCase
 
     visit message_thread_path(message.thread)
 
-    govbox_message_2 = govbox_messages(:three)
+    govbox_message_2 = govbox_messages(:ssd_new_message_notification_message)
 
     Govbox::Message.create_message_with_thread!(govbox_message_2)
     travel_to(2.seconds.from_now) { GoodJob.perform_inline }
-
     assert_link I18n.t "new_message_link"
     click_link I18n.t "new_message_link"
-    assert_text "MySubject"
+    assert_text "NotifTest"
   end
 end
