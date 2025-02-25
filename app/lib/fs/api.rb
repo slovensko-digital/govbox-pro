@@ -85,7 +85,7 @@ module Fs
 
     def initialize_obo(box)
       @obo = "#{box.settings_subject_id}:#{box.settings_dic}"
-      @obo += box.settings_delegate_id if box.settings_delegate_id
+      @obo += ":#{box.settings_delegate_id}" if box.settings_delegate_id
     end
 
     def jwt_header(obo = nil)
