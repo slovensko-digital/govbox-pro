@@ -81,6 +81,26 @@ class Fs::ApiConnectionTest < ActiveSupport::TestCase
     assert_equal original_fs_boxes_count, Fs::Box.count
   end
 
+  test ".boxify adds deleage_it and doesn't suplicate existing boxes if c_reg already present" do
+    original_fs_boxes_count = Fs::Box.count
+    existing_box = boxes(:fs_false_creg)
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :get_subjects, [
+      { "name" => existing_box.name, "dic" => existing_box.settings_dic, "subject_id" => existing_box.settings_subject_id, "authorization_type" => "6", "is_subject_c_reg" => existing_box.settings_is_subject_c_reg, "delegate_id" => "7e4faaa3-c130-4032-b4c1-d0892e9a4622" }
+    ]
+
+    api_connection = api_connections(:fs_api_connection2)
+
+    FsEnvironment.fs_client.stub :api, fs_api do
+      api_connection.boxify
+    end
+
+    assert_equal original_fs_boxes_count, Fs::Box.count
+    assert_equal existing_box.reload.settings_delegate_id, "7e4faaa3-c130-4032-b4c1-d0892e9a4622"
+    assert_equal existing_box.reload.settings_is_subject_c_reg, false
+  end
+
   test ".generate_short_name_from_name generates short name without number if unique" do
     api_connection = api_connections(:fs_api_connection1)
     assert_equal 'FSJH', api_connection.send(:generate_short_name_from_name, 'Janko Hraško')
