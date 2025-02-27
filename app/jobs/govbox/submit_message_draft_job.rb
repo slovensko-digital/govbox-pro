@@ -57,7 +57,7 @@ class Govbox::SubmitMessageDraftJob < ApplicationJob
       message_draft.submitted!
       Govbox::SyncBoxJob.set(wait: 3.minutes).perform_later(box) unless bulk_submit
     else
-      handle_submit_fail(message_draft, response_status, response_body.dig("message"))
+      handle_submit_fail(message_draft, response_status, response_body)
     end
   end
 
@@ -81,7 +81,7 @@ class Govbox::SubmitMessageDraftJob < ApplicationJob
     objects
   end
 
-  def handle_submit_fail(message_draft, response_status, response_message)
+  def handle_submit_fail(message_draft, response_status, response_body)
     # TODO notification
     message_draft.add_cascading_tag(message_draft.tenant.submission_error_tag)
 
@@ -90,12 +90,16 @@ class Govbox::SubmitMessageDraftJob < ApplicationJob
       message_draft.metadata["status"] = "temporary_submit_fail"
       message_draft.save
 
-      raise TemporarySubmissionError, "Message #{message_draft.uuid}: #{response_status}, #{response_message}"
+      raise TemporarySubmissionError, error_message(message_draft, response_status, response_body)
     else
       message_draft.metadata["status"] = "submit_fail"
       message_draft.save
 
-      raise SubmissionError, "Message #{message_draft.uuid}: #{response_status}, #{response_message}"
+      raise SubmissionError, error_message(message_draft, response_status, response_body)
     end
+  end
+
+  def error_message(message_draft, response_status, response_body)
+    "Box #{message_draft.box.id}, Message #{message_draft.uuid}: #{response_status}, #{response_body}"
   end
 end
