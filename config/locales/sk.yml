@@ -279,6 +279,7 @@ sk:
   message_thread_changed: "Zmena vo vlákne správ"
   message_draft_submitted: "Odoslaná správa"
   message_object_downloaded: "Stiahnutý objekt správy"
+  new_message_link: "Doručená nová správa, klikni pre prečítanie"
   "Automation::ContainsCondition": "obsahuje"
   "Automation::BooleanCondition": "je"
   "Automation::AttachmentContentContainsCondition": "obsahuje"
