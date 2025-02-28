@@ -72,6 +72,6 @@ class MessageThreads::TagsController < ApplicationController
   end
 
   def tags_assignments
-    params.require(:tags_assignments).permit(init: {}, new: {})
+    params.require(:tags_assignments).permit(init: {}, new: {}) || params.require(:quick_tags_assignments).permit(init: {}, new: {})
   end
 end
