@@ -37,6 +37,8 @@ module GovboxPro
 
     config.good_job.enable_cron = true
     config.good_job.smaller_number_is_higher_priority = true
+    config.good_job.cleanup_preserved_jobs_before_seconds_ago = 2.days
+    config.good_job.cleanup_discarded_jobs = false
 
     if ENV['AUTO_SYNC_BOXES'] == "ON"
       config.good_job.cron = {
