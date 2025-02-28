@@ -12,6 +12,12 @@ class MessageThreadsController < ApplicationController
 
   def show
     authorize @message_thread
+    @non_quick_thread_tags = @thread_tags.includes(:tag).where.not('tags.quick = ?', true)
+    @quick_tags = Current.tenant.quick_tags
+    @quick_tags_changes = RelationChanges::Tags.new(
+      tag_scope: @quick_tags.to_a,
+      tags_assignments: RelationChanges::Tags.build_assignment(message_thread: @message_thread, tag_scope: @quick_tags.to_a)
+    )
   end
 
   def rename
