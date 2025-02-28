@@ -11,8 +11,11 @@
           <%= render Common::BoxLabelComponent.new(@message_thread.box, "", "text-xs sm:text-sm", "px-2 py-0.5") %>
           <div class="h-6 sm:h-8 w-px bg-gray-900/10" aria-hidden="true" data-content-with-separator-target="separator"></div>
         </div>
-        <% @thread_tags.each do |thread_tag| %>
+        <% @non_quick_thread_tags.each do |thread_tag| %>
           <%= render Common::TagComponent.new(thread_tag.tag) %>
+        <% end %>
+        <% @quick_tags.each do |tag| %>
+          <%= render Common::QuickTagComponent.new(tag, checked: tag.in?(@thread_tags)) %>
         <% end %>
         <%= link_to edit_message_thread_tags_path(@message_thread), data: { turbo_frame: "modal" }, title: "Upraviť štítky", class: "rounded-md bg-blue-100 p-[5px] hover:bg-blue-200" do %>
           <%= render Icons::TagComponent.new(css_classes: "h-4 w-4 text-blue-600", stroke_width: 2) %>
