@@ -7,6 +7,7 @@
 #  external_name    :string
 #  icon             :string
 #  name             :string           not null
+#  quick            :boolean          default(FALSE)
 #  tag_groups_count :integer          default(0), not null
 #  type             :string           not null
 #  visible          :boolean          default(TRUE), not null

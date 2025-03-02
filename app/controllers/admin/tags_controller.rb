@@ -61,6 +61,6 @@ class Admin::TagsController < ApplicationController
   end
 
   def simple_tag_params
-    params.require(:simple_tag).permit(:name, :visible, :color, :icon)
+    params.require(:simple_tag).permit(:name, :visible, :quick, :color, :icon)
   end
 end
