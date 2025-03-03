@@ -23,7 +23,7 @@ class Upvs::MessageDraftsImportsController < ApplicationController
       box: @box
     )
 
-    Upvs::Drafts::ParseImportJob.perform_later(import, author: Current.user)
+    Upvs::Drafts::ParseImportJob.set(job_context: :later).perform_later(import, author: Current.user)
 
     redirect_to message_threads_path(q: "label:(#{Current.tenant.draft_tag.name})")
   end
