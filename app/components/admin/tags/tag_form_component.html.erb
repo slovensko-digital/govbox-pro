@@ -21,6 +21,14 @@
             </div>
             <div class="flex justify-start items-center self-stretch gap-4 px-6 py-3 border-t-0 border-r-0 border-b-0 border-l-0 border-gray-200">
               <div class="flex flex-col justify-start items-start self-stretch flex-grow overflow-hidden gap-2 rounded-md">
+                <%= form.label :quick, "Možnosť rýchleho pridávania", class: "block text-sm font-medium leading-6 text-gray-900" %>
+                <div class="mt-2 w-full">
+                  <%= form.check_box :quick, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2" %>
+                </div>
+              </div>
+            </div>
+            <div class="flex justify-start items-center self-stretch gap-4 px-6 py-3 border-t-0 border-r-0 border-b-0 border-l-0 border-gray-200">
+              <div class="flex flex-col justify-start items-start self-stretch flex-grow overflow-hidden gap-2 rounded-md">
                 <%= form.label :color, "Farba", class: "block text-sm font-medium leading-6 text-gray-900" %>
                 <div class="mt-2 w-full">
                   <%= form.select :color, helpers.color_select_options, {}, class: "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6" %>
