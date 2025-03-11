@@ -1,9 +1,8 @@
-<div class="flex flex-col gap-2 border-b border-gray-200 p-1 pb-4">
-  <div>
+<div class="flex flex-col gap-3 border-b border-gray-200 p-1 pb-4">
     <%= submit_tag "1", name: "assignments_update", id: "assignments_update", class: "hidden" %>
     <% @tags_filter.all_tags.each do |tag| %>
-      <div class="flex ml-1 gap-3 my-1 <%= "hidden" if @tags_filter.filtered_ids.exclude?(tag.id) %>">
-        <div class="flex h-6 items-center">
+      <div class="flex ml-1 gap-3 items-center <%= "hidden" if @tags_filter.filtered_ids.exclude?(tag.id) %>">
+        <div class="flex h-6">
           <%= hidden_field_tag "tags_assignments[new][#{tag.id}]", RelationChanges::REMOVE_SIGN, id: nil %>
 
           <% checkbox = RelationChanges::Checkbox.new(assignments: @tags_assignments, record_id: tag.id.to_s) %>
@@ -37,5 +36,4 @@
         </div>
       </div>
     <% end %>
-  </div>
 </div>
