@@ -23,12 +23,12 @@
       </div>
     <% end %>
     <% if @tags_filter.filter_query.present? %>
-      <div class="flex <%= "border-t border-gray-200 mt-1.5 pt-1.5" if @tags_filter.any_filtered_results? %>">
+      <div class="flex <%= "border-t border-gray-200 mt-1.5 pt-1.5 items-center" if @tags_filter.any_filtered_results? %>">
         <div class="mr-3 ml-1 flex h-6 items-center">
           <%= check_box_tag "new_tag", @tags_filter.filter_query, false, class: "h-6 w-6 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer", onchange: "this.form.requestSubmit(document.getElementById('create_tag')); this.disabled = true;" %>
         </div>
         <div class="min-w-0 flex text-sm leading-6">
-          <%= label_tag "new_tag", class: "flex gap-2 select-none text-gray-900 cursor-pointer text-lg" do %>
+          <%= label_tag "new_tag", class: "flex gap-2 select-none text-gray-900 cursor-pointer text-lg items-center" do %>
             <%= @tags_filter.filter_query %>
             <span class="rounded-full px-2 py-0.5 ml-2 bg-gray-400 text-white">zaškrtnutím vytvoríte nový štítok</span>
           <% end %>
