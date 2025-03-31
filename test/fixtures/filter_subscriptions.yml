@@ -1,2 +1,9 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
+ssd_with_subscriptions:
+  filter: ssd_with_subscriptions
+  tenant: ssd
+  user: basic
+  events:
+    - Notifications::NewMessageThread
+    - Notifications::NewMessage
