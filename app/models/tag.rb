@@ -32,7 +32,7 @@ class Tag < ApplicationRecord
   has_many :message_objects, through: :message_objects_tags
 
   validates :name, presence: true
-  validates :name, uniqueness: { scope: :tenant_id, case_sensitive: false }
+  validates :name, uniqueness: { scope: :tenant_id, case_sensitive: true }
 
   scope :simple, -> { where(type: SimpleTag.to_s) }
   scope :visible, -> { where(visible: true) }
