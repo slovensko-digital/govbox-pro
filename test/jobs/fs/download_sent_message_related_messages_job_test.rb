@@ -5,11 +5,18 @@ class Fs::DownloadSentMessageRelatedMessagesJobTest < ActiveJob::TestCase
     outbox_message = messages(:fs_accountants_outbox)
 
     fs_api = Minitest::Mock.new
+    fs_api.expect :obo_without_delegate, "obo_without_delegate"
     fs_api.expect :fetch_received_messages, {
       "count" => 0,
       "messages" => []
     },
     **{sent_message_id: outbox_message.metadata['fs_message_id'], page: 1, count: 25, from: nil, to: nil}
+
+    fs_api.expect :fetch_received_messages, {
+      "count" => 0,
+      "messages" => []
+    },
+    **{sent_message_id: outbox_message.metadata['fs_message_id'], page: 1, count: 25, from: nil, to: nil, obo: "obo_without_delegate"}
 
     FsEnvironment.fs_client.stub :api, fs_api do
       assert_raise(Fs::DownloadSentMessageRelatedMessagesJob::MissingRelatedMessagesError) do
