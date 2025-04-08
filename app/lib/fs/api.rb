@@ -2,6 +2,8 @@
 
 module Fs
   class Api
+    attr_accessor :obo, :obo_without_delegate
+
     def initialize(url, api_connection: nil, box: nil, handler: Faraday)
       @url = url
       @handler = handler
@@ -84,8 +86,8 @@ module Fs
     private
 
     def initialize_obo(box)
-      @obo = "#{box.settings_subject_id}:#{box.settings_dic}"
-      @obo += ":#{box.settings_delegate_id}" if box.settings_delegate_id
+      @obo_without_delegate = "#{box.settings_subject_id}:#{box.settings_dic}"
+      @obo = @obo_without_delegate + (box.settings_delegate_id ? ":#{box.settings_delegate_id}" : "")
     end
 
     def jwt_header(obo = nil)
