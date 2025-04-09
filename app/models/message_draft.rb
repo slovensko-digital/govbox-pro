@@ -68,6 +68,39 @@ class MessageDraft < Message
     message_draft.validate :validate_uuid_uniqueness
   end
 
+  def create_message_objects_from_params(objects_params)
+    objects_params.each do |object_params|
+      message_object = objects.create(object_params.except(:content, :to_be_signed, :tags))
+
+      object_params.fetch(:tags, []).each do |tag_name|
+        tag = tenant.user_signature_tags.find_by(name: tag_name)
+        tag.assign_to_message_object(message_object)
+        tag.assign_to_thread(thread)
+      end
+      thread.box.tenant.signed_externally_tag!.assign_to_message_object(message_object) if message_object.is_signed
+
+      if object_params[:to_be_signed]
+        tenant.signer_group.signature_requested_from_tag&.assign_to_message_object(message_object)
+        tenant.signer_group.signature_requested_from_tag&.assign_to_thread(thread)
+      end
+
+      MessageObjectDatum.create(
+        message_object: message_object,
+        blob: Base64.decode64(object_params[:content])
+      )
+    end
+
+    EventBus.publish(:message_thread_created, thread) if thread.previously_new_record?
+    EventBus.publish(:message_created, self)
+  end
+
+  def assign_tags_from_params(tags_params)
+    tags_params.each do |tag_name|
+      tag = tenant.tags.find_by(name: tag_name)
+      add_cascading_tag(tag)
+    end
+  end
+
   def update_content(parameters)
     metadata["data"] = parameters.to_h
     save!

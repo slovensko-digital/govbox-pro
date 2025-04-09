@@ -23,31 +23,8 @@ class Api::MessagesController < Api::TenantController
 
       @message.save
 
-      permitted_message_draft_params.fetch(:objects, []).each do |object_params|
-        message_object = @message.objects.create(object_params.except(:content, :to_be_signed, :tags))
-
-        object_params.fetch(:tags, []).each do |tag_name|
-          tag = @tenant.user_signature_tags.find_by(name: tag_name)
-          tag.assign_to_message_object(message_object)
-          tag.assign_to_thread(@message.thread)
-        end
-        @message.thread.box.tenant.signed_externally_tag!.assign_to_message_object(message_object) if message_object.is_signed
-
-        if object_params[:to_be_signed]
-          @message.tenant.signer_group.signature_requested_from_tag&.assign_to_message_object(message_object)
-          @message.tenant.signer_group.signature_requested_from_tag&.assign_to_thread(@message.thread)
-        end
-
-        MessageObjectDatum.create(
-          message_object: message_object,
-          blob: Base64.decode64(object_params[:content])
-        )
-      end
-
-      permitted_message_draft_params.fetch(:tags, []).each do |tag_name|
-        tag = @tenant.tags.find_by(name: tag_name)
-        @message.add_cascading_tag(tag)
-      end
+      @message.create_message_objects_from_params(permitted_message_draft_params.fetch(:objects, []))
+      @message.assign_tags_from_params(permitted_message_draft_params.fetch(:tags, []))
 
       if @message.valid?(:validate_data)
         @message.created!
