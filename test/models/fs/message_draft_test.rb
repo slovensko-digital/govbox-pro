@@ -87,5 +87,9 @@ class Fs::MessageDraftTest < ActiveSupport::TestCase
 
     assert_mock subscriber1
     assert_mock subscriber2
+
+    # remove callback
+    EventBus.class_variable_get(:@@subscribers_map)[:message_thread_created].pop
+    EventBus.class_variable_get(:@@subscribers_map)[:message_created].pop
   end
 end
