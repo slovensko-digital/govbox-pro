@@ -61,4 +61,35 @@ class Fs::MessageDraftTest < ActiveSupport::TestCase
       end
     end
   end
+
+  test "create_and_validate_with_fs_form method fires EventBus" do
+    author = users(:accountants_basic)
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :parse_form, {
+      "subject" => "1122334455",
+      "form_identifier" => "3055_781"
+    },
+    [file_fixture("fs/dic1122334455_fs3055_781__sprava_dani_2023.xml").read]
+
+    subscriber1 = Minitest::Mock.new
+    subscriber1.expect :perform_later, true, [:message_thread_created, MessageThread]
+
+    subscriber2 = Minitest::Mock.new
+    subscriber2.expect :perform_later, true, [:message_created, Fs::MessageDraft]
+
+    EventBus.subscribe_job(:message_thread_created, subscriber1)
+    EventBus.subscribe_job(:message_created, subscriber2)
+
+    FsEnvironment.fs_client.stub :api, fs_api do
+      Fs::MessageDraft.create_and_validate_with_fs_form(form_files: [fixture_file_upload("fs/dic1122334455_fs3055_781__sprava_dani_2023.xml", "application/xml")], author: author)
+    end
+
+    assert_mock subscriber1
+    assert_mock subscriber2
+
+    # remove callback
+    EventBus.class_variable_get(:@@subscribers_map)[:message_thread_created].pop
+    EventBus.class_variable_get(:@@subscribers_map)[:message_created].pop
+  end
 end
