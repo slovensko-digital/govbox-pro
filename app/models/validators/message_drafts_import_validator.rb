@@ -12,7 +12,7 @@ class MessageDraftsImportValidator < ActiveModel::Validator
 
           if File.directory?(draft_subfolder_path)
             case(draft_subfolder_name)
-            when 'podpisane', 'podpisat', 'podpisovat', 'nepodpisovat'
+            when 'podpisane', 'podpisat', 'podpisovat', 'nepodpisat','nepodpisovat'
               contains_files_only?(record, draft_subfolder_path)
             else
               record.errors.add(:drafts, "Disallowed draft subfolder")
