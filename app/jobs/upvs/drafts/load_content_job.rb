@@ -11,9 +11,9 @@ class Upvs::Drafts::LoadContentJob < ApplicationJob
         case subdirectory_name
         when "podpisane"
           load_message_draft_objects(message_draft, File.join(message_draft_path, subdirectory_name), signed: true, to_be_signed: false)
-        when "podpisat"
+        when "podpisat", "podpisovat"
           load_message_draft_objects(message_draft, File.join(message_draft_path, subdirectory_name), signed: false, to_be_signed: true)
-        when "nepodpisovat"
+        when "nepodpisat", "nepodpisovat"
           load_message_draft_objects(message_draft, File.join(message_draft_path, subdirectory_name), signed: false, to_be_signed: false)
         end
       end
