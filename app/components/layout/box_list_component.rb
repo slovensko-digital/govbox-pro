@@ -1,6 +1,5 @@
 class Layout::BoxListComponent < ViewComponent::Base
-  def initialize(box:, unread_message_count:)
+  def initialize(box:)
     @box = box
-    @unread_message_count = unread_message_count
   end
 end
