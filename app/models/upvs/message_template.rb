@@ -62,6 +62,9 @@ class Upvs::MessageTemplate < ::MessageTemplate
       create_form_object(message)
     end
 
+    EventBus.publish(:message_thread_created, message.thread) if message.thread.previously_new_record?
+    EventBus.publish(:message_created, message)
+
     message
   end
 

@@ -54,6 +54,9 @@ class Upvs::Drafts::LoadContentJob < ApplicationJob
         blob: File.read(File.join(objects_path, file_name))
       )
     end
+
+    EventBus.publish(:message_thread_created, message_draft.thread) if message_draft.thread.previously_new_record?
+    EventBus.publish(:message_created, message_draft)
   end
 
   def form?(message_draft, file_name)
