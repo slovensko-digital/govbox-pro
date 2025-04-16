@@ -160,6 +160,13 @@ paths:
                     description: Aktuálny stav správy
                     type: string
                     enum: ["being_loaded", "being_validated", "invalid", "created", "being_submitted", "temporary_submit_fail", "submit_fail", "submitted"]
+                  metadata:
+                    description: Metaúdaje správy
+                    oneOf:
+                      - type:
+                        $ref: '#/components/schemas/FsMessageMetadata'
+                      - type:
+                        $ref: '#/components/schemas/UpvsMessageMetadata'
                   message_objects:
                     description: Zoznam objektov správy
                     type: array
@@ -927,6 +934,112 @@ components:
         - type
         - timestamp
         - data
+
+    FsMessageMetadata:
+      description: Metaúdaje správy Finančnej správy
+      properties:
+        fs_message_id:
+          description: Fs identifikátor správy
+          type: string
+        fs_sent_message_id:
+          description: Fs identifikátor súvisiaceho podania
+          type: string
+        fs_status:
+          description: Stav
+          type: string
+        fs_submitting_subject:
+          description: Podávajúci subjekt
+          type: string
+        fs_submission_status:
+          description: Stav podania
+          type: string
+        fs_message_type:
+          description: Typ správy
+          type: string
+        fs_submission_type_id:
+          description: Identifikátor typu podania
+          type: string
+        fs_submission_type_name:
+          description: Názov typu podania
+          type: string
+        fs_submission_created_at:
+          description: Čas podania
+          type: string
+        fs_period:
+          description: Obdobie
+          type: string
+        fs_dismissal_reason:
+          description: Dôvod odmietnutia
+          type: string
+        fs_other_attributes:
+          description: Iné atribúty
+          type: string
+        dic:
+          description: DIČ
+          type: string
+        fs_form_id:
+          description: Interný identifikátor FS formulára
+          type: string
+        correlation_id:
+          description: Identifikátor vlákna správ
+          type: string
+          status:
+            description: Aktuálny stav správy
+            type: string
+            enum: ["being_loaded", "being_validated", "invalid", "created", "being_submitted", "temporary_submit_fail", "submit_fail", "submitted"]
+
+    UpvsMessageMetadata:
+      description: Metaúdaje správy ÚPVS
+      properties:
+        sktalk_class:
+          description: SKTalk trieda správy
+          type: string
+        posp_id:
+          description: Identifikátor obsiahnutého formulára správy
+          type: string
+        posp_version:
+          description: Verzia obsiahnutého formulára správy
+          type: string
+        message_type:
+          description: Typ správy
+          type:
+            string
+        correlation_id:
+          description: SKTalk identifikátor vlákna správ
+          type:
+            string
+        reference_id:
+          description: SKTalk identifikátor referenčnej správy
+          type: string
+          format: uuid
+        edesk_class:
+          description: Typ objektu el. formulára
+          type: string
+        recipient_uri:
+          description: Identifikátor prijímateľa správy
+          type: string
+          example: ico://sk/83369510
+        sender_uri:
+          description: Identifikátor odosielateľa správy
+          type: string
+          example: ico://sk/83369510
+        sender_business_reference:
+          description: Spisová značka odosielateľa elektronickej správy
+          type: string
+        recipient_business_reference:
+          description: Spisová značka prijímateľa elektronickej správy
+          type: string
+        delivery_notification:
+          description: Doručenka na prevzatie správy
+          type: object
+        authorized:
+          description: Označenie prevzatia doručenky (ak sa jedná o správu typu doručenka)
+          type:
+            string
+        status:
+          description: Aktuálny stav správy
+          type: string
+          enum: ["being_loaded", "being_validated", "invalid", "created", "being_submitted", "temporary_submit_fail", "submit_fail", "submitted"]
 
   securitySchemes:
     Tenant_Token:
