@@ -1,5 +1,8 @@
 class Fs::ValidateMessageDraftJob < ApplicationJob
-  def perform(message_draft, fs_client: FsEnvironment.fs_client)
+  def perform(message_draft_id, fs_client: FsEnvironment.fs_client)
+    message_draft = Message.find_by(id: message_draft_id)
+    return unless message_draft
+
     message_draft.metadata['status'] = 'being_validated'
     message_draft.save
 
@@ -10,6 +13,6 @@ class Fs::ValidateMessageDraftJob < ApplicationJob
 
     raise RuntimeError.new("Response status is not 202. Message #{response[:body][:errors]}") unless response[:status] == 202
 
-    Fs::ValidateMessageDraftStatusJob.perform_later(message_draft, response[:headers][:location])
+    Fs::ValidateMessageDraftStatusJob.perform_later(message_draft_id, response[:headers][:location])
   end
 end
