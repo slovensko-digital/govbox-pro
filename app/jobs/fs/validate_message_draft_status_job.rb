@@ -1,5 +1,7 @@
 class Fs::ValidateMessageDraftStatusJob < ApplicationJob
   def perform(message_draft, location_header, fs_client: FsEnvironment.fs_client)
+    return if message_draft.destroyed?
+
     response = fs_client.api(box: message_draft.thread.box).get_location(location_header)
 
     if response[:headers][:retry_after]
