@@ -5,7 +5,7 @@ class Fs::ValidateMessageDraftResultJob < ApplicationJob
     GoodJob::Job.find_by(active_job_id: job.job_id).destroy
   end
 
-  def perform(_message_draft, location_header, fs_client: FsEnvironment.fs_client)
+  def perform(message_draft, location_header, fs_client: FsEnvironment.fs_client)
     response = fs_client.api(box: message_draft.thread.box).get_location(location_header)
 
     if 200 == response[:status]
