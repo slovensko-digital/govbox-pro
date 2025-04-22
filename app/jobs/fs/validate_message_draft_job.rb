@@ -14,7 +14,7 @@ class Fs::ValidateMessageDraftJob < ApplicationJob
       Base64.strict_encode64(message_draft.form_object.content)
     )
 
-    raise RuntimeError.new("Response status is not 202. Message #{response[:body][:errors]}") unless response[:status] == 202
+    raise "Response status is not 202. Message #{response[:body][:errors]}" unless response[:status] == 202
 
     Fs::ValidateMessageDraftStatusJob.perform_later(message_draft, response[:headers][:location])
   end
