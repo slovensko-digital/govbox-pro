@@ -88,7 +88,7 @@ class Fs::MessageDraft < MessageDraft
 
       messages << message
 
-      Fs::ValidateMessageDraftJob.perform_later(message.id)
+      Fs::ValidateMessageDraftJob.perform_later(message)
     end
 
     messages

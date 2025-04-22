@@ -1,8 +1,11 @@
 class Fs::ValidateMessageDraftResultJob < ApplicationJob
-  def perform(message_draft_id, location_header, fs_client: FsEnvironment.fs_client)
-    message_draft = Message.find_by(id: message_draft_id)
-    return unless message_draft
+  discard_on ActiveJob::DeserializationError
 
+  after_discard do
+    GoodJob::Job.find_by(active_job_id: job.job_id).destroy
+  end
+
+  def perform(_message_draft, location_header, fs_client: FsEnvironment.fs_client)
     response = fs_client.api(box: message_draft.thread.box).get_location(location_header)
 
     if 200 == response[:status]
