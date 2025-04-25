@@ -88,13 +88,16 @@ class Fs::MessageDraft < MessageDraft
 
       messages << message
 
-      Fs::ValidateMessageDraftJob.perform_later(message)
-
-      EventBus.publish(:message_thread_created, message.thread)
-      EventBus.publish(:message_created, message)
+      message.publish_created_event
     end
 
     messages
+  end
+
+  def publish_created_event
+    super
+
+    Fs::ValidateMessageDraftJob.perform_later(self)
   end
 
   def submit

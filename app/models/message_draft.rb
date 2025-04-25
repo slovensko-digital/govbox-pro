@@ -90,8 +90,7 @@ class MessageDraft < Message
       )
     end
 
-    EventBus.publish(:message_thread_created, thread) if thread.previously_new_record?
-    EventBus.publish(:message_created, self)
+    publish_created_event
   end
 
   def assign_tags_from_params(tags_params)
@@ -112,6 +111,7 @@ class MessageDraft < Message
   def submit
     raise NotImplementedError
   end
+
   def draft?
     true
   end
@@ -185,8 +185,8 @@ class MessageDraft < Message
   def created!
     metadata["status"] = "created"
     save!
-    EventBus.publish(:message_thread_created, thread)
-    EventBus.publish(:message_created, self)
+
+    publish_created_event
   end
 
   def being_submitted!
