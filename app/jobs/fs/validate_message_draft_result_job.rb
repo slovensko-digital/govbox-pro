@@ -1,7 +1,9 @@
 class Fs::ValidateMessageDraftResultJob < ApplicationJob
   discard_on ActiveJob::DeserializationError
 
-  after_discard do
+  after_discard do |job, exception|
+    return unless exception.is_a?(ActiveJob::DeserializationError)
+
     GoodJob::Job.find_by(active_job_id: job.job_id).destroy
   end
 
