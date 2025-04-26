@@ -13,6 +13,16 @@
           <%= form.hidden_field(:type, value: 'Fs::ApiConnection') %>
           <div class="w-96">
             <div class="px-6 py-4">
+              <%= form.label :settings_username, "Meno prepojenia", class: "leading-6" %>
+              <div class="relative mt-2 rounded-md shadow-sm">
+                <% color = @api_connection.errors[:name].any? ? "red" : "gray" %>
+                <%= form.text_field :name, placeholder: "12345678", class: "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-#{color}-300 placeholder:text-#{color}-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" %>
+              </div>
+              <% @api_connection.errors[:name].each do |error| %>
+                <p class="mt-2 text-sm text-red-600"><%= error %></p>
+              <% end %>
+            </div>
+            <div class="px-6 py-4">
               <%= form.label :settings_username, "Prihlasovacie meno na portál FS", class: "leading-6" %>
               <div class="relative mt-2 rounded-md shadow-sm">
                 <% color = @api_connection.errors[:settings_username].any? ? "red" : "gray" %>

@@ -4,6 +4,7 @@
 #
 #  id                    :bigint           not null, primary key
 #  api_token_private_key :string           not null
+#  name                  :string
 #  obo                   :uuid
 #  settings              :jsonb
 #  sub                   :string           not null
@@ -29,7 +30,7 @@ class ApiConnection < ApplicationRecord
   end
 
   def name
-    "#{type} - #{sub}"
+    super || "#{type} - #{sub}"
   end
 
   def editable?
