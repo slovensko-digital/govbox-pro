@@ -12,15 +12,17 @@ class Fs::MessageDraftsController < ApplicationController
 
     redirect_back fallback_location: new_fs_message_draft_path, alert: 'Nahrajte súbory' and return unless message_draft_params[:content].present?
 
-    messages = ::Fs::MessageDraft.create_and_validate_with_fs_form(form_files: message_draft_params[:content], author: Current.user)
+    messages, errors = ::Fs::MessageDraft.create_and_validate_with_fs_form(form_files: message_draft_params[:content], author: Current.user)
 
-    if messages.none?(nil)
+    if errors.empty? && messages.none? {|msg| msg.type == 'Fs::InvalidMessageDraft' }
       redirect_path = messages.size == 1 ? message_thread_path(messages.first.thread) : message_threads_path
       redirect_to redirect_path, notice: 'Správy boli úspešne nahraté'
-    elsif messages.all?(nil)
-      redirect_to message_threads_path, alert: 'Nahratie správ nebolo úspešné'
+    elsif errors.any?
+      alert_msg = "Pre tieto súbory sa nenašli schránky: #{errors.join(', ')}"
+      redirect_to message_threads_path, alert: alert_msg
     else
-      redirect_to message_threads_path, alert: 'Niektoré zo správ sa nepodarilo nahrať'
+      alert_msg = messages.all? {|msg| msg.type == 'Fs::InvalidMessageDraft' } ? 'Nahratie správ nebolo úspešné' : 'Niektoré zo správ sa nepodarilo nahrať'
+      redirect_to message_threads_path, alert: alert_msg
     end
   end
 

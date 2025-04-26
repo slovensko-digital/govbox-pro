@@ -68,6 +68,10 @@ class Tenant < ApplicationRecord
     tags.where(type: %w[SignatureRequestedFromTag SignedByTag])
   end
 
+  def submission_error_tag!
+    submission_error_tag || raise(ActiveRecord::RecordNotFound, "`SubmissionErrorTag` not found in tenant: #{id}")
+  end
+
   def feature_enabled?(feature)
     raise "Unknown feature #{feature}" unless feature.in? ALL_FEATURE_FLAGS
 
