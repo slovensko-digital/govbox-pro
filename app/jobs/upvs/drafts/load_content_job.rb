@@ -55,7 +55,7 @@ class Upvs::Drafts::LoadContentJob < ApplicationJob
       )
     end
 
-    EventBus.publish_message_created_event(message_draft)
+    EventBus.publish(:message_thread_with_message_created, message)
   end
 
   def form?(message_draft, file_name)

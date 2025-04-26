@@ -17,13 +17,6 @@ class EventBus
     end
   end
 
-  def self.publish_message_created_event(message, force_thread_event: false)
-    self.publish(:message_thread_created, message.thread) if force_thread_event || message.thread.previously_new_record?
-    self.publish(:message_created, message)
-
-    Fs::ValidateMessageDraftJob.perform_later(message) if message.is_a?(Fs::MessageDraft)
-  end
-
   def self.reset!
     @@subscribers_map = {}
   end
@@ -33,9 +26,17 @@ end
 EventBus.reset!
 
 # wiring
+EventBus.subscribe :message_thread_with_message_created, ->(message) do
+  EventBus.publish(:message_thread, message)
+  EventBus.publish(:message_created, message)
+
+  EventBus.publish(:fs_message_draft_created, message) if message.is_a?(Fs::MessageDraft)
+end
+
+EventBus.subscribe_job :fs_message_draft_created, Fs::ValidateMessageDraftJob
 
 # automation
-[:message_thread_created, :message_created, :message_draft_submitted, :message_object_downloaded].each do |event|
+[:message_created, :message_draft_submitted, :message_object_downloaded].each do |event|
   EventBus.subscribe_job event, Automation::ApplyRulesForEventJob
 end
 

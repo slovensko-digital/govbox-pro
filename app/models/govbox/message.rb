@@ -54,7 +54,7 @@ class Govbox::Message < ApplicationRecord
       MessageObject.mark_message_objects_externally_signed(message.objects)
     end
 
-    EventBus.publish_message_created_event(message)
+    EventBus.publish(:message_thread_with_message_created, message)
 
     message
   end

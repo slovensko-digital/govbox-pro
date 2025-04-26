@@ -91,7 +91,7 @@ class MessageDraft < Message
       )
     end
 
-    EventBus.publish_message_created_event(self)
+    EventBus.publish(:message_thread_with_message_created, self)
   end
 
   def assign_tags_from_params(tags_params)
@@ -187,7 +187,7 @@ class MessageDraft < Message
     metadata["status"] = "created"
     save!
 
-    EventBus.publish_message_created_event(self, force_thread_event: true)
+    EventBus.publish(:message_thread_with_message_created, self)
   end
 
   def being_submitted!

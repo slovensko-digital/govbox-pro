@@ -84,7 +84,7 @@ class Fs::MessageDraft < MessageDraft
 
       messages << message
 
-      EventBus.publish_message_created_event(message)
+      EventBus.publish(:message_thread_with_message_created, message)
     end
 
     messages
