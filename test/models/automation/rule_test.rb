@@ -124,7 +124,7 @@ class Automation::RuleTest < ActiveSupport::TestCase
     assert_includes message_thread.tags, tag
   end
 
-  test 'should run an auotmation on message created APIConnectionCondition AddMessageThreadTagAction' do
+  test 'should run an automation on message created ApiConnectionCondition AddMessageThreadTagAction' do
     author = users(:accountants_basic)
 
     fs_api = Minitest::Mock.new

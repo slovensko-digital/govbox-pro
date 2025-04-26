@@ -34,7 +34,7 @@ module Automation
     end
 
     def api_connection_list
-      ApiConnection.all.map { |g| [g.name, g.id] }
+      automation_rule.tenant.api_connections.map { |api_connection| [api_connection.name, api_connection.id] }
     end
   end
 
@@ -170,7 +170,7 @@ module Automation
     end
   end
 
-  class APIConnectionCondition < Automation::Condition
+  class ApiConnectionCondition < Automation::Condition
     validates_associated :condition_object
     VALID_ATTR_LIST = ['api_connection'].freeze
 
