@@ -1,8 +1,8 @@
 <% if flash.any? %>
-  <div class="fixed top-20 inset-x-0 m-4 z-50" data-turbo-temporary>
+  <div class="fixed top-20 inset-x-0 m-4 z-50" <%= helpers.temporary_flash_or_empty(flash.all?{|type, _msg| type == 'notice' }) %>>
   <div class="flex flex-col items-end space-y-4">
     <% flash.each do |type, msg| %>
-      <div data-controller="dismissible-alert" data-turbo-temporary class="max-w-sm w-full pointer-events-auto rounded-md <%= type == 'notice' ? "bg-green-50" : "bg-red-50" %> p-4">
+      <div data-controller="<%= type == 'notice' ? 'dismissible-alert' : 'dismissible-alert-no-timeout' %>" <%= helpers.temporary_flash_or_empty(type == 'notice') %> class="max-w-sm w-full pointer-events-auto rounded-md <%= type == 'notice' ? "bg-green-50" : "bg-red-50" %> p-4">
         <div class="flex">
           <div class="flex-shrink-0">
             <% if type == 'notice' %>
@@ -24,7 +24,7 @@
             <div class="-mx-1.5 -my-1.5">
               <button
                 type="button"
-                data-action="dismissible-alert#dismiss"
+                data-action="<%= type == 'notice' ? 'dismissible-alert' : 'dismissible-alert-no-timeout' %>#dismiss"
                 class="inline-flex rounded-md <%= type == 'notice' ? "bg-green-50 text-green-500 hover:bg-green-100 focus:ring-green-600 focus:ring-offset-green-50" : "bg-red-50 text-red-500 hover:bg-red-100 focus:ring-red-600 focus:ring-offset-red-50" %> p-1.5 focus:outline-none focus:ring-2 focus:ring-offset-2"
               >
                 <span class="sr-only">

@@ -1,4 +1,8 @@
 module ApplicationHelper
+  def temporary_flash_or_empty(temporary_requested)
+    temporary_requested ? 'data-turbo-temporary' : ''
+  end
+
   def nice_datetime(datetime)
     if datetime.today?
       l(datetime, format: '%H:%M')
