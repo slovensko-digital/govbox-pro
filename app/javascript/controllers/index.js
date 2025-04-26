@@ -22,9 +22,6 @@ application.register("debounce", DebounceController)
 import DismissibleAlertController from "./dismissible_alert_controller"
 application.register("dismissible-alert", DismissibleAlertController)
 
-import DismissibleAlertNoTimeoutController from "./dismissible_alert_no_timeout_controller"
-application.register("dismissible-alert-no-timeout", DismissibleAlertNoTimeoutController)
-
 import FormController from "./form_controller"
 application.register("form", FormController)
 
