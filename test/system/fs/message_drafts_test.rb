@@ -162,7 +162,7 @@ class Fs::MessageDraftsTest < ApplicationSystemTestCase
         file_fixture("fs/Test_SV_invalid.xml")
       ]
       click_button "Nahrať správy"
-      assert_text "Pre tieto súbory sa nenašli schránky: dic1122334455_fs3055_781__sprava_dani_2023.xml, Test_SV_invalid.xml"
+      assert_text "dic1122334455_fs3055_781__sprava_dani_2023.xml, Test_SV_invalid.xml"
     end
   end
 
@@ -194,7 +194,7 @@ class Fs::MessageDraftsTest < ApplicationSystemTestCase
       attach_file "content[]", file_fixture("fs/dic1122334455_fs3055_781__sprava_dani_2023.xml")
       click_button "Nahrať správy"
 
-      assert_text "Nahratie správ nebolo úspešné"
+      assert_text "Chyba pri spracovaní"
     end
   end
 end
