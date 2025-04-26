@@ -248,7 +248,7 @@ accountants_drafts:
 
 accountants_unprocessable:
   name: Chybné
-  type: UnrpocessableTag
+  type: UnprocessableTag
   visible: true
   tenant: accountants
 
