@@ -57,3 +57,17 @@ GOOD_JOB_EXECUTION_MODE=async # make job runs along rails server (default)
 ### Getting sample data
 - your public IP has to be added to whitelist (ask colleague)
 - in rails console run `Govbox::SyncBoxJob.perform_later(Box.last)`
+
+### Push notifications
+Generate VAPID keys:
+```
+openssl ecparam -name prime256v1 -genkey -noout -out vapid_private.pem
+openssl ec -in vapid_private.pem -pubout -out vapid_public.pem
+```
+- write keys to `.env.local`, example:
+
+```dotenv
+DOMAIN_NAME="http://localhost:3000"
+VAPID_PUBLIC_KEY=
+VAPID_PRIVATE_KEY=
+```

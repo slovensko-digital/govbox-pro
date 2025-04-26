@@ -41,6 +41,12 @@ export default class extends Controller {
     }
   }
 
+  dismiss() {
+    if (this.hasBannerTarget) {
+      this.bannerTarget.classList.add("hidden");
+    }
+  }
+
   registerServiceWorker() {
     // Check if the browser supports service workers
     if ("serviceWorker" in navigator) {
