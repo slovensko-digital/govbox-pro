@@ -31,6 +31,7 @@ class MessageThreadsController < ApplicationController
 
   def index
     authorize MessageThread
+    @failed_files = session[:failed_files]
   end
 
   def scroll

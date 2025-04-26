@@ -18,7 +18,8 @@ class Fs::MessageDraftsController < ApplicationController
       redirect_path = messages.size == 1 ? message_thread_path(messages.first.thread) : message_threads_path
       redirect_to redirect_path, notice: 'Správy boli úspešne nahraté'
     elsif failed_files.any?
-      alert_msg = "Pre tieto súbory sa nenašli schránky: #{failed_files.map(&:original_filename).join(', ')}"
+      alert_msg = "Pre niektoré súbory sa nenašli schránky."
+      session[:failed_files] = failed_files.map(&:original_filename)
       redirect_to message_threads_path, alert: alert_msg
     else
       alert_msg = messages.all? {|msg| msg.invalid? } ? 'Nahratie správ nebolo úspešné' : 'Niektoré zo správ sa nepodarilo nahrať'
