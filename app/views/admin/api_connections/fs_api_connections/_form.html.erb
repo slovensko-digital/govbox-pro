@@ -32,26 +32,6 @@
                 <p class="mt-2 text-sm text-red-600"><%= error %></p>
               <% end %>
             </div>
-            <div class="px-6 py-4">
-              <%= form.label :sub, "FS API identifikátor", class: "block" %>
-              <div class="relative mt-2 rounded-md shadow-sm">
-                <% color = @api_connection.errors[:sub].any? ? "red" : "gray" %>
-                <%= form.text_field :sub, placeholder: "123", class: "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-#{color}-300 placeholder:text-#{color}-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" %>
-              </div>
-              <% @api_connection.errors[:sub].each do |error| %>
-                <p class="mt-2 text-sm text-red-600"><%= error %></p>
-              <% end %>
-            </div>
-            <div class="px-6 py-4">
-              <%= form.label :api_token_private_key, "FS API privátny kľúč", class: "block" %>
-              <div class="relative mt-2 rounded-md shadow-sm">
-                <% color = @api_connection.errors[:api_token_private_key].any? ? "red" : "gray" %>
-                <%= form.text_area :api_token_private_key, placeholder: "-----BEGIN RSA PRIVATE KEY-----\n...", class: "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-#{color}-300 placeholder:text-#{color}-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" %>
-              </div>
-              <% @api_connection.errors[:api_token_private_key].each do |error| %>
-                <p class="mt-2 text-sm text-red-600"><%= error %></p>
-              <% end %>
-            </div>
           </div>
           <div class="flex justify-start items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6">
             <%= link_to admin_tenant_api_connections_path(Current.tenant), class: "flex justify-center items-center flex-grow relative overflow-hidden gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300", data: { turbo_frame: "_top" } do %>
