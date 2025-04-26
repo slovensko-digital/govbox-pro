@@ -26,7 +26,7 @@ class Message < ApplicationRecord
   include MessageExportOperations
 
   belongs_to :thread, class_name: 'MessageThread', foreign_key: :message_thread_id, inverse_of: :messages
-  belongs_to :author, class_name: 'User', foreign_key: :author_id, optional: true
+  belongs_to :author, class_name: 'User', optional: true
   has_many :message_relations, dependent: :destroy
   has_many :message_relations_as_related_message, class_name: 'MessageRelation', foreign_key: :related_message_id, dependent: :destroy
   has_many :related_messages, through: :message_relations
@@ -46,9 +46,7 @@ class Message < ApplicationRecord
 
   after_update_commit ->(message) { EventBus.publish(:message_changed, message) }
   after_destroy_commit ->(message) { EventBus.publish(:message_destroyed, message) }
-  after_create_commit do |message|
-    broadcast_render_later_to message.thread, partial: "messages/new_message_alert", locals: { message: message }, priority: -1
-  end
+  after_create_commit :send_new_message_alerts
 
   def automation_rules_for_event(event)
     tenant.automation_rules.where(trigger_event: event)
@@ -161,5 +159,12 @@ class Message < ApplicationRecord
 
   def template
     MessageTemplate.find(metadata["template_id"]) if metadata["template_id"]
+  end
+
+  def send_new_message_alerts
+    message = self
+    return if message.outbox? || message.is_a?(MessageDraft) || message.is_a?(Upvs::MessageDraft)
+
+    broadcast_render_later_to message.thread, partial: "messages/new_message_alert", locals: { message: message }, priority: -1
   end
 end
