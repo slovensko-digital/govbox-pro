@@ -798,6 +798,10 @@ components:
       description: Parametre Upvs::MessageDraft
       type: object
       properties:
+        type:
+          description: Typ správy
+          type: string
+          enum: [ 'Upvs::MessageDraft' ]
         title:
           description: Predmet správy
           type: string
@@ -806,11 +810,6 @@ components:
           description: Identifikátor správy
           type: string
           format: uuid
-        type:
-          description: Typ správy
-          type: string
-          enum:
-            - Upvs::MessageDraft
         metadata:
           description: Metaúdaje správy
           type: object
@@ -953,7 +952,7 @@ components:
         type:
           description: Typ správy
           type: string
-          value: 'Fs::MessageDraft'
+          enum: ['Fs::MessageDraft']
         title:
           description: Predmet správy
           type: string
@@ -998,7 +997,7 @@ components:
               object_type:
                 description: Typ objektu
                 type: string
-                value: "FORM"
+                enum: [ 'FORM' ]
               content:
                 description: Obsah objektu zakódovaný podľa Base64
                 type: string
@@ -1080,10 +1079,10 @@ components:
         correlation_id:
           description: Identifikátor vlákna správ
           type: string
-          status:
-            description: Aktuálny stav správy
-            type: string
-            enum: ["being_loaded", "being_validated", "invalid", "created", "being_submitted", "temporary_submit_fail", "submit_fail", "submitted"]
+        status:
+          description: Aktuálny stav správy
+          type: string
+          enum: ["being_loaded", "being_validated", "invalid", "created", "being_submitted", "temporary_submit_fail", "submit_fail", "submitted"]
 
     UpvsMessageMetadata:
       description: Metaúdaje správy ÚPVS
