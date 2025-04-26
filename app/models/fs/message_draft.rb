@@ -125,7 +125,7 @@ class Fs::MessageDraft < MessageDraft
         outbox: true,
         replyable: false,
         delivered_at: Time.now,
-        metadata: message_params['metadata']&.merge({
+        metadata: (message_params['metadata'] || {}).merge({
           'status': 'being_loaded',
           'fs_form_id': fs_form.id,
         }),

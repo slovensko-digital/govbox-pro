@@ -158,10 +158,10 @@ class Message < ApplicationRecord
   end
 
   def all_metadata
-    metadata&.merge(template&.metadata || {})
+    metadata.merge(template&.metadata || {})
   end
 
   def template
-    MessageTemplate.find(metadata&.dig("template_id")) if metadata&.dig("template_id")
+    MessageTemplate.find(metadata.dig("template_id")) if metadata.dig("template_id")
   end
 end
