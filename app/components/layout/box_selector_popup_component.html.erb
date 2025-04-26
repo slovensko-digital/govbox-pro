@@ -22,7 +22,7 @@
           </div>
         <% end %>
       <% end %>
-      <%= tag.turbo_frame id: "box-list", class: "flex-col self-stretch mt-2 max-h-[450px] overflow-y-auto" do %>
+      <%= tag.turbo_frame id: "box-list", class: "flex-col self-stretch mt-2 max-h-[50vh] overflow-y-auto" do %>
         <% @boxes.each do |box| %>
           <%= render Layout::BoxListComponent.new(box: box) %>
         <% end %>
