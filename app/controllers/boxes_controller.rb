@@ -31,16 +31,13 @@ class BoxesController < ApplicationController
   def search
     authorize(Box)
 
-    boxes = Current.tenant.boxes.order(:name)
-                   .where('unaccent(name) ILIKE unaccent(?) OR unaccent(short_name) ILIKE unaccent(?)', "%#{params[:name_search]}%", "%#{params[:name_search]}%")
-    set_boxes_with_unread_message_counts(boxes)
+    @boxes = Current.tenant.boxes.order(:name).where('unaccent(name) ILIKE unaccent(?) OR unaccent(short_name) ILIKE unaccent(?)', "%#{params[:name_search]}%", "%#{params[:name_search]}%")
   end
 
   def get_selector
     authorize(Box)
 
-    boxes = Current.tenant.boxes.order(:name)
-    set_boxes_with_unread_message_counts(boxes)
+    @boxes = Current.tenant.boxes.order(:name)
   end
 
   private

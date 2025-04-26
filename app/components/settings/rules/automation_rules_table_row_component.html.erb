@@ -5,17 +5,13 @@
         <%= t(@automation_rule.trigger_event)=%><% unless @automation_rule.conditions.empty? %>, kde<% end %>
       </span>
       <% @automation_rule.conditions.each_with_index do |condition, index| %>
-        <% if condition.type == 'Automation::BoxCondition' %>
-          <span class="flex-grow-0 flex-shrink-0 text-lg font-medium text-left text-gray-900"><%= t condition.attr %></span>
-          <span class="flex-grow-0 flex-shrink-0 text-lg text-left text-gray-900"><%= t condition.type %></span>
+        <span class="flex-grow-0 flex-shrink-0 text-lg font-medium text-left text-gray-900"><%= t condition.attr %></span>
+        <span class="flex-grow-0 flex-shrink-0 text-lg text-left text-gray-900"><%= t condition.type %></span>
+        <% if condition.type.in? ['Automation::BoxCondition', 'Automation::ApiConnectionCondition']%>
           <span class="flex-grow-0 flex-shrink-0 font-medium text-lg text-left text-gray-900"><%= condition.condition_object.name %></span>
         <% elsif condition.type == 'Automation::BooleanCondition' %>
-          <span class="flex-grow-0 flex-shrink-0 text-lg font-medium text-left text-gray-900"><%= t condition.attr %></span>
-          <span class="flex-grow-0 flex-shrink-0 text-lg text-left text-gray-900"><%= t condition.type %></span>
           <span class="flex-grow-0 flex-shrink-0 font-medium text-lg text-left text-gray-900"><%= t condition.value %></span>
         <% else %>
-          <span class="flex-grow-0 flex-shrink-0 text-lg font-medium text-left text-gray-900"><%= t condition.attr %></span>
-          <span class="flex-grow-0 flex-shrink-0 text-lg text-left text-gray-900"><%= t condition.type %></span>
           <span class="flex-grow-0 flex-shrink-0 text-lg font-medium text-left text-gray-900"><%= condition.value %></span>
         <% end %>
         <% if index < @automation_rule.conditions.size - 1 %>

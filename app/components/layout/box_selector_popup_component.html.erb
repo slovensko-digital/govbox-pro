@@ -1,16 +1,13 @@
-<%= render Common::ModalComponent.new do |modal| %>
+<%= render Common::ModalComponent.new(max_size: "max-w-2xl") do |modal| %>
   <% modal.with_modal_content do %>
     <%= link_to select_all_boxes_path, data: { turbo_frame: "_top" }, class: "flex justify-between items-center self-stretch flex-grow-0 flex-shrink-0 py-2" do %>
       <span class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-gray-900">
         Všetky schránky
       </span>
-      <span class="flex-grow-0 flex-shrink-0 text-sm text-left text-gray-600 px-1.5 py-0.5 rounded-md bg-gray-50 border border-gray-300">
-        <%= @all_unread_messages_count %>
-      </span>
     <% end %>
     <hr>
     <div class="flex flex-col gap-2 mb-4">
-      <% if @boxes_with_unread_message_counts.length > SHOW_SEARCH_BOX_COUNT_THRESHOLD %>
+      <% if @boxes.length > SHOW_SEARCH_BOX_COUNT_THRESHOLD %>
         <%= form_with url: search_boxes_path, class: "flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 mt-4" do |form| %>
           <div class="flex w-full items-center rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600">
             <div class="p-2">
@@ -25,9 +22,9 @@
           </div>
         <% end %>
       <% end %>
-      <%= tag.turbo_frame id: "box-list", class: "flex-col self-stretch mt-2" do %>
-        <% @boxes_with_unread_message_counts.each do |box, unread_message_count| %>
-          <%= render Layout::BoxListComponent.new(box: box, unread_message_count: unread_message_count) %>
+      <%= tag.turbo_frame id: "box-list", class: "flex-col self-stretch mt-2 max-h-[50vh] overflow-y-auto" do %>
+        <% @boxes.each do |box| %>
+          <%= render Layout::BoxListComponent.new(box: box) %>
         <% end %>
       <% end %>
     </div>

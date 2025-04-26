@@ -338,3 +338,9 @@ ssd_attachment_matched:
   type: SimpleTag
   visible: true
   tenant: ssd
+
+api_connection_tag:
+  name: ApiConnectionTag
+  type: SimpleTag
+  visible: true
+  tenant: accountants

@@ -1,11 +1,8 @@
-<%= link_to select_box_path(@box), class: "flex justify-between items-center self-stretch flex-grow-0 flex-shrink-0 py-2", data: { turbo_frame: "_top" } do %>
-  <div class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative gap-3">
+<%= link_to select_box_path(@box), class: "flex justify-between items-center self-stretch flex-grow-0 py-2", data: { turbo_frame: "_top" } do %>
+  <div class="flex justify-start items-center flex-grow-0 relative gap-3">
     <div class="justify-start w-16">
       <%= render Common::BoxLabelComponent.new(@box) %>
     </div>
-    <span class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-gray-900"><%= @box.name %></span>
-  </div>
-  <div class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-1.5 px-1.5 py-0.5 rounded-md bg-gray-50 border border-gray-300">
-    <span class="flex-grow-0 flex-shrink-0 text-sm text-left text-gray-600"><%= @unread_message_count %></span>
+    <span class="flex-grow-0 text-base font-medium text-left text-gray-900"><%= @box.name %></span>
   </div>
 <% end %>

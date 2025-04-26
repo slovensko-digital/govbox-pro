@@ -1,6 +1,7 @@
 require 'test_helper'
 
 class Automation::RuleTest < ActiveSupport::TestCase
+  include ActionDispatch::TestProcess::FixtureFile
   test 'should update condition with nested attributes and cleanup as in model' do
     automation_rule = automation_rules(:one)
 
@@ -121,5 +122,23 @@ class Automation::RuleTest < ActiveSupport::TestCase
     travel_to(15.minutes.from_now) { GoodJob.perform_inline }
 
     assert_includes message_thread.tags, tag
+  end
+
+  test 'should run an automation on message created ApiConnectionCondition AddMessageThreadTagAction' do
+    author = users(:accountants_basic)
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :parse_form, {
+      "subject" => "1122334455",
+      "form_identifier" => "3055_781"
+    },
+                  [file_fixture("fs/dic1122334455_fs3055_781__sprava_dani_2023.xml").read]
+
+    FsEnvironment.fs_client.stub :api, fs_api do
+        Fs::MessageDraft.create_and_validate_with_fs_form(form_files: [fixture_file_upload("fs/dic1122334455_fs3055_781__sprava_dani_2023.xml", "application/xml")], author: author)
+    end
+    travel_to(15.minutes.from_now) { GoodJob.perform_inline }
+    message_draft = Fs::MessageDraft.last
+    assert_includes message_draft.thread.tags, tags(:api_connection_tag)
   end
 end
