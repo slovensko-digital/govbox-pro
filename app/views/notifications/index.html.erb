@@ -1,6 +1,19 @@
-<div class="p-4">
+<div class="p-4" data-controller="push" data-application-server-key="<%= Base64.urlsafe_decode64(ENV['VAPID_PUBLIC_KEY']).bytes %>" >
+  <div data-push-target="banner" class="hidden flex items-center gap-x-6 bg-indigo-600 px-6 py-2.5 sm:px-3.5 sm:before:flex-1">
+    <button type="button" data-action="click->push#requestPermission" class="text-sm/6 text-white">
+      <strong class="font-semibold underline">Govbox podporuje push notifikácie, klikni pre zapnutie</strong>
+    </button>
+    <div class="justify-end">
+      <button type="button" class="-m-3 p-3 focus-visible:outline-offset-[-4px]">
+        <span class="sr-only">Dismiss</span>
+        <svg class="size-5 text-white" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
+          <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
+        </svg>
+      </button>
+    </div>
+  </div>
   <div class="overflow-hidden bg-white sm:rounded-lg sm:shadow">
-    <div class="border-b border-gray-200 bg-white px-4 py-5 sm:px-6">
+    <div class="flex justify-between border-b border-gray-200 bg-white px-4 py-5 sm:px-6">
       <h3 class="text-base font-semibold leading-6 text-gray-900">Notifikácie</h3>
     </div>
     <div class="flow-root m-6">

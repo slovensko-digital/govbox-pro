@@ -195,6 +195,7 @@ Rails.application.routes.draw do
   resources :notifications do
     get :scroll, on: :collection
   end
+  resources :push_endpoints, only: [:create]
 
   resource :settings
 

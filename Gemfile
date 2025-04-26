@@ -50,6 +50,8 @@ gem 'pg_search'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.4', require: false
 
+gem 'web-push'
+
 group :development, :test do
   gem "brakeman"
   gem 'dotenv-rails'
