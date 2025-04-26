@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_04_26_132809) do
+ActiveRecord::Schema[7.1].define(version: 2025_04_26_150801) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -58,7 +58,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_26_132809) do
     t.string "type"
     t.bigint "tenant_id"
     t.jsonb "settings"
-    t.string "name"
+    t.string "custom_name"
     t.index ["tenant_id"], name: "index_api_connections_on_tenant_id"
   end
 

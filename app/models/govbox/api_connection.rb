@@ -4,7 +4,7 @@
 #
 #  id                    :bigint           not null, primary key
 #  api_token_private_key :string           not null
-#  name                  :string
+#  custom_name           :string
 #  obo                   :uuid
 #  settings              :jsonb
 #  sub                   :string           not null
