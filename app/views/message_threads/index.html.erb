@@ -3,7 +3,7 @@
     <meta name="turbo-visit-control" content="reload">
   <% end %>
 <% end %>
-<%= render MessageThreadsTableComponent.new(filter: @filter, filter_subscription: @filter_subscription, failed_files: @failed_files) do |component| %>
+<%= render MessageThreadsTableComponent.new(filter: @filter, filter_subscription: @filter_subscription, sticky_note_type: @sticky_note_type, sticky_note_data: @sticky_note_data) do |component| %>
   <% if @message_threads.any? %>
     <% component.with_message_thread do %>
       <%= render MessageThreadsTableRowComponent.with_collection(@message_threads) %>

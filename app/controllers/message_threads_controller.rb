@@ -31,7 +31,8 @@ class MessageThreadsController < ApplicationController
 
   def index
     authorize MessageThread
-    @failed_files = session[:failed_files]
+    @sticky_note_type = session[:sticky_note_type]
+    @sticky_note_data = session[:sticky_note_data]
   end
 
   def scroll

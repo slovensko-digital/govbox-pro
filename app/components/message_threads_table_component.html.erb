@@ -1,7 +1,7 @@
 <div>
-  <% if @failed_files.present? %>
+  <% if 'failed_files' == @sticky_note_type %>
     Pre nasledovné súbory sme nedokázali nájsť schránku:
-    <%= @failed_files.join(', ') %>
+    <%= @sticky_note_data.join(', ') %>
   <% end %>
 </div>
 
