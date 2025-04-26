@@ -186,7 +186,7 @@ class MessageDraft < Message
     metadata["status"] = "created"
     save!
 
-    publish_created_event
+    publish_created_event(force_thread_event: true)
   end
 
   def being_submitted!
