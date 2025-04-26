@@ -58,6 +58,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_26_182703) do
     t.string "type"
     t.bigint "tenant_id"
     t.jsonb "settings"
+    t.string "custom_name"
     t.index ["tenant_id"], name: "index_api_connections_on_tenant_id"
   end
 

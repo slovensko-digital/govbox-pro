@@ -2,17 +2,13 @@
   <div class="flex justify-between items-center self-stretch flex-grow flex-shrink-0 relative" id="<%= dom_id(@form.object) %>">
     <div class="flex gap-1">
       <%= @form.hidden_field :id %>
-      <% if @form.object.attr.in? ['box'] %>
-        <p class="text-base font-medium text-left text-gray-900"><%= t @form.object.attr %></p>
-        <p class="text-base text-left text-gray-900"><%= t @form.object.type %></p>
+      <p class="text-base font-medium text-left text-gray-900"><%= t @form.object.attr %></p>
+      <p class="text-base text-left text-gray-900"><%= t @form.object.type %></p>
+      <% if @form.object.attr.in? ['box', 'api_connection'] %>
         <p class="text-base font-medium text-left text-gray-900"><%= @form.object&.condition_object&.name %></p>
       <% elsif @form.object.attr.in? ['outbox'] %>
-        <p class="text-base font-medium text-left text-gray-900"><%= t @form.object.attr %></p>
-        <p class="text-base text-left text-gray-900"><%= t @form.object.type %></p>
         <p class="text-base font-medium text-left text-gray-900"><%= t @form.object.value %></p>
       <% else %>
-        <p class="text-base font-medium text-left text-gray-900"><%= t @form.object.attr %></p>
-        <p class="text-base text-left text-gray-900"><%= t @form.object.type %></p>
         <p class="text-base font-medium text-left text-gray-900"><%= @form.object.value %></p>
       <% end %>
       <%= @form.hidden_field :attr %>
