@@ -27,6 +27,9 @@ module Notifications
           filter_subscription: subscription,
           filter_name: subscription.filter.name
         )
+
+        url = Rails.application.routes.url_helpers.message_thread_url(thread, andhor: dom_id(message), host: ENV.fetch('DOMAIN_NAME', nil))
+        WebpushJob.perform_now(I18n.t("filter_subscription.events.Notifications::NewMessage.name"), thread.title, url, subscription.user)
       end
     end
   end

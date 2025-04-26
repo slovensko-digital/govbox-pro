@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_04_02_105803) do
+ActiveRecord::Schema[7.1].define(version: 2025_04_25_184927) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -527,6 +527,16 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_02_105803) do
     t.index ["user_id"], name: "index_notifications_on_user_id"
   end
 
+  create_table "push_endpoints", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "endpoint"
+    t.string "p256dh"
+    t.string "auth"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_push_endpoints_on_user_id"
+  end
+
   create_table "searchable_message_threads", force: :cascade do |t|
     t.integer "message_thread_id", null: false
     t.text "title", null: false
@@ -576,8 +586,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_02_105803) do
     t.integer "tag_groups_count", default: 0, null: false
     t.enum "color", enum_type: "color"
     t.index ["owner_id"], name: "index_tags_on_owner_id"
-    t.index ["tenant_id", "type"], name: "signings_tags", unique: true, where: "((type)::text = ANY ((ARRAY['SignatureRequestedTag'::character varying, 'SignedTag'::character varying])::text[]))"
     t.index ["tenant_id", "type", "name"], name: "index_tags_on_tenant_id_and_type_and_name", unique: true
+    t.index ["tenant_id", "type"], name: "signings_tags", unique: true, where: "((type)::text = ANY (ARRAY[('SignatureRequestedTag'::character varying)::text, ('SignedTag'::character varying)::text]))"
     t.index ["tenant_id"], name: "index_tags_on_tenant_id"
   end
 
@@ -682,6 +692,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_02_105803) do
   add_foreign_key "notifications", "message_threads", on_delete: :cascade
   add_foreign_key "notifications", "messages", on_delete: :cascade
   add_foreign_key "notifications", "users", on_delete: :cascade
+  add_foreign_key "push_endpoints", "users"
   add_foreign_key "searchable_message_threads", "message_threads", on_delete: :cascade
   add_foreign_key "stats_message_submission_requests", "boxes"
   add_foreign_key "tag_groups", "groups"
