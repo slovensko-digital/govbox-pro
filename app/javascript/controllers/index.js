@@ -10,8 +10,8 @@ application.register("all-checkboxes", AllCheckboxesController)
 import AutofocusController from "./autofocus_controller"
 application.register("autofocus", AutofocusController)
 
-import NewAutogramController from "./new_autogram_controller"
-application.register("new-autogram", NewAutogramController)
+import AutogramController from "./autogram_controller"
+application.register("autogram", AutogramController)
 
 import DebounceController from "./debounce_controller"
 application.register("debounce", DebounceController)
