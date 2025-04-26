@@ -84,7 +84,7 @@ class Fs::MessageDraft < MessageDraft
 
       messages << message
 
-      message.publish_created_event
+      EventBus.publish_message_created_event(message)
     end
 
     messages

@@ -62,7 +62,7 @@ class Upvs::MessageTemplate < ::MessageTemplate
       create_form_object(message)
     end
 
-    message.publish_created_event
+    EventBus.publish_message_created_event(message)
 
     message
   end

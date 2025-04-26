@@ -61,11 +61,6 @@ class Message < ApplicationRecord
     thread.message_threads_tags.find_by(tag: tag)&.destroy unless thread.messages.any? {|m| m.tags.include?(tag) }
   end
 
-  def publish_created_event(force_thread_event: false)
-    EventBus.publish(:message_thread_created, thread) if force_thread_event || thread.previously_new_record?
-    EventBus.publish(:message_created, self)
-  end
-
   def draft?
     false
   end

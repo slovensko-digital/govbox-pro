@@ -17,6 +17,13 @@ class EventBus
     end
   end
 
+  def self.publish_message_created_event(message, force_thread_event: false)
+    self.publish(:message_thread_created, message.thread) if force_thread_event || message.thread.previously_new_record?
+    self.publish(:message_created, message)
+
+    Fs::ValidateMessageDraftJob.perform_later(message) if message.is_a?(Fs::MessageDraft)
+  end
+
   def self.reset!
     @@subscribers_map = {}
   end
