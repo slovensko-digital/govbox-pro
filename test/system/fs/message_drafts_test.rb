@@ -138,6 +138,34 @@ class Fs::MessageDraftsTest < ApplicationSystemTestCase
     end
   end
 
+  test "user sees a list of filenames where box was not recognized" do
+    visit message_threads_path
+
+    click_button "Vytvoriť novú správu"
+    click_link "Vytvoriť novú správu na finančnú správu"
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :parse_form, {
+      "subject" => nil,
+      "form_identifier" => "3055_781"
+    },
+                  [file_fixture("fs/dic1122334455_fs3055_781__sprava_dani_2023.xml").read]
+    fs_api.expect :parse_form, {
+      "subject" => nil,
+      "form_identifier" => nil
+    },
+                  [file_fixture("fs/Test_SV_invalid.xml").read]
+
+    FsEnvironment.fs_client.stub :api, fs_api do
+      attach_file "content[]", [
+        file_fixture("fs/dic1122334455_fs3055_781__sprava_dani_2023.xml"),
+        file_fixture("fs/Test_SV_invalid.xml")
+      ]
+      click_button "Nahrať správy"
+      assert_text "Pre tieto súbory sa nenašli schránky: dic1122334455_fs3055_781__sprava_dani_2023.xml, Test_SV_invalid.xml"
+    end
+  end
+
   test "user can upload message draft only if any FS box exists & :fs_api feature is enabled" do
     sign_in_as(:basic)
 
