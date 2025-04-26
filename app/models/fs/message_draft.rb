@@ -28,7 +28,7 @@ class Fs::MessageDraft < MessageDraft
 
   def self.create_and_validate_with_fs_form(form_files: [], author:, fs_client: FsEnvironment.fs_client)
     messages = []
-    errors = []
+    failed_files = []
 
     form_files.each do |form_file|
       form_content = form_file.read.force_encoding("UTF-8")
@@ -39,13 +39,13 @@ class Fs::MessageDraft < MessageDraft
       box = author.tenant.boxes.with_enabled_message_drafts_import.find_by("settings ->> 'dic' = ?", dic)
 
       if box.nil?
-        errors << form_file.original_filename
+        failed_files << form_file
         next
       end
 
       fs_form = Fs::Form.find_by(identifier: fs_form_identifier)
 
-      klass = fs_form.nil? ? Fs::InvalidMessageDraft : Fs::MessageDraft
+      klass = fs_form ? Fs::MessageDraft : Fs::InvalidMessageDraft
       message = klass.create(
         uuid: SecureRandom.uuid,
         title: fs_form&.name || "Neznámy formulár - #{form_file.original_filename}",
@@ -55,7 +55,7 @@ class Fs::MessageDraft < MessageDraft
         replyable: false,
         delivered_at: Time.now,
         metadata: {
-          'status': fs_form.nil? ? 'invalid' : 'being_loaded',
+          'status': fs_form ? 'being_loaded' : 'invalid',
           'fs_form_id': fs_form&.id,
           'correlation_id': SecureRandom.uuid
         },
@@ -70,11 +70,8 @@ class Fs::MessageDraft < MessageDraft
       )
 
       message.save
-
-      if message.type == 'Fs::InvalidMessageDraft'
-        messages << message
-        next
-      end
+      messages << message
+      next if message.invalid?
 
       form_object = message.objects.create(
         object_type: 'FORM',
@@ -94,15 +91,13 @@ class Fs::MessageDraft < MessageDraft
         blob: form_content
       )
 
-      messages << message
-
       Fs::ValidateMessageDraftJob.perform_later(message)
 
       EventBus.publish(:message_thread_created, message.thread)
       EventBus.publish(:message_created, message)
     end
 
-    [messages, errors]
+    [messages, failed_files]
   end
 
   def submit

@@ -12,16 +12,16 @@ class Fs::MessageDraftsController < ApplicationController
 
     redirect_back fallback_location: new_fs_message_draft_path, alert: 'Nahrajte súbory' and return unless message_draft_params[:content].present?
 
-    messages, errors = ::Fs::MessageDraft.create_and_validate_with_fs_form(form_files: message_draft_params[:content], author: Current.user)
+    messages, failed_files = ::Fs::MessageDraft.create_and_validate_with_fs_form(form_files: message_draft_params[:content], author: Current.user)
 
-    if errors.empty? && messages.none? {|msg| msg.type == 'Fs::InvalidMessageDraft' }
+    if failed_files.empty? && messages.none? {|msg| msg.invalid? }
       redirect_path = messages.size == 1 ? message_thread_path(messages.first.thread) : message_threads_path
       redirect_to redirect_path, notice: 'Správy boli úspešne nahraté'
-    elsif errors.any?
-      alert_msg = "Pre tieto súbory sa nenašli schránky: #{errors.join(', ')}"
+    elsif failed_files.any?
+      alert_msg = "Pre tieto súbory sa nenašli schránky: #{failed_files.map(&:original_filename).join(', ')}"
       redirect_to message_threads_path, alert: alert_msg
     else
-      alert_msg = messages.all? {|msg| msg.type == 'Fs::InvalidMessageDraft' } ? 'Nahratie správ nebolo úspešné' : 'Niektoré zo správ sa nepodarilo nahrať'
+      alert_msg = messages.all? {|msg| msg.invalid? } ? 'Nahratie správ nebolo úspešné' : 'Niektoré zo správ sa nepodarilo nahrať'
       redirect_to message_threads_path, alert: alert_msg
     end
   end
