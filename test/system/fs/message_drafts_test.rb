@@ -132,7 +132,7 @@ class Fs::MessageDraftsTest < ApplicationSystemTestCase
 
         within_tags do
           assert_text "Rozpracované"
-          assert_text "Problémové"
+          assert_text "Chybné"
         end
       end
     end
