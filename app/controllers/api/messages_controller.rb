@@ -101,6 +101,9 @@ class Api::MessagesController < Api::TenantController
 
   def load_box
     @box = @tenant.boxes.find_by(uri: permitted_message_draft_params[:metadata][:sender_uri])
-    render_unprocessable_entity('Invalid sender') and return unless @box
+  end
+
+  rescue_from MessageDraft::InvalidSenderError do
+    render_unprocessable_entity('Invalid sender')
   end
 end

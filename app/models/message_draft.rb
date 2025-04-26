@@ -285,4 +285,7 @@ class MessageDraft < Message
   def validate_metadata_with_template
     errors.add(:metadata, :no_template) unless metadata&.dig("template_id").present?
   end
+
+  class InvalidSenderError < RuntimeError
+  end
 end
