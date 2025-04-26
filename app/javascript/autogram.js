@@ -35,9 +35,9 @@ export const endBatch = async (batchId) => {
   })
 }
 
-export const signMessageObject = async (messageObjectPath, batchId = null, authenticityToken) => {
+export const signMessageObject = async (messageObjectPath, batchId, authenticityToken, signatureSettings) => {
   const signingData = await loadSigningData(messageObjectPath)
-  const signedData = await makeSignRequest(prepareSingingRequestBody(signingData, batchId))
+  const signedData = await makeSignRequest(prepareSingingRequestBody(signingData, batchId, signatureSettings))
   const signedFile = signedFileData(signingData)
 
   return await markMessageObjectAsSigned(messageObjectPath, signedFile.name, signedFile.mineType, signedData.content, authenticityToken)
@@ -62,7 +62,7 @@ const signedFileData = (messageObjectData) => {
   }
 }
 
-const prepareSingingRequestBody = (messageObjectData, batchId = null) => {
+const prepareSingingRequestBody = (messageObjectData, batchId, signatureSettings = { pdfSignatureLevel: null }) => {
   if (!messageObjectData) {
     return
   }
@@ -73,8 +73,9 @@ const prepareSingingRequestBody = (messageObjectData, batchId = null) => {
 
   switch (messageObjectData.mime_type) {
     case "application/pdf":
-      signatureLevel = "PAdES_BASELINE_B"
-      signatureContainer = null
+      const { level, container } = pdfSignatureParams(signatureSettings.pdfSignatureLevel)
+      signatureLevel = level
+      signatureContainer = container
       break
     case 'application/xml':
     case 'application/x-eform-xml':
@@ -109,6 +110,27 @@ const prepareSingingRequestBody = (messageObjectData, batchId = null) => {
       fsFormId: messageObjectData.fs_form_id
     },
     payloadMimeType: payloadMimeType
+  }
+}
+
+const pdfSignatureParams = (pdfSignatureLevel) => {
+  switch (pdfSignatureLevel) {
+    case "XAdES_BASELINE_B":
+      return {
+        level: "XAdES_BASELINE_B",
+        container: "ASiC_E"
+      }
+    case "CAdES_BASELINE_B":
+      return {
+        level: "CAdES_BASELINE_B",
+        container: "ASiC_E"
+      }
+    case "PAdES_BASELINE_B":
+    default:
+      return {
+        level: "PAdES_BASELINE_B",
+        container: null
+      }
   }
 }
 

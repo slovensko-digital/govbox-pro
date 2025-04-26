@@ -6,6 +6,7 @@
 #  api_token_public_key :string
 #  feature_flags        :string           default([]), is an Array
 #  name                 :string           not null
+#  settings             :jsonb            not null
 #  created_at           :datetime         not null
 #  updated_at           :datetime         not null
 #
@@ -47,6 +48,8 @@ class Tenant < ApplicationRecord
 
   AVAILABLE_FEATURE_FLAGS = [:audit_log, :archive, :api, :fs_sync]
   ALL_FEATURE_FLAGS = [:audit_log, :archive, :api, :message_draft_import, :fs_api, :fs_sync]
+
+  PDF_SIGNATURE_LEVELS = ["PAdES_BASELINE_B", "XAdES_BASELINE_B", "CAdES_BASELINE_B"]
 
   def draft_tag!
     draft_tag || raise(ActiveRecord::RecordNotFound, "`DraftTag` not found in tenant: #{id}")
@@ -107,6 +110,24 @@ class Tenant < ApplicationRecord
     admin = tenant.users.create!(admin_params)
     tenant.admin_group.users << admin
     tenant
+  end
+
+  def set_pdf_signature_level(pdf_signature_level)
+    raise "Unknown pdf_signature_level #{pdf_signature_level}" unless pdf_signature_level.in? PDF_SIGNATURE_LEVELS
+
+    self.settings["pdf_signature_level"] = pdf_signature_level
+  end
+
+  def signature_settings
+    if PDF_SIGNATURE_LEVELS.include?(settings["pdf_signature_level"])
+      {
+        pdf_signature_level: settings["pdf_signature_level"]
+      }
+    else
+      {
+        pdf_signature_level: PDF_SIGNATURE_LEVELS[0]
+      }
+    end
   end
 
   private
