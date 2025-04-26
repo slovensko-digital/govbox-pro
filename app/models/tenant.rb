@@ -61,7 +61,7 @@ class Tenant < ApplicationRecord
   end
 
   def signed_tag!
-    signed_tag || raise(ActiveRecord::RecordNotFound, "`SignatureRequestedTag` not found in tenant: #{id}")
+    signed_tag || raise(ActiveRecord::RecordNotFound, "`SignedTag` not found in tenant: #{id}")
   end
 
   def user_signature_tags

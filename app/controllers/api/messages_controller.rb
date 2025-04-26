@@ -100,10 +100,18 @@ class Api::MessagesController < Api::TenantController
   end
 
   def load_box
-    @box = @tenant.boxes.find_by(uri: permitted_message_draft_params[:metadata][:sender_uri])
+    @box = @tenant.boxes.find_by(uri: permitted_message_draft_params[:metadata]&.dig('sender_uri'))
   end
 
   rescue_from MessageDraft::InvalidSenderError do
     render_unprocessable_entity('Invalid sender')
+  end
+
+  rescue_from MessageDraft::MissingFormObjectError do
+    render_unprocessable_entity('Message has to contain exactly one form object')
+  end
+
+  rescue_from MessageDraft::UnknownFormError do
+    render_unprocessable_entity('Unknown form')
   end
 end

@@ -26,8 +26,6 @@ class Upvs::MessageDraft < MessageDraft
     MessageDraftPolicy
   end
 
-  validate :validate_correlation_id
-
   def self.load_from_params(message_params, tenant: nil, box:)
     raise InvalidSenderError unless box
 
@@ -99,14 +97,6 @@ class Upvs::MessageDraft < MessageDraft
 
     unless ::Upvs::ServiceWithFormAllowRule.matching_metadata(all_metadata).where(institution_uri: metadata['recipient_uri']).any?
       errors.add(:metadata, :disallowed_form_for_recipient)
-    end
-  end
-
-  def validate_correlation_id
-    if all_metadata&.dig("correlation_id")
-      errors.add(:metadata, "Correlation ID must be UUID") unless all_metadata.dig("correlation_id").match?(Utils::UUID_PATTERN)
-    else
-      errors.add(:metadata, "Correlation ID can't be blank")
     end
   end
 end

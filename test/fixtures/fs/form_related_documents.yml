@@ -2693,7 +2693,6 @@ PREHLADv24_xsd:
     </xsd:element>
     </xsd:schema>
 
-
 PREHLADv24_txt_xslt:
   document_type: CLS_F_XSLT_TXT_SGN
   language: sk
@@ -3920,3 +3919,243 @@ PREHLADv24_txt_xslt:
       </xsl:template>
     </xsl:stylesheet>
 
+SVDPHv20_txt_xslt:
+  document_type: CLS_F_XSLT_TXT_SGN
+  language: sk
+  form: SVDPHv20
+  data: |
+    <?xml version="1.0" encoding="UTF-8"?>
+    <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format">
+    	<xsl:output method="text" omit-xml-declaration="yes" encoding="UTF-8"/>
+    	<xsl:template match="/">SÚHRNNÝ VÝKAZ
+    DAŇ Z PRIDANEJ HODNOTY
+    podľa zákona č. 222/2004 Z. z. o dani z pridanej hodnoty v znení neskorších predpisov
+
+    Identifikačné číslo pre daň z pridanej hodnoty:SK<xsl:value-of select="/dokument/hlavicka/identifikacneCislo/dic"/>
+    Druh súhrnného výkazu:<xsl:if test="/dokument/hlavicka/druhSV/riadny = '1'">riadny</xsl:if><xsl:if test="/dokument/hlavicka/druhSV/opravny = '1'">opravný</xsl:if><xsl:if test="/dokument/hlavicka/druhSV/dodatocny = '1'">dodatočný</xsl:if>
+
+    Obdobie
+    Mesiac:<xsl:value-of select="/dokument/hlavicka/obdobie/mesiac"/>
+    Štvrťrok:<xsl:value-of select="/dokument/hlavicka/obdobie/stvrtrok"/>
+    Rok:<xsl:value-of select="/dokument/hlavicka/obdobie/rok"/>
+
+    Názov alebo obchodné meno právnickej osoby alebo meno a priezvisko fyzickej osoby:<xsl:value-of select="/dokument/hlavicka/obchodneMeno/riadok[1]"/><xsl:value-of select="/dokument/hlavicka/obchodneMeno/riadok[2]"/><xsl:value-of select="/dokument/hlavicka/obchodneMeno/riadok[3]"/><xsl:value-of select="/dokument/hlavicka/obchodneMeno/riadok[4]"/>
+
+    Adresa sídla alebo trvalého pobytu
+    Ulica:<xsl:value-of select="/dokument/hlavicka/adresa/ulica"/>
+    Číslo:<xsl:value-of select="/dokument/hlavicka/adresa/cislo"/>
+    PSČ:<xsl:value-of select="/dokument/hlavicka/adresa/psc"/>
+    Obec:<xsl:value-of select="/dokument/hlavicka/adresa/obec"/>
+    Telefón:<xsl:value-of select="/dokument/hlavicka/adresa/tel"/>
+    Email:<xsl:value-of select="/dokument/hlavicka/adresa/email"/>
+
+    Celková hodnota dodaných tovarov v príslušnom kalendárnom štvrťroku (v eurách):<xsl:value-of select="/dokument/hlavicka/celkovaHodnota"/>
+
+    Meno a priezvisko osoby, ktorá je oprávnená konať za osobu podávajúcu súhrnný výkaz:<xsl:value-of select="/dokument/hlavicka/konatel"/>
+    Telefón:<xsl:value-of select="/dokument/hlavicka/konatelTel"/>
+    Email:<xsl:value-of select="/dokument/hlavicka/konatelEmail"/>
+
+    Dátum:<xsl:value-of select="/dokument/hlavicka/datumVyhlasenia/den"/>.<xsl:value-of select="/dokument/hlavicka/datumVyhlasenia/mesiac"/>.<xsl:value-of select="/dokument/hlavicka/datumVyhlasenia/rok"/>
+    <xsl:for-each select="/dokument/telo/strana">
+
+    I. časť
+    <xsl:for-each select="zaznam">
+
+    Kód štátu:<xsl:value-of select="kodStatu"/>
+    Identifikačné číslo pre daň nadobúdateľa pridelené v inom členskom štáte:<xsl:value-of select="idCislo"/>
+    Hodnota dodaných tovarov (v eurách):<xsl:value-of select="hodnota"/>
+    Kód pre trojstranné obchody:<xsl:value-of select="kod"/>
+    </xsl:for-each>
+
+    II. časť
+    <xsl:for-each select="zaznamCast2">
+
+    Kód štátu:<xsl:value-of select="kodStatu"/>
+    Identifikačné číslo pre daň z pridanej hodnoty dohodnutého nadobúdateľa tovaru pridelené v inom členskom štáte:<xsl:value-of select="idCislo"/>
+    Identifikačné číslo pre daň z pridanej hodnoty pôvodne dohodnutého nadobúdateľa tovaru, ktorý je nahradený inou zdaniteľnou osobou, pridelené v inom členskom štáte:<xsl:value-of select="idCislo2"/>
+    Vrátenie tovaru:<xsl:value-of select="vratenieTovaru"/>
+    Oprava:<xsl:value-of select="oprava"/>
+    </xsl:for-each>
+    </xsl:for-each>
+
+    </xsl:template>
+    </xsl:stylesheet>
+
+SVDPHv20_xsd:
+  document_type: CLS_F_XSD_EDOC
+  language: sk
+  form: SVDPHv20
+  data: |
+    <?xml version="1.0" encoding="UTF-8"?>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    	<xsd:annotation>
+    		<xsd:documentation>Suhrnny vykaz (dan z pridanej hodnoty) 2020</xsd:documentation>
+    	</xsd:annotation>
+    	<!-- komplexny typ nad standardnym retazcom (podla w3) s atributom 'funkcia' -->
+    	<xsd:complexType name="xsdStringHlavickaType">
+    		<xsd:simpleContent>
+    			<xsd:extension base="xsd:string">
+    				<xsd:attributeGroup ref="hlavickaAttribGroup"/>
+    			</xsd:extension>
+    		</xsd:simpleContent>
+    	</xsd:complexType>
+    	<!-- komplexny typ nad standardnym retazcom (podla w3) -->
+    	<xsd:complexType name="xsdStringTeloType">
+    		<xsd:simpleContent>
+    			<xsd:extension base="xsd:string">
+    				<xsd:attributeGroup ref="teloAttribGroup"/>
+    			</xsd:extension>
+    		</xsd:simpleContent>
+    	</xsd:complexType>
+    	<!-- skupina atributov specificka pre elementy hlavicky -->
+    	<xsd:attributeGroup name="hlavickaAttribGroup">
+    		<xsd:attribute name="pole" type="xsd:string" default="y"/>
+    		<xsd:attribute name="funkcia" type="xsd:string" default="udajeOOsobe"/>
+    	</xsd:attributeGroup>
+    	<!-- skupina atributov specificka pre elementy tela -->
+    	<xsd:attributeGroup name="teloAttribGroup">
+    		<xsd:attribute name="pole" type="xsd:string" default="y"/>
+    	</xsd:attributeGroup>
+    	<!-- korenovy element -->
+    	<xsd:element name="dokument">
+    		<xsd:complexType>
+    			<xsd:sequence>
+    				<xsd:element name="hlavicka" type="hlavickaType"/>
+    				<xsd:element name="telo" type="teloType"/>
+    			</xsd:sequence>
+    		</xsd:complexType>
+    	</xsd:element>
+    	<!-- hlavicka -->
+    	<xsd:complexType name="hlavickaType">
+    		<xsd:sequence>
+    			<xsd:element name="identifikacneCislo" type="identifikacneCisloType"/>
+    			<xsd:element name="danovyUrad" type="xsdStringHlavickaType"/>
+    			<xsd:element name="druhSV" type="druhSVType"/>
+    			<xsd:element name="obdobie" type="obdobieType"/>
+    			<xsd:element name="obchodneMeno" type="obchodneMenoType"/>
+    			<xsd:element name="adresa" type="sidloType"/>
+    			<xsd:element name="celkovaHodnota" type="optionalDecimalHlavickaType"/>
+    <!--			<xsd:element name="pocet2Stran" type="optionalDecimalHlavickaType"/> -->
+    			<xsd:element name="konatel" type="xsdStringHlavickaType"/>
+    			<xsd:element name="konatelTel" type="xsdStringHlavickaType" minOccurs="0"/>
+    			<xsd:element name="konatelEmail" type="xsdStringHlavickaType" minOccurs="0"/>
+    			<xsd:element name="datumVyhlasenia" type="splittedDateType"/>
+    		</xsd:sequence>
+    	</xsd:complexType>
+    	<xsd:complexType name="identifikacneCisloType">
+    		<xsd:sequence>
+    			<xsd:element name="kodStatu" type="xsdStringHlavickaType"/>
+    			<xsd:element name="dic" type="xsdStringHlavickaType"/>
+    		</xsd:sequence>
+    	</xsd:complexType>
+    	<xsd:complexType name="druhSVType">
+    		<xsd:sequence>
+    			<xsd:element name="riadny" type="checkBoxType"/>
+    			<xsd:element name="opravny" type="checkBoxType"/>
+    			<xsd:element name="dodatocny" type="checkBoxType"/>
+    		</xsd:sequence>
+    	</xsd:complexType>
+    	<xsd:complexType name="checkBoxType">
+    		<xsd:simpleContent>
+    			<xsd:extension base="emptyStringOrBoolean">
+    				<xsd:attributeGroup ref="hlavickaAttribGroup"/>
+    			</xsd:extension>
+    		</xsd:simpleContent>
+    	</xsd:complexType>
+    	<xsd:simpleType name="emptyStringOrBoolean">
+    		<xsd:union memberTypes="emptyString xsd:boolean"/>
+    	</xsd:simpleType>
+    	<xsd:simpleType name="emptyString">
+    		<xsd:restriction base="xsd:string">
+    			<xsd:enumeration value=""/>
+    		</xsd:restriction>
+    	</xsd:simpleType>
+    	<xsd:complexType name="obdobieType">
+    		<xsd:sequence>
+    			<xsd:element name="mesiac" type="xsdStringHlavickaType"/>
+    			<xsd:element name="stvrtrok" type="xsdStringHlavickaType"/>
+    			<xsd:element name="rok" type="xsdStringHlavickaType"/>
+    		</xsd:sequence>
+    	</xsd:complexType>
+    	<xsd:complexType name="obchodneMenoType">
+    		<xsd:sequence>
+    			<xsd:element name="riadok" type="xsdStringHlavickaType" minOccurs="4" maxOccurs="4"/>
+    		</xsd:sequence>
+    	</xsd:complexType>
+    	<xsd:complexType name="sidloType">
+    		<xsd:sequence>
+    			<xsd:element name="ulica" type="xsdStringHlavickaType"/>
+    			<xsd:element name="cislo" type="xsdStringHlavickaType"/>
+    			<xsd:element name="psc" type="xsdStringHlavickaType"/>
+    			<xsd:element name="obec" type="xsdStringHlavickaType"/>
+    			<xsd:element name="tel" type="xsdStringHlavickaType"/>
+    			<xsd:element name="email" type="xsdStringHlavickaType"/>
+    		</xsd:sequence>
+    	</xsd:complexType>
+    	<xsd:complexType name="telFaxHlavickaType">
+    		<xsd:sequence>
+    			<xsd:element name="predcislie" type="xsdStringHlavickaType"/>
+    			<xsd:element name="cislo" type="xsdStringHlavickaType"/>
+    		</xsd:sequence>
+    	</xsd:complexType>
+    	<xsd:complexType name="optionalDecimalHlavickaType">
+    		<xsd:simpleContent>
+    			<xsd:extension base="emptyStringOrDecimal">
+    				<xsd:attributeGroup ref="hlavickaAttribGroup"/>
+    			</xsd:extension>
+    		</xsd:simpleContent>
+    	</xsd:complexType>
+    	<xsd:simpleType name="emptyStringOrDecimal">
+    		<xsd:union memberTypes="xsd:decimal emptyString"/>
+    	</xsd:simpleType>
+    	<xsd:complexType name="splittedDateType">
+    		<xsd:sequence>
+    			<xsd:element name="den" type="xsdStringHlavickaType"/>
+    			<xsd:element name="mesiac" type="xsdStringHlavickaType"/>
+    			<xsd:element name="rok" type="xsdStringHlavickaType"/>
+    		</xsd:sequence>
+    	</xsd:complexType>
+    	<!-- telo -->
+    	<xsd:complexType name="teloType">
+    		<xsd:sequence>
+    			<xsd:element name="strana" type="stranaType" minOccurs="0" maxOccurs="unbounded"/>
+    		</xsd:sequence>
+    	</xsd:complexType>
+    	<xsd:complexType name="stranaType">
+    		<xsd:sequence>
+    <!--			<xsd:element name="oznacenie" type="oznacenieType"/> -->
+    			<xsd:element name="zaznam" type="zaznamType" minOccurs="12" maxOccurs="12"/>
+    			<xsd:element name="zaznamCast2" type="zaznamCast2Type" minOccurs="12" maxOccurs="12"/>
+    		</xsd:sequence>
+    	</xsd:complexType>
+    	<xsd:complexType name="oznacenieType">
+    		<xsd:sequence>
+    			<xsd:element name="aktualna" type="optionalDecimalTeloType"/>
+    			<xsd:element name="celkovo" type="xsdStringTeloType"/>
+    		</xsd:sequence>
+    	</xsd:complexType>
+    	<xsd:complexType name="zaznamType">
+    		<xsd:sequence>
+    			<xsd:element name="kodStatu" type="xsdStringTeloType"/>
+    			<xsd:element name="idCislo" type="xsdStringTeloType"/>
+    			<xsd:element name="hodnota" type="optionalDecimalTeloType"/>
+    			<xsd:element name="kod" type="xsdStringTeloType"/>
+    		</xsd:sequence>
+    	</xsd:complexType>
+    	<xsd:complexType name="zaznamCast2Type">
+    		<xsd:sequence>
+    			<xsd:element name="kodStatu" type="xsdStringTeloType"/>
+    			<xsd:element name="idCislo" type="xsdStringTeloType"/>
+    			<xsd:element name="idCislo2" type="xsdStringTeloType"/>
+    			<xsd:element name="vratenieTovaru" type="checkBoxType"/>
+    			<xsd:element name="oprava" type="checkBoxType"/>
+    		</xsd:sequence>
+    	</xsd:complexType>
+    	<xsd:complexType name="optionalDecimalTeloType">
+    		<xsd:simpleContent>
+    			<xsd:extension base="emptyStringOrDecimal">
+    				<xsd:attributeGroup ref="teloAttribGroup"/>
+    			</xsd:extension>
+    		</xsd:simpleContent>
+    	</xsd:complexType>
+    </xsd:schema>

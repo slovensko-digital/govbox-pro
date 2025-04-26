@@ -28,6 +28,7 @@ class MessageDraft < Message
   scope :not_in_submission_process, -> { where("metadata ->> 'status' NOT IN ('being_submitted', 'submitted')") }
 
   validate :validate_uuid
+  validate :validate_correlation_id
   validates :title, presence: { message: "Title can't be blank" }
   validates :delivered_at, presence: true
 
@@ -286,6 +287,20 @@ class MessageDraft < Message
     errors.add(:metadata, :no_template) unless metadata&.dig("template_id").present?
   end
 
+  def validate_correlation_id
+    if all_metadata&.dig("correlation_id")
+      errors.add(:metadata, "Correlation ID must be UUID") unless all_metadata.dig("correlation_id").match?(Utils::UUID_PATTERN)
+    else
+      errors.add(:metadata, "Correlation ID can't be blank")
+    end
+  end
+
   class InvalidSenderError < RuntimeError
+  end
+
+  class MissingFormObjectError < RuntimeError
+  end
+
+  class UnknownFormError < RuntimeError
   end
 end

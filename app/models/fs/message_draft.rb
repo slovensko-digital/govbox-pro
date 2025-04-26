@@ -90,12 +90,6 @@ class Fs::MessageDraft < MessageDraft
     messages
   end
 
-  def publish_created_event
-    super
-
-    Fs::ValidateMessageDraftJob.perform_later(self)
-  end
-
   def self.load_from_params(message_params, tenant: nil, box: nil)
     message_params = message_params.permit(
       :type,
@@ -114,27 +108,33 @@ class Fs::MessageDraft < MessageDraft
       ]
     )
 
-    form_content = Base64.decode64(message_params[:objects].select{|o| o['object_type'] == 'FORM'}.first['content'].force_encoding("UTF-8"))
+    b64_form_content = message_params[:objects]&.select{|o| o['object_type'] == 'FORM'}&.first&.dig('content')&.force_encoding("UTF-8")
+
+    raise MissingFormObjectError unless b64_form_content
+
+    form_content = Base64.decode64(b64_form_content)
     box, fs_form = get_parsed_box_and_form_from_content(form_content, tenant: tenant)
 
+    raise InvalidSenderError unless box
+    raise UnknownFormError unless fs_form
+
     message = ::Message.build(message_params.except(:objects, :tags).merge(
-        {
-          sender_name: box.name,
-          recipient_name: 'Finančná správa',
-          outbox: true,
-          replyable: false,
-          delivered_at: Time.now,
-          metadata: message_params['metadata'].merge({
-            'status': 'being_loaded',
-            'fs_form_id': fs_form.id,
-          }),
-        }
-      )
+      {
+        sender_name: box.name,
+        recipient_name: 'Finančná správa',
+        outbox: true,
+        replyable: false,
+        delivered_at: Time.now,
+        metadata: message_params['metadata']&.merge({
+          'status': 'being_loaded',
+          'fs_form_id': fs_form.id,
+        }),
+      })
     )
 
     message.thread = box.message_threads&.find_or_build_by_merge_uuid(
       box: box,
-      merge_uuid: message.metadata['correlation_id'],
+      merge_uuid: message.metadata&.dig('correlation_id'),
       title: message.title,
       delivered_at: message.delivered_at
     )
@@ -153,6 +153,11 @@ class Fs::MessageDraft < MessageDraft
     return box, fs_form
   end
 
+  def publish_created_event(force_thread_event: false)
+    super(force_thread_event: force_thread_event)
+
+    Fs::ValidateMessageDraftJob.perform_later(self)
+  end
 
   def submit
     Fs::SubmitMessageDraftAction.run(self)
@@ -176,9 +181,14 @@ class Fs::MessageDraft < MessageDraft
     validate_uuid_uniqueness
     validate_metadata
     validate_form_object
+    validate_objects
   end
 
   def validate_metadata
     errors.add(:metadata, 'No form ID') unless metadata&.dig('fs_form_id')
+  end
+
+  def validate_objects
+    errors.add(:objects, "Message has to contain exactly one object") if objects.size != 1
   end
 end
