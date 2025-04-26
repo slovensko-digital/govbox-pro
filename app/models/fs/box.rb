@@ -20,7 +20,8 @@ class Fs::Box < Box
 
   before_create { self.syncable = tenant.feature_enabled?(:fs_sync) }
 
-  validates_uniqueness_of :name, :short_name, scope: :tenant_id
+  validates_uniqueness_of :short_name, scope: [:tenant_id]
+  validates_uniqueness_of :name, scope: [:tenant_id, :uri]
 
   def self.policy_class
     BoxPolicy
