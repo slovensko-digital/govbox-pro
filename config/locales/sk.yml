@@ -286,6 +286,7 @@ sk:
   "Automation::MetadataValueNotCondition": "v metadátach neobsahuje"
   "Automation::MessageMetadataValueCondition": "správa v metadátach obsahuje"
   "Automation::BoxCondition": "je"
+  "Automation::APIConnectionCondition": "je"
   "Automation::AddMessageThreadTagAction": "Pridaj štítok na vlákno"
   "Automation::UnassignMessageThreadTagAction": "Odober štítok z vlákna"
   "Automation::AddTagAction": "Pridaj štítok"

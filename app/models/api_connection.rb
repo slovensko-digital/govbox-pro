@@ -15,6 +15,7 @@
 class ApiConnection < ApplicationRecord
   belongs_to :tenant, optional: true
   has_many :boxes
+  has_many :automation_conditions, as: :condition_object
 
   def box_obo(box)
     raise NotImplementedError
