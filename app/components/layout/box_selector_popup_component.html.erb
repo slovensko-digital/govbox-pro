@@ -1,4 +1,4 @@
-<%= render Common::ModalComponent.new(max_size: "min-w-[32rem] max-w-max") do |modal| %>
+<%= render Common::ModalComponent.new(max_size: "max-w-2xl") do |modal| %>
   <% modal.with_modal_content do %>
     <%= link_to select_all_boxes_path, data: { turbo_frame: "_top" }, class: "flex justify-between items-center self-stretch flex-grow-0 flex-shrink-0 py-2" do %>
       <span class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-gray-900">
