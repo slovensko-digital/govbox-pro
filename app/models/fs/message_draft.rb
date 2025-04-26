@@ -26,17 +26,13 @@ class Fs::MessageDraft < MessageDraft
     MessageDraftPolicy
   end
 
-  def self.create_and_validate_with_fs_form(form_files: [], author:, fs_client: FsEnvironment.fs_client)
+  def self.create_and_validate_with_fs_form(form_files: [], author:)
     messages = []
 
     form_files.each do |form_file|
       form_content = form_file.read.force_encoding("UTF-8")
-      form_information = fs_client.api.parse_form(form_content)
-      dic = form_information&.dig('subject')&.strip
-      fs_form_identifier = form_information&.dig('form_identifier')
 
-      box = author.tenant.boxes.with_enabled_message_drafts_import.find_by("settings ->> 'dic' = ?", dic)
-      fs_form = Fs::Form.find_by(identifier: fs_form_identifier)
+      box, fs_form = get_parsed_box_and_form_from_content(form_content, tenant: author.tenant)
 
       unless box && fs_form
         messages << nil
@@ -99,6 +95,64 @@ class Fs::MessageDraft < MessageDraft
 
     Fs::ValidateMessageDraftJob.perform_later(self)
   end
+
+  def self.load_from_params(message_params, tenant: nil, box: nil)
+    message_params = message_params.permit(
+      :type,
+      :uuid,
+      :title,
+      objects: [
+        :name,
+        :is_signed,
+        :to_be_signed,
+        :mimetype,
+        :object_type,
+        :content
+      ],
+      metadata: [
+        :correlation_id
+      ]
+    )
+
+    form_content = Base64.decode64(message_params[:objects].select{|o| o['object_type'] == 'FORM'}.first['content'].force_encoding("UTF-8"))
+    box, fs_form = get_parsed_box_and_form_from_content(form_content, tenant: tenant)
+
+    message = ::Message.build(message_params.except(:objects, :tags).merge(
+        {
+          sender_name: box.name,
+          recipient_name: 'Finančná správa',
+          outbox: true,
+          replyable: false,
+          delivered_at: Time.now,
+          metadata: message_params['metadata'].merge({
+            'status': 'being_loaded',
+            'fs_form_id': fs_form.id,
+          }),
+        }
+      )
+    )
+
+    message.thread = box.message_threads&.find_or_build_by_merge_uuid(
+      box: box,
+      merge_uuid: message.metadata['correlation_id'],
+      title: message.title,
+      delivered_at: message.delivered_at
+    )
+
+    message
+  end
+
+  def self.get_parsed_box_and_form_from_content(form_content, tenant:, fs_client: FsEnvironment.fs_client)
+    form_information = fs_client.api.parse_form(form_content)
+    dic = form_information&.dig('subject')&.strip
+    fs_form_identifier = form_information&.dig('form_identifier')
+
+    box = tenant.boxes.with_enabled_message_drafts_import.find_by("settings ->> 'dic' = ?", dic)
+    fs_form = Fs::Form.find_by(identifier: fs_form_identifier)
+
+    return box, fs_form
+  end
+
 
   def submit
     Fs::SubmitMessageDraftAction.run(self)

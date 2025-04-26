@@ -4,7 +4,7 @@ class Api::MessagesController < Api::TenantController
   before_action :check_message_type, only: :message_drafts
   before_action :check_tags, only: :message_drafts
 
-  ALLOWED_MESSAGE_TYPES = ['Upvs::MessageDraft']
+  ALLOWED_MESSAGE_TYPES = %w[Upvs::MessageDraft Fs::MessageDraft]
 
   def show
     @message = @tenant.messages.find(params[:id])
@@ -16,7 +16,7 @@ class Api::MessagesController < Api::TenantController
 
   def message_drafts
     ::Message.transaction do
-      @message = permitted_message_draft_params[:type].classify.safe_constantize.load_from_params(permitted_message_draft_params, box: @box)
+      @message = permitted_message_draft_params[:type].classify.safe_constantize.load_from_params(permitted_message_draft_params, tenant: @tenant, box: @box)
 
       render_unprocessable_entity(@message.errors.messages.values.join(', ')) and return unless @message.valid?
       render_conflict(@message.errors.messages.values.join(', ')) and return unless @message.valid?(:validate_uuid_uniqueness)

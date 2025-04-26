@@ -28,7 +28,7 @@ class Upvs::MessageDraft < MessageDraft
 
   validate :validate_correlation_id
 
-  def self.load_from_params(message_params, box:)
+  def self.load_from_params(message_params, tenant: nil, box:)
     message_params = message_params.permit(
       :type,
       :uuid,
