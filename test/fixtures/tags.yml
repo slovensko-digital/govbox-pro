@@ -246,9 +246,9 @@ accountants_drafts:
   visible: true
   tenant: accountants
 
-accountants_submission_errors:
-  name: Problémové
-  type: SubmissionErrorTag
+accountants_unprocessable:
+  name: Chybné
+  type: UnrpocessableTag
   visible: true
   tenant: accountants
 
