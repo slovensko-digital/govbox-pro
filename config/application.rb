@@ -40,6 +40,8 @@ module GovboxPro
     config.good_job.cleanup_preserved_jobs_before_seconds_ago = 1.days
     config.good_job.cleanup_discarded_jobs = false
 
+    Rails.application.routes.default_url_options[:host] = ENV.fetch('DOMAIN_NAME')
+
     if ENV['AUTO_SYNC_BOXES'] == "ON"
       config.good_job.cron = {
         sync_boxes: {

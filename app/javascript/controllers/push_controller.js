@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus";
+import { post } from "@rails/request.js";
 
 export default class extends Controller {
   static targets = ["banner"];
@@ -79,21 +80,17 @@ export default class extends Controller {
   }
 
   saveSubscription(subscription) {
-    // Extract necessary subscription data
-    const endpoint = subscription.endpoint;
-    const p256dh = btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.getKey("p256dh"))));
-    const auth = btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.getKey("auth"))));
+    const {
+      endpoint,
+      keys: { p256dh, auth },
+    } = subscription.toJSON();
+
+    const body = JSON.stringify({
+      push_endpoint: { endpoint, p256dh, auth },
+    });
 
     // Send the subscription data to the server
-    fetch("/push_endpoints", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
-      },
-      body: JSON.stringify({ endpoint, p256dh, auth }),
-    })
+    post("/push_endpoints", { body })
       .then((response) => {
         if (response.ok) {
           console.log("Subscription successfully saved on the server.");
