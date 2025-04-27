@@ -2,17 +2,15 @@ default: &default
   adapter: postgresql
   encoding: unicode
   pool: 50
-  host: <%= ENV['DB_HOST'] %>
-  port: <%= ENV['DB_PORT'] %>
-  username: <%= ENV['DB_USER'] %>
-  password: <%= ENV['DB_PASSWORD'] %>
 
 development:
   <<: *default
+  url: <%= ENV['DATABASE_URL'] %>
   database: govbox_pro_development
 
 test:
   <<: *default
+  url: <%= ENV['DATABASE_URL'] %>
   database: govbox_pro_test
 
 staging:

@@ -42,3 +42,8 @@ unassign_done_tag:
   name: RemoveDoneTagWhenNewInboxMessage
   trigger_event: message_created
 
+add_tag_api_connection:
+  user: basic
+  tenant: accountants
+  name: ApiConnectionIsCondition
+  trigger_event: message_created

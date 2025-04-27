@@ -271,6 +271,7 @@ sk:
   fs_message_type: "Typ FS správy"
   box: "Schránka správy"
   attachment: "Príloha"
+  api_connection: "API Prepojenie"
   boxes:
     sync_all_requested: "Sťahovanie nových správ bolo spustené."
   message_created: "Nová správa"
@@ -287,6 +288,7 @@ sk:
   "Automation::MetadataValueNotCondition": "v metadátach neobsahuje"
   "Automation::MessageMetadataValueCondition": "správa v metadátach obsahuje"
   "Automation::BoxCondition": "je"
+  "Automation::ApiConnectionCondition": "je"
   "Automation::AddMessageThreadTagAction": "Pridaj štítok na vlákno"
   "Automation::UnassignMessageThreadTagAction": "Odober štítok z vlákna"
   "Automation::AddTagAction": "Pridaj štítok"
