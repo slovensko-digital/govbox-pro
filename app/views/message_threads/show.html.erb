@@ -4,3 +4,6 @@
   thread_messages: @thread_messages,
   thread_last_message_draft_id: @thread_last_message_draft_id
 ) %>
+<%= turbo_frame_tag :new_messages_frame, target: "_top" do %>
+  <%= turbo_stream_from @message_thread, channel: Turbo::NewMessageChannel %>
+<% end %>

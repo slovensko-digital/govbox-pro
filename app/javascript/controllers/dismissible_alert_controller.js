@@ -1,10 +1,15 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
+  static values = {
+    timeout: { type: Number, default: 4000 },
+  };
   connect() {
-    setTimeout(() => {
-      this.dismiss();
-    }, 4000);
+    if (this.timeoutValue != 0) {
+      setTimeout(() => {
+        this.dismiss();
+      }, this.timeoutValue);
+    }
   }
 
   dismiss() {
