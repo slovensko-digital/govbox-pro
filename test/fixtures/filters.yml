@@ -14,9 +14,16 @@ two:
   query: Legal
   position: 2
 
+ssd_with_subscriptions:
+  tenant: ssd
+  author: admin
+  name: With subscriptions
+  query: Random text
+  position: 3
+
 solver_one:
   tenant: solver
   author: solver_other
   name: Urgent
   query: urgent
-  position: 3
+  position: 4

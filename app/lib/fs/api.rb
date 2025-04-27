@@ -1,15 +1,20 @@
+# frozen_string_literal: true
+
 module Fs
   class Api
+    attr_accessor :obo, :obo_without_delegate
+
     def initialize(url, api_connection: nil, box: nil, handler: Faraday)
       @url = url
       @handler = handler
       @handler.options.timeout = 900_000
 
-      api_connection = box&.api_connection unless api_connection
+      api_connection ||= box&.api_connection
       @sub = api_connection&.sub
       @api_token_private_key = api_connection ? OpenSSL::PKey::RSA.new(api_connection.api_token_private_key) : nil
       @fs_credentials = api_connection ? "#{api_connection.settings_username}:#{api_connection.settings_password}" : nil
-      @obo = box ? "#{box.settings_subject_id}:#{box.settings_dic}" : nil
+
+      initialize_obo(box) if box
     end
 
     def fetch_forms(**args)
@@ -37,13 +42,7 @@ module Fs
     end
 
     def fetch_received_messages(sent_message_id: nil, page: 1, count: 100, from: nil, to: nil, obo: @obo)
-      query = {
-        sent_message_id: sent_message_id,
-        page: page,
-        per_page: count,
-        from: from,
-        to: to
-      }.compact.to_query
+      query = { sent_message_id: sent_message_id, page: page, per_page: count, from: from, to: to }.compact.to_query
 
       request(:get, "received-messages?#{query}", {}, jwt_header(obo).merge(fs_credentials_header))[:body]
     end
@@ -85,6 +84,11 @@ module Fs
     end
 
     private
+
+    def initialize_obo(box)
+      @obo_without_delegate = "#{box.settings_subject_id}:#{box.settings_dic}"
+      @obo = @obo_without_delegate + (box.settings_delegate_id ? ":#{box.settings_delegate_id}" : "")
+    end
 
     def jwt_header(obo = nil)
       token = JWT.encode({

@@ -61,4 +61,9 @@ Rails.application.configure do
 
   # Raise error when a before_action's only/except options reference missing actions
   config.action_controller.raise_on_missing_callback_actions = true
+
+  # Problematic encrypted jsonb fields in test fixtures
+  config.active_record.encryption.encrypt_fixtures = true # https://guides.rubyonrails.org/active_record_encryption.html
+  ActiveRecord::Encryption.config.encrypt_fixtures = true # https://github.com/rails/rails/issues/48601
+  config.active_record.encryption.support_unencrypted_data = true # https://github.com/rails/rails/pull/45033
 end

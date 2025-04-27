@@ -16,6 +16,7 @@ class Filter < ApplicationRecord
 
   belongs_to :author, class_name: 'User'
   belongs_to :tenant
+  has_many :filter_subscriptions, dependent: :destroy
 
   validates :tenant_id, :author_id, :name, :query, presence: true
 

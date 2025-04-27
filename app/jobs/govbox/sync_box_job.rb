@@ -7,13 +7,17 @@ module Govbox
       edesk_api = upvs_client.api(box).edesk
       response_status, raw_folders = edesk_api.fetch_folders
 
+      sync_exclude_folder_ids = box.settings["sync_exclude_folder_ids"] || []
+
       raise "Unable to fetch folders" if response_status != 200
 
       raw_folders = raw_folders.index_by {|f| f["id"]}
       raw_folders.each_value do |folder_hash|
         folder = find_or_create_folder_with_parent(folder_hash, raw_folders, box)
 
-        SyncFolderJob.perform_later(folder) unless folder.bin? || folder.drafts?
+        next if sync_exclude_folder_ids.include?(folder.edesk_folder_id) ||  folder.bin? || folder.drafts?
+
+        SyncFolderJob.perform_later(folder)
       end
     end
 

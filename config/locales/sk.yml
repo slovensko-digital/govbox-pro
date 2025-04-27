@@ -349,6 +349,9 @@ sk:
     notifications:
       header: "Žiadne notifikácie"
       description: "Nemáte žiadne notifikácie."
+    group_users:
+      header: "Žiadni používatelia"
+      description: "V tejto skupine zatiaľ nie sú žiadni používatelia."
   feature_flags:
     api:
       name: "API"

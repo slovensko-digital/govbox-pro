@@ -46,4 +46,6 @@ class Fs::Box < Box
 
   store_accessor :settings, :dic, prefix: true
   store_accessor :settings, :subject_id, prefix: true
+  store_accessor :settings, :delegate_id, prefix: true
+  store_accessor :settings, :is_subject_c_reg, prefix: true
 end
