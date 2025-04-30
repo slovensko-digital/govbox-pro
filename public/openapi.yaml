@@ -438,6 +438,17 @@ paths:
       responses:
         201:
           description: Úspešné vytvorenie správy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    description: Identifikátor správy v systéme Govbox Pro
+                    type: integer
+                  thread_id:
+                    description: Identifikátor vlákna, ktorému prislúcha správa
+                    type: integer
         409:
           description: Duplicitná správa (UUID už existuje)
         422:
