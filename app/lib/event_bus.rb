@@ -27,7 +27,7 @@ EventBus.reset!
 
 # wiring
 EventBus.subscribe :message_thread_with_message_created, ->(message) do
-  EventBus.publish(:message_thread, message)
+  EventBus.publish(:message_thread_created, message.thread)
   EventBus.publish(:message_created, message)
 
   EventBus.publish(:fs_message_draft_created, message) if message.is_a?(Fs::MessageDraft)
@@ -36,7 +36,7 @@ end
 EventBus.subscribe_job :fs_message_draft_created, Fs::ValidateMessageDraftJob
 
 # automation
-[:message_created, :message_draft_submitted, :message_object_downloaded].each do |event|
+[:message_thread_created, :message_created, :message_draft_submitted, :message_object_downloaded].each do |event|
   EventBus.subscribe_job event, Automation::ApplyRulesForEventJob
 end
 
