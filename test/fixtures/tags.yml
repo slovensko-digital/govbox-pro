@@ -246,6 +246,12 @@ accountants_drafts:
   visible: true
   tenant: accountants
 
+accountants_unprocessable:
+  name: Chybné
+  type: UnprocessableTag
+  visible: true
+  tenant: accountants
+
 accountants_everything:
   name: Everything
   type: EverythingTag

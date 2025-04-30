@@ -27,6 +27,7 @@ class Tenant < ApplicationRecord
   has_one :archived_tag
   has_one :submitted_tag
   has_one :submission_error_tag
+  has_one :unprocessable_tag
   has_many :tags, dependent: :destroy
   has_many :signature_requested_from_tags
   has_many :signed_by_tags
@@ -66,6 +67,14 @@ class Tenant < ApplicationRecord
 
   def user_signature_tags
     tags.where(type: %w[SignatureRequestedFromTag SignedByTag])
+  end
+
+  def unprocessable_tag!
+    unprocessable_tag || raise(ActiveRecord::RecordNotFound, "`UnprocessableTag` not found in tenant: #{id}")
+  end
+
+  def submission_error_tag!
+    submission_error_tag || raise(ActiveRecord::RecordNotFound, "`SubmissionErrorTag` not found in tenant: #{id}")
   end
 
   def feature_enabled?(feature)

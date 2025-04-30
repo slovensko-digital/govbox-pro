@@ -28,28 +28,30 @@ class Fs::MessageDraft < MessageDraft
 
   def self.create_and_validate_with_fs_form(form_files: [], author:)
     messages = []
+    failed_files = []
 
     form_files.each do |form_file|
       form_content = form_file.read.force_encoding("UTF-8")
 
       box, fs_form = get_parsed_box_and_form_from_content(form_content, tenant: author.tenant)
 
-      unless box && fs_form
-        messages << nil
+      if box.nil?
+        failed_files << form_file
         next
       end
 
-      message = ::Fs::MessageDraft.create(
+      klass = fs_form ? Fs::MessageDraft : Fs::InvalidMessageDraft
+      message = klass.create(
         uuid: SecureRandom.uuid,
-        title: fs_form.name,
+        title: fs_form&.name || "Neznámy formulár - #{form_file.original_filename}",
         sender_name: box.name,
         recipient_name: 'Finančná správa',
         outbox: true,
         replyable: false,
         delivered_at: Time.now,
         metadata: {
-          'status': 'being_loaded',
-          'fs_form_id': fs_form.id,
+          'status': fs_form ? 'being_loaded' : 'invalid',
+          'fs_form_id': fs_form&.id,
           'correlation_id': SecureRandom.uuid
         },
         author: author
@@ -63,6 +65,9 @@ class Fs::MessageDraft < MessageDraft
       )
 
       message.save
+      messages << message
+
+      next if message.invalid?
 
       form_object = message.objects.create(
         object_type: 'FORM',
@@ -82,12 +87,10 @@ class Fs::MessageDraft < MessageDraft
         blob: form_content
       )
 
-      messages << message
-
       EventBus.publish(:message_thread_with_message_created, message)
     end
 
-    messages
+    [messages, failed_files]
   end
 
   def self.load_from_params(message_params, tenant: nil, box: nil)
