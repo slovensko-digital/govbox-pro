@@ -85,4 +85,26 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
     assert_not_includes json_response.pluck("id"), @tenant.messages.first.id
     assert_includes json_response.pluck("id"), @tenant.messages.second.id
   end
+
+  test "can destroy message draft" do
+    message = messages(:ssd_main_general_draft_one)
+
+    delete "/api/messages/#{message.id}", params: { token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }, as: :json
+
+    assert_response :success
+  end
+
+  test "returns not found if trying to destroy non-existing message draft" do
+    delete "/api/messages/123", params: { token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }, as: :json
+
+    assert_response :not_found
+  end
+
+  test "returns unprocessable entity if trying to destroy non-destroyable message" do
+    message = messages(:ssd_main_general_one)
+
+    delete "/api/messages/#{message.id}", params: { token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }, as: :json
+
+    assert_response :unprocessable_entity
+  end
 end

@@ -10,6 +10,16 @@ class Api::MessagesController < Api::TenantController
     @message = @tenant.messages.find(params[:id])
   end
 
+  def destroy
+    @message = @tenant.messages.find(params[:id])
+
+    if @message.destroyable? && @message.not_yet_submitted?
+      @message.destroy
+    else
+      render_unprocessable_entity("Message is not destroyable")
+    end
+  end
+
   def search
     @message = @tenant.messages.find_by(permitted_search_params)
   end

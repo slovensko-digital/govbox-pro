@@ -57,6 +57,7 @@ paths:
                       format: url
       security:
         - "Tenant_Token": []
+
   /api/message_threads/{id}/tags:
     post:
       tags: [Vlákna, Štítky]
@@ -197,6 +198,26 @@ paths:
                           format: byte
       security:
         - "Tenant_Token": []
+    delete:
+      tags: [Správy]
+      summary: Zmaže rozpracovanú správu
+      description: |
+        Zmaže rozpracovanú správu
+      parameters:
+        - name: id
+          in: path
+          description: Identifikátor správy
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        204:
+          description: Úspešné zmazaná správa
+        422:
+          description: Správu nie je možné zmazať
+      security:
+        - "Tenant_Token": []
 
   /api/messages/search:
     get:
@@ -314,6 +335,7 @@ paths:
           description: Nevalidný obsah správy
       security:
         - "Tenant_Token": []
+
   /api/messages/sync:
     get:
       tags: [Správy]

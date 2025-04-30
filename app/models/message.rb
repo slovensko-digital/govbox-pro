@@ -70,7 +70,7 @@ class Message < ApplicationRecord
   end
 
   def destroyable?
-    true
+    false
   end
 
   def submittable?
