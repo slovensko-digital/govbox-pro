@@ -1,9 +1,9 @@
-<% if @sticky_note_type.present? %>
+<% if @sticky_note.present? %>
   <%= turbo_frame_tag "sticky_note" do %>
     <div class="sm:m-4 sm:mb-0">
       <div class="flex items-center justify-between gap-x-6 bg-red-600 px-6 py-2.5 sm:rounded-md sm:py-3 sm:pl-4 sm:pr-3.5">
         <p class="text-sm/6 text-white">
-          <%= render partial: "sticky_notes/#{@sticky_note_type}", locals: { data: @sticky_note_data } %>
+          <%= render partial: "sticky_notes/#{@sticky_note.note_type}", locals: { sticky_note: @sticky_note } %>
         </p>
         <%= button_to sticky_note_path, method: :delete, form_class: "-m-3 leading-none flex-none p-3 focus-visible:outline-offset-[-4px]" do %>
           <span class="sr-only">Skryť</span>
