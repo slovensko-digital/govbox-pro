@@ -156,12 +156,6 @@ class Fs::MessageDraft < MessageDraft
     return box, fs_form
   end
 
-  def publish_created_event(force_thread_event: false)
-    super(force_thread_event: force_thread_event)
-
-    Fs::ValidateMessageDraftJob.perform_later(self)
-  end
-
   def submit
     Fs::SubmitMessageDraftAction.run(self)
   end
