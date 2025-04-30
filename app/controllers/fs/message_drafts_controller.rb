@@ -18,7 +18,7 @@ class Fs::MessageDraftsController < ApplicationController
       redirect_path = messages.size == 1 ? message_thread_path(messages.first.thread) : message_threads_path
       redirect_to redirect_path, notice: "Správy boli úspešne nahraté"
     elsif failed_files.any?
-      Current.user.create_sticky_note(note_type: "upload_failed", data: failed_files.map(&:original_filename)).save
+      Current.user.create_sticky_note(note_type: "upload_failed", data: failed_files.map(&:original_filename))
 
       redirect_to message_threads_path
     else
