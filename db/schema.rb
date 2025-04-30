@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_04_26_185447) do
+ActiveRecord::Schema[7.1].define(version: 2025_04_30_173223) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -555,6 +555,15 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_26_185447) do
     t.index ["box_id"], name: "index_stats_message_submission_requests_on_box_id"
   end
 
+  create_table "sticky_notes", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.jsonb "data"
+    t.string "note_type", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_sticky_notes_on_user_id"
+  end
+
   create_table "tag_groups", force: :cascade do |t|
     t.bigint "group_id", null: false
     t.bigint "tag_id", null: false
@@ -685,6 +694,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_26_185447) do
   add_foreign_key "notifications", "users", on_delete: :cascade
   add_foreign_key "searchable_message_threads", "message_threads", on_delete: :cascade
   add_foreign_key "stats_message_submission_requests", "boxes"
+  add_foreign_key "sticky_notes", "users"
   add_foreign_key "tag_groups", "groups"
   add_foreign_key "tag_groups", "tags"
   add_foreign_key "tags", "tenants"
