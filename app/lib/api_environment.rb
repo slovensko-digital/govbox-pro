@@ -15,12 +15,12 @@ module ApiEnvironment
 
   API_TENANT_PUBLIC_KEY_READER = -> (sub) { OpenSSL::PKey::RSA.new(API_TENANT_BY_IDENTITY_FINDER.call(sub).api_token_public_key) }
   API_TENANT_BY_IDENTITY_FINDER = -> (sub) do
-    render_unauthorized unless sub&.to_i
+    raise unless sub&.to_i
 
     tenant = Tenant.find(sub&.to_i)
 
-    render_unauthorized unless tenant
-    render_unauthorized unless tenant.feature_enabled? :api
+    raise unless tenant
+    raise unless tenant.feature_enabled? :api
 
     tenant
   end
