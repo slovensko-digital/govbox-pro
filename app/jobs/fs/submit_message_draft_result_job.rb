@@ -3,7 +3,7 @@ class Fs::SubmitMessageDraftResultJob < ApplicationJob
     response = fs_client.api(box: message_draft.thread.box).get_location(location_header)
 
     if 200 == response[:status]
-      message_draft.metadata[:status] = 'submitted'
+      message_draft.submitted!
       message_draft.metadata[:fs_message_id] = response[:body]['sent_message_id']
       message_draft.save
 

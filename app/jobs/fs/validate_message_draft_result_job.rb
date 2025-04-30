@@ -33,5 +33,6 @@ class Fs::ValidateMessageDraftResultJob < ApplicationJob
     end
 
     message_draft.save
+    EventBus.publish(:message_draft_validated, message_draft)
   end
 end

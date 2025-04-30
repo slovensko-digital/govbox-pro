@@ -278,6 +278,7 @@ sk:
   message_thread_created: "Nové vlákno"
   message_updated: "Upravená správa"
   message_thread_changed: "Zmena vo vlákne správ"
+  message_draft_validated: "Zvalidovaná správa"
   message_draft_submitted: "Odoslaná správa"
   message_object_downloaded: "Stiahnutý objekt správy"
   "Automation::ContainsCondition": "obsahuje"
