@@ -21,8 +21,7 @@ class Fs::Message
 
     associated_outbox_message.update(collapsed: true)
 
-    EventBus.publish(:message_thread_created, message.thread) if message.thread.previously_new_record?
-    EventBus.publish(:message_created, message)
+    EventBus.publish(:message_thread_with_message_created, message)
   end
 
   def self.create_outbox_message_with_thread!(raw_message, box:)
@@ -55,8 +54,7 @@ class Fs::Message
       MessageObject.mark_message_objects_externally_signed(message.objects)
     end
 
-    EventBus.publish(:message_thread_created, message.thread) if message.thread.previously_new_record?
-    EventBus.publish(:message_created, message)
+    EventBus.publish(:message_thread_with_message_created, message)
 
     message
   end

@@ -28,6 +28,7 @@ class MessageDraft < Message
   scope :not_in_submission_process, -> { where("metadata ->> 'status' NOT IN ('being_submitted', 'submitted')") }
 
   validate :validate_uuid
+  validate :validate_correlation_id
   validates :title, presence: { message: "Title can't be blank" }
   validates :delivered_at, presence: true
 
@@ -90,8 +91,7 @@ class MessageDraft < Message
       )
     end
 
-    EventBus.publish(:message_thread_created, thread) if thread.previously_new_record?
-    EventBus.publish(:message_created, self)
+    EventBus.publish(:message_thread_with_message_created, self)
   end
 
   def assign_tags_from_params(tags_params)
@@ -112,6 +112,7 @@ class MessageDraft < Message
   def submit
     raise NotImplementedError
   end
+
   def draft?
     true
   end
@@ -185,8 +186,8 @@ class MessageDraft < Message
   def created!
     metadata["status"] = "created"
     save!
-    EventBus.publish(:message_thread_created, thread)
-    EventBus.publish(:message_created, self)
+
+    EventBus.publish(:message_thread_with_message_created, self)
   end
 
   def being_submitted!
@@ -284,5 +285,22 @@ class MessageDraft < Message
 
   def validate_metadata_with_template
     errors.add(:metadata, :no_template) unless metadata&.dig("template_id").present?
+  end
+
+  def validate_correlation_id
+    if all_metadata&.dig("correlation_id")
+      errors.add(:metadata, "Correlation ID must be UUID") unless all_metadata.dig("correlation_id").match?(Utils::UUID_PATTERN)
+    else
+      errors.add(:metadata, "Correlation ID can't be blank")
+    end
+  end
+
+  class InvalidSenderError < RuntimeError
+  end
+
+  class MissingFormObjectError < RuntimeError
+  end
+
+  class UnknownFormError < RuntimeError
   end
 end

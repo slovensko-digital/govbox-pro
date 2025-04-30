@@ -303,7 +303,39 @@ accountants_basic_user_signature_requested:
   name: 'Na podpis: Basic user 2'
   type: SignatureRequestedFromTag
   visible: true
-  tenant: ssd
+  tenant: accountants
+  icon: pencil
+  color: yellow
+
+accountants_signed:
+  name: Podpísané
+  type: SignedTag
+  visible: true
+  tenant: accountants
+  icon: fingerprint
+  color: green
+
+accountants_basic_user_signed:
+  name: 'Podpísané: Basic user 2'
+  type: SignedByTag
+  visible: true
+  tenant: accountants
+  icon: pencil
+  color: yellow
+
+accountants_tag1:
+  name: 'Tag 1'
+  type: SimpleTag
+  visible: true
+  tenant: accountants
+  icon: pencil
+  color: yellow
+
+accountants_tag2:
+  name: 'Tag 2'
+  type: SimpleTag
+  visible: true
+  tenant: accountants
   icon: pencil
   color: yellow
 

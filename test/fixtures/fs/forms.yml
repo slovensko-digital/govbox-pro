@@ -29,3 +29,14 @@ PREHLADv24:
   ez_signature: true
   slug: PREHLADv24
   number_identifier: 573
+
+SVDPHv20:
+  identifier: '708_599'
+  name: Súhrnný výkaz pre daň z pridanej hodnoty (platný od 1.1.2020)
+  group_name: Správa daní/Daň z pridanej hodnoty/Súhrnný výkaz pre daň z pridanej hodnoty (platný od 1.1.2020)
+  subtype_name: Riadny
+  signature_required: true
+  ez_signature: true
+  slug: SVDPHv20
+  number_identifier: 471
+  submission_type_identifier: 708

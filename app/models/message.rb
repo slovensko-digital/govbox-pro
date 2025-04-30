@@ -157,6 +157,6 @@ class Message < ApplicationRecord
   end
 
   def template
-    MessageTemplate.find(metadata["template_id"]) if metadata["template_id"]
+    MessageTemplate.find(metadata.dig("template_id")) if metadata.dig("template_id")
   end
 end

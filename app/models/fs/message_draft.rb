@@ -26,24 +26,19 @@ class Fs::MessageDraft < MessageDraft
     MessageDraftPolicy
   end
 
-  def self.create_and_validate_with_fs_form(form_files: [], author:, fs_client: FsEnvironment.fs_client)
+  def self.create_and_validate_with_fs_form(form_files: [], author:)
     messages = []
     failed_files = []
 
     form_files.each do |form_file|
       form_content = form_file.read.force_encoding("UTF-8")
-      form_information = fs_client.api.parse_form(form_content)
-      dic = form_information&.dig('subject')&.strip
-      fs_form_identifier = form_information&.dig('form_identifier')
 
-      box = author.tenant.boxes.with_enabled_message_drafts_import.find_by("settings ->> 'dic' = ?", dic)
+      box, fs_form = get_parsed_box_and_form_from_content(form_content, tenant: author.tenant)
 
       if box.nil?
         failed_files << form_file
         next
       end
-
-      fs_form = Fs::Form.find_by(identifier: fs_form_identifier)
 
       klass = fs_form ? Fs::MessageDraft : Fs::InvalidMessageDraft
       message = klass.create(
@@ -71,6 +66,7 @@ class Fs::MessageDraft < MessageDraft
 
       message.save
       messages << message
+
       next if message.invalid?
 
       form_object = message.objects.create(
@@ -91,13 +87,73 @@ class Fs::MessageDraft < MessageDraft
         blob: form_content
       )
 
-      Fs::ValidateMessageDraftJob.perform_later(message)
-
-      EventBus.publish(:message_thread_created, message.thread)
-      EventBus.publish(:message_created, message)
+      EventBus.publish(:message_thread_with_message_created, message)
     end
 
     [messages, failed_files]
+  end
+
+  def self.load_from_params(message_params, tenant: nil, box: nil)
+    message_params = message_params.permit(
+      :type,
+      :uuid,
+      :title,
+      objects: [
+        :name,
+        :is_signed,
+        :to_be_signed,
+        :mimetype,
+        :object_type,
+        :content
+      ],
+      metadata: [
+        :correlation_id
+      ]
+    )
+
+    b64_form_content = message_params[:objects]&.select{|o| o['object_type'] == 'FORM'}&.first&.dig('content')&.force_encoding("UTF-8")
+
+    raise MissingFormObjectError unless b64_form_content
+
+    form_content = Base64.decode64(b64_form_content)
+    box, fs_form = get_parsed_box_and_form_from_content(form_content, tenant: tenant)
+
+    raise InvalidSenderError unless box
+    raise UnknownFormError unless fs_form
+
+    message = ::Message.build(message_params.except(:objects, :tags).merge(
+      {
+        sender_name: box.name,
+        recipient_name: 'Finančná správa',
+        outbox: true,
+        replyable: false,
+        delivered_at: Time.now,
+        metadata: (message_params['metadata'] || {}).merge({
+          'status': 'being_loaded',
+          'fs_form_id': fs_form.id,
+        }),
+      })
+    )
+
+    message.thread = box.message_threads&.find_or_build_by_merge_uuid(
+      box: box,
+      merge_uuid: message.metadata&.dig('correlation_id'),
+      title: message.title,
+      delivered_at: message.delivered_at
+    )
+
+    message
+  end
+
+  def self.get_parsed_box_and_form_from_content(form_content, tenant:, fs_client: FsEnvironment.fs_client)
+    form_information = fs_client.api.parse_form(form_content)
+    dic = form_information&.dig('subject')&.strip
+    fs_form_identifier = form_information&.dig('form_identifier')
+
+    box = tenant.boxes.with_enabled_message_drafts_import.find_by("settings ->> 'dic' = ?", dic)
+    fs_form = Fs::Form.find_by(identifier: fs_form_identifier)
+
+    return box, fs_form
   end
 
   def submit
@@ -122,9 +178,14 @@ class Fs::MessageDraft < MessageDraft
     validate_uuid_uniqueness
     validate_metadata
     validate_form_object
+    validate_objects
   end
 
   def validate_metadata
     errors.add(:metadata, 'No form ID') unless metadata&.dig('fs_form_id')
+  end
+
+  def validate_objects
+    errors.add(:objects, "Message has to contain exactly one object") if objects.size != 1
   end
 end
