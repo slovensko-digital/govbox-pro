@@ -13,9 +13,17 @@ module ApiEnvironment
     )
   end
 
-
   API_TENANT_PUBLIC_KEY_READER = -> (sub) { OpenSSL::PKey::RSA.new(API_TENANT_BY_IDENTITY_FINDER.call(sub).api_token_public_key) }
-  API_TENANT_BY_IDENTITY_FINDER = -> (sub) { t = Tenant.find(sub); return t if t.feature_enabled? :api }
+  API_TENANT_BY_IDENTITY_FINDER = -> (sub) do
+    raise unless sub&.to_i
+
+    tenant = Tenant.find(sub&.to_i)
+
+    raise unless tenant
+    raise unless tenant.feature_enabled? :api
+
+    tenant
+  end
 
   API_SITE_ADMIN_PUBLIC_KEY_READER = -> (sub) { OpenSSL::PKey::RSA.new(ENV.fetch('SITE_ADMIN_API_PUBLIC_KEY')) }
 end

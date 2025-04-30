@@ -28,7 +28,7 @@ class Api::MessagesController < Api::TenantController
 
       if @message.valid?(:validate_data)
         @message.created!
-        head :created
+        render json: { id:@message.id, thread_id: @message.message_thread_id }.to_json, status: :created
       else
         @message.destroy
         render_unprocessable_entity(@message.errors.messages.values.join(', '))
