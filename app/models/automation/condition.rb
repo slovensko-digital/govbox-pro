@@ -38,6 +38,20 @@ module Automation
     end
   end
 
+  class ValueCondition < Automation::Condition
+    validates :value, presence: true
+    VALID_ATTR_LIST = %w[type].freeze
+    validates :attr, inclusion: { in: VALID_ATTR_LIST }
+
+    def satisfied?(thing)
+      thing[attr] == value
+    end
+
+    def cleanup_record
+      self.condition_object = nil
+    end
+  end
+
   class ContainsCondition < Automation::Condition
     validates :value, presence: true
     VALID_ATTR_LIST = %w[sender_name recipient_name title object_type].freeze
