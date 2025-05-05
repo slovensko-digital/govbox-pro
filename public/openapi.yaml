@@ -296,6 +296,13 @@ paths:
                           description: Samotný objektu zakódovaný ako Base64 text
                           type: string
                           format: byte
+                  metadata:
+                    description: Metaúdaje správy
+                    oneOf:
+                      - type:
+                        $ref: '#/components/schemas/FsMessageMetadata'
+                      - type:
+                        $ref: '#/components/schemas/UpvsMessageMetadata'
       security:
         - "Tenant_Token": []
 
