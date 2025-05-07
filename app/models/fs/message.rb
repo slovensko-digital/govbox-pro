@@ -59,6 +59,24 @@ class Fs::Message
     message
   end
 
+  def self.update_message_data(message, raw_message)
+    puts 'Message data updated!'
+
+    MessageThread.with_advisory_lock!(message.thread.merge_identifiers.first.uuid, transaction: true, timeout_seconds: 10) do
+      message.metadata.merge!(
+        {
+          "fs_status" => raw_message['status'],
+          "fs_submission_status" => raw_message['submission_status'],
+          "fs_period" => raw_message['period'],
+          "fs_dismissal_reason" => raw_message['dismissal_reason'],
+          "fs_other_attributes" => raw_message['other_attributes'],
+        }
+      )
+      message.save!
+      update_html_visualization(message)
+    end
+  end
+
   private
 
   def self.create_inbox_message(raw_message)
