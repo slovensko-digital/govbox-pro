@@ -5,6 +5,7 @@ class Fs::SubmitMessageDraftResultJob < ApplicationJob
     if 200 == response[:status]
       message_draft.submitted!
       message_draft.metadata[:fs_message_id] = response[:body]['sent_message_id']
+      message_draft.remove_cascading_tag(message_draft.tenant.submission_error_tag)
       message_draft.save
 
       ::Fs::DownloadSentMessageJob.perform_later(response[:body]['sent_message_id'], box: message_draft.box)

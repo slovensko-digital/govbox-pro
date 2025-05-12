@@ -58,7 +58,7 @@ class Message < ApplicationRecord
 
   def remove_cascading_tag(tag)
     messages_tags.find_by(tag: tag)&.destroy
-    thread.message_threads_tags.find_by(tag: tag)&.destroy unless thread.messages.any? {|m| m.tags.include?(tag) }
+    thread.message_threads_tags.find_by(tag: tag)&.destroy unless thread.messages.reload.any? {|m| m.tags.include?(tag) }
   end
 
   def draft?
