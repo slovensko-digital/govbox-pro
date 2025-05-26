@@ -52,7 +52,8 @@ module GovboxPro
       config.good_job.cron['sync_fs_boxes'] = {
         cron: "1 1-23/2 * * *", # run every 2 hours (odd), "01:01", "03:01", "05:01", ...
         class: "Fs::SyncAllBoxesJob",
-        description: "Regular job to synchronize all boxes"
+        description: "Regular job to synchronize all boxes",
+        set: { job_context: :later }
       }
     end
 
