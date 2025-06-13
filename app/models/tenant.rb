@@ -135,6 +135,7 @@ class Tenant < ApplicationRecord
     create_signed_externally_tag!(name: "Externe podpísané", visible: false, color: "purple", icon: "shield-check")
     create_submitted_tag!(name: 'Odoslané na spracovanie')
     create_submission_error_tag!(name: 'Problémové')
+    create_unprocessable_tag!(name: 'Chybné', color: 'red', icon: 'exclamation-triangle')
 
     make_admins_see_everything!
   end
