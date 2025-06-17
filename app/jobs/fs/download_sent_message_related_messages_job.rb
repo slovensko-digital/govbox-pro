@@ -1,5 +1,11 @@
 module Fs
   class DownloadSentMessageRelatedMessagesJob < ApplicationJob
+    include GoodJob::ActiveJobExtensions::Concurrency
+
+    good_job_control_concurrency_with(
+      perform_throttle: [250, 1.minute]
+    )
+
     class MissingRelatedMessagesError < StandardError
     end
 
