@@ -14,7 +14,7 @@ class HealthCheckController < ApplicationController
   end
 
   def failing_jobs
-    failed_jobs = GoodJob::Job.where.not(error: nil)
+    failed_jobs = GoodJob::Job.discarded.count
     if failed_jobs.any?
       render status: :service_unavailable,
              json: { ok: false }
