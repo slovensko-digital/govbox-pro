@@ -1,4 +1,8 @@
 class Fs::SubmitMessageDraftResultJob < ApplicationJob
+  retry_on RuntimeError, attempts: 1 do |_job, _error|
+    # no-op
+  end
+
   def perform(message_draft, location_header, fs_client: FsEnvironment.fs_client)
     response = fs_client.api(box: message_draft.thread.box).get_location(location_header)
 
@@ -14,7 +18,7 @@ class Fs::SubmitMessageDraftResultJob < ApplicationJob
       message_draft.add_cascading_tag(message_draft.tenant.submission_error_tag)
       message_draft.save
 
-      raise RuntimeError.new("Box #{message_draft.box.id}, Message #{message_draft.uuid}: response[:status]")
+      raise RuntimeError.new("Box #{message_draft.box.id}, Message #{message_draft.uuid}: #{response[:status]}")
     else
       raise RuntimeError.new("Unexpected response status: #{response[:status]}")
     end
