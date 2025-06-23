@@ -13,6 +13,8 @@ class Fs::SubmitMessageDraftResultJob < ApplicationJob
       message_draft.metadata[:status] = 'submit_fail'
       message_draft.add_cascading_tag(message_draft.tenant.submission_error_tag)
       message_draft.save
+
+      raise RuntimeError.new("Box #{message_draft.box.id}, Message #{message_draft.uuid}: response[:status]")
     else
       raise RuntimeError.new("Unexpected response status: #{response[:status]}")
     end
