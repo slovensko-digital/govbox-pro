@@ -1,5 +1,11 @@
 module Fs
   class SyncBoxJob < ApplicationJob
+    include GoodJob::ActiveJobExtensions::Concurrency
+
+    good_job_control_concurrency_with(
+      perform_limit: 2
+    )
+
     def perform(box, from: Date.yesterday, to: Date.tomorrow, fs_client: FsEnvironment.fs_client, batch_size: 25)
       raise unless box.is_a?(Fs::Box)
       return unless box.syncable?
