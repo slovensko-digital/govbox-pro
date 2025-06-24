@@ -5,6 +5,7 @@ module Fs
       return unless box.syncable?
 
       box.messages.outbox.not_drafts.find_each do |outbox_message|
+        DownloadSentMessageJob.perform_later(outbox_message.metadata['fs_message_id'], box: outbox_message.box) if (from..to).cover?(outbox_message.delivered_at)
         DownloadSentMessageRelatedMessagesJob.perform_later(outbox_message, from: from, to: to)
       end
     end
