@@ -43,7 +43,7 @@ class BoxTest < ActiveSupport::TestCase
       Box.sync_all
     end
 
-    assert_enqueued_jobs Upvs::Box.where(syncable: true).count
+    assert_enqueued_jobs Box.where(syncable: true).count
   end
 
   test "should not be valid if same obo value present in other boxes within connection" do
