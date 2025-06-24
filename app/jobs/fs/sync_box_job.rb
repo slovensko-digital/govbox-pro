@@ -1,6 +1,6 @@
 module Fs
   class SyncBoxJob < ApplicationJob
-    def perform(box, from: Date.today - 1.day, to: Date.tomorrow, fs_client: FsEnvironment.fs_client, batch_size: 25)
+    def perform(box, from: Date.yesterday, to: Date.tomorrow, fs_client: FsEnvironment.fs_client, batch_size: 25)
       raise unless box.is_a?(Fs::Box)
       return unless box.syncable?
 
@@ -18,7 +18,7 @@ module Fs
 
           next unless related_outbox_message
 
-          DownloadSentMessageRelatedMessagesJob.perform_later(related_outbox_message, from: from, to: to)
+          ::Fs::DownloadReceivedMessageJob.perform_later(received_message['message_id'], box: box)
         end
 
         break if received_messages['messages'].size < batch_size

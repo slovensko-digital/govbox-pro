@@ -38,6 +38,7 @@ class Fs::Box < Box
   end
 
   def sync
+    Fs::SyncBoxJob.set(job_context: :asap).perform_later(self)
   end
 
   def single_recipient?
