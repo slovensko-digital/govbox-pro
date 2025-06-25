@@ -3,7 +3,7 @@ class Fs::Message
 
   def self.create_inbox_message_with_thread!(raw_message, box:)
     message = nil
-    associated_outbox_message = box.messages.where("metadata ->> 'fs_message_id' = ?", raw_message['sent_message_id']).take
+    associated_outbox_message = box.messages.where("messages.metadata ->> 'fs_message_id' = ?", raw_message['sent_message_id']).take
 
     MessageThread.with_advisory_lock!(associated_outbox_message.metadata['correlation_id'], transaction: true, timeout_seconds: 10) do
       message = create_inbox_message(raw_message)
@@ -26,7 +26,7 @@ class Fs::Message
 
   def self.create_outbox_message_with_thread!(raw_message, box:)
     message = nil
-    associated_message_draft = box.messages.where(type: 'Fs::MessageDraft').where("metadata ->> 'fs_message_id' = ?", raw_message['message_id']).take
+    associated_message_draft = box.messages.where(type: 'Fs::MessageDraft').where("messages.metadata ->> 'fs_message_id' = ?", raw_message['message_id']).take
 
     merge_identifier = (associated_message_draft.metadata['correlation_id'] if associated_message_draft) || SecureRandom.uuid
 

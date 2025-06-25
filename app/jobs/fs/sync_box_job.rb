@@ -20,7 +20,7 @@ module Fs
         end
 
         received_messages['messages'].each do |received_message|
-          related_outbox_message = box.messages.not_drafts.where("metadata ->> 'fs_message_id' = ?", received_message['sent_message_id']).first
+          related_outbox_message = box.messages.not_drafts.where("messages.metadata ->> 'fs_message_id' = ?", received_message['sent_message_id']).first
 
           next unless related_outbox_message
 
