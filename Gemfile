@@ -22,7 +22,7 @@ gem 'view_component'
 gem 'clockwork'
 
 # Workers
-gem 'good_job', '= 3.27.0'
+gem 'good_job', '= 3.29.4'
 
 # Auth
 gem 'omniauth-google-oauth2'
