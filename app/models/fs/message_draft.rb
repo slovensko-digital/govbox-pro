@@ -33,7 +33,7 @@ class Fs::MessageDraft < MessageDraft
     form_files.each do |form_file|
       form_content = form_file.read.force_encoding("UTF-8")
 
-      box, fs_form = get_parsed_box_and_form_from_content(form_content, tenant: author.tenant)
+      box, fs_form, period = get_parsed_box_and_form_from_content(form_content, tenant: author.tenant)
 
       if box.nil?
         failed_files << form_file
@@ -61,7 +61,10 @@ class Fs::MessageDraft < MessageDraft
         box: box,
         merge_uuid: SecureRandom.uuid,
         title: message.title,
-        delivered_at: message.delivered_at
+        delivered_at: message.delivered_at,
+        metadata: {
+          period: period
+        }
       )
 
       message.save
@@ -81,6 +84,7 @@ class Fs::MessageDraft < MessageDraft
         message.thread.box.tenant.signer_group.signature_requested_from_tag&.assign_to_message_object(form_object)
         message.thread.box.tenant.signer_group.signature_requested_from_tag&.assign_to_thread(message.thread)
       end
+      message.thread.assign_tag(message.thread.box.tenant.simple_tags.find_or_create_by!(name: period)) if period
 
       MessageObjectDatum.create(
         message_object: form_object,
@@ -116,7 +120,7 @@ class Fs::MessageDraft < MessageDraft
     raise MissingFormObjectError unless b64_form_content
 
     form_content = Base64.decode64(b64_form_content)
-    box, fs_form = get_parsed_box_and_form_from_content(form_content, tenant: tenant)
+    box, fs_form, period = get_parsed_box_and_form_from_content(form_content, tenant: tenant)
 
     raise InvalidSenderError unless box
     raise UnknownFormError unless fs_form
@@ -139,8 +143,12 @@ class Fs::MessageDraft < MessageDraft
       box: box,
       merge_uuid: message.metadata&.dig('correlation_id'),
       title: message.title,
-      delivered_at: message.delivered_at
+      delivered_at: message.delivered_at,
+      metadata: {
+        period: period
+      }
     )
+    message.thread.assign_tag(message.thread.box.tenant.simple_tags.find_or_create_by!(name: period)) if period
 
     message
   end
@@ -149,11 +157,12 @@ class Fs::MessageDraft < MessageDraft
     form_information = fs_client.api.parse_form(form_content)
     dic = form_information&.dig('subject')&.strip
     fs_form_identifier = form_information&.dig('form_identifier')
+    period = form_information&.dig('period')&.dig('pretty')
 
     box = tenant.boxes.with_enabled_message_drafts_import.find_by("settings ->> 'dic' = ?", dic)
     fs_form = Fs::Form.find_by(identifier: fs_form_identifier)
 
-    return box, fs_form
+    return box, fs_form, period
   end
 
   def submit

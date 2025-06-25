@@ -11,6 +11,8 @@ class Fs::Message
       message.thread = associated_outbox_message.thread
       message.thread.assign_tag(message.thread.tenant.inbox_tag)
 
+      message.metadata['fs_period'] ||= message.thread.metadata&.dig('period')
+
       message.save!
 
       create_message_objects(message, raw_message)
@@ -104,7 +106,7 @@ class Fs::Message
         "fs_message_id": raw_message['message_id'],
         "fs_status": raw_message['status'],
         "fs_submitting_subject": raw_message['submitting_subject'],
-        "fs_period": raw_message['period'],
+        "fs_period": raw_message['period'] || associated_message_draft&.thread&.metadata&.dig('period'),
         "fs_dismissal_reason": raw_message['dismissal_reason'],
         "fs_other_attributes": raw_message['other_attributes'],
         "dic": raw_message['dic']
