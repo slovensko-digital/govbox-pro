@@ -162,4 +162,25 @@ class Automation::RuleTest < ActiveSupport::TestCase
     message_draft = Fs::MessageDraft.last
     assert_not_includes message_draft.thread.tags, tags(:api_connection_tag)
   end
+
+  test 'runs an automation if ValueCondition satisfied' do
+    author = users(:accountants_basic)
+
+    rule = automation_rules(:add_tag_api_connection)
+    rule.conditions.create(type: "Automation::ValueCondition", attr: "type", value: "Fs::MessageDraft")
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :parse_form, {
+      "subject" => "1122334455",
+      "form_identifier" => "3055_781"
+    },
+                  [file_fixture("fs/1122334455_fs3055_781__sprava_dani_2023.xml").read]
+
+    FsEnvironment.fs_client.stub :api, fs_api do
+        Fs::MessageDraft.create_and_validate_with_fs_form(form_files: [fixture_file_upload("fs/1122334455_fs3055_781__sprava_dani_2023.xml", "application/xml")], author: author)
+    end
+    travel_to(15.minutes.from_now) { GoodJob.perform_inline }
+    message_draft = Fs::MessageDraft.last
+    assert_includes message_draft.thread.title, "1122334455"
+  end
 end

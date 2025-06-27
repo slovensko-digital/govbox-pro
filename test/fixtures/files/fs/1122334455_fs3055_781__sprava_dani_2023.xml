@@ -1,0 +1,65 @@
+<dokument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<secAdresovanieVP>
+	<valOrganFS>DU</valOrganFS>
+<secAdresatDU>
+	<valDanovyUrad>200</valDanovyUrad>
+</secAdresatDU>
+</secAdresovanieVP>
+<secOblastPodania>
+	<valOblastPodania>DAN</valOblastPodania>
+	<valAgenda>DAN_FO</valAgenda>
+</secOblastPodania>
+<secTypPodania>
+	<valTypSluzby1>1</valTypSluzby1>
+	<valTypPodania>ZVP</valTypPodania>
+</secTypPodania>
+<secDanSubjekt>
+	<valFormaDanovehoSubjektu>0</valFormaDanovehoSubjektu>
+	<valDicDanSubj>1122334455</valDicDanSubj>
+<secDanSubjFO>
+	<valIcoFO>50881337</valIcoFO>
+	<valObchMenoDanSubjFO>Meno Priezvisko</valObchMenoDanSubjFO>
+<secDoplUdajeFO>
+	<valTitulPredDanSubjFO>Bc.</valTitulPredDanSubjFO>
+	<valMenoDanSubjFO>Meno</valMenoDanSubjFO>
+	<valPriezvDanSubjFO>Priezvisko</valPriezvDanSubjFO>
+	<valRodneCisloDanSubjFO>8901193116</valRodneCisloDanSubjFO>
+</secDoplUdajeFO>
+</secDanSubjFO>
+</secDanSubjekt>
+<secSidlo>
+	<valUlica>Ulica</valUlica>
+	<valCislo>1/2</valCislo>
+	<valPsc>84101</valPsc>
+	<valObec>Mesto</valObec>
+	<valStat>Slovensko</valStat>
+</secSidlo>
+<secUdajeSpoplatnenePodanie>
+	<ID_sluzby>1088</ID_sluzby>
+	<valSadzobnikPoplatkov>DAN_V19.1.3</valSadzobnikPoplatkov>
+	<valNazovSluzby>DAN_VE1088/P1088</valNazovSluzby>
+<secPomocna>
+	<valVystupSluzby>E</valVystupSluzby>
+	<valJednokovaCena>1.00</valJednokovaCena>
+<secPomocna2>
+	<valOslobodenie>0</valOslobodenie>
+</secPomocna2>
+</secPomocna>
+<secSchrankaAP>
+	<schrankaAP>ico://sk/42499500_0012</schrankaAP>
+</secSchrankaAP>
+<secSchrankaSubjektu>
+  <schrankaSubjektu>rc://sk/8901193116_priezvisko_meno</schrankaSubjektu>
+</secSchrankaSubjektu>
+</secUdajeSpoplatnenePodanie>
+<secDruhPrilohy>
+	<valDruhPrilohy>0</valDruhPrilohy>
+</secDruhPrilohy>
+<secObsah>
+	<valTextPodania>Týmto Vás žiadam o vystavenie potvrdenia o výške dane na základe daňového priznania k dani z príjmov pre FO za zdaňovacie obdobie 2023 a potvrdenia o zaplatení dane.</valTextPodania>
+</secObsah>
+<secDatumPodania>
+	<valDatumPodania>2024-06-10</valDatumPodania>
+</secDatumPodania>
+</dokument>
+
