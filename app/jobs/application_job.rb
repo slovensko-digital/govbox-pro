@@ -38,6 +38,7 @@ class ApplicationJob < ActiveJob::Base
     case queue_name.to_sym
     when :asap then -1000
     when :default, :automation then 0
+    when :upvs_sync then 500
     when :later then 1000
     else
       raise "Unable to assign default priority to a job on #{queue_name} queue"
