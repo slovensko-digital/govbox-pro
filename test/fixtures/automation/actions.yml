@@ -47,3 +47,7 @@ add_tag_api_connection:
   automation_rule: add_tag_api_connection
   type: Automation::AddMessageThreadTagAction
   action_object: api_connection_tag (Tag)
+
+add_form_object_id_to_thread_title:
+  automation_rule: add_form_object_id_to_thread_title
+  type: Automation::AddFormObjectIdentifierToMessageThreadTitleAction

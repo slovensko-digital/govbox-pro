@@ -268,6 +268,7 @@ sk:
   object_type: "Typ objektu"
   fs_submission_status: "Stav podania"
   edesk_class: "Typ ÚPVS správy"
+  type: "Typ"
   fs_message_type: "Typ FS správy"
   box: "Schránka správy"
   attachment: "Príloha"
@@ -281,6 +282,7 @@ sk:
   message_draft_validated: "Zvalidovaná správa"
   message_draft_submitted: "Odoslaná správa"
   message_object_downloaded: "Stiahnutý objekt správy"
+  "Automation::ValueCondition": "je"
   "Automation::ContainsCondition": "obsahuje"
   "Automation::BooleanCondition": "je"
   "Automation::AttachmentContentContainsCondition": "obsahuje"
@@ -293,6 +295,7 @@ sk:
   "Automation::UnassignMessageThreadTagAction": "Odober štítok z vlákna"
   "Automation::AddTagAction": "Pridaj štítok"
   "Automation::ChangeMessageThreadTitleAction": "Premenuj vlákno na"
+  "Automation::AddFormObjectIdentifierToMessageThreadTitleAction": "Pridaj do vlákna ID z názvu formulára"
   "Automation::FireWebhookAction": "Zavolaj integráciu"
   group:
     names:
