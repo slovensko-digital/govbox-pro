@@ -46,7 +46,7 @@ module GovboxPro
           cron: "1 */2 * * *", # run every 2 hours (even), "00:01", "02:01", "04:01", ...
           class: "Govbox::SyncAllBoxesJob",
           description: "Regular job to synchronize all boxes",
-          set: { job_context: :upvs_sync }
+          set: { job_context: :low }
         }
       }
 
