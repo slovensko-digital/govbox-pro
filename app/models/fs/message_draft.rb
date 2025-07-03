@@ -148,7 +148,6 @@ class Fs::MessageDraft < MessageDraft
         period: period
       }
     )
-    message.thread.assign_tag(message.thread.box.tenant.simple_tags.find_or_create_by!(name: period)) if period
 
     message
   end
@@ -163,6 +162,13 @@ class Fs::MessageDraft < MessageDraft
     fs_form = Fs::Form.find_by(identifier: fs_form_identifier)
 
     return box, fs_form, period
+  end
+
+  def assign_tags_from_params(tags_params)
+    period = thread.metadata.dig('period')
+    thread.assign_tag(thread.box.tenant.simple_tags.find_or_create_by!(name: period)) if period
+
+    super
   end
 
   def submit
