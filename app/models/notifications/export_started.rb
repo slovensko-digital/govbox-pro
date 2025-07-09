@@ -13,12 +13,7 @@
 #  message_thread_id      :bigint
 #  user_id                :bigint           not null
 #
-class Notification < ApplicationRecord
-  belongs_to :user, inverse_of: :notifications
-  belongs_to :message_thread, optional: true
-  belongs_to :message, optional: true
-  belongs_to :filter_subscription, optional: true
-  belongs_to :export, optional: true
-
-  delegate :filter, to: :filter_subscription
+module Notifications
+  class ExportStarted < ::Notification
+  end
 end

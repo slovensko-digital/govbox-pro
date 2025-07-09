@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_06_25_104125) do
+ActiveRecord::Schema[7.1].define(version: 2025_07_09_191148) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -176,6 +176,15 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_25_104125) do
     t.index ["api_connection_id"], name: "index_boxes_on_api_connection_id"
     t.index ["tenant_id", "short_name"], name: "index_boxes_on_tenant_id_and_short_name", unique: true
     t.index ["tenant_id"], name: "index_boxes_on_tenant_id"
+  end
+
+  create_table "exports", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.integer "message_thread_ids", default: [], null: false, array: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.jsonb "settings", default: {}, null: false
+    t.index ["user_id"], name: "index_exports_on_user_id"
   end
 
   create_table "filter_subscriptions", force: :cascade do |t|
@@ -517,12 +526,14 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_25_104125) do
   create_table "notifications", force: :cascade do |t|
     t.string "type", null: false
     t.bigint "user_id", null: false
-    t.bigint "message_thread_id", null: false
+    t.bigint "message_thread_id"
     t.bigint "message_id"
     t.bigint "filter_subscription_id"
-    t.string "filter_name", null: false
+    t.string "filter_name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "export_id"
+    t.index ["export_id"], name: "index_notifications_on_export_id"
     t.index ["filter_subscription_id"], name: "index_notifications_on_filter_subscription_id"
     t.index ["message_id"], name: "index_notifications_on_message_id"
     t.index ["message_thread_id"], name: "index_notifications_on_message_thread_id"
@@ -657,6 +668,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_25_104125) do
   add_foreign_key "automation_webhooks", "tenants", on_delete: :cascade
   add_foreign_key "boxes", "api_connections"
   add_foreign_key "boxes", "tenants"
+  add_foreign_key "exports", "users"
   add_foreign_key "filter_subscriptions", "filters"
   add_foreign_key "filter_subscriptions", "tenants"
   add_foreign_key "filter_subscriptions", "users"

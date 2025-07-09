@@ -27,6 +27,10 @@ module ApplicationHelper
       "chat-bubble-left-right"
     when Notifications::MessageThreadNoteChanged
       "pencil-square"
+    when Notifications::ExportStarted
+      "folder"
+    when Notifications::ExportFinished
+      "folder-arrow-down"
     end
   end
 end

@@ -1,0 +1,94 @@
+<div class="p-4">
+  <div class="overflow-hidden bg-white sm:rounded-lg sm:shadow">
+    <div class="border-b border-gray-200 bg-white px-4 py-5 sm:px-6">
+      <h3 class="text-base font-semibold leading-6 text-gray-900">Export správ</h3>
+    </div>
+
+    <div class="flow-root m-6">
+      <%= form_for @export, url: message_threads_bulk_export_path(@export), method: :put do |f| %>
+        <div>
+          <h3 class="text-base font-semibold text-gray-900">Nastavenie exportu</h3>
+          <p class="mt-1 text-sm text-gray-500">Nastavte ako budú exportované jednotlivé typy správ.</p>
+        </div>
+        <div class="space-y-4 py-6">
+
+          <div class="flex items-center gap-x-3">
+            <%= check_box_tag "export[settings][pdf]", "1", @export.settings["pdf"], class: "h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer" %>
+            <%= label_tag "export[settings][pdf]", "Exportovať aj PDF", class: "select-none text-sm/6 text-gray-900 cursor-pointer" %>
+          </div>
+          <% @message_types.each do |message_type| %>
+            <div>
+              <label for="email" class="block text-sm/6 font-medium text-gray-900"><%= message_type %></label>
+              <div class="mt-2">
+                <%= text_field_tag "export[settings][templates][#{message_type}]", @export.settings.dig('templates', message_type), class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+
+        <div class="mb-6">
+          <%= f.submit "Uložiť nastavenia", class: "rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" %>
+        </div>
+      <% end %>
+
+      <div class="border-b border-gray-200 bg-white py-5">
+        <h3 class="text-base font-semibold text-gray-900">Náhľad exportu</h3>
+      </div>
+
+      <table class="min-w-full divide-y divide-gray-300">
+        <thead>
+        <tr>
+          <th scope="col" class="whitespace-nowrap py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">Schránka</th>
+          <th scope="col" class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Názov</th>
+          <th scope="col" class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Typ</th>
+          <th scope="col" class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Export</th>
+          <th scope="col" class="relative whitespace-nowrap py-3.5 pl-3 pr-4 sm:pr-0">
+            <span class="sr-only">Edit</span>
+          </th>
+        </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200 bg-white">
+        <% @message_threads.each do |message_thread| %>
+          <tr>
+            <td class="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-gray-500 sm:pl-0"><%= message_thread.box.short_name %></td>
+            <td class="px-2 py-2 text-sm font-medium text-gray-900"><%= message_thread.title %>
+              <div class="flex flex-wrap items-center gap-1">
+                <% message_thread.message_threads_tags.only_visible_tags.each do |tag| %>
+                  <%= render Common::TagComponent.new(tag.tag) %>
+                <% end %>
+              </div>
+            </td>
+            <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900"></td>
+            <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500"></td>
+          </tr>
+          <% message_thread.messages.sort_by(&:delivered_at).each do |message| %>
+            <tr>
+              <td class="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-gray-500 sm:pl-0"></td>
+              <td class="px-2 py-2 text-sm font-medium text-gray-900">
+                <span class="text-gray-500">&#10551;</span> <%= message.title %></td>
+              <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900"><%= message.message_type || '&mdash;'.html_safe %></td>
+              <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500"></td>
+            </tr>
+            <% message.objects.each do |message_object| %>
+              <tr>
+                <td class="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-gray-500 sm:pl-0"></td>
+                <td class="px-2 py-2 text-sm font-medium text-gray-900"> &nbsp;&nbsp;<span class="text-gray-500">&#10551;</span> <%= message_object.name %>
+                </td>
+                <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900"></td>
+                <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
+                  <code><%= @export.export_object_filepath(message_object) %></code></td>
+              </tr>
+            <% end %>
+          <% end %>
+        <% end %>
+        </tbody>
+      </table>
+
+      <div class="mt-6">
+        <%= form_for @export, url: message_threads_bulk_export_start_path(@export), method: :post do |f| %>
+          <%= f.submit "Exportovať", class: "rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500", data: { turbo_confirm: "Chcete vytvoriť export?" } %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
