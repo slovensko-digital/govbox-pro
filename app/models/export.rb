@@ -48,6 +48,10 @@ class Export < ApplicationRecord
     out
   end
 
+  def storage_path
+    File.join(Rails.root, "storage", "exports", "#{user.tenant.id}/#{id}.zip")
+  end
+
   private
 
   def set_default_template

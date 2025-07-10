@@ -54,7 +54,6 @@ class ExportJob < ApplicationJob
         pdf_content = nested_message_object.content
       else
         pdf_content = nested_message_object.prepare_pdf_visualization
-        # raise StandardError, "Unable to prepare PDF visualization for MessageObject ID #{nested_message_object.id}" unless pdf_content
       end
 
       file_path = unique_path_within_export(object, export: export, other_file_names: file_paths, pdf: true)
