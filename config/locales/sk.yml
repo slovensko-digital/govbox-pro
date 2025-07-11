@@ -376,3 +376,7 @@ sk:
     message_draft_import:
       name: "Import správ"
       description: "Funkcionalita pre hromadné zasielanie správ"
+  exports:
+    flash:
+      started: "Export správ bol zaradený na spracovanie."
+      updated: "Nastavenia exportu správ boli zmenené."

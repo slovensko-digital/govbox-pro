@@ -15,7 +15,7 @@ class NotificationsController < ApplicationController
 
   def set_notifications_and_cursor
     @notifications, @next_cursor = Pagination.paginate(
-      collection: Current.user.notifications.includes(:message_thread, :message, filter_subscription: :filter),
+      collection: Current.user.notifications.includes(:message_thread, :message, :export, filter_subscription: :filter),
       cursor: params[:cursor] || { id: nil },
       items_per_page: 20
     )

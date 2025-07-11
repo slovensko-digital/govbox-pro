@@ -116,7 +116,10 @@ class Message < ApplicationRecord
         identifier: all_metadata['message_type']
       )
     end
+  end
 
+  def message_type
+    metadata['fs_message_type'] || metadata['edesk_class']
   end
 
   def update_html_visualization
