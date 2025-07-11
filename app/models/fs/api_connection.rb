@@ -11,6 +11,7 @@
 #  type                  :string
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
+#  owner_id              :bigint
 #  tenant_id             :bigint
 #
 class Fs::ApiConnection < ::ApiConnection

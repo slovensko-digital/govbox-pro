@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_06_25_104125) do
+ActiveRecord::Schema[7.1].define(version: 2025_07_11_131441) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -59,6 +59,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_25_104125) do
     t.bigint "tenant_id"
     t.jsonb "settings"
     t.string "custom_name"
+    t.bigint "owner_id"
+    t.index ["owner_id"], name: "index_api_connections_on_owner_id"
     t.index ["tenant_id"], name: "index_api_connections_on_tenant_id"
   end
 
@@ -645,6 +647,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_25_104125) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "api_connections", "tenants"
+  add_foreign_key "api_connections", "users", column: "owner_id"
   add_foreign_key "archived_object_versions", "archived_objects"
   add_foreign_key "archived_objects", "message_objects"
   add_foreign_key "audit_logs", "message_threads", on_delete: :nullify
