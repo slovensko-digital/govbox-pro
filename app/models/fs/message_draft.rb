@@ -63,7 +63,8 @@ class Fs::MessageDraft < MessageDraft
         title: message.title,
         delivered_at: message.delivered_at,
         metadata: {
-          period: period
+          period: period,
+          fs_form_id: fs_form&.id
         }
       )
 
@@ -145,7 +146,8 @@ class Fs::MessageDraft < MessageDraft
       title: message.title,
       delivered_at: message.delivered_at,
       metadata: {
-        period: period
+        period: period,
+        fs_form_id: fs_form&.id
       }
     )
 
