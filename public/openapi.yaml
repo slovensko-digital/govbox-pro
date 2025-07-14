@@ -168,6 +168,12 @@ paths:
                         $ref: '#/components/schemas/FsMessageMetadata'
                       - type:
                         $ref: '#/components/schemas/UpvsMessageMetadata'
+                  tags:
+                    description: Zoznam štítkov priradených správe
+                    type: array
+                    items:
+                      description: Názov štítka priradeného správe
+                      type: string
                   message_objects:
                     description: Zoznam objektov správy
                     type: array
