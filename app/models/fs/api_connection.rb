@@ -54,13 +54,12 @@ class Fs::ApiConnection < ::ApiConnection
     fs_api = FsEnvironment.fs_client.api(api_connection: self)
     fs_api.get_subjects.each do |subject|
       Fs::Box.with_advisory_lock!("boxify-#{tenant_id}", transaction: true, timeout_seconds: 10) do
-        boxes = Fs::Box.where(tenant: tenant, api_connection_id: self.id).where("settings @> ?", {dic: subject["dic"], subject_id: subject["subject_id"]}.to_json)
+        boxes = Fs::Box.where(tenant: tenant).where("settings @> ?", {dic: subject["dic"], subject_id: subject["subject_id"]}.to_json)
         box = boxes.first unless boxes.count > 1
 
         unless box
           box = Fs::Box.new(
             tenant: tenant,
-            api_connection: self,
             settings: {
               dic: subject["dic"],
               subject_id: subject["subject_id"],
@@ -74,6 +73,8 @@ class Fs::ApiConnection < ::ApiConnection
         box.uri = "dic://sk/#{subject['dic']}"
         box.settings_delegate_id ||= subject["delegate_id"]
         box.settings_is_subject_c_reg ||= subject["is_subject_c_reg"]
+
+        box.boxes_api_connections.find_or_create_by(api_connection: self)
 
         count += 1 if box.new_record? && box.save
 
