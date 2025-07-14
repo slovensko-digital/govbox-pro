@@ -39,3 +39,7 @@ en:
         disallowed_form_for_recipient: "Recipient does not accept the form type"
         invalid_form: "Form XSD validation failed"
         invalid: "%{attribute} is not valid"
+  exports:
+    flash:
+      started: "Export started."
+      updated: ""
