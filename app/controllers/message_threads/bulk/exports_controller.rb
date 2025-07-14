@@ -8,7 +8,9 @@ module MessageThreads
       def show
         authorize @export
 
-        # TODO send_file
+        send_file @export.storage_path, type: 'application/x-zip-compressed', disposition: :download
+      rescue
+        redirect_back fallback_location: notifications_path, alert: "Export nie je možné stiahnuť."
       end
 
       def edit

@@ -19,7 +19,9 @@ class Export < ApplicationRecord
     "{{ schranka.nazov }}" => -> (o) { o.message.thread.box.name },
     "{{ schranka.dic }}" => -> (o) { o.message.thread.box.settings["dic"] },
     "{{ vlakno.id }}" => ->(o) { o.message.thread.id },
-    "{{ vlakno.obdobie }}" => ->(o) { o.message.thread.metadata["period"] },
+    "{{ vlakno.obdobie }}" => ->(o) { o.message.thread.metadata["period"] if o.message.thread.metadata&.dig("period") },
+    "{{ vlakno.formular }}" => ->(o) { Fs::Form.find_by_id(o.message.thread.metadata["fs_form_id"])&.slug if o.message.thread.metadata&.dig("fs_form_id") },
+    "{{ vlakno.datum_podania }}" => ->(o) { o.message.thread.messages.outbox.first.delivered_at&.to_date  },
     "{{ sprava.id }}" => ->(o) { o.message.id },
     "{{ subor.nazov }}" => ->(o) { o.name }
   }.freeze
@@ -44,6 +46,10 @@ class Export < ApplicationRecord
     end
 
     out
+  end
+
+  def storage_path
+    File.join(Rails.root, "storage", "exports", "#{user.tenant.id}/#{id}.zip")
   end
 
   private
