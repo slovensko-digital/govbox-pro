@@ -164,6 +164,14 @@ class Fs::MessageDraft < MessageDraft
     return box, fs_form, period
   end
 
+  def api_connection_form_submission
+    signed_by = thread.tags.where(type: "SignedByTag")&.first&.owner
+
+    return box.api_connections.find_by(owner: signed_by) if signed_by && box.api_connections.find_by(owner: signed_by)
+
+    box.api_connection
+  end
+
   def assign_tags_from_params(tags_params)
     period = thread.metadata.dig('period')
     thread.assign_tag(thread.box.tenant.simple_tags.find_or_create_by!(name: period)) if period

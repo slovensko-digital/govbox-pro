@@ -16,6 +16,7 @@
 #
 class ApiConnection < ApplicationRecord
   belongs_to :tenant, optional: true
+  belongs_to :owner, class_name: "User", optional: true
   has_many :boxes
 
   def box_obo(box)
