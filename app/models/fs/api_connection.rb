@@ -74,11 +74,11 @@ class Fs::ApiConnection < ::ApiConnection
         box.settings_delegate_id ||= subject["delegate_id"]
         box.settings_is_subject_c_reg ||= subject["is_subject_c_reg"]
 
-        box.boxes_api_connections.find_or_create_by(api_connection: self)
-
         count += 1 if box.new_record? && box.save
 
         box.save
+
+        box.boxes_api_connections.find_or_create_by(api_connection: self)
       end
     end
 
