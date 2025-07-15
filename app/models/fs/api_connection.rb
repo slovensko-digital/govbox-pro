@@ -60,6 +60,7 @@ class Fs::ApiConnection < ::ApiConnection
         unless box
           box = Fs::Box.new(
             tenant: tenant,
+            api_connection: self,
             settings: {
               dic: subject["dic"],
               subject_id: subject["subject_id"],
@@ -78,7 +79,7 @@ class Fs::ApiConnection < ::ApiConnection
 
         box.save
 
-        box.boxes_api_connections.find_or_create_by(api_connection: self)
+        box.boxes_other_api_connections.find_or_create_by(api_connection: self) if box.api_connection != self
       end
     end
 
