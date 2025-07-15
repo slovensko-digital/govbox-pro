@@ -164,7 +164,7 @@ class Fs::MessageDraft < MessageDraft
     return box, fs_form, period
   end
 
-  def api_connection_form_submission
+  def find_api_connection_for_submission
     signed_by = thread.tags.where(type: "SignedByTag")&.first&.owner
 
     return box.api_connections.find_by(owner: signed_by) if signed_by && box.api_connections.find_by(owner: signed_by)

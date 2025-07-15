@@ -12,7 +12,7 @@ class Fs::SubmitMessageDraftJob < ApplicationJob
   def perform(message_draft, bulk_submit: false, fs_client: FsEnvironment.fs_client)
     raise "Invalid message!" unless message_draft.valid?(:validate_data)
 
-    fs_api = fs_client.api(box: message_draft.box, api_connection: message_draft.api_connection_form_submission)
+    fs_api = fs_client.api(box: message_draft.box, api_connection: message_draft.find_api_connection_for_submission)
 
     response = fs_api.post_submission(
       message_draft.form.identifier,
