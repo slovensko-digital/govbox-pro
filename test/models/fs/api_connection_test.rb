@@ -61,7 +61,7 @@ class Fs::ApiConnectionTest < ActiveSupport::TestCase
     assert_equal original_fs_boxes_count, Fs::Box.count
   end
 
-  test ".boxify adds deleage_it and c_reg on existing boxes if present" do
+  test ".boxify adds delegate_id and c_reg on existing boxes if present" do
     original_fs_boxes_count = Fs::Box.count
     existing_box = boxes(:fs_accountants2)
 
@@ -81,7 +81,7 @@ class Fs::ApiConnectionTest < ActiveSupport::TestCase
     assert_equal original_fs_boxes_count, Fs::Box.count
   end
 
-  test ".boxify adds deleage_it and doesn't suplicate existing boxes if c_reg already present" do
+  test ".boxify adds delegate_id and doesn't duplicate existing boxes if c_reg already present" do
     original_fs_boxes_count = Fs::Box.count
     existing_box = boxes(:fs_false_creg)
 
@@ -145,5 +145,29 @@ class Fs::ApiConnectionTest < ActiveSupport::TestCase
     new_box.save
 
     assert_equal "FSJJ5", new_box.short_name
+  end
+
+  test ".boxify sets other API connections" do
+    original_fs_boxes_count = Fs::Box.count
+    existing_box = boxes(:fs_accountants2)
+    api_connection = existing_box.api_connection
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :get_subjects, [
+      {"name" => existing_box.name , "dic" => existing_box.settings_dic , "subject_id" => existing_box.settings_subject_id, "authorization_type" => "6"},
+    ]
+
+    other_api_connection = api_connections(:fs_api_connection3)
+
+    assert_equal [], existing_box.other_api_connections
+
+    FsEnvironment.fs_client.stub :api, fs_api do
+      other_api_connection.boxify
+    end
+
+    assert_equal api_connection, existing_box.api_connection
+    assert_equal 1, existing_box.other_api_connections.count
+    assert_equal other_api_connection, existing_box.other_api_connections.reload.first
+    assert_equal original_fs_boxes_count, Fs::Box.count
   end
 end

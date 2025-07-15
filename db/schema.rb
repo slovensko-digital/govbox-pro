@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_07_09_191148) do
+ActiveRecord::Schema[7.1].define(version: 2025_07_11_141032) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -59,6 +59,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_09_191148) do
     t.bigint "tenant_id"
     t.jsonb "settings"
     t.string "custom_name"
+    t.bigint "owner_id"
+    t.index ["owner_id"], name: "index_api_connections_on_owner_id"
     t.index ["tenant_id"], name: "index_api_connections_on_tenant_id"
   end
 
@@ -176,6 +178,16 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_09_191148) do
     t.index ["api_connection_id"], name: "index_boxes_on_api_connection_id"
     t.index ["tenant_id", "short_name"], name: "index_boxes_on_tenant_id_and_short_name", unique: true
     t.index ["tenant_id"], name: "index_boxes_on_tenant_id"
+  end
+
+  create_table "boxes_other_api_connections", force: :cascade do |t|
+    t.bigint "box_id", null: false
+    t.bigint "api_connection_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["api_connection_id"], name: "index_boxes_other_api_connections_on_api_connection_id"
+    t.index ["box_id", "api_connection_id"], name: "idx_on_box_id_api_connection_id_7b42f99e4a", unique: true
+    t.index ["box_id"], name: "index_boxes_other_api_connections_on_box_id"
   end
 
   create_table "exports", force: :cascade do |t|
@@ -665,6 +677,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_09_191148) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "api_connections", "tenants"
+  add_foreign_key "api_connections", "users", column: "owner_id"
   add_foreign_key "archived_object_versions", "archived_objects"
   add_foreign_key "archived_objects", "message_objects"
   add_foreign_key "audit_logs", "message_threads", on_delete: :nullify
@@ -677,6 +690,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_09_191148) do
   add_foreign_key "automation_webhooks", "tenants", on_delete: :cascade
   add_foreign_key "boxes", "api_connections"
   add_foreign_key "boxes", "tenants"
+  add_foreign_key "boxes_other_api_connections", "api_connections"
+  add_foreign_key "boxes_other_api_connections", "boxes"
   add_foreign_key "exports", "users"
   add_foreign_key "filter_subscriptions", "filters"
   add_foreign_key "filter_subscriptions", "tenants"

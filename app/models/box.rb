@@ -20,6 +20,8 @@ class Box < ApplicationRecord
 
   belongs_to :tenant
   belongs_to :api_connection
+  has_many :boxes_other_api_connections, dependent: :destroy
+  has_many :other_api_connections, through: :boxes_other_api_connections, class_name: 'ApiConnection', source: :api_connection
 
   has_many :message_threads, extend: MessageThreadsExtensions, dependent: :destroy
   has_many :messages, through: :message_threads

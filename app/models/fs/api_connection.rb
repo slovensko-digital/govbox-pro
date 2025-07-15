@@ -11,6 +11,7 @@
 #  type                  :string
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
+#  owner_id              :bigint
 #  tenant_id             :bigint
 #
 class Fs::ApiConnection < ::ApiConnection
@@ -53,7 +54,7 @@ class Fs::ApiConnection < ::ApiConnection
     fs_api = FsEnvironment.fs_client.api(api_connection: self)
     fs_api.get_subjects.each do |subject|
       Fs::Box.with_advisory_lock!("boxify-#{tenant_id}", transaction: true, timeout_seconds: 10) do
-        boxes = Fs::Box.where(tenant: tenant, api_connection_id: self.id).where("settings @> ?", {dic: subject["dic"], subject_id: subject["subject_id"]}.to_json)
+        boxes = Fs::Box.where(tenant: tenant).where("settings @> ?", {dic: subject["dic"], subject_id: subject["subject_id"]}.to_json)
         box = boxes.first unless boxes.count > 1
 
         unless box
@@ -77,6 +78,8 @@ class Fs::ApiConnection < ::ApiConnection
         count += 1 if box.new_record? && box.save
 
         box.save
+
+        box.boxes_other_api_connections.find_or_create_by(api_connection: self) if box.api_connection != self
       end
     end
 
