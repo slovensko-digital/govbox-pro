@@ -165,9 +165,11 @@ class Fs::MessageDraft < MessageDraft
   end
 
   def find_api_connection_for_submission
+    raise "Multiple signatures found. Can't choose API connection" if thread.tags.where(type: "SignedByTag").count > 1 && box.other_api_connections.any?
+
     signed_by = thread.tags.where(type: "SignedByTag")&.first&.owner
 
-    return box.api_connections.find_by(owner: signed_by) if signed_by && box.api_connections.find_by(owner: signed_by)
+    return box.other_api_connections.find_by(owner: signed_by) if signed_by && box.other_api_connections.find_by(owner: signed_by)
 
     box.api_connection
   end

@@ -180,14 +180,14 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_11_141032) do
     t.index ["tenant_id"], name: "index_boxes_on_tenant_id"
   end
 
-  create_table "boxes_api_connections", force: :cascade do |t|
+  create_table "boxes_other_api_connections", force: :cascade do |t|
     t.bigint "box_id", null: false
     t.bigint "api_connection_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["api_connection_id"], name: "index_boxes_api_connections_on_api_connection_id"
-    t.index ["box_id", "api_connection_id"], name: "index_boxes_api_connections_on_box_id_and_api_connection_id", unique: true
-    t.index ["box_id"], name: "index_boxes_api_connections_on_box_id"
+    t.index ["api_connection_id"], name: "index_boxes_other_api_connections_on_api_connection_id"
+    t.index ["box_id", "api_connection_id"], name: "idx_on_box_id_api_connection_id_7b42f99e4a", unique: true
+    t.index ["box_id"], name: "index_boxes_other_api_connections_on_box_id"
   end
 
   create_table "filter_subscriptions", force: :cascade do |t|
@@ -670,8 +670,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_11_141032) do
   add_foreign_key "automation_webhooks", "tenants", on_delete: :cascade
   add_foreign_key "boxes", "api_connections"
   add_foreign_key "boxes", "tenants"
-  add_foreign_key "boxes_api_connections", "api_connections"
-  add_foreign_key "boxes_api_connections", "boxes"
+  add_foreign_key "boxes_other_api_connections", "api_connections"
+  add_foreign_key "boxes_other_api_connections", "boxes"
   add_foreign_key "filter_subscriptions", "filters"
   add_foreign_key "filter_subscriptions", "tenants"
   add_foreign_key "filter_subscriptions", "users"

@@ -19,9 +19,9 @@ class Box < ApplicationRecord
   include Colorized
 
   belongs_to :tenant
-  belongs_to :api_connection # TODO delete
-  has_many :boxes_api_connections, dependent: :destroy
-  has_many :api_connections, through: :boxes_api_connections
+  belongs_to :api_connection
+  has_many :boxes_other_api_connections, dependent: :destroy
+  has_many :other_api_connections, through: :boxes_other_api_connections, class_name: 'ApiConnection', source: :api_connection
 
   has_many :message_threads, extend: MessageThreadsExtensions, dependent: :destroy
   has_many :messages, through: :message_threads
@@ -40,11 +40,6 @@ class Box < ApplicationRecord
 
   validates_presence_of :name, :short_name, :uri
   validate :validate_box_with_api_connection
-
-  # TODO uncomment when belongs_to :api_connection is deleted & update tests (boxes are created with api_connection param)
-  # def api_connection
-  #   api_connections.first
-  # end
 
   def self.create_with_api_connection!(params)
     raise NotImplementedError
