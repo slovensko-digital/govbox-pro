@@ -52,6 +52,7 @@ class Fs::MessageDraft < MessageDraft
         metadata: {
           'status': fs_form ? 'being_loaded' : 'invalid',
           'fs_form_id': fs_form&.id,
+          'dic': box.settings['dic'],
           'correlation_id': SecureRandom.uuid
         },
         author: author
@@ -136,6 +137,7 @@ class Fs::MessageDraft < MessageDraft
         metadata: (message_params['metadata'] || {}).merge({
           'status': 'being_loaded',
           'fs_form_id': fs_form.id,
+          'dic': box.settings['dic']
         }),
       })
     )
