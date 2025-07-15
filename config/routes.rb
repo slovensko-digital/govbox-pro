@@ -95,6 +95,10 @@ Rails.application.routes.draw do
         post :new
         post :start
       end
+
+      resources :exports do
+        post :start
+      end
     end
   end
 
