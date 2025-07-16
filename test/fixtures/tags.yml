@@ -306,6 +306,25 @@ accountants_basic_user_signature_requested:
   tenant: accountants
   icon: pencil
   color: yellow
+  owner: accountants_basic
+
+accountants_user2_signature_requested:
+  name: 'Na podpis: Basic user 3'
+  type: SignatureRequestedFromTag
+  visible: true
+  tenant: accountants
+  icon: pencil
+  color: yellow
+  owner: accountants_user2
+
+accountants_user3_signature_requested:
+  name: 'Na podpis: Basic user 4'
+  type: SignatureRequestedFromTag
+  visible: true
+  tenant: accountants
+  icon: pencil
+  color: yellow
+  owner: accountants_user3
 
 accountants_signed:
   name: Podpísané
