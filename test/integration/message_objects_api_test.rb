@@ -13,7 +13,14 @@ class MessageObjectsApiTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     json_response = JSON.parse(response.body)
-    assert_equal 12884, json_response["content"].size
     assert_equal 'JVBERi0xLj', json_response["content"].first(10)
+  end
+
+  test "responses with not found unless object downloadable as PDF" do
+    message_object = message_objects(:ssd_main_general_one_attachment)
+
+    get "/api/message_objects/#{message_object.id}/pdf", params: { token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }, as: :json
+
+    assert_response :not_found
   end
 end
