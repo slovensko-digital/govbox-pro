@@ -12,8 +12,9 @@ class MessageObjectsApiTest < ActionDispatch::IntegrationTest
     get "/api/message_objects/#{message_object.id}/pdf", params: { token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }, as: :json
 
     assert_response :success
-    json_response = JSON.parse(response.body)
-    assert_equal 'JVBERi0xLj', json_response["content"].first(10)
+    assert_equal "application/pdf", response.headers["content-type"]
+    assert_equal "download; filename=\"MyString.pdf\"; filename*=UTF-8''MyString.pdf", response.headers["content-disposition"]
+    assert_equal "%PDF-1.4", response.body.first(8)
   end
 
   test "responses with not found unless object downloadable as PDF" do

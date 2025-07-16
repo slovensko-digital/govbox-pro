@@ -199,7 +199,7 @@ paths:
                           description: Príznak, či je objekt podpísaný
                           type: boolean
                         data:
-                          description: Samotný objektu zakódovaný ako Base64 text
+                          description: Samotný obsah objektu zakódovaný ako Base64 text
                           type: string
                           format: byte
       security:
@@ -299,7 +299,7 @@ paths:
                           description: Príznak, či je objekt podpísaný
                           type: boolean
                         data:
-                          description: Samotný objektu zakódovaný ako Base64 text
+                          description: Samotný obsah objektu zakódovaný ako Base64 text
                           type: string
                           format: byte
                   metadata:
@@ -422,6 +422,32 @@ paths:
                             type: boolean
       security:
         - "Tenant_Token": []
+
+
+  /api/message_objects/{id}/pdf:
+    get:
+      tags: [ Objekty správ ]
+      summary: Vráti PDF vizualizáciu konkrétneho objektu správy
+      description: |
+        Vráti PDF vizualizáciu konkrétneho objektu správy.
+      parameters:
+        - name: id
+          in: path
+          description: Identifikátor objektu
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: Úspešné získanie PDF súboru s vizualizáciou objektu
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+      security:
+        - "Tenant_Token": [ ]
 
   /api/site_admin/tenant/:
     post:
