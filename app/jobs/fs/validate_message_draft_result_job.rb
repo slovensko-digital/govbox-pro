@@ -22,7 +22,7 @@ class Fs::ValidateMessageDraftResultJob < ApplicationJob
     unless response[:body]['result'] == 'OK'
       errors = response[:body]['problems']&.select { |problem| problem['level'] == 'error' }&.map{ |problem| problem['message'] }
       warnings = response[:body]['problems']&.select { |problem| problem['level'] == 'warning' }&.map{ |problem| problem['message'] }
-      diff = response[:body]['problems']&.select { |problem| problem['level'] == 'diff' }
+      diff = response[:body]['problems']&.select { |problem| problem['level'] == 'diff' }&.map{ |problem| problem['message'] }
 
       result = if errors.none? && warnings.none? && diff.any?
         'OK'
