@@ -71,7 +71,7 @@ class ApiController < ActionController::API
     render status: :forbidden, json: { message: "Forbidden" }
   end
 
-  def render_not_found(_key, **_options)
+  def render_not_found(_key = nil, **_options)
     render status: :not_found, json: { message: "Not found" }
   end
 
