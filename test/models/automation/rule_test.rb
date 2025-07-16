@@ -163,7 +163,7 @@ class Automation::RuleTest < ActiveSupport::TestCase
 
   test 'should not run an automation on message created AuthorHasApiConnectionCondition ValueCondition AddSignatureRequestedFromAuthorMessageThreadTagAction (if author does not have API connection for the box)' do
     author = users(:accountants_user4)
-    signature_requested_from_author_tag = tags(:accountants_user2_signature_requested)
+    signature_requested_from_author_tag = tags(:accountants_user4_signature_requested)
 
     fs_api = Minitest::Mock.new
     fs_api.expect :parse_form, {
