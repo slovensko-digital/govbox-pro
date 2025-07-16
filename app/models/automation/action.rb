@@ -17,7 +17,14 @@ module Automation
     belongs_to :action_object, polymorphic: true, optional: true
     attr_accessor :delete_record
 
-    ACTION_LIST = ['Automation::AddMessageThreadTagAction', 'Automation::UnassignMessageThreadTagAction', 'Automation::FireWebhookAction', 'Automation::ChangeMessageThreadTitleAction', 'Automation::AddFormObjectIdentifierToMessageThreadTitleAction'].freeze
+    ACTION_LIST = [
+      'Automation::AddMessageThreadTagAction',
+      'Automation::UnassignMessageThreadTagAction',
+      'Automation::FireWebhookAction',
+      'Automation::ChangeMessageThreadTitleAction',
+      'Automation::AddFormObjectIdentifierToMessageThreadTitleAction',
+      'Automation::AddSignatureRequestedFromAuthorMessageThreadTagAction'
+    ].freeze
 
     def tag_list
       automation_rule.tenant.tags.pluck(:name, :id)
@@ -61,6 +68,19 @@ module Automation
 
     def object_based?
       true
+    end
+  end
+
+  class AddSignatureRequestedFromAuthorMessageThreadTagAction < Action
+    def run!(message, _event)
+      thread = message.thread
+      tag = thread.tenant.tags.where(type: "SignatureRequestedFromTag", owner: message.author)
+
+      thread.tags << tag if tag && thread.tags.exclude?(tag)
+    end
+
+    def object_based?
+      false
     end
   end
 
