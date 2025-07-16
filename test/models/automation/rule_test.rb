@@ -148,7 +148,7 @@ class Automation::RuleTest < ActiveSupport::TestCase
 
     fs_api = Minitest::Mock.new
     fs_api.expect :parse_form, {
-      "subject" => "9988776655",
+      "subject" => "9988665533",
       "form_identifier" => "3055_781"
     },
     [file_fixture("fs/dic1122334455_fs3055_781__sprava_dani_2023.xml").read]
@@ -167,7 +167,7 @@ class Automation::RuleTest < ActiveSupport::TestCase
 
     fs_api = Minitest::Mock.new
     fs_api.expect :parse_form, {
-      "subject" => "9988776655",
+      "subject" => "9988665533",
       "form_identifier" => "3055_781"
     },
     [file_fixture("fs/dic1122334455_fs3055_781__sprava_dani_2023.xml").read]
