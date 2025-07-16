@@ -344,3 +344,22 @@ solver_main_delivery_notification_two:
         message_id: x7800b40-44b1-4012-ae78-774de6457cc2
         type: Doc.GeneralAgendaFiction
   thread: solver_main_delivery_notification
+
+solver_draft_with_diff:
+  uuid: <%= SecureRandom.uuid %>
+  title: FS draft
+  sender_name: MyString
+  recipient_name: MyString
+  html_visualization: MyString
+  delivered_at: <%= DateTime.current %>
+  metadata:
+    status: created
+    fs_form_id: 600
+    dic: 12345678
+    correlation_id: <%= SecureRandom.uuid %>
+    validation_errors:
+      result: OK
+      warnings: []
+      errors: []
+      diff: <mesiac>02</mesiac>\n---\n>       <mesiac>2</mesiac>\n
+  thread: solver_main_delivery_notification
