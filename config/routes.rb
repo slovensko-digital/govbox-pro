@@ -251,10 +251,15 @@ Rails.application.routes.draw do
         delete :destroy, on: :collection
       end
     end
+
     resources :messages, only: [:show, :destroy] do
       get :search, on: :collection
       post :message_drafts, on: :collection
       get :sync, on: :collection
+    end
+
+    resources :message_objects, only: [] do
+      get :pdf
     end
   end
 
