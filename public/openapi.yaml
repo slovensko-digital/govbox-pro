@@ -440,16 +440,12 @@ paths:
             format: int64
       responses:
         200:
-          description: Úspešné získanie PDF vizualizácie objektu
+          description: Úspešné získanie PDF súboru s vizualizáciou objektu
           content:
-            application/json:
+            application/pdf:
               schema:
-                type: object
-                properties:
-                  content:
-                    description: Base64 zakódovaná PDF vizualizácia objektu
-                    type: string
-                    example: UERGIGNvbnRlbnQgOik=
+                type: string
+                format: binary
       security:
         - "Tenant_Token": [ ]
 
