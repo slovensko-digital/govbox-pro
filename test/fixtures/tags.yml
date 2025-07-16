@@ -322,6 +322,25 @@ accountants_basic_user_signed:
   tenant: accountants
   icon: pencil
   color: yellow
+  owner: accountants_basic
+
+accountants_user2_signed:
+  name: 'Podpísané: Basic user 3'
+  type: SignedByTag
+  visible: true
+  tenant: accountants
+  icon: pencil
+  color: yellow
+  owner: accountants_user2
+
+accountants_user3_signed:
+  name: 'Podpísané: Basic user 4'
+  type: SignedByTag
+  visible: true
+  tenant: accountants
+  icon: pencil
+  color: yellow
+  owner: accountants_user3
 
 accountants_tag1:
   name: 'Tag 1'

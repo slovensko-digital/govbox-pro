@@ -84,6 +84,13 @@ fs_accountants_outbox:
   delivered_at: <%= 2.hours.ago %>
   last_message_delivered_at: <%= 2.hours.ago %>
 
+fs_accountants_multiple_api_connections_thread1:
+  box: fs_accountants_multiple_api_connections
+  title: Podanie
+  original_title: MyString
+  delivered_at: <%= 2.hours.ago %>
+  last_message_delivered_at: <%= 2.hours.ago %>
+
 solver_main_general_agenda:
   box: solver_main
   title: General agenda Solver

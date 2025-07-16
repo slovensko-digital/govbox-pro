@@ -34,3 +34,13 @@ accountants_basic:
   name: Basic user 2
   email: basic_user@email_accountants.com
   tenant: accountants
+
+accountants_user2:
+  name: Basic user 3
+  email: basic_user2@email_accountants.com
+  tenant: accountants
+
+accountants_user3:
+  name: Basic user 4
+  email: basic_user3@email_accountants.com
+  tenant: accountants
