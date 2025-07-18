@@ -1075,6 +1075,7 @@ components:
             correlation_id:
               description: Identifikátor vlákna správ
               type: string
+              format: uuid
           required:
             - correlation_id
         objects:
@@ -1201,6 +1202,7 @@ components:
         correlation_id:
           description: Identifikátor vlákna správ
           type: string
+          format: uuid
         status:
           description: Aktuálny stav správy
           type: string
@@ -1241,6 +1243,7 @@ components:
         correlation_id:
           description: SKTalk identifikátor vlákna správ
           type: string
+          format: uuid
         reference_id:
           description: SKTalk identifikátor referenčnej správy
           type: string
