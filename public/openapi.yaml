@@ -181,6 +181,9 @@ paths:
                       description: Objekt správy
                       type: object
                       properties:
+                        id:
+                          description: Identifikátor objektu v systéme Govbox Pro
+                          type: integer
                         name:
                           description: Názov objektu
                           type: string
@@ -281,6 +284,9 @@ paths:
                       description: Objekt správy
                       type: object
                       properties:
+                        id:
+                          description: Identifikátor objektu v systéme Govbox Pro
+                          type: integer
                         name:
                           description: Názov objektu
                           type: string
@@ -403,6 +409,9 @@ paths:
                         description: Objekt správy
                         type: object
                         properties:
+                          id:
+                            description: Identifikátor objektu v systéme Govbox Pro
+                            type: integer
                           name:
                             description: Názov objektu
                             type: string

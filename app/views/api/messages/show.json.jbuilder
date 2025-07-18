@@ -10,6 +10,7 @@ json.metadata @message.metadata
 json.tags @message.tags.pluck(:name)
 
 json.objects @message.objects do |object|
+  json.id object.id
   json.name object.name
   json.mimetype object.mimetype
   json.object_type object.object_type
