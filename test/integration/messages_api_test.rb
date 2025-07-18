@@ -32,6 +32,20 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "ignores diff in message metadata" do
+    @tenant = tenants(:solver)
+    message = messages(:solver_draft_with_diff)
+
+    get "/api/messages/#{message.id}", params: { token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }, as: :json
+
+    assert_response :success
+    json_response = JSON.parse(response.body)
+    assert_equal "OK", json_response["metadata"]["validation_errors"]["result"]
+    assert_equal [], json_response["metadata"]["validation_errors"]["warnings"]
+    assert_equal [], json_response["metadata"]["validation_errors"]["errors"]
+    assert_not json_response["metadata"]["validation_errors"].has_key?("diff")
+  end
+
   test "can not read nonexisting message" do
     message = messages(:ssd_main_general_one)
     message_id = message.id

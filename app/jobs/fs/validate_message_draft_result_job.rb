@@ -20,16 +20,26 @@ class Fs::ValidateMessageDraftResultJob < ApplicationJob
     end
 
     unless response[:body]['result'] == 'OK'
+      errors = response[:body]['problems']&.select { |problem| problem['level'] == 'error' }&.map{ |problem| problem['message'] }
+      warnings = response[:body]['problems']&.select { |problem| problem['level'] == 'warning' }&.map{ |problem| problem['message'] }
+      diff = response[:body]['problems']&.select { |problem| problem['level'] == 'diff' }&.map{ |problem| problem['message'] }
+
+      result = if errors.none? && warnings.none? && diff.any?
+        'OK'
+      else
+        response[:body]['result']
+      end
+
       message_draft.metadata[:validation_errors] = {
-        result: response[:body]['result'],
-        errors: response[:body]['problems']&.select { |problem| problem['level'] == 'error' }&.map{ |problem| problem['message'] },
-        warnings: response[:body]['problems']&.select { |problem| problem['level'] == 'warning' }&.map{ |problem| problem['message'] },
+        result: result,
+        errors: errors,
+        warnings: warnings,
+        diff: diff
       }
 
-      diff = response[:body]['problems']&.select { |problem| problem['level'] == 'diff' }
-      Rails.logger.info("Message draft DIFF: #{diff.map{ |problem| problem['message']}.join(', ')}") if diff.any?
+      # TODO log occurence if diff.any?
 
-      message_draft.add_cascading_tag(message_draft.tenant.submission_error_tag) if message_draft.metadata[:validation_errors][:errors].any? || message_draft.metadata[:validation_errors][:warnings].any?
+      message_draft.add_cascading_tag(message_draft.tenant.submission_error_tag) if errors.any? || warnings.any?
     end
 
     message_draft.save
