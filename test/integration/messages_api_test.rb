@@ -23,6 +23,7 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
     assert_equal message.tags.first.name, json_response["tags"][0]
     assert_equal message.tags.second.name, json_response["tags"][1]
     message.objects.each do |object|
+      assert_equal object.id, json_response["objects"][0]["id"]
       assert_equal object.name, json_response["objects"][0]["name"]
       assert_equal object.mimetype, json_response["objects"][0]["mimetype"]
       assert_equal object.object_type, json_response["objects"][0]["object_type"]
@@ -63,6 +64,7 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
     assert_equal message.delivered_at, Time.zone.parse(json_response["delivered_at"])
     assert_equal message.metadata["status"], json_response["status"]
     message.objects.each do |object|
+      assert_equal object.id, json_response["objects"][0]["id"]
       assert_equal object.name, json_response["objects"][0]["name"]
       assert_equal object.mimetype, json_response["objects"][0]["mimetype"]
       assert_equal object.object_type, json_response["objects"][0]["object_type"]
