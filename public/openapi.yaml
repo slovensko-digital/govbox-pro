@@ -277,6 +277,20 @@ paths:
                     description: Aktuálny stav správy
                     type: string
                     enum: [ "being_loaded", "being_validated", "invalid", "created", "being_submitted", "temporary_submit_fail", "submit_fail", "submitted" ]
+                  metadata:
+                    description: Metaúdaje správy
+                    oneOf:
+                      - type:
+                        $ref: '#/components/schemas/FsMessageMetadata'
+                      - type:
+                        $ref: '#/components/schemas/UpvsMessageMetadata'
+                  tags:
+                    description: Zoznam štítkov priradených správe
+                    type: array
+                    items:
+                      description: Názov štítka priradeného správe
+                      type:
+                        string
                   message_objects:
                     description: Zoznam objektov správy
                     type: array
@@ -308,13 +322,6 @@ paths:
                           description: Samotný objektu zakódovaný ako Base64 text
                           type: string
                           format: byte
-                  metadata:
-                    description: Metaúdaje správy
-                    oneOf:
-                      - type:
-                        $ref: '#/components/schemas/FsMessageMetadata'
-                      - type:
-                        $ref: '#/components/schemas/UpvsMessageMetadata'
       security:
         - "Tenant_Token": []
 
@@ -402,6 +409,20 @@ paths:
                       description: Aktuálny stav správy
                       type: string
                       enum: [ "being_loaded", "being_validated", "invalid", "created", "being_submitted", "temporary_submit_fail", "submit_fail", "submitted" ]
+                    metadata:
+                      description: Metaúdaje správy
+                      oneOf:
+                        - type:
+                          $ref: '#/components/schemas/FsMessageMetadata'
+                        - type:
+                          $ref: '#/components/schemas/UpvsMessageMetadata'
+                    tags:
+                      description: Zoznam štítkov priradených správe
+                      type: array
+                      items:
+                        description: Názov štítka priradeného správe
+                        type:
+                          string
                     message_objects:
                       description: Zoznam objektov správy
                       type: array
