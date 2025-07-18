@@ -89,6 +89,15 @@ fs_accountants2:
   settings: {"dic": "1122334456", "subject_id": "387cf7da-2cff-40e0-8ad2-650030429994", "message_drafts_import_enabled": true}
   type: 'Fs::Box'
 
+fs_accountants_multiple_api_connections:
+  name: Accountants main FS 3
+  uri: dic://sk/9988665533
+  tenant: accountants
+  short_name: FSJK3
+  api_connection: fs_api_connection4
+  settings: {"dic": "9988665533", "subject_id": "387cf7da-2cff-40e0-8ad2-650030429994", "message_drafts_import_enabled": true}
+  type: 'Fs::Box'
+
 fs_solver:
   name: Solver main FS
   uri: dic://sk/9988776655

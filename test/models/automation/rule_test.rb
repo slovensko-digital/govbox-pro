@@ -142,6 +142,44 @@ class Automation::RuleTest < ActiveSupport::TestCase
     assert_includes message_draft.thread.tags, tags(:api_connection_tag)
   end
 
+  test 'should run an automation on message created AuthorHasApiConnectionCondition ValueCondition AddSignatureRequestedFromAuthorMessageThreadTagAction (if author has API connection for the box)' do
+    author = users(:accountants_user2)
+    signature_requested_from_author_tag = tags(:accountants_user2_signature_requested)
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :parse_form, {
+      "subject" => "9988665533",
+      "form_identifier" => "3055_781"
+    },
+    [file_fixture("fs/dic1122334455_fs3055_781__sprava_dani_2023.xml").read]
+
+    FsEnvironment.fs_client.stub :api, fs_api do
+        Fs::MessageDraft.create_and_validate_with_fs_form(form_files: [fixture_file_upload("fs/dic1122334455_fs3055_781__sprava_dani_2023.xml", "application/xml")], author: author)
+    end
+    travel_to(15.minutes.from_now) { GoodJob.perform_inline }
+    message_draft = Fs::MessageDraft.last
+    assert_includes message_draft.thread.tags, signature_requested_from_author_tag
+  end
+
+  test 'should not run an automation on message created AuthorHasApiConnectionCondition ValueCondition AddSignatureRequestedFromAuthorMessageThreadTagAction (if author does not have API connection for the box)' do
+    author = users(:accountants_user4)
+    signature_requested_from_author_tag = tags(:accountants_user4_signature_requested)
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :parse_form, {
+      "subject" => "9988665533",
+      "form_identifier" => "3055_781"
+    },
+    [file_fixture("fs/dic1122334455_fs3055_781__sprava_dani_2023.xml").read]
+
+    FsEnvironment.fs_client.stub :api, fs_api do
+        Fs::MessageDraft.create_and_validate_with_fs_form(form_files: [fixture_file_upload("fs/dic1122334455_fs3055_781__sprava_dani_2023.xml", "application/xml")], author: author)
+    end
+    travel_to(15.minutes.from_now) { GoodJob.perform_inline }
+    message_draft = Fs::MessageDraft.last
+    assert_not_includes message_draft.thread.tags, signature_requested_from_author_tag
+  end
+
   test 'does not run an automation unless ValueCondition satisfied' do
     author = users(:accountants_basic)
 

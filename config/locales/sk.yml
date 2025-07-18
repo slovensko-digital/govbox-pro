@@ -273,6 +273,7 @@ sk:
   box: "Schránka správy"
   attachment: "Príloha"
   api_connection: "API Prepojenie"
+  authors_api_connection: "Autor svoje API prepojenie"
   boxes:
     sync_all_requested: "Sťahovanie nových správ bolo spustené."
   message_created: "Nová správa"
@@ -291,7 +292,9 @@ sk:
   "Automation::MessageMetadataValueCondition": "správa v metadátach obsahuje"
   "Automation::BoxCondition": "je"
   "Automation::ApiConnectionCondition": "je"
+  "Automation::AuthorHasApiConnectionCondition": "má"
   "Automation::AddMessageThreadTagAction": "Pridaj štítok na vlákno"
+  "Automation::AddSignatureRequestedFromAuthorMessageThreadTagAction": "Pridaj štítok pre vyžiadanie podpisu autora"
   "Automation::UnassignMessageThreadTagAction": "Odober štítok z vlákna"
   "Automation::AddTagAction": "Pridaj štítok"
   "Automation::ChangeMessageThreadTitleAction": "Premenuj vlákno na"
