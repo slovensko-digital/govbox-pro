@@ -174,7 +174,7 @@ paths:
                     items:
                       description: Názov štítka priradeného správe
                       type: string
-                  message_objects:
+                  objects:
                     description: Zoznam objektov správy
                     type: array
                     items:
@@ -291,7 +291,7 @@ paths:
                       description: Názov štítka priradeného správe
                       type:
                         string
-                  message_objects:
+                  objects:
                     description: Zoznam objektov správy
                     type: array
                     items:
@@ -423,7 +423,7 @@ paths:
                         description: Názov štítka priradeného správe
                         type:
                           string
-                    message_objects:
+                    objects:
                       description: Zoznam objektov správy
                       type: array
                       items:
