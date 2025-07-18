@@ -167,6 +167,8 @@ paths:
                       - type:
                         $ref: '#/components/schemas/FsMessageMetadata'
                       - type:
+                        $ref: '#/components/schemas/FsMessageDraftMetadata'
+                      - type:
                         $ref: '#/components/schemas/UpvsMessageMetadata'
                   tags:
                     description: Zoznam štítkov priradených správe
@@ -282,6 +284,8 @@ paths:
                     oneOf:
                       - type:
                         $ref: '#/components/schemas/FsMessageMetadata'
+                      - type:
+                        $ref: '#/components/schemas/FsMessageDraftMetadata'
                       - type:
                         $ref: '#/components/schemas/UpvsMessageMetadata'
                   tags:
@@ -414,6 +418,8 @@ paths:
                       oneOf:
                         - type:
                           $ref: '#/components/schemas/FsMessageMetadata'
+                        - type:
+                          $ref: '#/components/schemas/FsMessageDraftMetadata'
                         - type:
                           $ref: '#/components/schemas/UpvsMessageMetadata'
                     tags:
@@ -1069,6 +1075,7 @@ components:
             correlation_id:
               description: Identifikátor vlákna správ
               type: string
+              format: uuid
           required:
             - correlation_id
         objects:
@@ -1177,14 +1184,46 @@ components:
           type: string
         fs_form_id:
           description: Interný identifikátor FS formulára
-          type: string
-        correlation_id:
-          description: Identifikátor vlákna správ
-          type: string
+          type: integer
         status:
           description: Aktuálny stav správy
           type: string
           enum: ["being_loaded", "being_validated", "invalid", "created", "being_submitted", "temporary_submit_fail", "submit_fail", "submitted"]
+
+    FsMessageDraftMetadata:
+      description: Metaúdaje rozpracovanej správy Finančnej správy
+      properties:
+        dic:
+          description: DIČ
+          type: string
+        fs_form_id:
+          description: Interný identifikátor FS formulára
+          type: integer
+        correlation_id:
+          description: Identifikátor vlákna správ
+          type: string
+          format: uuid
+        status:
+          description: Aktuálny stav správy
+          type: string
+          enum: ["being_loaded", "being_validated", "invalid", "created", "being_submitted", "temporary_submit_fail", "submit_fail", "submitted"]
+        validation_errors:
+          description: Validačné errory správy
+          type: object
+          properties:
+            result:
+              description: Výsledok validácie správy
+              type: string
+            errors:
+              description: Validačné errory
+              type: array
+              items:
+                type: string
+            warnings:
+              description: Validačné upozornenia (logické chyby)
+              type: array
+              items:
+                type: string
 
     UpvsMessageMetadata:
       description: Metaúdaje správy ÚPVS
@@ -1204,6 +1243,7 @@ components:
         correlation_id:
           description: SKTalk identifikátor vlákna správ
           type: string
+          format: uuid
         reference_id:
           description: SKTalk identifikátor referenčnej správy
           type: string
