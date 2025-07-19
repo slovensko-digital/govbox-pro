@@ -20,8 +20,9 @@ class Export < ApplicationRecord
     "{{ schranka.dic }}" => -> (o) { o.message.thread.box.settings["dic"] },
     "{{ vlakno.id }}" => ->(o) { o.message.thread.id },
     "{{ vlakno.obdobie }}" => ->(o) { o.message.thread.metadata["period"] if o.message.thread.metadata&.dig("period") },
-    "{{ vlakno.formular }}" => ->(o) { Fs::Form.find_by_id(o.message.thread.metadata["fs_form_id"])&.slug if o.message.thread.metadata&.dig("fs_form_id") },
-    "{{ vlakno.datum_podania }}" => ->(o) { o.message.thread.messages.outbox.first.delivered_at&.to_date  },
+    "{{ vlakno.formular }}" => ->(o) { Fs::Form.find_by(id: o.message.thread.metadata["fs_form_id"])&.slug },
+    "{{ vlakno.formular_bez_verzie }}" => ->(o) { Fs::Form.find_by(id: o.message.thread.metadata["fs_form_id"])&.slug&.gsub(/v\d+$/, '') },
+    "{{ vlakno.datum_podania }}" => ->(o) { o.message.thread.messages.outbox.first.delivered_at&.to_date },
     "{{ sprava.id }}" => ->(o) { o.message.id },
     "{{ subor.nazov }}" => ->(o) { o.name }
   }.freeze
@@ -39,7 +40,22 @@ class Export < ApplicationRecord
   end
 
   def export_object_filepath(message_object)
-    template = settings.dig("templates", message_object.message.message_type).presence || settings.dig("templates", "default").presence || DEFAULT_TEMPLATE
+    thread = message_object.message.thread
+    form = Fs::Form.find_by(id: thread.metadata["fs_form_id"])&.slug
+    type = message_object.message.message_type
+
+    default_template = settings.dig("templates", "default").presence || DEFAULT_TEMPLATE
+
+    if settings.dig('by_form', form).present?
+      template = settings.dig("templates", "by_form", form).presence || default_template
+    elsif settings.dig('by_type', type).present?
+      template = settings.dig("templates", "by_type", type).presence || default_template
+    elsif settings['default'].present?
+      template = default_template
+    else
+      return nil
+    end
+
     out = template.dup
     REPLACEMENT_MAPPINGS.map do |key, value_function|
       out.gsub!(key) { value_function.call(message_object) }

@@ -25,6 +25,7 @@ class ExportJob < ApplicationJob
 
   def prepare_original_object(object, export:, zip:, file_paths:)
     file_path = unique_path_within_export(object, export: export, other_file_names: file_paths)
+    return unless file_path
 
     zip.put_next_entry(file_path)
     zip.write(object.content)
@@ -40,6 +41,8 @@ class ExportJob < ApplicationJob
       pdf_content = object.prepare_pdf_visualization
 
       file_path = unique_path_within_export(object, export: export, other_file_names: file_paths, pdf: true)
+      return unless file_path
+
       zip.put_next_entry(file_path)
       zip.write(pdf_content)
       file_paths << file_path
@@ -57,6 +60,8 @@ class ExportJob < ApplicationJob
       end
 
       file_path = unique_path_within_export(object, export: export, other_file_names: file_paths, pdf: true)
+      return nil unless file_path
+
       zip.put_next_entry(file_path)
       zip.write(pdf_content)
       file_paths << file_path
@@ -65,6 +70,7 @@ class ExportJob < ApplicationJob
 
   def unique_path_within_export(object, export:, other_file_names:, pdf: false)
     file_path = export.export_object_filepath(object)
+    return unless file_path
 
     file_path_with_extension = File.join(file_dir_name(file_path), file_base_name(file_path) + (pdf ? '.pdf' : File.extname(object.name)))
 
