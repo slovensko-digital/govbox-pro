@@ -15,7 +15,7 @@ class ExportJob < ApplicationJob
       end
     end
 
-   FileStorage.new.store("exports", "#{export.user.tenant.id}/#{export.id}.zip", export_content.string.force_encoding("UTF-8"))
+   FileStorage.new.store("exports", export.file_name, export_content.string.force_encoding("UTF-8"))
 
     export.user.notifications.create!(
       type: Notifications::ExportFinished,

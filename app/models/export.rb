@@ -66,7 +66,11 @@ class Export < ApplicationRecord
   end
 
   def storage_path
-    File.join(Rails.root, "storage", "exports", "#{user.tenant.id}/#{id}.zip")
+    File.join(Rails.root, "storage", "exports", file_name)
+  end
+
+  def file_name
+    "#{user.tenant.id}/govbox-pro-export-#{created_at.to_date}.zip"
   end
 
   private
