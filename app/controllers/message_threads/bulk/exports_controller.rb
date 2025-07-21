@@ -31,7 +31,8 @@ module MessageThreads
         authorize ::Message
         ids = params[:message_thread_ids] || []
         filtered_ids = message_thread_policy_scope.where(id: ids).includes(:messages).pluck(:id)
-        export = Current.user.exports.create!(message_thread_ids: filtered_ids, settings: { default: true })
+        default_settings = Current.user.exports.last&.settings || { default: true } # get settings from previous export
+        export = Current.user.exports.create!(message_thread_ids: filtered_ids, settings: default_settings)
 
         redirect_to edit_message_threads_bulk_export_path(export)
       end

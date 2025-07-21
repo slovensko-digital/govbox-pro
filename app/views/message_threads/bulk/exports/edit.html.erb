@@ -24,7 +24,7 @@
             </tr>
             <tr class="border-t border-gray-200">
               <td class="py-2 pr-3"><%= check_box_tag "export[settings][default]", "1", @export.settings['default'], class: "h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer" %></td>
-              <td class="text-sm">všetky súbory</td>
+              <td class="text-sm">všetky správy</td>
               <td class="whitespace-nowrap w-full py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-3"><%= text_field_tag "export[settings][templates][default]", @export.settings.dig('templates', 'default'), class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" %></td>
             </tr>
             <tr>
@@ -35,7 +35,7 @@
                 <td><%= check_box_tag "export[settings][by_form][#{message_form}]", "1", @export.settings.dig('by_form', message_form), class: "h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer" %></td>
                 <td class="text-sm"><%= message_form %></td>
                 <td class="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-3">
-                  <%= text_field_tag "export[settings][templates][#{message_form}]", @export.settings.dig('templates', message_form), placeholder: 'default', class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" %>
+                  <%= text_field_tag "export[settings][templates][#{message_form}]", @export.settings.dig('templates', message_form), placeholder: 'nastavenie ako pre všetky správy', class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" %>
                 </td>
               </tr>
             <% end %>
@@ -48,7 +48,7 @@
                 <td><%= check_box_tag "export[settings][by_type][#{message_type}]", "1", @export.settings.dig('by_type', message_type), class: "h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer" %></td>
                 <td class="text-sm"><%= message_type %></td>
                 <td class="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-3">
-                  <%= text_field_tag "export[settings][templates][#{message_type}]", @export.settings.dig('templates', message_type), placeholder: 'default', class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" %>
+                  <%= text_field_tag "export[settings][templates][#{message_type}]", @export.settings.dig('templates', message_type), placeholder: 'nastavenie ako pre všetky správy', class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" %>
                 </td>
               </tr>
             <% end %>

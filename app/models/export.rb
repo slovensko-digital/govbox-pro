@@ -47,9 +47,9 @@ class Export < ApplicationRecord
     default_template = settings.dig("templates", "default").presence || DEFAULT_TEMPLATE
 
     if settings.dig('by_form', form).present?
-      template = settings.dig("templates", "by_form", form).presence || default_template
+      template = settings.dig("templates", form).presence || default_template
     elsif settings.dig('by_type', type).present?
-      template = settings.dig("templates", "by_type", type).presence || default_template
+      template = settings.dig("templates", type).presence || default_template
     elsif settings['default'].present?
       template = default_template
     else
