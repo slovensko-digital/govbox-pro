@@ -20,7 +20,7 @@ module MessageThreads
         @message_forms = @message_threads.map do |thread|
           thread.metadata['fs_form_id']
         end.then do |ids|
-          Fs::Form.where(id: ids).pluck(:slug)
+          Fs::Form.where(id: ids).pluck(:slug).uniq
         end
         @message_types = @message_threads.flat_map do |thread|
           thread.messages.map(&:message_type)
