@@ -17,7 +17,7 @@ class Export < ApplicationRecord
 
   REPLACEMENT_MAPPINGS = {
     "{{ schranka.nazov }}" => -> (o) { o.message.thread.box.name },
-    "{{ schranka.oficialny_nazov }}" => -> (o) { o.message.thread.box.name.match(/^FS (.*?)(?:\s*(v zastúpení:.*| \(oblasť SPD\)))?$/).captures.first },
+    "{{ schranka.oficialny_nazov }}" => -> (o) { o.message.thread.box.name.match(/^FS (.*?)(?:\s*(v zastúpení:.*| \(oblasť SPD\)))?$/)&.captures&.first || o.message.thread.box.name },
     "{{ schranka.dic }}" => -> (o) { o.message.thread.box.settings["dic"] },
     "{{ vlakno.id }}" => ->(o) { o.message.thread.id },
     "{{ vlakno.obdobie }}" => ->(o) { o.message.thread.metadata["period"] if o.message.thread.metadata&.dig("period") },
