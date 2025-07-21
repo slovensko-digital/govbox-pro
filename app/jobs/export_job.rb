@@ -75,10 +75,9 @@ class ExportJob < ApplicationJob
     file_path_with_extension = File.join(file_dir_name(file_path), file_base_name(file_path) + (pdf ? '.pdf' : File.extname(object.name)))
 
     if file_path_with_extension.in?(other_file_names)
-      matches_count = other_file_names.count { |name| /#{file_path}( \(\d+\))?\.\w*/ =~ name }
-      file_path += " (#{matches_count})" if matches_count > 0
+      matches_count = other_file_names.count { |name| /#{file_base_name(file_path_with_extension)}( \(\d+\))?#{File.extname(file_path_with_extension)}/ =~ name }
 
-      file_path_with_extension = File.join(file_dir_name(file_path), file_base_name(file_path) + (pdf ? '.pdf' : File.extname(object.name)))
+      file_path_with_extension = File.join(file_dir_name(file_path), file_base_name(file_path)  + " (#{matches_count})" + (pdf ? '.pdf' : File.extname(object.name))) if matches_count > 0
     end
 
     file_path_with_extension
