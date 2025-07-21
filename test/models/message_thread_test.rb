@@ -163,6 +163,6 @@ class MessageThreadTest < ActiveSupport::TestCase
     assert_mock subscriber1
 
     # remove callback
-    EventBus.class_variable_get(:@@subscribers_map)[:message_thread_tag_changed].pop
+    EventBus.class_variable_get(:@@subscribers_map)[:message_thread_tag_changed].delete(subscriber1)
   end
 end

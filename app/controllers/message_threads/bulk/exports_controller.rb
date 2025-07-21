@@ -17,7 +17,12 @@ module MessageThreads
         authorize @export
 
         @message_threads = message_thread_policy_scope.where(id: @export.message_thread_ids).includes(:messages)
-        @message_types = ["default"] + @message_threads.flat_map do |thread|
+        @message_forms = @message_threads.map do |thread|
+          thread.metadata['fs_form_id']
+        end.then do |ids|
+          Fs::Form.where(id: ids).pluck(:slug).uniq
+        end
+        @message_types = @message_threads.flat_map do |thread|
           thread.messages.map(&:message_type)
         end.uniq.compact
       end
@@ -26,7 +31,8 @@ module MessageThreads
         authorize ::Message
         ids = params[:message_thread_ids] || []
         filtered_ids = message_thread_policy_scope.where(id: ids).includes(:messages).pluck(:id)
-        export = Current.user.exports.create!(message_thread_ids: filtered_ids)
+        default_settings = Current.user.exports.last&.settings || { default: true } # get settings from previous export
+        export = Current.user.exports.create!(message_thread_ids: filtered_ids, settings: default_settings)
 
         redirect_to edit_message_threads_bulk_export_path(export)
       end

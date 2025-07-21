@@ -15,7 +15,7 @@ class ExportJob < ApplicationJob
       end
     end
 
-   FileStorage.new.store("exports", "#{export.user.tenant.id}/#{export.id}.zip", export_content.string.force_encoding("UTF-8"))
+   FileStorage.new.store("exports", export.file_name, export_content.string.force_encoding("UTF-8"))
 
     export.user.notifications.create!(
       type: Notifications::ExportFinished,
@@ -25,6 +25,7 @@ class ExportJob < ApplicationJob
 
   def prepare_original_object(object, export:, zip:, file_paths:)
     file_path = unique_path_within_export(object, export: export, other_file_names: file_paths)
+    return unless file_path
 
     zip.put_next_entry(file_path)
     zip.write(object.content)
@@ -40,6 +41,8 @@ class ExportJob < ApplicationJob
       pdf_content = object.prepare_pdf_visualization
 
       file_path = unique_path_within_export(object, export: export, other_file_names: file_paths, pdf: true)
+      return unless file_path
+
       zip.put_next_entry(file_path)
       zip.write(pdf_content)
       file_paths << file_path
@@ -57,6 +60,8 @@ class ExportJob < ApplicationJob
       end
 
       file_path = unique_path_within_export(object, export: export, other_file_names: file_paths, pdf: true)
+      return nil unless file_path
+
       zip.put_next_entry(file_path)
       zip.write(pdf_content)
       file_paths << file_path
@@ -65,14 +70,14 @@ class ExportJob < ApplicationJob
 
   def unique_path_within_export(object, export:, other_file_names:, pdf: false)
     file_path = export.export_object_filepath(object)
+    return unless file_path
 
     file_path_with_extension = File.join(file_dir_name(file_path), file_base_name(file_path) + (pdf ? '.pdf' : File.extname(object.name)))
 
     if file_path_with_extension.in?(other_file_names)
-      matches_count = other_file_names.count { |name| /#{file_path}( \(\d+\))?\.\w*/ =~ name }
-      file_path += " (#{matches_count})" if matches_count > 0
+      matches_count = other_file_names.count { |name| /#{file_base_name(file_path_with_extension)}( \(\d+\))?#{File.extname(file_path_with_extension)}/ =~ name }
 
-      file_path_with_extension = File.join(file_dir_name(file_path), file_base_name(file_path) + (pdf ? '.pdf' : File.extname(object.name)))
+      file_path_with_extension = File.join(file_dir_name(file_path), file_base_name(file_path)  + " (#{matches_count})" + (pdf ? '.pdf' : File.extname(object.name))) if matches_count > 0
     end
 
     file_path_with_extension
