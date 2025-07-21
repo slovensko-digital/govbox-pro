@@ -62,7 +62,7 @@ class Export < ApplicationRecord
       out.gsub!(key) { value_function.call(message_object) }
     end
 
-    out
+    out.sub(/^\/+/, '')
   end
 
   def storage_path
