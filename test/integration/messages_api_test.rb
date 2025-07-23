@@ -1,6 +1,6 @@
 require "test_helper"
 
-class ThreadsApiTest < ActionDispatch::IntegrationTest
+class MessagesApiTest < ActionDispatch::IntegrationTest
   setup do
     @key_pair = OpenSSL::PKey::RSA.new File.read 'test/fixtures/tenant_test_cert.pem'
     @tenant = tenants(:ssd)
@@ -86,6 +86,12 @@ class ThreadsApiTest < ActionDispatch::IntegrationTest
       assert_equal object.is_signed, json_response["objects"][0]["is_signed"]
       assert_equal object.message_object_datum.blob, Base64.decode64(json_response["objects"][0]["data"])
     end
+  end
+
+  test "message search responses with 404 if no result" do
+    get "/api/messages/search", params: { uuid: SecureRandom.uuid, token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }, as: :json
+
+    assert_response :not_found
   end
 
   test "can sync messages" do
