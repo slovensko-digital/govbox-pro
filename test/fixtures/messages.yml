@@ -324,6 +324,40 @@ fs_accountants_draft:
     correlation_id: 4bc972bb-9364-47de-bb40-23720f24a4ab
   author: accountants_basic
 
+fs_accountants_thread1_outbox_message:
+  uuid: <%= SecureRandom.uuid %>
+  title: FS odoslane podanie
+  delivered_at: <%= 2.hours.ago %>
+  thread: fs_accountants_thread1
+  replyable: false
+  metadata:
+    fs_message_id: 1234567/2025
+    fs_status: Prijaté a potvrdené
+    fs_submitting_subject: GO FS subjekt
+    fs_period: Q22025
+    correlation_id: <%= SecureRandom.uuid %>
+  author: accountants_basic
+
+fs_accountants_thread1_inbox_message:
+  uuid: <%= SecureRandom.uuid %>
+  title: FS potvrdenka
+  delivered_at: <%= 2.hours.ago %>
+  thread: fs_accountants_thread1
+  outbox: false
+  replyable: false
+  metadata:
+    fs_message_id: 7654321/2025
+    fs_sent_message_id: 1234567/2025
+    fs_message_type: 'ED.DeliveryReport'
+    fs_submission_status: Prijaté a potvrdené
+    fs_status: Vybavená
+    fs_submitting_subject: GO FS subjekt
+    fs_submission_type_name: Súhrnný výkaz pre daň z pridanej hodnoty (platný od 1.1.2020) - riadny
+    fs_submission_created_at: <%= 2.hours.ago %>
+    fs_period: Q22025
+    correlation_id: <%= SecureRandom.uuid %>
+  author: accountants_basic
+
 solver_main_delivery_notification_one:
   uuid: bbff2617-3430-44c6-b827-519059ff1e90
   title: Authorized Delivery notification

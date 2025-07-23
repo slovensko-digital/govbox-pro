@@ -91,6 +91,16 @@ fs_accountants_multiple_api_connections_thread1:
   delivered_at: <%= 2.hours.ago %>
   last_message_delivered_at: <%= 2.hours.ago %>
 
+fs_accountants_thread1:
+  box: fs_accountants
+  title: Kompletne podanie
+  original_title: MyString
+  delivered_at: <%= 2.hours.ago %>
+  last_message_delivered_at: <%= 2.hours.ago %>
+  metadata:
+    fs_form_id: <%= Fs::Form.find_by(identifier: '708_599')&.id %>
+    period: Q22025
+
 solver_main_general_agenda:
   box: solver_main
   title: General agenda Solver
