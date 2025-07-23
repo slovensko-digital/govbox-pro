@@ -10,6 +10,8 @@ class ExportJob < ApplicationJob
           message.objects.each do |object|
             prepare_original_object(object, export: export, zip: zip, file_paths: file_paths)
             prepare_pdf_object(object, export: export, zip: zip, file_paths: file_paths) if export.settings["pdf"]
+
+            EventBus.publish(:message_object_downloaded, object)
           end
         end
       end
