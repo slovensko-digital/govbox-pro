@@ -98,7 +98,6 @@ fs_accountants_thread1:
   delivered_at: <%= 2.hours.ago %>
   last_message_delivered_at: <%= 2.hours.ago %>
   metadata:
-    fs_form_id: <%= Fs::Form.find_by(identifier: '708_599')&.id %>
     period: Q22025
 
 solver_main_general_agenda:
