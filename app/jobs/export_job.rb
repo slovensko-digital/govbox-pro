@@ -69,25 +69,16 @@ class ExportJob < ApplicationJob
   end
 
   def unique_path_within_export(object, export:, other_file_names:, pdf: false)
-    file_path = export.export_object_filepath(object)
-    return unless file_path
+    path = export.export_object_filepath(object)
+    return unless path
 
-    file_path_with_extension = File.join(file_dir_name(file_path), file_base_name(file_path) + (pdf ? '.pdf' : File.extname(object.name)))
+    extension = pdf ? ".pdf" : File.extname(object.name)
+    path_without_extension = path.delete_suffix(File.extname(object.name))
+    path_with_extension = "#{path_without_extension}#{extension}"
 
-    if file_path_with_extension.in?(other_file_names)
-      matches_count = other_file_names.count { |name| /#{file_base_name(file_path_with_extension)}( \(\d+\))?#{File.extname(file_path_with_extension)}/ =~ name }
+    return path_with_extension unless path_with_extension.in?(other_file_names)
 
-      file_path_with_extension = File.join(file_dir_name(file_path), file_base_name(file_path)  + " (#{matches_count})" + (pdf ? '.pdf' : File.extname(object.name))) if matches_count > 0
-    end
-
-    file_path_with_extension
-  end
-
-  def file_base_name(file_path)
-    File.basename(file_path, File.extname(file_path))
-  end
-
-  def file_dir_name(file_path)
-    File.dirname(file_path)
+    matches_count = other_file_names.count { |name| /#{path_without_extension}( \(\d+\))?#{extension}/ =~ name }
+    "#{path_without_extension} (#{matches_count})#{extension}"
   end
 end

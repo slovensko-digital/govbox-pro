@@ -71,7 +71,7 @@ google_box_with_govbox_api_connection_with_obo_support_without_obo_value:
     obo:
 
 fs_accountants:
-  name: Accountants main FS
+  name: FS Accountants main FS
   uri: dic://sk/1122334455
   tenant: accountants
   short_name: FSJJ
