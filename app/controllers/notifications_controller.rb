@@ -16,9 +16,13 @@ class NotificationsController < ApplicationController
   def set_notifications_and_cursor
     @notifications, @next_cursor = Pagination.paginate(
       collection: Current.user.notifications.includes(:message_thread, :message, :export, filter_subscription: :filter),
-      cursor: params[:cursor] || { id: nil },
+      cursor: params[:cursor]&.permit(:id).to_h.presence || { id: nil },
       items_per_page: 20
     )
+    @next_page_params = {
+      cursor: @next_cursor,
+      format: :turbo_stream
+    }
   end
 
   def set_retention
