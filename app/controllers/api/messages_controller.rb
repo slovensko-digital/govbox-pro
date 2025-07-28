@@ -22,6 +22,8 @@ class Api::MessagesController < Api::TenantController
 
   def search
     @message = @tenant.messages.find_by(permitted_search_params)
+
+    render_not_found unless @message
   end
 
   def message_drafts
