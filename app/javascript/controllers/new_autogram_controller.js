@@ -19,7 +19,7 @@ export default class extends Controller {
     try {
       if (files.length > 1) {
         batchId = await startBatch(files.length)
-        if (batchId === null) {
+        if (batchId == null) {
           console.error('Batch ID is null');
           this.doneErrorTarget.click()
           return;
