@@ -21,8 +21,8 @@ class Export < ApplicationRecord
     "{{ schranka.dic }}" => -> (o) { o.message.thread.box.settings["dic"] },
     "{{ vlakno.id }}" => ->(o) { o.message.thread.id },
     "{{ vlakno.obdobie }}" => ->(o) { o.message.thread.metadata["period"] if o.message.thread.metadata&.dig("period") },
-    "{{ vlakno.formular }}" => ->(o) { Fs::Form.find_by(id: o.message.thread.metadata["fs_form_id"])&.slug },
-    "{{ vlakno.formular_bez_verzie }}" => ->(o) { Fs::Form.find_by(id: o.message.thread.metadata["fs_form_id"])&.slug&.gsub(/v\d+$/, '') },
+    "{{ vlakno.formular }}" => ->(o) { form_name(o) },
+    "{{ vlakno.formular_bez_verzie }}" => ->(o) { form_name(o, include_version: false) },
     "{{ vlakno.datum_podania }}" => ->(o) { o.message.thread.messages.outbox.first.delivered_at&.to_date },
     "{{ sprava.id }}" => ->(o) { o.message.id },
     "{{ subor.nazov }}" => ->(o) { o.name }
@@ -63,6 +63,22 @@ class Export < ApplicationRecord
     end
 
     out.sub(/^\/+/, '')
+  end
+
+  def self.form_name(object, include_version: true)
+    form = Fs::Form.find_by(id: object.message.thread.metadata["fs_form_id"])
+    return unless form
+
+    prefix = case form.subtype_name
+             when "Dodatočné"
+               "DOD"
+             when "Opravné"
+               "OPR"
+             end
+
+    form_name = include_version ? form.slug: form.slug.sub(/v\d+$/, '')
+
+    [prefix, form_name].compact.join("_")
   end
 
   def storage_path
