@@ -66,10 +66,7 @@ class Export < ApplicationRecord
   end
 
   def self.form_name(object, include_version: true)
-    form = Fs::Form.find_by(id: object.message.thread.metadata["fs_form_id"])
-    return unless form
-    
-    form.short_name(include_version: include_version)
+    Fs::Form.find_by(id: object.message.thread.metadata["fs_form_id"])&.short_name(include_version: include_version)
   end
 
   def storage_path
