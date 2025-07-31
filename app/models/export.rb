@@ -68,17 +68,8 @@ class Export < ApplicationRecord
   def self.form_name(object, include_version: true)
     form = Fs::Form.find_by(id: object.message.thread.metadata["fs_form_id"])
     return unless form
-
-    prefix = case form.subtype_name
-             when "Dodatočné"
-               "DOD"
-             when "Opravné"
-               "OPR"
-             end
-
-    form_name = include_version ? form.slug: form.slug.sub(/v\d+$/, '')
-
-    [prefix, form_name].compact.join("_")
+    
+    form.short_name(include_version: include_version)
   end
 
   def storage_path
