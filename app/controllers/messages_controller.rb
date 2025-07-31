@@ -6,7 +6,7 @@ class MessagesController < ApplicationController
   def show
     authorize @message
 
-    @mode = params[:mode].to_sym
+    @mode = params[:mode]&.to_sym
     @collapsed = params[:collapsed] == 'true'
     @message.update(read: true)
   end
