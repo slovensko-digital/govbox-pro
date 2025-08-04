@@ -55,7 +55,7 @@ class Fs::ApiConnection < ::ApiConnection
     fs_api.get_subjects.each do |subject|
       Fs::Box.with_advisory_lock!("boxify-#{tenant_id}", transaction: true, timeout_seconds: 10) do
         boxes = Fs::Box.where(tenant: tenant).where("settings @> ?", {dic: subject["dic"], subject_id: subject["subject_id"]}.to_json)
-        box = boxes.first unless boxes.count > 1
+        box = boxes.select{ |box| box.settings_delegate_id == subject["delegate_id"] }
 
         unless box
           box = Fs::Box.new(
