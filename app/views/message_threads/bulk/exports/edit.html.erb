@@ -61,62 +61,70 @@
         </div>
       <% end %>
 
-      <div class="border-b border-gray-200 bg-white py-5">
-        <h3 class="text-base font-semibold text-gray-900">Náhľad exportu</h3>
-      </div>
-
-      <table class="min-w-full divide-y divide-gray-300">
-        <thead>
-        <tr>
-          <th scope="col" class="whitespace-nowrap py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">Schránka</th>
-          <th scope="col" class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Názov</th>
-          <th scope="col" class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Typ</th>
-          <th scope="col" class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Súbor</th>
-          <th scope="col" class="relative whitespace-nowrap py-3.5 pl-3 pr-4 sm:pr-0">
-            <span class="sr-only">Edit</span>
-          </th>
-        </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-200 bg-white">
-        <% @message_threads.each do |message_thread| %>
-          <tr>
-            <td class="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-gray-500 sm:pl-0"><%= message_thread.box.short_name %></td>
-            <td class="px-2 py-2 text-sm font-medium text-gray-900"><%= message_thread.title %>
-              <div class="flex flex-wrap items-center gap-1">
-                <% message_thread.message_threads_tags.only_visible_tags.each do |tag| %>
-                  <%= render Common::TagComponent.new(tag.tag) %>
-                <% end %>
-              </div>
-            </td>
-            <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900"></td>
-            <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500"></td>
-          </tr>
-          <% message_thread.messages.sort_by(&:delivered_at).each do |message| %>
+      <div class="border-b border-slate-200"  data-controller="accordion">
+        <button data-action="click->accordion#toggle" class="w-full flex justify-between items-center py-5 text-slate-800">
+          <span>Náhľad exportu</span>
+          <span id="accordion_icon" class="text-slate-800 transition-transform duration-300">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-4 h-4">
+              <path d="M3.75 7.25a.75.75 0 0 0 0 1.5h8.5a.75.75 0 0 0 0-1.5h-8.5Z" />
+            </svg>
+          </span>
+        </button>
+        <div id="accordion_content" class="max-h-full overflow-hidden transition-all duration-300 ease-in-out">
+          <table class="min-w-full divide-y divide-gray-300">
+            <thead>
             <tr>
-              <td class="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-gray-500 sm:pl-0"></td>
-              <td class="px-2 py-2 text-sm font-medium text-gray-900">
-                <span class="text-gray-500">&#10551;</span> <%= message.title %></td>
-              <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900"><%= message.message_type || '&mdash;'.html_safe %></td>
-              <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500"></td>
+              <th scope="col" class="whitespace-nowrap py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">Schránka</th>
+              <th scope="col" class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Názov</th>
+              <th scope="col" class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Typ</th>
+              <th scope="col" class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Súbor</th>
+              <th scope="col" class="relative whitespace-nowrap py-3.5 pl-3 pr-4 sm:pr-0">
+                <span class="sr-only">Edit</span>
+              </th>
             </tr>
-            <% message.objects.each do |message_object| %>
+            </thead>
+            <tbody class="divide-y divide-gray-200 bg-white">
+            <% @message_threads.each do |message_thread| %>
               <tr>
-                <td class="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-gray-500 sm:pl-0"></td>
-                <td class="px-2 py-2 text-sm font-medium text-gray-900"> &nbsp;&nbsp;<span class="text-gray-500">&#10551;</span> <%= message_object.name %>
+                <td class="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-gray-500 sm:pl-0"><%= message_thread.box.short_name %></td>
+                <td class="px-2 py-2 text-sm font-medium text-gray-900"><%= message_thread.title %>
+                  <div class="flex flex-wrap items-center gap-1">
+                    <% message_thread.message_threads_tags.only_visible_tags.each do |tag| %>
+                      <%= render Common::TagComponent.new(tag.tag) %>
+                    <% end %>
+                  </div>
                 </td>
                 <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900"></td>
-                <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
-                    <%=
-                      filepath = @export.export_object_filepath(message_object)
-                      filepath.present? ? content_tag(:code, filepath) : "&mdash;".html_safe
-                    %>
-                </td>
+                <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500"></td>
               </tr>
+              <% message_thread.messages.sort_by(&:delivered_at).each do |message| %>
+                <tr>
+                  <td class="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-gray-500 sm:pl-0"></td>
+                  <td class="px-2 py-2 text-sm font-medium text-gray-900">
+                    <span class="text-gray-500">&#10551;</span> <%= message.title %></td>
+                  <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900"><%= message.message_type || '&mdash;'.html_safe %></td>
+                  <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500"></td>
+                </tr>
+                <% message.objects.each do |message_object| %>
+                  <tr>
+                    <td class="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-gray-500 sm:pl-0"></td>
+                    <td class="px-2 py-2 text-sm font-medium text-gray-900"> &nbsp;&nbsp;<span class="text-gray-500">&#10551;</span> <%= message_object.name %>
+                    </td>
+                    <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900"></td>
+                    <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
+                      <%=
+                        filepath = @export.export_object_filepath(message_object)
+                        filepath.present? ? content_tag(:code, filepath) : "&mdash;".html_safe
+                      %>
+                    </td>
+                  </tr>
+                <% end %>
+              <% end %>
             <% end %>
-          <% end %>
-        <% end %>
-        </tbody>
-      </table>
+            </tbody>
+          </table>
+        </div>
+      </div>
 
       <div class="mt-6">
         <%= form_for @export, url: message_threads_bulk_export_start_path(@export), method: :post do |f| %>
