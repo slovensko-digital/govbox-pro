@@ -5,18 +5,22 @@ class ExportJob < ApplicationJob
     file_paths = []
 
     export_content = ::Zip::OutputStream.write_buffer do |zip|
-      export.message_threads.each do |message_thread|
-        message_thread.messages.each do |message|
-          message.objects.each do |object|
-            prepare_original_object(object, export: export, zip: zip, file_paths: file_paths)
-            prepare_pdf_object(object, export: export, zip: zip, file_paths: file_paths) if export.settings["pdf"]
+      if export.settings.dig("messages")
+        export.message_threads.each do |message_thread|
+          message_thread.messages.each do |message|
+            message.objects.each do |object|
+              prepare_original_object(object, export: export, zip: zip, file_paths: file_paths)
+              prepare_pdf_object(object, export: export, zip: zip, file_paths: file_paths) if export.settings["pdf"]
 
-            EventBus.publish(:message_object_downloaded, object)
+              EventBus.publish(:message_object_downloaded, object)
+            end
           end
         end
       end
 
-      prepare_summary(export: export, zip: zip)
+      if export.settings.dig("summary")
+        prepare_summary(export: export, zip: zip)
+      end
     end
 
    FileStorage.new.store("exports", export.file_name, export_content.string.force_encoding("UTF-8"))
