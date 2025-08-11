@@ -15,6 +15,8 @@ class ExportJob < ApplicationJob
           end
         end
       end
+
+      prepare_summary(export: export, zip: zip)
     end
 
    FileStorage.new.store("exports", export.file_name, export_content.string.force_encoding("UTF-8"))
@@ -68,6 +70,47 @@ class ExportJob < ApplicationJob
       zip.write(pdf_content)
       file_paths << file_path
     end
+  end
+
+  def prepare_summary(export:, zip:)
+    headers = [
+      'Evidenčné číslo',
+      'Dátum a čas zaevidovania',
+      'Subjekt',
+      'Typ podania',
+      'Externý kód typu podania',
+      'Stav podania',
+      'ID používateľa',
+      'Obdobie'
+    ]
+
+    summary_data = CSV.generate(headers: true) do |csv|
+      csv << headers
+
+      export.message_threads.each do |message_thread|
+        message_thread.messages.outbox.each do |outbox_message|
+          outbox_message_fs_id = outbox_message.metadata["fs_message_id"]
+
+          inbox_message = message_thread.messages.inbox
+                                        .where("messages.metadata ->> 'fs_sent_message_id' = ?", outbox_message_fs_id)
+                                        .take
+
+          csv << [
+            outbox_message_fs_id,
+            outbox_message.delivered_at,
+            outbox_message.metadata["dic"],
+            outbox_message.title,
+            outbox_message.form.submission_type_identifier,
+            inbox_message.metadata["fs_submission_status"],
+            outbox_message.metadata["fs_submitting_subject"],
+            outbox_message.metadata["fs_period"]
+          ]
+        end
+      end
+    end
+
+    zip.put_next_entry("podania_sumár.csv")
+    zip.write(summary_data.force_encoding('UTF-8'))
   end
 
   def unique_path_within_export(object, export:, other_file_names:, pdf: false)
