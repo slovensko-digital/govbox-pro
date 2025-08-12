@@ -151,6 +151,17 @@ class Message < ApplicationRecord
     (message_draft.tags.simple + message_draft.tags.signed).each { |tag| assign_tag(tag) }
   end
 
+  def export_summary
+    metadata_whitelist = %w[fs_message_id fs_sent_message_id fs_status fs_submission_status fs_submitting_subject fs_message_type fs_submission_type_name fs_submission_created_at fs_period fs_dismissal_reason dic correlation_id reference_id edesk_class sender_uri]
+
+    {
+      message_thread_id: message_thread_id,
+      title: title,
+      delivered_at: delivered_at,
+      tags: thread.tags.map(&:name)
+    }.merge!(metadata.slice(*metadata_whitelist))
+  end
+
   def assign_tag(tag)
     messages_tags.find_or_create_by!(tag: tag)
   end
