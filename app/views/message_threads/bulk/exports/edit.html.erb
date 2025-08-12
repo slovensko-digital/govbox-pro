@@ -17,55 +17,57 @@
           </div>
 
           <div class="flex items-center gap-x-3 py-3">
-            <%= check_box_tag "export[settings][messages]", "1", @export.settings["messages"], class: "h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer" %>
+            <%= check_box_tag "export[settings][messages]", "1", @export.settings["messages"], class: "h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer", onclick: "this.form.requestSubmit()" %>
             <%= label_tag "export[settings][messages]", "Exportovať správy", class: "select-none text-sm/6 text-gray-900 cursor-pointer" %>
           </div>
-          <p class="mt-1 text-sm text-gray-500">Nastavte ako budú exportované jednotlivé typy správ.</p>
+          <% if @export.settings["messages"] %>
+            <p class="mt-1 text-sm text-gray-500">Nastavte ako budú exportované jednotlivé typy správ.</p>
 
-          <div class="space-y-4 py-6 px-6">
-            <div class="flex items-center gap-x-3">
-              <%= check_box_tag "export[settings][pdf]", "1", @export.settings["pdf"], class: "h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer" %>
-              <%= label_tag "export[settings][pdf]", "Exportovať aj PDF", class: "select-none text-sm/6 text-gray-900 cursor-pointer" %>
+            <div class="space-y-4 py-6 px-6">
+              <div class="flex items-center gap-x-3">
+                <%= check_box_tag "export[settings][pdf]", "1", @export.settings["pdf"], class: "h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer" %>
+                <%= label_tag "export[settings][pdf]", "Exportovať aj PDF", class: "select-none text-sm/6 text-gray-900 cursor-pointer" %>
+              </div>
+
+              <table class="min-w-full">
+                <tbody>
+                <tr class="border-t border-gray-200">
+                  <td colspan="3" class="border-t border-gray-200 bg-gray-50 py-2 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-3">Všeobecné nastavenie</td>
+                </tr>
+                <tr class="border-t border-gray-200">
+                  <td class="py-2 pr-3"><%= check_box_tag "export[settings][default]", "1", @export.settings['default'], class: "h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer" %></td>
+                  <td class="text-sm">všetky správy</td>
+                  <td class="whitespace-nowrap w-full py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-3"><%= text_field_tag "export[settings][templates][default]", @export.settings.dig('templates', 'default'), class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" %></td>
+                </tr>
+                <tr>
+                  <td colspan="3" class="border-t border-gray-200 bg-gray-50 py-2 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-3">Podľa typu formulára</td>
+                </tr>
+                <% @message_forms.each do |message_form| %>
+                  <tr class="border-t border-gray-200">
+                    <td><%= check_box_tag "export[settings][by_form][#{message_form}]", "1", @export.settings.dig('by_form', message_form), class: "h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer" %></td>
+                    <td class="text-sm"><%= message_form %></td>
+                    <td class="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-3">
+                      <%= text_field_tag "export[settings][templates][#{message_form}]", @export.settings.dig('templates', message_form), placeholder: 'nastavenie ako pre všetky správy', class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" %>
+                    </td>
+                  </tr>
+                <% end %>
+
+                <tr class="border-t border-gray-200">
+                  <td colspan="3" class="bg-gray-50 py-2 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-3">Podľa typu správy</td>
+                </tr>
+                <% @message_types.each do |message_type| %>
+                  <tr class="border-t border-gray-200">
+                    <td><%= check_box_tag "export[settings][by_type][#{message_type}]", "1", @export.settings.dig('by_type', message_type), class: "h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer" %></td>
+                    <td class="text-sm"><%= message_type %></td>
+                    <td class="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-3">
+                      <%= text_field_tag "export[settings][templates][#{message_type}]", @export.settings.dig('templates', message_type), placeholder: 'nastavenie ako pre všetky správy', class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" %>
+                    </td>
+                  </tr>
+                <% end %>
+                </tbody>
+              </table>
             </div>
-
-            <table class="min-w-full">
-              <tbody>
-              <tr class="border-t border-gray-200">
-                <td colspan="3" class="border-t border-gray-200 bg-gray-50 py-2 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-3">Všeobecné nastavenie</td>
-              </tr>
-              <tr class="border-t border-gray-200">
-                <td class="py-2 pr-3"><%= check_box_tag "export[settings][default]", "1", @export.settings['default'], class: "h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer" %></td>
-                <td class="text-sm">všetky správy</td>
-                <td class="whitespace-nowrap w-full py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-3"><%= text_field_tag "export[settings][templates][default]", @export.settings.dig('templates', 'default'), class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" %></td>
-              </tr>
-              <tr>
-                <td colspan="3" class="border-t border-gray-200 bg-gray-50 py-2 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-3">Podľa typu formulára</td>
-              </tr>
-              <% @message_forms.each do |message_form| %>
-                <tr class="border-t border-gray-200">
-                  <td><%= check_box_tag "export[settings][by_form][#{message_form}]", "1", @export.settings.dig('by_form', message_form), class: "h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer" %></td>
-                  <td class="text-sm"><%= message_form %></td>
-                  <td class="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-3">
-                    <%= text_field_tag "export[settings][templates][#{message_form}]", @export.settings.dig('templates', message_form), placeholder: 'nastavenie ako pre všetky správy', class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" %>
-                  </td>
-                </tr>
-              <% end %>
-
-              <tr class="border-t border-gray-200">
-                <td colspan="3" class="bg-gray-50 py-2 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-3">Podľa typu správy</td>
-              </tr>
-              <% @message_types.each do |message_type| %>
-                <tr class="border-t border-gray-200">
-                  <td><%= check_box_tag "export[settings][by_type][#{message_type}]", "1", @export.settings.dig('by_type', message_type), class: "h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer" %></td>
-                  <td class="text-sm"><%= message_type %></td>
-                  <td class="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-3">
-                    <%= text_field_tag "export[settings][templates][#{message_type}]", @export.settings.dig('templates', message_type), placeholder: 'nastavenie ako pre všetky správy', class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" %>
-                  </td>
-                </tr>
-              <% end %>
-              </tbody>
-            </table>
-          </div>
+          <% end %>
         </div>
         <div class="mb-6">
           <%= f.submit "Uložiť nastavenia", class: "rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" %>
@@ -96,22 +98,6 @@
               <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900">-</td>
               <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">sumár.csv</td>
             </tr>
-<!--            <tr>-->
-<!--              <td class="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-gray-500 sm:pl-0"></td>-->
-<!--              <td class="px-2 py-2 text-sm font-medium text-gray-900">-->
-<!--                <span class="text-gray-500">&#10551;</span></td>-->
-<!--              <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900"></td>-->
-<!--              <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500"></td>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--              <td class="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-gray-500 sm:pl-0"></td>-->
-<!--              <td class="px-2 py-2 text-sm font-medium text-gray-900"> &nbsp;&nbsp;<span class="text-gray-500">&#10551;</span>-->
-<!--              </td>-->
-<!--              <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900"></td>-->
-<!--              <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">-->
-<!--                sumár.csv-->
-<!--              </td>-->
-<!--            </tr>-->
           <% end %>
 
           <% if @export.settings.dig("messages") %>
