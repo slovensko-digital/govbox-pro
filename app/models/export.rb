@@ -42,7 +42,7 @@ class Export < ApplicationRecord
 
   def export_object_filepath(message_object)
     thread = message_object.message.thread
-    form = Fs::Form.find_by(id: thread.metadata["fs_form_id"])&.slug
+    form = Fs::Form.find_by(id: thread.metadata&.dig("fs_form_id"))&.slug
     type = message_object.message.message_type
 
     default_template = settings.dig("templates", "default").presence || DEFAULT_TEMPLATE
@@ -66,7 +66,7 @@ class Export < ApplicationRecord
   end
 
   def self.form_name(object, include_version: true)
-    Fs::Form.find_by(id: object.message.thread.metadata["fs_form_id"])&.short_name(include_version: include_version)
+    Fs::Form.find_by(id: object.message.thread.metadata&.dig("fs_form_id"))&.short_name(include_version: include_version)
   end
 
   def storage_path

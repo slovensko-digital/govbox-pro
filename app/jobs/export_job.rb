@@ -1,3 +1,5 @@
+require 'csv'
+
 class ExportJob < ApplicationJob
   queue_as :default
 
@@ -77,43 +79,22 @@ class ExportJob < ApplicationJob
   end
 
   def prepare_summary(export:, zip:)
-    headers = [
-      'Evidenčné číslo',
-      'Dátum a čas zaevidovania',
-      'Subjekt',
-      'Typ podania',
-      'Externý kód typu podania',
-      'Stav podania',
-      'ID používateľa',
-      'Obdobie'
-    ]
-
     summary_data = CSV.generate(headers: true) do |csv|
-      csv << headers
+      csv << export.message_threads
+                   .flat_map(&:messages)
+                   .flat_map(&:export_summary)
+                   .map(&:keys)
+                   .flatten
+                   .uniq
 
       export.message_threads.each do |message_thread|
-        message_thread.messages.outbox.each do |outbox_message|
-          outbox_message_fs_id = outbox_message.metadata["fs_message_id"]
-
-          inbox_message = message_thread.messages.inbox
-                                        .where("messages.metadata ->> 'fs_sent_message_id' = ?", outbox_message_fs_id)
-                                        .take
-
-          csv << [
-            outbox_message_fs_id,
-            outbox_message.delivered_at,
-            outbox_message.metadata["dic"],
-            outbox_message.title,
-            outbox_message.form.submission_type_identifier,
-            inbox_message.metadata["fs_submission_status"],
-            outbox_message.metadata["fs_submitting_subject"],
-            outbox_message.metadata["fs_period"]
-          ]
+        message_thread.messages.each do |message|
+          csv << message.export_summary
         end
       end
     end
 
-    zip.put_next_entry("podania_sumár.csv")
+    zip.put_next_entry("sumár.csv")
     zip.write(summary_data.force_encoding('UTF-8'))
   end
 
