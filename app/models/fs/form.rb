@@ -40,9 +40,9 @@ class Fs::Form < ApplicationRecord
 
   def short_name(include_version: true)
     prefix = case subtype_name
-             when "Dodatočné"
+             when /\Adodatočn*/i
                "DOD"
-             when "Opravné"
+             when /\Aopravn*/i
                "OPR"
              end
 
