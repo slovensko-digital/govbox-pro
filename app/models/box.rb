@@ -57,6 +57,10 @@ class Box < ApplicationRecord
     raise NotImplementedError
   end
 
+  def official_name
+    name.match(/^FS (.*?)(?:\s*(v zastúpení:.*| \(oblasť SPD\)))?$/)&.captures&.first || name
+  end
+
   private
 
   def validate_box_with_api_connection

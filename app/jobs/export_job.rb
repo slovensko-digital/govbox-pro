@@ -94,8 +94,11 @@ class ExportJob < ApplicationJob
       end
     end
 
+    # Add UTF-8 BOM for Excel compatibility
+    bom = "\uFEFF"
+
     zip.put_next_entry("sumár.csv")
-    zip.write(summary_data.force_encoding('UTF-8'))
+    zip.write(bom + summary_data.force_encoding('UTF-8'))
   end
 
   def unique_path_within_export(object, export:, other_file_names:, pdf: false)

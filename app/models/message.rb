@@ -157,6 +157,7 @@ class Message < ApplicationRecord
     {
       message_thread_id: message_thread_id,
       title: title,
+      box: box.official_name,
       delivered_at: delivered_at,
       tags: thread.tags.map(&:name)
     }.merge!(metadata.slice(*metadata_whitelist))
