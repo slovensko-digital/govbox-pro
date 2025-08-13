@@ -5,7 +5,7 @@
     </div>
 
     <div class="flow-root m-6">
-      <%= form_for @export, url: message_threads_bulk_export_path(@export), method: :put do |f| %>
+      <%= form_for @export, url: message_threads_bulk_export_path(@export), html: { id: 'export-form' }, method: :put do %>
         <div>
           <h3 class="text-base font-semibold text-gray-900">Nastavenie exportu</h3>
         </div>
@@ -69,10 +69,15 @@
             </div>
           <% end %>
         </div>
-        <div class="mb-6">
-          <%= f.submit "Uložiť nastavenia", class: "rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" %>
-        </div>
       <% end %>
+
+      <div class="flex items-center gap-x-4 mb-6">
+        <%= button_tag "Uložiť nastavenia", class: "rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50", onclick: "document.getElementById('export-form').requestSubmit()" %>
+
+        <%= form_for @export, url: message_threads_bulk_export_start_path(@export), method: :post do |f| %>
+            <%= f.submit "Exportovať", class: "rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500", data: { turbo_confirm: "Chcete vytvoriť export?" } %>
+        <% end %>
+      </div>
 
       <div class="border-b border-gray-200 bg-white py-5">
         <h3 class="text-base font-semibold text-gray-900">Náhľad exportu</h3>
@@ -141,12 +146,6 @@
           <% end %>
         </tbody>
       </table>
-
-      <div class="mt-6">
-        <%= form_for @export, url: message_threads_bulk_export_start_path(@export), method: :post do |f| %>
-          <%= f.submit "Exportovať", class: "rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500", data: { turbo_confirm: "Chcete vytvoriť export?" } %>
-        <% end %>
-      </div>
     </div>
   </div>
 </div>
