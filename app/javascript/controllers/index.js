@@ -42,6 +42,3 @@ application.register("content-with-separator", ContentWithSeparator)
 
 import VisitedLinks from "./visited_links_controller"
 application.register("visited-links", VisitedLinks)
-
-import AccordionController from "./accordion_controller"
-application.register("accordion", AccordionController)
