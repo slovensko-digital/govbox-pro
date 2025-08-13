@@ -20,7 +20,7 @@
             <%= check_box_tag "export[settings][messages]", "1", @export.settings["messages"], class: "h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer", onclick: "this.form.requestSubmit()" %>
             <%= label_tag "export[settings][messages]", "Exportovať správy", class: "select-none text-sm/6 text-gray-900 cursor-pointer" %>
           </div>
-          <% if @export.settings["messages"] %>
+          <div style="<%= @export.settings['messages'] ? '' : 'display: none;' %>">
             <p class="mt-1 text-sm text-gray-500">Nastavte ako budú exportované jednotlivé typy správ.</p>
 
             <div class="space-y-4 py-6 px-6">
@@ -67,7 +67,7 @@
                 </tbody>
               </table>
             </div>
-          <% end %>
+          </div>
         </div>
       <% end %>
 
