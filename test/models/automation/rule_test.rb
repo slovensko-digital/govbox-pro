@@ -132,7 +132,13 @@ class Automation::RuleTest < ActiveSupport::TestCase
       "subject" => "1122334455",
       "form_identifier" => "3055_781"
     },
-                  [file_fixture("fs/dic1122334455_fs3055_781__sprava_dani_2023.xml").read]
+    [file_fixture("fs/dic1122334455_fs3055_781__sprava_dani_2023.xml").read]
+    fs_api.expect :post_validation, {
+      "status" => 202,
+      "body" => nil,
+      "headers" => {}
+    },
+    ["716_626", Base64.strict_encode64(file_fixture("fs/dic1122334455_fs3055_781__sprava_dani_2023.xml").read)]
 
     FsEnvironment.fs_client.stub :api, fs_api do
         Fs::MessageDraft.create_and_validate_with_fs_form(form_files: [fixture_file_upload("fs/dic1122334455_fs3055_781__sprava_dani_2023.xml", "application/xml")], author: author)
@@ -152,6 +158,12 @@ class Automation::RuleTest < ActiveSupport::TestCase
       "form_identifier" => "3055_781"
     },
     [file_fixture("fs/dic1122334455_fs3055_781__sprava_dani_2023.xml").read]
+    fs_api.expect :post_validation, {
+      "status" => 202,
+      "body" => nil,
+      "headers" => {}
+    },
+    ["716_626", Base64.strict_encode64(file_fixture("fs/dic1122334455_fs3055_781__sprava_dani_2023.xml").read)]
 
     FsEnvironment.fs_client.stub :api, fs_api do
         Fs::MessageDraft.create_and_validate_with_fs_form(form_files: [fixture_file_upload("fs/dic1122334455_fs3055_781__sprava_dani_2023.xml", "application/xml")], author: author)
@@ -171,6 +183,12 @@ class Automation::RuleTest < ActiveSupport::TestCase
       "form_identifier" => "3055_781"
     },
     [file_fixture("fs/dic1122334455_fs3055_781__sprava_dani_2023.xml").read]
+    fs_api.expect :post_validation, {
+      "status" => 202,
+      "body" => nil,
+      "headers" => {}
+    },
+    ["716_626", Base64.strict_encode64(file_fixture("fs/dic1122334455_fs3055_781__sprava_dani_2023.xml").read)]
 
     FsEnvironment.fs_client.stub :api, fs_api do
         Fs::MessageDraft.create_and_validate_with_fs_form(form_files: [fixture_file_upload("fs/dic1122334455_fs3055_781__sprava_dani_2023.xml", "application/xml")], author: author)
@@ -191,7 +209,13 @@ class Automation::RuleTest < ActiveSupport::TestCase
       "subject" => "1122334455",
       "form_identifier" => "3055_781"
     },
-                  [file_fixture("fs/dic1122334455_fs3055_781__sprava_dani_2023.xml").read]
+    [file_fixture("fs/dic1122334455_fs3055_781__sprava_dani_2023.xml").read]
+    fs_api.expect :post_validation, {
+      "status" => 202,
+      "body" => nil,
+      "headers" => {}
+    },
+    ["716_626", Base64.strict_encode64(file_fixture("fs/dic1122334455_fs3055_781__sprava_dani_2023.xml").read)]
 
     FsEnvironment.fs_client.stub :api, fs_api do
         Fs::MessageDraft.create_and_validate_with_fs_form(form_files: [fixture_file_upload("fs/dic1122334455_fs3055_781__sprava_dani_2023.xml", "application/xml")], author: author)
@@ -212,7 +236,13 @@ class Automation::RuleTest < ActiveSupport::TestCase
       "subject" => "1122334455",
       "form_identifier" => "3055_781"
     },
-                  [file_fixture("fs/1122334455_fs3055_781__sprava_dani_2023.xml").read]
+    [file_fixture("fs/1122334455_fs3055_781__sprava_dani_2023.xml").read]
+    fs_api.expect :post_validation, {
+      "status" => 202,
+      "body" => nil,
+      "headers" => {}
+    },
+    ["716_626", Base64.strict_encode64(file_fixture("fs/dic1122334455_fs3055_781__sprava_dani_2023.xml").read)]
 
     FsEnvironment.fs_client.stub :api, fs_api do
         Fs::MessageDraft.create_and_validate_with_fs_form(form_files: [fixture_file_upload("fs/1122334455_fs3055_781__sprava_dani_2023.xml", "application/xml")], author: author)

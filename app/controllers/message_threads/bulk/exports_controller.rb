@@ -18,7 +18,7 @@ module MessageThreads
 
         @message_threads = message_thread_policy_scope.where(id: @export.message_thread_ids).includes(:messages)
         @message_forms = @message_threads.map do |thread|
-          thread.metadata['fs_form_id']
+          thread.metadata&.dig('fs_form_id')
         end.then do |ids|
           Fs::Form.where(id: ids).pluck(:slug).uniq
         end

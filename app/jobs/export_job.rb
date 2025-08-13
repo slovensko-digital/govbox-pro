@@ -1,3 +1,5 @@
+require 'csv'
+
 class ExportJob < ApplicationJob
   queue_as :default
 
@@ -5,15 +7,21 @@ class ExportJob < ApplicationJob
     file_paths = []
 
     export_content = ::Zip::OutputStream.write_buffer do |zip|
-      export.message_threads.each do |message_thread|
-        message_thread.messages.each do |message|
-          message.objects.each do |object|
-            prepare_original_object(object, export: export, zip: zip, file_paths: file_paths)
-            prepare_pdf_object(object, export: export, zip: zip, file_paths: file_paths) if export.settings["pdf"]
+      if export.settings.dig("messages")
+        export.message_threads.each do |message_thread|
+          message_thread.messages.each do |message|
+            message.objects.each do |object|
+              prepare_original_object(object, export: export, zip: zip, file_paths: file_paths)
+              prepare_pdf_object(object, export: export, zip: zip, file_paths: file_paths) if export.settings["pdf"]
 
-            EventBus.publish(:message_object_downloaded, object)
+              EventBus.publish(:message_object_downloaded, object)
+            end
           end
         end
+      end
+
+      if export.settings.dig("summary")
+        prepare_summary(export: export, zip: zip)
       end
     end
 
@@ -68,6 +76,26 @@ class ExportJob < ApplicationJob
       zip.write(pdf_content)
       file_paths << file_path
     end
+  end
+
+  def prepare_summary(export:, zip:)
+    summary_data = CSV.generate(headers: true) do |csv|
+      csv << export.message_threads
+                   .flat_map(&:messages)
+                   .flat_map(&:export_summary)
+                   .map(&:keys)
+                   .flatten
+                   .uniq
+
+      export.message_threads.each do |message_thread|
+        message_thread.messages.each do |message|
+          csv << message.export_summary
+        end
+      end
+    end
+
+    zip.put_next_entry("sumár.csv")
+    zip.write(summary_data.force_encoding('UTF-8'))
   end
 
   def unique_path_within_export(object, export:, other_file_names:, pdf: false)
