@@ -12,4 +12,6 @@
 class BoxesApiConnection < ApplicationRecord
   belongs_to :box
   belongs_to :api_connection
+
+  store_accessor :settings, :delegate_id, prefix: true
 end

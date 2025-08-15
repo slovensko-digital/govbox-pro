@@ -14,7 +14,7 @@ module Fs
       @api_token_private_key = api_connection ? OpenSSL::PKey::RSA.new(api_connection.api_token_private_key) : nil
       @fs_credentials = api_connection ? "#{api_connection.settings_username}:#{api_connection.settings_password}" : nil
 
-      initialize_obo(box) if box
+      initialize_obo(box, api_connection: api_connection) if box
     end
 
     def fetch_forms(**args)
@@ -85,9 +85,10 @@ module Fs
 
     private
 
-    def initialize_obo(box)
+    def initialize_obo(box, api_connection:)
       @obo_without_delegate = "#{box.settings_subject_id}:#{box.settings_dic}"
-      @obo = @obo_without_delegate + (box.settings_delegate_id ? ":#{box.settings_delegate_id}" : "")
+      delegate_id = box.boxes_api_connections.find_by(api_connection: api_connection).settings_delegate_id
+      @obo = @obo_without_delegate + ( delegate_id ? ":#{delegate_id}" : "")
     end
 
     def jwt_header(obo = nil)

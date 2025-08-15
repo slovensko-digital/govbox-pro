@@ -101,7 +101,7 @@ fs_delegate:
   uri: dic://sk/9988776644
   tenant: solver
   short_name: DFS
-  settings: {"dic": "9988776644", "subject_id": "61a44216-d56c-43cf-9ffc-d6db8fcf9331", "delegate_id": "e5132b8a-f9dc-46f2-8525-568442dcffa7", "message_drafts_import_enabled": true}
+  settings: {"dic": "9988776644", "subject_id": "61a44216-d56c-43cf-9ffc-d6db8fcf9331", "message_drafts_import_enabled": true}
   type: 'Fs::Box'
 
 fs_false_creg:

@@ -68,7 +68,7 @@ fs_solver_api_connection:
 fs_delegate_api_connection:
   box: fs_delegate
   api_connection: fs_api_connection2
-  settings: {}
+  settings: {"delegate_id": "e5132b8a-f9dc-46f2-8525-568442dcffa7"}
 
 fs_false_creg_api_connection:
   box: fs_false_creg

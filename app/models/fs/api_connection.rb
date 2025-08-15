@@ -79,7 +79,7 @@ class Fs::ApiConnection < ::ApiConnection
         box.save
 
         box.boxes_api_connections.find_or_create_by(api_connection: self).tap do |box_api_connection|
-          box_api_connection.settings['delegate_id'] = subject["delegate_id"]
+          box_api_connection.settings_delegate_id = subject["delegate_id"]
           box_api_connection.save
         end
       end
