@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_08_14_093629) do
+ActiveRecord::Schema[7.1].define(version: 2025_08_14_054851) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -196,7 +196,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_14_093629) do
     t.bigint "api_connection_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.jsonb "settings", default: {}
     t.index ["api_connection_id"], name: "index_boxes_other_api_connections_on_api_connection_id"
     t.index ["box_id", "api_connection_id"], name: "idx_on_box_id_api_connection_id_7b42f99e4a", unique: true
     t.index ["box_id"], name: "index_boxes_other_api_connections_on_box_id"

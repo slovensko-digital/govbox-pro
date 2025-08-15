@@ -370,6 +370,15 @@ accountants_user3_signed:
   color: yellow
   owner: accountants_user3
 
+accountants_user4_signed:
+  name: 'Podpísané: Basic user 5'
+  type: SignedByTag
+  visible: true
+  tenant: accountants
+  icon: pencil
+  color: yellow
+  owner: accountants_user4
+
 accountants_tag1:
   name: 'Tag 1'
   type: SimpleTag

@@ -3,7 +3,6 @@
 # Table name: boxes_other_api_connections
 #
 #  id                :bigint           not null, primary key
-#  settings          :jsonb
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
 #  api_connection_id :bigint           not null

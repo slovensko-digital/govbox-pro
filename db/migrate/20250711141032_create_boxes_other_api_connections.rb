@@ -1,4 +1,4 @@
-class CreateBoxesApiConnections < ActiveRecord::Migration[7.1]
+class CreateBoxesOtherApiConnections < ActiveRecord::Migration[7.1]
   def change
     create_table :boxes_other_api_connections do |t|
       t.references :box, null: false, foreign_key: true

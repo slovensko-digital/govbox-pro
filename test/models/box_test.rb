@@ -54,7 +54,7 @@ class BoxTest < ActiveSupport::TestCase
       short_name: SecureRandom.hex,
       uri: SecureRandom.hex,
       tenant: box.tenant,
-      api_connection: box.api_connection,
+      api_connections: [box.api_connection],
       settings_obo: box.settings_obo
     )
 
@@ -70,7 +70,7 @@ class BoxTest < ActiveSupport::TestCase
       short_name: SecureRandom.hex,
       uri: SecureRandom.hex,
       tenant: box.tenant,
-      api_connection: box.api_connection
+      api_connections: [box.api_connection]
     )
 
     assert_not new_box.valid?
@@ -83,7 +83,7 @@ class BoxTest < ActiveSupport::TestCase
 
     box.destroy
 
-    assert api_connection.destroyed?
+    assert_raises(ActiveRecord::RecordNotFound) { api_connection.reload }
   end
 
   test "before_save callback normalizes settings_obo attribute" do
