@@ -22,8 +22,8 @@ class Govbox::ApiConnection < ::ApiConnection
     obo.presence
   end
 
-  def destroy_with_box?
-    boxes.empty?
+  def destroy_with_box?(box)
+    boxes.where.not(id: box.id).empty?
   end
 
   def validate_box(box)

@@ -208,7 +208,7 @@ module Automation
     VALID_ATTR_LIST = ['authors_api_connection'].freeze
 
     def satisfied?(message)
-      (message.box.api_connection.owner == message.author) || message.box.other_api_connections.where(owner: message.author).any?
+      message.box.api_connections.where(owner: message.author).any?
     end
 
     def cleanup_record

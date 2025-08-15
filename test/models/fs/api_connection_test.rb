@@ -61,7 +61,7 @@ class Fs::ApiConnectionTest < ActiveSupport::TestCase
     assert_equal original_fs_boxes_count, Fs::Box.count
   end
 
-  test ".boxify adds delegate_id and c_reg on existing boxes if present" do
+  test ".boxify adds c_reg on existing boxes if present" do
     original_fs_boxes_count = Fs::Box.count
     existing_box = boxes(:fs_accountants2)
 
@@ -76,12 +76,11 @@ class Fs::ApiConnectionTest < ActiveSupport::TestCase
       api_connection.boxify
     end
 
-    assert_equal existing_box.reload.settings_delegate_id, "7e4faaa3-c130-4032-b4c1-d0892e9a4622"
     assert_equal existing_box.reload.settings_is_subject_c_reg, false
     assert_equal original_fs_boxes_count, Fs::Box.count
   end
 
-  test ".boxify adds delegate_id and doesn't duplicate existing boxes if c_reg already present" do
+  test ".boxify doesn't duplicate existing boxes if c_reg already present" do
     original_fs_boxes_count = Fs::Box.count
     existing_box = boxes(:fs_false_creg)
 
@@ -97,7 +96,6 @@ class Fs::ApiConnectionTest < ActiveSupport::TestCase
     end
 
     assert_equal original_fs_boxes_count, Fs::Box.count
-    assert_equal existing_box.reload.settings_delegate_id, "7e4faaa3-c130-4032-b4c1-d0892e9a4622"
     assert_equal existing_box.reload.settings_is_subject_c_reg, false
   end
 
@@ -111,6 +109,7 @@ class Fs::ApiConnectionTest < ActiveSupport::TestCase
     box = boxes(:fs_accountants)
 
     new_box = box.dup
+    new_box.api_connections = box.api_connections
     new_box.name = 'Juraj Jánošík'
     new_box.uri = SecureRandom.hex
     new_box.short_name = api_connection.send(:generate_short_name_from_name, 'Juraj Jánošík')
@@ -120,6 +119,7 @@ class Fs::ApiConnectionTest < ActiveSupport::TestCase
 
 
     new_box = box.dup
+    new_box.api_connections = box.api_connections
     new_box.name = 'Ján Jánošík'
     new_box.uri = SecureRandom.hex
     new_box.short_name = api_connection.send(:generate_short_name_from_name, 'Ján Jánošík')
@@ -130,6 +130,7 @@ class Fs::ApiConnectionTest < ActiveSupport::TestCase
 
     # skips number 3 which is already used
     new_box = box.dup
+    new_box.api_connections = box.api_connections
     new_box.name = 'Ján Jabĺčko'
     new_box.uri = SecureRandom.hex
     new_box.short_name = api_connection.send(:generate_short_name_from_name, 'Ján Jabĺčko')
@@ -139,6 +140,7 @@ class Fs::ApiConnectionTest < ActiveSupport::TestCase
 
 
     new_box = box.dup
+    new_box.api_connections = box.api_connections
     new_box.name = 'Juraj Jabĺčko'
     new_box.uri = SecureRandom.hex
     new_box.short_name = api_connection.send(:generate_short_name_from_name, 'Juraj Jabĺčko')
@@ -159,15 +161,14 @@ class Fs::ApiConnectionTest < ActiveSupport::TestCase
 
     other_api_connection = api_connections(:fs_api_connection3)
 
-    assert_equal [], existing_box.other_api_connections
+    assert_equal 1, existing_box.api_connections.count
 
     FsEnvironment.fs_client.stub :api, fs_api do
       other_api_connection.boxify
     end
 
-    assert_equal api_connection, existing_box.api_connection
-    assert_equal 1, existing_box.other_api_connections.count
-    assert_equal other_api_connection, existing_box.other_api_connections.reload.first
+    assert_equal 2, existing_box.api_connections.count
+    assert [api_connection.id, other_api_connection.id].sort == existing_box.api_connections.reload.map(&:id).sort
     assert_equal original_fs_boxes_count, Fs::Box.count
   end
 end

@@ -83,7 +83,7 @@ class MessageDraftTest < ActiveSupport::TestCase
 
     box.other_api_connections.delete(api_connections(:fs_api_connection6))
 
-    user = users(:accountants_user3)
+    user = users(:accountants_user4)
     message_draft.thread.assign_tag(SignedByTag.find_by(owner: user))
 
     assert_raises(RuntimeError) do

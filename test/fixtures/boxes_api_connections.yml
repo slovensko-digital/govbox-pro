@@ -1,0 +1,76 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+ssd_main_api_connection:
+  box: ssd_main
+  api_connection: govbox_api_api_connection1
+  settings: {}
+
+ssd_other_api_connection:
+  box: ssd_other
+  api_connection: govbox_api_api_connection1
+  settings: {}
+
+solver_main_api_connection:
+  box: solver_main
+  api_connection: govbox_api_api_connection3
+  settings: {}
+
+google_box_with_govbox_api_connection_api_connection:
+  box: google_box_with_govbox_api_connection
+  api_connection: govbox_api_api_connection2
+  settings: {}
+
+google_box_with_sk_api_api_connection_with_obo_support_api_connection:
+  box: google_box_with_sk_api_api_connection_with_obo_support
+  api_connection: sk_api_api_connection_with_obo_support
+  settings: {}
+
+google_box_with_govbox_api_connection_with_obo_support_api_connection:
+  box: google_box_with_govbox_api_connection_with_obo_support
+  api_connection: govbox_api_api_connection_with_obo_support
+  settings: {}
+
+google_box_with_govbox_api_connection_with_obo_support_without_obo_value_api_connection:
+  box: google_box_with_govbox_api_connection_with_obo_support_without_obo_value
+  api_connection: govbox_api_api_connection_with_obo_support
+  settings: {}
+
+fs_accountants_api_connection:
+  box: fs_accountants
+  api_connection: fs_api_connection1
+  settings: {}
+
+fs_accountants2_api_connection:
+  box: fs_accountants2
+  api_connection: fs_api_connection1
+  settings: {}
+
+fs_accountants_multiple_api_connections_api_connection:
+  box: fs_accountants_multiple_api_connections
+  api_connection: fs_api_connection4
+  settings: {}
+
+fs_accountants_multiple_api_connections_c5:
+  box: fs_accountants_multiple_api_connections
+  api_connection: fs_api_connection5
+  settings: {}
+
+fs_accountants_multiple_api_connections_c6:
+  box: fs_accountants_multiple_api_connections
+  api_connection: fs_api_connection6
+  settings: {}
+
+fs_solver_api_connection:
+  box: fs_solver
+  api_connection: fs_api_connection2
+  settings: {}
+
+fs_delegate_api_connection:
+  box: fs_delegate
+  api_connection: fs_api_connection2
+  settings: {"delegate_id": "e5132b8a-f9dc-46f2-8525-568442dcffa7"}
+
+fs_false_creg_api_connection:
+  box: fs_false_creg
+  api_connection: fs_api_connection2
+  settings: {}

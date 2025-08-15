@@ -12,7 +12,7 @@ class Fs::BoxTest < ActiveSupport::TestCase
       short_name: 'FS TB',
       uri: 'dic://sk/0246802',
       type: 'Fs::Box',
-      api_connection: api_connections(:fs_api_connection1)
+      api_connections: [api_connections(:fs_api_connection1)]
     )
 
     assert box.reload.syncable
@@ -26,7 +26,7 @@ class Fs::BoxTest < ActiveSupport::TestCase
       short_name: 'FS TB',
       uri: 'dic://sk/0246802',
       type: 'Fs::Box',
-      api_connection: api_connections(:fs_api_connection2)
+      api_connections: [api_connections(:fs_api_connection2)]
     )
 
     assert_not box.reload.syncable

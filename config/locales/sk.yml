@@ -147,6 +147,8 @@ sk:
       year: Rok
   errors:
     format: "%{attribute} %{message}"
+    attributes:
+      api_connection: API prepojenie
     messages:
       accepted: musí byť potvrdené
       blank: "%{attribute} je povinná položka"

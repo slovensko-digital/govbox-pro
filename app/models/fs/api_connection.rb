@@ -26,7 +26,7 @@ class Fs::ApiConnection < ::ApiConnection
     obo.presence
   end
 
-  def destroy_with_box?
+  def destroy_with_box?(box)
     false
   end
 
@@ -60,26 +60,28 @@ class Fs::ApiConnection < ::ApiConnection
         unless box
           box = Fs::Box.new(
             tenant: tenant,
-            api_connection: self,
             settings: {
               dic: subject["dic"],
               subject_id: subject["subject_id"],
               message_drafts_import_enabled: Fs::Box::DISABLED_MESSAGE_DRAFTS_IMPORT_KEYWORDS.none? { |keyword| subject["name"].include?(keyword) }
-            }
+            },
+            api_connections: [self]
           )
         end
 
         box.name = "FS " + subject["name"]
         box.short_name ||= generate_short_name_from_name(subject["name"])
         box.uri = "dic://sk/#{subject['dic']}"
-        box.settings_delegate_id ||= subject["delegate_id"]
         box.settings_is_subject_c_reg ||= subject["is_subject_c_reg"]
 
         count += 1 if box.new_record? && box.save
 
         box.save
 
-        box.boxes_other_api_connections.find_or_create_by(api_connection: self) if box.api_connection != self
+        box.boxes_api_connections.find_or_create_by(api_connection: self).tap do |box_api_connection|
+          box_api_connection.settings_delegate_id = subject["delegate_id"]
+          box_api_connection.save
+        end
       end
     end
 

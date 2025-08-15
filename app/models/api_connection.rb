@@ -17,13 +17,14 @@
 class ApiConnection < ApplicationRecord
   belongs_to :tenant, optional: true
   belongs_to :owner, class_name: "User", optional: true
-  has_many :boxes
+  has_many :boxes_api_connections, dependent: :destroy
+  has_many :boxes, through: :boxes_api_connections
 
   def box_obo(box)
     raise NotImplementedError
   end
 
-  def destroy_with_box?
+  def destroy_with_box?(box)
     raise NotImplementedError
   end
 

@@ -91,6 +91,7 @@ sk_api_api_connection_with_obo_support:
   sub: sub4
   api_token_private_key: private_key
   type: 'SkApi::ApiConnectionWithOboSupport'
+  tenant: google
 
 fs_api_connection2:
   sub: fs_sub2
