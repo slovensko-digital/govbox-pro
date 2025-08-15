@@ -26,7 +26,7 @@ class Fs::ApiConnection < ::ApiConnection
     obo.presence
   end
 
-  def destroy_with_box?
+  def destroy_with_box?(box)
     false
   end
 
