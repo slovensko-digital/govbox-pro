@@ -34,7 +34,7 @@ class Fs::Box < Box
     end
     raise ArgumentError, "Api connection must be provided" unless api_connection
 
-    api_connection.boxes.create!(params.except(:api_connection).merge(type: 'Fs::Box'))
+    Box.create!(params.except(:api_connection).merge(type: 'Fs::Box', api_connections: [api_connection]))
   end
 
   def sync
