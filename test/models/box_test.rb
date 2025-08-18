@@ -30,22 +30,6 @@ class BoxTest < ActiveSupport::TestCase
     assert_not box.valid?
   end
 
-  test "sync method schedules Govbox::SyncBoxJob with highest priority" do
-    box = boxes(:ssd_main)
-
-    assert_enqueued_with(job: Govbox::SyncBoxJob, priority: -1000) do
-      box.sync
-    end
-  end
-
-  test "sync_all schedules sync of all boxes" do
-    assert_enqueued_with(job: Govbox::SyncBoxJob) do
-      Box.sync_all
-    end
-
-    assert_enqueued_jobs Box.where(syncable: true).count
-  end
-
   test "should not be valid if same obo value present in other boxes within connection" do
     box = boxes(:google_box_with_govbox_api_connection_with_obo_support)
 
@@ -75,6 +59,20 @@ class BoxTest < ActiveSupport::TestCase
 
     assert_not new_box.valid?
     assert_equal :settings_obo, new_box.errors.first.attribute
+  end
+
+  test "should not be valid if api connection from different tenant set" do
+    box = boxes(:google_box_with_govbox_api_connection_with_obo_support_without_obo_value)
+
+    new_box = Upvs::Box.create(
+      name: SecureRandom.hex,
+      short_name: SecureRandom.hex,
+      uri: SecureRandom.hex,
+      tenant: box.tenant,
+      api_connections: [api_connections(:govbox_api_api_connection_with_obo_support2)]
+    )
+
+    assert_not new_box.valid?
   end
 
   test "after_destroy callback destroys api_connection if Govbox::ApiConnection without any boxes" do
@@ -111,5 +109,21 @@ class BoxTest < ActiveSupport::TestCase
     box.destroy
 
     assert_not api_connection.destroyed?
+  end
+
+  test "sync method schedules Govbox::SyncBoxJob with highest priority" do
+    box = boxes(:ssd_main)
+
+    assert_enqueued_with(job: Govbox::SyncBoxJob, priority: -1000) do
+      box.sync
+    end
+  end
+
+  test "sync_all schedules sync of all boxes" do
+    assert_enqueued_with(job: Govbox::SyncBoxJob) do
+      Box.sync_all
+    end
+
+    assert_enqueued_jobs Box.where(syncable: true).count
   end
 end
