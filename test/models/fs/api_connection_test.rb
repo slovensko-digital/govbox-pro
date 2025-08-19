@@ -168,7 +168,7 @@ class Fs::ApiConnectionTest < ActiveSupport::TestCase
     end
 
     assert_equal 2, existing_box.api_connections.count
-    assert [api_connection.id, other_api_connection.id].sort == existing_box.api_connections.reload.map(&:id).sort
+    assert_equal 2, existing_box.boxes_api_connections.where(api_connection: [api_connection, other_api_connection]).count
     assert_equal original_fs_boxes_count, Fs::Box.count
   end
 
