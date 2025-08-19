@@ -52,6 +52,12 @@ govbox_api_api_connection_with_obo_support:
   tenant: google
   type: 'Govbox::ApiConnectionWithOboSupport'
 
+govbox_api_api_connection_with_obo_support2:
+  sub: sub3
+  api_token_private_key: private_key
+  tenant: solver
+  type: 'Govbox::ApiConnectionWithOboSupport'
+
 fs_api_connection1:
   sub: fs_sub1
   type: 'Fs::ApiConnection'
@@ -91,6 +97,7 @@ sk_api_api_connection_with_obo_support:
   sub: sub4
   api_token_private_key: private_key
   type: 'SkApi::ApiConnectionWithOboSupport'
+  tenant: google
 
 fs_api_connection2:
   sub: fs_sub2
