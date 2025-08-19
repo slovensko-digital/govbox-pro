@@ -171,4 +171,59 @@ class Fs::ApiConnectionTest < ActiveSupport::TestCase
     assert [api_connection.id, other_api_connection.id].sort == existing_box.api_connections.reload.map(&:id).sort
     assert_equal original_fs_boxes_count, Fs::Box.count
   end
+
+  test ".boxify associates API connections to the existing box" do
+    original_fs_boxes_count = Fs::Box.count
+
+    api_connection = api_connections(:fs_api_connection3)
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :get_subjects, [
+      {"subject_id"=>"ae968df6-6245-42c9-ad62-a590e20b20fe", "dic"=>"2020202020", "name"=>"Test subject, a.s.", "authorization_type" => "6", "delegate_id" => nil, "is_subject_c_reg" => false},
+    ]
+
+    FsEnvironment.fs_client.stub :api, fs_api do
+      api_connection.boxify
+    end
+
+    box = Fs::Box.last
+
+    assert_equal original_fs_boxes_count + 1, Fs::Box.count
+    assert_equal "FS Test subject, a.s.", box.name
+    assert_equal 1, box.api_connections.count
+    assert_equal api_connection, box.api_connections.first
+    assert_nil box.boxes_api_connections.find_by(api_connection: api_connection).settings_delegate_id
+
+    api_connection = api_connections(:fs_api_connection4)
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :get_subjects, [
+      {"subject_id"=>"ae968df6-6245-42c9-ad62-a590e20b20fe", "dic"=>"2020202020", "name"=>"Test subject, a.s.", "authorization_type" => "6", "delegate_id" => nil, "is_subject_c_reg" => false},
+    ]
+
+    FsEnvironment.fs_client.stub :api, fs_api do
+      api_connection.boxify
+    end
+
+    assert_equal original_fs_boxes_count + 1, Fs::Box.count
+    assert_equal 2, box.api_connections.count
+    assert box.api_connections.include?(api_connection)
+    assert_nil box.boxes_api_connections.find_by(api_connection: api_connection).settings_delegate_id
+
+    api_connection = api_connections(:fs_api_connection5)
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :get_subjects, [
+      {"subject_id"=>"ae968df6-6245-42c9-ad62-a590e20b20fe", "dic"=>"2020202020", "name"=>"Test subject, a.s. v zastúpení: SSD s. r. o.", "authorization_type" => "6", "delegate_id" => "4e34b214-108f-4cce-9219-ac8718eb9cdb", "is_subject_c_reg" => false},
+    ]
+
+    FsEnvironment.fs_client.stub :api, fs_api do
+      api_connection.boxify
+    end
+
+    assert_equal original_fs_boxes_count + 1, Fs::Box.count
+    assert_equal 3, box.api_connections.count
+    assert box.api_connections.include?(api_connection)
+    assert_equal "4e34b214-108f-4cce-9219-ac8718eb9cdb", box.boxes_api_connections.find_by(api_connection: api_connection).settings_delegate_id
+  end
 end
