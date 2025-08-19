@@ -9,12 +9,5 @@ class CreateBoxesApiConnections < ActiveRecord::Migration[7.1]
     end
 
     add_index :boxes_api_connections, [:box_id, :api_connection_id], unique: true
-
-    Box.find_each do |box|
-      box.boxes_api_connections.find_or_create_by(api_connection: box.api_connection)
-      box.other_api_connections.find_each do |other_api_connection|
-        box.boxes_api_connections.find_or_create_by(api_connection: other_api_connection)
-      end
-    end
   end
 end
