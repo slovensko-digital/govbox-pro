@@ -43,16 +43,23 @@ module MessageThreads
         if @export.update(export_params)
           redirect_to edit_message_threads_bulk_export_path(@export), notice: t("exports.flash.updated")
         else
-          render :edit, status: :unprocessable_entity
+          redirect_to edit_message_threads_bulk_export_path(@export), alert: @export.errors.full_messages.to_sentence
         end
       end
 
       def start
         authorize @export
 
-        @export.start
+        if params[:export].present? && export_params[:settings].present?
+          @export.settings.merge!(export_params[:settings])
+        end
 
-        redirect_to root_path, notice: t("exports.flash.started")
+        if @export.save
+          @export.start
+          redirect_to root_path, notice: t("exports.flash.started")
+        else
+          redirect_to edit_message_threads_bulk_export_path(@export), alert: @export.errors.full_messages.to_sentence
+        end
       end
 
       private

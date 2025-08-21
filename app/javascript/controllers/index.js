@@ -42,3 +42,6 @@ application.register("content-with-separator", ContentWithSeparator)
 
 import VisitedLinks from "./visited_links_controller"
 application.register("visited-links", VisitedLinks)
+
+import ExportStartController from "./export_start_controller"
+application.register("export-start", ExportStartController)
