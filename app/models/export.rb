@@ -12,6 +12,8 @@
 class Export < ApplicationRecord
   belongs_to :user
   before_save :set_default_template
+  before_validation :normalize_settings
+  validate :at_least_one_export_option, unless: :new_record?
 
   DEFAULT_TEMPLATE = "{{ schranka.nazov }}/vlakno-{{ vlakno.id }}/sprava-{{ sprava.id }}/{{ subor.nazov }}"
 
@@ -83,5 +85,16 @@ class Export < ApplicationRecord
     self.settings ||= {}
     self.settings['templates'] ||= {}
     self.settings['templates']['default'] = DEFAULT_TEMPLATE if settings.dig('templates', 'default').blank?
+  end
+
+  def at_least_one_export_option
+    errors.add(:base, I18n.t('activerecord.errors.models.export.attributes.base.empty_selection')) unless settings['summary'] || settings['messages']
+  end
+
+  def normalize_settings
+    self.settings ||= {}
+    %w[summary messages pdf default].each do |flag|
+      settings[flag] = ActiveModel::Type::Boolean.new.cast(settings[flag]) if settings.key?(flag)
+    end
   end
 end

@@ -73,9 +73,8 @@
 
       <div class="flex items-center gap-x-4 mb-6">
         <%= button_tag "Uložiť nastavenia", class: "rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50", onclick: "document.getElementById('export-form').requestSubmit()" %>
-
-        <%= form_for @export, url: message_threads_bulk_export_start_path(@export), method: :post do |f| %>
-            <%= f.submit "Exportovať", class: "rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500", data: { turbo_confirm: "Chcete vytvoriť export?" } %>
+        <%= form_for @export, url: message_threads_bulk_export_start_path(@export), html: { id: 'export-start-form', data: { controller: 'export-start', action: 'submit->export-start#submit' } }, method: :post do |f| %>
+          <%= f.submit "Exportovať", class: "rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500", data: { turbo_confirm: "Chcete vytvoriť export?" } %>
         <% end %>
       </div>
 
