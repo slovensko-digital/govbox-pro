@@ -8,7 +8,7 @@ class Api::SiteAdmin::Upvs::BoxesController < Api::SiteAdminController
   private
 
   def box_params
-    params.require(:box).permit(:name, :short_name, :uri, :color, :api_connection_id,
+    params.require(:box).permit(:name, :short_name, :export_name, :uri, :color, :api_connection_id,
                                 :settings_obo, api_connection: [:sub, :api_token_private_key]).merge(tenant_id: params[:tenant_id])
   end
 end

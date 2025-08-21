@@ -4,6 +4,7 @@
 #
 #  id                :bigint           not null, primary key
 #  color             :enum
+#  export_name       :string           not null
 #  name              :string           not null
 #  settings          :jsonb
 #  short_name        :string

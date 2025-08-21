@@ -112,4 +112,17 @@ class BoxTest < ActiveSupport::TestCase
 
     assert_not api_connection.destroyed?
   end
+
+  test "export_name auto populated from official_name" do
+    tenant = tenants(:solver)
+    box = tenant.boxes.create!(
+      name: 'FS Example Corp',
+      short_name: 'FSEC',
+      uri: 'dic://sk/1234500000',
+      type: 'Fs::Box',
+      api_connection: api_connections(:fs_api_connection2)
+    )
+
+    assert_equal 'Example Corp', box.export_name
+  end
 end

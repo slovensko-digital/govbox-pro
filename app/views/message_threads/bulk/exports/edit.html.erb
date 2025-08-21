@@ -39,6 +39,22 @@
                   <td class="text-sm">všetky správy</td>
                   <td class="whitespace-nowrap w-full py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-3"><%= text_field_tag "export[settings][templates][default]", @export.settings.dig('templates', 'default'), class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" %></td>
                 </tr>
+                <tr class="border-t border-gray-200">
+                  <td></td>
+                  <td colspan="2" class="py-2 pl-3 pr-4 text-xs text-gray-500 leading-5">
+                    <details class="group">
+                      <summary class="cursor-pointer select-none text-gray-600 hover:text-gray-800">Dostupné premenné pre šablónu</summary>
+                      <div class="mt-2 space-y-1">
+                        <code>{{ schranka.export_nazov }}</code> – upraviteľný export názov schránky<br>
+                        <code>{{ schranka.oficialny_nazov }}</code> – oficiálny názov<br>
+                        <code>{{ schranka.nazov }}</code> – pôvodný názov bez úprav<br>
+                        <code>{{ schranka.dic }}</code> – DIČ<br>
+                        <code>{{ vlakno.id }}</code>, <code>{{ vlakno.obdobie }}</code>, <code>{{ vlakno.formular }}</code>, <code>{{ vlakno.formular_bez_verzie }}</code>, <code>{{ vlakno.datum_podania }}</code><br>
+                        <code>{{ sprava.id }}</code>, <code>{{ subor.nazov }}</code>
+                      </div>
+                    </details>
+                  </td>
+                </tr>
                 <tr>
                   <td colspan="3" class="border-t border-gray-200 bg-gray-50 py-2 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-3">Podľa typu formulára</td>
                 </tr>
