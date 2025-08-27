@@ -16,15 +16,7 @@ module MessageThreads
       def edit
         authorize @export
 
-        @message_threads = message_thread_policy_scope.where(id: @export.message_thread_ids).includes(:messages)
-        @message_forms = @message_threads.map do |thread|
-          thread.metadata&.dig('fs_form_id')
-        end.then do |ids|
-          Fs::Form.where(id: ids).pluck(:slug).uniq
-        end
-        @message_types = @message_threads.flat_map do |thread|
-          thread.messages.map(&:message_type)
-        end.uniq.compact
+        build_export_context
       end
 
       def create
@@ -43,6 +35,7 @@ module MessageThreads
         if @export.update(export_params)
           redirect_to edit_message_threads_bulk_export_path(@export), notice: t("exports.flash.updated")
         else
+          build_export_context
           render :edit, status: :unprocessable_entity
         end
       end
@@ -50,9 +43,18 @@ module MessageThreads
       def start
         authorize @export
 
-        @export.start
+        if params[:export].present?
+          @export.assign_attributes(export_params)
+        end
 
-        redirect_to root_path, notice: t("exports.flash.started")
+        if @export.valid?
+          @export.save
+          @export.start
+          redirect_to root_path, notice: t("exports.flash.started")
+        else
+          build_export_context
+          render :edit, status: :unprocessable_entity
+        end
       end
 
       private
@@ -67,6 +69,18 @@ module MessageThreads
 
       def export_params
         params.require(:export).permit(settings: {})
+      end
+
+      def build_export_context
+        @message_threads = message_thread_policy_scope.where(id: @export.message_thread_ids).includes(:messages)
+        @message_forms = @message_threads.map do |thread|
+          thread.metadata&.dig('fs_form_id')
+        end.then do |ids|
+          Fs::Form.where(id: ids).pluck(:slug).uniq
+        end
+        @message_types = @message_threads.flat_map do |thread|
+          thread.messages.map(&:message_type)
+        end.uniq.compact
       end
     end
   end
