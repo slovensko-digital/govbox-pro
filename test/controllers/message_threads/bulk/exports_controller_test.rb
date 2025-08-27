@@ -25,18 +25,18 @@ module MessageThreads
         assert_redirected_to root_path
       end
 
-      test 'start merges incoming settings instead of overwriting whole settings hash' do
+      test 'start with partial settings overwrites settings and renders inline errors when invalid (no persistence)' do
         post :start, params: { export_id: @export.id, export: { settings: { 'messages' => '0' } } }
-        assert_redirected_to root_path
+        assert_response :unprocessable_entity
         @export.reload
-        assert_equal true, @export.settings['summary'], 'summary should remain true after partial settings merge'
-        assert_equal false, @export.settings['messages'], 'messages should be updated to false'
+        assert_equal true, @export.settings['summary'], 'invalid start should not persist: summary remains true'
+        assert_equal true, @export.settings['messages'], 'invalid start should not persist: messages remains true'
       end
 
       test 'start fails when invalid (no summary, no messages) after merge' do
         @export.update!(settings: { 'summary' => false, 'messages' => true })
         post :start, params: { export_id: @export.id, export: { settings: { 'messages' => '0' } } }
-        assert_redirected_to edit_message_threads_bulk_export_path(@export)
+        assert_response :unprocessable_entity
         @export.reload
         assert_equal true, @export.settings['messages'], 'invalid combination should not persist (messages should remain true)'
       end
@@ -44,14 +44,14 @@ module MessageThreads
       test 'start fails when already invalid and no incoming settings' do
         @export.update_columns(settings: { 'summary' => false, 'messages' => false })
         post :start, params: { export_id: @export.id }
-        assert_redirected_to edit_message_threads_bulk_export_path(@export)
+        assert_response :unprocessable_entity
       end
 
       test 'start fails when both options set to zero in single request' do
         assert @export.settings['summary']
         assert @export.settings['messages']
         post :start, params: { export_id: @export.id, export: { settings: { 'summary' => '0', 'messages' => '0' } } }
-        assert_redirected_to edit_message_threads_bulk_export_path(@export)
+        assert_response :unprocessable_entity
       end
 
       test 'start enqueues job and creates notification' do
@@ -73,7 +73,7 @@ module MessageThreads
 
       test 'invalid start does not persist invalid combination' do
         post :start, params: { export_id: @export.id, export: { settings: { 'summary' => '0', 'messages' => '0' } } }
-        assert_redirected_to edit_message_threads_bulk_export_path(@export)
+        assert_response :unprocessable_entity
         @export.reload
         refute(@export.settings['summary'] == false && @export.settings['messages'] == false)
       end

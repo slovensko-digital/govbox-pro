@@ -10,9 +10,21 @@
           <h3 class="text-base font-semibold text-gray-900">Nastavenie exportu</h3>
         </div>
 
+        <% if @export.errors.any? %>
+          <div class="mt-4 rounded-md bg-red-50 p-4" data-controller="dismissible-alert" data-dismissible-alert-timeout-value="5000">
+            <div class="flex text-sm text-red-700">
+              <ul class="list-disc space-y-1 pl-4">
+                <% @export.errors.full_messages.each do |msg| %>
+                  <li><%= msg %></li>
+                <% end %>
+              </ul>
+            </div>
+          </div>
+        <% end %>
+
         <div class="py-6">
           <div class="flex items-center gap-x-3 pd-3">
-            <%= check_box_tag "export[settings][summary]", "1", @export.settings["summary"], class: "h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer" %>
+            <%= check_box_tag "export[settings][summary]", "1", @export.settings["summary"], class: "h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer", onclick: "this.form.requestSubmit()" %>
             <%= label_tag "export[settings][summary]", "Exportovať sumár", class: "select-none text-sm/6 text-gray-900 cursor-pointer" %>
           </div>
 
@@ -73,9 +85,7 @@
 
       <div class="flex items-center gap-x-4 mb-6">
         <%= button_tag "Uložiť nastavenia", class: "rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50", onclick: "document.getElementById('export-form').requestSubmit()" %>
-        <%= form_for @export, url: message_threads_bulk_export_start_path(@export), html: { id: 'export-start-form', data: { controller: 'export-start', action: 'submit->export-start#submit' } }, method: :post do |f| %>
-          <%= f.submit "Exportovať", class: "rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500", data: { turbo_confirm: "Chcete vytvoriť export?" } %>
-        <% end %>
+        <%= button_tag "Exportovať", form: "export-form", formaction: message_threads_bulk_export_start_path(@export), formmethod: "post", class: "rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500", data: { turbo_confirm: "Chcete vytvoriť export?" } %>
       </div>
 
       <div class="border-b border-gray-200 bg-white py-5">
