@@ -1,4 +1,4 @@
-require 'csv'
+require 'axlsx'
 
 class ExportJob < ApplicationJob
   queue_as :default
@@ -25,7 +25,7 @@ class ExportJob < ApplicationJob
       end
     end
 
-   FileStorage.new.store("exports", export.file_name, export_content.string.force_encoding("UTF-8"))
+    FileStorage.new.store("exports", export.file_name, export_content.string.force_encoding("UTF-8"))
 
     export.user.notifications.create!(
       type: Notifications::ExportFinished,
@@ -79,26 +79,30 @@ class ExportJob < ApplicationJob
   end
 
   def prepare_summary(export:, zip:)
-    summary_data = CSV.generate(headers: true) do |csv|
-      csv << export.message_threads
-                   .flat_map(&:messages)
-                   .flat_map(&:export_summary)
-                   .map(&:keys)
-                   .flatten
-                   .uniq
+    headers = export.message_threads
+                    .flat_map(&:messages)
+                    .flat_map(&:export_summary)
+                    .map(&:keys)
+                    .flatten
+                    .uniq
 
-      export.message_threads.each do |message_thread|
-        message_thread.messages.each do |message|
-          csv << message.export_summary
+    Axlsx::Package.new do |p|
+      p.workbook.add_worksheet(:name => "Sumár") do |sheet|
+        sheet.add_row(headers)
+
+        export.message_threads.flat_map(&:messages).each do |message|
+          row_hash = message.export_summary
+          row = headers.map do |h|
+            v = row_hash[h]
+            v.nil? ? nil : v.to_s
+          end
+          sheet.add_row(row)
         end
       end
+
+      zip.put_next_entry('sumar.xlsx')
+      zip.write(p.to_stream.read)
     end
-
-    # Add UTF-8 BOM for Excel compatibility
-    bom = "\uFEFF"
-
-    zip.put_next_entry("sumár.csv")
-    zip.write(bom + summary_data.force_encoding('UTF-8'))
   end
 
   def unique_path_within_export(object, export:, other_file_names:, pdf: false)
