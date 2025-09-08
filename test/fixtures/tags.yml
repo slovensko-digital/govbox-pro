@@ -264,6 +264,12 @@ accountants_inbox:
   visible: false
   tenant: accountants
 
+accountants_submission_error_tag:
+  name: Problémové
+  type: SubmissionErrorTag
+  visible: true
+  tenant: accountants
+
 accountants_signature_requested:
   name: Na podpis
   type: SignatureRequestedTag
