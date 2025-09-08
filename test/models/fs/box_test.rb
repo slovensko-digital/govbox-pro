@@ -42,7 +42,7 @@ class Fs::BoxTest < ActiveSupport::TestCase
       short_name: "UBN",
       uri: "dic://sk/123456789",
       tenant: tenant,
-      api_connection: api_connection
+      api_connections: [api_connection]
     )
 
     # Should fail with same name, tenant_id, and uri
@@ -51,7 +51,7 @@ class Fs::BoxTest < ActiveSupport::TestCase
       short_name: "Different",
       uri: "dic://sk/123456789",
       tenant: tenant,
-      api_connection: api_connection
+      api_connections: [api_connection]
     )
     assert_not duplicate_box.valid?
     assert_includes duplicate_box.errors[:name], "Názov ste už použili"
@@ -62,7 +62,7 @@ class Fs::BoxTest < ActiveSupport::TestCase
       short_name: "Different",
       uri: "dic://sk/987654321",
       tenant: tenant,
-      api_connection: api_connection
+      api_connections: [api_connection]
     )
     assert different_uri_box.valid?
 
@@ -72,7 +72,7 @@ class Fs::BoxTest < ActiveSupport::TestCase
       short_name: "Different",
       uri: "dic://sk/123456789",
       tenant: tenants(:solver),
-      api_connection: api_connections(:fs_api_connection2)
+      api_connections: [api_connections(:fs_api_connection2)]
     )
     assert different_tenant_box.valid?
   end
@@ -87,7 +87,7 @@ class Fs::BoxTest < ActiveSupport::TestCase
       short_name: "OB",
       uri: "dic://sk/123456789",
       tenant: tenant,
-      api_connection: api_connection
+      api_connections: [api_connection]
     )
 
     # Should fail with same short_name, tenant_id, and uri
@@ -96,7 +96,7 @@ class Fs::BoxTest < ActiveSupport::TestCase
       short_name: "OB",
       uri: "dic://sk/123456789",
       tenant: tenant,
-      api_connection: api_connection
+      api_connections: [api_connection]
     )
     assert_not duplicate_box.valid?
     assert_includes duplicate_box.errors[:short_name], "Krátky názov ste už použili"
@@ -107,7 +107,7 @@ class Fs::BoxTest < ActiveSupport::TestCase
       short_name: "OB",
       uri: "dic://sk/987654321",
       tenant: tenant,
-      api_connection: api_connection
+      api_connections: [api_connection]
     )
     assert_not different_uri_box.valid?
     assert_includes different_uri_box.errors[:short_name], "Krátky názov ste už použili"
@@ -118,7 +118,7 @@ class Fs::BoxTest < ActiveSupport::TestCase
       short_name: "OB",
       uri: "dic://sk/123456789",
       tenant: tenants(:solver),
-      api_connection: api_connections(:fs_api_connection2)
+      api_connections: [api_connections(:fs_api_connection2)]
     )
     assert different_tenant_box.valid?
   end
