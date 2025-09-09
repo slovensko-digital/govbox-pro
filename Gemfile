@@ -40,6 +40,7 @@ gem 'stimulus-rails'
 gem 'jsbundling-rails'
 gem 'pdf-reader'
 gem 'grover'
+gem 'caxlsx'
 
 # Monitoring
 gem 'rollbar'
