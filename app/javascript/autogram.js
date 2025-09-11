@@ -84,7 +84,7 @@ const prepareSingingRequestBody = (messageObjectData, batchId = null, signatureS
       break
     case 'application/vnd.etsi.asic-e+zip':
       autoLoadEform = true
-      signatureLevel = null
+      signatureLevel = (signatureSettings.signatureWithTimestamp === true) ? "BASELINE_T" : null
       signatureContainer = null
       break
     case 'application/msword':
