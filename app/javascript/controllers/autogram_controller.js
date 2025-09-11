@@ -1,152 +1,83 @@
 import { Controller } from "@hotwired/stimulus"
-import { get, patch } from '@rails/request.js'
+import { isAutogramRunning, startBatch, signMessageObject, endBatch } from "../autogram"
 
 export default class extends Controller {
+  static targets = ["appNotRunning", "signingInProgress", "doneOk", "doneError", "openAutogramApp"]
 
-  async sign(messageObjectPath, that, batchId = null) {
-    return new Promise((resolve, reject) => {
-      get(`${messageObjectPath}/signing_data`, { responseKind: "*/*" })
-        .then(function (response) {
-          // TODO handle login if expired session
-
-          if (response.status === 204) {
-            alert("Vyplňte správu");
-          }
-          else if (response.contentType === 'application/json') {
-            return response.json;
-          }
-        }).then(async function (messageObjectData) {
-          if (!messageObjectData) {
-            return;
-          }
-          let payloadMimeType = `${messageObjectData.mime_type};base64`;
-          let signatureLevel = "XAdES_BASELINE_B";
-          let signatureContainer = "ASiC_E";
-
-          let signedFileName = await that.setSignedFileName(messageObjectData);
-          let signedFileMimeType = "application/vnd.etsi.asic-e+zip";
-
-          switch(messageObjectData.mime_type) {
-            case "application/pdf":
-              signatureLevel = "PAdES_BASELINE_B";
-              signatureContainer = null;
-
-              signedFileName = messageObjectData.file_name;
-              signedFileMimeType = messageObjectData.mime_type;
-              break;
-            // TODO check what in this case
-            // case 'application/xml':
-            //   break;
-            case 'application/x-eform-xml':
-              payloadMimeType = "application/xml;base64"
-              break;
-            case 'application/msword':
-            case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
-              payloadMimeType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64"
-              break;
-            case 'image/jpeg':
-            case 'image/tiff':
-            case 'image/png':
-              signatureLevel = "CAdES_BASELINE_B";
-              break;
-          }
-
-          fetch("http://localhost:37200/sign", {
-            method: "POST",
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-              batchId: batchId,
-              document: {
-                filename: messageObjectData.file_name,
-                content: messageObjectData.content
-              },
-              parameters: {
-                container: signatureContainer,
-                level: signatureLevel,
-                autoLoadEform: true
-              },
-              payloadMimeType: payloadMimeType
-            })
-          }).then(function (response) {
-            if (response.ok) {
-              return response.json();
-            }
-            else {
-              throw new Error;
-            }
-          }).then(function (signedData) {
-            that.updateObject(messageObjectPath, signedFileName, signedFileMimeType, signedData.content);
-          }).then(function () {
-            resolve();
-          }).catch(function (err) {
-            if (["Failed to fetch", "NetworkError when attempting to fetch resource.", "Load failed"].includes(err.message)) {
-              alert("Spustite aplikáciu autogram")
-            }
-            else {
-              alert("Podpisovanie neprebehlo úspešne");
-            }
-          });
-        })
-    });
+  connect() {
+    this.signAll()
   }
 
-  async updateObject(messageObjectPath, signedFileName, signedFileMimeType, signedContent) {
+  async signAll() {
+    const { files, token, signatureSettings } = this.getInputData()
+    if (!await this.assertAutogramIsRunning()) {
+      return
+    }
+
+    let batchId = null
+
+    try {
+      if (files.length > 1) {
+        batchId = await startBatch(files.length)
+        if (batchId == null) {
+          console.error('Batch ID is null');
+          this.doneErrorTarget.click()
+          return;
+        }
+      }
+
+      for await (const file of files) {
+        await signMessageObject(file.path, batchId, token, signatureSettings)
+      }
+
+      this.doneOkTarget.click()
+    } catch (error) {
+      console.log('error during signing', error)
+
+      try {
+        if (batchId !== null) {
+          await endBatch(batchId)
+        }
+      }
+      catch {
+        // delete batch should be idempotent
+      }
+
+      this.doneErrorTarget.click()
+    }
+  }
+
+  getInputData() {
     const authenticityToken = this.data.get("authenticityToken");
+    const files = JSON.parse(this.data.get("filesToBeSigned"));
+    const signatureSettings = JSON.parse(this.data.get("signatureSettings"));
 
-    return new Promise((resolve, reject) => {
-      // request.js lib is used, responseKind: "turbo-stream" option is very important (be careful if case of changes)
-      patch(messageObjectPath, {
-        body: JSON.stringify({
-          authenticity_token: authenticityToken,
-          name: signedFileName,
-          mimetype: signedFileMimeType,
-          is_signed: true,
-          content: signedContent
-        }),
-        responseKind: "turbo-stream"
-      }).then(function () {
-        resolve();
-      }).catch(function () {
-        alert("Podpisovanie neprebehlo úspešne")
-      });
-    });
+    if (!!authenticityToken && files.length) {
+      return {
+        token: authenticityToken,
+        files: files,
+        signatureSettings: signatureSettings
+      }
+    }
+
+    throw new Error('missing input data')
   }
 
-  async setSignedFileName(messageObjectData) {
-    return messageObjectData.file_name.substring(0, messageObjectData.file_name.lastIndexOf('.')).concat(".asice") || messageObjectData.file_name;
-  }
+  async assertAutogramIsRunning() {
+    this.signingInProgressTarget.classList.add("hidden")
+    this.appNotRunningTarget.classList.add("hidden")
 
-  signMultipleFiles() {
-    const filesToBeSigned = JSON.parse(this.data.get("filesToBeSigned"));
-    const that = this;
+    if (!await isAutogramRunning()) {
+      this.openAutogramAppTarget.click()
 
-    fetch("http://localhost:37200/batch", {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({
-        "totalNumberOfDocuments": filesToBeSigned.length
-      })
-    }).then(function (response) {
-      return response.json();
-    }).then(function (data) {
-      return data.batchId;
-    }).then(async function (batchId) {
-      for(const messageObject of filesToBeSigned) {
-        await that.sign(messageObject.path, that, batchId);
-      }
-    }).catch(function (err) {
-      if (err.message === "Failed to fetch") {
-        alert("Spustite aplikáciu autogram")
-      }
-      else {
-        alert("Podpisovanie neprebehlo úspešne")
-      }
-    });
-  }
+      this.signingInProgressTarget.classList.add("hidden")
+      this.appNotRunningTarget.classList.remove("hidden")
+      return false
+    }
 
-  async signSingleFile() {
-    const messageObjectPath = this.data.get("objectPath");
+    this.appNotRunningTarget.classList.add("hidden")
+    this.signingInProgressTarget.classList.remove("hidden")
 
-    await this.sign(messageObjectPath, this);
+    return true
   }
 }
