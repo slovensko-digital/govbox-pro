@@ -35,7 +35,7 @@ export const endBatch = async (batchId) => {
   })
 }
 
-export const signMessageObject = async (messageObjectPath, batchId = null, authenticityToken, signatureSettings = { signatureWithTimestamp: null, xadesSignatureForPdf: null }) => {
+export const signMessageObject = async (messageObjectPath, batchId = null, authenticityToken, signatureSettings = { signatureWithTimestamp: null, pdfSignatureFormat: null }) => {
   const signingData = await loadSigningData(messageObjectPath)
   const signedData = await makeSignRequest(prepareSingingRequestBody(signingData, batchId, signatureSettings))
   const signedFile = signedFileData(signingData, signatureSettings)
@@ -51,7 +51,7 @@ const signedFileData = (messageObjectData, signatureSettings) => {
   let name = signedFileName(messageObjectData.file_name)
   let mineType = "application/vnd.etsi.asic-e+zip"
 
-  if (messageObjectData.mime_type === "application/pdf" && signatureSettings.xadesSignatureForPdf !== true) {
+  if (messageObjectData.mime_type === "application/pdf" && signatureSettings.pdfSignatureFormat === "PAdES") {
     name = messageObjectData.file_name
     mineType = messageObjectData.mime_type
   }
@@ -73,10 +73,9 @@ const prepareSingingRequestBody = (messageObjectData, batchId = null, signatureS
 
   switch (messageObjectData.mime_type) {
     case "application/pdf":
-      if (signatureSettings.xadesSignatureForPdf !== true) {
-        signatureLevel = (signatureSettings.signatureWithTimestamp === true) ? "PAdES_BASELINE_T" : "PAdES_BASELINE_B"
-        signatureContainer = null
-      }
+      const { level, container } = pdfSignatureParams(signatureSettings)
+      signatureLevel = level
+      signatureContainer = container
       break
     case 'application/xml':
     case 'application/x-eform-xml':
@@ -111,6 +110,27 @@ const prepareSingingRequestBody = (messageObjectData, batchId = null, signatureS
       fsFormId: messageObjectData.fs_form_id
     },
     payloadMimeType: payloadMimeType
+  }
+}
+
+const pdfSignatureParams = (signatureSettings) => {
+  switch (signatureSettings.pdfSignatureFormat) {
+    case "XAdES":
+      return {
+        level: (signatureSettings.signatureWithTimestamp === true) ? "XAdES_BASELINE_T" : "XAdES_BASELINE_B",
+        container: "ASiC_E"
+      }
+    case "CAdES":
+      return {
+        level: (signatureSettings.signatureWithTimestamp === true) ? "CAdES_BASELINE_T" : "CAdES_BASELINE_B",
+        container: "ASiC_E"
+      }
+    case "PAdES":
+    default:
+      return {
+        level: (signatureSettings.signatureWithTimestamp === true) ? "PAdES_BASELINE_T" : "PAdES_BASELINE_B",
+        container: null
+      }
   }
 }
 
