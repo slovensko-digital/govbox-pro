@@ -9,7 +9,7 @@ export default class extends Controller {
   }
 
   async signAll() {
-    const { files, token } = this.getInputData()
+    const { files, token, signatureSettings } = this.getInputData()
     if (!await this.assertAutogramIsRunning()) {
       return
     }
@@ -27,7 +27,7 @@ export default class extends Controller {
       }
 
       for await (const file of files) {
-        await signMessageObject(file.path, batchId, token)
+        await signMessageObject(file.path, batchId, token, signatureSettings)
       }
 
       this.doneOkTarget.click()
@@ -50,11 +50,13 @@ export default class extends Controller {
   getInputData() {
     const authenticityToken = this.data.get("authenticityToken");
     const files = JSON.parse(this.data.get("filesToBeSigned"));
+    const signatureSettings = JSON.parse(this.data.get("signatureSettings"));
 
     if (!!authenticityToken && files.length) {
       return {
         token: authenticityToken,
         files: files,
+        signatureSettings: signatureSettings
       }
     }
 

@@ -35,9 +35,9 @@ export const endBatch = async (batchId) => {
   })
 }
 
-export const signMessageObject = async (messageObjectPath, batchId = null, authenticityToken) => {
+export const signMessageObject = async (messageObjectPath, batchId = null, authenticityToken, signatureSettings) => {
   const signingData = await loadSigningData(messageObjectPath)
-  const signedData = await makeSignRequest(prepareSingingRequestBody(signingData, batchId))
+  const signedData = await makeSignRequest(prepareSingingRequestBody(signingData, batchId, signatureSettings))
   const signedFile = signedFileData(signingData)
 
   return await markMessageObjectAsSigned(messageObjectPath, signedFile.name, signedFile.mineType, signedData.content, authenticityToken)
@@ -62,18 +62,18 @@ const signedFileData = (messageObjectData) => {
   }
 }
 
-const prepareSingingRequestBody = (messageObjectData, batchId = null) => {
+const prepareSingingRequestBody = (messageObjectData, batchId = null, signatureSettings = { signature_with_timestamp: null }) => {
   if (!messageObjectData) {
     return
   }
   let payloadMimeType = `${messageObjectData.mime_type};base64`
-  let signatureLevel = "XAdES_BASELINE_B"
+  let signatureLevel = (signatureSettings.signatureWithTimestamp === true) ? "XAdES_BASELINE_T" : "XAdES_BASELINE_B"
   let signatureContainer = "ASiC_E"
   let autoLoadEform = false
 
   switch (messageObjectData.mime_type) {
     case "application/pdf":
-      signatureLevel = "PAdES_BASELINE_B"
+      signatureLevel = (signatureSettings.signatureWithTimestamp === true) ? "PAdES_BASELINE_T" : "PAdES_BASELINE_B"
       signatureContainer = null
       break
     case 'application/xml':

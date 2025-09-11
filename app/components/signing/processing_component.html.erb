@@ -7,13 +7,16 @@
       files_to_be_signed = @message_objects.map do |message_object|
         { path: message_message_object_path(message_object.message_id, message_object.id) }
       end
+
+      signature_settings = @signature_settings.transform_keys { |key| key.to_s.camelize(:lower) }
     %>
     <div class="py-4">
       <%= content_tag(:div,
                       {
                         "data-controller": "new-autogram",
                         "data-new-autogram-files-to-be-signed": files_to_be_signed.to_json.html_safe,
-                        "data-new-autogram-authenticity-token": form_authenticity_token
+                        "data-new-autogram-authenticity-token": form_authenticity_token,
+                        "data-new-autogram-signature-settings": signature_settings.to_json.html_safe
                       }
           ) do %>
         <div data-new-autogram-target="appNotRunning">

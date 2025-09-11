@@ -50,6 +50,10 @@ class Tenant < ApplicationRecord
   AVAILABLE_FEATURE_FLAGS = [:audit_log, :archive, :api, :fs_sync]
   ALL_FEATURE_FLAGS = [:audit_log, :archive, :api, :message_draft_import, :fs_api, :fs_sync, :bulk_export]
 
+  def signature_settings
+    settings.slice("signature_with_timestamp")
+  end
+
   def draft_tag!
     draft_tag || raise(ActiveRecord::RecordNotFound, "`DraftTag` not found in tenant: #{id}")
   end
