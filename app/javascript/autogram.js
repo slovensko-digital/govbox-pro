@@ -35,10 +35,10 @@ export const endBatch = async (batchId) => {
   })
 }
 
-export const signMessageObject = async (messageObjectPath, batchId = null, authenticityToken, signatureSettings) => {
+export const signMessageObject = async (messageObjectPath, batchId = null, authenticityToken, signatureSettings = { signatureWithTimestamp: null, xadesSignatureForPdf: null }) => {
   const signingData = await loadSigningData(messageObjectPath)
   const signedData = await makeSignRequest(prepareSingingRequestBody(signingData, batchId, signatureSettings))
-  const signedFile = signedFileData(signingData)
+  const signedFile = signedFileData(signingData, signatureSettings)
 
   return await markMessageObjectAsSigned(messageObjectPath, signedFile.name, signedFile.mineType, signedData.content, authenticityToken)
 }
@@ -47,11 +47,11 @@ const signedFileName = (fileName) => {
   return fileName.substring(0, fileName.lastIndexOf('.')).concat(".asice") || fileName
 }
 
-const signedFileData = (messageObjectData) => {
+const signedFileData = (messageObjectData, signatureSettings) => {
   let name = signedFileName(messageObjectData.file_name)
   let mineType = "application/vnd.etsi.asic-e+zip"
 
-  if (messageObjectData.mime_type === "application/pdf") {
+  if (messageObjectData.mime_type === "application/pdf" && signatureSettings.xadesSignatureForPdf !== true) {
     name = messageObjectData.file_name
     mineType = messageObjectData.mime_type
   }
@@ -62,7 +62,7 @@ const signedFileData = (messageObjectData) => {
   }
 }
 
-const prepareSingingRequestBody = (messageObjectData, batchId = null, signatureSettings = { signature_with_timestamp: null }) => {
+const prepareSingingRequestBody = (messageObjectData, batchId = null, signatureSettings) => {
   if (!messageObjectData) {
     return
   }
@@ -73,8 +73,10 @@ const prepareSingingRequestBody = (messageObjectData, batchId = null, signatureS
 
   switch (messageObjectData.mime_type) {
     case "application/pdf":
-      signatureLevel = (signatureSettings.signatureWithTimestamp === true) ? "PAdES_BASELINE_T" : "PAdES_BASELINE_B"
-      signatureContainer = null
+      if (signatureSettings.xadesSignatureForPdf !== true) {
+        signatureLevel = (signatureSettings.signatureWithTimestamp === true) ? "PAdES_BASELINE_T" : "PAdES_BASELINE_B"
+        signatureContainer = null
+      }
       break
     case 'application/xml':
     case 'application/x-eform-xml':
