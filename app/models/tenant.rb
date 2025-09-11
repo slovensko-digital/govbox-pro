@@ -6,6 +6,7 @@
 #  api_token_public_key :string
 #  feature_flags        :string           default([]), is an Array
 #  name                 :string           not null
+#  settings             :jsonb            not null
 #  created_at           :datetime         not null
 #  updated_at           :datetime         not null
 #
