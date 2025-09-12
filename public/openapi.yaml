@@ -1199,6 +1199,18 @@ components:
         fs_form_id:
           description: Interný identifikátor FS formulára
           type: integer
+        fs_form_slug:
+          description: Skratka FS formulára
+          type: string
+          example: SVDPHv20
+        fs_form_subtype_name:
+          description: Typ FS formulára
+          type: string
+          example: Riadny
+        period:
+          description: Obdobie
+          type: string
+          example: 082025
         correlation_id:
           description: Identifikátor vlákna správ
           type: string

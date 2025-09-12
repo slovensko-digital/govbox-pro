@@ -52,7 +52,10 @@ class Fs::MessageDraft < MessageDraft
         metadata: {
           'status': fs_form ? 'being_loaded' : 'invalid',
           'fs_form_id': fs_form&.id,
+          'fs_form_slug': fs_form&.slug,
+          'fs_form_subtype_name': fs_form&.subtype_name,
           'dic': box.settings['dic'],
+          'period': period,
           'correlation_id': SecureRandom.uuid
         },
         author: author
@@ -137,7 +140,10 @@ class Fs::MessageDraft < MessageDraft
         metadata: (message_params['metadata'] || {}).merge({
           'status': 'being_loaded',
           'fs_form_id': fs_form.id,
-          'dic': box.settings['dic']
+          'fs_form_slug': fs_form.slug,
+          'fs_form_subtype_name': fs_form.subtype_name,
+          'dic': box.settings['dic'],
+          'period': period
         }),
       })
     )
@@ -149,7 +155,7 @@ class Fs::MessageDraft < MessageDraft
       delivered_at: message.delivered_at,
       metadata: {
         period: period,
-        fs_form_id: fs_form&.id
+        fs_form_id: fs_form.id
       }
     )
 
