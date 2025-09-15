@@ -11,6 +11,7 @@
 #  type                  :string
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
+#  owner_id              :bigint
 #  tenant_id             :bigint
 #
 class SkApi::ApiConnectionWithOboSupport < ::ApiConnection
@@ -22,13 +23,13 @@ class SkApi::ApiConnectionWithOboSupport < ::ApiConnection
     box.settings_obo.presence
   end
 
-  def destroy_with_box?
+  def destroy_with_box?(box)
     false
   end
 
   def validate_box(box)
     box.errors.add(:settings_obo, :not_allowed) if invalid_obo?(box)
-    box.errors.add(:settings_obo, :invalid) if boxes.where.not(id: box.id).where("settings @> ?", { obo: box.settings_obo }.to_json).exists?
+    box.errors.add(:settings_obo, :invalid) if boxes.where.not(id: box.id).where("boxes.settings @> ?", { obo: box.settings_obo }.to_json).exists?
   end
 
   private

@@ -59,7 +59,7 @@ class Message < ApplicationRecord
 
   def remove_cascading_tag(tag)
     messages_tags.find_by(tag: tag)&.destroy
-    thread.message_threads_tags.find_by(tag: tag)&.destroy unless thread.messages.any? {|m| m.tags.include?(tag) }
+    thread.message_threads_tags.find_by(tag: tag)&.destroy unless thread.messages.reload.any? {|m| m.tags.include?(tag) }
   end
 
   def draft?
@@ -71,7 +71,7 @@ class Message < ApplicationRecord
   end
 
   def destroyable?
-    true
+    false
   end
 
   def submittable?
@@ -117,7 +117,10 @@ class Message < ApplicationRecord
         identifier: all_metadata['message_type']
       )
     end
+  end
 
+  def message_type
+    metadata['fs_message_type'] || metadata['edesk_class']
   end
 
   def update_html_visualization
@@ -149,6 +152,18 @@ class Message < ApplicationRecord
     (message_draft.tags.simple + message_draft.tags.signed).each { |tag| assign_tag(tag) }
   end
 
+  def export_summary
+    metadata_whitelist = %w[fs_message_id fs_sent_message_id fs_status fs_submission_status fs_submitting_subject fs_message_type fs_submission_type_name fs_submission_created_at fs_period fs_dismissal_reason dic correlation_id reference_id edesk_class sender_uri]
+
+    {
+      message_thread_id: message_thread_id,
+      title: title,
+      box: box.official_name,
+      delivered_at: delivered_at,
+      tags: thread.tags.map(&:name)
+    }.merge!(metadata.slice(*metadata_whitelist))
+  end
+
   def assign_tag(tag)
     messages_tags.find_or_create_by!(tag: tag)
   end
@@ -158,7 +173,7 @@ class Message < ApplicationRecord
   end
 
   def template
-    MessageTemplate.find(metadata["template_id"]) if metadata["template_id"]
+    MessageTemplate.find(metadata.dig("template_id")) if metadata.dig("template_id")
   end
 
   def send_new_message_alerts

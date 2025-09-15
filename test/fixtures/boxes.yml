@@ -5,7 +5,6 @@ ssd_main:
   uri: SSDMainURI
   tenant: ssd
   short_name: MY1
-  api_connection: govbox_api_api_connection1
   type: 'Upvs::Box'
   settings:
     obo:
@@ -15,7 +14,6 @@ ssd_other:
   uri: MyString
   tenant: ssd
   short_name: MY2
-  api_connection: govbox_api_api_connection1
   type: 'Upvs::Box'
   settings:
     obo: cf703e1a-cc4a-4445-9c76-08eae349505f
@@ -25,7 +23,6 @@ solver_main:
   uri: SolverMainURI
   tenant: solver
   short_name: MY1
-  api_connection: govbox_api_api_connection3
   type: 'Upvs::Box'
   settings:
     obo:
@@ -35,7 +32,6 @@ google_box_with_govbox_api_connection:
   uri: google_box_with_govbox_api_connection_uri
   tenant: google
   short_name: box2
-  api_connection: govbox_api_api_connection2
   type: 'Upvs::Box'
   settings:
     obo:
@@ -45,7 +41,6 @@ google_box_with_govbox_api_connection_with_obo_support:
   uri: google_box_with_govbox_api_connection_with_obo_support_uri
   tenant: google
   short_name: box3
-  api_connection: govbox_api_api_connection_with_obo_support
   type: 'Upvs::Box'
   settings:
     obo: cf703e1a-cc4a-4445-9c76-08eae349505f
@@ -55,7 +50,6 @@ google_box_with_sk_api_api_connection_with_obo_support:
   uri: MyString2
   tenant: google
   short_name: box4
-  api_connection: sk_api_api_connection_with_obo_support
   type: 'Upvs::Box'
   settings:
     obo:
@@ -65,17 +59,15 @@ google_box_with_govbox_api_connection_with_obo_support_without_obo_value:
   uri: google_box_with_govbox_api_connection_with_obo_support_without_obo_value_uri
   tenant: google
   short_name: box5
-  api_connection: govbox_api_api_connection_with_obo_support
   type: 'Upvs::Box'
   settings:
     obo:
 
 fs_accountants:
-  name: Accountants main FS
+  name: FS Accountants main FS
   uri: dic://sk/1122334455
   tenant: accountants
   short_name: FSJJ
-  api_connection: fs_api_connection1
   settings: {"dic": "1122334455", "subject_id": "df2f9373-30b7-4a44-9738-5b4e24e4866c", "message_drafts_import_enabled": true}
   syncable: true
   type: 'Fs::Box'
@@ -85,8 +77,15 @@ fs_accountants2:
   uri: dic://sk/1122334456
   tenant: accountants
   short_name: FSJJ3
-  api_connection: fs_api_connection1
   settings: {"dic": "1122334456", "subject_id": "387cf7da-2cff-40e0-8ad2-650030429994", "message_drafts_import_enabled": true}
+  type: 'Fs::Box'
+
+fs_accountants_multiple_api_connections:
+  name: Accountants main FS 3
+  uri: dic://sk/9988665533
+  tenant: accountants
+  short_name: FSJK3
+  settings: {"dic": "9988665533", "subject_id": "387cf7da-2cff-40e0-8ad2-650030429994", "message_drafts_import_enabled": true}
   type: 'Fs::Box'
 
 fs_solver:
@@ -94,7 +93,6 @@ fs_solver:
   uri: dic://sk/9988776655
   tenant: solver
   short_name: SFS
-  api_connection: fs_api_connection2
   settings: {"dic": "1122334456", "subject_id": SecureRandom.uuid, "message_drafts_import_enabled": true}
   type: 'Fs::Box'
 
@@ -103,8 +101,7 @@ fs_delegate:
   uri: dic://sk/9988776644
   tenant: solver
   short_name: DFS
-  api_connection: fs_api_connection2
-  settings: {"dic": "9988776644", "subject_id": "61a44216-d56c-43cf-9ffc-d6db8fcf9331", "delegate_id": "e5132b8a-f9dc-46f2-8525-568442dcffa7", "message_drafts_import_enabled": true}
+  settings: {"dic": "9988776644", "subject_id": "61a44216-d56c-43cf-9ffc-d6db8fcf9331", "message_drafts_import_enabled": true}
   type: 'Fs::Box'
 
 fs_false_creg:
@@ -112,6 +109,5 @@ fs_false_creg:
   uri: dic://sk/9988776611
   tenant: solver
   short_name: CFRFS
-  api_connection: fs_api_connection2
   settings: {"dic": "9988776611", "subject_id": "61a44216-d56c-43cf-9ffc-d6db8fcf9331", "is_subject_c_reg": false, "message_drafts_import_enabled": true}
   type: 'Fs::Box'

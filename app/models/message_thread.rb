@@ -5,6 +5,7 @@
 #  id                        :bigint           not null, primary key
 #  delivered_at              :datetime         not null
 #  last_message_delivered_at :datetime         not null
+#  metadata                  :json
 #  original_title            :string           not null
 #  title                     :string           not null
 #  created_at                :datetime         not null

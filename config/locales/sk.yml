@@ -4,8 +4,8 @@ sk:
   activerecord:
     attributes:
       message:
-        sender_name: 'Odosielateľ'
-        recipient_name: 'Prijímateľ'
+        sender_name: "Odosielateľ"
+        recipient_name: "Prijímateľ"
       message_thread:
         title: "Názov"
       box:
@@ -23,7 +23,7 @@ sk:
         api_connection:
           attributes:
             tenant_id:
-              present: 'Tenant nesmie byť zvolený'
+              present: "Tenant nesmie byť zvolený"
         tag:
           attributes:
             base:
@@ -147,6 +147,8 @@ sk:
       year: Rok
   errors:
     format: "%{attribute} %{message}"
+    attributes:
+      api_connection: API prepojenie
     messages:
       accepted: musí byť potvrdené
       blank: "%{attribute} je povinná položka"
@@ -268,19 +270,23 @@ sk:
   object_type: "Typ objektu"
   fs_submission_status: "Stav podania"
   edesk_class: "Typ ÚPVS správy"
+  type: "Typ"
   fs_message_type: "Typ FS správy"
   box: "Schránka správy"
   attachment: "Príloha"
   api_connection: "API Prepojenie"
+  authors_api_connection: "Autor svoje API prepojenie"
   boxes:
     sync_all_requested: "Sťahovanie nových správ bolo spustené."
   message_created: "Nová správa"
   message_thread_created: "Nové vlákno"
   message_updated: "Upravená správa"
   message_thread_changed: "Zmena vo vlákne správ"
+  message_draft_validated: "Zvalidovaná správa"
   message_draft_submitted: "Odoslaná správa"
   message_object_downloaded: "Stiahnutý objekt správy"
   new_message_link: "Doručená nová správa, klikni pre prečítanie"
+  "Automation::ValueCondition": "je"
   "Automation::ContainsCondition": "obsahuje"
   "Automation::BooleanCondition": "je"
   "Automation::AttachmentContentContainsCondition": "obsahuje"
@@ -289,10 +295,13 @@ sk:
   "Automation::MessageMetadataValueCondition": "správa v metadátach obsahuje"
   "Automation::BoxCondition": "je"
   "Automation::ApiConnectionCondition": "je"
+  "Automation::AuthorHasApiConnectionCondition": "má"
   "Automation::AddMessageThreadTagAction": "Pridaj štítok na vlákno"
+  "Automation::AddSignatureRequestedFromAuthorMessageThreadTagAction": "Pridaj štítok pre vyžiadanie podpisu autora"
   "Automation::UnassignMessageThreadTagAction": "Odober štítok z vlákna"
   "Automation::AddTagAction": "Pridaj štítok"
   "Automation::ChangeMessageThreadTitleAction": "Premenuj vlákno na"
+  "Automation::AddFormObjectIdentifierToMessageThreadTitleAction": "Pridaj do vlákna ID z názvu formulára"
   "Automation::FireWebhookAction": "Zavolaj integráciu"
   group:
     names:
@@ -338,13 +347,13 @@ sk:
       description: "Nemáte vytvorené žiadne filtre."
     tags:
       header: "Žiadne štítky"
-      description: 'Zatiaľ nie sú vytvorené žiadne štítky.'
+      description: "Zatiaľ nie sú vytvorené žiadne štítky."
     rules:
       header: "Žiadne pravidlá"
-      description: 'Zatiaľ nie sú vytvorené žiadne pravidlá.'
+      description: "Zatiaľ nie sú vytvorené žiadne pravidlá."
     boxes:
       header: "Žiadne schránky"
-      description: 'Zatiaľ nie sú vytvorené žiadne schránky.'
+      description: "Zatiaľ nie sú vytvorené žiadne schránky."
     not_found:
       header: "Žiadne správy"
       description: "Zvolenému vyhľadávaniu nevyhovuje žiadna správa, skúste vybrať iný štítok alebo zmeniť vyhľadávací výraz."
@@ -373,3 +382,7 @@ sk:
     message_draft_import:
       name: "Import správ"
       description: "Funkcionalita pre hromadné zasielanie správ"
+  exports:
+    flash:
+      started: "Export správ bol zaradený na spracovanie."
+      updated: "Nastavenia exportu správ boli zmenené."

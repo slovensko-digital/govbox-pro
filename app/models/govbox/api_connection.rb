@@ -11,6 +11,7 @@
 #  type                  :string
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
+#  owner_id              :bigint
 #  tenant_id             :bigint
 #
 class Govbox::ApiConnection < ::ApiConnection
@@ -21,8 +22,8 @@ class Govbox::ApiConnection < ::ApiConnection
     obo.presence
   end
 
-  def destroy_with_box?
-    boxes.empty?
+  def destroy_with_box?(box)
+    boxes.where.not(id: box.id).empty?
   end
 
   def validate_box(box)

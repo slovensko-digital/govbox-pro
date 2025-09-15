@@ -6,8 +6,11 @@ json.sender_name @message.sender_name
 json.recipient_name @message.recipient_name
 json.delivered_at @message.delivered_at
 json.status @message.metadata.dig('status') if @message.metadata.dig('status').present?
+json.metadata @message.metadata
+json.tags @message.tags.pluck(:name)
 
 json.objects @message.objects do |object|
+  json.id object.id
   json.name object.name
   json.mimetype object.mimetype
   json.object_type object.object_type

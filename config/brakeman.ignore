@@ -1,6 +1,29 @@
 {
   "ignored_warnings": [
     {
+      "warning_type": "File Access",
+      "warning_code": 16,
+      "fingerprint": "088197f05cc1fbe65fb5f38fc93878d77cbd09b4ea0a9f2c0cedab56fb583f71",
+      "check_name": "SendFile",
+      "message": "Parameter value used in file name",
+      "file": "app/controllers/message_threads/bulk/exports_controller.rb",
+      "line": 11,
+      "link": "https://brakemanscanner.org/docs/warning_types/file_access/",
+      "code": "send_file(policy_scope(Export).find((params[:id] or params[:export_id])).storage_path, :type => \"application/x-zip-compressed\", :disposition => :download)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "MessageThreads::Bulk::ExportsController",
+        "method": "show"
+      },
+      "user_input": "params[:export_id]",
+      "confidence": "Weak",
+      "cwe_id": [
+        22
+      ],
+      "note": ""
+    },
+    {
       "warning_type": "Dynamic Render Path",
       "warning_code": 15,
       "fingerprint": "0d7a447e47382893b06895c67cb02fc7084b4904e795f2488049b4083d5ef829",
@@ -58,6 +81,5 @@
       "note": ""
     }
   ],
-  "updated": "2024-10-23 11:37:22 +0200",
-  "brakeman_version": "6.2.1"
+  "brakeman_version": "7.0.2"
 }

@@ -26,6 +26,8 @@ class User < ApplicationRecord
   has_many :filters, foreign_key: :author_id
   has_many :filter_subscriptions
   has_many :notifications
+  has_one :sticky_note, dependent: :destroy
+  has_many :exports
 
   validates_presence_of :name, :email
   validates_uniqueness_of :name, :email, scope: :tenant_id, case_sensitive: false

@@ -73,6 +73,7 @@ module PdfVisualizationOperations
 
     def form
       return unless xml?
+      return if message.metadata.dig("fs_message_type").present?
 
       xml_document = xml_unsigned_content
       # TODO forms without posp_id, posp_versions

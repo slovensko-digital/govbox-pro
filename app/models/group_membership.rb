@@ -26,6 +26,7 @@ class GroupMembership < ApplicationRecord
       tags_scope: tenant.signature_requested_from_tags,
       user_group: user_group,
       tag_name: "Na podpis: #{user.name}",
+      owner: user,
       color: "yellow",
       icon: "pencil"
     )
@@ -34,6 +35,7 @@ class GroupMembership < ApplicationRecord
       tags_scope: tenant.signed_by_tags,
       user_group: user_group,
       tag_name: "Podpísané: #{user.name}",
+      owner: user,
       color: "green",
       icon: "fingerprint"
     )

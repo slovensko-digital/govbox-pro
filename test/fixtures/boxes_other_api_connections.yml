@@ -1,0 +1,9 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+fs_accountants_multiple_api_connections_c5:
+  box: fs_accountants_multiple_api_connections
+  api_connection: fs_api_connection5
+
+fs_accountants_multiple_api_connections_c6:
+  box: fs_accountants_multiple_api_connections
+  api_connection: fs_api_connection6

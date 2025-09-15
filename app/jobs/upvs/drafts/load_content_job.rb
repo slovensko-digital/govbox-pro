@@ -55,8 +55,7 @@ class Upvs::Drafts::LoadContentJob < ApplicationJob
       )
     end
 
-    EventBus.publish(:message_thread_created, message_draft.thread) if message_draft.thread.previously_new_record?
-    EventBus.publish(:message_created, message_draft)
+    EventBus.publish(:message_thread_with_message_created, message_draft)
   end
 
   def form?(message_draft, file_name)

@@ -22,7 +22,7 @@ gem 'view_component'
 gem 'clockwork'
 
 # Workers
-gem 'good_job'
+gem 'good_job', '= 3.29.4'
 
 # Auth
 gem 'omniauth-google-oauth2'
@@ -31,10 +31,14 @@ gem 'omniauth-saml', '~> 2.2.1'
 gem 'pundit'
 
 # Utilities
+gem 'caxlsx'
+gem 'grover'
 gem 'grover'
 gem 'jbuilder'
 gem 'jsbundling-rails'
+gem 'jsbundling-rails'
 gem 'jwt'
+gem 'pdf-reader'
 gem 'pdf-reader'
 gem 'rack-attack'
 gem 'rest-client'

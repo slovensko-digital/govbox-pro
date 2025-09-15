@@ -312,6 +312,64 @@ fs_accountants_outbox:
     correlation_id: 4bc972bb-9364-47de-bb40-23720f24a4ab
   author: accountants_basic
 
+fs_accountants_draft:
+  type: Fs::MessageDraft
+  uuid: <%= SecureRandom.uuid %>
+  title: FS podanie
+  delivered_at: <%= 2.hours.ago %>
+  thread: fs_accountants_multiple_api_connections_thread1
+  replyable: false
+  metadata:
+    fs_message_id: 1234/2024
+    correlation_id: 4bc972bb-9364-47de-bb40-23720f24a4ab
+  author: accountants_basic
+
+fs_accountants_draft2:
+  type: Fs::MessageDraft
+  uuid: <%= SecureRandom.uuid %>
+  title: FS podanie
+  delivered_at: <%= 2.hours.ago %>
+  thread: fs_accountants_draft
+  replyable: false
+  metadata:
+    fs_message_id: 1234/2025
+    correlation_id: 2bc972bx-9364-47de-bb40-23720f24a4ab
+  author: accountants_basic
+
+fs_accountants_thread1_outbox_message:
+  uuid: <%= SecureRandom.uuid %>
+  title: FS odoslane podanie
+  delivered_at: <%= 2.hours.ago %>
+  thread: fs_accountants_thread1
+  replyable: false
+  metadata:
+    fs_message_id: 1234567/2025
+    fs_status: Prijaté a potvrdené
+    fs_submitting_subject: GO FS subjekt
+    fs_period: Q22025
+    correlation_id: <%= SecureRandom.uuid %>
+  author: accountants_basic
+
+fs_accountants_thread1_inbox_message:
+  uuid: <%= SecureRandom.uuid %>
+  title: FS potvrdenka
+  delivered_at: <%= 2.hours.ago %>
+  thread: fs_accountants_thread1
+  outbox: false
+  replyable: false
+  metadata:
+    fs_message_id: 7654321/2025
+    fs_sent_message_id: 1234567/2025
+    fs_message_type: 'ED.DeliveryReport'
+    fs_submission_status: Prijaté a potvrdené
+    fs_status: Vybavená
+    fs_submitting_subject: GO FS subjekt
+    fs_submission_type_name: Súhrnný výkaz pre daň z pridanej hodnoty (platný od 1.1.2020) - riadny
+    fs_submission_created_at: <%= 2.hours.ago %>
+    fs_period: Q22025
+    correlation_id: <%= SecureRandom.uuid %>
+  author: accountants_basic
+
 solver_main_delivery_notification_one:
   uuid: bbff2617-3430-44c6-b827-519059ff1e90
   title: Authorized Delivery notification
@@ -343,4 +401,23 @@ solver_main_delivery_notification_two:
       consignment:
         message_id: x7800b40-44b1-4012-ae78-774de6457cc2
         type: Doc.GeneralAgendaFiction
+  thread: solver_main_delivery_notification
+
+solver_draft_with_diff:
+  uuid: <%= SecureRandom.uuid %>
+  title: FS draft
+  sender_name: MyString
+  recipient_name: MyString
+  html_visualization: MyString
+  delivered_at: <%= DateTime.current %>
+  metadata:
+    status: created
+    fs_form_id: 600
+    dic: 12345678
+    correlation_id: <%= SecureRandom.uuid %>
+    validation_errors:
+      result: OK
+      warnings: []
+      errors: []
+      diff: <mesiac>02</mesiac>\n---\n>       <mesiac>2</mesiac>\n
   thread: solver_main_delivery_notification

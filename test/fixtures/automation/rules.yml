@@ -47,3 +47,15 @@ add_tag_api_connection:
   tenant: accountants
   name: ApiConnectionIsCondition
   trigger_event: message_created
+
+add_form_object_id_to_thread_title:
+  user: basic
+  tenant: accountants
+  name: FormObjectIdCondition
+  trigger_event: message_created
+
+request_signature_from_author:
+  user: basic
+  tenant: accountants
+  name: Request signature from author
+  trigger_event: message_created

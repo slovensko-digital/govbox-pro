@@ -26,6 +26,6 @@ class Govbox::SubmitMessageDraftJobTest < ActiveJob::TestCase
     assert_mock subscriber
 
     # remove callback
-    EventBus.class_variable_get(:@@subscribers_map)[:message_draft_submitted].pop
+    EventBus.class_variable_get(:@@subscribers_map)[:message_draft_submitted].delete(subscriber)
   end
 end

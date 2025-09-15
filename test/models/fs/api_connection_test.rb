@@ -61,7 +61,7 @@ class Fs::ApiConnectionTest < ActiveSupport::TestCase
     assert_equal original_fs_boxes_count, Fs::Box.count
   end
 
-  test ".boxify adds deleage_it and c_reg on existing boxes if present" do
+  test ".boxify adds c_reg on existing boxes if present" do
     original_fs_boxes_count = Fs::Box.count
     existing_box = boxes(:fs_accountants2)
 
@@ -76,12 +76,11 @@ class Fs::ApiConnectionTest < ActiveSupport::TestCase
       api_connection.boxify
     end
 
-    assert_equal existing_box.reload.settings_delegate_id, "7e4faaa3-c130-4032-b4c1-d0892e9a4622"
     assert_equal existing_box.reload.settings_is_subject_c_reg, false
     assert_equal original_fs_boxes_count, Fs::Box.count
   end
 
-  test ".boxify adds deleage_it and doesn't suplicate existing boxes if c_reg already present" do
+  test ".boxify doesn't duplicate existing boxes if c_reg already present" do
     original_fs_boxes_count = Fs::Box.count
     existing_box = boxes(:fs_false_creg)
 
@@ -97,7 +96,6 @@ class Fs::ApiConnectionTest < ActiveSupport::TestCase
     end
 
     assert_equal original_fs_boxes_count, Fs::Box.count
-    assert_equal existing_box.reload.settings_delegate_id, "7e4faaa3-c130-4032-b4c1-d0892e9a4622"
     assert_equal existing_box.reload.settings_is_subject_c_reg, false
   end
 
@@ -111,6 +109,7 @@ class Fs::ApiConnectionTest < ActiveSupport::TestCase
     box = boxes(:fs_accountants)
 
     new_box = box.dup
+    new_box.api_connections = box.api_connections
     new_box.name = 'Juraj Jánošík'
     new_box.uri = SecureRandom.hex
     new_box.short_name = api_connection.send(:generate_short_name_from_name, 'Juraj Jánošík')
@@ -120,6 +119,7 @@ class Fs::ApiConnectionTest < ActiveSupport::TestCase
 
 
     new_box = box.dup
+    new_box.api_connections = box.api_connections
     new_box.name = 'Ján Jánošík'
     new_box.uri = SecureRandom.hex
     new_box.short_name = api_connection.send(:generate_short_name_from_name, 'Ján Jánošík')
@@ -130,6 +130,7 @@ class Fs::ApiConnectionTest < ActiveSupport::TestCase
 
     # skips number 3 which is already used
     new_box = box.dup
+    new_box.api_connections = box.api_connections
     new_box.name = 'Ján Jabĺčko'
     new_box.uri = SecureRandom.hex
     new_box.short_name = api_connection.send(:generate_short_name_from_name, 'Ján Jabĺčko')
@@ -139,11 +140,90 @@ class Fs::ApiConnectionTest < ActiveSupport::TestCase
 
 
     new_box = box.dup
+    new_box.api_connections = box.api_connections
     new_box.name = 'Juraj Jabĺčko'
     new_box.uri = SecureRandom.hex
     new_box.short_name = api_connection.send(:generate_short_name_from_name, 'Juraj Jabĺčko')
     new_box.save
 
     assert_equal "FSJJ5", new_box.short_name
+  end
+
+  test ".boxify sets other API connections" do
+    original_fs_boxes_count = Fs::Box.count
+    existing_box = boxes(:fs_accountants2)
+    api_connection = existing_box.api_connection
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :get_subjects, [
+      {"name" => existing_box.name , "dic" => existing_box.settings_dic , "subject_id" => existing_box.settings_subject_id, "authorization_type" => "6"},
+    ]
+
+    other_api_connection = api_connections(:fs_api_connection3)
+
+    assert_equal 1, existing_box.api_connections.count
+
+    FsEnvironment.fs_client.stub :api, fs_api do
+      other_api_connection.boxify
+    end
+
+    assert_equal 2, existing_box.api_connections.count
+    assert_equal 2, existing_box.boxes_api_connections.where(api_connection: [api_connection, other_api_connection]).count
+    assert_equal original_fs_boxes_count, Fs::Box.count
+  end
+
+  test ".boxify associates API connections to the existing box" do
+    original_fs_boxes_count = Fs::Box.count
+
+    api_connection = api_connections(:fs_api_connection3)
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :get_subjects, [
+      {"subject_id"=>"ae968df6-6245-42c9-ad62-a590e20b20fe", "dic"=>"2020202020", "name"=>"Test subject, a.s.", "authorization_type" => "6", "delegate_id" => nil, "is_subject_c_reg" => false},
+    ]
+
+    FsEnvironment.fs_client.stub :api, fs_api do
+      api_connection.boxify
+    end
+
+    box = Fs::Box.last
+
+    assert_equal original_fs_boxes_count + 1, Fs::Box.count
+    assert_equal "FS Test subject, a.s.", box.name
+    assert_equal 1, box.api_connections.count
+    assert_equal api_connection, box.api_connections.first
+    assert_nil box.boxes_api_connections.find_by(api_connection: api_connection).settings_delegate_id
+
+    api_connection = api_connections(:fs_api_connection4)
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :get_subjects, [
+      {"subject_id"=>"ae968df6-6245-42c9-ad62-a590e20b20fe", "dic"=>"2020202020", "name"=>"Test subject, a.s.", "authorization_type" => "6", "delegate_id" => nil, "is_subject_c_reg" => false},
+    ]
+
+    FsEnvironment.fs_client.stub :api, fs_api do
+      api_connection.boxify
+    end
+
+    assert_equal original_fs_boxes_count + 1, Fs::Box.count
+    assert_equal 2, box.api_connections.count
+    assert box.api_connections.include?(api_connection)
+    assert_nil box.boxes_api_connections.find_by(api_connection: api_connection).settings_delegate_id
+
+    api_connection = api_connections(:fs_api_connection5)
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :get_subjects, [
+      {"subject_id"=>"ae968df6-6245-42c9-ad62-a590e20b20fe", "dic"=>"2020202020", "name"=>"Test subject, a.s. v zastúpení: SSD s. r. o.", "authorization_type" => "6", "delegate_id" => "4e34b214-108f-4cce-9219-ac8718eb9cdb", "is_subject_c_reg" => false},
+    ]
+
+    FsEnvironment.fs_client.stub :api, fs_api do
+      api_connection.boxify
+    end
+
+    assert_equal original_fs_boxes_count + 1, Fs::Box.count
+    assert_equal 3, box.api_connections.count
+    assert box.api_connections.include?(api_connection)
+    assert_equal "4e34b214-108f-4cce-9219-ac8718eb9cdb", box.boxes_api_connections.find_by(api_connection: api_connection).settings_delegate_id
   end
 end
