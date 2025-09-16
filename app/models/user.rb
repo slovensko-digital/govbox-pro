@@ -30,7 +30,7 @@ class User < ApplicationRecord
   has_many :notifications
   has_one :sticky_note, dependent: :destroy
   has_many :exports
-  has_secure_password
+  has_secure_password validations: false
 
   validates_presence_of :name, :email
   validates_uniqueness_of :name, :email, :username, scope: :tenant_id, case_sensitive: false
