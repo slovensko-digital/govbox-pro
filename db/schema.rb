@@ -640,6 +640,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_09_15_083445) do
     t.datetime "updated_at", null: false
     t.string "feature_flags", default: [], array: true
     t.string "api_token_public_key"
+    t.jsonb "settings", default: {}, null: false
   end
 
   create_table "upvs_form_related_documents", force: :cascade do |t|
