@@ -20,7 +20,8 @@ class Fs::Box < Box
 
   before_create { self.syncable = tenant.feature_enabled?(:fs_sync) }
 
-  validates_uniqueness_of :name, :short_name, scope: :tenant_id
+  validates_uniqueness_of :short_name, scope: [:tenant_id]
+  validates_uniqueness_of :name, scope: [:tenant_id, :uri]
 
   def self.policy_class
     BoxPolicy
@@ -34,7 +35,7 @@ class Fs::Box < Box
     end
     raise ArgumentError, "Api connection must be provided" unless api_connection
 
-    api_connection.boxes.create!(params.except(:api_connection).merge(type: 'Fs::Box'))
+    Box.create!(params.except(:api_connection).merge(type: 'Fs::Box', api_connections: [api_connection]))
   end
 
   def sync
@@ -47,6 +48,5 @@ class Fs::Box < Box
 
   store_accessor :settings, :dic, prefix: true
   store_accessor :settings, :subject_id, prefix: true
-  store_accessor :settings, :delegate_id, prefix: true
   store_accessor :settings, :is_subject_c_reg, prefix: true
 end

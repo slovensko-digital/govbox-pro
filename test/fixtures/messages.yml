@@ -324,6 +324,18 @@ fs_accountants_draft:
     correlation_id: 4bc972bb-9364-47de-bb40-23720f24a4ab
   author: accountants_basic
 
+fs_accountants_draft2:
+  type: Fs::MessageDraft
+  uuid: <%= SecureRandom.uuid %>
+  title: FS podanie
+  delivered_at: <%= 2.hours.ago %>
+  thread: fs_accountants_draft
+  replyable: false
+  metadata:
+    fs_message_id: 1234/2025
+    correlation_id: 2bc972bx-9364-47de-bb40-23720f24a4ab
+  author: accountants_basic
+
 fs_accountants_thread1_outbox_message:
   uuid: <%= SecureRandom.uuid %>
   title: FS odoslane podanie

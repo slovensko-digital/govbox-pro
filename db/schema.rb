@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_07_21_071233) do
+ActiveRecord::Schema[7.1].define(version: 2025_09_11_081634) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -178,6 +178,17 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_21_071233) do
     t.index ["api_connection_id"], name: "index_boxes_on_api_connection_id"
     t.index ["tenant_id", "short_name"], name: "index_boxes_on_tenant_id_and_short_name", unique: true
     t.index ["tenant_id"], name: "index_boxes_on_tenant_id"
+  end
+
+  create_table "boxes_api_connections", force: :cascade do |t|
+    t.bigint "box_id", null: false
+    t.bigint "api_connection_id", null: false
+    t.jsonb "settings", default: {}
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["api_connection_id"], name: "index_boxes_api_connections_on_api_connection_id"
+    t.index ["box_id", "api_connection_id"], name: "index_boxes_api_connections_on_box_id_and_api_connection_id", unique: true
+    t.index ["box_id"], name: "index_boxes_api_connections_on_box_id"
   end
 
   create_table "boxes_other_api_connections", force: :cascade do |t|
@@ -629,6 +640,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_21_071233) do
     t.datetime "updated_at", null: false
     t.string "feature_flags", default: [], array: true
     t.string "api_token_public_key"
+    t.jsonb "settings", default: {}, null: false
   end
 
   create_table "upvs_form_related_documents", force: :cascade do |t|
@@ -689,6 +701,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_21_071233) do
   add_foreign_key "automation_webhooks", "tenants", on_delete: :cascade
   add_foreign_key "boxes", "api_connections"
   add_foreign_key "boxes", "tenants"
+  add_foreign_key "boxes_api_connections", "api_connections"
+  add_foreign_key "boxes_api_connections", "boxes"
   add_foreign_key "boxes_other_api_connections", "api_connections"
   add_foreign_key "boxes_other_api_connections", "boxes"
   add_foreign_key "exports", "users"

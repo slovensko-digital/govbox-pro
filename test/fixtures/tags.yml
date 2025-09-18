@@ -264,6 +264,12 @@ accountants_inbox:
   visible: false
   tenant: accountants
 
+accountants_submission_error_tag:
+  name: Problémové
+  type: SubmissionErrorTag
+  visible: true
+  tenant: accountants
+
 accountants_signature_requested:
   name: Na podpis
   type: SignatureRequestedTag
@@ -369,6 +375,15 @@ accountants_user3_signed:
   icon: pencil
   color: yellow
   owner: accountants_user3
+
+accountants_user4_signed:
+  name: 'Podpísané: Basic user 5'
+  type: SignedByTag
+  visible: true
+  tenant: accountants
+  icon: pencil
+  color: yellow
+  owner: accountants_user4
 
 accountants_tag1:
   name: 'Tag 1'

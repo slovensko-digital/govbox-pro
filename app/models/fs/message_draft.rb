@@ -52,7 +52,10 @@ class Fs::MessageDraft < MessageDraft
         metadata: {
           'status': fs_form ? 'being_loaded' : 'invalid',
           'fs_form_id': fs_form&.id,
+          'fs_form_slug': fs_form&.slug,
+          'fs_form_subtype_name': fs_form&.subtype_name,
           'dic': box.settings['dic'],
+          'period': period,
           'correlation_id': SecureRandom.uuid
         },
         author: author
@@ -137,7 +140,10 @@ class Fs::MessageDraft < MessageDraft
         metadata: (message_params['metadata'] || {}).merge({
           'status': 'being_loaded',
           'fs_form_id': fs_form.id,
-          'dic': box.settings['dic']
+          'fs_form_slug': fs_form.slug,
+          'fs_form_subtype_name': fs_form.subtype_name,
+          'dic': box.settings['dic'],
+          'period': period
         }),
       })
     )
@@ -149,7 +155,7 @@ class Fs::MessageDraft < MessageDraft
       delivered_at: message.delivered_at,
       metadata: {
         period: period,
-        fs_form_id: fs_form&.id
+        fs_form_id: fs_form.id
       }
     )
 
@@ -169,14 +175,13 @@ class Fs::MessageDraft < MessageDraft
   end
 
   def find_api_connection_for_submission
-    return box.api_connection if box.other_api_connections.none?
+    return box.api_connection if box.api_connections.count == 1
 
     raise "Multiple signatures found. Can't choose API connection" if thread.tags.where(type: "SignedByTag").count > 1
 
     signed_by = thread.tags.where(type: "SignedByTag")&.first&.owner
 
-    return box.api_connection if box.api_connection.owner == signed_by
-    return box.other_api_connections.find_by(owner: signed_by) if signed_by && box.other_api_connections.find_by(owner: signed_by)
+    return box.api_connections.find_by(owner: signed_by) if signed_by && box.api_connections.find_by(owner: signed_by)
 
     raise "Signer not allowed to submit the message"
   end
