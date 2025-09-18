@@ -4,6 +4,7 @@ module MessageThreads
   module Bulk
     class ExportsController < ApplicationController
       before_action :set_export, only: %i[show edit update start]
+      before_action :load_export_context, only: :edit
 
       def show
         authorize @export
@@ -15,8 +16,6 @@ module MessageThreads
 
       def edit
         authorize @export
-
-        build_export_context
       end
 
       def create
@@ -35,7 +34,7 @@ module MessageThreads
         if @export.update(export_params)
           redirect_to edit_message_threads_bulk_export_path(@export), notice: t("exports.flash.updated")
         else
-          build_export_context
+          load_export_context
           render :edit, status: :unprocessable_entity
         end
       end
@@ -44,17 +43,14 @@ module MessageThreads
         authorize @export
 
         if params[:export].present?
-          @export.assign_attributes(export_params)
+          unless @export.update(export_params)
+            load_export_context
+            return render :edit, status: :unprocessable_entity
+          end
         end
 
-        if @export.valid?
-          @export.save
-          @export.start
-          redirect_to root_path, notice: t("exports.flash.started")
-        else
-          build_export_context
-          render :edit, status: :unprocessable_entity
-        end
+        @export.start
+        redirect_to root_path, notice: t("exports.flash.started")
       end
 
       private
@@ -71,7 +67,7 @@ module MessageThreads
         params.require(:export).permit(settings: {})
       end
 
-      def build_export_context
+      def load_export_context
         @message_threads = message_thread_policy_scope.where(id: @export.message_thread_ids).includes(:messages)
         @message_forms = @message_threads.map do |thread|
           thread.metadata&.dig('fs_form_id')

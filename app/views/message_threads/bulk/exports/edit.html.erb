@@ -11,7 +11,7 @@
         </div>
 
         <% if @export.errors.any? %>
-          <div class="mt-4 rounded-md bg-red-50 p-4" data-controller="dismissible-alert" data-dismissible-alert-timeout-value="5000">
+          <div class="mt-4 rounded-md bg-red-50 p-4">
             <div class="flex text-sm text-red-700">
               <ul class="list-disc space-y-1 pl-4">
                 <% @export.errors.full_messages.each do |msg| %>
