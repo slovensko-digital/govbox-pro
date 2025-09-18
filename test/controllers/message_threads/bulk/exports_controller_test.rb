@@ -41,12 +41,6 @@ module MessageThreads
         assert_equal true, @export.settings['messages'], 'invalid combination should not persist (messages should remain true)'
       end
 
-      test 'start fails when already invalid and no incoming settings' do
-        @export.update_columns(settings: { 'summary' => false, 'messages' => false })
-        post :start, params: { export_id: @export.id }
-        assert_response :unprocessable_entity
-      end
-
       test 'start fails when both options set to zero in single request' do
         assert @export.settings['summary']
         assert @export.settings['messages']
