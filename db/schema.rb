@@ -173,6 +173,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_09_18_181423) do
     t.enum "color", enum_type: "color"
     t.jsonb "settings"
     t.string "type"
+    t.string "export_name", null: false
     t.index ["tenant_id", "short_name"], name: "index_boxes_on_tenant_id_and_short_name", unique: true
     t.index ["tenant_id"], name: "index_boxes_on_tenant_id"
   end

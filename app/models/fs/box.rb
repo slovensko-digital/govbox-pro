@@ -2,17 +2,18 @@
 #
 # Table name: boxes
 #
-#  id         :bigint           not null, primary key
-#  color      :enum
-#  name       :string           not null
-#  settings   :jsonb
-#  short_name :string
-#  syncable   :boolean          default(TRUE), not null
-#  type       :string
-#  uri        :string           not null
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  tenant_id  :bigint           not null
+#  id          :bigint           not null, primary key
+#  color       :enum
+#  export_name :string           not null
+#  name        :string           not null
+#  settings    :jsonb
+#  short_name  :string
+#  syncable    :boolean          default(TRUE), not null
+#  type        :string
+#  uri         :string           not null
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#  tenant_id   :bigint           not null
 #
 class Fs::Box < Box
   DISABLED_MESSAGE_DRAFTS_IMPORT_KEYWORDS = ['(oblasť SPD)']

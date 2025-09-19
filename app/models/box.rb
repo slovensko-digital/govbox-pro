@@ -2,17 +2,18 @@
 #
 # Table name: boxes
 #
-#  id         :bigint           not null, primary key
-#  color      :enum
-#  name       :string           not null
-#  settings   :jsonb
-#  short_name :string
-#  syncable   :boolean          default(TRUE), not null
-#  type       :string
-#  uri        :string           not null
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  tenant_id  :bigint           not null
+#  id          :bigint           not null, primary key
+#  color       :enum
+#  export_name :string           not null
+#  name        :string           not null
+#  settings    :jsonb
+#  short_name  :string
+#  syncable    :boolean          default(TRUE), not null
+#  type        :string
+#  uri         :string           not null
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#  tenant_id   :bigint           not null
 #
 class Box < ApplicationRecord
   include Colorized
@@ -36,7 +37,9 @@ class Box < ApplicationRecord
 
   before_create { self.color = Box.colors.keys[name.hash % Box.colors.size] if color.blank? }
 
-  validates_presence_of :name, :short_name, :uri
+  validates_presence_of :name, :short_name, :uri, :export_name
+  
+  before_validation :set_default_export_name, on: :create
   validate :validate_api_connection_presence
   validate :validate_box_with_api_connections
 
@@ -65,6 +68,10 @@ class Box < ApplicationRecord
   end
 
   private
+
+  def set_default_export_name
+    self.export_name = official_name if export_name.blank?
+  end
 
   def validate_api_connection_presence
     errors.add(:api_connection, :blank) if api_connections.empty?

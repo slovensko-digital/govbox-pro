@@ -10,9 +10,21 @@
           <h3 class="text-base font-semibold text-gray-900">Nastavenie exportu</h3>
         </div>
 
+        <% if @export.errors.any? %>
+          <div class="mt-4 rounded-md bg-red-50 p-4">
+            <div class="flex text-sm text-red-700">
+              <ul class="list-disc space-y-1 pl-4">
+                <% @export.errors.full_messages.each do |msg| %>
+                  <li><%= msg %></li>
+                <% end %>
+              </ul>
+            </div>
+          </div>
+        <% end %>
+
         <div class="py-6">
           <div class="flex items-center gap-x-3 pd-3">
-            <%= check_box_tag "export[settings][summary]", "1", @export.settings["summary"], class: "h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer" %>
+            <%= check_box_tag "export[settings][summary]", "1", @export.settings["summary"], class: "h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer", onclick: "this.form.requestSubmit()" %>
             <%= label_tag "export[settings][summary]", "Exportovať sumár", class: "select-none text-sm/6 text-gray-900 cursor-pointer" %>
           </div>
 
@@ -22,6 +34,25 @@
           </div>
           <div style="<%= @export.settings['messages'] ? '' : 'display: none;' %>">
             <p class="mt-1 text-sm text-gray-500">Nastavte ako budú exportované jednotlivé typy správ.</p>
+
+            <div class="mt-2">
+              <details class="group">
+                <summary class="text-sm cursor-pointer select-none text-gray-500 hover:text-gray-800">Dostupné premenné pre šablónu</summary>
+                <div class="mt-2 space-y-1 text-xs text-gray-500 leading-5">
+                  <code>{{ schranka.export_nazov }}</code> – upraviteľný názov schránky pre export<br>
+                  <code>{{ schranka.oficialny_nazov }}</code> – oficiálny názov schránky<br>
+                  <code>{{ schranka.nazov }}</code> – pôvodný názov schránky bez úprav<br>
+                  <code>{{ schranka.dic }}</code> – DIČ schránky<br>
+                  <code>{{ vlakno.id }}</code> – identifikátor vlákna<br>
+                  <code>{{ vlakno.obdobie }}</code> – obdobie vlákna (napr. 2024-01)<br>
+                  <code>{{ vlakno.formular }}</code> – typ formulára s verziou (napr. DPHv20)<br>
+                  <code>{{ vlakno.formular_bez_verzie }}</code> – typ formulára bez verzie (napr. DPH)<br>
+                  <code>{{ vlakno.datum_podania }}</code> – dátum podania<br>
+                  <code>{{ sprava.id }}</code> – identifikátor správy<br>
+                  <code>{{ subor.nazov }}</code> – názov súboru (napr. priloha.pdf)
+                </div>
+              </details>
+            </div>
 
             <div class="space-y-4 py-6 px-6">
               <div class="flex items-center gap-x-3">
@@ -73,10 +104,7 @@
 
       <div class="flex items-center gap-x-4 mb-6">
         <%= button_tag "Uložiť nastavenia", class: "rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50", onclick: "document.getElementById('export-form').requestSubmit()" %>
-
-        <%= form_for @export, url: message_threads_bulk_export_start_path(@export), method: :post do |f| %>
-            <%= f.submit "Exportovať", class: "rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500", data: { turbo_confirm: "Chcete vytvoriť export?" } %>
-        <% end %>
+        <%= button_tag "Exportovať", form: "export-form", formaction: message_threads_bulk_export_start_path(@export), formmethod: "post", class: "rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500", data: { turbo_confirm: "Chcete vytvoriť export?" } %>
       </div>
 
       <div class="border-b border-gray-200 bg-white py-5">
