@@ -20,12 +20,6 @@ sk:
         disallowed_form_for_recipient: "Prijímateľ neprijíma tento typ formulára"
         invalid_form: "Formulár nie je validný voči XSD"
       models:
-        fs/box:
-          attributes:
-            name:
-              taken: "Názov ste už použili"
-            short_name:
-              taken: "Krátky názov ste už použili"
         api_connection:
           attributes:
             tenant_id:
