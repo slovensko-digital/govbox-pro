@@ -118,7 +118,7 @@ class BoxTest < ActiveSupport::TestCase
       short_name: 'FSEC',
       uri: 'dic://sk/1234500000',
       type: 'Fs::Box',
-      api_connection: api_connections(:fs_api_connection2)
+      api_connections: [api_connections(:fs_api_connection2)]
     )
 
     assert_equal 'Example Corp', box.export_name

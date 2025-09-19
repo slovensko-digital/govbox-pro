@@ -80,7 +80,7 @@ class Box < ApplicationRecord
   def validate_api_connection_presence
     errors.add(:api_connection, :blank) if api_connections.empty?
   end
-  
+
   def validate_box_with_api_connections
     api_connections.each do |api_connection|
       errors.add(:api_connection, :invalid) if api_connection.tenant && (api_connection.tenant.id != tenant.id)
