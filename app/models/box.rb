@@ -20,7 +20,8 @@ class Box < ApplicationRecord
   include Colorized
 
   belongs_to :tenant
-  belongs_to :api_connection
+  has_many :boxes_api_connections
+  has_many :api_connections, through: :boxes_api_connections
   has_many :boxes_other_api_connections, dependent: :destroy
   has_many :other_api_connections, through: :boxes_other_api_connections, class_name: 'ApiConnection', source: :api_connection
 
@@ -32,20 +33,27 @@ class Box < ApplicationRecord
 
   scope :with_enabled_message_drafts_import, -> { where("(settings ->> 'message_drafts_import_enabled')::boolean = ?", true) }
 
-  after_destroy do |box|
-    api_connection.destroy if api_connection.destroy_with_box?
+  before_destroy do |box|
+    api_connection.destroy if api_connection.destroy_with_box?(self)
+    boxes_api_connections.destroy_all
     EventBus.publish(:box_destroyed, box.id)
   end
 
   before_create { self.color = Box.colors.keys[name.hash % Box.colors.size] if color.blank? }
 
   validates_presence_of :name, :short_name, :uri, :export_name
-
+  
   before_validation :set_default_export_name, on: :create
+  validate :validate_api_connection_presence
   validate :validate_box_with_api_connection
+  
 
   def self.create_with_api_connection!(params)
     raise NotImplementedError
+  end
+
+  def api_connection
+    ApiConnection.find_by_id(api_connection_id) || api_connections.first
   end
 
   def sync
@@ -72,7 +80,16 @@ class Box < ApplicationRecord
 
   def validate_box_with_api_connection
     errors.add(:api_connection, :invalid) if api_connection.tenant && (api_connection.tenant.id != tenant.id)
+  end
+  
+  def validate_api_connection_presence
+    errors.add(:api_connection, :blank) if api_connections.empty?
+  end
 
-    api_connection.validate_box(self)
+  def validate_box_with_api_connections
+    api_connections.each do |api_connection|
+      errors.add(:api_connection, :invalid) if api_connection.tenant && (api_connection.tenant.id != tenant.id)
+      api_connection.validate_box(self)
+    end
   end
 end

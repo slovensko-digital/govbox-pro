@@ -91,6 +91,13 @@ fs_accountants_multiple_api_connections_thread1:
   delivered_at: <%= 2.hours.ago %>
   last_message_delivered_at: <%= 2.hours.ago %>
 
+fs_accountants_draft:
+  box: fs_accountants
+  title: Podanie
+  original_title: MyString
+  delivered_at: <%= 2.hours.ago %>
+  last_message_delivered_at: <%= 2.hours.ago %>
+
 fs_accountants_thread1:
   box: fs_accountants
   title: Kompletne podanie
