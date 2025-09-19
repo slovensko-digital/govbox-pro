@@ -123,7 +123,7 @@ class BoxTest < ActiveSupport::TestCase
 
     assert_equal 'Example Corp', box.export_name
   end
-  
+
   test "sync method schedules Govbox::SyncBoxJob with highest priority" do
     box = boxes(:ssd_main)
 

@@ -45,7 +45,7 @@ class Box < ApplicationRecord
   
   before_validation :set_default_export_name, on: :create
   validate :validate_api_connection_presence
-  validate :validate_box_with_api_connection
+  validate :validate_box_with_api_connections
 
   def self.create_with_api_connection!(params)
     raise NotImplementedError
@@ -75,10 +75,6 @@ class Box < ApplicationRecord
 
   def set_default_export_name
     self.export_name = official_name if export_name.blank?
-  end
-
-  def validate_box_with_api_connection
-    errors.add(:api_connection, :invalid) if api_connection.tenant && (api_connection.tenant.id != tenant.id)
   end
 
   def validate_api_connection_presence
