@@ -42,7 +42,7 @@ class Box < ApplicationRecord
   before_create { self.color = Box.colors.keys[name.hash % Box.colors.size] if color.blank? }
 
   validates_presence_of :name, :short_name, :uri, :export_name
-
+  
   before_validation :set_default_export_name, on: :create
   validate :validate_api_connection_presence
   validate :validate_box_with_api_connection
