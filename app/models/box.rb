@@ -2,19 +2,18 @@
 #
 # Table name: boxes
 #
-#  id                :bigint           not null, primary key
-#  color             :enum
-#  name              :string           not null
-#  export_name       :string           not null
-#  settings          :jsonb
-#  short_name        :string
-#  syncable          :boolean          default(TRUE), not null
-#  type              :string
-#  uri               :string           not null
-#  created_at        :datetime         not null
-#  updated_at        :datetime         not null
-#  api_connection_id :bigint
-#  tenant_id         :bigint           not null
+#  id          :bigint           not null, primary key
+#  color       :enum
+#  export_name :string           not null
+#  name        :string           not null
+#  settings    :jsonb
+#  short_name  :string
+#  syncable    :boolean          default(TRUE), not null
+#  type        :string
+#  uri         :string           not null
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#  tenant_id   :bigint           not null
 #
 class Box < ApplicationRecord
   include Colorized
@@ -22,9 +21,6 @@ class Box < ApplicationRecord
   belongs_to :tenant
   has_many :boxes_api_connections
   has_many :api_connections, through: :boxes_api_connections
-  has_many :boxes_other_api_connections, dependent: :destroy
-  has_many :other_api_connections, through: :boxes_other_api_connections, class_name: 'ApiConnection', source: :api_connection
-
   has_many :message_threads, extend: MessageThreadsExtensions, dependent: :destroy
   has_many :messages, through: :message_threads
   has_many :message_submission_requests, dependent: :destroy, class_name: '::Stats::MessageSubmissionRequest'
@@ -52,7 +48,7 @@ class Box < ApplicationRecord
   end
 
   def api_connection
-    ApiConnection.find_by_id(api_connection_id) || api_connections.first
+    api_connections.first
   end
 
   def sync
