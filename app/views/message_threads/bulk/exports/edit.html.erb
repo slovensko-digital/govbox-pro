@@ -23,6 +23,25 @@
           <div style="<%= @export.settings['messages'] ? '' : 'display: none;' %>">
             <p class="mt-1 text-sm text-gray-500">Nastavte ako budú exportované jednotlivé typy správ.</p>
 
+            <div class="mt-2">
+              <details class="group">
+                <summary class="text-sm cursor-pointer select-none text-gray-500 hover:text-gray-800">Dostupné premenné pre šablónu</summary>
+                <div class="mt-2 space-y-1 text-xs text-gray-500 leading-5">
+                  <code>{{ schranka.export_nazov }}</code> – upraviteľný názov schránky pre export<br>
+                  <code>{{ schranka.oficialny_nazov }}</code> – oficiálny názov schránky<br>
+                  <code>{{ schranka.nazov }}</code> – pôvodný názov schránky bez úprav<br>
+                  <code>{{ schranka.dic }}</code> – DIČ schránky<br>
+                  <code>{{ vlakno.id }}</code> – identifikátor vlákna<br>
+                  <code>{{ vlakno.obdobie }}</code> – obdobie vlákna (napr. 2024-01)<br>
+                  <code>{{ vlakno.formular }}</code> – typ formulára s verziou (napr. DPHv20)<br>
+                  <code>{{ vlakno.formular_bez_verzie }}</code> – typ formulára bez verzie (napr. DPH)<br>
+                  <code>{{ vlakno.datum_podania }}</code> – dátum podania<br>
+                  <code>{{ sprava.id }}</code> – identifikátor správy<br>
+                  <code>{{ subor.nazov }}</code> – názov súboru (napr. priloha.pdf)
+                </div>
+              </details>
+            </div>
+
             <div class="space-y-4 py-6 px-6">
               <div class="flex items-center gap-x-3">
                 <%= check_box_tag "export[settings][pdf]", "1", @export.settings["pdf"], class: "h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer" %>

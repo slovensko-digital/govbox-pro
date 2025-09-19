@@ -26,6 +26,6 @@ class Admin::Boxes::UpvsBoxesController < Admin::BoxesController
   private
 
   def box_params
-    params.require(:upvs_box).permit(:api_connection_id, :name, :uri, :short_name, :color, :settings_obo)
+    params.require(:upvs_box).permit(:api_connection_id, :name, :uri, :short_name, :export_name, :color, :settings_obo)
   end
 end
