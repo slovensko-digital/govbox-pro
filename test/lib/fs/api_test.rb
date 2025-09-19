@@ -20,7 +20,7 @@ module Fs
       fs_api = Fs::Api.new(FS_API_URL, box: box, handler: handler)
 
       jwt_header_mock = Minitest::Mock.new
-      jwt_header_mock.expect :call, {}, ["#{box.settings_subject_id}:#{box.settings_dic}:#{box.settings_delegate_id}"]
+      jwt_header_mock.expect :call, {}, ["#{box.settings_subject_id}:#{box.settings_dic}:#{box.boxes_api_connections.first.settings_delegate_id}"]
 
       fs_api.stub :fs_credentials_header, {} do
         fs_api.stub :jwt_header, jwt_header_mock do
