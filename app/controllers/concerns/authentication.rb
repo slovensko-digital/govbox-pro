@@ -3,6 +3,20 @@ module Authentication
 
   included do
     before_action :authenticate
+    before_action :http_authenticate
+  end
+  def http_authenticate
+    return unless ENV['REQUIRE_HTTP_AUTH'] == 'true'
+
+    authenticate_or_request_with_http_basic do |email, password|
+      user = User.find_by(email: email)
+      if user&.authenticate(password)
+        Current.user = user
+        true
+      else
+        false
+      end
+    end
   end
 
   SESSION_TIMEOUT = 20.minutes

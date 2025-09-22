@@ -5,7 +5,6 @@ class ApplicationController < ActionController::Base
   after_action :verify_authorized
   after_action :verify_policy_scoped, only: :index if respond_to?(:index)
   before_action :set_menu_context
-  before_action :http_authenticate
 
   def pundit_user
     Current.user
@@ -17,21 +16,5 @@ class ApplicationController < ActionController::Base
     @tags = policy_scope(Tag, policy_scope_class: TagPolicy::ScopeListable).where(visible: true).order(:name)
     @filters = policy_scope(Filter, policy_scope_class: FilterPolicy::ScopeShowable).order(:position)
     @menu = SidebarMenu.new(controller_name, action_name, { tags: @tags, filters: @filters }).menu
-  end
-
-  private
-
-  def http_authenticate
-    return unless ENV['REQUIRE_HTTP_AUTH'] == 'true'
-
-      authenticate_or_request_with_http_basic do |email, password|
-        user = User.find_by(email: email)
-        if user&.authenticate(password)
-          Current.user = user
-          true
-        else
-          false
-        end
-    end
   end
 end
