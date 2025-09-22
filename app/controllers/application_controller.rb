@@ -24,9 +24,14 @@ class ApplicationController < ActionController::Base
   def http_authenticate
     return unless ENV['REQUIRE_HTTP_AUTH'] == 'true'
 
-    authenticate_or_request_with_http_basic do |username, password|
-      user = User.find_by(username: username)
-      user&.authenticate(password)
+      authenticate_or_request_with_http_basic do |email, password|
+        user = User.find_by(email: email)
+        if user&.authenticate(password)
+          Current.user = user
+          true
+        else
+          false
+        end
     end
   end
 end

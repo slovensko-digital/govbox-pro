@@ -9,7 +9,6 @@
 #  notifications_reset_at       :datetime
 #  password_digest              :string
 #  saml_identifier              :string
-#  username                     :string
 #  created_at                   :datetime         not null
 #  updated_at                   :datetime         not null
 #  tenant_id                    :bigint
@@ -33,7 +32,7 @@ class User < ApplicationRecord
   has_secure_password validations: false
 
   validates_presence_of :name, :email
-  validates_uniqueness_of :name, :email, :username, scope: :tenant_id, case_sensitive: false
+  validates_uniqueness_of :name, :email, scope: :tenant_id, case_sensitive: false
 
   before_destroy :delete_user_group, prepend: true
   after_create :handle_default_settings
