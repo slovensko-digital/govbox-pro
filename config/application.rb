@@ -10,6 +10,8 @@ if ['development', 'test'].include? ENV['RAILS_ENV']
   Dotenv::Rails.load
 end
 
+Zip.unicode_names = true
+
 module GovboxPro
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
