@@ -5,7 +5,9 @@ class Admin::Boxes::UpvsBoxesController < Admin::BoxesController
   end
 
   def create
-    @box = Current.tenant.boxes.new(type: "Upvs::Box", **box_params)
+    api_connection = Current.tenant.api_connections.find(box_params[:api_connection_id])
+    @box = Current.tenant.boxes.new(**box_params.except(:api_connection_id).merge(type: 'Upvs::Box', api_connections: [api_connection]))
+
     authorize([:admin, @box])
     if @box.save
       redirect_to admin_tenant_boxes_url(Current.tenant), notice: "Box was successfully created."
@@ -16,7 +18,7 @@ class Admin::Boxes::UpvsBoxesController < Admin::BoxesController
 
   def update
     authorize([:admin, @box])
-    if @box.update(type: "Upvs::Box", **box_params)
+    if @box.update(type: "Upvs::Box", **box_params.except(:api_connection_id))
       redirect_to admin_tenant_boxes_url(Current.tenant), notice: "Box was successfully updated."
     else
       render :edit, status: :unprocessable_entity
