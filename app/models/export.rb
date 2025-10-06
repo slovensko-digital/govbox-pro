@@ -26,7 +26,8 @@ class Export < ApplicationRecord
     "{{ vlakno.obdobie }}" => ->(o) { o.message.thread.metadata["period"] if o.message.thread.metadata&.dig("period") },
     "{{ vlakno.formular }}" => ->(o) { form_name(o) },
     "{{ vlakno.formular_bez_verzie }}" => ->(o) { form_name(o, include_version: false) },
-    "{{ vlakno.datum_podania }}" => ->(o) { o.message.thread.messages.outbox.first.delivered_at&.to_date },
+    "{{ vlakno.datum_podania }}" => ->(o) { o.message.thread.messages.outbox&.first&.delivered_at&.to_date },
+    "{{ vlakno.datum_dorucenia }}" => ->(o) { o.message.delivered_at.to_date },
     "{{ sprava.id }}" => ->(o) { o.message.id },
     "{{ subor.nazov }}" => ->(o) { o.name }
   }.freeze
