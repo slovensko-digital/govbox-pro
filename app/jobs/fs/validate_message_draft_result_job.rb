@@ -38,6 +38,8 @@ class Fs::ValidateMessageDraftResultJob < ApplicationJob
 
     # TODO log occurence if diff.any?
 
+    message_draft.add_cascading_tag(message_draft.tenant.validation_error_tag) if errors.any?
+    message_draft.add_cascading_tag(message_draft.tenant.validation_warning_tag) if warnings.any?
     message_draft.add_cascading_tag(message_draft.tenant.submission_error_tag) if errors.any? || warnings.any?
 
     message_draft.save

@@ -29,6 +29,8 @@ class Tenant < ApplicationRecord
   has_one :submitted_tag
   has_one :submission_error_tag
   has_one :unprocessable_tag
+  has_one :validation_warning_tag
+  has_one :validation_error_tag
   has_many :tags, dependent: :destroy
   has_many :signature_requested_from_tags
   has_many :signed_by_tags
@@ -156,6 +158,8 @@ class Tenant < ApplicationRecord
     create_submitted_tag!(name: 'Odoslané na spracovanie')
     create_submission_error_tag!(name: 'Problémové')
     create_unprocessable_tag!(name: 'Chybné', color: 'red', icon: 'exclamation-triangle')
+    create_validation_error_tag!(name: "Chybné údaje", color: 'red', icon: "exclamation-triangle")
+    create_validation_warning_tag!(name: "Upozornenia", color: "orange", icon: "exclamation-triangle")
 
     make_admins_see_everything!
   end

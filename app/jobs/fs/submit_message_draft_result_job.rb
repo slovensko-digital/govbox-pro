@@ -10,12 +10,15 @@ class Fs::SubmitMessageDraftResultJob < ApplicationJob
       message_draft.submitted!
       message_draft.metadata[:fs_message_id] = response[:body]['sent_message_id']
       message_draft.remove_cascading_tag(message_draft.tenant.submission_error_tag)
+      message_draft.remove_cascading_tag(message_draft.tenant.validation_error_tag)
+      message_draft.remove_cascading_tag(message_draft.tenant.validation_warning_tag)
       message_draft.save
 
       ::Fs::DownloadSentMessageJob.perform_later(response[:body]['sent_message_id'], box: message_draft.box)
     elsif [400, 422].include?(response[:status])
       message_draft.metadata[:status] = 'submit_fail'
       message_draft.add_cascading_tag(message_draft.tenant.submission_error_tag)
+      message_draft.add_cascading_tag(message_draft.tenant.validation_error_tag)
       message_draft.save
 
       raise RuntimeError.new("Box #{message_draft.box.id}, Message #{message_draft.uuid}: #{response[:status]}")
