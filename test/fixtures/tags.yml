@@ -270,6 +270,18 @@ accountants_submission_error_tag:
   visible: true
   tenant: accountants
 
+accountants_validation_error_tag:
+  name: Chybné údaje
+  type: ValidationErrorTag
+  visible: true
+  tenant: accountants
+
+accountants_validation_warning_tag:
+  name: Upozornenia
+  type: ValidationWarningTag
+  visible: true
+  tenant: accountants
+
 accountants_signature_requested:
   name: Na podpis
   type: SignatureRequestedTag
