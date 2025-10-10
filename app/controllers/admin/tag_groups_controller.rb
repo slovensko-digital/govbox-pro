@@ -12,13 +12,13 @@ class Admin::TagGroupsController < ApplicationController
     @tag_group = TagGroup.new(tag_group_params)
     authorize([:admin, @tag_group])
     @tag_group.save!
-    redirect_to edit_permissions_admin_tenant_group_url(Current.tenant, @tag_group.group), notice: "Tag permission was successfully assigned"
+    redirect_to edit_permissions_admin_tenant_group_url(Current.tenant, @tag_group.group), notice: "Prístup na základe štítkov bol úspešne priradený"
   end
 
   def destroy
     authorize([:admin, @tag_group])
     @tag_group.destroy
-    redirect_to edit_permissions_admin_tenant_group_url(Current.tenant, @tag_group.group), notice: "Tag permission was successfully destroyed"
+    redirect_to edit_permissions_admin_tenant_group_url(Current.tenant, @tag_group.group), notice: "Prístup na základe štítkov bol úspešne odstránený"
   end
 
   private
