@@ -54,7 +54,6 @@ class Govbox::SubmitMessageDraftJob < ApplicationJob
 
     if success
       message_draft.remove_cascading_tag(message_draft.tenant.submission_error_tag)
-      message_draft.remove_cascading_tag(message_draft.tenant.validation_error_tag)
       message_draft.submitted!
       Govbox::SyncBoxJob.set(wait: 3.minutes).perform_later(box) unless bulk_submit
     else
@@ -85,7 +84,6 @@ class Govbox::SubmitMessageDraftJob < ApplicationJob
   def handle_submit_fail(message_draft, response_status, response_body)
     # TODO notification
     message_draft.add_cascading_tag(message_draft.tenant.submission_error_tag)
-    message_draft.add_cascading_tag(message_draft.tenant.validation_error_tag)
 
     case response_status
     when 408, 503
