@@ -10,7 +10,7 @@ class Admin::Boxes::UpvsBoxesController < Admin::BoxesController
 
     authorize([:admin, @box])
     if @box.save
-      redirect_to admin_tenant_boxes_url(Current.tenant), notice: "Box was successfully created."
+      redirect_to admin_tenant_boxes_url(Current.tenant), notice: "Box bol úspešne vytvorený"
     else
       render :new, status: :unprocessable_entity
     end
@@ -19,7 +19,7 @@ class Admin::Boxes::UpvsBoxesController < Admin::BoxesController
   def update
     authorize([:admin, @box])
     if @box.update(type: "Upvs::Box", **box_params.except(:api_connection_id))
-      redirect_to admin_tenant_boxes_url(Current.tenant), notice: "Box was successfully updated."
+      redirect_to admin_tenant_boxes_url(Current.tenant), notice: "Box bol úspešne upravený"
     else
       render :edit, status: :unprocessable_entity
     end

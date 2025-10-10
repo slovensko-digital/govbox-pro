@@ -2,7 +2,7 @@ class Admin::ApiConnections::FsApiConnectionsController < Admin::ApiConnectionsC
   def update
     authorize([:admin, @api_connection])
     if @api_connection.update(api_connection_params)
-      redirect_to admin_tenant_api_connections_url(Current.tenant), notice: "API connection was successfully updated."
+      redirect_to admin_tenant_api_connections_url(Current.tenant), notice: "API pripojenie bolo úspešne upravené"
     else
       render :edit, status: :unprocessable_entity
     end

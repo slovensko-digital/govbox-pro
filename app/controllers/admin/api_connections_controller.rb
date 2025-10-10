@@ -13,7 +13,7 @@ class Admin::ApiConnectionsController < ApplicationController
   def destroy
     authorize [:admin, @api_connection]
     @api_connection.destroy
-    redirect_to admin_tenant_api_connections_url(Current.tenant), notice: 'API connection was successfully destroyed'
+    redirect_to admin_tenant_api_connections_url(Current.tenant), notice: 'API pripojenie bolo úspešne odstránené'
   end
 
   def new
