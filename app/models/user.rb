@@ -7,6 +7,7 @@
 #  name                         :string           not null
 #  notifications_last_opened_at :datetime
 #  notifications_reset_at       :datetime
+#  password_digest              :string
 #  saml_identifier              :string
 #  created_at                   :datetime         not null
 #  updated_at                   :datetime         not null

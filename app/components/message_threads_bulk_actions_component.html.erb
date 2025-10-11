@@ -8,7 +8,11 @@
       <% else %>
         Správy v schránke
         <% if @count_estimate %>
-          <span class="text-sm">(približne <%= @count_estimate %> správ)</span>
+          <% if @count_estimate.in?(20..100) %>
+            (<%= @count_estimate %>)
+          <% elsif @count_estimate > 100 %>
+            (100+)
+          <% end %>
         <% end %>
       <% end %>
 

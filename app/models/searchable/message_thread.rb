@@ -127,7 +127,6 @@ class Searchable::MessageThread < ApplicationRecord
   end
 
   def self.calculate_count_estimate(scope:, per_page:)
-    estimate = ApplicationRecord.count_estimate_for(scope)
-    estimate && estimate > per_page ? estimate : nil
+    scope.limit(101).pluck(:id).count
   end
 end
