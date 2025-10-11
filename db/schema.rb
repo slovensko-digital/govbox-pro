@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_10_10_151644) do
+ActiveRecord::Schema[7.1].define(version: 2025_10_11_164132) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -517,6 +517,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_10_151644) do
     t.boolean "collapsed", default: false, null: false
     t.boolean "outbox", default: false, null: false
     t.index "((metadata ->> 'fs_message_id'::text))", name: "index_messages_on_metadata_fs_message_id", using: :hash
+    t.jsonb "export_metadata", default: {}, null: false
     t.index ["author_id"], name: "index_messages_on_author_id"
     t.index ["import_id"], name: "index_messages_on_import_id"
     t.index ["message_thread_id"], name: "index_messages_on_message_thread_id"

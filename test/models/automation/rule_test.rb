@@ -70,7 +70,7 @@ class Automation::RuleTest < ActiveSupport::TestCase
     assert_not_includes message.tags, tags(:ssd_print)
   end
 
-  test 'should run an automation on message created AttachmentContainsConidition AddMessageThreadTagAction' do
+  test 'should run an automation on message created AttachmentContainsConidition AddMessageThreadTagAction AddMessageExportMetadataBoxNameAction' do
     govbox_message = govbox_messages(:ssd_crac)
 
     Govbox::Message.create_message_with_thread!(govbox_message)
@@ -79,6 +79,7 @@ class Automation::RuleTest < ActiveSupport::TestCase
 
     assert_includes message.thread.tags, tags(:ssd_crac_success)
     assert_not_includes message.tags, tags(:ssd_crac_success)
+    assert_equal "BOX NAME", message.export_metadata["box_name"]
   end
 
   test 'should run an automation on message created outbox BooleanCondition, edesk_class MessageMetadataValueNotCondition UnassignMessageThreadTagAction if conditions satisfied' do
