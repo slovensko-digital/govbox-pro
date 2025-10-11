@@ -52,8 +52,9 @@ class ApiTokenAuthenticatorTest < ActiveSupport::TestCase
 
   test 'verifies EXP claim value' do
     token = generate_token
-    travel_to Time.now + 5.minutes
-    assert_raises(JWT::ExpiredSignature) { @api_token_authenticator.verify_token(token) }
+    travel_to(Time.now + 5.minutes) do
+      assert_raises(JWT::ExpiredSignature) { @api_token_authenticator.verify_token(token) }
+    end
   end
 
   test 'verifies JTI claim presence' do
@@ -76,9 +77,9 @@ class ApiTokenAuthenticatorTest < ActiveSupport::TestCase
 
     authenticator.verify_token(t1)
 
-    travel_to Time.now + 5.minutes
-
-    assert_raises(JWT::ExpiredSignature) { authenticator.verify_token(t1) }
+    travel_to(Time.now + 5.minutes) do
+      assert_raises(JWT::ExpiredSignature) { authenticator.verify_token(t1) }
+    end
   end
 
   class TokenDecoderFailure < ApiTokenAuthenticatorTest
