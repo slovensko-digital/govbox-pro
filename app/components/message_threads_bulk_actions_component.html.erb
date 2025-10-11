@@ -117,6 +117,15 @@
                 Zmazať rozpracované
               <% end %>
             </div>
+            <div class="py-1" role="none">
+              <%= button_tag "export", type: "submit",
+                             formaction: message_threads_bulk_exports_path,
+                             formmethod: :post,
+                             class: "w-full text-gray-700 group flex items-center px-4 py-2 text-sm hover:bg-gray-100 hover:text-gray-900", role: "menuitem" do %>
+                <%= render Common::IconComponent.new("folder-arrow-down", classes: "mr-2 sm:mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500") %>
+                Exportovať
+              <% end %>
+            </div>
           </div>
         </div>
       <% end %>

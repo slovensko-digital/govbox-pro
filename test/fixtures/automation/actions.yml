@@ -42,3 +42,16 @@ unassign_done_tag:
   automation_rule: unassign_done_tag
   type: Automation::UnassignMessageThreadTagAction
   action_object: ssd_done (Tag)
+
+add_tag_api_connection:
+  automation_rule: add_tag_api_connection
+  type: Automation::AddMessageThreadTagAction
+  action_object: api_connection_tag (Tag)
+
+add_form_object_id_to_thread_title:
+  automation_rule: add_form_object_id_to_thread_title
+  type: Automation::AddFormObjectIdentifierToMessageThreadTitleAction
+
+request_signature_from_author:
+  automation_rule: request_signature_from_author
+  type: Automation::AddSignatureRequestedFromAuthorMessageThreadTagAction

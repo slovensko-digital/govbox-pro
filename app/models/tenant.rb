@@ -6,6 +6,7 @@
 #  api_token_public_key :string
 #  feature_flags        :string           default([]), is an Array
 #  name                 :string           not null
+#  settings             :jsonb            not null
 #  created_at           :datetime         not null
 #  updated_at           :datetime         not null
 #
@@ -27,6 +28,7 @@ class Tenant < ApplicationRecord
   has_one :archived_tag
   has_one :submitted_tag
   has_one :submission_error_tag
+  has_one :unprocessable_tag
   has_many :tags, dependent: :destroy
   has_many :signature_requested_from_tags
   has_many :signed_by_tags
@@ -48,6 +50,25 @@ class Tenant < ApplicationRecord
   AVAILABLE_FEATURE_FLAGS = [:audit_log, :archive, :api, :fs_sync]
   ALL_FEATURE_FLAGS = [:audit_log, :archive, :api, :message_draft_import, :fs_api, :fs_sync]
 
+  PDF_SIGNATURE_FORMATS = %w[PAdES XAdES CAdES]
+
+  def set_pdf_signature_format(pdf_signature_format)
+    raise "Unknown pdf_signature_format #{pdf_signature_format}" unless pdf_signature_format.in? PDF_SIGNATURE_FORMATS
+
+    self.settings["pdf_signature_format"] = pdf_signature_format
+    save!
+  end
+
+  def signature_settings
+    pdf_signature_format = if PDF_SIGNATURE_FORMATS.include?(settings["pdf_signature_format"])
+      settings["pdf_signature_format"]
+    else
+      PDF_SIGNATURE_FORMATS[0]
+    end
+
+    settings.slice("signature_with_timestamp").merge!({"pdf_signature_format" => pdf_signature_format})
+  end
+
   def draft_tag!
     draft_tag || raise(ActiveRecord::RecordNotFound, "`DraftTag` not found in tenant: #{id}")
   end
@@ -61,11 +82,19 @@ class Tenant < ApplicationRecord
   end
 
   def signed_tag!
-    signed_tag || raise(ActiveRecord::RecordNotFound, "`SignatureRequestedTag` not found in tenant: #{id}")
+    signed_tag || raise(ActiveRecord::RecordNotFound, "`SignedTag` not found in tenant: #{id}")
   end
 
   def user_signature_tags
     tags.where(type: %w[SignatureRequestedFromTag SignedByTag])
+  end
+
+  def unprocessable_tag!
+    unprocessable_tag || raise(ActiveRecord::RecordNotFound, "`UnprocessableTag` not found in tenant: #{id}")
+  end
+
+  def submission_error_tag!
+    submission_error_tag || raise(ActiveRecord::RecordNotFound, "`SubmissionErrorTag` not found in tenant: #{id}")
   end
 
   def feature_enabled?(feature)
@@ -126,6 +155,7 @@ class Tenant < ApplicationRecord
     create_signed_externally_tag!(name: "Externe podpísané", visible: false, color: "purple", icon: "shield-check")
     create_submitted_tag!(name: 'Odoslané na spracovanie')
     create_submission_error_tag!(name: 'Problémové')
+    create_unprocessable_tag!(name: 'Chybné', color: 'red', icon: 'exclamation-triangle')
 
     make_admins_see_everything!
   end

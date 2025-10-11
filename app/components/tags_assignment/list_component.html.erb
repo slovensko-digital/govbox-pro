@@ -1,9 +1,8 @@
-<div class="flex flex-col gap-2 border-b border-gray-200 p-1 pb-4">
-  <div>
+<div class="flex flex-col gap-3 border-b border-gray-200 p-1 pb-4">
     <%= submit_tag "1", name: "assignments_update", id: "assignments_update", class: "hidden" %>
     <% @tags_filter.all_tags.each do |tag| %>
-      <div class="flex ml-1 gap-3 <%= "hidden" if @tags_filter.filtered_ids.exclude?(tag.id) %>">
-        <div class="flex h-6 items-center">
+      <div class="flex ml-1 gap-3 items-center <%= "hidden" if @tags_filter.filtered_ids.exclude?(tag.id) %>">
+        <div class="flex">
           <%= hidden_field_tag "tags_assignments[new][#{tag.id}]", RelationChanges::REMOVE_SIGN, id: nil %>
 
           <% checkbox = RelationChanges::Checkbox.new(assignments: @tags_assignments, record_id: tag.id.to_s) %>
@@ -13,9 +12,9 @@
                               data: { controller: "tri-state-checkbox", action: "click->tri-state-checkbox#nextState", "tri-state-checkbox-checked-value": RelationChanges::ADD_SIGN, "tri-state-checkbox-indeterminate-value": RelationChanges::KEEP_SIGN },
                               onchange: "this.form.requestSubmit(document.getElementById('assignments_update'));",
                               id: "new_tags_assignments_#{tag.id}",
-                              class: "h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer" %>
+                              class: "h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer" %>
           <% else %>
-            <%= check_box_tag "tags_assignments[new][#{tag.id}]", checkbox.value, checkbox.checked?, id: "new_tags_assignments_#{tag.id}", class: "h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer", onchange: "this.form.requestSubmit(document.getElementById('assignments_update'));" %>
+            <%= check_box_tag "tags_assignments[new][#{tag.id}]", checkbox.value, checkbox.checked?, id: "new_tags_assignments_#{tag.id}", class: "h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer", onchange: "this.form.requestSubmit(document.getElementById('assignments_update'));" %>
           <% end %>
         </div>
         <div class="min-w-0 flex text-sm leading-6">
@@ -24,12 +23,12 @@
       </div>
     <% end %>
     <% if @tags_filter.filter_query.present? %>
-      <div class="flex <%= "border-t border-gray-200 mt-1.5 pt-1.5" if @tags_filter.any_filtered_results? %>">
-        <div class="mr-3 ml-1 flex h-6 items-center">
-          <%= check_box_tag "new_tag", @tags_filter.filter_query, false, class: "h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer", onchange: "this.form.requestSubmit(document.getElementById('create_tag')); this.disabled = true;" %>
+      <div class="flex <%= "border-t border-gray-200 mt-1.5 pt-4 items-center" if @tags_filter.any_filtered_results? %>">
+        <div class="mr-3 ml-1 flex items-center">
+          <%= check_box_tag "new_tag", @tags_filter.filter_query, false, class: "h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer", onchange: "this.form.requestSubmit(document.getElementById('create_tag')); this.disabled = true;" %>
         </div>
         <div class="min-w-0 flex text-sm leading-6">
-          <%= label_tag "new_tag", class: "flex gap-2 select-none text-gray-900 cursor-pointer" do %>
+          <%= label_tag "new_tag", class: "flex gap-2 select-none text-gray-900 cursor-pointer text items-center" do %>
             <%= @tags_filter.filter_query %>
             <span class="rounded-full px-2 py-0.5 ml-2 bg-gray-400 text-white">zaškrtnutím vytvoríte nový štítok</span>
           <% end %>
@@ -37,5 +36,4 @@
         </div>
       </div>
     <% end %>
-  </div>
 </div>

@@ -4,54 +4,43 @@ class Api::MessagesController < Api::TenantController
   before_action :check_message_type, only: :message_drafts
   before_action :check_tags, only: :message_drafts
 
-  ALLOWED_MESSAGE_TYPES = ['Upvs::MessageDraft']
+  ALLOWED_MESSAGE_TYPES = %w[Upvs::MessageDraft Fs::MessageDraft]
 
   def show
     @message = @tenant.messages.find(params[:id])
   end
 
+  def destroy
+    @message = @tenant.messages.find(params[:id])
+
+    if @message.destroyable? && @message.not_yet_submitted?
+      @message.destroy
+    else
+      render_unprocessable_entity("Message is not destroyable")
+    end
+  end
+
   def search
     @message = @tenant.messages.find_by(permitted_search_params)
+
+    render_not_found unless @message
   end
 
   def message_drafts
     ::Message.transaction do
-      @message = permitted_message_draft_params[:type].classify.safe_constantize.load_from_params(permitted_message_draft_params, box: @box)
+      @message = permitted_message_draft_params[:type].classify.safe_constantize.load_from_params(permitted_message_draft_params, tenant: @tenant, box: @box)
 
       render_unprocessable_entity(@message.errors.messages.values.join(', ')) and return unless @message.valid?
       render_conflict(@message.errors.messages.values.join(', ')) and return unless @message.valid?(:validate_uuid_uniqueness)
 
       @message.save
 
-      permitted_message_draft_params.fetch(:objects, []).each do |object_params|
-        message_object = @message.objects.create(object_params.except(:content, :to_be_signed, :tags))
-
-        object_params.fetch(:tags, []).each do |tag_name|
-          tag = @tenant.user_signature_tags.find_by(name: tag_name)
-          tag.assign_to_message_object(message_object)
-          tag.assign_to_thread(@message.thread)
-        end
-        @message.thread.box.tenant.signed_externally_tag!.assign_to_message_object(message_object) if message_object.is_signed
-
-        if object_params[:to_be_signed]
-          @message.tenant.signer_group.signature_requested_from_tag&.assign_to_message_object(message_object)
-          @message.tenant.signer_group.signature_requested_from_tag&.assign_to_thread(@message.thread)
-        end
-
-        MessageObjectDatum.create(
-          message_object: message_object,
-          blob: Base64.decode64(object_params[:content])
-        )
-      end
-
-      permitted_message_draft_params.fetch(:tags, []).each do |tag_name|
-        tag = @tenant.tags.find_by(name: tag_name)
-        @message.add_cascading_tag(tag)
-      end
+      @message.create_message_objects_from_params(permitted_message_draft_params.fetch(:objects, []))
+      @message.assign_tags_from_params(permitted_message_draft_params.fetch(:tags, []))
 
       if @message.valid?(:validate_data)
         @message.created!
-        head :created
+        render json: { id:@message.id, thread_id: @message.message_thread_id }.to_json, status: :created
       else
         @message.destroy
         render_unprocessable_entity(@message.errors.messages.values.join(', '))
@@ -123,7 +112,18 @@ class Api::MessagesController < Api::TenantController
   end
 
   def load_box
-    @box = @tenant.boxes.find_by(uri: permitted_message_draft_params[:metadata][:sender_uri])
-    render_unprocessable_entity('Invalid sender') and return unless @box
+    @box = @tenant.boxes.find_by(uri: permitted_message_draft_params[:metadata]&.dig('sender_uri'))
+  end
+
+  rescue_from MessageDraft::InvalidSenderError do
+    render_unprocessable_entity('Invalid sender')
+  end
+
+  rescue_from MessageDraft::MissingFormObjectError do
+    render_unprocessable_entity('Message has to contain exactly one form object')
+  end
+
+  rescue_from MessageDraft::UnknownFormError do
+    render_unprocessable_entity('Unknown form')
   end
 end

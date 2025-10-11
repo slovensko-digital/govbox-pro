@@ -39,3 +39,12 @@ en:
         disallowed_form_for_recipient: "Recipient does not accept the form type"
         invalid_form: "Form XSD validation failed"
         invalid: "%{attribute} is not valid"
+      models:
+        export:
+          attributes:
+            base:
+              empty_selection: "At least one export option must be selected"
+  exports:
+    flash:
+      started: "Export started."
+      updated: "Export settings saved."

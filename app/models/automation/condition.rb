@@ -21,7 +21,7 @@ module Automation
     attr_accessor :delete_record
 
     # when adding items, check defaults in condition_form_component.rb
-    ATTR_LIST = %i[box sender_name recipient_name title sender_uri recipient_uri outbox attachment edesk_class fs_submission_status fs_message_type object_type].freeze
+    ATTR_LIST = %i[box sender_name recipient_name title sender_uri recipient_uri outbox attachment edesk_class fs_submission_status fs_message_type object_type api_connection type authors_api_connection].freeze
 
     def valid_condition_type_list_for_attr
       Automation::Condition.subclasses.map do |subclass|
@@ -31,6 +31,24 @@ module Automation
 
     def box_list
       automation_rule.tenant.boxes.pluck(:name, :id)
+    end
+
+    def api_connection_list
+      automation_rule.tenant.api_connections.map { |api_connection| [api_connection.name, api_connection.id] }
+    end
+  end
+
+  class ValueCondition < Automation::Condition
+    validates :value, presence: true
+    VALID_ATTR_LIST = %w[type].freeze
+    validates :attr, inclusion: { in: VALID_ATTR_LIST }
+
+    def satisfied?(thing)
+      thing[attr] == value
+    end
+
+    def cleanup_record
+      self.condition_object = nil
     end
   end
 
@@ -163,6 +181,39 @@ module Automation
       end
       io.close
       pdf_string.match?(value)
+    end
+  end
+
+  class ApiConnectionCondition < Automation::Condition
+    validates_associated :condition_object
+    VALID_ATTR_LIST = ['api_connection'].freeze
+
+    def satisfied?(thing)
+      object = if thing.respond_to? :thread
+                 thing.thread
+               else
+                 thing
+               end
+      object.box.api_connection == condition_object
+    end
+
+    def cleanup_record
+      self.value = nil
+      self.attr = 'api_connection'
+    end
+  end
+
+  class AuthorHasApiConnectionCondition < Automation::Condition
+    validates_associated :condition_object
+    VALID_ATTR_LIST = ['authors_api_connection'].freeze
+
+    def satisfied?(message)
+      message.box.api_connections.where(owner: message.author).any?
+    end
+
+    def cleanup_record
+      self.value = nil
+      self.attr = 'authors_api_connection'
     end
   end
 end

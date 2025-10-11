@@ -22,7 +22,7 @@ gem 'view_component'
 gem 'clockwork'
 
 # Workers
-gem 'good_job'
+gem 'good_job', '= 3.29.4'
 
 # Auth
 gem 'omniauth-google-oauth2'
@@ -40,6 +40,7 @@ gem 'stimulus-rails'
 gem 'jsbundling-rails'
 gem 'pdf-reader'
 gem 'grover'
+gem 'caxlsx'
 
 # Monitoring
 gem 'rollbar'

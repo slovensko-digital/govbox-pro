@@ -37,4 +37,17 @@ class Fs::Form < ApplicationRecord
   def related_document(type)
     related_documents.where(document_type: type).where("lower(language) = 'sk'")&.first&.data
   end
+
+  def short_name(include_version: true)
+    prefix = case subtype_name
+             when /\Adodatočn*/i
+               "DOD"
+             when /\Aopravn*/i
+               "OPR"
+             end
+
+    form_name = include_version ? slug: slug.sub(/v\d+$/, '')
+
+    [prefix, form_name].compact.join("_")
+  end
 end

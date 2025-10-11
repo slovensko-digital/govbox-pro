@@ -33,8 +33,8 @@ class EventBusTest < ActiveSupport::TestCase
     assert_mock subscriber3
 
     # remove callbacks
-    EventBus.class_variable_get(:@@subscribers_map)[:event1].pop
-    EventBus.class_variable_get(:@@subscribers_map)[:event1].pop
-    EventBus.class_variable_get(:@@subscribers_map)[:event2].pop
+    EventBus.class_variable_get(:@@subscribers_map)[:event1].delete(subscriber1)
+    EventBus.class_variable_get(:@@subscribers_map)[:event1].delete(subscriber2)
+    EventBus.class_variable_get(:@@subscribers_map)[:event2].delete(subscriber3)
   end
 end

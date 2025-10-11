@@ -3,13 +3,15 @@ class Fs::Message
 
   def self.create_inbox_message_with_thread!(raw_message, box:)
     message = nil
-    associated_outbox_message = box.messages.where("metadata ->> 'fs_message_id' = ?", raw_message['sent_message_id']).take
+    associated_outbox_message = box.messages.where("messages.metadata ->> 'fs_message_id' = ?", raw_message['sent_message_id']).take
 
     MessageThread.with_advisory_lock!(associated_outbox_message.metadata['correlation_id'], transaction: true, timeout_seconds: 10) do
       message = create_inbox_message(raw_message)
 
       message.thread = associated_outbox_message.thread
       message.thread.assign_tag(message.thread.tenant.inbox_tag)
+
+      message.metadata['fs_period'] ||= message.thread.metadata&.dig('period')
 
       message.save!
 
@@ -21,13 +23,12 @@ class Fs::Message
 
     associated_outbox_message.update(collapsed: true)
 
-    EventBus.publish(:message_thread_created, message.thread) if message.thread.previously_new_record?
-    EventBus.publish(:message_created, message)
+    EventBus.publish(:message_thread_with_message_created, message)
   end
 
   def self.create_outbox_message_with_thread!(raw_message, box:)
     message = nil
-    associated_message_draft = box.messages.where(type: 'Fs::MessageDraft').where("metadata ->> 'fs_message_id' = ?", raw_message['message_id']).take
+    associated_message_draft = box.messages.where(type: 'Fs::MessageDraft').where("messages.metadata ->> 'fs_message_id' = ?", raw_message['message_id']).take
 
     merge_identifier = (associated_message_draft.metadata['correlation_id'] if associated_message_draft) || SecureRandom.uuid
 
@@ -49,14 +50,15 @@ class Fs::Message
 
       if associated_message_draft
         message.copy_tags_from_draft(associated_message_draft)
+        message.metadata["validation_errors"] = { diff: associated_message_draft.metadata.dig("validation_errors", "diff") }
+        message.save
         associated_message_draft.destroy
       end
 
       MessageObject.mark_message_objects_externally_signed(message.objects)
     end
 
-    EventBus.publish(:message_thread_created, message.thread) if message.thread.previously_new_record?
-    EventBus.publish(:message_created, message)
+    EventBus.publish(:message_thread_with_message_created, message)
 
     message
   end
@@ -106,7 +108,7 @@ class Fs::Message
         "fs_message_id": raw_message['message_id'],
         "fs_status": raw_message['status'],
         "fs_submitting_subject": raw_message['submitting_subject'],
-        "fs_period": raw_message['period'],
+        "fs_period": raw_message['period'] || associated_message_draft&.thread&.metadata&.dig('period'),
         "fs_dismissal_reason": raw_message['dismissal_reason'],
         "fs_other_attributes": raw_message['other_attributes'],
         "dic": raw_message['dic']

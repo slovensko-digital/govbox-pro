@@ -17,7 +17,14 @@ module Automation
     belongs_to :action_object, polymorphic: true, optional: true
     attr_accessor :delete_record
 
-    ACTION_LIST = ['Automation::AddMessageThreadTagAction', 'Automation::UnassignMessageThreadTagAction', 'Automation::FireWebhookAction', 'Automation::ChangeMessageThreadTitleAction'].freeze
+    ACTION_LIST = [
+      'Automation::AddMessageThreadTagAction',
+      'Automation::UnassignMessageThreadTagAction',
+      'Automation::FireWebhookAction',
+      'Automation::ChangeMessageThreadTitleAction',
+      'Automation::AddFormObjectIdentifierToMessageThreadTitleAction',
+      'Automation::AddSignatureRequestedFromAuthorMessageThreadTagAction'
+    ].freeze
 
     def tag_list
       automation_rule.tenant.tags.pluck(:name, :id)
@@ -64,6 +71,19 @@ module Automation
     end
   end
 
+  class AddSignatureRequestedFromAuthorMessageThreadTagAction < Action
+    def run!(message, _event)
+      thread = message.thread
+      tag = thread.tenant.tags.where(type: "SignatureRequestedFromTag", owner: message.author)
+
+      thread.tags << tag if tag && thread.tags.exclude?(tag)
+    end
+
+    def object_based?
+      false
+    end
+  end
+
   class ChangeMessageThreadTitleAction < Automation::Action
     def run!(thing, _event)
       object = if thing.respond_to? :thread
@@ -74,6 +94,22 @@ module Automation
       new_value = value.gsub("{{title}}", object.title)
       object.title = new_value
       object.save!
+    end
+
+    def object_based?
+      false
+    end
+  end
+
+  class AddFormObjectIdentifierToMessageThreadTitleAction < Automation::Action
+    def run!(message, _event)
+      message_thread = message.thread
+      match = message.form_object.name.match(/\A(\d+)[_\-]/)&.captures&.first
+
+      if match
+        message_thread.title = "#{match} - #{message_thread.title}"
+        message_thread.save!
+      end
     end
 
     def object_based?

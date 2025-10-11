@@ -4,12 +4,14 @@
 #
 #  id                    :bigint           not null, primary key
 #  api_token_private_key :string           not null
+#  custom_name           :string
 #  obo                   :uuid
 #  settings              :jsonb
 #  sub                   :string           not null
 #  type                  :string
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
+#  owner_id              :bigint
 #  tenant_id             :bigint
 #
 class Fs::ApiConnection < ::ApiConnection
@@ -24,7 +26,7 @@ class Fs::ApiConnection < ::ApiConnection
     obo.presence
   end
 
-  def destroy_with_box?
+  def destroy_with_box?(box)
     false
   end
 
@@ -52,30 +54,34 @@ class Fs::ApiConnection < ::ApiConnection
     fs_api = FsEnvironment.fs_client.api(api_connection: self)
     fs_api.get_subjects.each do |subject|
       Fs::Box.with_advisory_lock!("boxify-#{tenant_id}", transaction: true, timeout_seconds: 10) do
-        boxes = Fs::Box.where(tenant: tenant, api_connection_id: self.id).where("settings @> ?", {dic: subject["dic"], subject_id: subject["subject_id"]}.to_json)
+        boxes = Fs::Box.where(tenant: tenant).where("settings @> ?", {dic: subject["dic"], subject_id: subject["subject_id"]}.to_json)
         box = boxes.first unless boxes.count > 1
 
         unless box
           box = Fs::Box.new(
             tenant: tenant,
-            api_connection: self,
             settings: {
               dic: subject["dic"],
               subject_id: subject["subject_id"],
               message_drafts_import_enabled: Fs::Box::DISABLED_MESSAGE_DRAFTS_IMPORT_KEYWORDS.none? { |keyword| subject["name"].include?(keyword) }
-            }
+            },
+            api_connections: [self]
           )
         end
 
         box.name = "FS " + subject["name"]
         box.short_name ||= generate_short_name_from_name(subject["name"])
         box.uri = "dic://sk/#{subject['dic']}"
-        box.settings_delegate_id ||= subject["delegate_id"]
         box.settings_is_subject_c_reg ||= subject["is_subject_c_reg"]
 
         count += 1 if box.new_record? && box.save
 
         box.save
+
+        box.boxes_api_connections.find_or_create_by(api_connection: self).tap do |box_api_connection|
+          box_api_connection.settings_delegate_id = subject["delegate_id"]
+          box_api_connection.save
+        end
       end
     end
 

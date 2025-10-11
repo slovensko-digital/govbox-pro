@@ -48,3 +48,20 @@ is_not_posting_confirmation:
   attr: edesk_class
   type: Automation::MetadataValueNotCondition
   value: POSTING_CONFIRMATION
+
+is_api_connection:
+  automation_rule: add_tag_api_connection
+  attr: api_connection
+  type: Automation::ApiConnectionCondition
+  condition_object: fs_api_connection1 (ApiConnection)
+
+is_fs_message_draft:
+  automation_rule: request_signature_from_author
+  attr: type
+  type: Automation::ValueCondition
+  value: Fs::MessageDraft
+
+authors_api_connections_condition:
+  automation_rule: request_signature_from_author
+  attr: authors_api_connection
+  type: Automation::AuthorHasApiConnectionCondition

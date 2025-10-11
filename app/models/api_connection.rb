@@ -4,23 +4,27 @@
 #
 #  id                    :bigint           not null, primary key
 #  api_token_private_key :string           not null
+#  custom_name           :string
 #  obo                   :uuid
 #  settings              :jsonb
 #  sub                   :string           not null
 #  type                  :string
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
+#  owner_id              :bigint
 #  tenant_id             :bigint
 #
 class ApiConnection < ApplicationRecord
   belongs_to :tenant, optional: true
-  has_many :boxes
+  belongs_to :owner, class_name: "User", optional: true
+  has_many :boxes_api_connections, dependent: :destroy
+  has_many :boxes, through: :boxes_api_connections
 
   def box_obo(box)
     raise NotImplementedError
   end
 
-  def destroy_with_box?
+  def destroy_with_box?(box)
     raise NotImplementedError
   end
 
@@ -29,7 +33,7 @@ class ApiConnection < ApplicationRecord
   end
 
   def name
-    "#{type} - #{sub}"
+    custom_name || "#{type} - #{sub}"
   end
 
   def editable?

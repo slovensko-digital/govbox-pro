@@ -45,41 +45,43 @@ module GovboxPro
     if ENV['AUTO_SYNC_BOXES'] == "ON"
       config.good_job.cron = {
         sync_boxes: {
-          cron: "1 */2 * * *",  # run every 2 hours (even), "00:01", "02:01", "04:01", ...
+          cron: "1 */2 * * *", # run every 2 hours (even), "00:01", "02:01", "04:01", ...
           class: "Govbox::SyncAllBoxesJob",
-          description: "Regular job to synchronize all boxes"
+          description: "Regular job to synchronize all boxes",
+          set: { job_context: :low }
         }
       }
 
       config.good_job.cron['sync_fs_boxes'] = {
-        cron: "1 1-23/2 * * *",  # run every 2 hours (odd), "01:01", "03:01", "05:01", ...
+        cron: "1 5,13 * * *", # run at 5:01 and 13:01
         class: "Fs::SyncAllBoxesJob",
-        description: "Regular job to synchronize all boxes"
+        description: "Regular job to synchronize all boxes",
+        set: { job_context: :later }
       }
     end
 
     config.good_job.cron['autoload_fs_boxes'] = {
-      cron: "00 6 * * *",  # run every day at 6:00 am
+      cron: "00 6 * * *", # run every day at 6:00 am
       class: "Fs::BoxifyAllApiConnectionsJob",
       description: "Regular job to autoload FS boxes"
     }
 
     config.good_job.cron['check_messages_mapping'] = {
-      cron: "30 7 * * *",  # run every day at 7:30 am
+      cron: "30 7 * * *", # run every day at 7:30 am
       class: "Govbox::CheckMessagesMappingJob",
       description: "Regular job to check messages mapping",
       set: { job_context: :later }
     }
 
     config.good_job.cron['check_archived_documents'] = {
-      cron: "30 3 * * *",  # run every day at 3:30 am
+      cron: "30 3 * * *", # run every day at 3:30 am
       class: "Archivation::ArchiveAllArchivedMessageThreadsJob",
       description: "Regular job to archive message_threads"
     }
 
     if ENV['AUTO_SYNC_FS_FORMS'] == "ON"
       config.good_job.cron['fetch_fs_forms'] = {
-        cron: "0 */12 * * *",  # run every 12 hours
+        cron: "0 */12 * * *", # run every 12 hours
         class: "Fs::FetchFormsJob",
         description: "Regular job to fetch Fs::Forms",
         set: { job_context: :later }
@@ -88,7 +90,7 @@ module GovboxPro
 
     if ENV['AUTO_SYNC_UPVS_FORMS'] == "ON"
       config.good_job.cron['fetch_upvs_forms_related_documents'] = {
-        cron: "0 */12 * * *",  # run every 12 hours
+        cron: "0 */12 * * *", # run every 12 hours
         class: "Upvs::FetchFormRelatedDocumentsJob",
         description: "Regular job to fetch Upvs::FormRelatedDocuments",
         set: { job_context: :later }
@@ -104,3 +106,5 @@ module GovboxPro
     # config.eager_load_paths << Rails.root.join("extras")
   end
 end
+
+Rails.application.routes.default_url_options = { host: 'hovno' }

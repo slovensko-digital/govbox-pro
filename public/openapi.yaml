@@ -57,6 +57,7 @@ paths:
                       format: url
       security:
         - "Tenant_Token": []
+
   /api/message_threads/{id}/tags:
     post:
       tags: [Vlákna, Štítky]
@@ -166,14 +167,25 @@ paths:
                       - type:
                         $ref: '#/components/schemas/FsMessageMetadata'
                       - type:
+                        $ref: '#/components/schemas/FsMessageDraftMetadata'
+                      - type:
                         $ref: '#/components/schemas/UpvsMessageMetadata'
-                  message_objects:
+                  tags:
+                    description: Zoznam štítkov priradených správe
+                    type: array
+                    items:
+                      description: Názov štítka priradeného správe
+                      type: string
+                  objects:
                     description: Zoznam objektov správy
                     type: array
                     items:
                       description: Objekt správy
                       type: object
                       properties:
+                        id:
+                          description: Identifikátor objektu v systéme Govbox Pro
+                          type: integer
                         name:
                           description: Názov objektu
                           type: string
@@ -192,9 +204,29 @@ paths:
                           description: Príznak, či je objekt podpísaný
                           type: boolean
                         data:
-                          description: Samotný objektu zakódovaný ako Base64 text
+                          description: Samotný obsah objektu zakódovaný ako Base64 text
                           type: string
                           format: byte
+      security:
+        - "Tenant_Token": []
+    delete:
+      tags: [Správy]
+      summary: Zmaže rozpracovanú správu
+      description: |
+        Zmaže rozpracovanú správu
+      parameters:
+        - name: id
+          in: path
+          description: Identifikátor správy
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        204:
+          description: Úspešné zmazaná správa
+        422:
+          description: Správu nie je možné zmazať
       security:
         - "Tenant_Token": []
 
@@ -247,13 +279,32 @@ paths:
                     description: Aktuálny stav správy
                     type: string
                     enum: [ "being_loaded", "being_validated", "invalid", "created", "being_submitted", "temporary_submit_fail", "submit_fail", "submitted" ]
-                  message_objects:
+                  metadata:
+                    description: Metaúdaje správy
+                    oneOf:
+                      - type:
+                        $ref: '#/components/schemas/FsMessageMetadata'
+                      - type:
+                        $ref: '#/components/schemas/FsMessageDraftMetadata'
+                      - type:
+                        $ref: '#/components/schemas/UpvsMessageMetadata'
+                  tags:
+                    description: Zoznam štítkov priradených správe
+                    type: array
+                    items:
+                      description: Názov štítka priradeného správe
+                      type:
+                        string
+                  objects:
                     description: Zoznam objektov správy
                     type: array
                     items:
                       description: Objekt správy
                       type: object
                       properties:
+                        id:
+                          description: Identifikátor objektu v systéme Govbox Pro
+                          type: integer
                         name:
                           description: Názov objektu
                           type: string
@@ -272,7 +323,7 @@ paths:
                           description: Príznak, či je objekt podpísaný
                           type: boolean
                         data:
-                          description: Samotný objektu zakódovaný ako Base64 text
+                          description: Samotný obsah objektu zakódovaný ako Base64 text
                           type: string
                           format: byte
       security:
@@ -288,162 +339,33 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                title:
-                  description: Predmet správy
-                  type: string
-                  example: Žaloba
-                uuid:
-                  description: Identifikátor správy
-                  type: string
-                  format: uuid
-                type:
-                  description: Typ správy
-                  type: string
-                  enum:
-                    - Upvs::MessageDraft
-                metadata:
-                  description: Metaúdaje správy
-                  type: object
-                  properties:
-                    correlation_id:
-                      description: Identifikátor vlákna správ
-                      type: string
-                      format: uuid
-                    reference_id:
-                      description: Identifikátor správy, na ktorú sa správa (odpoveď) viaže
-                      type: string
-                      format: uuid
-                    business_id:
-                      description: Identifikátor, ktorý jednoznačne identifikuje správu, pričom tento identifikátor môže byť v čitateľnom tvare. Jeho formát určuje poskytovateľ služby.
-                      type: string
-                    recipient_uri:
-                      description: Identifikátor prijímateľa správy
-                      type: string
-                      format: uri
-                      example: ico://sk/83369510
-                    sender_uri:
-                      description: Identifikátor odosielateľa správy
-                      type: string
-                      format: uri
-                      example: ico://sk/83369526
-                    posp_id:
-                      description: Identifikátor formulára
-                      type: string
-                      example: 00166073.RESS_EZA_Zaloba_doplnenie_ine.sk
-                    posp_version:
-                      description: Verzia formulára
-                      type: string
-                      example: "1.11"
-                    message_type:
-                      description: Typ správy
-                      type: string
-                      example: 00166073.RESS_EZA_Zaloba_doplnenie_ine.sk
-                    sktalk_class:
-                      description: Trieda SkTalk správy
-                      type: string
-                      example: IAM_FORM_ZNEPLATNENIE_TU_REQ_01
-                      default: EGOV_APPLICATION
-                    sender_business_reference:
-                      description: Spisová značka odosielateľa elektronickej správy
-                      type: string
-                      example: "1234567"
-                    recipient_business_reference:
-                      description: Spisová značka prijímateľa elektronickej správy
-                      type: string
-                      example: EX1234/2000
-                objects:
-                  description: Objekty správy
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      name:
-                        description: Názov objektu
-                        type: string
-                        nullable: true
-                      description:
-                        description: Popis objektu
-                        type: string
-                        nullable: true
-                      is_signed:
-                        description: Indikátor či je obsah objektu podpísaný
-                        type: boolean
-                      to_be_signed:
-                        description: Indikátor či obsah objektu má byť podpísaný. V prípade hodnoty true je vyžiadaný podpis na danom objekte
-                        type: boolean
-                      mimetype:
-                        description: Typ internetového média v súlade s typom a obsahom objektu
-                        type: string
-                        enum:
-                          - application/x-eform-xml
-                          - application/xml
-                          - application/msword
-                          - application/pdf
-                          - application/vnd.etsi.asic-e+zip
-                          - application/vnd.etsi.asic-s+zip
-                          - application/vnd.openxmlformats-officedocument.wordprocessingml.document
-                          - application/x-xades_zep
-                          - application/x-zip-compressed
-                          - image/jpg
-                          - image/jpeg
-                          - image/png
-                          - image/tiff
-                      object_type:
-                        description: Typ objektu
-                        type: string
-                        enum: ["FORM", "ATTACHMENT"]
-                      content:
-                        description: Obsah objektu zakódovaný podľa Base64
-                        type: string
-                      tags:
-                        description: Štítky, ktorými má byť objekt označený
-                        type: array
-                        items:
-                          type: string
-                    required:
-                      - mimetype
-                      - is_signed
-                      - object_type
-                      - content
-                  example:
-                    - name: form.asice
-                      description: Formulár
-                      is_signed: true
-                      mimetype: application/vnd.etsi.asic-e+zip
-                      object_type: FORM
-                      content: base64 asice content
-                    - name: priloha1.asice
-                      description: Príloha 1
-                      is_signed: true
-                      mimetype: application/vnd.etsi.asic-e+zip
-                      form: false
-                      content: base64 asice content
-                tags:
-                  description: Štítky, ktorými majú byť správy označené
-                  type: array
-                  items:
-                    type: string
-              required:
-                - message_id
-                - correlation_id
-                - recipient_uri
-                - sender_uri
-                - posp_id
-                - posp_version
-                - message_type
-                - title
-                - objects
+              oneOf:
+               - type:
+                 $ref: '#/components/schemas/FsMessageDraftParams'
+               - type:
+                 $ref: '#/components/schemas/UpvsMessageDraftParams'
+
       responses:
         201:
           description: Úspešné vytvorenie správy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    description: Identifikátor správy v systéme Govbox Pro
+                    type: integer
+                  thread_id:
+                    description: Identifikátor vlákna, ktorému prislúcha správa
+                    type: integer
         409:
           description: Duplicitná správa (UUID už existuje)
         422:
           description: Nevalidný obsah správy
       security:
         - "Tenant_Token": []
+
   /api/messages/sync:
     get:
       tags: [Správy]
@@ -491,13 +413,32 @@ paths:
                       description: Aktuálny stav správy
                       type: string
                       enum: [ "being_loaded", "being_validated", "invalid", "created", "being_submitted", "temporary_submit_fail", "submit_fail", "submitted" ]
-                    message_objects:
+                    metadata:
+                      description: Metaúdaje správy
+                      oneOf:
+                        - type:
+                          $ref: '#/components/schemas/FsMessageMetadata'
+                        - type:
+                          $ref: '#/components/schemas/FsMessageDraftMetadata'
+                        - type:
+                          $ref: '#/components/schemas/UpvsMessageMetadata'
+                    tags:
+                      description: Zoznam štítkov priradených správe
+                      type: array
+                      items:
+                        description: Názov štítka priradeného správe
+                        type:
+                          string
+                    objects:
                       description: Zoznam objektov správy
                       type: array
                       items:
                         description: Objekt správy
                         type: object
                         properties:
+                          id:
+                            description: Identifikátor objektu v systéme Govbox Pro
+                            type: integer
                           name:
                             description: Názov objektu
                             type: string
@@ -517,6 +458,32 @@ paths:
                             type: boolean
       security:
         - "Tenant_Token": []
+
+
+  /api/message_objects/{id}/pdf:
+    get:
+      tags: [ Objekty správ ]
+      summary: Vráti PDF vizualizáciu konkrétneho objektu správy
+      description: |
+        Vráti PDF vizualizáciu konkrétneho objektu správy.
+      parameters:
+        - name: id
+          in: path
+          description: Identifikátor objektu
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: Úspešné získanie PDF súboru s vizualizáciou objektu
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+      security:
+        - "Tenant_Token": [ ]
 
   /api/site_admin/tenant/:
     post:
@@ -935,6 +902,244 @@ components:
         - timestamp
         - data
 
+    UpvsMessageDraftParams:
+      description: Parametre Upvs::MessageDraft
+      type: object
+      properties:
+        type:
+          description: Typ správy
+          type: string
+          enum: [ 'Upvs::MessageDraft' ]
+        title:
+          description: Predmet správy
+          type: string
+          example: Žaloba
+        uuid:
+          description: Identifikátor správy
+          type: string
+          format: uuid
+        metadata:
+          description: Metaúdaje správy
+          type: object
+          properties:
+            correlation_id:
+              description: Identifikátor vlákna správ
+              type: string
+              format: uuid
+            reference_id:
+              description: Identifikátor správy, na ktorú sa správa (odpoveď) viaže
+              type: string
+              format: uuid
+            business_id:
+              description: Identifikátor, ktorý jednoznačne identifikuje správu, pričom tento identifikátor môže byť v čitateľnom tvare. Jeho formát určuje poskytovateľ služby.
+              type: string
+            recipient_uri:
+              description: Identifikátor prijímateľa správy
+              type: string
+              format: uri
+              example: ico://sk/83369510
+            sender_uri:
+              description: Identifikátor odosielateľa správy
+              type: string
+              format: uri
+              example: ico://sk/83369526
+            posp_id:
+              description: Identifikátor formulára
+              type: string
+              example: 00166073.RESS_EZA_Zaloba_doplnenie_ine.sk
+            posp_version:
+              description: Verzia formulára
+              type: string
+              example: "1.11"
+            message_type:
+              description: Typ správy
+              type: string
+              example: 00166073.RESS_EZA_Zaloba_doplnenie_ine.sk
+            sktalk_class:
+              description: Trieda SkTalk správy
+              type: string
+              example: IAM_FORM_ZNEPLATNENIE_TU_REQ_01
+              default: EGOV_APPLICATION
+            sender_business_reference:
+              description: Spisová značka odosielateľa elektronickej správy
+              type: string
+              example: "1234567"
+            recipient_business_reference:
+              description: Spisová značka prijímateľa elektronickej správy
+              type: string
+              example: EX1234/2000
+          required:
+            - posp_id
+            - posp_version
+            - message_type
+            - correlation_id
+            - recipient_uri
+            - sender_uri
+        objects:
+          description: Objekty správy
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                description: Názov objektu
+                type: string
+                nullable: true
+              description:
+                description: Popis objektu
+                type: string
+                nullable: true
+              is_signed:
+                description: Indikátor či je obsah objektu podpísaný
+                type: boolean
+              to_be_signed:
+                description: Indikátor či obsah objektu má byť podpísaný. V prípade hodnoty true je vyžiadaný podpis na danom objekte
+                type: boolean
+              mimetype:
+                description: Typ internetového média v súlade s typom a obsahom objektu
+                type: string
+                enum:
+                  - application/x-eform-xml
+                  - application/xml
+                  - application/msword
+                  - application/pdf
+                  - application/vnd.etsi.asic-e+zip
+                  - application/vnd.etsi.asic-s+zip
+                  - application/vnd.openxmlformats-officedocument.wordprocessingml.document
+                  - application/x-xades_zep
+                  - application/x-zip-compressed
+                  - image/jpg
+                  - image/jpeg
+                  - image/png
+                  - image/tiff
+              object_type:
+                description: Typ objektu
+                type: string
+                enum: [ "FORM", "ATTACHMENT" ]
+              content:
+                description: Obsah objektu zakódovaný podľa Base64
+                type: string
+              tags:
+                description: Štítky, ktorými má byť objekt označený
+                type: array
+                items:
+                  type: string
+            required:
+              - mimetype
+              - is_signed
+              - object_type
+              - content
+          example:
+            - name: form.asice
+              description: Formulár
+              is_signed: true
+              mimetype: application/vnd.etsi.asic-e+zip
+              object_type: FORM
+              content: base64 asice content
+            - name: priloha1.asice
+              description: Príloha 1
+              is_signed: true
+              mimetype: application/vnd.etsi.asic-e+zip
+              form: false
+              content: base64 asice content
+        tags:
+          description: Štítky, ktorými majú byť správy označené
+          type: array
+          items:
+            type: string
+      required:
+        - type
+        - uuid
+        - title
+        - metadata
+        - objects
+
+    FsMessageDraftParams:
+      description: Parametre Fs::MessageDraft
+      properties:
+        type:
+          description: Typ správy
+          type: string
+          enum: ['Fs::MessageDraft']
+        title:
+          description: Predmet správy
+          type: string
+        uuid:
+          description: UUID správy
+          type: string
+          format: uuid
+        metadata:
+          description: Metaúdaje správy
+          type: object
+          properties:
+            correlation_id:
+              description: Identifikátor vlákna správ
+              type: string
+              format: uuid
+          required:
+            - correlation_id
+        objects:
+          description: Objekty správy
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                description: Názov objektu
+                type: string
+                nullable: true
+              description:
+                description: Popis objektu
+                type: string
+                nullable: true
+              is_signed:
+                description: Indikátor či je obsah objektu podpísaný
+                type: boolean
+              to_be_signed:
+                description: Indikátor či obsah objektu má byť podpísaný. V prípade hodnoty true je vyžiadaný podpis na danom objekte
+                type: boolean
+              mimetype:
+                description: Typ internetového média v súlade s typom a obsahom objektu
+                type: string
+                enum:
+                  - text/xml
+              object_type:
+                description: Typ objektu
+                type: string
+                enum: [ 'FORM' ]
+              content:
+                description: Obsah objektu zakódovaný podľa Base64
+                type: string
+              tags:
+                description: Štítky, ktorými má byť objekt označený
+                type: array
+                items:
+                  type: string
+            required:
+              - mimetype
+              - is_signed
+              - object_type
+              - content
+          example:
+            - name: svdph20.xml
+              description: Súhrnný výkaz pre daň z pridanej hodnoty (platný od 1.1.2020)
+              is_signed: false
+              mimetype: text/xml
+              object_type: FORM
+              content: base64 XML content
+        tags:
+          description: Štítky, ktorými majú byť správy označené
+          type: array
+          items:
+            type: string
+      required:
+        - type
+        - uuid
+        - title
+        - correlation_id
+        - metadata
+        - objects
+
     FsMessageMetadata:
       description: Metaúdaje správy Finančnej správy
       properties:
@@ -979,14 +1184,58 @@ components:
           type: string
         fs_form_id:
           description: Interný identifikátor FS formulára
+          type: integer
+        status:
+          description: Aktuálny stav správy
           type: string
+          enum: ["being_loaded", "being_validated", "invalid", "created", "being_submitted", "temporary_submit_fail", "submit_fail", "submitted"]
+
+    FsMessageDraftMetadata:
+      description: Metaúdaje rozpracovanej správy Finančnej správy
+      properties:
+        dic:
+          description: DIČ
+          type: string
+        fs_form_id:
+          description: Interný identifikátor FS formulára
+          type: integer
+        fs_form_slug:
+          description: Skratka FS formulára
+          type: string
+          example: SVDPHv20
+        fs_form_subtype_name:
+          description: Typ FS formulára
+          type: string
+          example: Riadny
+        period:
+          description: Obdobie
+          type: string
+          example: 082025
         correlation_id:
           description: Identifikátor vlákna správ
           type: string
-          status:
-            description: Aktuálny stav správy
-            type: string
-            enum: ["being_loaded", "being_validated", "invalid", "created", "being_submitted", "temporary_submit_fail", "submit_fail", "submitted"]
+          format: uuid
+        status:
+          description: Aktuálny stav správy
+          type: string
+          enum: ["being_loaded", "being_validated", "invalid", "created", "being_submitted", "temporary_submit_fail", "submit_fail", "submitted"]
+        validation_errors:
+          description: Validačné errory správy
+          type: object
+          properties:
+            result:
+              description: Výsledok validácie správy
+              type: string
+            errors:
+              description: Validačné errory
+              type: array
+              items:
+                type: string
+            warnings:
+              description: Validačné upozornenia (logické chyby)
+              type: array
+              items:
+                type: string
 
     UpvsMessageMetadata:
       description: Metaúdaje správy ÚPVS
@@ -1002,12 +1251,11 @@ components:
           type: string
         message_type:
           description: Typ správy
-          type:
-            string
+          type: string
         correlation_id:
           description: SKTalk identifikátor vlákna správ
-          type:
-            string
+          type: string
+          format: uuid
         reference_id:
           description: SKTalk identifikátor referenčnej správy
           type: string
@@ -1034,8 +1282,7 @@ components:
           type: object
         authorized:
           description: Označenie prevzatia doručenky (ak sa jedná o správu typu doručenka)
-          type:
-            string
+          type: string
         status:
           description: Aktuálny stav správy
           type: string

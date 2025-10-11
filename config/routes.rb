@@ -95,6 +95,10 @@ Rails.application.routes.draw do
         post :new
         post :start
       end
+
+      resources :exports do
+        post :start
+      end
     end
   end
 
@@ -248,10 +252,15 @@ Rails.application.routes.draw do
         delete :destroy, on: :collection
       end
     end
-    resources :messages, only: [:show] do
+
+    resources :messages, only: [:show, :destroy] do
       get :search, on: :collection
       post :message_drafts, on: :collection
       get :sync, on: :collection
+    end
+
+    resources :message_objects, only: [] do
+      get :pdf
     end
   end
 
@@ -268,6 +277,8 @@ Rails.application.routes.draw do
       post :callback
     end
   end
+
+  resource :sticky_note
 
   get :auth, path: 'prihlasenie', to: 'sessions#login'
   get 'auth/google_oauth2/callback', to: 'sessions#create'

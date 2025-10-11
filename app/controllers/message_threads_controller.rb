@@ -31,6 +31,8 @@ class MessageThreadsController < ApplicationController
 
   def index
     authorize MessageThread
+
+    @sticky_note = Current.user.sticky_note
   end
 
   def scroll

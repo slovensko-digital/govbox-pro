@@ -1,4 +1,4 @@
-<%= render Common::ModalComponent.new do |modal| %>
+<%= render Common::ModalComponent.new(max_size: "max-w-2xl") do |modal| %>
   <% modal.with_modal_content do %>
     <%= link_to select_all_boxes_path, data: { turbo_frame: "_top" }, class: "flex justify-between items-center self-stretch flex-grow-0 flex-shrink-0 py-2" do %>
       <span class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-gray-900">
@@ -22,7 +22,7 @@
           </div>
         <% end %>
       <% end %>
-      <%= tag.turbo_frame id: "box-list", class: "flex-col self-stretch mt-2" do %>
+      <%= tag.turbo_frame id: "box-list", class: "flex-col self-stretch mt-2 max-h-[50vh] overflow-y-auto" do %>
         <% @boxes.each do |box| %>
           <%= render Layout::BoxListComponent.new(box: box) %>
         <% end %>

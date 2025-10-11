@@ -1,4 +1,7 @@
 class Fs::SubmitMessageDraftJob < ApplicationJob
+  class SubmissionError < StandardError
+  end
+
   include GoodJob::ActiveJobExtensions::Concurrency
 
   good_job_control_concurrency_with(
@@ -9,10 +12,21 @@ class Fs::SubmitMessageDraftJob < ApplicationJob
     key: -> { "Fs::SubmitMessageDraftJob-#{arguments.first.try(:id)}" }
   )
 
+  retry_on SubmissionError, attempts: 1 do |_job, _error|
+    # no-op
+  end
+
   def perform(message_draft, bulk_submit: false, fs_client: FsEnvironment.fs_client)
     raise "Invalid message!" unless message_draft.valid?(:validate_data)
 
-    fs_api = fs_client.api(box: message_draft.thread.box)
+    begin
+      fs_api = fs_client.api(box: message_draft.box, api_connection: message_draft.find_api_connection_for_submission)
+    rescue Exception => e
+      message_draft.metadata["status"] = "submit_fail"
+      message_draft.save!
+
+      raise SubmissionError, e.message
+    end
 
     response = fs_api.post_submission(
       message_draft.form.identifier,

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_04_25_184927) do
+ActiveRecord::Schema[7.1].define(version: 2025_09_18_181423) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -58,6 +58,9 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_25_184927) do
     t.string "type"
     t.bigint "tenant_id"
     t.jsonb "settings"
+    t.string "custom_name"
+    t.bigint "owner_id"
+    t.index ["owner_id"], name: "index_api_connections_on_owner_id"
     t.index ["tenant_id"], name: "index_api_connections_on_tenant_id"
   end
 
@@ -168,13 +171,31 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_25_184927) do
     t.boolean "syncable", default: true, null: false
     t.string "short_name"
     t.enum "color", enum_type: "color"
-    t.bigint "api_connection_id"
     t.jsonb "settings"
     t.string "type"
-    t.index "tenant_id, api_connection_id, ((settings ->> 'obo'::text))", name: "api_connection_box_settings_obo", unique: true
-    t.index ["api_connection_id"], name: "index_boxes_on_api_connection_id"
+    t.string "export_name", null: false
     t.index ["tenant_id", "short_name"], name: "index_boxes_on_tenant_id_and_short_name", unique: true
     t.index ["tenant_id"], name: "index_boxes_on_tenant_id"
+  end
+
+  create_table "boxes_api_connections", force: :cascade do |t|
+    t.bigint "box_id", null: false
+    t.bigint "api_connection_id", null: false
+    t.jsonb "settings", default: {}
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["api_connection_id"], name: "index_boxes_api_connections_on_api_connection_id"
+    t.index ["box_id", "api_connection_id"], name: "index_boxes_api_connections_on_box_id_and_api_connection_id", unique: true
+    t.index ["box_id"], name: "index_boxes_api_connections_on_box_id"
+  end
+
+  create_table "exports", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.integer "message_thread_ids", default: [], null: false, array: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.jsonb "settings", default: {}, null: false
+    t.index ["user_id"], name: "index_exports_on_user_id"
   end
 
   create_table "filter_subscriptions", force: :cascade do |t|
@@ -262,13 +283,17 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_25_184927) do
     t.datetime "finished_at"
     t.text "error"
     t.integer "error_event", limit: 2
+    t.text "error_backtrace", array: true
+    t.uuid "process_id"
     t.index ["active_job_id", "created_at"], name: "index_good_job_executions_on_active_job_id_and_created_at"
+    t.index ["process_id", "created_at"], name: "index_good_job_executions_on_process_id_and_created_at"
   end
 
   create_table "good_job_processes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.jsonb "state"
+    t.integer "lock_type", limit: 2
   end
 
   create_table "good_job_settings", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -301,6 +326,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_25_184927) do
     t.text "job_class"
     t.integer "error_event", limit: 2
     t.text "labels", array: true
+    t.uuid "locked_by_id"
+    t.datetime "locked_at"
     t.index ["active_job_id", "created_at"], name: "index_good_jobs_on_active_job_id_and_created_at"
     t.index ["batch_callback_id"], name: "index_good_jobs_on_batch_callback_id", where: "(batch_callback_id IS NOT NULL)"
     t.index ["batch_id"], name: "index_good_jobs_on_batch_id", where: "(batch_id IS NOT NULL)"
@@ -309,8 +336,10 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_25_184927) do
     t.index ["cron_key", "cron_at"], name: "index_good_jobs_on_cron_key_and_cron_at_cond", unique: true, where: "(cron_key IS NOT NULL)"
     t.index ["finished_at"], name: "index_good_jobs_jobs_on_finished_at", where: "((retried_good_job_id IS NULL) AND (finished_at IS NOT NULL))"
     t.index ["labels"], name: "index_good_jobs_on_labels", where: "(labels IS NOT NULL)", using: :gin
+    t.index ["locked_by_id"], name: "index_good_jobs_on_locked_by_id", where: "(locked_by_id IS NOT NULL)"
     t.index ["priority", "created_at"], name: "index_good_job_jobs_for_candidate_lookup", where: "(finished_at IS NULL)"
     t.index ["priority", "created_at"], name: "index_good_jobs_jobs_on_priority_created_at_when_unfinished", order: { priority: "DESC NULLS LAST" }, where: "(finished_at IS NULL)"
+    t.index ["priority", "scheduled_at"], name: "index_good_jobs_on_priority_scheduled_at_unfinished_unlocked", where: "((finished_at IS NULL) AND (locked_by_id IS NULL))"
     t.index ["queue_name", "scheduled_at"], name: "index_good_jobs_on_queue_name_and_scheduled_at", where: "(finished_at IS NULL)"
     t.index ["scheduled_at"], name: "index_good_jobs_on_scheduled_at", where: "(finished_at IS NULL)"
   end
@@ -454,6 +483,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_25_184927) do
     t.datetime "updated_at", null: false
     t.datetime "last_message_delivered_at", null: false
     t.bigint "box_id", null: false
+    t.json "metadata"
     t.index ["folder_id"], name: "index_message_threads_on_folder_id"
   end
 
@@ -515,12 +545,14 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_25_184927) do
   create_table "notifications", force: :cascade do |t|
     t.string "type", null: false
     t.bigint "user_id", null: false
-    t.bigint "message_thread_id", null: false
+    t.bigint "message_thread_id"
     t.bigint "message_id"
     t.bigint "filter_subscription_id"
-    t.string "filter_name", null: false
+    t.string "filter_name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "export_id"
+    t.index ["export_id"], name: "index_notifications_on_export_id"
     t.index ["filter_subscription_id"], name: "index_notifications_on_filter_subscription_id"
     t.index ["message_id"], name: "index_notifications_on_message_id"
     t.index ["message_thread_id"], name: "index_notifications_on_message_thread_id"
@@ -564,6 +596,15 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_25_184927) do
     t.index ["box_id"], name: "index_stats_message_submission_requests_on_box_id"
   end
 
+  create_table "sticky_notes", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.jsonb "data"
+    t.string "note_type", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_sticky_notes_on_user_id"
+  end
+
   create_table "tag_groups", force: :cascade do |t|
     t.bigint "group_id", null: false
     t.bigint "tag_id", null: false
@@ -597,6 +638,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_25_184927) do
     t.datetime "updated_at", null: false
     t.string "feature_flags", default: [], array: true
     t.string "api_token_public_key"
+    t.jsonb "settings", default: {}, null: false
   end
 
   create_table "upvs_form_related_documents", force: :cascade do |t|
@@ -644,6 +686,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_25_184927) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "api_connections", "tenants"
+  add_foreign_key "api_connections", "users", column: "owner_id"
   add_foreign_key "archived_object_versions", "archived_objects"
   add_foreign_key "archived_objects", "message_objects"
   add_foreign_key "audit_logs", "message_threads", on_delete: :nullify
@@ -654,8 +697,10 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_25_184927) do
   add_foreign_key "automation_rules", "tenants"
   add_foreign_key "automation_rules", "users"
   add_foreign_key "automation_webhooks", "tenants", on_delete: :cascade
-  add_foreign_key "boxes", "api_connections"
   add_foreign_key "boxes", "tenants"
+  add_foreign_key "boxes_api_connections", "api_connections"
+  add_foreign_key "boxes_api_connections", "boxes"
+  add_foreign_key "exports", "users"
   add_foreign_key "filter_subscriptions", "filters"
   add_foreign_key "filter_subscriptions", "tenants"
   add_foreign_key "filter_subscriptions", "users"
@@ -695,6 +740,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_25_184927) do
   add_foreign_key "push_endpoints", "users"
   add_foreign_key "searchable_message_threads", "message_threads", on_delete: :cascade
   add_foreign_key "stats_message_submission_requests", "boxes"
+  add_foreign_key "sticky_notes", "users"
   add_foreign_key "tag_groups", "groups"
   add_foreign_key "tag_groups", "tags"
   add_foreign_key "tags", "tenants"

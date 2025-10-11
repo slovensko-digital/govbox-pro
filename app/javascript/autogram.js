@@ -35,10 +35,10 @@ export const endBatch = async (batchId) => {
   })
 }
 
-export const signMessageObject = async (messageObjectPath, batchId = null, authenticityToken) => {
+export const signMessageObject = async (messageObjectPath, batchId = null, authenticityToken, signatureSettings = { signatureWithTimestamp: null, pdfSignatureFormat: null }) => {
   const signingData = await loadSigningData(messageObjectPath)
-  const signedData = await makeSignRequest(prepareSingingRequestBody(signingData, batchId))
-  const signedFile = signedFileData(signingData)
+  const signedData = await makeSignRequest(prepareSingingRequestBody(signingData, batchId, signatureSettings))
+  const signedFile = signedFileData(signingData, signatureSettings)
 
   return await markMessageObjectAsSigned(messageObjectPath, signedFile.name, signedFile.mineType, signedData.content, authenticityToken)
 }
@@ -47,11 +47,11 @@ const signedFileName = (fileName) => {
   return fileName.substring(0, fileName.lastIndexOf('.')).concat(".asice") || fileName
 }
 
-const signedFileData = (messageObjectData) => {
+const signedFileData = (messageObjectData, signatureSettings) => {
   let name = signedFileName(messageObjectData.file_name)
   let mineType = "application/vnd.etsi.asic-e+zip"
 
-  if (messageObjectData.mime_type === "application/pdf") {
+  if (messageObjectData.mime_type === "application/pdf" && signatureSettings.pdfSignatureFormat === "PAdES") {
     name = messageObjectData.file_name
     mineType = messageObjectData.mime_type
   }
@@ -62,19 +62,20 @@ const signedFileData = (messageObjectData) => {
   }
 }
 
-const prepareSingingRequestBody = (messageObjectData, batchId = null) => {
+const prepareSingingRequestBody = (messageObjectData, batchId = null, signatureSettings) => {
   if (!messageObjectData) {
     return
   }
   let payloadMimeType = `${messageObjectData.mime_type};base64`
-  let signatureLevel = "XAdES_BASELINE_B"
+  let signatureLevel = (signatureSettings.signatureWithTimestamp === true) ? "XAdES_BASELINE_T" : "XAdES_BASELINE_B"
   let signatureContainer = "ASiC_E"
   let autoLoadEform = false
 
   switch (messageObjectData.mime_type) {
     case "application/pdf":
-      signatureLevel = "PAdES_BASELINE_B"
-      signatureContainer = null
+      const { level, container } = pdfSignatureParams(signatureSettings)
+      signatureLevel = level
+      signatureContainer = container
       break
     case 'application/xml':
     case 'application/x-eform-xml':
@@ -83,7 +84,7 @@ const prepareSingingRequestBody = (messageObjectData, batchId = null) => {
       break
     case 'application/vnd.etsi.asic-e+zip':
       autoLoadEform = true
-      signatureLevel = null
+      signatureLevel = (signatureSettings.signatureWithTimestamp === true) ? "BASELINE_T" : null
       signatureContainer = null
       break
     case 'application/msword':
@@ -109,6 +110,27 @@ const prepareSingingRequestBody = (messageObjectData, batchId = null) => {
       fsFormId: messageObjectData.fs_form_id
     },
     payloadMimeType: payloadMimeType
+  }
+}
+
+const pdfSignatureParams = (signatureSettings) => {
+  switch (signatureSettings.pdfSignatureFormat) {
+    case "XAdES":
+      return {
+        level: (signatureSettings.signatureWithTimestamp === true) ? "XAdES_BASELINE_T" : "XAdES_BASELINE_B",
+        container: "ASiC_E"
+      }
+    case "CAdES":
+      return {
+        level: (signatureSettings.signatureWithTimestamp === true) ? "CAdES_BASELINE_T" : "CAdES_BASELINE_B",
+        container: "ASiC_E"
+      }
+    case "PAdES":
+    default:
+      return {
+        level: (signatureSettings.signatureWithTimestamp === true) ? "PAdES_BASELINE_T" : "PAdES_BASELINE_B",
+        container: null
+      }
   }
 }
 

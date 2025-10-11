@@ -62,6 +62,8 @@ class Upvs::MessageTemplate < ::MessageTemplate
       create_form_object(message)
     end
 
+    EventBus.publish(:message_thread_with_message_created, message)
+
     message
   end
 
@@ -103,7 +105,7 @@ class Upvs::MessageTemplate < ::MessageTemplate
     filled_content = self.content.dup
 
     template_items.each do |template_item|
-      filled_content.gsub!(template_item[:placeholder], message.metadata['data'][template_item[:name]].to_s)
+      filled_content.gsub!(template_item[:placeholder], REXML::Text.normalize(message.metadata['data'][template_item[:name]].to_s))
     end
 
     message.update(

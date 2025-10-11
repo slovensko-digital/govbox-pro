@@ -48,7 +48,7 @@ module Govbox
     end
 
     def create_message_relations(message)
-      related_messages = ::Message.where("metadata ->> 'reference_id' = ?", message.uuid).joins(:thread)
+      related_messages = ::Message.where("messages.metadata ->> 'reference_id' = ?", message.uuid).joins(:thread)
                                 .where(thread: { box_id: message.thread.box_id })
 
       related_messages.each do |related_message|
@@ -70,7 +70,7 @@ module Govbox
 
       if message.outbox?
         # TODO change .where(collapsed: false) to .where(hidden: true)
-        referring_messages = message.thread.messages.inbox.where("metadata ->> 'reference_id' = ?", message.uuid).where(collapsed: false)
+        referring_messages = message.thread.messages.inbox.where("messages.metadata ->> 'reference_id' = ?", message.uuid).where(collapsed: false)
         message.update(collapsed: true) if referring_messages.any?
       else
         message.thread.messages.outbox.where(uuid: message.metadata["reference_id"]).take&.update(

@@ -246,6 +246,12 @@ accountants_drafts:
   visible: true
   tenant: accountants
 
+accountants_unprocessable:
+  name: Chybné
+  type: UnprocessableTag
+  visible: true
+  tenant: accountants
+
 accountants_everything:
   name: Everything
   type: EverythingTag
@@ -256,6 +262,12 @@ accountants_inbox:
   name: Inbox
   type: InboxTag
   visible: false
+  tenant: accountants
+
+accountants_submission_error_tag:
+  name: Problémové
+  type: SubmissionErrorTag
+  visible: true
   tenant: accountants
 
 accountants_signature_requested:
@@ -297,7 +309,95 @@ accountants_basic_user_signature_requested:
   name: 'Na podpis: Basic user 2'
   type: SignatureRequestedFromTag
   visible: true
-  tenant: ssd
+  tenant: accountants
+  icon: pencil
+  color: yellow
+  owner: accountants_basic
+
+accountants_user2_signature_requested:
+  name: 'Na podpis: Basic user 3'
+  type: SignatureRequestedFromTag
+  visible: true
+  tenant: accountants
+  icon: pencil
+  color: yellow
+  owner: accountants_user2
+
+accountants_user3_signature_requested:
+  name: 'Na podpis: Basic user 4'
+  type: SignatureRequestedFromTag
+  visible: true
+  tenant: accountants
+  icon: pencil
+  color: yellow
+  owner: accountants_user3
+
+accountants_user4_signature_requested:
+  name: 'Na podpis: Basic user 5'
+  type: SignatureRequestedFromTag
+  visible: true
+  tenant: accountants
+  icon: pencil
+  color: yellow
+  owner: accountants_user4
+
+accountants_signed:
+  name: Podpísané
+  type: SignedTag
+  visible: true
+  tenant: accountants
+  icon: fingerprint
+  color: green
+
+accountants_basic_user_signed:
+  name: 'Podpísané: Basic user 2'
+  type: SignedByTag
+  visible: true
+  tenant: accountants
+  icon: pencil
+  color: yellow
+  owner: accountants_basic
+
+accountants_user2_signed:
+  name: 'Podpísané: Basic user 3'
+  type: SignedByTag
+  visible: true
+  tenant: accountants
+  icon: pencil
+  color: yellow
+  owner: accountants_user2
+
+accountants_user3_signed:
+  name: 'Podpísané: Basic user 4'
+  type: SignedByTag
+  visible: true
+  tenant: accountants
+  icon: pencil
+  color: yellow
+  owner: accountants_user3
+
+accountants_user4_signed:
+  name: 'Podpísané: Basic user 5'
+  type: SignedByTag
+  visible: true
+  tenant: accountants
+  icon: pencil
+  color: yellow
+  owner: accountants_user4
+
+accountants_tag1:
+  name: 'Tag 1'
+  type: SimpleTag
+  visible: true
+  tenant: accountants
+  icon: pencil
+  color: yellow
+
+accountants_tag2:
+  name: 'Tag 2'
+  type: SimpleTag
+  visible: true
+  tenant: accountants
   icon: pencil
   color: yellow
 
@@ -306,3 +406,9 @@ ssd_attachment_matched:
   type: SimpleTag
   visible: true
   tenant: ssd
+
+api_connection_tag:
+  name: ApiConnectionTag
+  type: SimpleTag
+  visible: true
+  tenant: accountants
