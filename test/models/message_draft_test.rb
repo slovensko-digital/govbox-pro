@@ -45,21 +45,21 @@ class MessageDraftTest < ActiveSupport::TestCase
 
     user1 = users(:accountants_basic)
     user1_api_connection = user1.tenant.api_connections.find_by(owner: user1)
-    message_draft.thread.assign_tag(SignedByTag.find_by(owner: user1))
+    message_draft.form_object.assign_tag(SignedByTag.find_by(owner: user1))
 
     assert_equal user1_api_connection, message_draft.find_api_connection_for_submission
 
     user2 = users(:accountants_user2)
     user2_api_connection = user2.tenant.api_connections.find_by(owner: user2)
-    message_draft.thread.unassign_tag(SignedByTag.find_by(owner: user1))
-    message_draft.thread.assign_tag(SignedByTag.find_by(owner: user2))
+    message_draft.form_object.message_objects_tags.find_by(tag: SignedByTag.find_by(owner: user1)).destroy
+    message_draft.form_object.assign_tag(SignedByTag.find_by(owner: user2))
 
     assert_equal user2_api_connection, message_draft.find_api_connection_for_submission
 
     user3 = users(:accountants_user3)
     user3_api_connection = user3.tenant.api_connections.find_by(owner: user3)
-    message_draft.thread.unassign_tag(SignedByTag.find_by(owner: user2))
-    message_draft.thread.assign_tag(SignedByTag.find_by(owner: user3))
+    message_draft.form_object.message_objects_tags.find_by(tag: SignedByTag.find_by(owner: user2)).destroy
+    message_draft.form_object.assign_tag(SignedByTag.find_by(owner: user3))
 
     assert_equal user3_api_connection, message_draft.find_api_connection_for_submission
   end
