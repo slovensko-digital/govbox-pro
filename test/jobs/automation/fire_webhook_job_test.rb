@@ -18,11 +18,7 @@ class Automation::FireWebhookJobTest < ActiveJob::TestCase
     downloader = Minitest::Mock.new
     downloader.expect :post, true, [webhook.url, data], content_type: 'application/json'
 
-    webhook.fire! message1, event, timestamp, downloader: downloader
-
-    Faraday.stub :post, downloader do
-      Automation::FireWebhookJob.new.perform(webhook, message1, event, timestamp)
-    end
+    Automation::FireWebhookJob.new.perform(webhook, message1, event, timestamp, downloader: downloader)
 
     assert_mock downloader
   end
