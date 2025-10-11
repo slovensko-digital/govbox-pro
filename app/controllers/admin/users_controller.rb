@@ -20,7 +20,7 @@ class Admin::UsersController < ApplicationController
     authorize([:admin, @user])
 
     if @user.save
-      redirect_to admin_tenant_users_url(Current.tenant), notice: 'User was successfully created'
+      redirect_to admin_tenant_users_url(Current.tenant), notice: 'Používateľ bol úspešne vytvorený'
     else
       render :new, status: :unprocessable_entity
     end
@@ -29,7 +29,7 @@ class Admin::UsersController < ApplicationController
   def update
     authorize([:admin, @user])
     if @user.update(user_params)
-      redirect_to admin_tenant_users_url(Current.tenant), notice: 'User was successfully updated'
+      redirect_to admin_tenant_users_url(Current.tenant), notice: 'Používateľ bol úspešne upravený'
     else
       render :edit, status: :unprocessable_entity
     end
@@ -38,7 +38,7 @@ class Admin::UsersController < ApplicationController
   def destroy
     authorize([:admin, @user])
     if @user.destroy
-      redirect_to admin_tenant_users_url(Current.tenant), notice: 'User was successfully destroyed'
+      redirect_to admin_tenant_users_url(Current.tenant), notice: 'Používateľ bol úspešne odstránený'
     else
       flash[:alert] = @user.errors.full_messages[0]
       redirect_to admin_tenant_users_url(Current.tenant)
