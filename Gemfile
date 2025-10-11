@@ -64,12 +64,8 @@ group :development do
   gem 'annotate'
   gem 'listen'
   gem 'web-console'
-  gem 'solargraph'
   gem 'htmlbeautifier'
-  gem 'erb_lint'
-  gem 'ruby-lsp-rails'
   gem 'rdbg'
-  gem 'rubocop'
   gem 'rubocop-rails'
 end
 
