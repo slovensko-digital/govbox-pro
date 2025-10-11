@@ -56,7 +56,7 @@ class Box < ApplicationRecord
   end
 
   def self.sync_all
-    find_each(&:sync)
+    where(syncable: true).find_each(&:sync)
   end
 
   def single_recipient?
