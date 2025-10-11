@@ -4,14 +4,30 @@ class SessionsController < ApplicationController
   skip_before_action :set_menu_context
   layout 'login'
 
-  def login
-  end
+  def login; end
 
   def create
     Current.user = User.find_by(email: auth_hash.info.email)
 
     create_session
     EventBus.publish(:user_logged_in, Current.user) if Current.user
+  end
+
+  def create_http_basic
+    authenticated = authenticate_or_request_with_http_basic do |email, password|
+      user = User.find_by(email: email)
+      if user&.authenticate(password)
+        Current.user = user
+        true
+      else
+        false
+      end
+    end
+
+    return unless authenticated
+
+    create_session
+    EventBus.publish(:user_logged_in, Current.user)
   end
 
   def destroy

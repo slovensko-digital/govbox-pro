@@ -3,20 +3,6 @@ module Authentication
 
   included do
     before_action :authenticate
-    before_action :http_authenticate
-  end
-  def http_authenticate
-    return unless ENV['REQUIRE_HTTP_AUTH'] == 'true'
-
-    authenticate_or_request_with_http_basic do |email, password|
-      user = User.find_by(email: email)
-      if user&.authenticate(password)
-        Current.user = user
-        true
-      else
-        false
-      end
-    end
   end
 
   SESSION_TIMEOUT = 20.minutes
@@ -40,7 +26,7 @@ module Authentication
       session[:user_id] = Current.user.id
       session[:login_expires_at] = SESSION_TIMEOUT.from_now
       session[:tenant_id] = Current.user.tenant_id
-      session[:user_profile_picture_url] = auth_hash.info.image
+      session[:user_profile_picture_url] = auth_hash.info.image if auth_hash.present?
       session[:box_id] = Current.user.tenant.boxes.first.id if Current.user.tenant.boxes.one?
       session[:upvs_login] = saml_identifier.present?
       redirect_to session[:after_login_path] || default_after_login_path
