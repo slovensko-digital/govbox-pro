@@ -14,7 +14,6 @@ gem 'turbo-rails'
 
 # Styles
 gem 'importmap-rails'
-gem 'importmap-rails'
 gem 'initials'
 gem 'sprockets-rails'
 gem 'tailwindcss-rails'
@@ -35,12 +34,9 @@ gem 'pundit'
 # Utilities
 gem 'caxlsx'
 gem 'grover'
-gem 'grover'
 gem 'jbuilder'
 gem 'jsbundling-rails'
-gem 'jsbundling-rails'
 gem 'jwt'
-gem 'pdf-reader'
 gem 'pdf-reader'
 gem 'rack-attack'
 gem 'rest-client'
@@ -70,9 +66,6 @@ group :development do
   gem 'listen'
   gem 'rdbg'
   gem 'rubocop-rails'
-  gem 'ruby-lsp'
-  gem 'ruby-lsp-rails'
-  gem 'web-console'
   gem 'web-console'
 end
 
