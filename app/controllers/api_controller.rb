@@ -1,5 +1,5 @@
 class ApiController < ActionController::API
-  include Localization
+  around_action :use_en_locale
   before_action :authenticate_user
   around_action :wrap_in_request_logger
 
@@ -39,6 +39,10 @@ class ApiController < ActionController::API
       endpoint_path: request.path,
       response_status: error ? exception_wrapper.status_code : response.code
     )
+  end
+
+  def use_en_locale(&action)
+    I18n.with_locale(:en, &action)
   end
 
   def wrap_in_request_logger
