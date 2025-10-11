@@ -53,12 +53,12 @@ fs_accountants_multiple_api_connections_api_connection:
 fs_accountants_multiple_api_connections_c5:
   box: fs_accountants_multiple_api_connections
   api_connection: fs_api_connection5
-  settings: {}
+  settings: {"delegate_id": "5383c493-5e8b-43a9-ab2b-cc428c9e6023"}
 
 fs_accountants_multiple_api_connections_c6:
   box: fs_accountants_multiple_api_connections
   api_connection: fs_api_connection6
-  settings: {}
+  settings: {"delegate_id": "760c4a81-91dc-4a09-855a-6b8b3eaf1929"}
 
 fs_solver_api_connection:
   box: fs_solver

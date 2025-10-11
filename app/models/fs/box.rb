@@ -39,7 +39,9 @@ class Fs::Box < Box
   end
 
   def sync
-    Fs::SyncBoxJob.set(job_context: :asap).perform_later(self, api_connection: self.api_connection)
+    boxes_api_connections.group_by { |boxes_api_connection| boxes_api_connection.settings_delegate_id }.each do |settings_delegate_id, boxes_api_connections|
+      ::Fs::SyncBoxJob.set(job_context: :asap).perform_later(self, api_connection: boxes_api_connections.first.api_connection)
+    end
   end
 
   def single_recipient?
