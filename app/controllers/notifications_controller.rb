@@ -5,10 +5,13 @@ class NotificationsController < ApplicationController
   before_action :set_retention
 
   def index
-
   end
 
   def scroll
+  end
+
+  def badge
+    render partial: "notifications/badge", locals: { user: Current.user }
   end
 
   private

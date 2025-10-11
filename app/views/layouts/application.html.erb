@@ -28,5 +28,6 @@
       <% end %>
     <% end %>
     <%= turbo_frame_tag :modal, target: "_top" %>
+    <%= turbo_stream_from Current.user %>
   </body>
 </html>
