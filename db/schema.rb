@@ -670,6 +670,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_10_151644) do
     t.string "saml_identifier"
     t.datetime "notifications_last_opened_at"
     t.datetime "notifications_reset_at"
+    t.string "password_digest"
     t.index "tenant_id, lower((email)::text)", name: "index_users_on_tenant_id_and_lowercase_email", unique: true
   end
 
