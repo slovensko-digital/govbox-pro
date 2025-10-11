@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_09_18_181423) do
+ActiveRecord::Schema[7.1].define(version: 2025_10_10_151644) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -171,7 +171,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_09_18_181423) do
     t.boolean "syncable", default: true, null: false
     t.string "short_name"
     t.enum "color", enum_type: "color"
-    t.jsonb "settings"
+    t.jsonb "settings", default: {}, null: false
     t.string "type"
     t.string "export_name", null: false
     t.index ["tenant_id", "short_name"], name: "index_boxes_on_tenant_id_and_short_name", unique: true
@@ -628,7 +628,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_09_18_181423) do
     t.enum "color", enum_type: "color"
     t.index ["owner_id"], name: "index_tags_on_owner_id"
     t.index ["tenant_id", "type", "name"], name: "index_tags_on_tenant_id_and_type_and_name", unique: true
-    t.index ["tenant_id", "type"], name: "signings_tags", unique: true, where: "((type)::text = ANY (ARRAY[('SignatureRequestedTag'::character varying)::text, ('SignedTag'::character varying)::text]))"
+    t.index ["tenant_id", "type"], name: "signings_tags", unique: true, where: "((type)::text = ANY ((ARRAY['SignatureRequestedTag'::character varying, 'SignedTag'::character varying])::text[]))"
     t.index ["tenant_id"], name: "index_tags_on_tenant_id"
   end
 

@@ -43,8 +43,8 @@ EventBus.subscribe :fs_message_draft_created, ->(message_draft) {
 end
 
 # notifications
-EventBus.subscribe :message_thread_changed, ->(thread) {
-  ReindexAndNotifyFilterSubscriptionsJob.perform_later(thread.id)
+EventBus.subscribe :message_thread_changed, ->(thread, author) {
+  ReindexAndNotifyFilterSubscriptionsJob.perform_later(thread.id, author)
 }
 
 # reindexing
