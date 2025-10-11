@@ -5,11 +5,7 @@ class Govbox::AuthorizeDeliveryNotificationsAction
     messages = message_threads.map(&:messages).flatten
 
     results = messages.map do |message|
-      is_authorized = ::Govbox::AuthorizeDeliveryNotificationAction.run(message, perform: false)
-
-      jobs_batch.add { authorize_job.perform_later(message) } if is_authorized
-
-      is_authorized
+      ::Govbox::AuthorizeDeliveryNotificationAction.run(message, jobs_batch:)
     end
 
     jobs_batch.enqueue(on_finish: ::Govbox::AuthorizeDeliveryNotificationsFinishedJob, user: Current.user)
