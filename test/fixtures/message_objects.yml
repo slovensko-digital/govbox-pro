@@ -149,6 +149,12 @@ fs_accountants_outbox_form:
   mimetype: application/vnd.etsi.asic-e+zip
   object_type: FORM
 
+fs_accountants_draft_form:
+  message: fs_accountants_draft
+  name: SVDPHv20.asice
+  mimetype: application/vnd.etsi.asic-e+zip
+  object_type: FORM
+
 fs_accountants_inbox_form:
   message: fs_accountants_thread1_inbox_message
   name: DeliveryReport.asice
