@@ -79,24 +79,29 @@ class MessageObjectsController < ApplicationController
   end
 
   def message_object_params
-    params.permit(:name, :mimetype, :content)
+    params.permit(:name, :mimetype, :content, :signed_by)
   end
 
   def mark_message_object_as_signed(message_object)
     permitted_params = message_object_params
 
+    signed_by_metadata = permitted_params[:signed_by].split(',').map {|part| part.strip.split('=')}.to_h
+    signed_by_name = signed_by_metadata['CN']
+
     message_object.transaction do
       message_object.update!(
         name: permitted_params[:name],
         mimetype: permitted_params[:mimetype],
-        is_signed: true
+        is_signed: true,
+        signed_by_metadata: permitted_params[:signed_by]
       )
 
       message_object.message_object_datum.update!(
         blob: Base64.decode64(permitted_params[:content])
       )
 
-      message_object.mark_signed_by_user(Current.user)
+      signed_by = User.find_by(name: signed_by_name) || Current.user
+      message_object.mark_signed_by_user(signed_by)
     end
   end
 end

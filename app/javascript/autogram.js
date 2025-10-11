@@ -40,7 +40,7 @@ export const signMessageObject = async (messageObjectPath, batchId = null, authe
   const signedData = await makeSignRequest(prepareSingingRequestBody(signingData, batchId, signatureSettings))
   const signedFile = signedFileData(signingData, signatureSettings)
 
-  return await markMessageObjectAsSigned(messageObjectPath, signedFile.name, signedFile.mineType, signedData.content, authenticityToken)
+  return await markMessageObjectAsSigned(messageObjectPath, signedFile.name, signedFile.mineType, signedData.content, signedData.signedBy, authenticityToken)
 }
 
 const signedFileName = (fileName) => {
@@ -134,13 +134,14 @@ const pdfSignatureParams = (signatureSettings) => {
   }
 }
 
-const markMessageObjectAsSigned = async (messageObjectPath, signedFileName, signedFileMimeType, signedContent, authenticityToken) => {
+const markMessageObjectAsSigned = async (messageObjectPath, signedFileName, signedFileMimeType, signedContent, signedBy, authenticityToken) => {
   return await patch(messageObjectPath, {
     body: JSON.stringify({
       authenticity_token: authenticityToken,
       name: signedFileName,
       mimetype: signedFileMimeType,
-      content: signedContent
+      content: signedContent,
+      signed_by: signedBy
     }),
     // request.js lib is used, responseKind: "turbo-stream" option is very important (be careful if case of changes)
     responseKind: "turbo-stream"

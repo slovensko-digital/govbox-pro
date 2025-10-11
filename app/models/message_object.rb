@@ -2,17 +2,18 @@
 #
 # Table name: message_objects
 #
-#  id           :bigint           not null, primary key
-#  description  :string
-#  is_signed    :boolean
-#  mimetype     :string
-#  name         :string
-#  object_type  :string           not null
-#  uuid         :uuid
-#  visualizable :boolean
-#  created_at   :datetime         not null
-#  updated_at   :datetime         not null
-#  message_id   :bigint           not null
+#  id                 :bigint           not null, primary key
+#  description        :string
+#  is_signed          :boolean
+#  mimetype           :string
+#  name               :string
+#  object_type        :string           not null
+#  signed_by_metadata :string
+#  uuid               :uuid
+#  visualizable       :boolean
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
+#  message_id         :bigint           not null
 #
 class MessageObject < ApplicationRecord
   include PdfVisualizationOperations
