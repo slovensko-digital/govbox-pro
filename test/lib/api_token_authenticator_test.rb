@@ -1,9 +1,6 @@
 require 'test_helper'
 
 class ApiTokenAuthenticatorTest < ActiveSupport::TestCase
-  REPLAY_EPSILON = 3.minutes
-  REPLAY_DELTA = ApiTokenAuthenticator::MAX_EXP_IN - REPLAY_EPSILON
-
   setup do
     @sub = 1
     @key_pair = OpenSSL::PKey::RSA.new(512)
