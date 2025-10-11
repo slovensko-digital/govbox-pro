@@ -2,7 +2,16 @@
   <div class="flex justify-stretch items-center gap-4 px-4 lg:py-4 border-t-0 border-r-0 border-b border-l-0 border-gray-200 min-h-[3rem] sm:min-h-[5rem]">
     <%= check_box_tag("", nil, false, { class: "hidden sm:block h-4 w-4 rounded border-gray-300 text-blue-500 focus:ring-0", type: "checkbox", id: "checkbox-all", data: { action: "all-checkboxes#toggle", "all-checkboxes-target": "checkbox" } }) %>
 
-    <span class="grow sm:text-xl text-base font-semibold text-left text-gray-900"><%= @ids.present? ? t(:selected_message, count: @ids.count) : "Správy v schránke" %>
+    <span class="grow sm:text-xl text-base font-semibold text-left text-gray-900">
+      <% if @ids.present? %>
+        <%= t(:selected_message, count: @ids.count) %>
+      <% else %>
+        Správy v schránke
+        <% if @count_estimate %>
+          <span class="text-sm">(približne <%= @count_estimate %> správ)</span>
+        <% end %>
+      <% end %>
+
       <% if @filter %>
         <% if @filter_subscription %>
           <%= link_to edit_filter_filter_subscription_path(@filter, @filter_subscription), title: "Nastaviť notifikácie", "data-turbo-frame": :modal, form_class: "inline" do %>

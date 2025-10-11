@@ -12,4 +12,19 @@ class ApplicationRecord < ActiveRecord::Base
       raise FailedToAcquireLockError
     end
   end
+
+  def self.count_estimate_for(relation = all)
+    rel =
+      relation
+        .except(:select, :order, :includes, :preload, :eager_load) # planner doesn't need these
+        .select(Arel.sql('1')) # SELECT list doesn't matter, keep it simple
+
+    sql  = rel.to_sql
+    qsql = connection.quote(sql) # safe quoting
+
+    connection.select_value("SELECT count_estimate(#{qsql})").to_i
+  rescue ActiveRecord::StatementInvalid
+    # Fallback if something (permissions, CTE edge cases, etc.) breaks
+    nil
+  end
 end
