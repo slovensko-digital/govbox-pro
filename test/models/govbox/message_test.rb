@@ -84,8 +84,10 @@ class Govbox::MessageTest < ActiveSupport::TestCase
     # Inbox tag is added when significant inbox message processed
     assert message_thread.tags.include?(tags(:ssd_inbox))
 
+    message_thread.messages.reload
+
     # Significant inbox messages is marked unread
-    assert_not message_thread.messages.reload.all?{|m| m.read?}
+    assert_not message_thread.messages.all?{|m| m.read?}
     assert_not message_thread.messages.last.read?
   end
 

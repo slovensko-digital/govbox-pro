@@ -1,9 +1,6 @@
 require 'test_helper'
 
 class ApiTokenAuthenticatorTest < ActiveSupport::TestCase
-  REPLAY_EPSILON = 3.minutes
-  REPLAY_DELTA = ApiTokenAuthenticator::MAX_EXP_IN - REPLAY_EPSILON
-
   setup do
     @sub = 1
     @key_pair = OpenSSL::PKey::RSA.new(512)
@@ -52,8 +49,9 @@ class ApiTokenAuthenticatorTest < ActiveSupport::TestCase
 
   test 'verifies EXP claim value' do
     token = generate_token
-    travel_to Time.now + 5.minutes
-    assert_raises(JWT::ExpiredSignature) { @api_token_authenticator.verify_token(token) }
+    travel_to(Time.now + 5.minutes) do
+      assert_raises(JWT::ExpiredSignature) { @api_token_authenticator.verify_token(token) }
+    end
   end
 
   test 'verifies JTI claim presence' do
@@ -76,9 +74,9 @@ class ApiTokenAuthenticatorTest < ActiveSupport::TestCase
 
     authenticator.verify_token(t1)
 
-    travel_to Time.now + 5.minutes
-
-    assert_raises(JWT::ExpiredSignature) { authenticator.verify_token(t1) }
+    travel_to(Time.now + 5.minutes) do
+      assert_raises(JWT::ExpiredSignature) { authenticator.verify_token(t1) }
+    end
   end
 
   class TokenDecoderFailure < ApiTokenAuthenticatorTest
