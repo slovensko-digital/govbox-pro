@@ -49,3 +49,8 @@ accountants_user4:
   name: Basic user 5
   email: basic_user4@email_accountants.com
   tenant: accountants
+
+notification_user:
+  name: Notification user
+  email: notification_user@email.com
+  tenant: ssd
