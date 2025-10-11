@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_10_10_151644) do
+ActiveRecord::Schema[7.1].define(version: 2025_10_11_110055) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -421,6 +421,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_10_151644) do
     t.boolean "visualizable"
     t.uuid "uuid"
     t.string "description"
+    t.jsonb "signed_by_metadata", default: []
     t.index ["message_id"], name: "index_message_objects_on_message_id"
   end
 
