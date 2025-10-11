@@ -12,7 +12,8 @@
         </div>
         <%= form_with model: [:admin, Current.tenant, @box], scope: :upvs_box, url: polymorphic_path([:admin, Current.tenant, :boxes, @box]) do |form| %>
           <div class="w-96">
-            <div class="px-6 py-4">
+            <% if @box.new_record? %>
+              <div class="px-6 py-4">
               <%= form.label :api_connection_id, "API prepojenie" %>
               <div class="relative mt-2 rounded-md shadow-sm">
                 <% color = @box.errors[:api_connection_id].any? ? 'red' : 'gray' %>
@@ -22,6 +23,7 @@
                 <p class="mt-2 text-sm text-red-600"><%= error %></p>
               <% end %>
             </div>
+            <% end %>
             <div class="px-6 py-4">
               <%= form.label :name, "Názov schránky", class: "block" %>
               <div class="relative mt-2 rounded-md shadow-sm">
@@ -59,6 +61,16 @@
                 <%= form.text_field :short_name, placeholder: "ABC", class: "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-#{color}-300 placeholder:text-#{color}-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" %>
               </div>
               <% @box.errors[:short_name].each do |error| %>
+                <p class="mt-2 text-sm text-red-600"><%= error %></p>
+              <% end %>
+            </div>
+            <div class="px-6 py-4">
+              <%= form.label :export_name, "Názov pre export" %>
+              <div class="relative mt-2 rounded-md shadow-sm">
+                <% color = @box.errors[:export_name].any? ? "red" : "gray" %>
+                <%= form.text_field :export_name, class: "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-#{color}-300 placeholder:text-#{color}-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" %>
+              </div>
+              <% @box.errors[:export_name].each do |error| %>
                 <p class="mt-2 text-sm text-red-600"><%= error %></p>
               <% end %>
             </div>

@@ -6,6 +6,7 @@
 #  api_token_public_key :string
 #  feature_flags        :string           default([]), is an Array
 #  name                 :string           not null
+#  settings             :jsonb            not null
 #  created_at           :datetime         not null
 #  updated_at           :datetime         not null
 #
@@ -47,7 +48,26 @@ class Tenant < ApplicationRecord
   validates_presence_of :name
 
   AVAILABLE_FEATURE_FLAGS = [:audit_log, :archive, :api, :fs_sync]
-  ALL_FEATURE_FLAGS = [:audit_log, :archive, :api, :message_draft_import, :fs_api, :fs_sync, :bulk_export]
+  ALL_FEATURE_FLAGS = [:audit_log, :archive, :api, :message_draft_import, :fs_api, :fs_sync]
+
+  PDF_SIGNATURE_FORMATS = %w[PAdES XAdES CAdES]
+
+  def set_pdf_signature_format(pdf_signature_format)
+    raise "Unknown pdf_signature_format #{pdf_signature_format}" unless pdf_signature_format.in? PDF_SIGNATURE_FORMATS
+
+    self.settings["pdf_signature_format"] = pdf_signature_format
+    save!
+  end
+
+  def signature_settings
+    pdf_signature_format = if PDF_SIGNATURE_FORMATS.include?(settings["pdf_signature_format"])
+      settings["pdf_signature_format"]
+    else
+      PDF_SIGNATURE_FORMATS[0]
+    end
+
+    settings.slice("signature_with_timestamp").merge!({"pdf_signature_format" => pdf_signature_format})
+  end
 
   def draft_tag!
     draft_tag || raise(ActiveRecord::RecordNotFound, "`DraftTag` not found in tenant: #{id}")

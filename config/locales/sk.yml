@@ -38,6 +38,10 @@ sk:
           attributes:
             metadata:
               no_template: "Typ správy je povinná položka"
+        export:
+          attributes:
+            base:
+              empty_selection: "Musí byť zvolené aspoň jedno z nastavení exportu"
   date:
     abbr_day_names:
       - Ne
