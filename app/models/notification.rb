@@ -22,30 +22,5 @@ class Notification < ApplicationRecord
 
   delegate :filter, to: :filter_subscription
 
-  scope :latest, -> { order(created_at: :desc).limit(1) }
-
-  after_commit :broadcast_badge_update
-
-  def self.last_seen_at(user)
-    user.notifications_last_seen_at || -DateTime::Infinity.new
-  end
-
-  def self.any_unseen?(user)
-    latest_at = user.notifications.latest&.first&.created_at
-
-    return false if latest_at.blank?
-
-    latest_at > last_seen_at(user)
-  end
-
-  private
-
-  def broadcast_badge_update
-    Turbo::StreamsChannel.broadcast_replace_to(
-      user,
-      target: "notification_badge",
-      partial: "notifications/badge",
-      locals: { user: user }
-    )
-  end
+  after_create -> { user.update(notifications_opened: false) }
 end

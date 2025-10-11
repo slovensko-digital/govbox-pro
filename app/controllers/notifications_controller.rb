@@ -10,10 +10,6 @@ class NotificationsController < ApplicationController
   def scroll
   end
 
-  def badge
-    render partial: "notifications/badge", locals: { user: Current.user }
-  end
-
   private
 
   def set_notifications_and_cursor
