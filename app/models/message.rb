@@ -38,6 +38,8 @@ class Message < ApplicationRecord
   # used for joins only
   has_many :message_threads_tags, primary_key: :message_thread_id, foreign_key: :message_thread_id
 
+  store_accessor :export_metadata, :box_name, prefix: true
+
   delegate :tenant, to: :thread
   delegate :box, to: :thread
 
