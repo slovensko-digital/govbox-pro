@@ -6,6 +6,7 @@
 #  email                        :string           not null
 #  name                         :string           not null
 #  notifications_last_opened_at :datetime
+#  notifications_last_seen_at   :datetime
 #  notifications_reset_at       :datetime
 #  password_digest              :string
 #  saml_identifier              :string
@@ -72,14 +73,16 @@ class User < ApplicationRecord
   end
 
   def update_notifications_retention
+    attrs = { notifications_last_seen_at: Time.current }
+
     if notifications_reset_at.blank?
-      update(notifications_reset_at: 5.minutes.from_now)
+      attrs[:notifications_reset_at] = 5.minutes.from_now
     elsif notifications_reset_at < Time.current
-      update(
-        notifications_last_opened_at: notifications_reset_at,
-        notifications_reset_at: 5.minutes.from_now
-      )
+      attrs[:notifications_last_opened_at] = notifications_reset_at
+      attrs[:notifications_reset_at] = 5.minutes.from_now
     end
+
+    update(attrs)
   end
 
   private
