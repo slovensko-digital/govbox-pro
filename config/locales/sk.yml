@@ -4,8 +4,8 @@ sk:
   activerecord:
     attributes:
       message:
-        sender_name: 'Odosielateľ'
-        recipient_name: 'Prijímateľ'
+        sender_name: "Odosielateľ"
+        recipient_name: "Prijímateľ"
       message_thread:
         title: "Názov"
       box:
@@ -23,7 +23,7 @@ sk:
         api_connection:
           attributes:
             tenant_id:
-              present: 'Tenant nesmie byť zvolený'
+              present: "Tenant nesmie byť zvolený"
         tag:
           attributes:
             base:
@@ -289,6 +289,7 @@ sk:
   message_draft_validated: "Zvalidovaná správa"
   message_draft_submitted: "Odoslaná správa"
   message_object_downloaded: "Stiahnutý objekt správy"
+  new_message_link: "Doručená nová správa, klikni pre prečítanie"
   "Automation::ValueCondition": "je"
   "Automation::ContainsCondition": "obsahuje"
   "Automation::BooleanCondition": "je"
@@ -350,13 +351,13 @@ sk:
       description: "Nemáte vytvorené žiadne filtre."
     tags:
       header: "Žiadne štítky"
-      description: 'Zatiaľ nie sú vytvorené žiadne štítky.'
+      description: "Zatiaľ nie sú vytvorené žiadne štítky."
     rules:
       header: "Žiadne pravidlá"
-      description: 'Zatiaľ nie sú vytvorené žiadne pravidlá.'
+      description: "Zatiaľ nie sú vytvorené žiadne pravidlá."
     boxes:
       header: "Žiadne schránky"
-      description: 'Zatiaľ nie sú vytvorené žiadne schránky.'
+      description: "Zatiaľ nie sú vytvorené žiadne schránky."
     not_found:
       header: "Žiadne správy"
       description: "Zvolenému vyhľadávaniu nevyhovuje žiadna správa, skúste vybrať iný štítok alebo zmeniť vyhľadávací výraz."
