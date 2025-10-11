@@ -22,8 +22,10 @@ module Notifications
         type: Notifications::NewMessageThread,
         message_thread: thread,
         filter_subscription: subscription,
-        filter_name: subscription.filter.name,
+        filter_name: subscription.filter.name
       )
+      url = Rails.application.routes.url_helpers.message_thread_url(thread)
+      WebpushJob.perform_now(I18n.t("filter_subscription.events.Notifications::NewMessageThread.name"), thread.title, message_thread_url(thread), subscription.user)
     end
   end
 end
