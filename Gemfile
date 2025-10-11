@@ -14,6 +14,8 @@ gem 'turbo-rails'
 
 # Styles
 gem 'importmap-rails'
+gem 'importmap-rails'
+gem 'initials'
 gem 'sprockets-rails'
 gem 'tailwindcss-rails'
 gem 'view_component'
@@ -64,14 +66,13 @@ end
 
 group :development do
   gem 'annotate'
-  gem 'erb_lint'
   gem 'htmlbeautifier'
   gem 'listen'
   gem 'rdbg'
-  gem 'rubocop'
   gem 'rubocop-rails'
   gem 'ruby-lsp'
   gem 'ruby-lsp-rails'
+  gem 'web-console'
   gem 'web-console'
 end
 

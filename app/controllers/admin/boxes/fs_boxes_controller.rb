@@ -2,7 +2,7 @@ class Admin::Boxes::FsBoxesController < Admin::BoxesController
   def update
     authorize([:admin, @box])
     if @box.update(uri: "dic://sk/#{box_params.require(:settings_dic)}", **box_params)
-      redirect_to admin_tenant_boxes_url(Current.tenant), notice: "Box was successfully updated."
+      redirect_to admin_tenant_boxes_url(Current.tenant), notice: "Schránka bola úspešne upravená"
     else
       render :edit, status: :unprocessable_entity
     end
