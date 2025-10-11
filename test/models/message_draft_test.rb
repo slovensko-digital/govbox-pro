@@ -92,7 +92,7 @@ class MessageDraftTest < ActiveSupport::TestCase
     box = boxes(:fs_accountants_multiple_api_connections)
     message_draft = messages(:fs_accountants_draft)
 
-    box.other_api_connections.delete(api_connections(:fs_api_connection6))
+    box.api_connections.delete(api_connections(:fs_api_connection6))
 
     user = users(:accountants_user4)
     message_draft.thread.assign_tag(SignedByTag.find_by(owner: user))

@@ -2,18 +2,18 @@
 #
 # Table name: boxes
 #
-#  id                :bigint           not null, primary key
-#  color             :enum
-#  name              :string           not null
-#  settings          :jsonb
-#  short_name        :string
-#  syncable          :boolean          default(TRUE), not null
-#  type              :string
-#  uri               :string           not null
-#  created_at        :datetime         not null
-#  updated_at        :datetime         not null
-#  api_connection_id :bigint
-#  tenant_id         :bigint           not null
+#  id          :bigint           not null, primary key
+#  color       :enum
+#  export_name :string           not null
+#  name        :string           not null
+#  settings    :jsonb            not null
+#  short_name  :string
+#  syncable    :boolean          default(TRUE), not null
+#  type        :string
+#  uri         :string           not null
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#  tenant_id   :bigint           not null
 #
 class Fs::Box < Box
   DISABLED_MESSAGE_DRAFTS_IMPORT_KEYWORDS = ['(oblasť SPD)']
@@ -35,7 +35,7 @@ class Fs::Box < Box
     end
     raise ArgumentError, "Api connection must be provided" unless api_connection
 
-    Box.create!(params.except(:api_connection).merge(type: 'Fs::Box', api_connections: [api_connection]))
+    Box.create!(params.except(:api_connection, :api_connection_id).merge(type: 'Fs::Box', api_connections: [api_connection]))
   end
 
   def sync

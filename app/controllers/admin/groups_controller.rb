@@ -38,7 +38,7 @@ class Admin::GroupsController < ApplicationController
     authorize([:admin, @group], policy_class: Admin::GroupPolicy)
 
     if @group.save
-      redirect_to edit_members_admin_tenant_group_url(Current.tenant, @group, step: :new), notice: 'Group was successfully created'
+      redirect_to edit_members_admin_tenant_group_url(Current.tenant, @group, step: :new), notice: 'Skupina bola úspešne vytvorená'
     else
       render :new, status: :unprocessable_entity
     end
@@ -47,7 +47,7 @@ class Admin::GroupsController < ApplicationController
   def update
     authorize([:admin, @group], policy_class: Admin::GroupPolicy)
     if @group.update(group_params)
-      redirect_to admin_tenant_groups_url(Current.tenant), notice: 'Group was successfully updated'
+      redirect_to admin_tenant_groups_url(Current.tenant), notice: 'Skupina bola úspešne upravená'
     else
       render :edit, status: :unprocessable_entity
     end
@@ -56,7 +56,7 @@ class Admin::GroupsController < ApplicationController
   def destroy
     authorize([:admin, @group], policy_class: Admin::GroupPolicy)
     @group.destroy
-    redirect_to admin_tenant_groups_url(Current.tenant), notice: 'Group was successfully destroyed'
+    redirect_to admin_tenant_groups_url(Current.tenant), notice: 'Skupina bola úspešne odstránená'
   end
 
   def search_non_members

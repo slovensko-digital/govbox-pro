@@ -5,10 +5,12 @@ class Admin::Boxes::UpvsBoxesController < Admin::BoxesController
   end
 
   def create
-    @box = Current.tenant.boxes.new(type: "Upvs::Box", **box_params)
+    api_connection = Current.tenant.api_connections.find(box_params[:api_connection_id])
+    @box = Current.tenant.boxes.new(**box_params.except(:api_connection_id).merge(type: 'Upvs::Box', api_connections: [api_connection]))
+
     authorize([:admin, @box])
     if @box.save
-      redirect_to admin_tenant_boxes_url(Current.tenant), notice: "Box was successfully created."
+      redirect_to admin_tenant_boxes_url(Current.tenant), notice: "Schránka bola úspešne vytvorená"
     else
       render :new, status: :unprocessable_entity
     end
@@ -16,8 +18,8 @@ class Admin::Boxes::UpvsBoxesController < Admin::BoxesController
 
   def update
     authorize([:admin, @box])
-    if @box.update(type: "Upvs::Box", **box_params)
-      redirect_to admin_tenant_boxes_url(Current.tenant), notice: "Box was successfully updated."
+    if @box.update(type: "Upvs::Box", **box_params.except(:api_connection_id))
+      redirect_to admin_tenant_boxes_url(Current.tenant), notice: "Schránka bola úspešne upravená"
     else
       render :edit, status: :unprocessable_entity
     end
@@ -26,6 +28,6 @@ class Admin::Boxes::UpvsBoxesController < Admin::BoxesController
   private
 
   def box_params
-    params.require(:upvs_box).permit(:api_connection_id, :name, :uri, :short_name, :color, :settings_obo)
+    params.require(:upvs_box).permit(:api_connection_id, :name, :uri, :short_name, :export_name, :color, :settings_obo)
   end
 end

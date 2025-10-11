@@ -45,6 +45,46 @@ class FsMessageDraftsApiTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test 'sets metadata' do
+    message_params = {
+      type: 'Fs::MessageDraft',
+      title: 'SVDPH Podanie',
+      uuid: SecureRandom.uuid,
+      metadata: {
+        correlation_id: SecureRandom.uuid
+      },
+      objects: [
+        {
+          name: 'test_svdph.xml',
+          is_signed: false,
+          to_be_signed: true,
+          mimetype: 'text/xml',
+          object_type: 'FORM',
+          content: Base64.encode64(file_fixture("fs/svdph_valid.xml").read)
+        }
+      ]
+    }
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :parse_form, {
+      "subject" => "1122334456",
+      "form_identifier" => "708_599",
+      "period" => {
+        "pretty" => "082025"
+      }
+    },
+    [file_fixture("fs/svdph_valid.xml").read]
+
+    FsEnvironment.fs_client.stub :api, fs_api do
+      post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair)} ), as: :json
+
+      assert_response :created
+      assert_equal "082025", Message.last.metadata['period']
+      assert_equal "SVDPHv20", Message.last.metadata['fs_form_slug']
+      assert_equal "Riadny", Message.last.metadata['fs_form_subtype_name']
+    end
+  end
+
   test 'SignatureRestedTag is assigned from SignerGroup if object marked to_be_signed' do
     message_params = {
       type: 'Fs::MessageDraft',

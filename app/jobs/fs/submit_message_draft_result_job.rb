@@ -4,7 +4,7 @@ class Fs::SubmitMessageDraftResultJob < ApplicationJob
   end
 
   def perform(message_draft, location_header, fs_client: FsEnvironment.fs_client)
-    response = fs_client.api(box: message_draft.thread.box).get_location(location_header)
+    response = fs_client.api(box: message_draft.thread.box, api_connection: message_draft.find_api_connection_for_submission).get_location(location_header)
 
     if 200 == response[:status]
       message_draft.submitted!

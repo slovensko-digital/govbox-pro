@@ -26,7 +26,7 @@ module Authentication
       session[:user_id] = Current.user.id
       session[:login_expires_at] = SESSION_TIMEOUT.from_now
       session[:tenant_id] = Current.user.tenant_id
-      session[:user_profile_picture_url] = auth_hash.info.image if auth_hash.present?
+      session[:user_profile_picture_url] = user_avatar
       session[:box_id] = Current.user.tenant.boxes.first.id if Current.user.tenant.boxes.one?
       session[:upvs_login] = saml_identifier.present?
       redirect_to session[:after_login_path] || default_after_login_path
@@ -64,5 +64,12 @@ module Authentication
 
   def default_after_login_path
     root_path
+  end
+
+  def user_avatar
+    encoded_svg = Base64.strict_encode64(Initials.svg(Current.user.name, size: 34))
+    avatar_src = "data:image/svg+xml;base64,#{encoded_svg}"
+
+    auth_hash&.info&.image.presence || avatar_src
   end
 end

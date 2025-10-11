@@ -12,18 +12,22 @@
 class Export < ApplicationRecord
   belongs_to :user
   before_save :set_default_template
+  before_validation :normalize_settings
+  validate :at_least_one_export_option, unless: :new_record?
 
-  DEFAULT_TEMPLATE = "{{ schranka.nazov }}/vlakno-{{ vlakno.id }}/sprava-{{ sprava.id }}/{{ subor.nazov }}"
+  DEFAULT_TEMPLATE = "{{ schranka.export_nazov }}/vlakno-{{ vlakno.id }}/sprava-{{ sprava.id }}/{{ subor.nazov }}"
 
   REPLACEMENT_MAPPINGS = {
     "{{ schranka.nazov }}" => -> (o) { o.message.thread.box.name },
     "{{ schranka.oficialny_nazov }}" => -> (o) { o.message.thread.box.official_name },
+    "{{ schranka.export_nazov }}" => -> (o) { o.message.thread.box.export_name },
     "{{ schranka.dic }}" => -> (o) { o.message.thread.box.settings["dic"] },
     "{{ vlakno.id }}" => ->(o) { o.message.thread.id },
     "{{ vlakno.obdobie }}" => ->(o) { o.message.thread.metadata["period"] if o.message.thread.metadata&.dig("period") },
     "{{ vlakno.formular }}" => ->(o) { form_name(o) },
     "{{ vlakno.formular_bez_verzie }}" => ->(o) { form_name(o, include_version: false) },
-    "{{ vlakno.datum_podania }}" => ->(o) { o.message.thread.messages.outbox.first.delivered_at&.to_date },
+    "{{ vlakno.datum_podania }}" => ->(o) { o.message.thread.messages.outbox&.first&.delivered_at&.to_date },
+    "{{ vlakno.datum_dorucenia }}" => ->(o) { o.message.delivered_at.to_date },
     "{{ sprava.id }}" => ->(o) { o.message.id },
     "{{ subor.nazov }}" => ->(o) { o.name }
   }.freeze
@@ -83,5 +87,16 @@ class Export < ApplicationRecord
     self.settings ||= {}
     self.settings['templates'] ||= {}
     self.settings['templates']['default'] = DEFAULT_TEMPLATE if settings.dig('templates', 'default').blank?
+  end
+
+  def at_least_one_export_option
+    errors.add(:base, I18n.t('activerecord.errors.models.export.attributes.base.empty_selection')) unless settings['summary'] || settings['messages']
+  end
+
+  def normalize_settings
+    self.settings ||= {}
+    %w[summary messages pdf default].each do |flag|
+      settings[flag] = ActiveModel::Type::Boolean.new.cast(settings[flag]) if settings.key?(flag)
+    end
   end
 end

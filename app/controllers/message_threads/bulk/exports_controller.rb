@@ -4,6 +4,7 @@ module MessageThreads
   module Bulk
     class ExportsController < ApplicationController
       before_action :set_export, only: %i[show edit update start]
+      before_action :load_export_context, only: :edit
 
       def show
         authorize @export
@@ -15,16 +16,6 @@ module MessageThreads
 
       def edit
         authorize @export
-
-        @message_threads = message_thread_policy_scope.where(id: @export.message_thread_ids).includes(:messages)
-        @message_forms = @message_threads.map do |thread|
-          thread.metadata&.dig('fs_form_id')
-        end.then do |ids|
-          Fs::Form.where(id: ids).pluck(:slug).uniq
-        end
-        @message_types = @message_threads.flat_map do |thread|
-          thread.messages.map(&:message_type)
-        end.uniq.compact
       end
 
       def create
@@ -43,6 +34,7 @@ module MessageThreads
         if @export.update(export_params)
           redirect_to edit_message_threads_bulk_export_path(@export), notice: t("exports.flash.updated")
         else
+          load_export_context
           render :edit, status: :unprocessable_entity
         end
       end
@@ -50,8 +42,14 @@ module MessageThreads
       def start
         authorize @export
 
-        @export.start
+        if params[:export].present?
+          unless @export.update(export_params)
+            load_export_context
+            return render :edit, status: :unprocessable_entity
+          end
+        end
 
+        @export.start
         redirect_to root_path, notice: t("exports.flash.started")
       end
 
@@ -67,6 +65,18 @@ module MessageThreads
 
       def export_params
         params.require(:export).permit(settings: {})
+      end
+
+      def load_export_context
+        @message_threads = message_thread_policy_scope.where(id: @export.message_thread_ids).includes(:messages)
+        @message_forms = @message_threads.map do |thread|
+          thread.metadata&.dig('fs_form_id')
+        end.then do |ids|
+          Fs::Form.where(id: ids).pluck(:slug).uniq
+        end
+        @message_types = @message_threads.flat_map do |thread|
+          thread.messages.map(&:message_type)
+        end.uniq.compact
       end
     end
   end

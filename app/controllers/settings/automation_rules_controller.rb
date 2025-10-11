@@ -22,7 +22,7 @@ class Settings::AutomationRulesController < ApplicationController
     @automation_rule.user = Current.user
     authorize @automation_rule, policy_class: Settings::AutomationRulePolicy
     if @automation_rule.save
-      redirect_to settings_automation_rules_path, notice: 'Rule was successfully created'
+      redirect_to settings_automation_rules_path, notice: 'Pravidlo bolo úspešne vytvorené'
     else
       render :new, status: :unprocessable_entity
     end
@@ -31,7 +31,7 @@ class Settings::AutomationRulesController < ApplicationController
   def update
     authorize @automation_rule, policy_class: Settings::AutomationRulePolicy
     if @automation_rule.update(automation_rule_params)
-      redirect_to settings_automation_rules_path, notice: 'Rule was successfully created'
+      redirect_to settings_automation_rules_path, notice: 'Pravidlo bolo úspešne upravené'
     else
       render :edit, status: :unprocessable_entity
     end
@@ -40,7 +40,7 @@ class Settings::AutomationRulesController < ApplicationController
   def destroy
     authorize @automation_rule, policy_class: Settings::AutomationRulePolicy
     @automation_rule.destroy
-    redirect_to settings_automation_rules_path, notice: 'Automation rule was successfully destroyed.'
+    redirect_to settings_automation_rules_path, notice: 'Pravidlo bolo úspešne odstránené'
   end
 
   def header_step
