@@ -8,7 +8,7 @@
 #  mimetype           :string
 #  name               :string
 #  object_type        :string           not null
-#  signed_by_metadata :string
+#  signed_by_metadata :jsonb
 #  uuid               :uuid
 #  visualizable       :boolean
 #  created_at         :datetime         not null
@@ -67,7 +67,9 @@ class MessageObject < ApplicationRecord
     end
   end
 
-  def mark_signed_by_user(user)
+  def mark_signed_by_metadata_or_user(metadata, current_user)
+    user = User.find_by(name: signed_by_common_name(metadata)) || current_user
+
     assign_tag(user.signed_by_tag)
     unassign_tag(user.signature_requested_from_tag)
     unassign_tag(user.tenant.signer_group.signature_requested_from_tag)
@@ -149,6 +151,12 @@ class MessageObject < ApplicationRecord
   end
 
   private
+
+  def signed_by_common_name(metadata)
+    return nil if metadata.blank?
+
+    metadata.split(',').map { |part| part.strip.split('=') }.to_h['CN']
+  end
 
   def allowed_mimetype?
     if mimetype

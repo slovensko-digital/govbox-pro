@@ -421,7 +421,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_11_110055) do
     t.boolean "visualizable"
     t.uuid "uuid"
     t.string "description"
-    t.string "signed_by_metadata"
+    t.jsonb "signed_by_metadata", default: []
     t.index ["message_id"], name: "index_message_objects_on_message_id"
   end
 
@@ -619,7 +619,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_11_110055) do
     t.enum "color", enum_type: "color"
     t.index ["owner_id"], name: "index_tags_on_owner_id"
     t.index ["tenant_id", "type", "name"], name: "index_tags_on_tenant_id_and_type_and_name", unique: true
-    t.index ["tenant_id", "type"], name: "signings_tags", unique: true, where: "((type)::text = ANY ((ARRAY['SignatureRequestedTag'::character varying, 'SignedTag'::character varying])::text[]))"
+    t.index ["tenant_id", "type"], name: "signings_tags", unique: true, where: "((type)::text = ANY (ARRAY[('SignatureRequestedTag'::character varying)::text, ('SignedTag'::character varying)::text]))"
     t.index ["tenant_id"], name: "index_tags_on_tenant_id"
   end
 
