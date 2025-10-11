@@ -14,17 +14,12 @@ class SessionsController < ApplicationController
   end
 
   def create_http_basic
-    authenticated = authenticate_or_request_with_http_basic do |email, password|
+    authenticate_or_request_with_http_basic do |email, password|
       user = User.find_by(email: email)
-      if user&.authenticate(password)
-        Current.user = user
-        true
-      else
-        false
-      end
+      Current.user = user if user&.authenticate(password)
     end
 
-    return unless authenticated
+    return unless Current.user
 
     create_session
     EventBus.publish(:user_logged_in, Current.user)
@@ -33,9 +28,7 @@ class SessionsController < ApplicationController
   def destroy
     EventBus.publish(:user_logged_out, User.find_by(id: session[:user_id])) if session[:user_id]
 
-    if session[:upvs_login]
-      redirect_to upvs_logout_path and return
-    end
+    redirect_to upvs_logout_path and return if session[:upvs_login]
 
     clean_session
 
