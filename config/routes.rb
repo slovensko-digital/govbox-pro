@@ -197,7 +197,10 @@ Rails.application.routes.draw do
   resources :messages_tags
 
   resources :notifications do
-    get :scroll, on: :collection
+    collection do
+      get :scroll
+      get :badge
+    end
   end
 
   resource :settings

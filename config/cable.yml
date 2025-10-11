@@ -1,6 +1,6 @@
 development:
-  adapter: redis
-  url: redis://localhost:6379/1
+  adapter: postgresql
+  url: <%= ENV['DATABASE_URL'] %>
 
 test:
   adapter: test
