@@ -21,4 +21,16 @@ class Notification < ApplicationRecord
   belongs_to :export, optional: true
 
   delegate :filter, to: :filter_subscription
+  after_create_commit :send_webpush
+
+  def sends_webpush?
+    true
+  end
+
+  def send_webpush
+    return unless sends_webpush?
+
+    url = Rails.application.routes.url_helpers.notifications_url
+    WebpushJob.perform_later(I18n.t("webpush.generic_title"), I18n.t("webpush.generic_body"), url, user)
+  end
 end

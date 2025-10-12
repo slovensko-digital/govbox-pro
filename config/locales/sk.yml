@@ -334,6 +334,9 @@ sk:
       create: "Notifikácie boli nastavené!"
       update: "Notifikacie boli zmenené!"
       destroy: "Notifikácie boli zrušené!"
+  webpush:
+    generic_title: "Nová notifikácia"
+    generic_body: "Máte novu notifikáciu"
   signing:
     processed: "Dokumenty boli úspešne podpísané"
     failed: "Pri podpisovaní dokumentov sa vyskytla chyba"
