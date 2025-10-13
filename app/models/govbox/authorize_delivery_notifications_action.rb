@@ -12,8 +12,4 @@ class Govbox::AuthorizeDeliveryNotificationsAction
 
     results.select { |value| value }.present?
   end
-
-  def self.authorize_job
-    Govbox::AuthorizeDeliveryNotificationJob.set(job_context: :asap)
-  end
 end
