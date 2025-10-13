@@ -105,10 +105,9 @@ Govbox::ApiConnectionWithOboSupport.find_or_create_by!(
 ```
 
 ### Push notifications
-Generate VAPID keys:
+Generate VAPID keys, in rails console run:
 ```
-openssl ecparam -name prime256v1 -genkey -noout -out vapid_private.pem
-openssl ec -in vapid_private.pem -pubout -out vapid_public.pem
+WebPush::VapidKey.new
 ```
 - write keys to `.env.local`, example:
 
