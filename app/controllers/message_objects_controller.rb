@@ -13,8 +13,8 @@ class MessageObjectsController < ApplicationController
   def update
     authorize @message_object
 
-    mark_message_object_as_signed(@message_object)
-    
+    @message_object.mark_message_object_as_signed(message_object_params, Current.user)
+
     last_thread_message_draft = @message.thread.message_drafts.includes(objects: :nested_message_objects, attachments: :nested_message_objects).order(delivered_at: :asc)&.last
     @is_last = @message == last_thread_message_draft
   end
@@ -54,7 +54,7 @@ class MessageObjectsController < ApplicationController
     authorize @message_object
 
     head :no_content and return unless @message_object.content.present?
-    
+
     return unless @message_object.form?
 
     render template: 'message_drafts/update_body' unless @message.valid?(:validate_data)
@@ -80,23 +80,5 @@ class MessageObjectsController < ApplicationController
 
   def message_object_params
     params.permit(:name, :mimetype, :content)
-  end
-
-  def mark_message_object_as_signed(message_object)
-    permitted_params = message_object_params
-
-    message_object.transaction do
-      message_object.update!(
-        name: permitted_params[:name],
-        mimetype: permitted_params[:mimetype],
-        is_signed: true
-      )
-
-      message_object.message_object_datum.update!(
-        blob: Base64.decode64(permitted_params[:content])
-      )
-
-      message_object.mark_signed_by_user(Current.user)
-    end
   end
 end
