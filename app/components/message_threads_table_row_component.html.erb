@@ -15,7 +15,7 @@
             <%= render Common::BoxLabelComponent.new(@message_thread.box, "", "text-xs sm:text-sm", "px-2 py-0.5") %>
             <div class="h-6 sm:h-8 w-px bg-gray-900/10" aria-hidden="true" data-content-with-separator-target="separator"></div>
           </div>
-          <% @visible_tags.each do |tag| %>
+          <% visible_tags.each do |tag| %>
             <%= render Common::TagComponent.new(tag) %>
           <% end %>
         </div>

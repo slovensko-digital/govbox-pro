@@ -33,4 +33,8 @@ module ApplicationHelper
       "folder-arrow-down"
     end
   end
+
+  def sort_tags(tags)
+    tags.sort_by(&:name).sort_by { |i| i.type.in?(%w[ValidationWarningTag ValidationErrorTag]) ? 1 : 0 }
+  end
 end

@@ -139,6 +139,6 @@ class MessageThreadsController < ApplicationController
   end
 
   def set_thread_tags
-    @thread_tags = @message_thread.message_threads_tags.only_visible_tags
+    @thread_tags = helpers.sort_tags(@message_thread.message_threads_tags.only_visible_tags)
   end
 end
