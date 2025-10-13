@@ -52,4 +52,28 @@ class Fs::DownloadSentMessageRelatedMessagesJobTest < ActiveJob::TestCase
       end
     end
   end
+
+  test "fetches received message with API connection selected according to outbox message" do
+    outbox_message = messages(:fs_accountants_multiple_api_connections_outbox)
+
+    fs_api = Minitest::Mock.new
+
+    fs_client = Minitest::Mock.new
+    fs_client.expect :api, fs_api, **{api_connection: api_connections(:fs_api_connection5), box: outbox_message.box}
+
+    fs_api.expect :obo_without_delegate, "obo_without_delegate"
+    fs_api.expect :fetch_received_messages, {
+      "count" => 1,
+      "messages" => [
+        {
+          "message_id" => "12345"
+        }
+      ]
+    },
+    **{sent_message_id: outbox_message.metadata['fs_message_id'], page: 1, count: 25, from: nil, to: nil}
+
+    assert_enqueued_with(job: Fs::DownloadReceivedMessageJob) do
+      Fs::DownloadSentMessageRelatedMessagesJob.new.perform(outbox_message, fs_client: fs_client)
+    end
+  end
 end
