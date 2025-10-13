@@ -68,7 +68,7 @@ class MessageObject < ApplicationRecord
   end
 
   def mark_signed_by_metadata_or_user(metadata, current_user)
-    user = User.find_by(name: signed_by_common_name(metadata)) || current_user
+    user = current_user.tenant.users.find_by(name: signed_by_common_name(metadata)) || current_user
 
     assign_tag(user.signed_by_tag)
     unassign_tag(user.signature_requested_from_tag)
