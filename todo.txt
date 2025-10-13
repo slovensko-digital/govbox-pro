@@ -1,0 +1,11 @@
+fallback - genbericka notifka
+later
+zrobit vlastnost specifickej notifikacie sends_push?
+    - a nedat ho export_start-u
+este od Lucky dojde jedna - domergeovat
+
+
+neskor
+- ostatne notifky
+- bundlovac - hardcoded cas, a pamatat si posledne poslanie
+    - plus resetovat pri pozreti notifikacii na frontende

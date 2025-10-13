@@ -14,14 +14,14 @@ class ReindexAndNotifyFilterSubscriptionsJob < ApplicationJob
     key: -> { "ReindexAndNotifyFilterSubscriptionsJob-#{arguments.first}" }
   )
 
-  def perform(thread_id, author = nil)
+  def perform(thread_id, _author = nil)
     thread = MessageThread.find_by(id: thread_id)
 
     return unless thread
 
     MessageThread.transaction do
       candidates = thread.tenant.filter_subscriptions
-      candidates = candidates.where.not(user: author) if author
+      # candidates = candidates.where.not(user: author) if author
 
       matching_before = matching_subscriptions(candidates, thread)
       update_snapshot(thread)
