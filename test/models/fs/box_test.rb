@@ -3,6 +3,8 @@
 require "test_helper"
 
 class Fs::BoxTest < ActiveSupport::TestCase
+  include ActiveJob::TestHelper
+
   test "#after_create callback sets syncable value to true if tenant fs_sync feature is enabled" do
     tenant = tenants(:accountants)
     tenant.enable_feature(:fs_sync)
@@ -121,5 +123,21 @@ class Fs::BoxTest < ActiveSupport::TestCase
       api_connections: [api_connections(:fs_api_connection2)]
     )
     assert different_tenant_box.valid?
+  end
+
+  test "sync method schedules Fs::SyncBoxJob with highest priority" do
+    box = boxes(:fs_accountants)
+
+    assert_enqueued_with(job: Fs::SyncBoxJob, priority: -1000) do
+      box.sync
+    end
+  end
+
+  test "sync_all schedules sync of all boxes with selected API connections" do
+    assert_enqueued_with(job: Fs::SyncBoxJob) do
+      Fs::Box.sync_all
+    end
+
+    assert_enqueued_jobs Fs::Box.joins(:boxes_api_connections).group("boxes_api_connections.settings->>'delegate_id'").count.values.sum
   end
 end
