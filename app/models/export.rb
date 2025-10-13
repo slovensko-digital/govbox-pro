@@ -20,7 +20,7 @@ class Export < ApplicationRecord
   REPLACEMENT_MAPPINGS = {
     "{{ schranka.nazov }}" => -> (o) { o.message.thread.box.name },
     "{{ schranka.oficialny_nazov }}" => -> (o) { o.message.thread.box.official_name },
-    "{{ schranka.export_nazov }}" => -> (o) { o.message.thread.box.export_name },
+    "{{ schranka.export_nazov }}" => -> (o) { o.message.export_metadata_box_name.presence || o.message.thread.box.export_name },
     "{{ schranka.dic }}" => -> (o) { o.message.thread.box.settings["dic"] },
     "{{ vlakno.id }}" => ->(o) { o.message.thread.id },
     "{{ vlakno.obdobie }}" => ->(o) { o.message.thread.metadata["period"] if o.message.thread.metadata&.dig("period") },

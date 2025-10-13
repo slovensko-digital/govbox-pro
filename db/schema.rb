@@ -517,6 +517,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_12_084553) do
     t.boolean "collapsed", default: false, null: false
     t.boolean "outbox", default: false, null: false
     t.index "((metadata ->> 'fs_message_id'::text))", name: "index_messages_on_metadata_fs_message_id", using: :hash
+    t.jsonb "export_metadata", default: {}, null: false
     t.index ["author_id"], name: "index_messages_on_author_id"
     t.index ["import_id"], name: "index_messages_on_import_id"
     t.index ["message_thread_id"], name: "index_messages_on_message_thread_id"

@@ -5,6 +5,7 @@
 #  id                 :bigint           not null, primary key
 #  collapsed          :boolean          default(FALSE), not null
 #  delivered_at       :datetime         not null
+#  export_metadata    :jsonb            not null
 #  html_visualization :text
 #  metadata           :json
 #  outbox             :boolean          default(FALSE), not null

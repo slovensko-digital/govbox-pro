@@ -33,6 +33,11 @@ six:
   type: Automation::ChangeMessageThreadTitleAction
   value: "New title - {{title}}"
 
+add_box_name_to_export_metadata:
+  automation_rule: six
+  type: Automation::AddMessageExportMetadataBoxNameAction
+  value: "BOX NAME"
+
 seven:
   automation_rule: six
   type: Automation::AddMessageThreadTagAction
