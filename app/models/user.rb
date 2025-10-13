@@ -6,6 +6,7 @@
 #  email                        :string           not null
 #  name                         :string           not null
 #  notifications_last_opened_at :datetime
+#  notifications_opened         :boolean          default(FALSE), not null
 #  notifications_reset_at       :datetime
 #  password_digest              :string
 #  saml_identifier              :string
@@ -36,6 +37,7 @@ class User < ApplicationRecord
 
   before_destroy :delete_user_group, prepend: true
   after_create :handle_default_settings
+  after_update :broadcast_badge_update
 
   def site_admin?
     ENV['SITE_ADMIN_EMAILS'].to_s.split(',').include?(email)
@@ -72,14 +74,16 @@ class User < ApplicationRecord
   end
 
   def update_notifications_retention
+    attrs = { notifications_opened: true }
+
     if notifications_reset_at.blank?
-      update(notifications_reset_at: 5.minutes.from_now)
+      attrs[:notifications_reset_at] = 5.minutes.from_now
     elsif notifications_reset_at < Time.current
-      update(
-        notifications_last_opened_at: notifications_reset_at,
-        notifications_reset_at: 5.minutes.from_now
-      )
+      attrs[:notifications_last_opened_at] = notifications_reset_at
+      attrs[:notifications_reset_at] = 5.minutes.from_now
     end
+
+    update(attrs)
   end
 
   private
@@ -99,5 +103,14 @@ class User < ApplicationRecord
       visible: false
     )
     draft_tag.mark_readable_by_groups([user_group])
+  end
+
+  def broadcast_badge_update
+    Turbo::StreamsChannel.broadcast_replace_to(
+      self,
+      target: "notification_badge",
+      partial: "notifications/badge",
+      locals: { user: self }
+    )
   end
 end

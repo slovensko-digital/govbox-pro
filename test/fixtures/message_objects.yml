@@ -137,8 +137,20 @@ ssd_main_draft_form:
   mimetype: application/x-eform-xml
   object_type: FORM
 
+fs_accountants_multiple_api_connections_outbox_form:
+  message: fs_accountants_multiple_api_connections_outbox
+  name: SVDPHv20.asice
+  mimetype: application/vnd.etsi.asic-e+zip
+  object_type: FORM
+
 fs_accountants_outbox_form:
   message: fs_accountants_thread1_outbox_message
+  name: SVDPHv20.asice
+  mimetype: application/vnd.etsi.asic-e+zip
+  object_type: FORM
+
+fs_accountants_draft_form:
+  message: fs_accountants_draft
   name: SVDPHv20.asice
   mimetype: application/vnd.etsi.asic-e+zip
   object_type: FORM
