@@ -14,7 +14,7 @@ class ReindexAndNotifyFilterSubscriptionsJob < ApplicationJob
     key: -> { "ReindexAndNotifyFilterSubscriptionsJob-#{arguments.first}" }
   )
 
-  def perform(thread_id, _author = nil)
+  def perform(thread_id, author = nil)
     thread = MessageThread.find_by(id: thread_id)
 
     return unless thread
