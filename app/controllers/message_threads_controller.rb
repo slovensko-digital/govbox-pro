@@ -42,6 +42,7 @@ class MessageThreadsController < ApplicationController
   def bulk_actions
     authorize MessageThread
 
+    @count_estimate = params[:count_estimate].present? ? params[:count_estimate].to_i : nil
     @ids = params[:message_thread_ids] || []
   end
 
@@ -82,7 +83,7 @@ class MessageThreadsController < ApplicationController
         cursor: cursor
       )
 
-    @message_threads, @next_cursor = result.fetch_values(:records, :next_cursor)
+    @message_threads, @next_cursor, @count_estimate = result.fetch_values(:records, :next_cursor, :count_estimate)
     @next_cursor = MessageThreadCollection.serialize_cursor(@next_cursor)
     @next_page_params = search_params.to_h.merge(cursor: @next_cursor).merge(format: :turbo_stream)
   end

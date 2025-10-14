@@ -31,3 +31,7 @@ ssd_main_draft_to_be_signed3_draft_two_attachment2_signature_requested:
 ssd_main_draft_to_be_signed4_draft_form_signature_requested:
   message_object: ssd_main_draft_to_be_signed4_draft_form
   tag: ssd_signers_signature_requested
+
+fs_accountants_multiple_api_connections_outbox_form_signed_by_tag:
+  message_object: fs_accountants_multiple_api_connections_outbox_form
+  tag: accountants_user2_signed

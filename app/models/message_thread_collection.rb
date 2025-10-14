@@ -30,13 +30,13 @@ class MessageThreadCollection
       tenant: search_permissions.fetch(:tenant)
     )
 
-    ids, next_cursor, highlights = Searchable::MessageThread.search_ids(
+    ids, next_cursor, highlights, count_estimate = Searchable::MessageThread.search_ids(
       filter,
       search_permissions: search_permissions,
       cursor: cursor,
       direction: DIRECTION,
       per_page: PER_PAGE
-    ).fetch_values(:ids, :next_cursor, :highlights)
+    ).fetch_values(:ids, :next_cursor, :highlights, :count_estimate)
 
     message_thread_scope = scope.
       where(id: ids).
@@ -57,7 +57,8 @@ class MessageThreadCollection
 
     {
       records: records,
-      next_cursor: next_cursor
+      next_cursor: next_cursor,
+      count_estimate:,
     }
   end
 
