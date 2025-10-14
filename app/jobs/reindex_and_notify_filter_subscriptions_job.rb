@@ -21,7 +21,7 @@ class ReindexAndNotifyFilterSubscriptionsJob < ApplicationJob
 
     MessageThread.transaction do
       candidates = thread.tenant.filter_subscriptions
-      # candidates = candidates.where.not(user: author) if author
+      candidates = candidates.where.not(user: author) if author
 
       matching_before = matching_subscriptions(candidates, thread)
       update_snapshot(thread)
