@@ -138,7 +138,9 @@ class Message < ApplicationRecord
     return unless form&.xslt_html
     return unless form_object&.unsigned_content
 
-    template = Nokogiri::XSLT(form.xslt_html)
+    customized_xslt = Fs::XsltCustomizer.apply_customizations(form.xslt_html)
+
+    template = Nokogiri::XSLT(customized_xslt)
     template.transform(form_object.xml_unsigned_content)
   end
 
