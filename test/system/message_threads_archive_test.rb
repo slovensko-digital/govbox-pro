@@ -2,6 +2,7 @@ require "application_system_test_case"
 
 class MessageThreadsArchiveTest < ApplicationSystemTestCase
   setup do
+    Searchable::MessageThread.reindex_all
     sign_in_as(:basic)
   end
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_10_10_112150) do
+ActiveRecord::Schema[7.1].define(version: 2025_10_12_084553) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -194,7 +194,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_10_112150) do
     t.boolean "syncable", default: true, null: false
     t.string "short_name"
     t.enum "color", enum_type: "color"
-    t.jsonb "settings"
+    t.jsonb "settings", default: {}, null: false
     t.string "type"
     t.string "export_name", null: false
     t.index ["tenant_id", "short_name"], name: "index_boxes_on_tenant_id_and_short_name", unique: true
@@ -540,6 +540,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_10_112150) do
     t.boolean "collapsed", default: false, null: false
     t.boolean "outbox", default: false, null: false
     t.index "((metadata ->> 'fs_message_id'::text))", name: "index_messages_on_metadata_fs_message_id", using: :hash
+    t.jsonb "export_metadata", default: {}, null: false
     t.index ["author_id"], name: "index_messages_on_author_id"
     t.index ["import_id"], name: "index_messages_on_import_id"
     t.index ["message_thread_id"], name: "index_messages_on_message_thread_id"
@@ -693,6 +694,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_10_112150) do
     t.string "saml_identifier"
     t.datetime "notifications_last_opened_at"
     t.datetime "notifications_reset_at"
+    t.string "password_digest"
+    t.boolean "notifications_opened", default: false, null: false
     t.index "tenant_id, lower((email)::text)", name: "index_users_on_tenant_id_and_lowercase_email", unique: true
   end
 

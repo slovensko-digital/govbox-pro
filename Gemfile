@@ -15,6 +15,7 @@ gem 'turbo-rails'
 # Styles
 gem 'sprockets-rails'
 gem 'importmap-rails'
+gem 'initials'
 gem 'tailwindcss-rails'
 gem 'view_component'
 
@@ -63,12 +64,8 @@ group :development do
   gem 'annotate'
   gem 'listen'
   gem 'web-console'
-  gem 'solargraph'
   gem 'htmlbeautifier'
-  gem 'erb_lint'
-  gem 'ruby-lsp-rails'
   gem 'rdbg'
-  gem 'rubocop'
   gem 'rubocop-rails'
 end
 
@@ -79,3 +76,5 @@ group :test do
   gem 'webmock'
   gem 'simplecov', require: false
 end
+
+gem "bcrypt", "~> 3.1"

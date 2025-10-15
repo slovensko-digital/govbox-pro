@@ -5,6 +5,7 @@
 #  id                 :bigint           not null, primary key
 #  collapsed          :boolean          default(FALSE), not null
 #  delivered_at       :datetime         not null
+#  export_metadata    :jsonb            not null
 #  html_visualization :text
 #  metadata           :json
 #  outbox             :boolean          default(FALSE), not null
@@ -36,6 +37,8 @@ class Message < ApplicationRecord
   has_many :attachments, -> { where(object_type: "ATTACHMENT") }, class_name: 'MessageObject', inverse_of: :message
   # used for joins only
   has_many :message_threads_tags, primary_key: :message_thread_id, foreign_key: :message_thread_id
+
+  store_accessor :export_metadata, :box_name, prefix: true
 
   delegate :tenant, to: :thread
   delegate :box, to: :thread

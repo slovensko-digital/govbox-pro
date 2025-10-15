@@ -6,7 +6,7 @@
 #  color       :enum
 #  export_name :string           not null
 #  name        :string           not null
-#  settings    :jsonb
+#  settings    :jsonb            not null
 #  short_name  :string
 #  syncable    :boolean          default(TRUE), not null
 #  type        :string
@@ -56,7 +56,7 @@ class Box < ApplicationRecord
   end
 
   def self.sync_all
-    find_each(&:sync)
+    where(syncable: true).find_each(&:sync)
   end
 
   def single_recipient?

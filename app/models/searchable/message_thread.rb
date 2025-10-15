@@ -86,6 +86,8 @@ class Searchable::MessageThread < ApplicationRecord
     # remove default order rule given by pg_search
     scope = scope.reorder("")
 
+    count_estimate = calculate_count_estimate(scope:, per_page:)
+
     collection, next_cursor = Pagination.paginate(
       collection: scope,
       cursor: cursor,
@@ -102,12 +104,14 @@ class Searchable::MessageThread < ApplicationRecord
         ids: ids,
         next_cursor: next_cursor,
         highlights: highlights,
+        count_estimate:,
       }
     else
       {
         ids: ids,
         next_cursor: next_cursor,
         highlights: {},
+        count_estimate:,
       }
     end
   end
@@ -120,5 +124,9 @@ class Searchable::MessageThread < ApplicationRecord
 
   def self.reindex_all
     ::MessageThread.includes(:tags, :messages, :message_thread_note, :box).find_each { |mt| ::Searchable::Indexer.index_message_thread(mt) }
+  end
+
+  def self.calculate_count_estimate(scope:, per_page:)
+    scope.limit(101).pluck(:id).count
   end
 end

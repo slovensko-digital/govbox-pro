@@ -6,23 +6,33 @@ class NotificationsTest < ApplicationSystemTestCase
     sign_in_as(:basic)
   end
 
-  test "user can subscribe to a filter and show notifications" do
-    visit message_threads_path
+  test "user can subscribe to a filter" do
+    subscribe_general_threads(:basic)
+  end
 
-    click_link "With General text"
-
-    click_link "Nastaviť notifikácie"
-
-    check "Nová konverzácia"
-    check "Nová správa"
-    check "Zmena poznámky"
-
-    click_button "Nastaviť notifikácie"
-    assert_text "Notifikácie boli nastavené!"
-
+  test "user can subscribe to a filter but should not see notification from his action" do
+    subscribe_general_threads(:basic)
     add_note_to_thread(message_threads(:ssd_main_general))
 
     GoodJob.perform_inline
+
+    find("#user-menu-button").click
+    click_link "Notifikácie"
+
+    refute_text "Zmenená poznámka na vlákne"
+  end
+
+  test "user should see a notification from action from other user" do
+    subscribe_general_threads(:notification_user)
+
+    sign_out
+    sign_in_as(:basic)
+    add_note_to_thread(message_threads(:ssd_main_general))
+
+    GoodJob.perform_inline
+
+    sign_out
+    sign_in_as(:notification_user)
 
     find("#user-menu-button").click
     click_link "Notifikácie"
@@ -38,5 +48,23 @@ class NotificationsTest < ApplicationSystemTestCase
     click_button "Uložiť"
 
     assert_text note
+  end
+
+  def subscribe_general_threads(user)
+    sign_out
+    sign_in_as(user)
+
+    visit message_threads_path
+
+    click_link "With General text"
+
+    click_link "Nastaviť notifikácie"
+
+    check "Nová konverzácia"
+    check "Nová správa"
+    check "Zmena poznámky"
+
+    click_button "Nastaviť notifikácie"
+    assert_text "Notifikácie boli nastavené!"
   end
 end

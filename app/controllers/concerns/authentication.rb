@@ -65,4 +65,11 @@ module Authentication
   def default_after_login_path
     root_path
   end
+
+  def user_avatar
+    encoded_svg = Base64.strict_encode64(Initials.svg(Current.user.name, size: 34))
+    avatar_src = "data:image/svg+xml;base64,#{encoded_svg}"
+
+    auth_hash&.info&.image.presence || avatar_src
+  end
 end

@@ -83,16 +83,8 @@ GEM
       activerecord (>= 3.2, < 8.0)
       rake (>= 10.4, < 14.0)
     ast (2.4.2)
-    backport (1.2.0)
     base64 (0.2.0)
-    benchmark (0.3.0)
-    better_html (2.0.2)
-      actionview (>= 6.0)
-      activesupport (>= 6.0)
-      ast (~> 2.0)
-      erubi (~> 1.4)
-      parser (>= 2.4)
-      smart_properties
+    bcrypt (3.1.20)
     bigdecimal (3.1.6)
     bindex (0.8.1)
     bootsnap (1.18.3)
@@ -135,7 +127,6 @@ GEM
     debug (1.9.1)
       irb (~> 1.10)
       reline (>= 0.3.8)
-    diff-lcs (1.5.1)
     docile (1.4.0)
     domain_name (0.6.20240107)
     dotenv (3.1.0)
@@ -143,14 +134,6 @@ GEM
       dotenv (= 3.1.0)
       railties (>= 6.1)
     drb (2.2.1)
-    e2mmap (0.1.0)
-    erb_lint (0.5.0)
-      activesupport
-      better_html (>= 2.0.1)
-      parser (>= 2.7.1.4)
-      rainbow
-      rubocop
-      smart_properties
     erubi (1.12.0)
     et-orbi (1.2.11)
       tzinfo
@@ -189,11 +172,11 @@ GEM
       actionpack (>= 6.0.0)
       activesupport (>= 6.0.0)
       railties (>= 6.0.0)
+    initials (0.4.3)
     io-console (0.7.2)
     irb (1.11.2)
       rdoc
       reline (>= 0.4.2)
-    jaro_winkler (1.5.6)
     jbuilder (2.11.5)
       actionview (>= 5.0.0)
       activesupport (>= 5.0.0)
@@ -202,10 +185,6 @@ GEM
     json (2.7.1)
     jwt (2.8.1)
       base64
-    kramdown (2.4.0)
-      rexml
-    kramdown-parser-gfm (1.1.0)
-      kramdown (~> 2.0)
     language_server-protocol (3.17.0.3)
     launchy (2.5.2)
       addressable (~> 2.8)
@@ -295,7 +274,6 @@ GEM
     pg_search (2.3.6)
       activerecord (>= 5.2)
       activesupport (>= 5.2)
-    prism (0.19.0)
     pry (0.14.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
@@ -363,7 +341,6 @@ GEM
     rb-fsevent (0.11.2)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
-    rbs (2.8.4)
     rdbg (0.1.0)
       debug (>= 1.2.2)
     rdoc (6.6.2)
@@ -376,8 +353,6 @@ GEM
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
-    reverse_markdown (2.1.1)
-      nokogiri
     rexml (3.2.6)
     rollbar (3.5.1)
     rubocop (1.60.2)
@@ -398,16 +373,6 @@ GEM
       rack (>= 1.1)
       rubocop (>= 1.33.0, < 2.0)
       rubocop-ast (>= 1.30.0, < 2.0)
-    ruby-lsp (0.13.4)
-      language_server-protocol (~> 3.17.0)
-      prism (>= 0.19.0, < 0.20)
-      sorbet-runtime (>= 0.5.10782)
-    ruby-lsp-rails (0.2.9)
-      actionpack (>= 6.0)
-      activerecord (>= 6.0)
-      railties (>= 6.0)
-      ruby-lsp (>= 0.13.0, < 0.14.0)
-      sorbet-runtime (>= 0.5.9897)
     ruby-progressbar (1.13.0)
     ruby-rc4 (0.1.5)
     ruby-saml (1.17.0)
@@ -425,27 +390,9 @@ GEM
       simplecov_json_formatter (~> 0.1)
     simplecov-html (0.12.3)
     simplecov_json_formatter (0.1.4)
-    smart_properties (1.17.0)
     snaky_hash (2.0.1)
       hashie
       version_gem (~> 1.1, >= 1.1.1)
-    solargraph (0.50.0)
-      backport (~> 1.2)
-      benchmark
-      bundler (~> 2.0)
-      diff-lcs (~> 1.4)
-      e2mmap
-      jaro_winkler (~> 1.5)
-      kramdown (~> 2.3)
-      kramdown-parser-gfm (~> 1.1)
-      parser (~> 3.0)
-      rbs (~> 2.0)
-      reverse_markdown (~> 2.0)
-      rubocop (~> 1.38)
-      thor (~> 1.0)
-      tilt (~> 2.0)
-      yard (~> 0.9, >= 0.9.24)
-    sorbet-runtime (0.5.11247)
     sprockets (4.2.1)
       concurrent-ruby (~> 1.0)
       rack (>= 2.2.4, < 4)
@@ -467,7 +414,6 @@ GEM
     tailwindcss-rails (2.3.0-x86_64-linux)
       railties (>= 6.0.0)
     thor (1.3.1)
-    tilt (2.3.0)
     timeout (0.4.1)
     ttfunk (1.7.0)
     turbo-rails (2.0.2)
@@ -502,7 +448,6 @@ GEM
       zeitwerk (>= 2.6)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    yard (0.9.34)
     zeitwerk (2.6.13)
 
 PLATFORMS
@@ -515,6 +460,7 @@ PLATFORMS
 
 DEPENDENCIES
   annotate
+  bcrypt (~> 3.1)
   bootsnap (>= 1.4.4)
   brakeman
   capybara
@@ -522,12 +468,12 @@ DEPENDENCIES
   caxlsx
   clockwork
   dotenv-rails
-  erb_lint
   foreman
   good_job (= 3.29.4)
   grover
   htmlbeautifier
   importmap-rails
+  initials
   jbuilder
   jsbundling-rails
   jwt
@@ -548,13 +494,10 @@ DEPENDENCIES
   rdbg
   rest-client
   rollbar
-  rubocop
   rubocop-rails
-  ruby-lsp-rails
   rubyzip
   selenium-webdriver
   simplecov
-  solargraph
   sprockets-rails
   stimulus-rails
   tailwindcss-rails

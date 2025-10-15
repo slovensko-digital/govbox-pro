@@ -282,6 +282,7 @@ Rails.application.routes.draw do
   get :auth, path: 'prihlasenie', to: 'sessions#login'
   get 'auth/google_oauth2/callback', to: 'sessions#create'
   get 'auth/google_oauth2/failure', to: 'sessions#failure'
+  get 'auth/http', to: 'sessions#create_http_basic'
 
   get "/service-worker.js" => "service_worker#service_worker"
   get "/manifest.json" => "service_worker#manifest"

@@ -1,5 +1,4 @@
 class Api::MessagesController < Api::TenantController
-  before_action :set_en_locale
   before_action :load_box, only: :message_drafts
   before_action :check_message_type, only: :message_drafts
   before_action :check_tags, only: :message_drafts
