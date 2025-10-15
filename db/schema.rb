@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_09_18_181423) do
+ActiveRecord::Schema[7.1].define(version: 2025_10_10_112150) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -47,6 +47,29 @@ ActiveRecord::Schema[7.1].define(version: 2025_09_18_181423) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "agp_bundles", force: :cascade do |t|
+    t.uuid "bundle_identifier", null: false
+    t.integer "status", default: 0, null: false
+    t.bigint "tenant_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["bundle_identifier"], name: "index_agp_bundles_on_bundle_identifier", unique: true
+    t.index ["tenant_id"], name: "index_agp_bundles_on_tenant_id"
+  end
+
+  create_table "agp_contracts", force: :cascade do |t|
+    t.uuid "contract_identifier", null: false
+    t.bigint "message_object_id", null: false
+    t.datetime "message_object_updated_at", null: false
+    t.bigint "agp_bundle_id", null: false
+    t.integer "status", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["agp_bundle_id"], name: "index_agp_contracts_on_agp_bundle_id"
+    t.index ["contract_identifier"], name: "index_agp_contracts_on_contract_identifier", unique: true
+    t.index ["message_object_id"], name: "index_agp_contracts_on_message_object_id"
   end
 
   create_table "api_connections", force: :cascade do |t|
@@ -618,7 +641,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_09_18_181423) do
     t.enum "color", enum_type: "color"
     t.index ["owner_id"], name: "index_tags_on_owner_id"
     t.index ["tenant_id", "type", "name"], name: "index_tags_on_tenant_id_and_type_and_name", unique: true
-    t.index ["tenant_id", "type"], name: "signings_tags", unique: true, where: "((type)::text = ANY (ARRAY[('SignatureRequestedTag'::character varying)::text, ('SignedTag'::character varying)::text]))"
+    t.index ["tenant_id", "type"], name: "signings_tags", unique: true, where: "((type)::text = ANY ((ARRAY['SignatureRequestedTag'::character varying, 'SignedTag'::character varying])::text[]))"
     t.index ["tenant_id"], name: "index_tags_on_tenant_id"
   end
 
@@ -675,6 +698,9 @@ ActiveRecord::Schema[7.1].define(version: 2025_09_18_181423) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "agp_bundles", "tenants"
+  add_foreign_key "agp_contracts", "agp_bundles"
+  add_foreign_key "agp_contracts", "message_objects"
   add_foreign_key "api_connections", "tenants"
   add_foreign_key "api_connections", "users", column: "owner_id"
   add_foreign_key "archived_object_versions", "archived_objects"
