@@ -3,6 +3,8 @@
     <% if @message_object_ids.present? %>
       <% if @next_step == "sign" %>
         <%= submit_tag "Podpísať Autogramom", formaction: message_draft_signing_path(@message_draft), formmethod: :post, data: { turbo_frame: "modal" }, class: "inline-flex w-full justify-center items-center px-3 py-2 rounded-md font-medium text-left text-sm text-white bg-blue-700 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 focus:outline-none dark:focus:ring-blue-800 hover:cursor-pointer sm:w-auto" %>
+      <% elsif @next_step == "sign-agp" %>
+        <%= submit_tag "Pokračovať", formaction: new_agp_bundle_path(message_draft_id: @message_draft.id, object_ids: @message_draft.objects.map(&:id)), formmethod: :post, data: { turbo_frame: "modal" }, class: "inline-flex w-full justify-center items-center px-3 py-2 rounded-md font-medium text-left text-sm text-white bg-blue-700 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 focus:outline-none dark:focus:ring-blue-800 hover:cursor-pointer sm:w-auto" %>
       <% else %>
         <%= submit_tag "Vybrať podpisujúcich", formaction: edit_message_draft_signature_requests_path(@message_draft), formmethod: :post, data: { turbo_frame: "modal" }, class: "inline-flex w-full justify-center items-center px-3 py-2 rounded-md font-medium text-left text-sm text-white bg-blue-700 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 focus:outline-none dark:focus:ring-blue-800 hover:cursor-pointer sm:w-auto" %>
       <% end %>

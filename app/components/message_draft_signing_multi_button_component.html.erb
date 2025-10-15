@@ -32,6 +32,17 @@
             Podpísať
           <% end %>
 
+          <% if @agp_enabled %>
+            <%= link_to new_message_draft_document_selections_path(@message, next_step: "sign-agp"),
+                        data: { turbo_frame: "modal" },
+                        class: "whitespace-nowrap flex gap-3",
+                        role: "menu-item",
+                        tabindex: -1 do %>
+              <%= render Common::IconComponent.new("fingerprint", classes: "w-5 h-5 text-gray-400") %>
+              Autogram Portal
+            <% end %>
+          <% end %>
+
           <%= link_to new_message_draft_document_selections_path(@message),
                       data: { turbo_frame: "modal" },
                       class: "whitespace-nowrap flex gap-3",
