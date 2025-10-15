@@ -1,0 +1,25 @@
+<%= tag.turbo_frame id: "modal" do %>
+  <%= render Common::ModalComponent.new(closable: true) do |modal| %>
+    <% modal.with_header do %>
+      Podpisovanie cez Autogram Portal
+    <% end %>
+    <% modal.with_modal_content do %>
+      <div class="py-4">
+        <% if @bundle.init? %>
+          <p class="pb-4">
+            Balík dokumentov sa inicializuje. Počkajte prosím, kým sa proces dokončí.
+          </p>
+          <div>
+            <%= link_to "Skontrolovať stav", agp_bundle_path(@bundle), method: :get, data: { turbo_frame: "modal" }, class: "inline-flex w-full justify-center rounded-md px-3 py-2 text-sm font-semibold bg-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:w-auto" %>
+          </div>
+        <% elsif @bundle.init_failed? %>
+          <p class="pb-4 text-red-600">
+            Nastala chyba pri inicializácii bundle. Skúste to prosím znova.
+          </p>
+        <% elsif @bundle.created? %>
+          <%= render "created" %>
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
+<% end %>
