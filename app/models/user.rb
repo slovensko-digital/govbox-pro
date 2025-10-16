@@ -106,7 +106,7 @@ class User < ApplicationRecord
   end
 
   def broadcast_badge_update
-    Turbo::StreamsChannel.broadcast_replace_to(
+    Turbo::StreamsChannel.broadcast_update_to(
       self,
       target: "notification_badge",
       partial: "notifications/badge",
