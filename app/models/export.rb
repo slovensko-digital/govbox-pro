@@ -29,7 +29,7 @@ class Export < ApplicationRecord
     "{{ vlakno.datum_podania }}" => ->(o) { o.message.thread.messages.outbox&.first&.delivered_at&.to_date },
     "{{ vlakno.datum_dorucenia }}" => ->(o) { o.message.delivered_at.to_date },
     "{{ sprava.id }}" => ->(o) { o.message.id },
-    "{{ subor.nazov }}" => ->(o) { o.name }
+    "{{ subor.nazov }}" => ->(o) { MessageObjectHelper.displayable_name(o) }
   }.freeze
 
   def start
