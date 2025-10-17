@@ -74,6 +74,22 @@ class MessageObject < ApplicationRecord
     thread.mark_signed_by_user(user)
   end
 
+  def mark_message_object_as_signed(params, user)
+    transaction do
+      update!(
+        name: params[:name],
+        mimetype: params[:mimetype],
+        is_signed: true
+      )
+
+      message_object_datum.update!(
+        blob: Base64.decode64(params[:content])
+      )
+
+      mark_signed_by_user(user)
+    end
+  end
+
   def add_signature_requested_from_group(group)
     return if has_tag?(group.signed_by_tag)
 
