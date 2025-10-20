@@ -74,7 +74,7 @@ class MessageObject < ApplicationRecord
     thread.mark_signed_by_user(user)
   end
 
-  def mark_message_object_as_signed(params, user)
+  def mark_as_signed!(params, user)
     transaction do
       update!(
         name: params[:name],

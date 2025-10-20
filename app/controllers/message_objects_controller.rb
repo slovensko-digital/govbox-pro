@@ -13,7 +13,7 @@ class MessageObjectsController < ApplicationController
   def update
     authorize @message_object
 
-    @message_object.mark_message_object_as_signed(message_object_params, Current.user)
+    @message_object.mark_as_signed!(message_object_params, Current.user)
 
     last_thread_message_draft = @message.thread.message_drafts.includes(objects: :nested_message_objects, attachments: :nested_message_objects).order(delivered_at: :asc)&.last
     @is_last = @message == last_thread_message_draft

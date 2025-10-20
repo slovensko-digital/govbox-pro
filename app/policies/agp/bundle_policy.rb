@@ -1,7 +1,5 @@
 module Agp
   class BundlePolicy < ApplicationPolicy
-    # TODO: revise policies
-
     def show?
       record.tenant_id == user.tenant_id
     end

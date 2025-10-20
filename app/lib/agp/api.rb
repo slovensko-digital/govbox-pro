@@ -58,21 +58,21 @@ module Agp
     private
 
     def request_post(path, body)
-      begin
-        response = Faraday.post(File.join(@url, "api/v1/", path), body.to_json, jwt_header.merge({ content_type: 'application/json' }))
-        structure = response.body.empty? ? nil : JSON.parse(response.body)
-      rescue StandardError => error
-        raise StandardError.new(error.response) if error.respond_to?(:response) && error.response
-        raise error
-      else
-        raise ConflictResponseError.new(response.body) if response.status == 409
-        raise StandardError.new(response.body) if response.status != 404 && response.status > 400
-        {
-          status: response.status,
-          body: structure,
-          headers: response.headers
-        }
-      end
+      response = Faraday.post(File.join(@url, "api/v1/", path), body.to_json, jwt_header.merge({ content_type: 'application/json' }))
+      structure = response.body.empty? ? nil : JSON.parse(response.body)
+    rescue StandardError => e
+      raise(StandardError, e.response) if e.respond_to?(:response) && e.response
+
+      raise e
+    else
+      raise(ConflictResponseError, response.body) if response.status == 409
+      raise(StandardError, response.body) if response.status != 404 && response.status > 400
+
+      {
+        status: response.status,
+        body: structure,
+        headers: response.headers
+      }
     end
 
     def request(method, path, *args)
@@ -139,15 +139,16 @@ module Agp
     end
 
     def request_url(method, path, *args)
-      Rails.logger.info("AGP request: #{method} #{path} #{args.inspect}")
       response = @handler.public_send(method, path, *args)
       structure = response.body.empty? ? nil : JSON.parse(response.body)
-    rescue StandardError => error
-      raise StandardError.new(error.response) if error.respond_to?(:response) && error.response
-      raise error
+    rescue StandardError => e
+      raise(StandardError, e.response) if e.respond_to?(:response) && e.response
+
+      raise e
     else
-      raise ConflictResponseError.new(response.body) if response.status == 409
-      raise StandardError.new(response.body) if response.status != 404 && response.status > 400
+      raise(ConflictResponseError, response.body) if response.status == 409
+      raise(StandardError, response.body) if response.status != 404 && response.status > 400
+
       {
         status: response.status,
         body: structure,

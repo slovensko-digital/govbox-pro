@@ -7,10 +7,6 @@ module Agp
 
     def show
       authorize @bundle
-
-      # respond_to do |format|
-      #   format.turbo_stream
-      # end
     end
 
     def new
