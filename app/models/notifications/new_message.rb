@@ -30,5 +30,12 @@ module Notifications
         )
       end
     end
+
+    def send_webpush
+      return unless sends_webpush?
+
+      url = Rails.application.routes.url_helpers.message_thread_url(message_thread, anchor: ActionView::RecordIdentifier.dom_id(message))
+      WebpushJob.perform_later(I18n.t("filter_subscription.events.Notifications::NewMessage.name"), message_thread.title, url, user)
+    end
   end
 end
