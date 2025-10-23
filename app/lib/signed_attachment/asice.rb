@@ -77,8 +77,7 @@ class SignedAttachment::Asice
     payload_documents.each do |payload_document|
       next unless Utils.mimetype_without_optional_params(payload_document.mimetype) == Utils::OCTET_STREAM_MIMETYPE
 
-      safe_name = xpath_safe_string(payload_document.name)
-      mimetype_from_manifest = xml_manifest.xpath("//manifest:file-entry[@manifest:full-path = #{safe_name}]/@manifest:media-type")&.first&.value
+      mimetype_from_manifest = xml_manifest.xpath("//manifest:file-entry[@manifest:full-path = $name]/@manifest:media-type", nil, name: payload_document.name)&.first&.value
 
       next unless mimetype_from_manifest.present?
 
@@ -95,14 +94,5 @@ class SignedAttachment::Asice
     end
 
     manifest_file_content
-  end
-
-  def self.xpath_safe_string(str)
-    if str.include?("'")
-      parts = str.split("'").map { |part| "'#{part}'" }
-      "concat(#{parts.join(%q{, "'", })})"
-    else
-      "'#{str}'"
-    end
   end
 end
