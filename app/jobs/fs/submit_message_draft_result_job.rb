@@ -12,7 +12,7 @@ class Fs::SubmitMessageDraftResultJob < ApplicationJob
       message_draft.remove_cascading_tag(message_draft.tenant.submission_error_tag)
       message_draft.save
 
-      ::Fs::DownloadSentMessageJob.perform_later(response[:body]['sent_message_id'], box: message_draft.box)
+      ::Fs::DownloadSentMessageJob.perform_later(response[:body]['sent_message_id'], message_draft: message_draft)
     elsif [400, 422].include?(response[:status])
       message_draft.metadata[:status] = 'submit_fail'
       message_draft.add_cascading_tag(message_draft.tenant.submission_error_tag)
