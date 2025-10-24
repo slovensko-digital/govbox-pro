@@ -48,9 +48,14 @@ class Tenant < ApplicationRecord
   validates_presence_of :name
 
   AVAILABLE_FEATURE_FLAGS = [:audit_log, :archive, :api, :fs_sync]
-  ALL_FEATURE_FLAGS = [:audit_log, :archive, :api, :message_draft_import, :fs_api, :fs_sync]
+  ALL_FEATURE_FLAGS = [:audit_log, :archive, :api, :message_draft_import, :fs_api, :fs_sync, :autogram_portal]
 
   PDF_SIGNATURE_FORMATS = %w[PAdES XAdES CAdES]
+
+  def agp_sub
+    # TODO
+    1
+  end
 
   def set_pdf_signature_format(pdf_signature_format)
     raise "Unknown pdf_signature_format #{pdf_signature_format}" unless pdf_signature_format.in? PDF_SIGNATURE_FORMATS
