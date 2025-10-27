@@ -2,6 +2,8 @@ module Agp
   class AcceptSignedContractJob < ApplicationJob
     def perform(contract_id)
       contract = Agp::Contract.find_by!(contract_identifier: contract_id)
+      return unless contract.created?
+
       message_object = contract.message_object
 
       agp_api = SigningEnvironment.signing_client.api(tenant: message_object.tenant)

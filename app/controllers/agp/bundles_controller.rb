@@ -18,7 +18,7 @@ module Agp
       authorize(Agp::Bundle)
       @bundle = Agp::Bundle.find_by(bundle_identifier: bundle_params[:bundle_identifier]) || Agp::Bundle.new(**bundle_params, tenant: Current.tenant)
       if @bundle.save
-        Agp::UploadBundleJob.new.perform(@bundle) if @bundle.init?
+        Agp::UploadBundleJob.new.perform(@bundle)
         redirect_to @bundle
       else
         render :new, status: :unprocessable_entity

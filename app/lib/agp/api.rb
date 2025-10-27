@@ -55,6 +55,10 @@ module Agp
       end
     end
 
+    def retrieve_contract_status(contract_id)
+      request(:get, "contracts/#{CGI.escape(contract_id)}/status")
+    end
+
     private
 
     def request_post(path, body)

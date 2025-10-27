@@ -11,20 +11,26 @@
 #  agp_bundle_id             :bigint           not null
 #  message_object_id         :bigint           not null
 #
-class Agp::Contract < ApplicationRecord
-  belongs_to :bundle, class_name: "Agp::Bundle", foreign_key: "agp_bundle_id", inverse_of: :contracts
-  belongs_to :message_object, class_name: "MessageObject", optional: false
+module Agp
+  class Contract < ApplicationRecord
+    belongs_to :bundle, class_name: "Agp::Bundle", foreign_key: "agp_bundle_id", inverse_of: :contracts
+    belongs_to :message_object, class_name: "MessageObject", optional: false
 
-  enum status: ["init", "init_failed", "created", "completed", "failed"]
+    enum status: { "init" => 0, "init_failed" => 1, "created" => 2, "completed" => 3, "failed" => 4 }
 
-  before_validation :set_contract_identifier, on: :create
+    before_validation :set_contract_identifier, on: :create
 
-  validates :contract_identifier, presence: true, uniqueness: true
-  validates :message_object_updated_at, presence: true
+    validates :contract_identifier, presence: true, uniqueness: true
+    validates :message_object_updated_at, presence: true
 
-  private
+    def timed_out?
+      Time.zone.now > (updated_at + 15.minutes)
+    end
 
-  def set_contract_identifier
-    self.contract_identifier ||= SecureRandom.uuid
+    private
+
+    def set_contract_identifier
+      self.contract_identifier ||= SecureRandom.uuid
+    end
   end
 end

@@ -54,7 +54,7 @@ class Tenant < ApplicationRecord
 
   def agp_sub
     # TODO
-    1
+    ENV.fetch("AGP_API_SUB", "1")
   end
 
   def set_pdf_signature_format(pdf_signature_format)
