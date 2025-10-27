@@ -62,7 +62,7 @@ module Agp
     private
 
     def request_post(path, body)
-      response = Faraday.post(File.join(@url, "api/v1/", path), body.to_json, jwt_header.merge({ content_type: 'application/json' }))
+      response = Faraday.post("#{File.join(@url, "api/v1/", path)}?token=#{jwt_token}", body.to_json, { content_type: 'application/json' })
       structure = response.body.empty? ? nil : JSON.parse(response.body)
     rescue StandardError => e
       raise(StandardError, e.response) if e.respond_to?(:response) && e.response
@@ -79,8 +79,8 @@ module Agp
       }
     end
 
-    def request(method, path, *args)
-      request_url(method, File.join(@url, "api/v1/", path), *args, jwt_header.merge({ content_type: 'application/json' }))
+    def request(method, path)
+      request_url(method, "#{File.join(@url, "api/v1/", path)}?token=#{jwt_token}", {}, { content_type: 'application/json' })
     end
 
     def generate_document_body(mo)
@@ -128,8 +128,8 @@ module Agp
       r
     end
 
-    def jwt_header
-      token = JWT.encode(
+    def jwt_token
+      JWT.encode(
         {
           sub: @sub,
           exp: 5.minutes.from_now.to_i,
@@ -138,8 +138,6 @@ module Agp
         @api_token_private_key,
         'RS256'
       )
-
-      { Authorization: "Bearer #{token}" }
     end
 
     def request_url(method, path, *args)
