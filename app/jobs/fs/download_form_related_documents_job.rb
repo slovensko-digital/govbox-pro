@@ -4,5 +4,6 @@ class Fs::DownloadFormRelatedDocumentsJob < ApplicationJob
 
     fs_form_downloader.download_related_document_by_type(:xsd)
     fs_form_downloader.download_related_document_by_type(:xslt_txt)
+    fs_form_downloader.download_related_document_by_type(:xslt_html)
   end
 end
