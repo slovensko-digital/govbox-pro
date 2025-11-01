@@ -13,7 +13,7 @@ module Fs::MessageHelper
   end
 
   def self.build_html_visualization_from_form(message)
-    raise 'Missing Fs::Form XSLT' unless message.form&.xslt_txt
+    raise 'Missing Fs::Form XSLT' unless message.form&.xslt_html
     return unless message.form_object&.unsigned_content
 
     template = Nokogiri::XSLT(message.form.xslt_html)
@@ -28,7 +28,7 @@ module Fs::MessageHelper
     doc.css('script[src]').each do |script|
       src = script['src']
       if src && !src.start_with?('http') && !src.start_with?('//')
-        clean_src = src.gsub(/^\.\.?\//, '')
+        clean_src = src.gsub(%r{^\.\.?/}, '')
         script['src'] = "#{base_url}/#{clean_src}"
       end
     end
@@ -36,7 +36,7 @@ module Fs::MessageHelper
     doc.css('link[rel="stylesheet"][href]').each do |link|
       href = link['href']
       if href && !href.start_with?('http') && !href.start_with?('//')
-        clean_href = href.gsub(/^\.\.?\//, '')
+        clean_href = href.gsub(%r{^\.\.?/}, '')
         link['href'] = "#{base_url}/#{clean_href}"
       end
     end
@@ -44,7 +44,7 @@ module Fs::MessageHelper
     doc.css('img[src]').each do |img|
       src = img['src']
       if src && !src.start_with?('http') && !src.start_with?('data:') && !src.start_with?('//')
-        clean_src = src.gsub(/^\.\.?\//, '')
+        clean_src = src.gsub(%r{^\.\.?/}, '')
         img['src'] = "#{base_url}/#{clean_src}"
       end
     end
