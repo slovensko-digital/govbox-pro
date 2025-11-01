@@ -25,27 +25,19 @@ module Fs::MessageHelper
 
     doc = Nokogiri::HTML::DocumentFragment.parse(transformed_html)
 
-    doc.css('script[src]').each do |script|
-      src = script['src']
-      if src && !src.start_with?('http') && !src.start_with?('//')
-        clean_src = src.gsub(%r{^\.\.?/}, '')
-        script['src'] = "#{base_url}/#{clean_src}"
-      end
-    end
+    {
+      'script[src]' => 'src',
+      'link[rel="stylesheet"][href]' => 'href',
+      'img[src]' => 'src'
+    }.each do |selector, attr|
+      doc.css(selector).each do |el|
+        url = el[attr]
+        next unless url
 
-    doc.css('link[rel="stylesheet"][href]').each do |link|
-      href = link['href']
-      if href && !href.start_with?('http') && !href.start_with?('//')
-        clean_href = href.gsub(%r{^\.\.?/}, '')
-        link['href'] = "#{base_url}/#{clean_href}"
-      end
-    end
+        next if url.start_with?('http', '//', 'data:')
 
-    doc.css('img[src]').each do |img|
-      src = img['src']
-      if src && !src.start_with?('http') && !src.start_with?('data:') && !src.start_with?('//')
-        clean_src = src.gsub(%r{^\.\.?/}, '')
-        img['src'] = "#{base_url}/#{clean_src}"
+        clean = url.gsub(%r{^\.\.?/}, '')
+        el[attr] = "#{base_url}/#{clean}"
       end
     end
 
