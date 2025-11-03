@@ -1,5 +1,6 @@
 class ReindexAndNotifyFilterSubscriptionsJob < ApplicationJob
   include GoodJob::ActiveJobExtensions::Concurrency
+  include DiscardOnDeserializationError
 
   good_job_control_concurrency_with(
     # Maximum number of unfinished jobs to allow with the concurrency key
