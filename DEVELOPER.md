@@ -58,6 +58,17 @@ env RAILS_ENV=test ././bin/setup
 yarn
 ```
 
+### Seed the database
+
+After configuring your admin email and setting up the database, run:
+
+```console
+./bin/rails db:seed
+```
+
+> [!NOTE]
+> Make sure you have set `SITE_ADMIN_EMAILS` in your `.env.local` file before running the seed command, as this creates the admin account and other initial data.
+
 ### Run local development environment
 
 ```console
