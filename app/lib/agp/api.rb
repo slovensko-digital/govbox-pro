@@ -89,7 +89,7 @@ module Agp
       r[:xdcParameters] = generate_xdc_parameters(mo) if mo.object_type == "FORM"
 
       if mo.mimetype.include?("base64")
-        r[:contentType] = mo.mimetype
+        r[:contentType] = mo.mimetype.gsub("application/x-eform-xml", "application/xml")
         r[:content] = mo.message_object_datum.blob
       else
         r[:contentType] = "#{mo.mimetype};base64"
