@@ -1,9 +1,15 @@
 <% if @signable %>
   <div class="inline-flex rounded-lg shadow-sm">
-    <%= link_to "Podpísať",
-                new_message_draft_document_selections_path(@message, next_step: "sign"),
-                data: { turbo_frame: "modal" },
-                class: "relative inline-flex items-center rounded-l-lg bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10" %>
+    <% if @agp_enabled %>
+      <%= link_to "Podpísať", new_message_draft_document_selections_path(@message, next_step: "sign-agp"),
+                  data: { turbo_frame: "modal" },
+                  class: "relative inline-flex items-center rounded-l-lg bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10" %>
+    <% else %>
+      <%= link_to "Podpísať",
+                  new_message_draft_document_selections_path(@message, next_step: "sign"),
+                  data: { turbo_frame: "modal" },
+                  class: "relative inline-flex items-center rounded-l-lg bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10" %>
+    <% end %>
 
     <div class="relative -ml-px block" data-controller="dropdown" data-action="click->dropdown#toggle click@window->dropdown#hide">
       <button type="button" data-dropdown-target="button" class="relative inline-flex items-center rounded-r-lg bg-white px-2 py-2.5 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10" id="option-menu-button" aria-expanded="true" aria-haspopup="true">
@@ -29,18 +35,7 @@
                       role: "menu-item",
                       tabindex: -1 do %>
             <%= render Common::IconComponent.new("fingerprint", classes: "w-5 h-5 text-gray-400") %>
-            Podpísať
-          <% end %>
-
-          <% if @agp_enabled %>
-            <%= link_to new_message_draft_document_selections_path(@message, next_step: "sign-agp"),
-                        data: { turbo_frame: "modal" },
-                        class: "whitespace-nowrap flex gap-3",
-                        role: "menu-item",
-                        tabindex: -1 do %>
-              <%= render Common::IconComponent.new("fingerprint", classes: "w-5 h-5 text-gray-400") %>
-              Autogram Portal
-            <% end %>
+            Podpísať lokálne
           <% end %>
 
           <%= link_to new_message_draft_document_selections_path(@message),
