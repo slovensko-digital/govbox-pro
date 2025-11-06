@@ -92,7 +92,7 @@ module Agp
         r[:contentType] = mo.mimetype.gsub("application/x-eform-xml", "application/xml")
         r[:content] = mo.message_object_datum.blob
       else
-        r[:contentType] = "#{mo.mimetype};base64"
+        r[:contentType] = "#{mo.mimetype.gsub("application/x-eform-xml", "application/xml")};base64"
         r[:content] = Base64.strict_encode64(mo.message_object_datum.blob)
       end
 
