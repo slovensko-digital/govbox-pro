@@ -13,34 +13,40 @@ module Fs::MessageHelper
   end
 
   def self.build_html_visualization_from_form(message)
-    raise 'Missing Fs::Form XSLT' unless message.form&.xslt_html
     return unless message.form_object&.unsigned_content
 
-    template = Nokogiri::XSLT(message.form.xslt_html)
-    transformed_html = template.transform(message.form_object.xml_unsigned_content).to_s
+    xslt = message.form&.xslt_html || message.form&.xslt_txt
+    raise 'Missing Fs::Form XSLT (HTML and TXT both unavailable)' unless xslt
 
-    forms_storage_url = ENV['FS_FORMS_STORAGE_API_URL']
-    form_path = "#{message.form.slug}/1.0/Content"
-    base_url = "#{forms_storage_url}/#{form_path}"
+    template = Nokogiri::XSLT(xslt)
+    transformed_content = template.transform(message.form_object.xml_unsigned_content).to_s
 
-    doc = Nokogiri::HTML::DocumentFragment.parse(transformed_html)
+    if xslt == message.form&.xslt_txt
+      transformed_content = ActionController::Base.helpers.simple_format(transformed_content)
+    else
+      forms_storage_url = ENV['FS_FORMS_STORAGE_API_URL']
+      form_path = "#{message.form.slug}/1.0/Content"
+      base_url = "#{forms_storage_url}/#{form_path}"
 
-    {
-      'script[src]' => 'src',
-      'link[rel="stylesheet"][href]' => 'href',
-      'img[src]' => 'src'
-    }.each do |selector, attr|
-      doc.css(selector).each do |el|
-        url = el[attr]
-        next unless url
+      doc = Nokogiri::HTML::DocumentFragment.parse(transformed_content)
 
-        next if url.start_with?('http', '//', 'data:')
-
-        clean = url.gsub(%r{^\.\.?/}, '')
-        el[attr] = "#{base_url}/#{clean}"
+      {
+        'script[src]' => 'src',
+        'link[rel="stylesheet"][href]' => 'href',
+        'img[src]' => 'src'
+      }.each do |selector, attr|
+        doc.css(selector).each do |el|
+          url = el[attr]
+          next unless url
+          next if url.start_with?('http', '//', 'data:')
+          clean = url.gsub(%r{^\.\.?/}, '')
+          el[attr] = "#{base_url}/#{clean}"
+        end
       end
+
+      transformed_content = doc.to_html
     end
 
-    ActionController::Base.new.render_to_string('fs/messages/_style', layout: false, locals: { message: message }) + doc.to_html
+    ActionController::Base.new.render_to_string('fs/messages/_style', layout: false, locals: { message: message }) + transformed_content
   end
 end
