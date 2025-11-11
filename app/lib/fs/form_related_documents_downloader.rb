@@ -18,8 +18,8 @@ class Fs::FormRelatedDocumentsDownloader < ::Utils::Downloader
       related_document_path = XSD_PATH
       related_document_type = 'CLS_F_XSD_EDOC'
     when :xslt_html
-      related_document_node = xml_manifest.at_xpath('//manifest:file-entry[@media-destination="x-xslt-ro"]')
-      related_document_path = related_document_node&.[]('full-path')&.gsub(/\\/, '/')
+      related_document_path = xml_manifest.xpath('//manifest:file-entry[@media-destination="x-xslt-ro"]')&.first&.[]('full-path')
+      related_document_path&.gsub!(/\\/, '/')
       related_document_type = 'CLS_F_XSLT_HTML'
     when :xslt_txt
       related_document_path = xml_manifest.xpath('//manifest:file-entry[@media-destination="sign"]')&.first['full-path']
