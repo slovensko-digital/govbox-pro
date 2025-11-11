@@ -39,8 +39,9 @@ module Fs::MessageHelper
           url = el[attr]
           next unless url
           next if url.start_with?('http', '//', 'data:')
-          clean = url.gsub(%r{^\.\.?/}, '')
-          el[attr] = "#{base_url}/#{clean}"
+
+          normalized_path = url.gsub(%r{^\.\.?/}, '')
+          el[attr] = "#{base_url}/#{normalized_path}"
         end
       end
 
