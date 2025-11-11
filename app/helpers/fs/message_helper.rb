@@ -45,7 +45,7 @@ module Fs::MessageHelper
         end
       end
 
-      transformed_content = doc.to_html
+      transformed_content = doc.to_html.html_safe
     end
 
     ActionController::Base.new.render_to_string('fs/messages/_style', layout: false, locals: { message: message }) + transformed_content
