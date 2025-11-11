@@ -23,7 +23,7 @@ class Tenant < ApplicationRecord
   has_many :groups, dependent: :destroy
   has_many :custom_groups
 
-  has_many :message_templates,dependent: :destroy
+  has_many :message_templates, dependent: :destroy
 
   has_one :draft_tag, -> { where(owner_id: nil) }
   has_one :everything_tag
