@@ -8,14 +8,14 @@
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
 #  tenant_id     :bigint           not null
-#  user_id       :bigint           not null
+#  user_id       :bigint
 #
 module Automation
   class Rule < ApplicationRecord
     include AuditableEvents
 
     belongs_to :tenant
-    belongs_to :user
+    belongs_to :user, optional: true
     has_many :conditions,
              class_name: 'Automation::Condition',
              dependent: :destroy,

@@ -11,6 +11,10 @@
 #  updated_at           :datetime         not null
 #
 class Tenant < ApplicationRecord
+  has_many :boxes, dependent: :destroy
+  has_many :api_connections, dependent: :destroy
+  has_many :automation_rules, class_name: "Automation::Rule", dependent: :destroy
+
   has_many :users, dependent: :destroy
 
   has_one :all_group
@@ -18,6 +22,8 @@ class Tenant < ApplicationRecord
   has_one :admin_group
   has_many :groups, dependent: :destroy
   has_many :custom_groups
+
+  has_many :message_templates, dependent: :destroy
 
   has_one :draft_tag, -> { where(owner_id: nil) }
   has_one :everything_tag
@@ -34,9 +40,6 @@ class Tenant < ApplicationRecord
   has_many :signed_by_tags
   has_many :simple_tags
 
-  has_many :boxes, dependent: :destroy
-  has_many :api_connections, dependent: :destroy
-  has_many :automation_rules, class_name: "Automation::Rule", dependent: :destroy
   has_many :filters
   has_many :filter_subscriptions
   has_many :automation_webhooks, class_name: "Automation::Webhook", dependent: :destroy
