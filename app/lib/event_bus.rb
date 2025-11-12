@@ -60,7 +60,7 @@ EventBus.subscribe :tag_destroyed, ->(tag) do
 end
 
 # cleanup
-EventBus.subscribe :box_destroyed, ->(box_id) { Govbox::DestroyBoxDataJob.perform_later(box_id) }
+EventBus.subscribe :box_destroyed, ->(box_id) { Govbox::DestroyBoxDataJob.set(job_context: :later).perform_later(box_id) }
 
 # audit logs
 EventBus.subscribe :message_thread_note_created, ->(note) { AuditLog::MessageThreadNoteCreated.create_audit_record(note) }
