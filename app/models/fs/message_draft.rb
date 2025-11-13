@@ -176,7 +176,7 @@ class Fs::MessageDraft < MessageDraft
   end
 
   def find_api_connection_for_submission
-    return box.api_connection if box.api_connections.count == 1
+    return box.api_connection if box.api_connections.count == 1 && !box.api_connection.owner
 
     raise "Multiple signatures found. Can't choose API connection" if form_object.tags.where(type: "SignedByTag").count > 1
 
