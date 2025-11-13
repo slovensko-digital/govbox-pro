@@ -13,11 +13,41 @@ module Fs::MessageHelper
   end
 
   def self.build_html_visualization_from_form(message)
-    raise 'Missing Fs::Form XSLT' unless message.form&.xslt_txt
     return unless message.form_object&.unsigned_content
 
-    template = Nokogiri::XSLT(message.form.xslt_txt)
+    xslt = message.form&.xslt_html || message.form&.xslt_txt
+    raise 'Missing Fs::Form XSLT (HTML and TXT both unavailable)' unless xslt
 
-    ActionController::Base.new.render_to_string('fs/messages/_style', layout: false, locals: { message: message }) + ActionController::Base.helpers.simple_format(template.transform(message.form_object.xml_unsigned_content).to_s)
+    template = Nokogiri::XSLT(xslt)
+    transformed_content = template.transform(message.form_object.xml_unsigned_content).to_s
+
+    if xslt == message.form&.xslt_txt
+      transformed_content = ActionController::Base.helpers.simple_format(transformed_content)
+    else
+      forms_storage_url = ENV['FS_FORMS_STORAGE_API_URL']
+      form_path = "#{message.form.slug}/1.0/Content"
+      base_url = "#{forms_storage_url}/#{form_path}"
+
+      doc = Nokogiri::HTML::DocumentFragment.parse(transformed_content)
+
+      {
+        'script[src]' => 'src',
+        'link[rel="stylesheet"][href]' => 'href',
+        'img[src]' => 'src'
+      }.each do |selector, attr|
+        doc.css(selector).each do |el|
+          url = el[attr]
+          next unless url
+          next if url.start_with?('http', '//', 'data:')
+
+          normalized_path = url.gsub(%r{^\.\.?/}, '')
+          el[attr] = "#{base_url}/#{normalized_path}"
+        end
+      end
+
+      transformed_content = doc.to_html.html_safe
+    end
+
+    ActionController::Base.new.render_to_string('fs/messages/_style', layout: false, locals: { message: message }) + transformed_content
   end
 end
