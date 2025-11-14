@@ -88,7 +88,7 @@ class Fs::ValidateMessageDraftResultJobTest < ActiveJob::TestCase
     end
   end
 
-  test "signature is not requested if FS API returns errors" do
+  test "message is marked as invalid & signature is not requested if FS API returns errors" do
     outbox_message = messages(:fs_accountants_outbox)
     url = "https://fsapi.test/submissions/#{outbox_message.id}"
 
@@ -109,6 +109,7 @@ class Fs::ValidateMessageDraftResultJobTest < ActiveJob::TestCase
 
     FsEnvironment.fs_client.stub :api, fs_api do
       Fs::ValidateMessageDraftResultJob.new.perform(outbox_message, url)
+      assert_equal 'invalid', outbox_message.metadata['status']
       assert_equal 'WARN', outbox_message.metadata['validation_errors']['result']
       assert_equal ["Rok musí byť zadaný."], outbox_message.metadata['validation_errors']['errors']
 
