@@ -7,8 +7,7 @@ class Fs::ValidateMessageDraftResultJob < ApplicationJob
     if 200 == response[:status]
       message_draft.metadata[:status] = 'created'
     elsif [400, 422].include?(response[:status])
-      message_draft.metadata[:status] = 'invalid'
-      message_draft.add_cascading_tag(message_draft.tenant.submission_error_tag)
+      mark_message_draft_invalid(message_draft)
     else
       raise RuntimeError.new("Unexpected response status: #{response[:status]}")
     end
@@ -21,7 +20,9 @@ class Fs::ValidateMessageDraftResultJob < ApplicationJob
       'OK'
     else
       response[:body]['result']
-    end
+   end
+
+    mark_message_draft_invalid(message_draft) if errors.any?
 
     message_draft.metadata[:validation_errors] = {
       result: result,
@@ -41,5 +42,12 @@ class Fs::ValidateMessageDraftResultJob < ApplicationJob
 
     message_draft.save
     EventBus.publish(:message_draft_validated, message_draft)
+  end
+
+  private
+
+  def mark_message_draft_invalid(message_draft)
+    message_draft.metadata[:status] = 'invalid'
+    message_draft.add_cascading_tag(message_draft.tenant.submission_error_tag)
   end
 end
