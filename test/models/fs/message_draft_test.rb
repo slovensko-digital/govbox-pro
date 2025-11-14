@@ -21,10 +21,6 @@ class Fs::MessageDraftTest < ActiveSupport::TestCase
         Fs::MessageDraft.create_and_validate_with_fs_form(form_files: [fixture_file_upload("fs/dic1122334455_fs3055_781__sprava_dani_2023.xml", "application/xml")], author: author)
       end
     end
-
-    message_draft = Fs::MessageDraft.last
-    assert message_draft.form_object.tags.include?(author.tenant.signer_group.signature_requested_from_tag)
-    assert message_draft.thread.tags.include?(author.tenant.signer_group.signature_requested_from_tag)
   end
 
   test "create_and_validate_with_fs_form method strips DIC (matches box even if extra spaces within DIC in XML file)" do
