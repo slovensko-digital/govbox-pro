@@ -20,5 +20,7 @@ Rails.application.config.middleware.use OmniAuth::Builder do
     scope: 'email'
   }
 
+  provider :microsoft_graph, ENV['AZURE_APPLICATION_CLIENT_ID'], ENV['AZURE_APPLICATION_CLIENT_SECRET']
+
   provider :saml, UpvsEnvironment.sso_settings if UpvsEnvironment.sso_support?
 end
