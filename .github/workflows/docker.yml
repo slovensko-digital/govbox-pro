@@ -10,11 +10,13 @@ permissions:
 
 jobs:
   build:
+    environment: packaging
+
     name: Build Image
 
     runs-on: ubuntu-latest
 
-    if: ${{(github.repository == 'slovensko-digital/govbox-pro') && (github.ref == 'refs/heads/main')}}
+    if: ${{(github.repository == 'slovensko-digital/govbox-pro')}}
 
     steps:
       - uses: actions/checkout@v5
