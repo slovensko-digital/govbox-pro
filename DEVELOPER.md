@@ -42,6 +42,24 @@ GOOGLE_CLIENT_ID=some-numbers-and-characters.apps.googleusercontent.com
 GOOGLE_CLIENT_SECRET=GOCSPX-and-other-secret-part
 ```
 
+### Microsoft Entra ID (AAD)
+
+- [Create AAD APP](https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade)
+  - don't forget to Add a Redirect URI `http://localhost:3000/auth/microsoft_graph/callback`
+- write `Application (client) ID` and `Certificates & secrets` to `.env.local`, example:
+
+```dotenv
+MICROSOFT_CLIENT_ID=some-numbers-and-characters
+MICROSOFT_CLIENT_SECRET=some-secret
+```
+
+- set `Manifest` to version v2 and update the following fields:
+
+```json
+"accessTokenAcceptedVersion": 2,
+"signInAudience": "AzureADandPersonalMicrosoftAccount"
+```
+
 ## Running
 
 ### Run database
