@@ -53,12 +53,14 @@ MICROSOFT_CLIENT_ID=some-numbers-and-characters
 MICROSOFT_CLIENT_SECRET=some-secret
 ```
 
-- set `Manifest` to version v2 and update the following fields:
+- in the portal, open the Manifest tab under Manage section and set the following properties:
 
 ```json
 "accessTokenAcceptedVersion": 2,
 "signInAudience": "AzureADandPersonalMicrosoftAccount"
 ```
+
+> For more details, see the [official documentation](https://learn.microsoft.com/en-us/entra/identity-platform/reference-app-manifest#signinaudience-attribute)
 
 ## Running
 
