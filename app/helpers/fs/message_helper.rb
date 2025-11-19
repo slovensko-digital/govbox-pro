@@ -15,7 +15,12 @@ module Fs::MessageHelper
   def self.build_html_visualization_from_form(message)
     return unless message.form_object&.unsigned_content
 
-    xslt = message.form&.xslt_html || message.form&.xslt_txt
+    xslt = if message.form_object.unsigned_content.size > 250.kilobytes
+             message.form&.xslt_txt
+           else
+             message.form&.xslt_html || message.form&.xslt_txt
+           end
+
     raise 'Missing Fs::Form XSLT (HTML and TXT both unavailable)' unless xslt
 
     template = Nokogiri::XSLT(xslt)
