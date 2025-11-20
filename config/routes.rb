@@ -286,6 +286,11 @@ Rails.application.routes.draw do
     get 'auth/google_oauth2/failure', to: 'sessions#failure'
   end
 
+  if ENV["AZURE_APPLICATION_CLIENT_ID"]
+    get 'auth/microsoft_graph/callback', to: 'sessions#create'
+    get 'auth/microsoft_graph/failure', to: 'sessions#failure'
+  end
+
   if ENV["HTTP_AUTH"] == "true"
     get 'auth/http', to: 'sessions#create_http_basic'
   end
