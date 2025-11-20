@@ -6,12 +6,16 @@
   <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
     <div class="bg-white px-6 py-12 shadow sm:rounded-lg sm:px-12">
       <div class="space-y-6">
-        <div>
-          <%= button_to "Prihlásiť cez Google", "/auth/google_oauth2", method: :post, data: { turbo: false }, class: "flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" %>
-        </div>
-        <div>
-          <%= button_to "Prihlásiť cez Microsoft", "/auth/microsoft_graph", method: :post, data: { turbo: false }, class: "flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" %>
-        </div>
+        <% if ENV["GOOGLE_CLIENT_ID"] %>
+          <div>
+            <%= button_to "Prihlásiť cez Google", "/auth/google_oauth2", method: :post, data: { turbo: false }, class: "flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" %>
+          </div>
+        <% end %>
+        <% if ENV["AZURE_APPLICATION_CLIENT_ID"] %>
+          <div>
+            <%= button_to "Prihlásiť cez Microsoft", "/auth/microsoft_graph", method: :post, data: { turbo: false }, class: "flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" %>
+          </div>
+        <% end %>
         <% if UpvsEnvironment.sso_support? %>
           <div>
             <%= button_to "Prihlásiť cez slovensko.sk", "/auth/saml", method: :post, data: { turbo: false }, class: "flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" %>
