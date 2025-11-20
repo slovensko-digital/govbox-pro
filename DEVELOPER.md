@@ -49,8 +49,8 @@ GOOGLE_CLIENT_SECRET=GOCSPX-and-other-secret-part
 - write `Application (client) ID` and `Certificates & secrets` to `.env.local`, example:
 
 ```dotenv
-MICROSOFT_CLIENT_ID=some-numbers-and-characters
-MICROSOFT_CLIENT_SECRET=some-secret
+AZURE_APPLICATION_CLIENT_ID=some-numbers-and-characters
+AZURE_APPLICATION_CLIENT_SECRET=some-secret
 ```
 
 - in the portal, open the Manifest tab under Manage section and set the following properties:
