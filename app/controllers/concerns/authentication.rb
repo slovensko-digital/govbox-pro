@@ -26,7 +26,7 @@ module Authentication
       session[:user_id] = Current.user.id
       session[:login_expires_at] = SESSION_TIMEOUT.from_now
       session[:tenant_id] = Current.user.tenant_id
-      session[:user_profile_picture_url] = user_avatar
+      session[:user_profile_picture_url] = auth_hash&.info&.image
       session[:box_id] = Current.user.tenant.boxes.first.id if Current.user.tenant.boxes.one?
       session[:upvs_login] = saml_identifier.present?
       redirect_to session[:after_login_path] || default_after_login_path
