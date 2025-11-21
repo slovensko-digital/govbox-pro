@@ -39,3 +39,6 @@ application.register("content-with-separator", ContentWithSeparator)
 
 import VisitedLinks from "./visited_links_controller"
 application.register("visited-links", VisitedLinks)
+
+import PushController from "./push_controller"
+application.register("push", PushController)
