@@ -16,7 +16,7 @@ class SessionsController < ApplicationController
   def http_auth
     # basic auth credentials provided
     if request.authorization.present?
-      authenticate_or_request_with_http_basic do |email, password|
+      authenticate_with_http_basic do |email, password|
         user = User.find_by(email: email)
         Current.user = user if user&.authenticate(password)
       end

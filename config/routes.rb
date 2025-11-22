@@ -291,7 +291,7 @@ Rails.application.routes.draw do
     get 'auth/microsoft_graph/failure', to: 'sessions#failure'
   end
 
-  if ENV["HTTP_AUTH"]
+  if ENV["HTTP_AUTH"] == "true"
     get 'auth/http', to: 'sessions#http_auth'
     post 'auth/http/callback', to: 'sessions#create_http_auth'
   end
