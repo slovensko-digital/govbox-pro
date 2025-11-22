@@ -295,6 +295,11 @@ Rails.application.routes.draw do
     get 'auth/http', to: 'sessions#create_http_basic'
   end
 
+  if ENV["HTTP_AUTH"] == "true"
+    get 'auth/password', to: 'sessions#login_password'
+    post 'auth/password/callback', to: 'sessions#create_password'
+  end
+
   get "/service-worker.js" => "service_worker#service_worker"
   get "/manifest.json" => "service_worker#manifest"
 

@@ -25,6 +25,24 @@ class SessionsController < ApplicationController
     EventBus.publish(:user_logged_in, Current.user)
   end
 
+  def login_password
+    render :login_password
+  end
+
+  def create_password
+    user = User.find_by(email: params[:email])
+
+    if user&.authenticate(params[:password])
+      Current.user = user
+
+      create_session
+      EventBus.publish(:user_logged_in, Current.user)
+    else
+      flash[:alert] = "Nesprávny email alebo heslo"
+      render :login_password, status: :unprocessable_entity
+    end
+  end
+
   def destroy
     EventBus.publish(:user_logged_out, User.find_by(id: session[:user_id])) if session[:user_id]
 
