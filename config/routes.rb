@@ -292,7 +292,8 @@ Rails.application.routes.draw do
   end
 
   if ENV["HTTP_AUTH"] == "true"
-    get 'auth/http', to: 'sessions#create_http_basic'
+    get 'auth/http', to: 'sessions#http_auth'
+    post 'auth/http/callback', to: 'sessions#create_http_auth'
   end
 
   get "/service-worker.js" => "service_worker#service_worker"

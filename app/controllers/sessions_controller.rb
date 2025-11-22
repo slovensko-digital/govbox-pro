@@ -13,16 +13,41 @@ class SessionsController < ApplicationController
     EventBus.publish(:user_logged_in, Current.user) if Current.user
   end
 
-  def create_http_basic
-    authenticate_or_request_with_http_basic do |email, password|
-      user = User.find_by(email: email)
-      Current.user = user if user&.authenticate(password)
+  def http_auth
+    # basic auth credentials provided
+    if request.authorization.present?
+      authenticate_with_http_basic do |email, password|
+        user = User.find_by(email: email)
+        Current.user = user if user&.authenticate(password)
+      end
+
+      return request_http_basic_authentication unless Current.user
+
+      create_session
+      EventBus.publish(:user_logged_in, Current.user)
+
+      return
     end
 
-    return unless Current.user
+    if request.format.html?
+      render :login_password
+      return
+    end
 
-    create_session
-    EventBus.publish(:user_logged_in, Current.user)
+    request_http_basic_authentication
+  end
+
+  def create_http_auth
+    user = User.find_by(email: params[:email])
+
+    if user&.authenticate(params[:password])
+      Current.user = user
+      create_session
+      EventBus.publish(:user_logged_in, Current.user)
+    else
+      flash[:alert] = "Nesprávny email alebo heslo"
+      render :login_password, status: :unprocessable_entity
+    end
   end
 
   def destroy
