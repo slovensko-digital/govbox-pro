@@ -217,6 +217,7 @@ Rails.application.routes.draw do
 
   resources :sessions do
     get :login, on: :collection
+    get :login_password, on: :collection
     get :no_account, on: :collection
     delete :destroy, on: :collection
   end
@@ -292,7 +293,7 @@ Rails.application.routes.draw do
   end
 
   if ENV["HTTP_AUTH"] == "true"
-    get 'auth/http', to: 'sessions#http_auth'
+    get 'auth/http', to: 'sessions#login_password'
     post 'auth/http/callback', to: 'sessions#create_http_auth'
   end
 
