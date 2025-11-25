@@ -217,7 +217,7 @@ Rails.application.routes.draw do
 
   resources :sessions do
     get :login, on: :collection
-    get :login_password, on: :collection
+    get :identity, on: :collection
     get :no_account, on: :collection
     delete :destroy, on: :collection
   end
@@ -292,10 +292,8 @@ Rails.application.routes.draw do
     get 'auth/microsoft_graph/failure', to: 'sessions#failure'
   end
 
-  if ENV["HTTP_AUTH"] == "true"
-    get 'auth/http', to: 'sessions#login_password'
-    post 'auth/http/callback', to: 'sessions#create_http_auth'
-  end
+  post 'auth/identity/callback', to: 'sessions#create'
+  post 'auth/identity/failure', to: 'sessions#failure'
 
   get "/service-worker.js" => "service_worker#service_worker"
   get "/manifest.json" => "service_worker#manifest"

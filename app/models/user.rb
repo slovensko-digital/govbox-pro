@@ -14,8 +14,10 @@
 #  updated_at                   :datetime         not null
 #  tenant_id                    :bigint
 #
-class User < ApplicationRecord
+class User < OmniAuth::Identity::Models::ActiveRecord
   include AuditableEvents
+
+  auth_key :email
 
   belongs_to :tenant
 

@@ -5,27 +5,13 @@ class SessionsController < ApplicationController
   layout 'login'
 
   def login; end
+  def identity; end
 
   def create
     Current.user = User.find_by(email: auth_hash.info.email)
 
     create_session
     EventBus.publish(:user_logged_in, Current.user) if Current.user
-  end
-
-  def login_password; end
-
-  def create_http_auth
-    user = User.find_by(email: params[:email])
-
-    if user&.authenticate(params[:password])
-      Current.user = user
-      create_session
-      EventBus.publish(:user_logged_in, Current.user)
-    else
-      flash[:alert] = "Nesprávny email alebo heslo"
-      render :login_password, status: :unprocessable_entity
-    end
   end
 
   def destroy

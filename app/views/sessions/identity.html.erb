@@ -17,11 +17,11 @@
         </div>
       <% end %>
 
-      <%= form_with url: auth_http_callback_path, method: :post, local: true, class: "space-y-6" do |f| %>
+      <%= form_with url: "/auth/identity/callback", method: :post, local: true, class: "space-y-6" do |f| %>
         <div>
-          <%= f.label :email, "Emailová adresa", class: "block text-sm font-medium leading-6 text-gray-900" %>
+          <%= f.label :auth_key, "Emailová adresa", class: "block text-sm font-medium leading-6 text-gray-900" %>
           <div class="mt-2">
-            <%= f.email_field :email, required: true, autofocus: true, class: "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" %>
+            <%= f.email_field :auth_key, required: true, autofocus: true, class: "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" %>
           </div>
         </div>
 
