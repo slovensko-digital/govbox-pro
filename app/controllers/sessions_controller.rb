@@ -5,7 +5,6 @@ class SessionsController < ApplicationController
   layout 'login'
 
   def login; end
-  def identity; end
 
   def create
     Current.user = User.find_by(email: auth_hash.info.email)
