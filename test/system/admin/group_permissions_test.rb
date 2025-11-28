@@ -4,6 +4,7 @@ require "application_system_test_case"
 
 class GroupPermissionsTest < ApplicationSystemTestCase
   setup do
+    BoxGroup.delete_all
     sign_in_as(:admin)
     @group = groups(:ssd_custom)
   end

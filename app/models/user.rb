@@ -54,11 +54,11 @@ class User < ApplicationRecord
   end
 
   def accessible_tags
-    accessible_via_group(Tag, TagGroup, 'tag_groups', 'tag_id')
+    accessible_via_group(Tag, TagGroup, 'tag_id')
   end
 
   def accessible_boxes
-    accessible_via_group(Box, BoxGroup, 'box_groups', 'box_id')
+    accessible_via_group(Box, BoxGroup, 'box_id')
   end
 
   def signer?
@@ -88,11 +88,14 @@ class User < ApplicationRecord
 
   private
 
-  def accessible_via_group(model_class, join_model_class, join_table_name, foreign_key)
+  def accessible_via_group(model_class, join_model_class, foreign_key)
+    join_table = join_model_class.arel_table
+    model_table = model_class.arel_table
+
     model_class.where(
       join_model_class.select(1)
                       .joins(:group_memberships)
-                      .where("#{join_table_name}.#{foreign_key} = #{model_class.table_name}.id")
+                      .where(join_table[foreign_key].eq(model_table[:id]))
                       .where(group_memberships: { user_id: id })
                       .arel.exists
     )
