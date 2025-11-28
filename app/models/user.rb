@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: users
@@ -35,9 +37,9 @@ class User < ApplicationRecord
   validates_presence_of :name, :email
   validates_uniqueness_of :name, :email, scope: :tenant_id, case_sensitive: false
 
-  before_destroy :delete_user_group, prepend: true
   after_create :handle_default_settings
   after_update :broadcast_badge_update
+  before_destroy :delete_user_group, prepend: true
 
   def site_admin?
     ENV['SITE_ADMIN_EMAILS'].to_s.split(',').include?(email)
@@ -52,13 +54,11 @@ class User < ApplicationRecord
   end
 
   def accessible_tags
-    Tag.where(
-      TagGroup.select(1)
-              .joins(:group_memberships)
-              .where("tag_groups.tag_id = tags.id")
-              .where(group_memberships: { user_id: id })
-              .arel.exists
-    )
+    accessible_via_group(Tag, TagGroup, 'tag_groups', 'tag_id')
+  end
+
+  def accessible_boxes
+    accessible_via_group(Box, BoxGroup, 'box_groups', 'box_id')
   end
 
   def signer?
@@ -87,6 +87,16 @@ class User < ApplicationRecord
   end
 
   private
+
+  def accessible_via_group(model_class, join_model_class, join_table_name, foreign_key)
+    model_class.where(
+      join_model_class.select(1)
+                      .joins(:group_memberships)
+                      .where("#{join_table_name}.#{foreign_key} = #{model_class.table_name}.id")
+                      .where(group_memberships: { user_id: id })
+                      .arel.exists
+    )
+  end
 
   def delete_user_group
     user_group.destroy

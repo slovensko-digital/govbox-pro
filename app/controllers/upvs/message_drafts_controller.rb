@@ -12,7 +12,7 @@ class Upvs::MessageDraftsController < ApplicationController
     @templates_list = MessageTemplate.tenant_templates_list(Current.tenant)
     @message_template = MessageTemplate.default_template
     @message = Upvs::MessageDraft.new
-    @boxes = Current.tenant&.boxes.where(type: 'Upvs::Box')
+    @boxes = Current.user.accessible_boxes.where(type: 'Upvs::Box')
     @box = Current.box if Current.box.is_a?(Upvs::Box) || @boxes.first
     @recipients_list = @message_template&.recipients&.pluck(:institution_name, :institution_uri)&.map { |name, uri| { uri: uri, name: name }}
 
@@ -34,7 +34,7 @@ class Upvs::MessageDraftsController < ApplicationController
     unless @message.valid?(:create_from_template)
       @templates_list = MessageTemplate.tenant_templates_list(Current.tenant)
       @message_template ||= MessageTemplate.default_template
-      @boxes = Current.tenant&.boxes.where(type: 'Upvs::Box')
+      @boxes = Current.user.accessible_boxes.where(type: 'Upvs::Box')
       @box ||= Current.box if Current.box || @boxes.first
 
       @recipients_list = @message_template&.recipients&.pluck(:institution_name, :institution_uri)&.map { |name, uri| { uri: uri, name: name }}
@@ -61,7 +61,7 @@ class Upvs::MessageDraftsController < ApplicationController
   end
 
   def load_box
-    @box = Box.find(new_message_draft_params[:sender_id]) if new_message_draft_params[:sender_id].present?
+    @box = Current.user.accessible_boxes.find(new_message_draft_params[:sender_id]) if new_message_draft_params[:sender_id].present?
   end
 
   def load_message_template

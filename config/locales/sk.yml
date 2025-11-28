@@ -390,3 +390,32 @@ sk:
     flash:
       started: "Export správ bol zaradený na spracovanie."
       updated: "Nastavenia exportu správ boli zmenené."
+  admin:
+    groups:
+      create:
+        success: "Skupina bola úspešne vytvorená"
+      update:
+        success: "Skupina bola úspešne upravená"
+      destroy:
+        success: "Skupina bola úspešne odstránená"
+      permissions:
+        title: "Nastaviť prístup - %{group_name}"
+        edit: "Upraviť oprávnenia"
+        back: "Späť"
+        boxes: "Schránky"
+        tags: "Štítky"
+        search_placeholder:
+          box: "Vyhľadaj schránku"
+          tag: "Vyhľadaj štítok"
+        add_popup:
+          title:
+            box: "Pridaj právo na schránku skupine"
+            tag: "Pridaj právo na štítok skupine"
+          empty:
+            box: "Schránka nenájdená"
+            tag: "Štítok nenájdený"
+        empty_list:
+          box: "Zatiaľ nie sú priradené žiadne schránky. Pridajte schránky, ku ktorým má mať táto skupina prístup."
+          tag: "Zatiaľ nie sú priradené žiadne štítky. Pridajte štítky, ku ktorým má mať táto skupina prístup."
+        actions:
+          delete: "Zmazať"

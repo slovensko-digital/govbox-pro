@@ -58,11 +58,7 @@ class Admin::GroupPolicy < ApplicationPolicy
     @user.admin?
   end
 
-  def search_non_members?
-    @user.admin?
-  end
-
-  def search_non_tags?
-    @user.admin?
-  end
+  alias search_non_members? edit_permissions?
+  alias search_non_tags? edit_permissions?
+  alias search_non_boxes? edit_permissions?
 end

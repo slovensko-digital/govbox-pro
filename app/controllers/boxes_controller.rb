@@ -31,13 +31,14 @@ class BoxesController < ApplicationController
   def search
     authorize(Box)
 
-    @boxes = Current.tenant.boxes.order(:name).where('unaccent(name) ILIKE unaccent(?) OR unaccent(short_name) ILIKE unaccent(?)', "%#{params[:name_search]}%", "%#{params[:name_search]}%")
+    @boxes = Current.user.accessible_boxes.order(:name).where('unaccent(name) ILIKE unaccent(?) OR unaccent(short_name) ILIKE unaccent(?)', "%#{params[:name_search]}%", "%#{params[:name_search]}%")
   end
 
   def get_selector
+    authorize([:admin, Box]) if params[:admin]
     authorize(Box)
 
-    @boxes = Current.tenant.boxes.order(:name)
+    @boxes = Current.user.accessible_boxes.order(:name)
   end
 
   private

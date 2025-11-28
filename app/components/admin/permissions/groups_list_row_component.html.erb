@@ -1,4 +1,4 @@
-<div class="self-stretch p-6 border-b border-gray-200 justify-between items-center gap-4 inline-flex">
+<div class="self-stretch p-6 border-b border-gray-200 justify-between items-center gap-4 inline-flex" id="<%= dom_id(@group) %>">
   <div class="flex gap-4 justify-start">
     <div class="inline-flex shrink-0 grow-0 items-center justify-center w-16 h-16 bg-blue-600 rounded-full">
       <span class="text-white text-2xl font-normal"><%= @group.name[0] %></span>
@@ -20,7 +20,7 @@
     </div>
   </div>
   <div class="justify-start items-start gap-2 flex">
-    <%= link_to edit_permissions_admin_tenant_group_path(@group.tenant, @group), data: { turbo_frame: "modal" }  do %>
+    <%= link_to edit_permissions_admin_tenant_group_path(@group.tenant, @group), title: t('admin.groups.permissions.edit'), data: { turbo_frame: "_top" }  do %>
       <%= render Common::EditButtonComponent.new %>
     <% end %>
   </div>

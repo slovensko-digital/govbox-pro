@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_11_07_084951) do
+ActiveRecord::Schema[7.1].define(version: 2025_11_25_200838) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -160,6 +160,16 @@ ActiveRecord::Schema[7.1].define(version: 2025_11_07_084951) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["tenant_id"], name: "index_automation_webhooks_on_tenant_id"
+  end
+
+  create_table "box_groups", force: :cascade do |t|
+    t.bigint "box_id", null: false
+    t.bigint "group_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["box_id", "group_id"], name: "index_box_groups_on_box_id_and_group_id", unique: true
+    t.index ["box_id"], name: "index_box_groups_on_box_id"
+    t.index ["group_id"], name: "index_box_groups_on_group_id"
   end
 
   create_table "boxes", force: :cascade do |t|
@@ -690,6 +700,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_11_07_084951) do
   add_foreign_key "automation_rules", "tenants"
   add_foreign_key "automation_rules", "users"
   add_foreign_key "automation_webhooks", "tenants", on_delete: :cascade
+  add_foreign_key "box_groups", "boxes"
+  add_foreign_key "box_groups", "groups"
   add_foreign_key "boxes", "tenants"
   add_foreign_key "boxes_api_connections", "api_connections"
   add_foreign_key "boxes_api_connections", "boxes"

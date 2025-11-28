@@ -32,8 +32,10 @@ Rails.application.routes.draw do
         get :edit_permissions, on: :member
         post :search_non_members, on: :member
         post :search_non_tags, on: :member
+        post :search_non_boxes, on: :member
         resources :group_memberships do
         end
+        resources :box_groups, only: [:create, :destroy]
       end
 
       resources :users

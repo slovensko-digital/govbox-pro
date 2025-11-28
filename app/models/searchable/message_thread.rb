@@ -65,19 +65,16 @@ class Searchable::MessageThread < ApplicationRecord
 
     scope = scope.where(tenant_id: search_permissions.fetch(:tenant))
     scope = scope.where(box_id: search_permissions.fetch(:box)) if search_permissions[:box]
+    scope = scope.where(box_id: search_permissions[:box_ids]) if search_permissions[:box_ids]
 
-    if search_permissions[:tag_ids]
-      if search_permissions[:tag_ids].any?
-        scope = scope.where("tag_ids && ARRAY[?]", search_permissions[:tag_ids])
-      end
-    end
+    scope = scope.where("tag_ids && ARRAY[?]", search_permissions[:tag_ids]) if search_permissions[:tag_ids]&.any?
 
     if query_filter[:filter_tag_ids].present?
-      if query_filter[:filter_tag_ids] == :missing_tag
-        scope = scope.none
-      else
-        scope = scope.where("tag_ids @> ARRAY[?]", query_filter[:filter_tag_ids])
-      end
+      scope = if query_filter[:filter_tag_ids] == :missing_tag
+                scope.none
+              else
+                scope.where("tag_ids @> ARRAY[?]", query_filter[:filter_tag_ids])
+              end
     end
     scope = scope.where.not("tag_ids && ARRAY[?]", query_filter[:filter_out_tag_ids]) if query_filter[:filter_out_tag_ids].present?
     scope = scope.fulltext_search(query_filter[:fulltext], prefix_search: query_filter[:prefix_search]).with_pg_search_highlight if query_filter[:fulltext].present?
