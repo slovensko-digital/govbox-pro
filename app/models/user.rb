@@ -20,6 +20,7 @@ class User < ApplicationRecord
   belongs_to :tenant
 
   has_one :draft_tag, foreign_key: :owner_id
+  has_one :author_tag, foreign_key: :owner_id
   has_many :group_memberships, dependent: :destroy
   has_many :groups, through: :group_memberships
   has_many :own_tags, class_name: 'Tag', inverse_of: :owner, foreign_key: :owner_id, dependent: :nullify
@@ -86,8 +87,6 @@ class User < ApplicationRecord
     update(attrs)
   end
 
-  private
-
   def delete_user_group
     user_group.destroy
   end
@@ -103,6 +102,14 @@ class User < ApplicationRecord
       visible: false
     )
     draft_tag.mark_readable_by_groups([user_group])
+
+    author_tag = tenant.tags.create(
+      owner: self,
+      name: "Authors-#{name}",
+      type: "AuthorTag",
+      visible: false
+    )
+    author_tag.mark_readable_by_groups([user_group])
   end
 
   def broadcast_badge_update
