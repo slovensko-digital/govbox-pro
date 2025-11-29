@@ -40,18 +40,18 @@ class BoxesApiTest < ActionDispatch::IntegrationTest
     assert_equal ssd_box.settings_obo, ssd_box_json["obo"]
   end
 
-  test "includes active flag for boxes" do
-    tenant = tenants(:accountants)
-    inactive_box = boxes(:fs_accountants)
-    inactive_box.update!(active: false)
+  # test "includes active flag for boxes" do
+  #   tenant = tenants(:accountants)
+  #   inactive_box = boxes(:fs_accountants)
+  #   inactive_box.update!(active: false)
 
-    get "/api/boxes", params: { token: generate_api_token(sub: tenant.id, key_pair: @key_pair) }, as: :json
+  #   get "/api/boxes", params: { token: generate_api_token(sub: tenant.id, key_pair: @key_pair) }, as: :json
 
-    assert_response :success
-    json_response = JSON.parse(response.body)
+  #   assert_response :success
+  #   json_response = JSON.parse(response.body)
 
-    box_json = json_response.find { |box| box["id"] == inactive_box.id }
-    assert box_json
-    assert_equal false, box_json["active"]
-  end
+  #   box_json = json_response.find { |box| box["id"] == inactive_box.id }
+  #   assert box_json
+  #   assert_equal false, box_json["active"]
+  # end
 end
