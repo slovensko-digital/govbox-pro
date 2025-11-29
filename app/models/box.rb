@@ -5,6 +5,7 @@
 #  id          :bigint           not null, primary key
 #  color       :enum
 #  export_name :string           not null
+#  active      :boolean          default(TRUE), not null
 #  name        :string           not null
 #  settings    :jsonb            not null
 #  short_name  :string
@@ -27,7 +28,8 @@ class Box < ApplicationRecord
   has_many :message_drafts_imports, dependent: :destroy
   has_many :automation_conditions, as: :condition_object
 
-  scope :with_enabled_message_drafts_import, -> { where("(settings ->> 'message_drafts_import_enabled')::boolean = ?", true) }
+  scope :active, -> { where(active: true) }
+  scope :with_enabled_message_drafts_import, -> { active.where("(settings ->> 'message_drafts_import_enabled')::boolean = ?", true) }
 
   before_destroy do |box|
     api_connection.destroy if api_connection.destroy_with_box?(self)
@@ -56,11 +58,16 @@ class Box < ApplicationRecord
   end
 
   def self.sync_all
-    where(syncable: true).find_each(&:sync)
+    where(syncable: true, active: true).find_each(&:sync)
   end
 
   def single_recipient?
     raise NotImplementedError
+  end
+
+  def refresh_active_from_connections
+    new_active_state = boxes_api_connections.any?(&:active?)
+    update_columns(active: new_active_state) if !destroyed? && !frozen? && active != new_active_state
   end
 
   def official_name
