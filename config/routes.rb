@@ -36,6 +36,7 @@ Rails.application.routes.draw do
         resources :group_memberships do
         end
         resources :box_groups, only: [:create, :destroy]
+        resources :tag_groups, only: [:create, :destroy]
       end
 
       resources :users
@@ -56,7 +57,7 @@ Rails.application.routes.draw do
       end
 
       resources :tags
-      resources :tag_groups
+      resources :permissions, only: [:index]
       resources :automation_webhooks
     end
     resources :audit_logs, only: :index do

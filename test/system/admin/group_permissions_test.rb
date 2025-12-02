@@ -32,7 +32,7 @@ class GroupPermissionsTest < ApplicationSystemTestCase
   private
 
   def manage_permission_test(item:, column_selector:, search_result_selector:, item_name_for_search:)
-    visit admin_tenant_tag_groups_path(tenants(:ssd))
+    visit admin_tenant_permissions_path(tenants(:ssd))
 
     within("##{dom_id(@group)}") do
       click_link I18n.t("admin.groups.permissions.edit")

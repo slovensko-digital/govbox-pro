@@ -11,7 +11,7 @@ class SidebarMenu
   private
 
   def initial_structure(controller, _action)
-    return admin_menu + site_admin_menu if controller.in? %w[groups users tags tag_groups automation_rules boxes api_connections filters automation_webhooks feature_flags]
+    return admin_menu + site_admin_menu if controller.in? %w[groups users tags permissions automation_rules boxes api_connections filters automation_webhooks feature_flags]
 
     default_main_menu
   end
@@ -35,7 +35,7 @@ class SidebarMenu
       TW::SidebarMenuItemComponent.new(name: 'Pravidlá', url: settings_automation_rules_path, icon: Icons::FunnelComponent.new),
       TW::SidebarMenuDividerComponent.new(name: 'Administrácia'),
       TW::SidebarMenuItemComponent.new(name: 'Používatelia', url: admin_tenant_users_path(Current.tenant), icon: Icons::UsersComponent.new),
-      TW::SidebarMenuItemComponent.new(name: 'Prístup', url: admin_tenant_tag_groups_path(Current.tenant), icon: Icons::LockClosedComponent.new),
+      TW::SidebarMenuItemComponent.new(name: 'Prístup', url: admin_tenant_permissions_path(Current.tenant), icon: Icons::LockClosedComponent.new),
       TW::SidebarMenuItemComponent.new(name: 'Schránky', url: admin_tenant_boxes_path(Current.tenant), icon: Common::IconComponent.new("inbox-stack")),
       TW::SidebarMenuItemComponent.new(name: 'API Prepojenia', url: admin_tenant_api_connections_path(Current.tenant), icon: Icons::RectangleStackComponent.new),
       TW::SidebarMenuItemComponent.new(name: 'Skupiny', url: admin_tenant_groups_path(Current.tenant), icon: Icons::UserGroupsComponent.new),
