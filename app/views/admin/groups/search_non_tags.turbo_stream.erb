@@ -1,15 +1,15 @@
 <%= turbo_stream.update 'tag-search-results' do %>
   <% if !params[:name_search].empty? %>
-    <%= render Admin::Permissions::ItemAddPopupComponent.new(
+    <%= render partial: "admin/permissions/item_add_popup", locals: {
           title: t('admin.groups.permissions.add_popup.title.tag'),
           close_path: edit_permissions_admin_tenant_group_path(Current.tenant, @group),
           items: @tags,
           empty_message: t('admin.groups.permissions.add_popup.empty.tag'),
-          url: admin_tenant_tag_groups_path(@group.tenant),
+          url: admin_tenant_group_tag_groups_path(Current.tenant, @group),
           item_param_key: :tag_id,
           group_id: @group.id,
           item_type: :tag,
           nested_params: true
-        ) %>
+        } %>
   <% end %>
 <% end %>

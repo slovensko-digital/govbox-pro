@@ -1,8 +1,8 @@
 <div class="w-full p-4 flex-col justify-start items-start gap-4 inline-flex">
   <div class="self-stretch bg-white rounded-md border border-gray-200 flex-col justify-start items-start flex">
     <div class="self-stretch p-6 border-b border-gray-200 justify-start items-center gap-4 inline-flex">
-      <div class="grow shrink basis-0 text-gray-900 text-xl font-semibold leading-[35px]"><%= t('admin.groups.permissions.title', group_name: @group.name) %></div>
-      <%= link_to admin_tenant_tag_groups_path(Current.tenant), class: "px-3.5 py-2.5 bg-white rounded-md border border-gray-300 justify-center items-center gap-2.5 flex hover:bg-gray-100" do %>
+      <div class="grow shrink basis-0 text-gray-900 text-xl font-semibold leading-[35px]"><%= t('admin.groups.permissions.title', group_name: group.name) %></div>
+      <%= link_to admin_tenant_permissions_path(Current.tenant), class: "px-3.5 py-2.5 bg-white rounded-md border border-gray-300 justify-center items-center gap-2.5 flex hover:bg-gray-100" do %>
         <p class="text-gray-900 text-base font-medium leading-normal"><%= t('admin.groups.permissions.back') %></p>
       <% end %>
     </div>
@@ -12,7 +12,7 @@
       <div class="flex flex-col gap-4" id="boxes-column">
         <div class="text-lg font-semibold text-gray-900"><%= t('admin.groups.permissions.boxes') %></div>
         
-        <%= form_with url: search_non_boxes_admin_tenant_group_path(Current.tenant, @group),
+        <%= form_with url: search_non_boxes_admin_tenant_group_path(Current.tenant, group),
                       data: { controller: 'debounce', debounce_target: 'form'},
                       class: "flex justify-start items-center self-stretch gap-4" do |form| %>
           <div class="relative w-full">
@@ -30,16 +30,16 @@
         <% end %>
         
         <div class="flex flex-col divide-y border rounded-md border-gray-200">
-          <% if @group.box_groups.empty? %>
+          <% if group.box_groups.empty? %>
             <div class="p-4 text-sm text-gray-500 text-center">
               <%= t('admin.groups.permissions.empty_list.box') %>
             </div>
           <% else %>
-            <% @group.box_groups.each do |box_group| %>
-              <%= render Admin::Permissions::ItemRowComponent.new(
-                delete_path: admin_tenant_group_box_group_path(Current.tenant, @group, box_group),
+            <% group.box_groups.each do |box_group| %>
+              <%= render layout: "admin/permissions/item_row", locals: {
+                delete_path: admin_tenant_group_box_group_path(Current.tenant, group, box_group),
                 id: dom_id(box_group.box, :permission_row)
-              ) do %>
+              } do %>
                 <p class="self-stretch flex-grow-0 flex-shrink-0 text-sm font-medium text-left text-gray-900"><%= box_group.box.name %></p>
                 <p class="self-stretch flex-grow-0 flex-shrink-0 text-xs text-left text-gray-500"><%= box_group.box.short_name %></p>
               <% end %>
@@ -52,7 +52,7 @@
       <div class="flex flex-col gap-4" id="tags-column">
         <div class="text-lg font-semibold text-gray-900"><%= t('admin.groups.permissions.tags') %></div>
         
-        <%= form_with url: search_non_tags_admin_tenant_group_path(Current.tenant, @group),
+        <%= form_with url: search_non_tags_admin_tenant_group_path(Current.tenant, group),
                       data: { controller: 'debounce', debounce_target: 'form'},
                       class: "flex justify-start items-center self-stretch gap-4" do |form| %>
           <div class="relative w-full">
@@ -70,16 +70,16 @@
         <% end %>
         
         <div class="flex flex-col divide-y border rounded-md border-gray-200">
-          <% if @group.tag_groups.empty? %>
+          <% if group.tag_groups.empty? %>
             <div class="p-4 text-sm text-gray-500 text-center">
               <%= t('admin.groups.permissions.empty_list.tag') %>
             </div>
           <% else %>
-            <% @group.tag_groups.each do |group_permission| %>
-              <%= render Admin::Permissions::ItemRowComponent.new(
-                delete_path: admin_tenant_tag_group_path(Current.tenant, group_permission),
+            <% group.tag_groups.each do |group_permission| %>
+              <%= render layout: "admin/permissions/item_row", locals: {
+                delete_path: admin_tenant_group_tag_group_path(Current.tenant, group, group_permission),
                 id: dom_id(group_permission.tag, :permission_row)
-              ) do %>
+              } do %>
                 <%= render Common::TagComponent.new(group_permission.tag) %>
               <% end %>
             <% end %>
