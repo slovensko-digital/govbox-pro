@@ -128,7 +128,7 @@ class MessageThreadsController < ApplicationController
     result = { tenant: Current.tenant }
     result[:box] = Current.box if Current.box
     result[:tag_ids] = policy_scope(Tag).pluck(:id)
-    result[:box_ids] = Current.user.accessible_boxes.pluck(:id)
+    result[:accessible_box_ids] = Current.user.accessible_boxes.pluck(:id)
     result
   end
 

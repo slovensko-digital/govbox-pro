@@ -37,9 +37,9 @@ class User < ApplicationRecord
   validates_presence_of :name, :email
   validates_uniqueness_of :name, :email, scope: :tenant_id, case_sensitive: false
 
+  before_destroy :delete_user_group, prepend: true
   after_create :handle_default_settings
   after_update :broadcast_badge_update
-  before_destroy :delete_user_group, prepend: true
 
   def site_admin?
     ENV['SITE_ADMIN_EMAILS'].to_s.split(',').include?(email)
@@ -54,11 +54,23 @@ class User < ApplicationRecord
   end
 
   def accessible_tags
-    accessible_via_group(Tag, TagGroup, 'tag_id')
+    Tag.where(
+      TagGroup.select(1)
+              .joins(:group_memberships)
+              .where("tag_groups.tag_id = tags.id")
+              .where(group_memberships: { user_id: id })
+              .arel.exists
+    )
   end
 
   def accessible_boxes
-    accessible_via_group(Box, BoxGroup, 'box_id')
+    Box.where(
+      BoxGroup.select(1)
+                      .joins(:group_memberships)
+                      .where("box_groups.box_id = boxes.id")
+                      .where(group_memberships: { user_id: id })
+                      .arel.exists
+    )
   end
 
   def signer?
@@ -87,19 +99,6 @@ class User < ApplicationRecord
   end
 
   private
-
-  def accessible_via_group(model_class, join_model_class, foreign_key)
-    join_table = join_model_class.arel_table
-    model_table = model_class.arel_table
-
-    model_class.where(
-      join_model_class.select(1)
-                      .joins(:group_memberships)
-                      .where(join_table[foreign_key].eq(model_table[:id]))
-                      .where(group_memberships: { user_id: id })
-                      .arel.exists
-    )
-  end
 
   def delete_user_group
     user_group.destroy
