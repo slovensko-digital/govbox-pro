@@ -11,7 +11,7 @@ class CreateBoxGroups < ActiveRecord::Migration[7.1]
 
     Tenant.find_each do |tenant|
       box_ids = tenant.boxes.pluck(:id)
-      group_ids = tenant.groups.pluck(:id)
+      group_ids = tenant.groups.where(type: ['AdminGroup', 'UserGroup', 'CustomGroup']).pluck(:id)
 
       timestamp = Time.current
 

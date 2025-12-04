@@ -9,7 +9,7 @@
     
     <div class="self-stretch p-6 grid grid-cols-2 gap-6">
       <!-- Boxes Column -->
-      <div class="flex flex-col gap-4" id="boxes-column">
+      <div class="flex flex-col gap-4 pb-6" id="boxes-column">
         <div class="text-lg font-semibold text-gray-900"><%= t('admin.groups.permissions.boxes') %></div>
         
         <%= form_with url: search_non_boxes_admin_tenant_group_path(Current.tenant, group),

@@ -94,6 +94,10 @@ accountants_signers_to_fs_delegate:
   group: accountants_signers
   box: fs_accountants_multiple_api_connections
 
+accountants_user2_to_fs_delegate:
+  group: accountants_user2_group
+  box: fs_accountants_multiple_api_connections
+
 # ----------------------------------------------------
 # 4. GOOGLE/API Boxes (Often granted to SSD_ALL group for generic tests)
 # ----------------------------------------------------
