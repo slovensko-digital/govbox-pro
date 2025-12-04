@@ -112,6 +112,55 @@ paths:
       security:
         - "Tenant_Token": []
 
+  /api/boxes:
+    get:
+      tags: [Schránky]
+      summary: Vráti zoznam schránok tenanta
+      description: |
+        Vráti zoznam schránok dostupných pre daný tenant vrátane údajov potrebných na identifikáciu schránky.
+        Hodí sa napríklad pre overovanie, či už bola udelená autorizácia na zastupovanie konkrétnej schránky.
+      responses:
+        200:
+          description: Úspešné získanie zoznamu schránok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      description: Identifikátor schránky v systéme Govbox Pro
+                      type: integer
+                    name:
+                      description: Názov schránky
+                      type: string
+                    short_name:
+                      description: Skrátený názov schránky používaný v rozhraní
+                      type: string
+                    export_name:
+                      description: Názov schránky určený na exporty a zobrazovanie
+                      type: string
+                    uri:
+                      description: URI schránky
+                      type: string
+                    type:
+                      description: Typ schránky, napr. Upvs::Box alebo Fs::Box
+                      type: string
+                    obo:
+                      description: OBO identifikátor schránky ak je k dispozícii
+                      type: string
+                      nullable: true
+                    dic:
+                      description: DIČ schránky ak je k dispozícii
+                      type: string
+                      nullable: true
+                    # active:
+                    #   description: Indikuje, či je možné schránku používať (napr. platná autorizácia na zastupovanie)
+                    #   type: boolean
+      security:
+        - "Tenant_Token": []
+
   /api/messages/{id}:
     get:
       tags: [Správy]
