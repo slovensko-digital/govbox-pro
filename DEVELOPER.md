@@ -35,7 +35,8 @@ SITE_ADMIN_EMAILS=your-g-suite-sign-up-email@gmail.com
 
 - [Get / Create OAuth permissions by guide](https://medium.com/@jenn.leigh.hansen/google-oauth2-for-rails-ba1bcfd1b863)
   - don't forget to Add an Authorized Redirect URI `http://localhost:3000/auth/google_oauth2/callback`
-- write permissions to `.env.local`, example:
+- write permissions to `.env.local`, example
+- We:
 
 ```dotenv
 GOOGLE_CLIENT_ID=some-numbers-and-characters.apps.googleusercontent.com
@@ -115,9 +116,8 @@ After configuring your admin email and setting up the database, run:
 - See [jobs web ui / dashboard](http://localhost:3000/good_job)
 
 ### Getting sample data
-
-- Your public IP has to be added to whitelist (ask colleague)
-- In rails console run `Govbox::SyncBoxJob.perform_later(Box.last)`
+- your public IP has to be added to whitelist (ask colleague)
+- in rails console run `Govbox::SyncBoxJob.perform_later(Box.last)`
 
 ### Create sample FS connections
 
@@ -133,4 +133,17 @@ Govbox::ApiConnectionWithOboSupport.find_or_create_by!(
   sub: "SPL_Irvin_83300252_KK_24022023",
   api_token_private_key: File.read(Rails.root + "security/govbox_api_fix.pem")
 )
+```
+
+### Push notifications
+Generate VAPID keys, in rails console run:
+```
+WebPush::VapidKey.new
+```
+- write keys to `.env.local`, example:
+
+```dotenv
+DOMAIN_NAME="http://localhost:3000"
+VAPID_PUBLIC_KEY=
+VAPID_PRIVATE_KEY=
 ```
