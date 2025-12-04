@@ -53,52 +53,52 @@ class Fs::ApiConnection < ::ApiConnection
     count = 0
     fs_api = FsEnvironment.fs_client.api(api_connection: self)
 
-    Fs::BoxActivityUpdater.mark_connections_inactive(self)
+    Fs::Box.transaction do
+      deactivate_connections!
 
-    fs_api.get_subjects.each do |subject|
-      Fs::Box.with_advisory_lock!("boxify-#{tenant_id}", transaction: true, timeout_seconds: 10) do
-        boxes = Fs::Box.where(tenant: tenant).where("settings @> ?", {dic: subject["dic"], subject_id: subject["subject_id"]}.to_json)
-        box = boxes.first unless boxes.count > 1
+      fs_api.get_subjects.each do |subject|
+        Fs::Box.with_advisory_lock!("boxify-#{tenant_id}", transaction: true, timeout_seconds: 10) do
+          boxes = Fs::Box.where(tenant: tenant).where("settings @> ?", {dic: subject["dic"], subject_id: subject["subject_id"]}.to_json)
+          box = boxes.first unless boxes.count > 1
 
-        unless box
-          box = Fs::Box.new(
-            tenant: tenant,
-            settings: {
-              dic: subject["dic"],
-              subject_id: subject["subject_id"],
-              message_drafts_import_enabled: Fs::Box::DISABLED_MESSAGE_DRAFTS_IMPORT_KEYWORDS.none? { |keyword| subject["name"].include?(keyword) }
-            },
-            api_connections: [self]
-          )
-        end
+          unless box
+            box = Fs::Box.new(
+              tenant: tenant,
+              settings: {
+                dic: subject["dic"],
+                subject_id: subject["subject_id"],
+                message_drafts_import_enabled: Fs::Box::DISABLED_MESSAGE_DRAFTS_IMPORT_KEYWORDS.none? { |keyword| subject["name"].include?(keyword) }
+              },
+              api_connections: [self]
+            )
+          end
 
-        box.name = "FS " + subject["name"]
-        box.short_name ||= generate_short_name_from_name(subject["name"])
-        box.uri = "dic://sk/#{subject['dic']}"
-        box.settings_is_subject_c_reg ||= subject["is_subject_c_reg"]
-        box.active = true
+          box.name = "FS " + subject["name"]
+          box.short_name ||= generate_short_name_from_name(subject["name"])
+          box.uri = "dic://sk/#{subject['dic']}"
+          box.settings_is_subject_c_reg ||= subject["is_subject_c_reg"]
+          box.active = true
 
-        count += 1 if box.new_record? && box.save
+          count += 1 if box.new_record? && box.save
 
-        box.save
+          box.save
 
-        box.boxes_api_connections.find_or_create_by(api_connection: self).tap do |box_api_connection|
-          box_api_connection.settings_delegate_id = subject["delegate_id"]
-          box_api_connection.settings_active = true
-          box_api_connection.save
+          box.boxes_api_connections.find_or_create_by(api_connection: self).tap do |box_api_connection|
+            box_api_connection.settings_delegate_id = subject["delegate_id"]
+            box_api_connection.settings_active = true
+            box_api_connection.save
+          end
         end
       end
     end
-
-    refresh_boxes_activity!
 
     count
   end
 
   private
 
-  def refresh_boxes_activity!
-    Fs::BoxActivityUpdater.refresh_box_activity(self)
+  def deactivate_connections!
+    boxes_api_connections.find_each { |connection| connection.update!(settings_active: false) }
   end
 
   def generate_short_name_from_name(name)

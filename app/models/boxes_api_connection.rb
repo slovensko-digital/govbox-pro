@@ -18,7 +18,7 @@ class BoxesApiConnection < ApplicationRecord
   scope :active, -> { where("(settings ->> 'active')::boolean IS NULL OR (settings ->> 'active')::boolean = ?", true) }
 
   before_validation :set_default_active, on: :create
-  after_commit :refresh_box_activity, on: [:create, :update, :destroy]
+  after_commit :update_box_active_state, on: [:create, :update, :destroy]
 
   def active?
     return true if settings_active.nil?
@@ -32,10 +32,10 @@ class BoxesApiConnection < ApplicationRecord
     self.settings_active = true if settings_active.nil?
   end
 
-  def refresh_box_activity
+  def update_box_active_state
     return unless box
     return if box.destroyed? || box.frozen?
 
-    box.refresh_active_from_connections
+    box.update_active_state_from_connections
   end
 end

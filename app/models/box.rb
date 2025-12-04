@@ -58,15 +58,15 @@ class Box < ApplicationRecord
   end
 
   def self.sync_all
-    where(syncable: true, active: true).find_each(&:sync)
+    active.where(syncable: true).find_each(&:sync)
   end
 
   def single_recipient?
     raise NotImplementedError
   end
 
-  def refresh_active_from_connections
-    new_active_state = boxes_api_connections.any?(&:active?)
+  def update_active_state_from_connections
+    new_active_state = boxes_api_connections.active.exists?
     update_columns(active: new_active_state) if !destroyed? && !frozen? && active != new_active_state
   end
 

@@ -114,6 +114,25 @@ class Fs::ApiConnectionTest < ActiveSupport::TestCase
     assert_equal false, box.boxes_api_connections.find_by(api_connection: api_connection).settings_active
   end
 
+  test ".boxify reactivates connections present in the API response" do
+    api_connection = api_connections(:fs_api_connection1)
+    box = boxes(:fs_accountants)
+    connection = api_connection.boxes_api_connections.find_by(box: box)
+    connection.update!(settings_active: false)
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :get_subjects, [
+      {"name" => "Accountants main FS", "dic" => box.settings_dic, "subject_id" => box.settings_subject_id, "authorization_type" => "6"}
+    ]
+
+    FsEnvironment.fs_client.stub :api, fs_api do
+      api_connection.boxify
+    end
+
+    assert connection.reload.settings_active
+    assert box.reload.active
+  end
+
   test ".boxify keeps box active when another API connection is still active" do
     box = boxes(:fs_accountants_multiple_api_connections)
     api_connection = api_connections(:fs_api_connection4)
