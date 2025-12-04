@@ -151,6 +151,10 @@ paths:
                       description: OBO identifikátor schránky ak je k dispozícii
                       type: string
                       nullable: true
+                    dic:
+                      description: DIČ schránky ak je k dispozícii
+                      type: string
+                      nullable: true
                     # active:
                     #   description: Indikuje, či je možné schránku používať (napr. platná autorizácia na zastupovanie)
                     #   type: boolean
