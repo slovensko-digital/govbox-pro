@@ -66,6 +66,7 @@ class User < ApplicationRecord
   end
 
   def eligible_to_sign?
+    # TODO: #748
     true
   end
 
