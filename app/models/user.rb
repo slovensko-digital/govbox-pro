@@ -87,6 +87,8 @@ class User < ApplicationRecord
     update(attrs)
   end
 
+  private
+
   def delete_user_group
     user_group.destroy
   end
