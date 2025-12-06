@@ -3,10 +3,18 @@
     <div class="self-stretch p-6 border-b border-gray-200 justify-start items-center gap-4 inline-flex">
       <div class="grow shrink basis-0 text-gray-900 text-xl font-semibold leading-[35px]">Aktivácia rozšírení</div>
     </div>
-    <% @feature_flags.each do |flag| %>
-      <div class="self-stretch flex-col justify-start items-start flex">
-        <%= render Admin::FeatureFlags::FeatureFlagsListRowComponent.new(flag.to_s, @enabled_features) %>
+    <% if @feature_flags.present? %>
+      <% @feature_flags.each do |flag| %>
+        <div class="self-stretch flex-col justify-start items-start flex">
+          <%= render Admin::FeatureFlags::FeatureFlagsListRowComponent.new(flag.to_s, @enabled_features) %>
+        </div>
+      <% end %>
+    <% else %>
+      <div class="self-stretch p-6 justify-start items-center gap-4 inline-flex">
+        <div class="text-gray-500 text-base font-normal leading-normal">
+          Pre tohto klienta nie sú momentálne povolené žiadne používateľsky upraviteľné rozšírenia.
+        </div>
       </div>
     <% end %>
-  </div> 
+  </div>
 </div>
