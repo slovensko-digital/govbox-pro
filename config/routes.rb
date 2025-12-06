@@ -217,7 +217,6 @@ Rails.application.routes.draw do
 
   resources :sessions do
     get :login, on: :collection
-    get :identity, on: :collection
     get :no_account, on: :collection
     delete :destroy, on: :collection
   end
