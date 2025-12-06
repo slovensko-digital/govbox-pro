@@ -5,6 +5,7 @@ class CreateAuthorTagsForExistingUsers < ActiveRecord::Migration[7.1]
 
       ActiveRecord::Base.transaction do
         user_group = user.user_group
+        next unless user_group
 
         author_tag = user.tenant.tags.create!(
           owner: user,
