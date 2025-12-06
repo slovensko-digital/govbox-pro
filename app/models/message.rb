@@ -55,7 +55,6 @@ class Message < ApplicationRecord
   end
 
   def add_cascading_tag(tag)
-    puts "adding tag #{tag} to message #{id} and thread #{thread.id}"
     messages_tags.find_or_create_by!(tag: tag)
     thread.message_threads_tags.find_or_create_by!(tag: tag)
   end

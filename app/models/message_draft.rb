@@ -34,7 +34,6 @@ class MessageDraft < Message
   validates :delivered_at, presence: true
 
   after_create do
-    puts "DRAFT THING"
     add_cascading_tag(thread.box.tenant.draft_tag!)
     add_cascading_tag(author.draft_tag) if author
     add_cascading_tag(author.author_tag) if author

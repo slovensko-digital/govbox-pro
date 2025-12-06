@@ -102,7 +102,6 @@ class Fs::Message
   end
 
   def self.create_outbox_message(raw_message, associated_message_draft: nil)
-    puts raw_message
     Message.create(
       uuid: raw_message.dig('message_container', 'message_id'),
       title: raw_message['submission_type_name'],
