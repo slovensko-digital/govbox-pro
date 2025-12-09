@@ -198,6 +198,10 @@ class Fs::MessageDraft < MessageDraft
     false
   end
 
+  def submittable?
+    super && box.active?
+  end
+
   def build_html_visualization
     Fs::MessageHelper.build_html_visualization_from_form(self)
   end
