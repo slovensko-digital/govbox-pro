@@ -34,7 +34,7 @@ class Fs::MessageDraft < MessageDraft
     form_files.each do |form_file|
       form_content = form_file.read.force_encoding("UTF-8")
 
-      box, fs_form, period = get_parsed_box_and_form_from_content(form_content, tenant: author.tenant)
+      box, fs_form, period = get_parsed_box_and_form_from_content(form_content, tenant: author.tenant, author: author)
 
       if box.nil?
         failed_files << form_file
@@ -159,13 +159,18 @@ class Fs::MessageDraft < MessageDraft
     message
   end
 
-  def self.get_parsed_box_and_form_from_content(form_content, tenant:, fs_client: FsEnvironment.fs_client)
+  def self.get_parsed_box_and_form_from_content(form_content, tenant:, fs_client: FsEnvironment.fs_client, author: nil)
     form_information = fs_client.api.parse_form(form_content)
     dic = form_information&.dig('subject')&.strip
     fs_form_identifier = form_information&.dig('form_identifier')
     period = form_information&.dig('period')&.dig('pretty')
 
-    box = tenant.boxes.with_enabled_message_drafts_import.find_by("settings ->> 'dic' = ?", dic)
+    if author
+      box = author.accessible_boxes.with_enabled_message_drafts_import.find_by("settings ->> 'dic' = ?", dic)
+    else
+      box = tenant.boxes.with_enabled_message_drafts_import.find_by("settings ->> 'dic' = ?", dic)
+    end
+
     fs_form = Fs::Form.find_by(identifier: fs_form_identifier)
 
     return box, fs_form, period

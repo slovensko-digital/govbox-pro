@@ -21,6 +21,8 @@ class Box < ApplicationRecord
   belongs_to :tenant
   has_many :boxes_api_connections
   has_many :api_connections, through: :boxes_api_connections
+  has_many :box_groups, dependent: :destroy
+  has_many :groups, through: :box_groups
   has_many :message_threads, extend: MessageThreadsExtensions, dependent: :destroy
   has_many :messages, through: :message_threads
   has_many :message_submission_requests, dependent: :destroy, class_name: '::Stats::MessageSubmissionRequest'
