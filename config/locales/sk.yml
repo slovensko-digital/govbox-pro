@@ -384,7 +384,7 @@ sk:
       name: "Synchronizácia schránky z finančnej správy"
       description: "Synchronizácia schránky z finančnej správy"
     upvs:
-      name: "UPVS"
+      name: "ÚPVS"
       description: "Funkčnosť prepojenia s ústredným portálom verejnej správy (slovensko.sk)"
     message_draft_import:
       name: "Import správ"
