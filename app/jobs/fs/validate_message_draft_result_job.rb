@@ -39,7 +39,7 @@ class Fs::ValidateMessageDraftResultJob < ApplicationJob
       tenant = message_draft.thread.box.tenant
       author = message_draft.author
 
-      signature_target = if tenant.signature_request_mode == 'author' && author.present? && author.eligible_to_sign?
+      signature_target = if tenant.signature_request_mode == 'author' && message_draft.signable_by_author?
                            author
                          else
                            tenant.signer_group
