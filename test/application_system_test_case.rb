@@ -1,6 +1,7 @@
 require "test_helper"
 require "helpers/auth_helper"
 require "helpers/page_parts_helper"
+require "helpers/tenant_helper"
 
 class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   driver = ENV['DRIVER'] ? ENV['DRIVER'].to_sym : :headless_chrome
@@ -8,4 +9,5 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
 
   include AuthHelper
   include PagePartsHelper
+  include TenantHelper
 end
