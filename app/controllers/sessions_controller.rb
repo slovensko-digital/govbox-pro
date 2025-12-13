@@ -13,18 +13,6 @@ class SessionsController < ApplicationController
     EventBus.publish(:user_logged_in, Current.user) if Current.user
   end
 
-  def create_http_basic
-    authenticate_or_request_with_http_basic do |email, password|
-      user = User.find_by(email: email)
-      Current.user = user if user&.authenticate(password)
-    end
-
-    return unless Current.user
-
-    create_session
-    EventBus.publish(:user_logged_in, Current.user)
-  end
-
   def destroy
     EventBus.publish(:user_logged_out, User.find_by(id: session[:user_id])) if session[:user_id]
 
