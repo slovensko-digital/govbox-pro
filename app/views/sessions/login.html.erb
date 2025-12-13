@@ -8,7 +8,7 @@
       <% if ENV["IDENTITY_AUTH"] == "true" %>
         <%= render "identity" %>
 
-        <div class="relative mt-10">
+        <div class="relative mt-10 mb-6">
           <div class="absolute inset-0 flex items-center" aria-hidden="true">
             <div class="w-full border-t border-gray-200"></div>
           </div>
@@ -18,7 +18,7 @@
         </div>
       <% end %>
 
-      <div class="<%= ENV["IDENTITY_AUTH"] == "true" ? 'mt-6' : '' %> grid grid-cols-1 gap-6">
+      <div class="grid grid-cols-1 gap-6">
         <% if ENV["GOOGLE_CLIENT_ID"] %>
           <%= button_to "/auth/google_oauth2", method: :post, data: { turbo: false }, class: "flex w-full items-center justify-center gap-3 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:ring-transparent" do %>
             <svg class="h-5 w-5" aria-hidden="true" viewBox="0 0 48 48">
