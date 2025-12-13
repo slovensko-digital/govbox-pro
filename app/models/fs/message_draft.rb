@@ -206,6 +206,15 @@ class Fs::MessageDraft < MessageDraft
     Fs::Form.find(metadata['fs_form_id'])
   end
 
+  def signable_by_author?
+    return false unless author
+    return false unless author.signer?
+    return true if box.api_connections.where(owner: nil).one?
+    return true if box.api_connections.where(owner: author).present?
+
+    false
+  end
+
   private
 
   def validate_data

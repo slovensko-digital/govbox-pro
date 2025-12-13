@@ -54,6 +54,7 @@ class Tenant < ApplicationRecord
   ALL_FEATURE_FLAGS = [:audit_log, :archive, :api, :message_draft_import, :fs_api, :fs_sync]
 
   PDF_SIGNATURE_FORMATS = %w[PAdES XAdES CAdES]
+  SIGNATURE_REQUEST_MODES = %w[signer_group author].freeze
 
   def set_pdf_signature_format(pdf_signature_format)
     raise "Unknown pdf_signature_format #{pdf_signature_format}" unless pdf_signature_format.in? PDF_SIGNATURE_FORMATS
@@ -70,6 +71,18 @@ class Tenant < ApplicationRecord
     end
 
     settings.slice("signature_with_timestamp").merge!({"pdf_signature_format" => pdf_signature_format})
+  end
+
+  def set_signature_request_mode(mode)
+    raise "Unknown mode #{mode}" unless mode.in?(SIGNATURE_REQUEST_MODES)
+
+    self.settings["signature_request_mode"] = mode
+    save!
+  end
+
+  def signature_request_mode
+    mode = settings["signature_request_mode"]
+    mode.in?(SIGNATURE_REQUEST_MODES) ? mode : SIGNATURE_REQUEST_MODES[0]
   end
 
   def draft_tag!
