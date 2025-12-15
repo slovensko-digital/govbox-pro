@@ -1,0 +1,43 @@
+<div id="agp-container"></div>
+
+<script>
+  window.agpInitialized = false;
+  
+  window.initializeAGPWhenReady = function() {
+    if (window.agpInitialized) {
+      console.log("AGP already initialized, skipping...");
+      return;
+    }
+    
+    if (!document.getElementById("agp-container")) {
+      console.log("AGP container not found, retrying...");
+      setTimeout(window.initializeAGPWhenReady, 100);
+      return;
+    }
+    
+    if (typeof window.agp === 'undefined') {
+      console.log("AGP SDK not loaded yet, retrying...");
+      setTimeout(window.initializeAGPWhenReady, 100);
+      return;
+    }
+    
+    console.log("Initializing AGP iframe for bundle <%= @bundle.bundle_identifier %>");
+    window.agpInitialized = true;
+    window.agp.initBundleIframe("<%= @bundle.bundle_identifier %>", {
+      mode: 'iframe',
+      parentElement: "#agp-container", 
+      width: '100%',
+      height: '600px',
+      noPreview: true, 
+      onMessage: (event) => {
+        if (event.status === 'document-signed') {
+          console.log("Documents signed, reloading parent page...");
+          // window.parent.location.reload();
+
+        }
+      }
+    });
+  };
+</script>
+
+<script src="<%= @agp_sdk_file %>" onload="window.initializeAGPWhenReady()"></script>

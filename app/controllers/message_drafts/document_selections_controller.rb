@@ -18,7 +18,7 @@ module MessageDrafts
     end
 
     def set_next_step
-      next_steps = ["sign", "signature_request"]
+      next_steps = ["sign", "sign-agp", "signature_request"]
 
       @next_step = next_steps.include?(params[:next_step]) ? params[:next_step] : "signature_request"
     end
@@ -29,9 +29,14 @@ module MessageDrafts
 
     def redirect_to_next_step
       if @message_draft.objects.length == 1
-        if @next_step == "sign"
+        if @next_step.in?(["sign", "sign-agp"])
           if @message_draft.valid?(:validate_data)
-            redirect_to new_message_draft_signing_path(@message_draft, object_ids: @message_draft.objects.map(&:id))
+            redirect_to case @next_step
+                        when "sign"
+                          new_message_draft_signing_path(@message_draft, object_ids: @message_draft.objects.map(&:id))
+                        when "sign-agp"
+                          new_agp_bundle_path(message_draft_id: @message_draft.id, object_ids: @message_draft.objects.map(&:id))
+                        end
           else
             @message = @message_draft
             render template: 'message_drafts/update_body' and return
@@ -48,7 +53,7 @@ module MessageDrafts
       all_ids = message_draft.objects.pluck(:id).map(&:to_s)
       requested_ids = select_requested_object_ids(message_draft).map(&:to_s)
 
-      if next_step == "sign" && Current.user.signer? && requested_ids.present?
+      if next_step.in?(["sign", "sign-agp"]) && Current.user.signer? && requested_ids.present?
         return requested_ids
       end
 
