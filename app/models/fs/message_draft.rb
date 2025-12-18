@@ -218,8 +218,4 @@ class Fs::MessageDraft < MessageDraft
   def validate_metadata
     errors.add(:metadata, 'No form ID') unless metadata&.dig('fs_form_id')
   end
-
-  def validate_objects
-    errors.add(:objects, "Message has to contain exactly one object") if objects.size != 1
-  end
 end
