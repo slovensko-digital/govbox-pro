@@ -91,8 +91,6 @@ class MessageDraft < Message
         blob: Base64.decode64(object_params[:content])
       )
     end
-
-    EventBus.publish(:message_thread_with_message_created, self)
   end
 
   def assign_tags_from_params(tags_params)

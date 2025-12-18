@@ -83,7 +83,7 @@ class FsMessageDraftsApiTest < ActionDispatch::IntegrationTest
 
     FsEnvironment.fs_client.stub :api, fs_api do
       post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair)} ), as: :json
-      
+
       assert_response :created
       assert_not_equal Message.count, @before_request_messages_count
       assert @box, Message.last.box
