@@ -261,6 +261,8 @@ Rails.application.routes.draw do
     resources :message_objects, only: [] do
       get :pdf
     end
+
+    resources :boxes, only: :index
   end
 
   if UpvsEnvironment.sso_support?
