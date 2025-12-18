@@ -122,12 +122,12 @@ class Tenant < ApplicationRecord
   end
 
   def list_available_features
-    env_flags = ENV['TENANT_AVAILABLE_FEATURE_FLAGS']
+    env_flags = ENV.fetch("TENANT_AVAILABLE_FEATURE_FLAGS", nil)
     return [] if env_flags.blank?
 
     parsed_flags = env_flags.split(",").map(&:strip).map(&:to_sym)
     invalid_flags = parsed_flags - ALL_FEATURE_FLAGS
-    Rails.logger.warn("Unknown feature flags configured: #{invalid_flags.join(', ')}") if invalid_flags.any?
+    Rails.logger.warn("Unknown feature flags configured: #{invalid_flags.join(", ")}") if invalid_flags.any?
     parsed_flags & ALL_FEATURE_FLAGS
   end
 
