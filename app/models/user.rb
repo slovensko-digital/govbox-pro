@@ -26,12 +26,12 @@ class User < ApplicationRecord
   has_many :message_drafts, foreign_key: :author_id, dependent: :destroy
   has_many :messages, foreign_key: :author_id, dependent: :nullify
   has_many :automation_rules, class_name: 'Automation::Rule', dependent: :nullify
-  has_many :filters, foreign_key: :author_id, dependent: :destroy
+  has_many :filters, foreign_key: :author_id, dependent: :nullify
   has_many :filter_subscriptions, dependent: :destroy
   has_many :notifications, dependent: :destroy
   has_one :sticky_note, dependent: :destroy
   has_many :exports, dependent: :destroy
-  has_many :api_connections, foreign_key: :owner_id, dependent: :nullify
+  has_many :api_connections, foreign_key: :owner_id, dependent: :destroy
   has_secure_password validations: false
 
   validates_presence_of :name, :email
