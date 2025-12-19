@@ -2,10 +2,7 @@ class Fs::ValidateMessageDraftJob < ApplicationJob
   include DiscardOnDeserializationError
   include GoodJob::ActiveJobExtensions::Concurrency
 
-  class ValidationError < StandardError
-  end
-
-  class TemporaryValidationError < ValidationError
+  class TemporaryValidationError < StandardError
   end
 
 
@@ -18,10 +15,6 @@ class Fs::ValidateMessageDraftJob < ApplicationJob
   )
 
   retry_on TemporaryValidationError, wait: 2.minutes, attempts: 5
-
-  retry_on ValidationError, attempts: 1 do |_job, _error|
-    # no-op
-  end
 
   def perform(message_draft, fs_client: FsEnvironment.fs_client)
     message_draft.metadata['status'] = 'being_validated'
@@ -50,8 +43,13 @@ class Fs::ValidateMessageDraftJob < ApplicationJob
     when 408, 503
       raise TemporaryValidationError, error_message(message_draft, response_status, response_body)
     else
+      message_draft.metadata[:validation_errors] = {
+        result: response_body['result'],
+        errors: [
+          response_body['message']
+        ]
+      }
       mark_message_draft_invalid(message_draft)
-      raise ValidationError, error_message(message_draft, response_status, response_body)
     end
   end
 
