@@ -51,15 +51,15 @@ module Fs
       request(:get, "received-messages/#{CGI.escape(message_id)}", {}, jwt_header(obo).merge(fs_credentials_header))[:body]
     end
 
-    def post_validation(form_identifier, content)
-      request(:post, "validations", {form_identifier: form_identifier, content: content}, jwt_header, accept_negative: true)
+    def post_validation(form_identifier, content, attachments)
+      request(:post, "validations", {form_identifier: form_identifier, content: content, attachments: attachments}, jwt_header, accept_negative: true)
     end
 
     def delete_validation(validation_id)
       request(:delete, "validations/#{validation_id}", {}, jwt_header, accept_negative: true)
     end
 
-    def post_submission(form_identifier, content, allow_warn_status: true, message_uuid:, form_object_uuid:, is_signed: true, mime_type: 'application/vnd.etsi.asic-e+zip', obo: @obo)
+    def post_submission(form_identifier, content, attachments: [], allow_warn_status: true, message_uuid:, form_object_uuid:, is_signed: true, mime_type: 'application/vnd.etsi.asic-e+zip', obo: @obo)
       request(:post, "submissions", {
         message_container_message_id: message_uuid,
         message_container_form_object_id: form_object_uuid,
@@ -67,7 +67,8 @@ module Fs
         mime_type: mime_type,
         form_identifier: form_identifier,
         content: content,
-        allow_warn_status: allow_warn_status
+        allow_warn_status: allow_warn_status,
+        attachments: attachments
       }, jwt_header(obo).merge(fs_credentials_header))
     end
 

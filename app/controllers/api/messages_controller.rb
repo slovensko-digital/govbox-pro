@@ -77,6 +77,7 @@ class Api::MessagesController < Api::TenantController
         :sktalk_class
       ],
       objects: [
+        :identifier,
         :name,
         :description,
         :is_signed,
