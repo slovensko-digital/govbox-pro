@@ -151,7 +151,7 @@ class Message < ApplicationRecord
       message_draft_object.tags.signed.each { |tag| message_object.assign_tag(tag) }
     end
 
-    (message_draft.tags.simple + message_draft.tags.signed).each { |tag| assign_tag(tag) }
+    (message_draft.tags.simple + message_draft.tags.author + message_draft.tags.signed).each { |tag| assign_tag(tag) }
   end
 
   def export_summary
