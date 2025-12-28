@@ -26,17 +26,22 @@ module MessageDrafts
     def update
       authorize MessageObjectsTag
 
-      signers_changes = RelationChanges::Signers.new(
-        signers_scope: signers_scope.includes(tenant: :signature_requested_tag),
-        assignments: signers_assignments
-      )
+      if @message_draft.valid?(:validate_data)
+        signers_changes = RelationChanges::Signers.new(
+          signers_scope: signers_scope.includes(tenant: :signature_requested_tag),
+          assignments: signers_assignments
+        )
 
-      signers_changes.save(@message_objects)
+        signers_changes.save(@message_objects)
 
-      # status: 303 is needed otherwise PATCH is kept in the following redirect https://apidock.com/rails/ActionController/Redirecting/redirect_to
-      redirect_to message_thread_path(@message_draft.thread, anchor: helpers.dom_id(@message_draft)),
-                  notice: "Podpisové štítky boli upravené",
-                  status: 303
+        # status: 303 is needed otherwise PATCH is kept in the following redirect https://apidock.com/rails/ActionController/Redirecting/redirect_to
+        redirect_to message_thread_path(@message_draft.thread, anchor: helpers.dom_id(@message_draft)),
+                    notice: "Podpisové štítky boli upravené",
+                    status: 303
+      else
+        @message = @message_draft
+        render template: 'message_drafts/update_body', status: :unprocessable_entity
+      end
     end
 
     private
