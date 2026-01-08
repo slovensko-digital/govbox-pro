@@ -28,17 +28,20 @@ module MessageDrafts
     end
 
     def redirect_to_next_step
-      if @message_draft.objects.length == 1
-        if @next_step == "sign"
-          if @message_draft.valid?(:validate_data)
-            redirect_to new_message_draft_signing_path(@message_draft, object_ids: @message_draft.objects.map(&:id))
-          else
-            @message = @message_draft
-            render template: 'message_drafts/update_body' and return
-          end
+      return unless @message_draft.objects.length == 1
+
+      if @next_step == "sign"
+        if @message_draft.valid?(:validate_data)
+          redirect_to new_message_draft_signing_path(@message_draft, object_ids: @message_draft.objects.map(&:id))
         else
-          redirect_to edit_message_draft_signature_requests_path(@message_draft, object_ids: @message_draft.objects.map(&:id))
+          @message = @message_draft
+          render template: 'message_drafts/update_body' and return
         end
+      elsif @message_draft.valid?(:validate_data)
+        redirect_to edit_message_draft_signature_requests_path(@message_draft, object_ids: @message_draft.objects.map(&:id))
+      else
+        @message = @message_draft
+        render template: 'message_drafts/update_body' and return
       end
     end
 
