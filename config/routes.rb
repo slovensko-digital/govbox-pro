@@ -293,7 +293,10 @@ Rails.application.routes.draw do
     get 'auth/microsoft_graph/failure', to: 'sessions#failure'
   end
 
-  get 'auth/http', to: 'sessions#create_http_basic' if ENV["HTTP_AUTH"] == "true"
+  if ENV["IDENTITY_AUTH"] == "true"
+    post 'auth/identity/callback', to: 'sessions#create'
+    post 'auth/identity/failure', to: 'sessions#failure'
+  end
 
   get "/service-worker.js" => "service_worker#service_worker"
   get "/manifest.json" => "service_worker#manifest"
