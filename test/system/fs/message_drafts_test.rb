@@ -169,6 +169,9 @@ class Fs::MessageDraftsTest < ApplicationSystemTestCase
   test "user can upload message draft only if any FS box exists & :fs_api feature is enabled" do
     sign_in_as(:basic)
 
+    tenant = users(:basic).tenant
+    tenant.enable_feature(:upvs, force: true)
+
     visit message_threads_path
 
     click_button "Vytvoriť novú správu"
