@@ -1,0 +1,45 @@
+<dokument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <secAdresovanieVP>
+    <valOrganFS>FRSR</valOrganFS>
+  </secAdresovanieVP>
+  <secOblastPodania>
+    <valOblastPodania>DAN</valOblastPodania>
+    <valAgenda>FR_DAN_PH</valAgenda>
+  </secOblastPodania>
+  <secTypPodania>
+    <valTypSluzby1>2</valTypSluzby1>
+    <valTypPodania>PNZ</valTypPodania>
+  </secTypPodania>
+  <secDanSubjekt>
+    <valFormaDanovehoSubjektu>0</valFormaDanovehoSubjektu>
+    <valDicDanSubj>1234567890</valDicDanSubj>
+    <secDanSubjFO>
+      <secDoplUdajeFO>
+        <valMenoDanSubjFO>Meno</valMenoDanSubjFO>
+        <valPriezvDanSubjFO>Priezvisko</valPriezvDanSubjFO>
+        <valRodneCisloDanSubjFO>1234567890</valRodneCisloDanSubjFO>
+      </secDoplUdajeFO>
+    </secDanSubjFO>
+  </secDanSubjekt>
+  <secSidlo>
+    <valCislo>123</valCislo>
+    <valPsc>12345</valPsc>
+    <valObec>Obec</valObec>
+    <valStat>Slovensko</valStat>
+  </secSidlo>
+  <secDruhPrilohy>
+    <valDruhPrilohy>2</valDruhPrilohy>
+  </secDruhPrilohy>
+  <secObsah>
+    <valTextPodania>Text podania</valTextPodania>
+  </secObsah>
+  <secPrilohyPodania>
+    <secPrilohaPodania>
+      <valPopisPrilohy>popis prilohy</valPopisPrilohy>
+      <valSposobDoruceniaPrilohy>SD_ESP</valSposobDoruceniaPrilohy>
+    </secPrilohaPodania>
+  </secPrilohyPodania>
+  <secDatumPodania>
+    <valDatumPodania>2025-11-21</valDatumPodania>
+  </secDatumPodania>
+</dokument>

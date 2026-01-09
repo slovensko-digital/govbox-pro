@@ -4,6 +4,7 @@
 #
 #  id           :bigint           not null, primary key
 #  description  :string
+#  identifier   :string
 #  is_signed    :boolean
 #  mimetype     :string
 #  name         :string

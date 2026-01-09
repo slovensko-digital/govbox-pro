@@ -1133,6 +1133,10 @@ components:
           items:
             type: object
             properties:
+              identifier:
+                description: FS Identifikátor typu prílohy
+                type: string
+                nullable: true
               name:
                 description: Názov objektu
                 type: string
