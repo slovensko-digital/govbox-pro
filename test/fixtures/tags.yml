@@ -206,10 +206,24 @@ ssd_basic_user_drafts:
   visible: false
   tenant: ssd
 
+ssd_basic_user_authors:
+  name: Authors-Basic user
+  owner: basic
+  type: AuthorTag
+  visible: false
+  tenant: ssd
+
 ssd_admin_user_drafts:
   name: Drafts-Admin user
   owner: admin
   type: DraftTag
+  visible: false
+  tenant: ssd
+
+ssd_admin_user_author:
+  name: Authors-Admin user
+  owner: basic
+  type: AuthorTag
   visible: false
   tenant: ssd
 
@@ -223,6 +237,13 @@ solver_other_user_drafts:
   name: Drafts-Other user
   owner: solver_other
   type: DraftTag
+  visible: false
+  tenant: solver
+
+solver_other_user_author:
+  name: Authors-Other user
+  owner: solver_other
+  type: AuthorTag
   visible: false
   tenant: solver
 
@@ -302,6 +323,13 @@ accountants_basic_user_drafts:
   name: Drafts-Basic user
   owner: accountants_basic
   type: DraftTag
+  visible: false
+  tenant: accountants
+
+accountants_basic_user_authors:
+  name: Authors-Basic user
+  owner: accountants_basic
+  type: AuthorTag
   visible: false
   tenant: accountants
 
