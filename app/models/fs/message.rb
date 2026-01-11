@@ -111,6 +111,7 @@ class Fs::Message
       replyable: false,
       collapsed: collapsed?,
       outbox: true,
+      author: associated_message_draft&.author,
       metadata: {
         "fs_form_id": (associated_message_draft.metadata['fs_form_id'] if associated_message_draft) || Fs::Form.find_by(submission_type_identifier: raw_message['submission_type_id'])&.id,
         "fs_message_id": raw_message['message_id'],
