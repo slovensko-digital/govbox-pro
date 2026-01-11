@@ -98,4 +98,25 @@ class Fs::MessageTest < ActiveSupport::TestCase
 
     assert Message.last.thread.tags.include?(tags(:accountants_inbox))
   end
+
+  test "#create_outbox_message assigns author from associated message draft" do
+    raw_message = {
+      "created_at" => Time.now.to_s,
+      "message_container" => { "message_id" => SecureRandom.uuid },
+      "submission_type_name" => "FS Podanie",
+      "subject" => "FS Subject",
+      "message_id" => "123456",
+      "status" => "Odoslané",
+      "submitting_subject" => "Firma s.r.o.",
+      "dismissal_reason" => nil,
+      "other_attributes" => {},
+      "dic" => "2020202020"
+    }
+
+    draft = messages(:fs_accountants_draft)
+
+    message = Fs::Message.create_outbox_message(raw_message, associated_message_draft: draft)
+
+    assert_equal draft.author, message.author, "Author should be assigned to the outbox message"
+  end
 end

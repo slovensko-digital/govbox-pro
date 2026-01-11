@@ -11,3 +11,7 @@ ssd_main_general_two_external:
 ssd_main_general_one_everything:
   message: ssd_main_general_one
   tag: ssd_everything
+
+ssd_main_draft_to_be_signed_draft_one_author:
+  message: ssd_main_draft_to_be_signed_draft_one
+  tag: ssd_basic_user_authors
