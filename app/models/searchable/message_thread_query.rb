@@ -9,21 +9,26 @@ class Searchable::MessageThreadQuery
 
     with_text = query.to_s
 
-    query.to_s.scan(/(-?label):(\(([^)]+)\)|([^ ]+)|\*)/).each do |match|
-      raise "unexpected label case" if match.length != 4
+    with_text.scan(/(-?(?:label|author)):(\(([^)]+)\)|([^ ]+)|\*)/).each do |match|
+      key = match[0] # "label", "-label", "author"
+      value = [match[2], match[3]].find(&:presence)
 
-      label_name = [match[2], match[3]].find(&:presence)
-
-      if match[0] == "label"
-        filter_labels << label_name
-      elsif match[0] == "-label"
-        filter_out_labels << label_name
+      case key
+      when "label"
+        filter_labels << value
+        with_text = with_text.gsub("#{key}:#{match[1]}", "")
+      when "-label"
+        filter_out_labels << value
+        with_text = with_text.gsub("#{key}:#{match[1]}", "")
+      when "author"
+        if value == "me" && Current.user
+          filter_labels << AuthorTag.find_by(owner: Current.user)&.name
+          with_text = with_text.gsub("#{key}:#{match[1]}", "")
+        end
       end
-
-      with_text = with_text.gsub("#{match[0]}:#{match[1]}", "")
     end
 
-    with_text = with_text.gsub(/\s+/, ' ').strip
+    with_text = with_text.gsub(/\s+/, " ").strip
 
     {
       fulltext: with_text,
