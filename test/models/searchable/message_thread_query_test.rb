@@ -84,4 +84,62 @@ class Searchable::MessageThreadQueryTest < ActiveSupport::TestCase
       filter_out_labels: []
     }
   end
+
+  test "parser author:me" do
+    Current.user = users(:basic)
+
+    expected_author_tag = AuthorTag.find_by(owner: Current.user)&.name
+
+    assert_equal Searchable::MessageThreadQuery.parse('author:me NASES'), {
+      fulltext: 'NASES',
+      prefix_search: false,
+      filter_labels: [expected_author_tag],
+      filter_out_labels: []
+    }
+  ensure
+    Current.user = nil
+  end
+
+  test "parser author:XYZ treated as fulltext" do
+    Current.user = users(:basic)
+
+    assert_equal Searchable::MessageThreadQuery.parse('author:jano NASES'), {
+      fulltext: 'author:jano NASES',
+      prefix_search: false,
+      filter_labels: [],
+      filter_out_labels: []
+    }
+  ensure
+    Current.user = nil
+  end
+
+  test "parser mixed author:me and tag" do
+    Current.user = users(:basic)
+
+    expected_author_tag = AuthorTag.find_by(owner: Current.user)&.name
+
+    query = 'label:(NASES) author:me žiadosť'
+    assert_equal Searchable::MessageThreadQuery.parse(query), {
+      fulltext: 'žiadosť',
+      prefix_search: false,
+      filter_labels: ['NASES', expected_author_tag],
+      filter_out_labels: []
+    }
+  ensure
+    Current.user = nil
+  end
+
+  test "parser mixed author:XYZ and tag" do
+    Current.user = users(:basic)
+
+    query = 'label:(NASES) author:jano žiadosť'
+    assert_equal Searchable::MessageThreadQuery.parse(query), {
+      fulltext: 'author:jano žiadosť',
+      prefix_search: false,
+      filter_labels: ['NASES'],
+      filter_out_labels: []
+    }
+  ensure
+    Current.user = nil
+  end
 end
