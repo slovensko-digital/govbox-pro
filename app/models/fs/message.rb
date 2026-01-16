@@ -89,6 +89,7 @@ class Fs::Message
         "fs_status": raw_message['status'],
         "fs_submitting_subject": raw_message['submitting_subject'],
         "fs_submission_status": raw_message['submission_status'],
+        "fs_submission_verification_status": raw_message['submission_verification_status'],
         "fs_message_type": raw_message.dig('message_container', 'message_type'),
         "fs_submission_type_id": raw_message['submission_type_id'], # TODO kde pouzit? asi napr. pri vytvarani nazvu suboru pri exporte
         "fs_submission_type_name": raw_message['submission_type_name'],
