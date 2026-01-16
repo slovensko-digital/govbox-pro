@@ -698,7 +698,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_16_150542) do
   add_foreign_key "filter_subscriptions", "tenants"
   add_foreign_key "filter_subscriptions", "users"
   add_foreign_key "filters", "tenants", on_delete: :cascade
-  add_foreign_key "filters", "users", column: "author_id", on_delete: :cascade
+  add_foreign_key "filters", "users", column: "author_id", on_delete: :nullify
   add_foreign_key "folders", "boxes"
   add_foreign_key "fs_form_related_documents", "fs_forms"
   add_foreign_key "govbox_folders", "govbox_folders", column: "parent_folder_id"
