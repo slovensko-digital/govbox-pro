@@ -15,3 +15,7 @@ ssd_main_general_one_everything:
 ssd_main_draft_to_be_signed_draft_one_author:
   message: ssd_main_draft_to_be_signed_draft_one
   tag: ssd_basic_user_authors
+
+fs_accountants_draft_author:
+  message: fs_accountants_draft
+  tag: accountants_basic_user_authors
