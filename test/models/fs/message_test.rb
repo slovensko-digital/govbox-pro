@@ -98,4 +98,27 @@ class Fs::MessageTest < ActiveSupport::TestCase
 
     assert Message.last.thread.tags.include?(tags(:accountants_inbox))
   end
+
+  test "#create_outbox_message_with_thread assigns author and author tag from associated message draft" do
+    draft = messages(:fs_accountants_draft)
+
+    raw_message = {
+      "created_at" => Time.now.to_s,
+      "message_container" => { "message_id" => SecureRandom.uuid, "objects" => [] },
+      "submission_type_name" => "FS Podanie",
+      "subject" => "FS Subject",
+      "message_id" => draft.metadata['fs_message_id'],
+      "status" => "Odoslané",
+      "submitting_subject" => "Firma s.r.o.",
+      "dismissal_reason" => nil,
+      "other_attributes" => {},
+      "dic" => "2020202020"
+    }
+
+    message = Fs::Message.create_outbox_message_with_thread!(raw_message, box: draft.box)
+
+    assert_equal draft.author, message.author, "Author should be assigned to the outbox message"
+    assert message.tags.include?(draft.author.author_tag), "Author tag should be assigned to the outbox message"
+    assert message.thread.tags.include?(draft.author.author_tag), "Author tag should be assigned to the message thread"
+  end
 end
