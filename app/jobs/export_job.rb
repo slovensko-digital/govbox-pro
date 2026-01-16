@@ -117,7 +117,7 @@ class ExportJob < ApplicationJob
 
     return path_with_extension unless path_with_extension.in?(other_file_names)
 
-    matches_count = other_file_names.count { |name| /#{path_without_extension}( \(\d+\))?#{extension}/ =~ name }
+    matches_count = other_file_names.count { |name| /#{Regexp.escape(path_without_extension)}( \(\d+\))?#{Regexp.escape(extension)}/ =~ name }
     "#{path_without_extension} (#{matches_count})#{extension}"
   end
 end
