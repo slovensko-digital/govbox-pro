@@ -1,0 +1,53 @@
+<%# locals: { title:, close_path:, items:, empty_message:, url:, item_param_key:, group_id:, item_type: :box, nested_params: false } %>
+<% item_type ||= :box %>
+<% nested_params ||= false %>
+
+<div class="flex flex-col absolute z-50 mt-2 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+  <div class="flex flex-col justify-start items-start rounded-lg bg-white border border-gray-300" style="box-shadow: 1px 1px 4px 0 rgba(0,0,0,0.1);">
+    <% if items && items.present? %>
+      <div class="flex justify-start items-center self-stretch gap-6 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
+        <div class="flex flex-col justify-start items-start flex-grow relative">
+          <p class="self-stretch flex-grow text-m font-semibold text-left text-gray-900"><%= title %></p>
+        </div>
+        <%= render Common::CloseButtonComponent.new(link_to: close_path, target_frame: "_top") %>
+      </div>
+      <div class="flex flex-wrap gap-2 p-6 max-w-3xl">
+        <% items.each do |item| %>
+          <% 
+             current_params = if nested_params
+               # For TagGroups: tag_group[tag_id] and tag_group[group_id]
+               { "#{item_type}_group": { item_param_key => item.id, group_id: group_id } }
+             else
+               # For BoxGroups: flat box_id and group_id
+               { item_param_key => item.id, group_id: group_id }
+             end
+          %>
+          <%= render layout: "admin/permissions/item_add", locals: {
+                url: url,
+                params: current_params
+              } do %>
+            <% if item_type == :tag %>
+              <div class="flex justify-center items-center gap-1 px-2 py-1 rounded-md bg-blue-50 border border-blue-300">
+                <p class="text-sm text-left text-blue-600"><%= item.name %></p>
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" class="flex-grow-0 flex-shrink-0 w-3.5 h-3.5 relative" preserveAspectRatio="xMidYMid meet">
+                  <path d="M3.5 3.5L10.5 10.5M3.5 10.5L10.5 3.5L3.5 10.5Z" stroke="#3B82F6" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+              </div>
+            <% else %>
+              <div class="flex justify-center items-center gap-2 px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200">
+                <p class="text-sm font-medium text-gray-900"><%= item.name %></p>
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4">
+                  <path d="M10 5V10M10 10V15M10 10H15M10 10H5" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+              </div>
+            <% end %>
+          <% end %>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="flex justify-start items-center self-stretch gap-4 p-6 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
+        <%= empty_message %>
+      </div>
+    <% end %>
+  </div>
+</div>

@@ -65,4 +65,8 @@ class Admin::GroupPolicy < ApplicationPolicy
   def search_non_tags?
     @user.admin?
   end
+
+  def search_non_boxes?
+    @user.admin?
+  end
 end
