@@ -36,7 +36,7 @@ class Fs::SubmitMessageDraftJob < ApplicationJob
       attachments: message_draft.attachments.map do |attachment|
         {
           mime_type: attachment.mimetype,
-          content: attachment.content,
+          content: Base64.strict_encode64(attachment.content),
           object_id: attachment.uuid,
           identifier: attachment.identifier
         }
