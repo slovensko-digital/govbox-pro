@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_11_07_084951) do
+ActiveRecord::Schema[7.1].define(version: 2026_01_16_150542) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -213,7 +213,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_11_07_084951) do
 
   create_table "filters", force: :cascade do |t|
     t.bigint "tenant_id", null: false
-    t.bigint "author_id", null: false
+    t.bigint "author_id"
     t.string "name", null: false
     t.string "query", null: false
     t.integer "position", null: false
@@ -516,8 +516,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_11_07_084951) do
     t.bigint "author_id"
     t.boolean "collapsed", default: false, null: false
     t.boolean "outbox", default: false, null: false
-    t.index "((metadata ->> 'fs_message_id'::text))", name: "index_messages_on_metadata_fs_message_id", using: :hash
     t.jsonb "export_metadata", default: {}, null: false
+    t.index "((metadata ->> 'fs_message_id'::text))", name: "index_messages_on_metadata_fs_message_id", using: :hash
     t.index ["author_id"], name: "index_messages_on_author_id"
     t.index ["import_id"], name: "index_messages_on_import_id"
     t.index ["message_thread_id"], name: "index_messages_on_message_thread_id"
