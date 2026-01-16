@@ -52,6 +52,10 @@ accountants_basic_user:
   user: accountants_basic
   group: accountants_basic_user
 
+accountants_admin_basic_user:
+  user: accountants_basic
+  group: accountants_admins
+
 ssd_all_notification_user:
   user: notification_user
   group: ssd_basic_user

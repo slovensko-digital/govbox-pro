@@ -50,3 +50,14 @@ SVDPHv20:
   slug: SVDPHv20
   number_identifier: 471
   submission_type_identifier: 708
+
+DPFOBv24:
+  identifier: '803_800'
+  name: Daňové priznanie k dani z príjmov FO (typ B) za obdobie 2024 (platné od 1.1.2025)
+  group_name: Správa daní/Daň z príjmov fyzickej osoby/Daňové priznanie k dani z príjmov FO (typ B) za obdobie 2024 (platné od 1.1.2025)
+  subtype_name: Riadne
+  signature_required: true
+  ez_signature: true
+  slug: DPFOBv24
+  number_identifier: 601,
+  submission_type_identifier: 803
