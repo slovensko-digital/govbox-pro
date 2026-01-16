@@ -207,7 +207,7 @@ ssd_basic_user_drafts:
   tenant: ssd
 
 ssd_basic_user_authors:
-  name: Authors-Basic user
+  name: Author-Basic user
   owner: basic
   type: AuthorTag
   visible: false
@@ -221,7 +221,7 @@ ssd_admin_user_drafts:
   tenant: ssd
 
 ssd_admin_user_author:
-  name: Authors-Admin user
+  name: Author-Admin user
   owner: basic
   type: AuthorTag
   visible: false
@@ -241,7 +241,7 @@ solver_other_user_drafts:
   tenant: solver
 
 solver_other_user_author:
-  name: Authors-Other user
+  name: Author-Other user
   owner: solver_other
   type: AuthorTag
   visible: false
@@ -327,7 +327,7 @@ accountants_basic_user_drafts:
   tenant: accountants
 
 accountants_basic_user_authors:
-  name: Authors-Basic user
+  name: Author-Basic user
   owner: accountants_basic
   type: AuthorTag
   visible: false

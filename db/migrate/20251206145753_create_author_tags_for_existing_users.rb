@@ -5,11 +5,11 @@ class CreateAuthorTagsForExistingUsers < ActiveRecord::Migration[7.1]
 
       ActiveRecord::Base.transaction do
         user_group = user.user_group
-        next unless user_group
+        raise "User group not found for user #{user.id}" unless user_group
 
         author_tag = user.tenant.tags.create!(
           owner: user,
-          name: "Authors-#{user.name}",
+          name: "Author-#{user.name}",
           type: "AuthorTag",
           visible: false
         )

@@ -107,7 +107,7 @@ class User < ApplicationRecord
 
     author_tag = tenant.tags.create(
       owner: self,
-      name: "Authors-#{name}",
+      name: "Author-#{name}",
       type: "AuthorTag",
       visible: false
     )

@@ -99,7 +99,7 @@ class Fs::MessageTest < ActiveSupport::TestCase
     assert Message.last.thread.tags.include?(tags(:accountants_inbox))
   end
 
-  test "#create_outbox_message assigns author from associated message draft" do
+  test "#create_outbox_message assigns author and author tag from associated message draft" do
     raw_message = {
       "created_at" => Time.now.to_s,
       "message_container" => { "message_id" => SecureRandom.uuid },
@@ -118,5 +118,6 @@ class Fs::MessageTest < ActiveSupport::TestCase
     message = Fs::Message.create_outbox_message(raw_message, associated_message_draft: draft)
 
     assert_equal draft.author, message.author, "Author should be assigned to the outbox message"
+    assert message.tags.include?(draft.author.author_tag), "Author tag should be assigned to the outbox message"
   end
 end

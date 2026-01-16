@@ -31,7 +31,7 @@ class Govbox::Message < ApplicationRecord
 
     MessageThread.with_advisory_lock!(govbox_message.correlation_id, transaction: true, timeout_seconds: 10) do
       message = create_message(govbox_message)
-      message.author = message_draft.author if message_draft
+      message.author = message_draft&.author
 
       message.thread = message_draft&.thread
       message.thread ||= govbox_message.box.message_threads.find_or_create_by_merge_uuid!(
