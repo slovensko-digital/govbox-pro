@@ -195,7 +195,7 @@ class Fs::MessageDraft < MessageDraft
   end
 
   def attachments_allowed?
-    form.attachments_allowed?
+    not_yet_submitted? && form.attachments_allowed?
   end
 
   def build_html_visualization
