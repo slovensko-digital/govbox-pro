@@ -16,4 +16,24 @@ class FeatureFlagsManagementTest < ApplicationSystemTestCase
     users(:admin).tenant.reload
     assert_not_equal enabled, users(:admin).tenant.feature_enabled?(available_features[0])
   end
+
+  test "sidebar without functions menu if no features available" do
+    with_env_features("") do
+      visit admin_tenant_feature_flags_path(users(:admin).tenant)
+
+      within_sidebar do
+        assert_no_link "Funkcie"
+      end
+    end
+  end
+
+  test "sidebar with functions menu if features available" do
+    with_env_features("api") do
+      visit admin_tenant_feature_flags_path(users(:admin).tenant)
+
+      within_sidebar do
+        assert_link "Funkcie"
+      end
+    end
+  end
 end
