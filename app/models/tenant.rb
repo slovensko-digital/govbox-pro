@@ -2,13 +2,14 @@
 #
 # Table name: tenants
 #
-#  id                   :bigint           not null, primary key
-#  api_token_public_key :string
-#  feature_flags        :string           default([]), is an Array
-#  name                 :string           not null
-#  settings             :jsonb            not null
-#  created_at           :datetime         not null
-#  updated_at           :datetime         not null
+#  id                     :bigint           not null, primary key
+#  api_token_public_key   :string
+#  feature_flags          :string           default([]), is an Array
+#  name                   :string           not null
+#  settings               :jsonb            not null
+#  signature_request_mode :string           default("signer_group"), not null
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
 #
 class Tenant < ApplicationRecord
   has_many :boxes, dependent: :destroy
@@ -56,6 +57,8 @@ class Tenant < ApplicationRecord
   PDF_SIGNATURE_FORMATS = %w[PAdES XAdES CAdES]
   SIGNATURE_REQUEST_MODES = %w[signer_group author].freeze
 
+  validates :signature_request_mode, inclusion: { in: SIGNATURE_REQUEST_MODES }
+
   def set_pdf_signature_format(pdf_signature_format)
     raise "Unknown pdf_signature_format #{pdf_signature_format}" unless pdf_signature_format.in? PDF_SIGNATURE_FORMATS
 
@@ -71,18 +74,6 @@ class Tenant < ApplicationRecord
     end
 
     settings.slice("signature_with_timestamp").merge!({"pdf_signature_format" => pdf_signature_format})
-  end
-
-  def set_signature_request_mode(mode)
-    raise "Unknown mode #{mode}" unless mode.in?(SIGNATURE_REQUEST_MODES)
-
-    self.settings["signature_request_mode"] = mode
-    save!
-  end
-
-  def signature_request_mode
-    mode = settings["signature_request_mode"]
-    mode.in?(SIGNATURE_REQUEST_MODES) ? mode : SIGNATURE_REQUEST_MODES[0]
   end
 
   def draft_tag!

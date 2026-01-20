@@ -36,14 +36,7 @@ class Fs::ValidateMessageDraftResultJob < ApplicationJob
     message_draft.add_cascading_tag(message_draft.tenant.submission_error_tag) if errors.any? || warnings.any?
 
     if message_draft.metadata[:status] == 'created' && errors.none? && message_draft.form.signature_required && !message_draft.form_object.is_signed?
-      tenant = message_draft.thread.box.tenant
-      author = message_draft.author
-
-      signature_target = if tenant.signature_request_mode == 'author' && message_draft.signable_by_author?
-                           author
-                         else
-                           tenant.signer_group
-                         end
+      signature_target = message_draft.signature_target_group
 
       signature_target.signature_requested_from_tag&.assign_to_message_object(message_draft.form_object)
       signature_target.signature_requested_from_tag&.assign_to_thread(message_draft.thread)

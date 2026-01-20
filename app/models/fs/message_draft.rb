@@ -215,6 +215,16 @@ class Fs::MessageDraft < MessageDraft
     false
   end
 
+  def signature_target_group
+    tenant = thread.box.tenant
+
+    if tenant.signature_request_mode == 'author' && signable_by_author?
+      author
+    else
+      tenant.signer_group
+    end
+  end
+
   private
 
   def validate_data
