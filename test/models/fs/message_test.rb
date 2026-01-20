@@ -17,6 +17,11 @@ class Fs::MessageTest < ActiveSupport::TestCase
       "is_ekr2" => true,
       "status" => "Vybavená",
       "submission_status" => "Prijaté a potvrdené",
+      "submission_verification_status" =>
+        {
+          "name" => "Platné",
+          "description" => "Overenie platnosti podpisov podania bolo ukončené. Všetky podpisy sú platné."
+        },
       "dic" => "1122222333",
       "subject" => "xy",
       "submitting_subject" => "xy",
@@ -99,6 +104,63 @@ class Fs::MessageTest < ActiveSupport::TestCase
     assert Message.last.thread.tags.include?(tags(:accountants_inbox))
   end
 
+  test "#create_inbox_message_with_thread saves submission_verification_status info" do
+    raw_message = {
+      "created_at" => "2024-06-05T10:27:03.105Z",
+      "message_id" => "12345689/2024",
+      "submission_type_id" => "3079",
+      "submission_type_name" => "Podanie pre FS  (Správa daní) – späťvzatie žiadosti",
+      "message_type_id" => "DRSR_POPP_v02",
+      "message_type_name" => "Informácia o podaní",
+      "sent_message_id" => "1234/2024",
+      "seen" => true,
+      "is_ekr2" => true,
+      "status" => "Vybavená",
+      "submission_status" => "Prijaté a potvrdené",
+      "submission_verification_status" =>
+        {
+          "name" => "Platné",
+          "description" => "Overenie platnosti podpisov podania bolo ukončené. Všetky podpisy sú platné."
+        },
+      "dic" => "1122222333",
+      "subject" => "xy",
+      "submitting_subject" => "xy",
+      "submission_created_at" => "2024-06-05T10:27:01.433Z",
+      "period" => nil,
+      "dismissal_reason" => nil,
+      "message_container" =>
+        {
+          "message_id" => SecureRandom.uuid,
+          "sender_id" => "FSSR",
+          "recipient_id" => "1122222333",
+          "message_type" => "ED.DeliveryReport",
+          "subject" => "x",
+          "objects" => [
+            {
+              "class" => "FORM",
+              "description" => "DeliveryReport",
+              "encoding" => "XML",
+              "id" => SecureRandom.uuid,
+              "signed" => true,
+              "mime_type" => "application/xml",
+              "name" => "DeliveryReport",
+              "content" =>
+                "<content>xy</content>"
+            }
+          ]
+        }
+    }
+
+    Fs::Message.create_inbox_message_with_thread!(raw_message, box: boxes(:fs_accountants))
+
+    message = Message.last
+
+    assert_equal "Platné", message.metadata.dig("fs_submission_verification_status", "name")
+    assert_equal "Overenie platnosti podpisov podania bolo ukončené. Všetky podpisy sú platné.", message.metadata.dig("fs_submission_verification_status", "description")
+    assert "Platné".in?(message.html_visualization)
+    assert "Overenie platnosti podpisov podania bolo ukončené. Všetky podpisy sú platné.".in?(message.html_visualization)
+  end
+  
   test "#create_outbox_message_with_thread assigns author and author tag from associated message draft" do
     draft = messages(:fs_accountants_draft)
 

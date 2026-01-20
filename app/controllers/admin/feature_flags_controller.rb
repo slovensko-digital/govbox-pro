@@ -3,22 +3,21 @@ class Admin::FeatureFlagsController < ApplicationController
 
   def index
     authorize([:admin, :feature_flag])
-    if params.include?(:labs)
-      @feature_flags = @tenant.list_all_features
-    else
-      @feature_flags = @tenant.list_available_features
-    end
+    @feature_flags = @tenant.list_available_features
     @enabled_features = @tenant.feature_flags
   end
 
   def update
     authorize([:admin, :feature_flag])
+
+    feature = params[:id].to_sym
+
     if feature_flags_params[:enabled] == "true"
-      @tenant.feature_flags << params[:id]
+      @tenant.enable_feature(feature)
     else
-      @tenant.feature_flags.delete(params[:id])
+      @tenant.disable_feature(feature)
     end
-    @tenant.save!
+
     redirect_to admin_tenant_feature_flags_path
   end
 
