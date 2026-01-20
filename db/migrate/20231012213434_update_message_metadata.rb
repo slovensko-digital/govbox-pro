@@ -1,5 +1,7 @@
 class UpdateMessageMetadata < ActiveRecord::Migration[7.0]
   def change
+    return unless Govbox::Message.any?
+
     upvs_client = UpvsEnvironment.upvs_client
 
     Govbox::Message.find_each do |govbox_message|

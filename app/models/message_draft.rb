@@ -5,6 +5,7 @@
 #  id                 :bigint           not null, primary key
 #  collapsed          :boolean          default(FALSE), not null
 #  delivered_at       :datetime         not null
+#  export_metadata    :jsonb            not null
 #  html_visualization :text
 #  metadata           :json
 #  outbox             :boolean          default(FALSE), not null
@@ -34,7 +35,10 @@ class MessageDraft < Message
 
   after_create do
     add_cascading_tag(thread.box.tenant.draft_tag!)
-    add_cascading_tag(author.draft_tag) if author
+    if author
+      add_cascading_tag(author.draft_tag)
+      add_cascading_tag(author.author_tag)
+    end
   end
   after_update_commit ->(message) { EventBus.publish(:message_draft_changed, message) }
 

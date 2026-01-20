@@ -14,7 +14,7 @@ class MessageObjectsController < ApplicationController
     authorize @message_object
 
     mark_message_object_as_signed(@message_object)
-    
+
     last_thread_message_draft = @message.thread.message_drafts.includes(objects: :nested_message_objects, attachments: :nested_message_objects).order(delivered_at: :asc)&.last
     @is_last = @message == last_thread_message_draft
   end
@@ -54,10 +54,20 @@ class MessageObjectsController < ApplicationController
     authorize @message_object
 
     head :no_content and return unless @message_object.content.present?
-    
+
     return unless @message_object.form?
 
-    render template: 'message_drafts/update_body' unless @message.valid?(:validate_data)
+    unless @message.valid?(:validate_data)
+      respond_to do |format|
+        format.turbo_stream do
+          render template: 'message_drafts/update_body'
+        end
+
+        format.json do
+          render json: { errors: @message.errors.full_messages }, status: :unprocessable_entity
+        end
+      end
+    end
   end
 
   def destroy

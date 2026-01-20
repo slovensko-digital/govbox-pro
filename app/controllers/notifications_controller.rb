@@ -5,7 +5,6 @@ class NotificationsController < ApplicationController
   before_action :set_retention
 
   def index
-
   end
 
   def scroll

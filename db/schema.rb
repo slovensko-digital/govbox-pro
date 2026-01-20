@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_10_10_151644) do
+ActiveRecord::Schema[7.1].define(version: 2025_12_13_142432) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -148,7 +148,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_10_151644) do
     t.string "trigger_event", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
+    t.bigint "user_id"
     t.index ["tenant_id"], name: "index_automation_rules_on_tenant_id"
     t.index ["user_id"], name: "index_automation_rules_on_user_id"
   end
@@ -516,6 +516,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_10_151644) do
     t.bigint "author_id"
     t.boolean "collapsed", default: false, null: false
     t.boolean "outbox", default: false, null: false
+    t.jsonb "export_metadata", default: {}, null: false
     t.index "((metadata ->> 'fs_message_id'::text))", name: "index_messages_on_metadata_fs_message_id", using: :hash
     t.index ["author_id"], name: "index_messages_on_author_id"
     t.index ["import_id"], name: "index_messages_on_import_id"
@@ -671,6 +672,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_10_151644) do
     t.datetime "notifications_last_opened_at"
     t.datetime "notifications_reset_at"
     t.string "password_digest"
+    t.boolean "notifications_opened", default: false, null: false
     t.index "tenant_id, lower((email)::text)", name: "index_users_on_tenant_id_and_lowercase_email", unique: true
   end
 

@@ -5,6 +5,7 @@
 #  id                 :bigint           not null, primary key
 #  collapsed          :boolean          default(FALSE), not null
 #  delivered_at       :datetime         not null
+#  export_metadata    :jsonb            not null
 #  html_visualization :text
 #  metadata           :json
 #  outbox             :boolean          default(FALSE), not null
@@ -85,10 +86,6 @@ class Fs::MessageDraft < MessageDraft
       form_object.update(is_signed: form_object.asice?)
       message.thread.box.tenant.signed_externally_tag!.assign_to_message_object(form_object) if form_object.is_signed?
 
-      if fs_form.signature_required && !form_object.is_signed?
-        message.thread.box.tenant.signer_group.signature_requested_from_tag&.assign_to_message_object(form_object)
-        message.thread.box.tenant.signer_group.signature_requested_from_tag&.assign_to_thread(message.thread)
-      end
       message.thread.assign_tag(message.thread.box.tenant.simple_tags.find_or_create_by!(name: period)) if period
 
       MessageObjectDatum.create(
@@ -175,11 +172,11 @@ class Fs::MessageDraft < MessageDraft
   end
 
   def find_api_connection_for_submission
-    return box.api_connection if box.api_connections.count == 1
+    return box.api_connection if box.api_connections.count == 1 && !box.api_connection.owner
 
-    raise "Multiple signatures found. Can't choose API connection" if thread.tags.where(type: "SignedByTag").count > 1
+    raise "Multiple signatures found. Can't choose API connection" if form_object.tags.where(type: "SignedByTag").count > 1
 
-    signed_by = thread.tags.where(type: "SignedByTag")&.first&.owner
+    signed_by = form_object.tags.where(type: "SignedByTag")&.first&.owner
 
     return box.api_connections.find_by(owner: signed_by) if signed_by && box.api_connections.find_by(owner: signed_by)
 

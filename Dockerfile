@@ -25,7 +25,13 @@ RUN bundle install
 # Cache everything
 COPY . .
 
+# Precompile bootsnap code for faster boot times
+RUN bundle exec bootsnap precompile app/ lib/
+
 RUN SECRET_KEY_BASE=NONE RAILS_ENV=production bundle exec rails assets:precompile
 
-# Run application by default
-CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]
+# Entrypoint prepares the database.
+ENTRYPOINT ["/app/bin/docker-entrypoint"]
+
+# Start the server by default, this can be overwritten at runtime
+CMD ["./bin/rails", "server"]

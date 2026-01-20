@@ -22,10 +22,7 @@ class Fs::SubmitMessageDraftJob < ApplicationJob
     begin
       fs_api = fs_client.api(box: message_draft.box, api_connection: message_draft.find_api_connection_for_submission)
     rescue Exception => e
-      message_draft.metadata["status"] = "submit_fail"
-      message_draft.save!
-
-      raise SubmissionError, e.message
+      handle_submit_fail(message_draft, e.message)
     end
 
     response = fs_api.post_submission(
@@ -44,8 +41,19 @@ class Fs::SubmitMessageDraftJob < ApplicationJob
       bulk: bulk_submit
     )
 
-    raise RuntimeError.new("Response status is not 202. Message #{response[:body][:errors]}") unless response[:status] == 202
+    handle_submit_fail(message_draft, "Response status is not 202. Message #{response[:body][:errors]}") unless response[:status] == 202
 
     Fs::SubmitMessageDraftStatusJob.perform_later(message_draft, response[:headers][:location])
+  end
+
+  private
+
+  def handle_submit_fail(message_draft, error_message)
+    message_draft.metadata["status"] = "submit_fail"
+    message_draft.save!
+
+    message_draft.add_cascading_tag(message_draft.tenant.submission_error_tag)
+
+    raise SubmissionError, error_message
   end
 end

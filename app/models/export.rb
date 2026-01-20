@@ -20,7 +20,7 @@ class Export < ApplicationRecord
   REPLACEMENT_MAPPINGS = {
     "{{ schranka.nazov }}" => -> (o) { o.message.thread.box.name },
     "{{ schranka.oficialny_nazov }}" => -> (o) { o.message.thread.box.official_name },
-    "{{ schranka.export_nazov }}" => -> (o) { o.message.thread.box.export_name },
+    "{{ schranka.export_nazov }}" => -> (o) { o.message.export_metadata_box_name.presence || o.message.thread.box.export_name },
     "{{ schranka.dic }}" => -> (o) { o.message.thread.box.settings["dic"] },
     "{{ vlakno.id }}" => ->(o) { o.message.thread.id },
     "{{ vlakno.obdobie }}" => ->(o) { o.message.thread.metadata["period"] if o.message.thread.metadata&.dig("period") },
@@ -29,7 +29,7 @@ class Export < ApplicationRecord
     "{{ vlakno.datum_podania }}" => ->(o) { o.message.thread.messages.outbox&.first&.delivered_at&.to_date },
     "{{ vlakno.datum_dorucenia }}" => ->(o) { o.message.delivered_at.to_date },
     "{{ sprava.id }}" => ->(o) { o.message.id },
-    "{{ subor.nazov }}" => ->(o) { o.name }
+    "{{ subor.nazov }}" => ->(o) { MessageObjectHelper.displayable_name(o) }
   }.freeze
 
   def start

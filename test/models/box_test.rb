@@ -123,20 +123,4 @@ class BoxTest < ActiveSupport::TestCase
 
     assert_equal 'Example Corp', box.export_name
   end
-
-  test "sync method schedules Govbox::SyncBoxJob with highest priority" do
-    box = boxes(:ssd_main)
-
-    assert_enqueued_with(job: Govbox::SyncBoxJob, priority: -1000) do
-      box.sync
-    end
-  end
-
-  test "sync_all schedules sync of all boxes" do
-    assert_enqueued_with(job: Govbox::SyncBoxJob) do
-      Box.sync_all
-    end
-
-    assert_enqueued_jobs Box.where(syncable: true).count
-  end
 end

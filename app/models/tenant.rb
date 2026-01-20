@@ -11,6 +11,10 @@
 #  updated_at           :datetime         not null
 #
 class Tenant < ApplicationRecord
+  has_many :boxes, dependent: :destroy
+  has_many :api_connections, dependent: :destroy
+  has_many :automation_rules, class_name: "Automation::Rule", dependent: :destroy
+
   has_many :users, dependent: :destroy
 
   has_one :all_group
@@ -18,6 +22,8 @@ class Tenant < ApplicationRecord
   has_one :admin_group
   has_many :groups, dependent: :destroy
   has_many :custom_groups
+
+  has_many :message_templates, dependent: :destroy
 
   has_one :draft_tag, -> { where(owner_id: nil) }
   has_one :everything_tag
@@ -34,9 +40,6 @@ class Tenant < ApplicationRecord
   has_many :signed_by_tags
   has_many :simple_tags
 
-  has_many :boxes, dependent: :destroy
-  has_many :api_connections, dependent: :destroy
-  has_many :automation_rules, class_name: "Automation::Rule", dependent: :destroy
   has_many :filters
   has_many :filter_subscriptions
   has_many :automation_webhooks, class_name: "Automation::Webhook", dependent: :destroy
@@ -47,8 +50,7 @@ class Tenant < ApplicationRecord
 
   validates_presence_of :name
 
-  AVAILABLE_FEATURE_FLAGS = [:audit_log, :archive, :api, :fs_sync]
-  ALL_FEATURE_FLAGS = [:audit_log, :archive, :api, :message_draft_import, :fs_api, :fs_sync]
+  ALL_FEATURE_FLAGS = [:audit_log, :archive, :api, :message_draft_import, :fs_api, :fs_sync, :upvs]
 
   PDF_SIGNATURE_FORMATS = %w[PAdES XAdES CAdES]
 
@@ -103,16 +105,16 @@ class Tenant < ApplicationRecord
     feature.to_s.in? feature_flags
   end
 
-  def enable_feature(feature)
-    raise "Unknown feature #{feature}" unless feature.in? AVAILABLE_FEATURE_FLAGS
+  def enable_feature(feature, force: false)
+    raise "Unknown feature #{feature}" if !force && !(feature.in? list_available_features)
     raise "Feature already enabled" if feature.to_s.in? feature_flags
 
     feature_flags << feature
     save!
   end
 
-  def disable_feature(feature)
-    raise "Unknown feature #{feature}" unless feature.in? AVAILABLE_FEATURE_FLAGS
+  def disable_feature(feature, force: false)
+    raise "Unknown feature #{feature}" if !force && !(feature.in? list_available_features)
     raise "Feature not enabled" unless feature.to_s.in? feature_flags
 
     feature_flags.delete_if { |f| f == feature.to_s }
@@ -120,7 +122,13 @@ class Tenant < ApplicationRecord
   end
 
   def list_available_features
-    AVAILABLE_FEATURE_FLAGS
+    env_flags = ENV.fetch("TENANT_AVAILABLE_FEATURE_FLAGS", nil)
+    return [] if env_flags.blank?
+
+    parsed_flags = env_flags.split(",").map(&:strip).map(&:to_sym)
+    invalid_flags = parsed_flags - ALL_FEATURE_FLAGS
+    Rails.logger.warn("Unknown feature flags configured: #{invalid_flags.join(", ")}") if invalid_flags.any?
+    parsed_flags & ALL_FEATURE_FLAGS
   end
 
   def list_all_features

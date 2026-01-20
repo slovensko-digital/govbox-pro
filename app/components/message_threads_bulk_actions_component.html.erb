@@ -144,7 +144,7 @@
       <% end %>
     <% end %>
 
-    <% if Current.tenant.boxes.where(type: 'Upvs::Box').any? || (Current.tenant.feature_enabled?(:fs_api) && Current.tenant.boxes.where(type: 'Fs::Box').any?) %>
+    <% if (Current.tenant.feature_enabled?(:upvs) && Current.tenant.boxes.where(type: 'Upvs::Box').any?) || (Current.tenant.feature_enabled?(:fs_api) && Current.tenant.boxes.where(type: 'Fs::Box').any?) %>
       <div data-controller="dropdown" class="relative hidden sm:inline-block text-left">
       <div>
         <button type="button" data-action="dropdown#toggle click@window->dropdown#hide" class="inline-flex w-full justify-center items-center gap-x-1.5 rounded-md bg-white px-2 py-1 sm:px-3 sm:py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" id="menu-button" aria-expanded="true" aria-haspopup="true">
@@ -159,7 +159,7 @@
            aria-orientation="vertical"
            aria-labelledby="menu-button"
            tabindex="-1">
-        <% if Current.tenant.boxes.where(type: 'Upvs::Box').any? %>
+        <% if Current.tenant.feature_enabled?(:upvs) && Current.tenant.boxes.where(type: 'Upvs::Box').any? %>
           <div class="py-1" role="none">
             <%= link_to "Napísať novú správu na slovensko.sk", new_upvs_message_draft_path,
                            class: "w-full text-gray-700 group flex items-center px-4 py-2 text-sm hover:bg-gray-100 hover:text-gray-900", data: { turbo_frame: "_top" }, role: "menuitem" %>

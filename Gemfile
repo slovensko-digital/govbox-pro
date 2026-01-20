@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 ruby '3.3.0'
 
-gem 'rails', '~> 7.1'
+gem 'rails', '~> 7.1.5'
 gem 'rails-i18n'
 
 gem 'pg', '~> 1.5'
@@ -27,6 +27,7 @@ gem 'good_job', '= 3.29.4'
 
 # Auth
 gem 'omniauth-google-oauth2'
+gem 'omniauth-microsoft_graph'
 gem 'omniauth-saml', '~> 2.2.1'
 gem 'omniauth-rails_csrf_protection'
 gem 'pundit'

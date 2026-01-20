@@ -306,6 +306,7 @@ sk:
   "Automation::ChangeMessageThreadTitleAction": "Premenuj vlákno na"
   "Automation::AddFormObjectIdentifierToMessageThreadTitleAction": "Pridaj do vlákna ID z názvu formulára"
   "Automation::FireWebhookAction": "Zavolaj integráciu"
+  "Automation::AddMessageExportMetadataBoxNameAction": "Nastav názov schránky do metadát pre export na"
   group:
     names:
       all: "Všetci"
@@ -382,6 +383,9 @@ sk:
     fs_sync:
       name: "Synchronizácia schránky z finančnej správy"
       description: "Synchronizácia schránky z finančnej správy"
+    upvs:
+      name: "ÚPVS"
+      description: "Funkčnosť prepojenia s ústredným portálom verejnej správy (slovensko.sk)"
     message_draft_import:
       name: "Import správ"
       description: "Funkcionalita pre hromadné zasielanie správ"

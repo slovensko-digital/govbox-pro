@@ -21,4 +21,6 @@ class Notification < ApplicationRecord
   belongs_to :export, optional: true
 
   delegate :filter, to: :filter_subscription
+
+  after_create -> { user.update(notifications_opened: false) }
 end
