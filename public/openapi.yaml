@@ -155,9 +155,9 @@ paths:
                       description: DIČ schránky ak je k dispozícii
                       type: string
                       nullable: true
-                    # active:
-                    #   description: Indikuje, či je možné schránku používať (napr. platná autorizácia na zastupovanie)
-                    #   type: boolean
+                    active:
+                      description: Indikuje, či je možné schránku používať (napr. platná autorizácia na zastupovanie)
+                      type: boolean
       security:
         - "Tenant_Token": []
 
