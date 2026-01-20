@@ -208,7 +208,7 @@ class MessageDraft < Message
   end
 
   def attachments_allowed?
-    true
+    not_yet_submitted?
   end
 
   def original_message

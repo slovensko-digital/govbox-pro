@@ -115,7 +115,7 @@ class MessageObject < ApplicationRecord
 
   def destroyable?
     # TODO: avoid loading message association if we have
-    message.draft? && message.attachments_allowed? && message.not_yet_submitted? && !form
+    message.draft? && message.attachments_allowed? && !form
   end
 
   def archived?
