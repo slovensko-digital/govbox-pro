@@ -19,14 +19,17 @@ application.register("debounce", DebounceController)
 import DismissibleAlertController from "./dismissible_alert_controller"
 application.register("dismissible-alert", DismissibleAlertController)
 
+import DropzoneController from "./dropzone_controller"
+application.register("dropzone", DropzoneController)
+
 import FormController from "./form_controller"
 application.register("form", FormController)
 
 import MessageDraftsController from "./message_drafts_controller"
 application.register("message-drafts", MessageDraftsController)
 
-import DropzoneController from "./dropzone_controller"
-application.register("dropzone", DropzoneController)
+import ShiftSelectController from "./shift_select_controller"
+application.register("shift-select", ShiftSelectController)
 
 import TriStateCheckboxController from "./tri_state_checkbox_controller"
 application.register("tri-state-checkbox", TriStateCheckboxController)
@@ -34,8 +37,5 @@ application.register("tri-state-checkbox", TriStateCheckboxController)
 import TurboContentController from "./turbo_content_controller"
 application.register("turbo-content", TurboContentController)
 
-import ContentWithSeparator from "./content_with_separator"
-application.register("content-with-separator", ContentWithSeparator)
-
-import VisitedLinks from "./visited_links_controller"
-application.register("visited-links", VisitedLinks)
+import VisitedLinksController from "./visited_links_controller"
+application.register("visited-links", VisitedLinksController)
