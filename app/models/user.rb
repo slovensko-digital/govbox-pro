@@ -32,13 +32,15 @@ class User < ApplicationRecord
   has_one :sticky_note, dependent: :destroy
   has_many :exports
   has_secure_password validations: false
+  has_many :push_endpoints
 
   validates_presence_of :name, :email
   validates_uniqueness_of :name, :email, scope: :tenant_id, case_sensitive: false
 
-  before_destroy :delete_user_group, prepend: true
+  after_create :handle_default_settings
   after_create :handle_default_settings
   after_update :broadcast_badge_update
+  before_destroy :delete_user_group, prepend: true
 
   def site_admin?
     ENV['SITE_ADMIN_EMAILS'].to_s.split(',').include?(email)

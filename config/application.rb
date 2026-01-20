@@ -6,9 +6,7 @@ require "rails/all"
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
-if ['development', 'test'].include? ENV['RAILS_ENV']
-  Dotenv::Rails.load
-end
+Dotenv::Rails.load if ['development', 'test'].include? ENV['RAILS_ENV']
 
 module GovboxPro
   class Application < Rails::Application
@@ -25,11 +23,11 @@ module GovboxPro
     config.active_record.default_timezone = :utc
     config.time_zone = 'Europe/Bratislava'
 
-    config.autoload_paths += Dir[File.join(Rails.root, 'app', 'models', 'validators')]
+    config.autoload_paths += Dir[Rails.root.join("app/models/validators").to_s]
 
-    config.active_record.encryption.primary_key = ENV['ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY']
-    config.active_record.encryption.deterministic_key = ENV['ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY']
-    config.active_record.encryption.key_derivation_salt = ENV['ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT']
+    config.active_record.encryption.primary_key = ENV.fetch('ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY', nil)
+    config.active_record.encryption.deterministic_key = ENV.fetch('ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY', nil)
+    config.active_record.encryption.key_derivation_salt = ENV.fetch('ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT', nil)
 
     config.active_job.queue_adapter = :good_job
     config.active_job.default_queue_name = :default
@@ -37,8 +35,10 @@ module GovboxPro
 
     config.good_job.enable_cron = true
     config.good_job.smaller_number_is_higher_priority = true
-    config.good_job.cleanup_preserved_jobs_before_seconds_ago = 1.days
+    config.good_job.cleanup_preserved_jobs_before_seconds_ago = 1.day
     config.good_job.cleanup_discarded_jobs = false
+
+    Rails.application.routes.default_url_options[:host] = ENV.fetch('DOMAIN_NAME')
 
     if ENV['AUTO_SYNC_BOXES'] == "ON"
       config.good_job.cron = {
@@ -105,4 +105,4 @@ module GovboxPro
   end
 end
 
-Rails.application.routes.default_url_options = { host: 'hovno' }
+Rails.application.routes.default_url_options[:host] = ENV.fetch('DOMAIN_NAME')

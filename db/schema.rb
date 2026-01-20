@@ -560,6 +560,16 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_13_142432) do
     t.index ["user_id"], name: "index_notifications_on_user_id"
   end
 
+  create_table "push_endpoints", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "endpoint"
+    t.string "p256dh"
+    t.string "auth"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_push_endpoints_on_user_id"
+  end
+
   create_table "searchable_message_threads", force: :cascade do |t|
     t.integer "message_thread_id", null: false
     t.text "title", null: false
@@ -730,6 +740,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_13_142432) do
   add_foreign_key "notifications", "message_threads", on_delete: :cascade
   add_foreign_key "notifications", "messages", on_delete: :cascade
   add_foreign_key "notifications", "users", on_delete: :cascade
+  add_foreign_key "push_endpoints", "users"
   add_foreign_key "searchable_message_threads", "message_threads", on_delete: :cascade
   add_foreign_key "stats_message_submission_requests", "boxes"
   add_foreign_key "sticky_notes", "users"
