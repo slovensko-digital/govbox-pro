@@ -16,7 +16,7 @@
 #  updated_at                 :datetime         not null
 #
 class Fs::Form < ApplicationRecord
-  ATTACHMENTS_ALLOWED_FOR = %w[
+  FORMS_WITH_ATTACHMENTS = %w[
     DPFOAv25
     DPFOBv23
     DPFOBv24
@@ -52,7 +52,7 @@ class Fs::Form < ApplicationRecord
   end
 
   def attachments_allowed?
-    ATTACHMENTS_ALLOWED_FOR.include?(slug)
+    FORMS_WITH_ATTACHMENTS.include?(slug)
   end
 
   def short_name(include_version: true)
