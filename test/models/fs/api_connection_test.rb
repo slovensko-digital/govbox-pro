@@ -111,14 +111,14 @@ class Fs::ApiConnectionTest < ActiveSupport::TestCase
     end
 
     assert_not box.reload.active
-    assert_equal false, box.boxes_api_connections.find_by(api_connection: api_connection).settings_active
+    assert_equal false, box.boxes_api_connections.find_by(api_connection: api_connection).active
   end
 
   test ".boxify reactivates connections present in the API response" do
     api_connection = api_connections(:fs_api_connection1)
     box = boxes(:fs_accountants)
     connection = api_connection.boxes_api_connections.find_by(box: box)
-    connection.update!(settings_active: false)
+    connection.update!(active: false)
 
     fs_api = Minitest::Mock.new
     fs_api.expect :get_subjects, [
@@ -129,7 +129,7 @@ class Fs::ApiConnectionTest < ActiveSupport::TestCase
       api_connection.boxify
     end
 
-    assert connection.reload.settings_active
+    assert connection.reload.active
     assert box.reload.active
   end
 
@@ -145,7 +145,7 @@ class Fs::ApiConnectionTest < ActiveSupport::TestCase
     end
 
     assert box.reload.active
-    assert_equal false, box.boxes_api_connections.find_by(api_connection: api_connection).settings_active
+    assert_equal false, box.boxes_api_connections.find_by(api_connection: api_connection).active
   end
 
   test ".boxify reactivates box and connection when subject reappears" do
@@ -160,7 +160,7 @@ class Fs::ApiConnectionTest < ActiveSupport::TestCase
     end
 
     assert_not box.reload.active
-    assert_equal false, box.boxes_api_connections.find_by(api_connection: api_connection).settings_active
+    assert_equal false, box.boxes_api_connections.find_by(api_connection: api_connection).active
 
     fs_api = Minitest::Mock.new
     fs_api.expect :get_subjects, [
@@ -172,7 +172,7 @@ class Fs::ApiConnectionTest < ActiveSupport::TestCase
     end
 
     assert box.reload.active
-    assert_equal true, box.boxes_api_connections.find_by(api_connection: api_connection).settings_active
+    assert_equal true, box.boxes_api_connections.find_by(api_connection: api_connection).active
   end
 
   test ".generate_short_name_from_name generates short name without number if unique" do
@@ -213,7 +213,7 @@ class Fs::ApiConnectionTest < ActiveSupport::TestCase
     new_box.save
 
     assert_equal "FSJJ4", new_box.short_name
-
+    
 
     new_box = box.dup
     new_box.api_connections = box.api_connections

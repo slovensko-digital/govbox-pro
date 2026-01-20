@@ -52,10 +52,9 @@ class Fs::ApiConnection < ::ApiConnection
   def boxify
     count = 0
     fs_api = FsEnvironment.fs_client.api(api_connection: self)
+    processed_connection_ids = []
 
     Fs::Box.transaction do
-      deactivate_connections!
-
       fs_api.get_subjects.each do |subject|
         Fs::Box.with_advisory_lock!("boxify-#{tenant_id}", transaction: true, timeout_seconds: 10) do
           boxes = Fs::Box.where(tenant: tenant).where("settings @> ?", {dic: subject["dic"], subject_id: subject["subject_id"]}.to_json)
@@ -85,11 +84,15 @@ class Fs::ApiConnection < ::ApiConnection
 
           box.boxes_api_connections.find_or_create_by(api_connection: self).tap do |box_api_connection|
             box_api_connection.settings_delegate_id = subject["delegate_id"]
-            box_api_connection.settings_active = true
+            box_api_connection.active = true
             box_api_connection.save
+
+            processed_connection_ids << box_api_connection.id
           end
         end
       end
+
+      deactivate_stale_connections(processed_connection_ids)
     end
 
     count
@@ -97,8 +100,12 @@ class Fs::ApiConnection < ::ApiConnection
 
   private
 
-  def deactivate_connections!
-    boxes_api_connections.find_each { |connection| connection.update!(settings_active: false) }
+  def deactivate_stale_connections(processed_connection_ids)
+    stale = boxes_api_connections.where.not(id: processed_connection_ids)
+    affected_box_ids = stale.pluck(:box_id)
+    stale.update_all(active: false)
+
+    Fs::Box.where(id: affected_box_ids).find_each(&:update_active_state_from_connections)
   end
 
   def generate_short_name_from_name(name)
