@@ -50,7 +50,7 @@ class Tenant < ApplicationRecord
 
   validates_presence_of :name
 
-  ALL_FEATURE_FLAGS = [:audit_log, :archive, :api, :message_draft_import, :fs_api, :fs_sync, :fs_submissions_with_attachments]
+  ALL_FEATURE_FLAGS = [:audit_log, :archive, :api, :message_draft_import, :fs_api, :fs_sync, :upvs, :fs_submissions_with_attachments]
 
   PDF_SIGNATURE_FORMATS = %w[PAdES XAdES CAdES]
 
@@ -105,16 +105,16 @@ class Tenant < ApplicationRecord
     feature.to_s.in? feature_flags
   end
 
-  def enable_feature(feature)
-    raise "Unknown feature #{feature}" unless feature.in? list_available_features
+  def enable_feature(feature, force: false)
+    raise "Unknown feature #{feature}" if !force && !(feature.in? list_available_features)
     raise "Feature already enabled" if feature.to_s.in? feature_flags
 
     feature_flags << feature
     save!
   end
 
-  def disable_feature(feature)
-    raise "Unknown feature #{feature}" unless feature.in? list_available_features
+  def disable_feature(feature, force: false)
+    raise "Unknown feature #{feature}" if !force && !(feature.in? list_available_features)
     raise "Feature not enabled" unless feature.to_s.in? feature_flags
 
     feature_flags.delete_if { |f| f == feature.to_s }

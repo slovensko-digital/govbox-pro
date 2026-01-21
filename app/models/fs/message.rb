@@ -89,6 +89,7 @@ class Fs::Message
         "fs_status": raw_message['status'],
         "fs_submitting_subject": raw_message['submitting_subject'],
         "fs_submission_status": raw_message['submission_status'],
+        "fs_submission_verification_status": raw_message['submission_verification_status'],
         "fs_message_type": raw_message.dig('message_container', 'message_type'),
         "fs_submission_type_id": raw_message['submission_type_id'], # TODO kde pouzit? asi napr. pri vytvarani nazvu suboru pri exporte
         "fs_submission_type_name": raw_message['submission_type_name'],
@@ -111,6 +112,7 @@ class Fs::Message
       replyable: false,
       collapsed: collapsed?,
       outbox: true,
+      author: associated_message_draft&.author,
       metadata: {
         "fs_form_id": (associated_message_draft.metadata['fs_form_id'] if associated_message_draft) || Fs::Form.find_by(submission_type_identifier: raw_message['submission_type_id'])&.id,
         "fs_message_id": raw_message['message_id'],
