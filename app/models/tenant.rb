@@ -50,7 +50,7 @@ class Tenant < ApplicationRecord
 
   validates_presence_of :name
 
-  ALL_FEATURE_FLAGS = [:audit_log, :archive, :api, :message_draft_import, :fs_api, :fs_sync]
+  ALL_FEATURE_FLAGS = [:audit_log, :archive, :api, :message_draft_import, :fs_api, :fs_sync, :fs_submissions_with_attachments]
 
   PDF_SIGNATURE_FORMATS = %w[PAdES XAdES CAdES]
 

@@ -70,6 +70,23 @@ class MessageDraftsTest < ApplicationSystemTestCase
     end
   end
 
+  test "adding attachments is disabled unless tenant has the feature enabled" do
+    tenant = tenants(:accountants)
+    tenant.feature_flags.delete(:fs_submissions_with_attachments)
+    tenant.save
+
+    sign_in_as(:accountants_basic)
+
+    message_draft = messages(:fs_accountants_draft)
+    message_thread = message_draft.thread
+
+    visit message_thread_path(message_thread)
+
+    within("#attachments_fs_message_draft_#{message_draft.id}") do
+      assert_no_text "Pridať prílohu"
+    end
+  end
+
   test "adding attachments is enabled if FS form allows it" do
     sign_in_as(:accountants_basic)
 
