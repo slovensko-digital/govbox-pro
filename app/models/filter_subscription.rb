@@ -59,7 +59,7 @@ class FilterSubscription < ApplicationRecord
               .where("tag_ids && ARRAY[?]", tag_ids)
 
     query = Searchable::MessageThreadQuery.labels_to_ids(
-      Searchable::MessageThreadQuery.parse(filter.query),
+      Searchable::MessageThreadQuery.parse(filter.query, user_tag_name: user.author_tag&.name),
       tenant: tenant
     )
 

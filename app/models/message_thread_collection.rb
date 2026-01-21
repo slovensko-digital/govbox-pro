@@ -24,7 +24,7 @@ class MessageThreadCollection
   # def self.exists_by_query()
 
   def self.all(scope: MessageThread, search_permissions:, query: "", cursor:)
-    parsed_query = Searchable::MessageThreadQuery.parse(query)
+    parsed_query = Searchable::MessageThreadQuery.parse(query, user_tag_name: Current.user.author_tag&.name)
     filter = Searchable::MessageThreadQuery.labels_to_ids(
       parsed_query,
       tenant: search_permissions.fetch(:tenant)

@@ -3,7 +3,7 @@
 class Searchable::MessageThreadQuery
   PREFIX_SEARCH_REGEXP = /^\S{4,}\*$/
 
-  def self.parse(query)
+  def self.parse(query, user_tag_name: nil)
     filter_labels = []
     filter_out_labels = []
 
@@ -21,8 +21,8 @@ class Searchable::MessageThreadQuery
         filter_out_labels << value
         with_text = with_text.gsub("#{key}:#{match[1]}", "")
       when "author"
-        if value == "me" && Current.user
-          filter_labels << AuthorTag.find_by(owner: Current.user)&.name
+        if value == "me" && user_tag_name
+          filter_labels << user_tag_name
           with_text = with_text.gsub("#{key}:#{match[1]}", "")
         end
       end
