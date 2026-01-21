@@ -109,14 +109,14 @@ ssd_main_draft_to_be_signed3_draft_two_form:
 
 ssd_main_draft_to_be_signed3_draft_two_attachment:
   message: ssd_main_draft_to_be_signed3_draft_two
-  name: MyString
-  mimetype: application/x-eform-xml
+  name: 1234-Rozh_o_pokute_§155_ods.1_písm.g)_no.asice
+  mimetype: application/vnd.etsi.asic-e+zip
   object_type: ATTACHMENT
 
 ssd_main_draft_to_be_signed3_draft_two_attachment2:
   message: ssd_main_draft_to_be_signed3_draft_two
-  name: MyString
-  mimetype: application/x-eform-xml
+  name: 1234-Rozh_o_pokute_§155_ods.1_písm.g)_no.asice
+  mimetype: application/vnd.etsi.asic-e+zip
   object_type: ATTACHMENT
 
 ssd_main_draft_to_be_signed4_draft_form:

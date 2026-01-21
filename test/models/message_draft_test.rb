@@ -40,6 +40,27 @@ class MessageDraftTest < ActiveSupport::TestCase
     EventBus.class_variable_get(:@@subscribers_map)[:message_thread_created].pop
   end
 
+  test "automatically assigns author tag on creation" do
+    author = users(:basic)
+    box = boxes(:ssd_main)
+
+    message = MessageDraft.create!(
+      uuid: SecureRandom.uuid,
+      title: 'Author Tag Test',
+      sender_name: 'Sender',
+      recipient_name: 'Recipient',
+      delivered_at: Time.now,
+      thread: box.message_threads.first,
+      read: true,
+      replyable: false,
+      author: author,
+      metadata: { correlation_id: SecureRandom.uuid }
+    )
+
+    assert message.tags.include?(author.author_tag), "Message draft should have author tag"
+    assert message.thread.tags.include?(author.author_tag), "Message thread should have author tag"
+  end
+
   test ".find_api_connection_for_submission finds API connection according to signatures" do
     message_draft = messages(:fs_accountants_draft)
 
