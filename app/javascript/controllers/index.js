@@ -13,6 +13,9 @@ application.register("autofocus", AutofocusController)
 import AutogramController from "./autogram_controller"
 application.register("autogram", AutogramController)
 
+import ContentWithSeparatorController from "./content_with_separator_controller"
+application.register("content-with-separator", ContentWithSeparatorController)
+
 import DebounceController from "./debounce_controller"
 application.register("debounce", DebounceController)
 
