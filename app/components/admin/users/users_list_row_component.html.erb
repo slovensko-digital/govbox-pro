@@ -20,7 +20,7 @@
       <%= render Common::EditButtonComponent.new %>
     <% end %>
     <% if Pundit.policy(Current.user, [:admin, @user]).destroy? %>
-      <%= button_to admin_tenant_user_path(@user.tenant, @user), method: :delete, title: "Vymazať používateľa" do %>
+      <%= button_to admin_tenant_user_path(@user.tenant, @user), method: :delete, title: "Vymazať používateľa", data: { turbo_confirm: "Naozaj chcete zmazať používateľa '#{@user.name}'? Spolu s ním budú zmazané všetky jeho rozpracované správy." } do %>
         <%= render Common::DeleteButtonComponent.new %>
       <% end %>
     <% end %>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_12_13_142432) do
+ActiveRecord::Schema[7.1].define(version: 2026_01_16_150542) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -213,7 +213,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_13_142432) do
 
   create_table "filters", force: :cascade do |t|
     t.bigint "tenant_id", null: false
-    t.bigint "author_id", null: false
+    t.bigint "author_id"
     t.string "name", null: false
     t.string "query", null: false
     t.integer "position", null: false
@@ -698,7 +698,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_13_142432) do
   add_foreign_key "filter_subscriptions", "tenants"
   add_foreign_key "filter_subscriptions", "users"
   add_foreign_key "filters", "tenants", on_delete: :cascade
-  add_foreign_key "filters", "users", column: "author_id", on_delete: :cascade
+  add_foreign_key "filters", "users", column: "author_id", on_delete: :nullify
   add_foreign_key "folders", "boxes"
   add_foreign_key "fs_form_related_documents", "fs_forms"
   add_foreign_key "govbox_folders", "govbox_folders", column: "parent_folder_id"
