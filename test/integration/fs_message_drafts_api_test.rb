@@ -191,7 +191,7 @@ class FsMessageDraftsApiTest < ActionDispatch::IntegrationTest
     FsEnvironment.fs_client.stub :api, fs_api do
       post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
-      assert_response :unprocessable_entity
+      assert_response :unprocessable_content
 
       json_response = JSON.parse(response.body)
       assert_equal 'Tag with name Special does not exist', json_response['message']
@@ -270,7 +270,7 @@ class FsMessageDraftsApiTest < ActionDispatch::IntegrationTest
     FsEnvironment.fs_client.stub :api, fs_api do
       post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
-      assert_response :unprocessable_entity
+      assert_response :unprocessable_content
 
       json_response = JSON.parse(response.body)
       assert_equal "Title can't be blank", json_response['message']
@@ -312,7 +312,7 @@ class FsMessageDraftsApiTest < ActionDispatch::IntegrationTest
     FsEnvironment.fs_client.stub :api, fs_api do
       post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
-      assert_response :unprocessable_entity
+      assert_response :unprocessable_content
 
       json_response = JSON.parse(response.body)
       assert_equal 'Invalid sender', json_response['message']
@@ -350,7 +350,7 @@ class FsMessageDraftsApiTest < ActionDispatch::IntegrationTest
     FsEnvironment.fs_client.stub :api, fs_api do
       post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
-      assert_response :unprocessable_entity
+      assert_response :unprocessable_content
 
       json_response = JSON.parse(response.body)
       assert_equal 'Invalid sender', json_response['message']
@@ -390,7 +390,7 @@ class FsMessageDraftsApiTest < ActionDispatch::IntegrationTest
     FsEnvironment.fs_client.stub :api, fs_api do
       post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
-      assert_response :unprocessable_entity
+      assert_response :unprocessable_content
 
       json_response = JSON.parse(response.body)
       assert_equal 'Unknown form', json_response['message']
@@ -429,7 +429,7 @@ class FsMessageDraftsApiTest < ActionDispatch::IntegrationTest
     FsEnvironment.fs_client.stub :api, fs_api do
       post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
-      assert_response :unprocessable_entity
+      assert_response :unprocessable_content
 
       json_response = JSON.parse(response.body)
       assert_equal 'Invalid sender', json_response['message']
@@ -470,7 +470,7 @@ class FsMessageDraftsApiTest < ActionDispatch::IntegrationTest
     FsEnvironment.fs_client.stub :api, fs_api do
       post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }) , as: :json
 
-      assert_response :unprocessable_entity
+      assert_response :unprocessable_content
 
       json_response = JSON.parse(response.body)
       assert_equal 'Form XSD validation failed', json_response['message']
@@ -508,7 +508,7 @@ class FsMessageDraftsApiTest < ActionDispatch::IntegrationTest
     FsEnvironment.fs_client.stub :api, fs_api do
       post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
-      assert_response :unprocessable_entity
+      assert_response :unprocessable_content
 
       json_response = JSON.parse(response.body)
 
@@ -545,7 +545,7 @@ class FsMessageDraftsApiTest < ActionDispatch::IntegrationTest
     FsEnvironment.fs_client.stub :api, fs_api do
       post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
-      assert_response :unprocessable_entity
+      assert_response :unprocessable_content
 
       json_response = JSON.parse(response.body)
       assert_equal "Correlation ID can't be blank", json_response['message']
@@ -574,7 +574,7 @@ class FsMessageDraftsApiTest < ActionDispatch::IntegrationTest
     FsEnvironment.fs_client.stub :api, fs_api do
       post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
-      assert_response :unprocessable_entity
+      assert_response :unprocessable_content
 
       json_response = JSON.parse(response.body)
       assert_equal 'Message has to contain exactly one form object', json_response['message']
@@ -620,7 +620,7 @@ class FsMessageDraftsApiTest < ActionDispatch::IntegrationTest
     FsEnvironment.fs_client.stub :api, fs_api do
       post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
-      assert_response :unprocessable_entity
+      assert_response :unprocessable_content
 
       json_response = JSON.parse(response.body)
       assert_equal 'Message has to contain exactly one object', json_response['message']
@@ -734,7 +734,7 @@ class FsMessageDraftsApiTest < ActionDispatch::IntegrationTest
     FsEnvironment.fs_client.stub :api, fs_api do
       post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
-      assert_response :unprocessable_entity
+      assert_response :unprocessable_content
 
       json_response = JSON.parse(response.body)
       assert_equal "Objects is not valid", json_response['message']
@@ -774,7 +774,7 @@ class FsMessageDraftsApiTest < ActionDispatch::IntegrationTest
     FsEnvironment.fs_client.stub :api, fs_api do
       post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
-      assert_response :unprocessable_entity
+      assert_response :unprocessable_content
 
       json_response = JSON.parse(response.body)
       assert_equal 'Signature tag with name Podpísané Ferko does not exist', json_response['message']
