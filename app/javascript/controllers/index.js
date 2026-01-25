@@ -39,3 +39,6 @@ application.register("content-with-separator", ContentWithSeparator)
 
 import VisitedLinks from "./visited_links_controller"
 application.register("visited-links", VisitedLinks)
+
+import DelayedPostController from "./delayed_post_controller"
+application.register("delayed-post", DelayedPostController)
