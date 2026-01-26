@@ -262,6 +262,9 @@ GEM
       oauth2 (~> 2.0.6)
       omniauth (~> 2.0)
       omniauth-oauth2 (~> 1.8.0)
+    omniauth-identity (3.0.9)
+      bcrypt
+      omniauth
     omniauth-microsoft_graph (2.1.0)
       jwt (~> 2.0)
       omniauth (~> 2.0)
@@ -500,6 +503,7 @@ DEPENDENCIES
   jwt
   listen
   omniauth-google-oauth2
+  omniauth-identity
   omniauth-microsoft_graph
   omniauth-rails_csrf_protection
   omniauth-saml (~> 2.2.1)
