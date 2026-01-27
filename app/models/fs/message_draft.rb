@@ -198,6 +198,10 @@ class Fs::MessageDraft < MessageDraft
     tenant.feature_enabled?(:fs_submissions_with_attachments) && not_yet_submitted? && form.attachments_allowed?
   end
 
+  def attachments_editable?
+    false
+  end
+
   def build_html_visualization
     Fs::MessageHelper.build_html_visualization_from_form(self)
   end

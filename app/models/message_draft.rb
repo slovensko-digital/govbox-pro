@@ -211,6 +211,10 @@ class MessageDraft < Message
     not_yet_submitted?
   end
 
+  def attachments_editable?
+    not_yet_submitted?
+  end
+
   def original_message
     Message.find(metadata["original_message_id"]) if metadata["original_message_id"]
   end

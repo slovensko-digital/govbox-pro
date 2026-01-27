@@ -8,13 +8,13 @@
             <p class="flex-grow-0 flex-shrink-0 text-base text-left text-gray-900">
               <% if @attachments.present? %>
                 Správa obsahuje <b><%= t("message_object", count: @attachments.length) %></b>
-              <% elsif @message.attachments_allowed? %>
+              <% elsif @message.attachments_editable? %>
                 <b>Pridať prílohu</b>
               <% end %>
             </p>
           </div>
 
-          <% if @message.attachments_allowed? %>
+          <% if @message.attachments_editable? %>
             <%
               attachments_form_id = "#{dom_id(@message, :attachments)}_form"
             %>
