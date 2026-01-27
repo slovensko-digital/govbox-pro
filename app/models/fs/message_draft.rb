@@ -194,12 +194,8 @@ class Fs::MessageDraft < MessageDraft
     Fs::SubmitMessageDraftAction.run(self)
   end
 
-  def attachments_allowed?
-    tenant.feature_enabled?(:fs_submissions_with_attachments) && not_yet_submitted? && form.attachments_allowed?
-  end
-
   def attachments_editable?
-    false
+    tenant.feature_enabled?(:fs_submissions_with_attachments) && not_yet_submitted? && form.attachments_allowed?
   end
 
   def build_html_visualization

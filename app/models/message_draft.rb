@@ -207,10 +207,6 @@ class MessageDraft < Message
     EventBus.publish(:message_draft_submitted, self)
   end
 
-  def attachments_allowed?
-    not_yet_submitted?
-  end
-
   def attachments_editable?
     not_yet_submitted?
   end
