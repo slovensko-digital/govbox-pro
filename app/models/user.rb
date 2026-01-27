@@ -8,16 +8,13 @@
 #  notifications_last_opened_at :datetime
 #  notifications_opened         :boolean          default(FALSE), not null
 #  notifications_reset_at       :datetime
-#  password_digest              :string
 #  saml_identifier              :string
 #  created_at                   :datetime         not null
 #  updated_at                   :datetime         not null
 #  tenant_id                    :bigint
 #
-class User < OmniAuth::Identity::Models::ActiveRecord
+class User < ApplicationRecord
   include AuditableEvents
-
-  auth_key :email
 
   belongs_to :tenant
 
@@ -32,7 +29,8 @@ class User < OmniAuth::Identity::Models::ActiveRecord
   has_many :notifications
   has_one :sticky_note, dependent: :destroy
   has_many :exports
-  has_secure_password validations: false
+
+  has_many :identities, dependent: :destroy
 
   validates_presence_of :name, :email
   validates_uniqueness_of :name, :email, scope: :tenant_id, case_sensitive: false

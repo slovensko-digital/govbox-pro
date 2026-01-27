@@ -17,7 +17,7 @@ Rails.application.config.middleware.use OmniAuth::Builder do
   end
 
   provider :identity,
-           model: User,
+           model: Identity,
            fields: [:email],
            enable_registration: false,
            on_login: lambda { |env|
