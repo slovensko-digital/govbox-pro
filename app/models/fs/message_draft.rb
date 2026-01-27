@@ -198,6 +198,10 @@ class Fs::MessageDraft < MessageDraft
     false
   end
 
+  def attachments_editable?
+    false
+  end
+
   def build_html_visualization
     Fs::MessageHelper.build_html_visualization_from_form(self)
   end
