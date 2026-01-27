@@ -31,4 +31,22 @@ class ExportTest < ActiveSupport::TestCase
     export.settings['messages'] = true
     assert export.valid?
   end
+
+  test 'file_name returns old naming logic if old file exists' do
+    export = exports(:one)
+    old_name = "#{export.user.tenant.id}/govbox-pro-export-#{export.created_at.to_date}.zip"
+
+    File.stub(:exist?, true) do
+      assert_equal old_name, export.file_name
+    end
+  end
+
+  test 'file_name returns new naming logic if old file does not exist' do
+    export = exports(:one)
+    new_name = "#{export.user.tenant.id}/govbox-pro-export-##{export.id}-#{export.created_at.to_date}.zip"
+
+    File.stub(:exist?, false) do
+      assert_equal new_name, export.file_name
+    end
+  end
 end

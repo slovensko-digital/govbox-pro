@@ -264,6 +264,8 @@ Rails.application.routes.draw do
     resources :message_objects, only: [] do
       get :pdf
     end
+
+    resources :boxes, only: :index
   end
 
   if UpvsEnvironment.sso_support?
@@ -294,8 +296,9 @@ Rails.application.routes.draw do
     get 'auth/microsoft_graph/failure', to: 'sessions#failure'
   end
 
-  if ENV["HTTP_AUTH"] == "true"
-    get 'auth/http', to: 'sessions#create_http_basic'
+  if ENV["IDENTITY_AUTH"] == "true"
+    post 'auth/identity/callback', to: 'sessions#create'
+    post 'auth/identity/failure', to: 'sessions#failure'
   end
 
   get "/service-worker.js" => "service_worker#service_worker"

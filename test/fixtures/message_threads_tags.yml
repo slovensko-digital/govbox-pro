@@ -147,3 +147,11 @@ ssd_main_draft_to_be_signed4_ssd_signers_signature_requested:
 ssd_main_empty_draft_ssd_basic_user_drafts:
   message_thread: ssd_main_empty_draft
   tag: ssd_basic_user_drafts
+
+ssd_main_draft_to_be_signed_author:
+  message_thread: ssd_main_draft_to_be_signed
+  tag: ssd_basic_user_authors
+
+fs_accountants_multiple_api_connections_thread1_author:
+  message_thread: fs_accountants_multiple_api_connections_thread1
+  tag: accountants_basic_user_authors

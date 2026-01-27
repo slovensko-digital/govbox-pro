@@ -22,6 +22,7 @@ class User < ApplicationRecord
   belongs_to :tenant
 
   has_one :draft_tag, foreign_key: :owner_id
+  has_one :author_tag, foreign_key: :owner_id
   has_many :group_memberships, dependent: :destroy
   has_many :groups, through: :group_memberships
   has_many :own_tags, class_name: 'Tag', inverse_of: :owner, foreign_key: :owner_id, dependent: :nullify
@@ -32,7 +33,6 @@ class User < ApplicationRecord
   has_many :notifications
   has_one :sticky_note, dependent: :destroy
   has_many :exports
-  has_secure_password validations: false
 
   validates_presence_of :name, :email
   validates_uniqueness_of :name, :email, scope: :tenant_id, case_sensitive: false
@@ -115,6 +115,14 @@ class User < ApplicationRecord
       visible: false
     )
     draft_tag.mark_readable_by_groups([user_group])
+
+    author_tag = tenant.tags.create(
+      owner: self,
+      name: "Author-#{name}",
+      type: "AuthorTag",
+      visible: false
+    )
+    author_tag.mark_readable_by_groups([user_group])
   end
 
   def broadcast_badge_update
