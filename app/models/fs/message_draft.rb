@@ -194,10 +194,6 @@ class Fs::MessageDraft < MessageDraft
     Fs::SubmitMessageDraftAction.run(self)
   end
 
-  def attachments_allowed?
-    false
-  end
-
   def attachments_editable?
     false
   end
