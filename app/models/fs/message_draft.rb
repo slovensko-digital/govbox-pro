@@ -195,7 +195,7 @@ class Fs::MessageDraft < MessageDraft
   end
 
   def attachments_editable?
-    false
+    tenant.feature_enabled?(:fs_submissions_with_attachments) && not_yet_submitted? && form.attachments_allowed?
   end
 
   def build_html_visualization
@@ -217,5 +217,13 @@ class Fs::MessageDraft < MessageDraft
 
   def validate_metadata
     errors.add(:metadata, 'No form ID') unless metadata&.dig('fs_form_id')
+  end
+
+  def validate_objects
+    if !tenant.feature_enabled?(:fs_submissions_with_attachments)
+      errors.add(:objects, "Message has to contain exactly one object") if objects.size != 1
+    else
+      super
+    end
   end
 end
