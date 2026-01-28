@@ -4,6 +4,7 @@
 #
 #  id           :bigint           not null, primary key
 #  description  :string
+#  identifier   :string
 #  is_signed    :boolean
 #  mimetype     :string
 #  name         :string
@@ -114,7 +115,7 @@ class MessageObject < ApplicationRecord
 
   def destroyable?
     # TODO: avoid loading message association if we have
-    message.draft? && message.not_yet_submitted? && !form?
+    message.draft? && message.attachments_editable? && !form
   end
 
   def archived?

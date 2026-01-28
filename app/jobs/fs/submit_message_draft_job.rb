@@ -32,7 +32,15 @@ class Fs::SubmitMessageDraftJob < ApplicationJob
       form_object_uuid: message_draft.form_object.uuid,
       allow_warn_status: true,
       is_signed: message_draft.form_object.is_signed,
-      mime_type: message_draft.form_object.mimetype
+      mime_type: message_draft.form_object.mimetype,
+      attachments: message_draft.attachments.map do |attachment|
+        {
+          mime_type: attachment.mimetype,
+          content: Base64.strict_encode64(attachment.content),
+          object_id: attachment.uuid,
+          identifier: attachment.identifier
+        }
+      end
     )
 
     message_draft.thread.box.message_submission_requests.create(
