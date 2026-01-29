@@ -45,6 +45,100 @@ class FsMessageDraftsApiTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test 'can upload valid message with attachment if tenant feature flag enabled' do
+    message_params = {
+      type: 'Fs::MessageDraft',
+      title: 'VP_DANv24_fo Podanie',
+      uuid: SecureRandom.uuid,
+      metadata: {
+        correlation_id: SecureRandom.uuid
+      },
+      objects: [
+        {
+          name: 'vp_danv24_fo.xml',
+          is_signed: false,
+          to_be_signed: true,
+          mimetype: 'text/xml',
+          object_type: 'FORM',
+          content: Base64.encode64(file_fixture("fs/vp_danv24_fo.xml").read)
+        },
+        {
+          name: 'priloha.pdf',
+          is_signed: false,
+          to_be_signed: false,
+          mimetype: 'application/pdf',
+          object_type: 'ATTACHMENT',
+          content: Base64.encode64(file_fixture("lorem_ipsum.pdf").read)
+        }
+      ]
+    }
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :parse_form, {
+      "subject" => "1122334456",
+      "form_identifier" => "3078_781"
+    },
+    [file_fixture("fs/vp_danv24_fo.xml").read]
+
+
+    FsEnvironment.fs_client.stub :api, fs_api do
+      post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair)} ), as: :json
+
+      assert_response :created
+      assert_not_equal Message.count, @before_request_messages_count
+      assert @box, Message.last.box
+    end
+  end
+
+  test 'does not upload message with attachment if tenant feature flag disabled' do
+    @tenant.feature_flags.delete('fs_submissions_with_attachments')
+    @tenant.save
+
+    message_params = {
+      type: 'Fs::MessageDraft',
+      title: 'VP_DANv24_fo Podanie',
+      uuid: SecureRandom.uuid,
+      metadata: {
+        correlation_id: SecureRandom.uuid
+      },
+      objects: [
+        {
+          name: 'vp_danv24_fo.xml',
+          is_signed: false,
+          to_be_signed: true,
+          mimetype: 'text/xml',
+          object_type: 'FORM',
+          content: Base64.encode64(file_fixture("fs/vp_danv24_fo.xml").read)
+        },
+        {
+          name: 'priloha.pdf',
+          is_signed: false,
+          to_be_signed: false,
+          mimetype: 'application/pdf',
+          object_type: 'ATTACHMENT',
+          content: Base64.encode64(file_fixture("lorem_ipsum.pdf").read)
+        }
+      ]
+    }
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :parse_form, {
+      "subject" => "1122334456",
+      "form_identifier" => "3078_781"
+    },
+                  [file_fixture("fs/vp_danv24_fo.xml").read]
+
+    FsEnvironment.fs_client.stub :api, fs_api do
+      post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair)} ), as: :json
+
+      assert_response :unprocessable_entity
+
+      json_response = JSON.parse(response.body)
+      assert_equal 'Message has to contain exactly one object', json_response['message']
+      assert_equal Message.count, @before_request_messages_count
+    end
+  end
+
   test 'sets metadata' do
     message_params = {
       type: 'Fs::MessageDraft',
@@ -583,7 +677,7 @@ class FsMessageDraftsApiTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test 'does not create message if more than one object present' do
+  test 'does not create message if more than one form object present' do
     message_params = {
       type: 'Fs::MessageDraft',
       title: 'SVDPH Podanie',
@@ -604,7 +698,7 @@ class FsMessageDraftsApiTest < ActionDispatch::IntegrationTest
           name: 'attachment.xml',
           is_signed: false,
           mimetype: 'application/xml',
-          object_type: 'ATTACHMENT',
+          object_type: 'FORM',
           content: Base64.encode64('<Attachment><Content>Hello!</Content></Attachment>')
         }
       ]
@@ -623,7 +717,7 @@ class FsMessageDraftsApiTest < ActionDispatch::IntegrationTest
       assert_response :unprocessable_entity
 
       json_response = JSON.parse(response.body)
-      assert_equal 'Message has to contain exactly one object', json_response['message']
+      assert_equal 'Message has to contain exactly one form object', json_response['message']
 
       assert_equal Message.count, @before_request_messages_count
     end
@@ -737,7 +831,7 @@ class FsMessageDraftsApiTest < ActionDispatch::IntegrationTest
       assert_response :unprocessable_entity
 
       json_response = JSON.parse(response.body)
-      assert_equal "Objects is not valid", json_response['message']
+      assert_equal "Objects is not valid, Name can't be blank", json_response['message']
 
       assert_equal Message.count, @before_request_messages_count
     end

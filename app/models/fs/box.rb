@@ -3,6 +3,7 @@
 # Table name: boxes
 #
 #  id          :bigint           not null, primary key
+#  active      :boolean          default(TRUE), not null
 #  color       :enum
 #  export_name :string           not null
 #  name        :string           not null
@@ -39,6 +40,8 @@ class Fs::Box < Box
   end
 
   def sync
+    return unless active?
+
     boxes_api_connections.group_by { |boxes_api_connection| boxes_api_connection.settings_delegate_id }.each do |settings_delegate_id, boxes_api_connections|
       ::Fs::SyncBoxJob.set(job_context: :asap).perform_later(self, api_connection: boxes_api_connections.first.api_connection)
     end

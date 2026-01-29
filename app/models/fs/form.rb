@@ -16,6 +16,19 @@
 #  updated_at                 :datetime         not null
 #
 class Fs::Form < ApplicationRecord
+  FORMS_WITH_ATTACHMENTS = %w[
+    DPFOAv25
+    DPFOBv23
+    DPFOBv24
+    DPFOBv25
+    DPPOv22
+    DPPOv24
+    DPPOv25
+    OZNDFTv25
+    V2Pv25
+    ZIA51g2v21
+  ].freeze
+
   has_many :related_documents, class_name: 'Fs::FormRelatedDocument', foreign_key: 'fs_form_id', dependent: :destroy
 
   def xslt_html
@@ -36,6 +49,10 @@ class Fs::Form < ApplicationRecord
 
   def related_document(type)
     related_documents.where(document_type: type).where("lower(language) = 'sk'")&.first&.data
+  end
+
+  def attachments_allowed?
+    FORMS_WITH_ATTACHMENTS.include?(slug)
   end
 
   def short_name(include_version: true)
