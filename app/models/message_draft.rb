@@ -142,7 +142,7 @@ class MessageDraft < Message
   end
 
   def submittable?
-    form_object&.content&.present? && correctly_created? && valid?(:validate_data) && !any_objects_with_requested_signature?
+    box.active? && form_object&.content&.present? && correctly_created? && valid?(:validate_data) && !any_objects_with_requested_signature?
   end
 
   def not_submittable_errors

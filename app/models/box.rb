@@ -29,6 +29,7 @@ class Box < ApplicationRecord
   has_many :automation_conditions, as: :condition_object
 
   scope :active, -> { where(active: true) }
+  scope :syncable, -> { where(syncable: true) }
   scope :with_enabled_message_drafts_import, -> { active.where("(settings ->> 'message_drafts_import_enabled')::boolean = ?", true) }
 
   before_destroy do |box|
@@ -58,7 +59,7 @@ class Box < ApplicationRecord
   end
 
   def self.sync_all
-    active.where(syncable: true).find_each(&:sync)
+    active.syncable.find_each(&:sync)
   end
 
   def single_recipient?
