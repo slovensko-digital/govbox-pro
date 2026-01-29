@@ -423,6 +423,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_20_115648) do
     t.boolean "visualizable"
     t.uuid "uuid"
     t.string "description"
+    t.string "identifier"
     t.index ["message_id"], name: "index_message_objects_on_message_id"
   end
 

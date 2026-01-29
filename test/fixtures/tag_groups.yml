@@ -40,6 +40,10 @@ finance_ssd_signer_user2:
   tag: ssd_finance
   group: ssd_signer_user2
 
+everything_accountants_admins:
+  tag: accountants_everything
+  group: accountants_admins
+
 accountants_signers_signature_requested:
   tag: accountants_signers_signature_requested
   group: accountants_signers
