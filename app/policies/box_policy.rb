@@ -10,7 +10,7 @@ class BoxPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      scope.where(tenant: @user.tenant)
+      @user.accessible_boxes
     end
   end
 

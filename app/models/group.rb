@@ -18,6 +18,8 @@ class Group < ApplicationRecord
   has_many :users, through: :group_memberships
   has_many :tag_groups, dependent: :destroy
   has_many :tags, through: :tag_groups
+  has_many :box_groups, dependent: :destroy
+  has_many :boxes, through: :box_groups
 
   EDITABLE_GROUP_TYPES = %w[AdminGroup SignerGroup CustomGroup]
 
