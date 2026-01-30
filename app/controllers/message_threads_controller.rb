@@ -80,6 +80,7 @@ class MessageThreadsController < ApplicationController
         scope: message_thread_policy_scope.includes(:tags, :box),
         search_permissions: search_permissions,
         query: search_params[:q],
+        user_tag_name: Current.user.author_tag&.name,
         cursor: cursor
       )
 
