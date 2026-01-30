@@ -10,6 +10,12 @@ class MessageThreadsController < ApplicationController
   after_action :mark_thread_as_read, only: %i[show history]
   before_action :set_reload
 
+  def index
+    authorize MessageThread
+
+    @sticky_note = Current.user.sticky_note
+  end
+
   def show
     authorize @message_thread
   end
@@ -25,14 +31,8 @@ class MessageThreadsController < ApplicationController
     if @message_thread.rename(message_thread_params)
       redirect_to @message_thread, notice: 'Názov vlákna bol upravený'
     else
-      render :rename, status: :unprocessable_entity
+      render :rename, status: :unprocessable_content
     end
-  end
-
-  def index
-    authorize MessageThread
-
-    @sticky_note = Current.user.sticky_note
   end
 
   def scroll
@@ -42,7 +42,7 @@ class MessageThreadsController < ApplicationController
   def bulk_actions
     authorize MessageThread
 
-    @count_estimate = params[:count_estimate].present? ? params[:count_estimate].to_i : nil
+    @count_estimate = params[:count_estimate].presence&.to_i
     @ids = params[:message_thread_ids] || []
   end
 
@@ -55,10 +55,10 @@ class MessageThreadsController < ApplicationController
       redirect_to message_thread_path(message_thread), notice: 'Vlákna boli úspešne spojené'
     elsif message_thread == false
       flash[:alert] = 'Nie je možné spojiť vlákna z rôznych schránok'
-      redirect_back fallback_location: message_threads_path
+      redirect_back_or_to(message_threads_path)
     else
       flash[:alert] = 'Označte zaškrtávacími políčkami minimálne 2 vlákna, ktoré chcete spojiť'
-      redirect_back fallback_location: message_threads_path
+      redirect_back_or_to(message_threads_path)
     end
   end
 

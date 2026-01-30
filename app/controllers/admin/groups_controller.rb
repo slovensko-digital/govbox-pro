@@ -40,7 +40,7 @@ class Admin::GroupsController < ApplicationController
     if @group.save
       redirect_to edit_members_admin_tenant_group_url(Current.tenant, @group, step: :new), notice: 'Skupina bola úspešne vytvorená'
     else
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
 
@@ -49,7 +49,7 @@ class Admin::GroupsController < ApplicationController
     if @group.update(group_params)
       redirect_to admin_tenant_groups_url(Current.tenant), notice: 'Skupina bola úspešne upravená'
     else
-      render :edit, status: :unprocessable_entity
+      render :edit, status: :unprocessable_content
     end
   end
 

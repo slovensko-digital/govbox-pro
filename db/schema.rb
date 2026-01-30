@@ -174,6 +174,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_20_204457) do
     t.jsonb "settings", default: {}, null: false
     t.string "type"
     t.string "export_name", null: false
+    t.boolean "active", default: true, null: false
     t.index ["tenant_id", "short_name"], name: "index_boxes_on_tenant_id_and_short_name", unique: true
     t.index ["tenant_id"], name: "index_boxes_on_tenant_id"
   end
@@ -184,6 +185,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_20_204457) do
     t.jsonb "settings", default: {}
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "active", default: true, null: false
     t.index ["api_connection_id"], name: "index_boxes_api_connections_on_api_connection_id"
     t.index ["box_id", "api_connection_id"], name: "index_boxes_api_connections_on_box_id_and_api_connection_id", unique: true
     t.index ["box_id"], name: "index_boxes_api_connections_on_box_id"
@@ -421,6 +423,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_20_204457) do
     t.boolean "visualizable"
     t.uuid "uuid"
     t.string "description"
+    t.string "identifier"
     t.index ["message_id"], name: "index_message_objects_on_message_id"
   end
 

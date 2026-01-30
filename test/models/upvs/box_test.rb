@@ -16,6 +16,6 @@ class Upvs::BoxTest < ActiveSupport::TestCase
       Upvs::Box.sync_all
     end
 
-    assert_enqueued_jobs Upvs::Box.where(syncable: true).count
+    assert_enqueued_jobs Upvs::Box.syncable.count
   end
 end

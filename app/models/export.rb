@@ -78,7 +78,9 @@ class Export < ApplicationRecord
   end
 
   def file_name
-    "#{user.tenant.id}/govbox-pro-export-#{created_at.to_date}.zip"
+    old_name = "#{user.tenant.id}/govbox-pro-export-#{created_at.to_date}.zip" # Old naming logic
+    new_name = "#{user.tenant.id}/govbox-pro-export-##{id}-#{created_at.to_date}.zip"
+    File.exist?(File.join(Rails.root, "storage", "exports", old_name)) ? old_name : new_name
   end
 
   private

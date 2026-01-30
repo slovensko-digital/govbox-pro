@@ -7,5 +7,5 @@ json.array! @boxes do |box|
   json.type box.type
   json.obo box.settings_obo if box.respond_to?(:settings_obo)
   json.dic box.settings_dic if box.respond_to?(:settings_dic)
-  # json.active box.active
+  json.active box.active
 end

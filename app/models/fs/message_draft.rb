@@ -194,8 +194,8 @@ class Fs::MessageDraft < MessageDraft
     Fs::SubmitMessageDraftAction.run(self)
   end
 
-  def attachments_allowed?
-    false
+  def attachments_editable?
+    tenant.feature_enabled?(:fs_submissions_with_attachments) && not_yet_submitted? && form.attachments_allowed?
   end
 
   def build_html_visualization
@@ -237,7 +237,11 @@ class Fs::MessageDraft < MessageDraft
   end
 
   def validate_objects
-    errors.add(:objects, "Message has to contain exactly one object") if objects.size != 1
+    if !tenant.feature_enabled?(:fs_submissions_with_attachments)
+      errors.add(:objects, "Message has to contain exactly one object") if objects.size != 1
+    else
+      super
+    end
   end
 
   def global_api_connection?
