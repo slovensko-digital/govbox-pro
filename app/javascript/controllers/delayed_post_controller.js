@@ -3,20 +3,11 @@ import { post } from "@rails/request.js"
 
 export default class DelayedPostController extends Controller {
   static values = {
-    url: String,
-    timeout: { type: Number, default: 1000 }
+    url: String
   }
 
   connect() {
-    this.timeoutId = setTimeout(() => {
-      this.doPost()
-    }, this.timeoutValue)
-  }
-
-  disconnect() {
-    if (this.timeoutId) {
-      clearTimeout(this.timeoutId)
-    }
+    this.doPost()
   }
 
   async doPost() {
