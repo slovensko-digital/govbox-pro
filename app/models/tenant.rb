@@ -54,6 +54,9 @@ class Tenant < ApplicationRecord
   ALL_FEATURE_FLAGS = [:audit_log, :archive, :api, :message_draft_import, :fs_api, :fs_sync, :upvs, :fs_submissions_with_attachments]
 
   PDF_SIGNATURE_FORMATS = %w[PAdES XAdES CAdES]
+  SIGNATURE_REQUEST_MODES = %w[signer_group author].freeze
+
+  validates :signature_request_mode, inclusion: { in: SIGNATURE_REQUEST_MODES }
 
   def set_pdf_signature_format(pdf_signature_format)
     raise "Unknown pdf_signature_format #{pdf_signature_format}" unless pdf_signature_format.in? PDF_SIGNATURE_FORMATS

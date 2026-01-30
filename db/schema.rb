@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_01_20_115648) do
+ActiveRecord::Schema[7.1].define(version: 2026_01_20_204457) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -622,7 +622,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_20_115648) do
     t.enum "color", enum_type: "color"
     t.index ["owner_id"], name: "index_tags_on_owner_id"
     t.index ["tenant_id", "type", "name"], name: "index_tags_on_tenant_id_and_type_and_name", unique: true
-    t.index ["tenant_id", "type"], name: "signings_tags", unique: true, where: "((type)::text = ANY (ARRAY[('SignatureRequestedTag'::character varying)::text, ('SignedTag'::character varying)::text]))"
+    t.index ["tenant_id", "type"], name: "signings_tags", unique: true, where: "((type)::text = ANY ((ARRAY['SignatureRequestedTag'::character varying, 'SignedTag'::character varying])::text[]))"
     t.index ["tenant_id"], name: "index_tags_on_tenant_id"
   end
 
@@ -633,6 +633,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_20_115648) do
     t.string "feature_flags", default: [], array: true
     t.string "api_token_public_key"
     t.jsonb "settings", default: {}, null: false
+    t.string "signature_request_mode", default: "signer_group", null: false
   end
 
   create_table "upvs_form_related_documents", force: :cascade do |t|

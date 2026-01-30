@@ -206,6 +206,23 @@ class Fs::MessageDraft < MessageDraft
     Fs::Form.find(metadata['fs_form_id'])
   end
 
+  def signable_by_author?
+    return false unless author
+    return false unless author.signer?
+    return true if global_api_connection?
+    true if author_api_connection?
+  end
+
+  def signature_target_group
+    tenant = thread.box.tenant
+
+    if tenant.signature_request_mode == 'author' && signable_by_author?
+      author
+    else
+      tenant.signer_group
+    end
+  end
+
   private
 
   def validate_data
@@ -225,5 +242,13 @@ class Fs::MessageDraft < MessageDraft
     else
       super
     end
+  end
+
+  def global_api_connection?
+    box.api_connections.where(owner: nil).one?
+  end
+
+  def author_api_connection?
+    box.api_connections.where(owner: author).present?
   end
 end
