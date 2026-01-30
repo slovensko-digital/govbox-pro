@@ -31,7 +31,7 @@ class Admin::TagsController < ApplicationController
     if @tag.save
       redirect_to admin_tenant_tags_path(Current.tenant), notice: "Štítok bol úspešne vytvorený"
     else
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
 
@@ -41,7 +41,7 @@ class Admin::TagsController < ApplicationController
     if @tag.update(simple_tag_params)
       redirect_to admin_tenant_tags_path(Current.tenant), notice: "Štítok bol úspešne upravený"
     else
-      render :edit, status: :unprocessable_entity
+      render :edit, status: :unprocessable_content
     end
   end
 

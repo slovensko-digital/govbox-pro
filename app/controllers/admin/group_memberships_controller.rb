@@ -11,7 +11,7 @@ class Admin::GroupMembershipsController < ApplicationController
       flash[:notice] = 'Skupinové členstvo bolo úspešne vytvorené'
       redirect_to edit_members_admin_tenant_group_path(Current.tenant, @group_membership.group)
     else
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
 

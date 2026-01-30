@@ -15,7 +15,7 @@ class Api::MessagesController < Api::TenantController
     if @message.destroyable? && @message.not_yet_submitted?
       @message.destroy
     else
-      render_unprocessable_entity("Message is not destroyable")
+      render_unprocessable_content("Message is not destroyable")
     end
   end
 
@@ -29,7 +29,7 @@ class Api::MessagesController < Api::TenantController
     ::Message.transaction do
       @message = permitted_message_draft_params[:type].classify.safe_constantize.load_from_params(permitted_message_draft_params, tenant: @tenant, box: @box)
 
-      render_unprocessable_entity(@message.errors.messages.values.join(', ')) and return unless @message.valid?
+      render_unprocessable_content(@message.errors.messages.values.join(', ')) and return unless @message.valid?
       render_conflict(@message.errors.messages.values.join(', ')) and return unless @message.valid?(:validate_uuid_uniqueness)
 
       @message.save
@@ -42,7 +42,7 @@ class Api::MessagesController < Api::TenantController
         render json: { id:@message.id, thread_id: @message.message_thread_id }.to_json, status: :created
       else
         @message.destroy
-        render_unprocessable_entity(@message.errors.messages.values.join(', '))
+        render_unprocessable_content(@message.errors.messages.values.join(', '))
       end
     end
   end
@@ -100,14 +100,14 @@ class Api::MessagesController < Api::TenantController
     tag_names.each do |tag_name|
       @tenant.tags.find_by!(name: tag_name)
     rescue ActiveRecord::RecordNotFound
-      render_unprocessable_entity("Tag with name #{tag_name} does not exist") and return
+      render_unprocessable_content("Tag with name #{tag_name} does not exist") and return
     end
 
     message_object_tag_names = permitted_message_draft_params.fetch(:objects, []).pluck('tags').compact.flatten
     message_object_tag_names.each do |tag_name|
       @tenant.user_signature_tags.find_by!(name: tag_name)
     rescue ActiveRecord::RecordNotFound
-      render_unprocessable_entity("Signature tag with name #{tag_name} does not exist") and return
+      render_unprocessable_content("Signature tag with name #{tag_name} does not exist") and return
     end
   end
 
@@ -116,14 +116,14 @@ class Api::MessagesController < Api::TenantController
   end
 
   rescue_from MessageDraft::InvalidSenderError do
-    render_unprocessable_entity('Invalid sender')
+    render_unprocessable_content('Invalid sender')
   end
 
   rescue_from MessageDraft::MissingFormObjectError do
-    render_unprocessable_entity('Message has to contain exactly one form object')
+    render_unprocessable_content('Message has to contain exactly one form object')
   end
 
   rescue_from MessageDraft::UnknownFormError do
-    render_unprocessable_entity('Unknown form')
+    render_unprocessable_content('Unknown form')
   end
 end
