@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_01_20_115648) do
+ActiveRecord::Schema[7.1].define(version: 2026_01_27_090434) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -394,6 +394,16 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_20_115648) do
     t.index ["tenant_id"], name: "index_groups_on_tenant_id"
   end
 
+  create_table "identities", force: :cascade do |t|
+    t.string "email", null: false
+    t.string "password_digest", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_identities_on_email", unique: true
+    t.index ["user_id"], name: "index_identities_on_user_id"
+  end
+
   create_table "message_drafts_imports", force: :cascade do |t|
     t.string "name", null: false
     t.integer "status", default: 0
@@ -674,7 +684,6 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_20_115648) do
     t.string "saml_identifier"
     t.datetime "notifications_last_opened_at"
     t.datetime "notifications_reset_at"
-    t.string "password_digest"
     t.boolean "notifications_opened", default: false, null: false
     t.index "tenant_id, lower((email)::text)", name: "index_users_on_tenant_id_and_lowercase_email", unique: true
   end
@@ -701,7 +710,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_20_115648) do
   add_foreign_key "filter_subscriptions", "tenants"
   add_foreign_key "filter_subscriptions", "users"
   add_foreign_key "filters", "tenants", on_delete: :cascade
-  add_foreign_key "filters", "users", column: "author_id", on_delete: :cascade
+  add_foreign_key "filters", "users", column: "author_id", on_delete: :nullify
   add_foreign_key "folders", "boxes"
   add_foreign_key "fs_form_related_documents", "fs_forms"
   add_foreign_key "govbox_folders", "govbox_folders", column: "parent_folder_id"
@@ -709,6 +718,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_20_115648) do
   add_foreign_key "group_memberships", "groups"
   add_foreign_key "group_memberships", "users"
   add_foreign_key "groups", "tenants"
+  add_foreign_key "identities", "users"
   add_foreign_key "message_drafts_imports", "boxes"
   add_foreign_key "message_object_data", "message_objects"
   add_foreign_key "message_objects", "messages"
