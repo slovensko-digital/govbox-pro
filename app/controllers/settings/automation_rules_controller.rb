@@ -24,7 +24,7 @@ class Settings::AutomationRulesController < ApplicationController
     if @automation_rule.save
       redirect_to settings_automation_rules_path, notice: 'Pravidlo bolo úspešne vytvorené'
     else
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
 
@@ -33,7 +33,7 @@ class Settings::AutomationRulesController < ApplicationController
     if @automation_rule.update(automation_rule_params)
       redirect_to settings_automation_rules_path, notice: 'Pravidlo bolo úspešne upravené'
     else
-      render :edit, status: :unprocessable_entity
+      render :edit, status: :unprocessable_content
     end
   end
 

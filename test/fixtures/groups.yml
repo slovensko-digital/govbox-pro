@@ -55,6 +55,11 @@ solver_other_user:
   type: UserGroup
   tenant: solver
 
+accountants_admins:
+  name: admins
+  type: AdminGroup
+  tenant: accountants
+
 accountants_basic_user:
   name: Basic user 2
   type: UserGroup
