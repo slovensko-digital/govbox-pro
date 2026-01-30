@@ -209,7 +209,8 @@ class Fs::MessageDraft < MessageDraft
   def signable_by_author?
     return false unless author
     return false unless author.signer?
-    author_has_valid_api_connection?
+    return true if global_api_connection?
+    true if author_api_connection?
   end
 
   def signature_target_group
@@ -239,8 +240,11 @@ class Fs::MessageDraft < MessageDraft
     errors.add(:objects, "Message has to contain exactly one object") if objects.size != 1
   end
 
-  def author_has_valid_api_connection?
-    # If there is exactly one global API connection or the author has their own API connection
-    box.api_connections.where(owner: nil).one? || box.api_connections.where(owner: author).present?
+  def global_api_connection?
+    box.api_connections.where(owner: nil).one?
+  end
+
+  def author_api_connection?
+    box.api_connections.where(owner: author).present?
   end
 end
