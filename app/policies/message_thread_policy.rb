@@ -60,4 +60,8 @@ class MessageThreadPolicy < ApplicationPolicy
   def archive?
     true
   end
+
+  def mark_read?
+    true
+  end
 end

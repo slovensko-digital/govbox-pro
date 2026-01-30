@@ -42,3 +42,6 @@ application.register("turbo-content", TurboContentController)
 
 import VisitedLinksController from "./visited_links_controller"
 application.register("visited-links", VisitedLinksController)
+
+import DelayedPostController from "./delayed_post_controller"
+application.register("delayed-post", DelayedPostController)
