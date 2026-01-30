@@ -65,3 +65,21 @@ authors_api_connections_condition:
   automation_rule: request_signature_from_author
   attr: authors_api_connection
   type: Automation::AuthorHasApiConnectionCondition
+
+fs_submission_status:
+  automation_rule: ed_delivery_report_rule
+  attr: fs_submission_status
+  type: Automation::MetadataValueCondition
+  value: Prijaté a potvrdené
+
+fs_message_type:
+  automation_rule: ed_delivery_report_rule
+  attr: fs_message_type
+  type: Automation::MetadataValueCondition
+  value: ED.DeliveryReport
+
+fs_submission_verification_status:
+  automation_rule: ed_delivery_report_rule
+  attr: fs_submission_verification_status
+  type: Automation::MetadataValueCondition
+  value: "{\"name\"=>\"Platné\", \"description\"=>\"Overenie platnosti podpisov podania bolo ukončené. Všetky podpisy sú platné.\"}"
