@@ -59,3 +59,9 @@ request_signature_from_author:
   tenant: accountants
   name: Request signature from author
   trigger_event: message_created
+
+ed_delivery_report_rule:
+  user: basic
+  tenant: accountants
+  name: Add S potvrdenkou tag
+  trigger_event: message_created
