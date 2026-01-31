@@ -1,4 +1,4 @@
-<div class="flex flex-col justify-stretch items-stretch" data-controller="delayed-post" data-delayed-post-url-value="<%= mark_read_message_thread_path(@message_thread) %>">
+<div class="flex flex-col justify-stretch items-stretch">
   <%= render MessageThreadHeaderComponent.new(@message_thread, @thread_tags) %>
   <%= render MessageThreadNoteComponent.new(@message_thread.note) %>
   <div class="flex flex-col justify-start items-start gap-2 p-4">
