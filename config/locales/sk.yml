@@ -1,13 +1,14 @@
+---
 sk:
-  true: "áno"
-  false: "nie"
+  true: áno
+  false: nie
   activerecord:
     attributes:
       message:
-        sender_name: 'Odosielateľ'
-        recipient_name: 'Prijímateľ'
+        sender_name: Odosielateľ
+        recipient_name: Prijímateľ
       message_thread:
-        title: "Názov"
+        title: Názov
       box:
         name: Názov
         short_name: Krátky názov
@@ -15,86 +16,86 @@ sk:
         settings_obo: ID identity
     errors:
       messages:
-        record_invalid: "Validácia neúspešná: %{errors}"
-        disallowed_form: "Daný typ formulára nie je povolený"
-        disallowed_form_for_recipient: "Prijímateľ neprijíma tento typ formulára"
-        invalid_form: "Formulár nie je validný voči XSD"
+        record_invalid: 'Validácia neúspešná: %{errors}'
+        disallowed_form: Daný typ formulára nie je povolený
+        disallowed_form_for_recipient: Prijímateľ neprijíma tento typ formulára
+        invalid_form: Formulár nie je validný voči XSD
       models:
         api_connection:
           attributes:
             tenant_id:
-              present: 'Tenant nesmie byť zvolený'
+              present: Tenant nesmie byť zvolený
         tag:
           attributes:
             base:
               restrict_dependent_destroy:
-                has_many: "Štítok je použitý v automatizačných pravidlách, nie je ho možné vymazať. Upravte najskôr pravidlá"
+                has_many: Štítok je použitý v automatizačných pravidlách, nie je ho možné vymazať. Upravte najskôr pravidlá
         automation/webhook:
           attributes:
             base:
               restrict_dependent_destroy:
-                has_many: "Integrácia je použitá v automatizačných pravidlách, nie je možné ju vymazať. Upravte najskôr pravidlá"
+                has_many: Integrácia je použitá v automatizačných pravidlách, nie je možné ju vymazať. Upravte najskôr pravidlá
         message_draft:
           attributes:
             metadata:
-              no_template: "Typ správy je povinná položka"
+              no_template: Typ správy je povinná položka
         export:
           attributes:
             base:
-              empty_selection: "Musí byť zvolené aspoň jedno z nastavení exportu"
+              empty_selection: Musí byť zvolené aspoň jedno z nastavení exportu
   date:
     abbr_day_names:
-      - Ne
-      - Po
-      - Ut
-      - St
-      - Št
-      - Pi
-      - So
+    - Ne
+    - Po
+    - Ut
+    - St
+    - Št
+    - Pi
+    - So
     abbr_month_names:
-      -
-      - Jan
-      - Feb
-      - Mar
-      - Apr
-      - Máj
-      - Jún
-      - Júl
-      - Aug
-      - Sep
-      - Okt
-      - Nov
-      - Dec
+    -
+    - Jan
+    - Feb
+    - Mar
+    - Apr
+    - Máj
+    - Jún
+    - Júl
+    - Aug
+    - Sep
+    - Okt
+    - Nov
+    - Dec
     day_names:
-      - Nedeľa
-      - Pondelok
-      - Utorok
-      - Streda
-      - Štvrtok
-      - Piatok
-      - Sobota
+    - Nedeľa
+    - Pondelok
+    - Utorok
+    - Streda
+    - Štvrtok
+    - Piatok
+    - Sobota
     formats:
       default: "%d.%m.%Y"
       long: "%d. %B %Y"
       short: "%d %b"
     month_names:
-      -
-      - Január
-      - Február
-      - Marec
-      - Apríl
-      - Máj
-      - Jún
-      - Júl
-      - August
-      - September
-      - Október
-      - November
-      - December
+    -
+    - Január
+    - Február
+    - Marec
+    - Apríl
+    - Máj
+    - Jún
+    - Júl
+    - August
+    - September
+    - Október
+    - November
+    - December
     order:
-      - :day
-      - :month
-      - :year
+    - :day
+    - :month
+    - :year
   datetime:
     distance_in_words:
       about_x_hours:
@@ -177,15 +178,11 @@ sk:
       too_short: je príliš krátky/a (min. %{count} znakov)
       wrong_length: nemá správnu dĺžku (očakáva sa %{count} znakov)
     template:
-      body: "Nasledujúce polia obsahujú chybne vyplnené údaje:"
+      body: 'Nasledujúce polia obsahujú chybne vyplnené údaje:'
       header:
         one: Pri ukladaní objektu %{model} došlo k chybám a nebolo ho možné uložiť
-        few:
-          Pri ukladaní objektu %{model} došlo k %{count} chybám a nebolo ho možné
-          uložiť
-        other:
-          Pri ukladaní objektu %{model} došlo k %{count} chybám a nebolo ho možné
-          uložiť
+        few: Pri ukladaní objektu %{model} došlo k %{count} chybám a nebolo ho možné uložiť
+        other: Pri ukladaní objektu %{model} došlo k %{count} chybám a nebolo ho možné uložiť
   helpers:
     select:
       prompt: Prosím vyberte si
@@ -218,9 +215,9 @@ sk:
           quadrillion: Biliarda
           thousand: Tisíc
           trillion: Bilión
-          unit: ""
+          unit: ''
       format:
-        delimiter: ""
+        delimiter: ''
         precision: 1
         significant: false
         strip_insignificant_zeros: false
@@ -240,7 +237,7 @@ sk:
         delimiter: " "
     precision:
       format:
-        delimiter: ""
+        delimiter: ''
   support:
     array:
       last_word_connector: " a "
@@ -258,167 +255,173 @@ sk:
     few: "%{count} používatelia"
     other: "%{count} používateľov"
   message_object:
-    one: "1 prílohu"
+    one: 1 prílohu
     few: "%{count} prílohy"
     other: "%{count} príloh"
   selected_message:
     one: "%{count} označená správa"
     few: "%{count} označené správy"
     other: "%{count} označených správ"
-  no_message_object_name: "Súbor bez názvu"
-  sender_name: "Odosielateľ"
-  recipient_name: "Prijímateľ"
-  sender_uri: "URI odosielateľa"
-  recipient_uri: "URI prijímateľa"
-  outbox: "Odoslaná pošta"
-  object_type: "Typ objektu"
-  fs_submission_status: "Stav podania"
-  edesk_class: "Typ ÚPVS správy"
-  type: "Typ"
-  fs_message_type: "Typ FS správy"
-  box: "Schránka správy"
-  attachment: "Príloha"
-  api_connection: "API Prepojenie"
-  authors_api_connection: "Autor svoje API prepojenie"
+  no_message_object_name: Súbor bez názvu
+  sender_name: Odosielateľ
+  recipient_name: Prijímateľ
+  sender_uri: URI odosielateľa
+  recipient_uri: URI prijímateľa
+  outbox: Odoslaná pošta
+  object_type: Typ objektu
+  fs_submission_status: Stav podania
+  edesk_class: Typ ÚPVS správy
+  type: Typ
+  fs_message_type: Typ FS správy
+  box: Schránka správy
+  attachment: Príloha
+  api_connection: API Prepojenie
+  authors_api_connection: Autor svoje API prepojenie
   boxes:
-    sync_all_requested: "Sťahovanie nových správ bolo spustené."
-  message_created: "Nová správa"
-  message_thread_created: "Nové vlákno"
-  message_updated: "Upravená správa"
-  message_thread_changed: "Zmena vo vlákne správ"
-  message_draft_validated: "Zvalidovaná správa"
-  message_draft_submitted: "Odoslaná správa"
-  message_object_downloaded: "Stiahnutý objekt správy"
-  "Automation::ValueCondition": "je"
-  "Automation::ContainsCondition": "obsahuje"
-  "Automation::BooleanCondition": "je"
-  "Automation::AttachmentContentContainsCondition": "obsahuje"
-  "Automation::MetadataValueCondition": "v metadátach obsahuje"
-  "Automation::MetadataValueNotCondition": "v metadátach neobsahuje"
-  "Automation::MessageMetadataValueCondition": "správa v metadátach obsahuje"
-  "Automation::BoxCondition": "je"
-  "Automation::ApiConnectionCondition": "je"
-  "Automation::AuthorHasApiConnectionCondition": "má"
-  "Automation::AddMessageThreadTagAction": "Pridaj štítok na vlákno"
-  "Automation::AddSignatureRequestedFromAuthorMessageThreadTagAction": "Pridaj štítok pre vyžiadanie podpisu autora"
-  "Automation::UnassignMessageThreadTagAction": "Odober štítok z vlákna"
-  "Automation::AddTagAction": "Pridaj štítok"
-  "Automation::ChangeMessageThreadTitleAction": "Premenuj vlákno na"
-  "Automation::AddFormObjectIdentifierToMessageThreadTitleAction": "Pridaj do vlákna ID z názvu formulára"
-  "Automation::FireWebhookAction": "Zavolaj integráciu"
-  "Automation::AddMessageExportMetadataBoxNameAction": "Nastav názov schránky do metadát pre export na"
+    sync_all_requested: Sťahovanie nových správ bolo spustené.
+  message_created: Nová správa
+  message_thread_created: Nové vlákno
+  message_updated: Upravená správa
+  message_thread_changed: Zmena vo vlákne správ
+  message_draft_validated: Zvalidovaná správa
+  message_draft_submitted: Odoslaná správa
+  message_object_downloaded: Stiahnutý objekt správy
+  Automation::ValueCondition: je
+  Automation::ContainsCondition: obsahuje
+  Automation::BooleanCondition: je
+  Automation::AttachmentContentContainsCondition: obsahuje
+  Automation::MetadataValueCondition: v metadátach obsahuje
+  Automation::MetadataValueNotCondition: v metadátach neobsahuje
+  Automation::MessageMetadataValueCondition: správa v metadátach obsahuje
+  Automation::BoxCondition: je
+  Automation::ApiConnectionCondition: je
+  Automation::AuthorHasApiConnectionCondition: má
+  Automation::AddMessageThreadTagAction: Pridaj štítok na vlákno
+  Automation::AddSignatureRequestedFromAuthorMessageThreadTagAction: Pridaj štítok pre vyžiadanie podpisu autora
+  Automation::UnassignMessageThreadTagAction: Odober štítok z vlákna
+  Automation::AddTagAction: Pridaj štítok
+  Automation::ChangeMessageThreadTitleAction: Premenuj vlákno na
+  Automation::AddFormObjectIdentifierToMessageThreadTitleAction: Pridaj do vlákna ID z názvu formulára
+  Automation::FireWebhookAction: Zavolaj integráciu
+  Automation::AddMessageExportMetadataBoxNameAction: Nastav názov schránky do metadát pre export na
   group:
     names:
-      all: "Všetci"
-      admin: "Administrátori"
-      signer: "Podpisovatelia"
-  title: "Názov"
+      all: Všetci
+      admin: Administrátori
+      signer: Podpisovatelia
+  title: Názov
   tag_editing_in_message_threads:
-    one: "Úprava štítkov v jednom vlákne"
-    other: "Úprava štítkov v %{count} vláknach"
+    one: Úprava štítkov v jednom vlákne
+    other: Úprava štítkov v %{count} vláknach
   message_draft:
-    form_signed: "Správa už bola podpísaná. Podpísanú správu nie je možné ďalej upravovať. V prípade potreby zmien kliknite na tlačidlo Odstrániť podpisy. Všetky podpisy budú odstránené, správu bude ďalej možné upravovať. Následne ju bude potrebné znova podpísať."
-    submitted: "Správa už bola odoslaná. Odoslanú správu nie je možné ďalej upravovať. V prípade potreby pripravte novú správu a odošlite ju."
-    read_only_agenda: "Správu nie je možné ďalej upravovať. V prípade potreby pripravte novú správu a odošlite ju."
+    form_signed: Správa už bola podpísaná. Podpísanú správu nie je možné ďalej upravovať. V prípade potreby zmien kliknite na tlačidlo Odstrániť podpisy. Všetky podpisy budú odstránené, správu bude ďalej možné upravovať. Následne ju bude potrebné znova podpísať.
+    submitted: Správa už bola odoslaná. Odoslanú správu nie je možné ďalej upravovať. V prípade potreby pripravte novú správu a odošlite ju.
+    read_only_agenda: Správu nie je možné ďalej upravovať. V prípade potreby pripravte novú správu a odošlite ju.
   filter_subscription:
     events:
       Notifications::NewMessageThread:
-        name: "Nová konverzácia"
-        description: "Dostanete notifikáciu o novom vlákne vyhovujúcemu filtru."
+        name: Nová konverzácia
+        description: Dostanete notifikáciu o novom vlákne vyhovujúcemu filtru.
       Notifications::NewMessage:
-        name: "Nová správa"
-        description: "Dostanete notifikáciu ku každej novej správe vo vláknach vyhovujúcim filtru."
+        name: Nová správa
+        description: Dostanete notifikáciu ku každej novej správe vo vláknach vyhovujúcim filtru.
       Notifications::MessageThreadNoteChanged:
-        name: "Zmena poznámky"
-        description: "Dostanete notifikáciu o zmene poznámky k vláknu."
+        name: Zmena poznámky
+        description: Dostanete notifikáciu o zmene poznámky k vláknu.
     flash:
-      create: "Notifikácie boli nastavené!"
-      update: "Notifikacie boli zmenené!"
-      destroy: "Notifikácie boli zrušené!"
+      create: Notifikácie boli nastavené!
+      update: Notifikacie boli zmenené!
+      destroy: Notifikácie boli zrušené!
   signing:
-    processed: "Dokumenty boli úspešne podpísané"
-    failed: "Pri podpisovaní dokumentov sa vyskytla chyba"
+    processed: Dokumenty boli úspešne podpísané
+    failed: Pri podpisovaní dokumentov sa vyskytla chyba
     documents:
-      one: "1 dokument"
+      one: 1 dokument
       few: "%{count} dokumenty"
       other: "%{count} dokumentov"
   bulk:
     signing:
-      nothing_to_sign: "Vo vybraných vláknach sa nenašli žiadne dokumenty so žiadosťou na podpis"
+      nothing_to_sign: Vo vybraných vláknach sa nenašli žiadne dokumenty so žiadosťou na podpis
   blank_results:
     filters:
-      header: "Žiadne filtre"
-      description: "Nemáte vytvorené žiadne filtre."
+      header: Žiadne filtre
+      description: Nemáte vytvorené žiadne filtre.
     tags:
-      header: "Žiadne štítky"
-      description: 'Zatiaľ nie sú vytvorené žiadne štítky.'
+      header: Žiadne štítky
+      description: Zatiaľ nie sú vytvorené žiadne štítky.
     rules:
-      header: "Žiadne pravidlá"
-      description: 'Zatiaľ nie sú vytvorené žiadne pravidlá.'
+      header: Žiadne pravidlá
+      description: Zatiaľ nie sú vytvorené žiadne pravidlá.
     boxes:
-      header: "Žiadne schránky"
-      description: 'Zatiaľ nie sú vytvorené žiadne schránky.'
+      header: Žiadne schránky
+      description: Zatiaľ nie sú vytvorené žiadne schránky.
     not_found:
-      header: "Žiadne správy"
-      description: "Zvolenému vyhľadávaniu nevyhovuje žiadna správa, skúste vybrať iný štítok alebo zmeniť vyhľadávací výraz."
+      header: Žiadne správy
+      description: Zvolenému vyhľadávaniu nevyhovuje žiadna správa, skúste vybrať iný štítok alebo zmeniť vyhľadávací výraz.
     notifications:
-      header: "Žiadne notifikácie"
-      description: "Nemáte žiadne notifikácie."
+      header: Žiadne notifikácie
+      description: Nemáte žiadne notifikácie.
     group_users:
-      header: "Žiadni používatelia"
-      description: "V tejto skupine zatiaľ nie sú žiadni používatelia."
+      header: Žiadni používatelia
+      description: V tejto skupine zatiaľ nie sú žiadni používatelia.
   feature_flags:
     api:
-      name: "API"
-      description: "Prístup k vybraným funkciám systému a dátam cez API"
+      name: API
+      description: Prístup k vybraným funkciám systému a dátam cez API
     archive:
-      name: "Archive"
-      description: "Archivácia správ"
+      name: Archive
+      description: Archivácia správ
     audit_log:
-      name: "Audit log"
-      description: "Zaznamenávanie a prezeranie auditných záznamov o činnosti používateľov"
+      name: Audit log
+      description: Zaznamenávanie a prezeranie auditných záznamov o činnosti používateľov
     fs_api:
-      name: "API finančnej správy"
-      description: "Funkčnosť prepojenia s finančnou správou"
+      name: API finančnej správy
+      description: Funkčnosť prepojenia s finančnou správou
     fs_sync:
-      name: "Synchronizácia schránky z finančnej správy"
-      description: "Synchronizácia schránky z finančnej správy"
+      name: Synchronizácia schránky z finančnej správy
+      description: Synchronizácia schránky z finančnej správy
     upvs:
-      name: "ÚPVS"
-      description: "Funkčnosť prepojenia s ústredným portálom verejnej správy (slovensko.sk)"
+      name: ÚPVS
+      description: Funkčnosť prepojenia s ústredným portálom verejnej správy (slovensko.sk)
     message_draft_import:
-      name: "Import správ"
-      description: "Funkcionalita pre hromadné zasielanie správ"
+      name: Import správ
+      description: Funkcionalita pre hromadné zasielanie správ
   exports:
     flash:
-      started: "Export správ bol zaradený na spracovanie."
-      updated: "Nastavenia exportu správ boli zmenené."
+      started: Export správ bol zaradený na spracovanie.
+      updated: Nastavenia exportu správ boli zmenené.
   admin:
     groups:
       create:
-        success: "Skupina bola úspešne vytvorená"
+        success: Skupina bola úspešne vytvorená
       update:
-        success: "Skupina bola úspešne upravená"
+        success: Skupina bola úspešne upravená
       destroy:
-        success: "Skupina bola úspešne odstránená"
+        success: Skupina bola úspešne odstránená
       permissions:
-        title: "Nastaviť prístup - %{group_name}"
-        edit: "Upraviť oprávnenia"
-        back: "Späť"
-        boxes: "Schránky"
-        tags: "Štítky"
+        title: Prístup pre skupinu %{group_name}
+        edit: Upraviť oprávnenia
+        back: Späť
+        boxes: Schránky
+        tags: Štítky
         search_placeholder:
-          box: "Vyhľadaj schránku"
-          tag: "Vyhľadaj štítok"
+          box: Vyhľadaj schránku
+          tag: Vyhľadaj štítok
+          boxes_and_tags: Vyhľadaj schránku alebo štítok
         add_popup:
           title:
-            box: "Pridaj právo na schránku skupine"
-            tag: "Pridaj právo na štítok skupine"
+            box: Pridaj právo na schránku skupine
+            tag: Pridaj právo na štítok skupine
+            boxes_and_tags: Pridaj práva skupine
           empty:
-            box: "Schránka nenájdená"
-            tag: "Štítok nenájdený"
+            box: Schránka nenájdená
+            tag: Štítok nenájdený
+            boxes_and_tags: Žiadne výsledky
         empty_list:
-          box: "Zatiaľ nie sú priradené žiadne schránky. Pridajte schránky, ku ktorým má mať táto skupina prístup."
-          tag: "Zatiaľ nie sú priradené žiadne štítky. Pridajte štítky, ku ktorým má mať táto skupina prístup."
+          box: Zatiaľ nie sú priradené žiadne schránky. Pridajte schránky, ku ktorým má mať táto skupina prístup.
+          tag: Zatiaľ nie sú priradené žiadne štítky. Pridajte štítky, ku ktorým má mať táto skupina prístup.
         actions:
-          delete: "Zmazať"
+          delete: Zmazať
+        type:
+          box: Schránka
+          tag: Štítok

@@ -14,7 +14,6 @@ class GroupPermissionsTest < ApplicationSystemTestCase
     manage_permission_test(
       item: box,
       column_selector: "#boxes-column",
-      search_result_selector: "#box-search-results",
       item_name_for_search: box.name
     )
   end
@@ -24,14 +23,13 @@ class GroupPermissionsTest < ApplicationSystemTestCase
     manage_permission_test(
       item: tag,
       column_selector: "#tags-column",
-      search_result_selector: "#tag-search-results",
       item_name_for_search: tag.name
     )
   end
 
   private
 
-  def manage_permission_test(item:, column_selector:, search_result_selector:, item_name_for_search:)
+  def manage_permission_test(item:, column_selector:, item_name_for_search:)
     visit admin_tenant_permissions_path(tenants(:ssd))
 
     within("##{dom_id(@group)}") do
@@ -44,11 +42,9 @@ class GroupPermissionsTest < ApplicationSystemTestCase
       assert_no_text item.name
     end
 
-    within(column_selector) do
-      fill_in "name_search", with: item_name_for_search
-    end
+    fill_in "name_search", with: item_name_for_search
 
-    within(search_result_selector) do
+    within("#boxes-and-tags-search-results") do
       assert_selector "button", text: item_name_for_search, count: 1
       find("button", text: item_name_for_search).click
     end
