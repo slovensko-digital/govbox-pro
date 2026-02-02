@@ -302,6 +302,7 @@ ssd_main_empty_draft:
   author: basic
 
 fs_accountants_outbox:
+  type: Fs::MessageDraft
   uuid: <%= SecureRandom.uuid %>
   title: FS podanie
   delivered_at: <%= 2.hours.ago %>
