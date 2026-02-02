@@ -199,8 +199,8 @@ class Fs::MessageDraft < MessageDraft
     Fs::SubmitMessageDraftAction.run(self)
   end
 
-  def attachments_allowed?
-    false
+  def attachments_editable?
+    tenant.feature_enabled?(:fs_submissions_with_attachments) && not_yet_submitted? && form&.attachments_allowed?
   end
 
   def build_html_visualization
@@ -208,7 +208,25 @@ class Fs::MessageDraft < MessageDraft
   end
 
   def form
-    Fs::Form.find(metadata['fs_form_id'])
+    Fs::Form.find_by(id: metadata['fs_form_id'])
+  end
+
+  def signable_by_author?
+    return false unless author
+    return false unless author.signer?
+    return true if global_api_connection?
+    return true if author_api_connection?
+    false
+  end
+
+  def signature_target_group
+    tenant = thread.box.tenant
+
+    if tenant.signature_request_mode == 'author' && signable_by_author?
+      author
+    else
+      tenant.signer_group
+    end
   end
 
   private
@@ -225,6 +243,18 @@ class Fs::MessageDraft < MessageDraft
   end
 
   def validate_objects
-    errors.add(:objects, "Message has to contain exactly one object") if objects.size != 1
+    if !tenant.feature_enabled?(:fs_submissions_with_attachments)
+      errors.add(:objects, "Message has to contain exactly one object") if objects.size != 1
+    else
+      super
+    end
+  end
+
+  def global_api_connection?
+    box.api_connections.where(owner: nil).one?
+  end
+
+  def author_api_connection?
+    box.api_connections.where(owner: author).present?
   end
 end

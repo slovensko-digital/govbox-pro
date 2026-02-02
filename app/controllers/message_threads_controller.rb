@@ -2,13 +2,18 @@ class MessageThreadsController < ApplicationController
   include MessageThreadsConcern
   include TurboReload
 
-  before_action :set_message_thread, only: %i[show rename update history confirm_unarchive archive]
+  before_action :set_message_thread, only: %i[show rename update history confirm_unarchive archive mark_read]
   before_action :set_thread_tags, only: %i[show history]
   before_action :set_thread_messages, only: %i[show history confirm_unarchive archive]
   before_action :load_threads, only: %i[index scroll]
   before_action :set_subscription, only: :index
-  after_action :mark_thread_as_read, only: %i[show history]
   before_action :set_reload
+
+  def index
+    authorize MessageThread
+
+    @sticky_note = Current.user.sticky_note
+  end
 
   def show
     authorize @message_thread
@@ -25,14 +30,8 @@ class MessageThreadsController < ApplicationController
     if @message_thread.rename(message_thread_params)
       redirect_to @message_thread, notice: 'Názov vlákna bol upravený'
     else
-      render :rename, status: :unprocessable_entity
+      render :rename, status: :unprocessable_content
     end
-  end
-
-  def index
-    authorize MessageThread
-
-    @sticky_note = Current.user.sticky_note
   end
 
   def scroll
@@ -42,7 +41,7 @@ class MessageThreadsController < ApplicationController
   def bulk_actions
     authorize MessageThread
 
-    @count_estimate = params[:count_estimate].present? ? params[:count_estimate].to_i : nil
+    @count_estimate = params[:count_estimate].presence&.to_i
     @ids = params[:message_thread_ids] || []
   end
 
@@ -55,10 +54,10 @@ class MessageThreadsController < ApplicationController
       redirect_to message_thread_path(message_thread), notice: 'Vlákna boli úspešne spojené'
     elsif message_thread == false
       flash[:alert] = 'Nie je možné spojiť vlákna z rôznych schránok'
-      redirect_back fallback_location: message_threads_path
+      redirect_back_or_to(message_threads_path)
     else
       flash[:alert] = 'Označte zaškrtávacími políčkami minimálne 2 vlákna, ktoré chcete spojiť'
-      redirect_back fallback_location: message_threads_path
+      redirect_back_or_to(message_threads_path)
     end
   end
 
@@ -80,6 +79,7 @@ class MessageThreadsController < ApplicationController
         scope: message_thread_policy_scope.includes(:tags, :box),
         search_permissions: search_permissions,
         query: search_params[:q],
+        user_tag_name: Current.user.author_tag&.name,
         cursor: cursor
       )
 
@@ -103,6 +103,12 @@ class MessageThreadsController < ApplicationController
     redirect_back_or_to message_threads_path(@message_thread), notice: 'Archivácia vlákna bola úspešne upravená'
   end
 
+  def mark_read
+    authorize @message_thread
+    @message_thread.mark_all_messages_read
+    head :ok
+  end
+
   private
 
   def set_subscription
@@ -114,10 +120,6 @@ class MessageThreadsController < ApplicationController
 
   def set_message_thread
     @message_thread = message_thread_policy_scope.find(params[:id])
-  end
-
-  def mark_thread_as_read
-    @message_thread.mark_all_messages_read
   end
 
   def message_thread_policy_scope

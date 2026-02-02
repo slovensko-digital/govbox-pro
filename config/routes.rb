@@ -115,6 +115,7 @@ Rails.application.routes.draw do
     get :history, on: :member
     get :confirm_unarchive, on: :member
     patch :archive, on: :member
+    post :mark_read, on: :member
     resources :messages
     resources :message_thread_notes
     scope module: 'message_threads' do

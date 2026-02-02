@@ -53,7 +53,7 @@ module Admin
         redirect_to admin_tenant_groups_url(Current.tenant), notice: t('.success')
       else
         render :edit, status: :unprocessable_content
-      end
+      end  
     end
 
     def destroy
