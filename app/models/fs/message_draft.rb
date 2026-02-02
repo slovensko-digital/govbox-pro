@@ -195,7 +195,7 @@ class Fs::MessageDraft < MessageDraft
   end
 
   def attachments_editable?
-    tenant.feature_enabled?(:fs_submissions_with_attachments) && not_yet_submitted? && form.attachments_allowed?
+    tenant.feature_enabled?(:fs_submissions_with_attachments) && not_yet_submitted? && form&.attachments_allowed?
   end
 
   def build_html_visualization
@@ -203,7 +203,7 @@ class Fs::MessageDraft < MessageDraft
   end
 
   def form
-    Fs::Form.find(metadata['fs_form_id'])
+    Fs::Form.find_by(id: metadata['fs_form_id'])
   end
 
   private
