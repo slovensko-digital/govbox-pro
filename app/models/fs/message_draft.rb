@@ -210,7 +210,8 @@ class Fs::MessageDraft < MessageDraft
     return false unless author
     return false unless author.signer?
     return true if global_api_connection?
-    true if author_api_connection?
+    return true if author_api_connection?
+    false
   end
 
   def signature_target_group
