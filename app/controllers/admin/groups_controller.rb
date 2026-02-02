@@ -43,7 +43,7 @@ module Admin
       if @group.save
         redirect_to edit_members_admin_tenant_group_url(Current.tenant, @group, step: :new), notice: t('.success')
       else
-        render :new, status: :unprocessable_entity
+        render :new, status: :unprocessable_content
       end
     end
 
@@ -52,7 +52,7 @@ module Admin
       if @group.update(group_params)
         redirect_to admin_tenant_groups_url(Current.tenant), notice: t('.success')
       else
-        render :edit, status: :unprocessable_entity
+        render :edit, status: :unprocessable_content
       end
     end
 
@@ -83,21 +83,25 @@ module Admin
     private
 
     def non_members_search_clause
-      search_non_associated_resources(user_policy_scope, User, :group_memberships, :group_memberships)
+      user_policy_scope
+        .where(tenant: Current.tenant.id)
+        .where.not(id: User.joins(:group_memberships).where(group_memberships: { group_id: @group.id }))
+        .where('unaccent(name) ILIKE unaccent(?)', "%#{params[:name_search]}%")
+        .order(:name)
     end
 
     def non_tags_search_clause
-      search_non_associated_resources(tag_policy_scope, Tag, :tag_groups, :tag_groups)
+      tag_policy_scope
+        .where(tenant: Current.tenant.id)
+        .where.not(id: Tag.joins(:tag_groups).where(tag_groups: { group_id: @group.id }))
+        .where('unaccent(name) ILIKE unaccent(?)', "%#{params[:name_search]}%")
+        .order(:name)
     end
 
     def non_boxes_search_clause
-      search_non_associated_resources(box_policy_scope, Box, :box_groups, :box_groups)
-    end
-
-    def search_non_associated_resources(scope, model_class, join_association, join_table_name)
-      scope
+      box_policy_scope
         .where(tenant: Current.tenant.id)
-        .where.not(id: model_class.joins(join_association).where(join_table_name => { group_id: @group.id }))
+        .where.not(id: Box.joins(:box_groups).where(box_groups: { group_id: @group.id }))
         .where('unaccent(name) ILIKE unaccent(?)', "%#{params[:name_search]}%")
         .order(:name)
     end

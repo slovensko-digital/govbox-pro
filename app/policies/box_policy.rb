@@ -10,7 +10,7 @@ class BoxPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      @user.accessible_boxes
+      scope.where(id: @user.accessible_boxes)
     end
   end
 
