@@ -78,8 +78,14 @@ fs_message_type:
   type: Automation::MetadataValueCondition
   value: ED.DeliveryReport
 
-fs_submission_verification_status:
+fs_submission_verification_status_name:
   automation_rule: ed_delivery_report_rule
-  attr: fs_submission_verification_status
+  attr: fs_submission_verification_status.name
   type: Automation::MetadataValueCondition
-  value: "{\"name\"=>\"Platné\", \"description\"=>\"Overenie platnosti podpisov podania bolo ukončené. Všetky podpisy sú platné.\"}"
+  value: Platné
+
+fs_submission_verification_status_description:
+  automation_rule: ed_delivery_report_rule
+  attr: fs_submission_verification_status.description
+  type: Automation::MetadataValueCondition
+  value: Overenie platnosti podpisov podania bolo ukončené. Všetky podpisy sú platné.
