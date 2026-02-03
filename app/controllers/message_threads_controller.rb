@@ -2,12 +2,11 @@ class MessageThreadsController < ApplicationController
   include MessageThreadsConcern
   include TurboReload
 
-  before_action :set_message_thread, only: %i[show rename update history confirm_unarchive archive]
+  before_action :set_message_thread, only: %i[show rename update history confirm_unarchive archive mark_read]
   before_action :set_thread_tags, only: %i[show history]
   before_action :set_thread_messages, only: %i[show history confirm_unarchive archive]
   before_action :load_threads, only: %i[index scroll]
   before_action :set_subscription, only: :index
-  after_action :mark_thread_as_read, only: %i[show history]
   before_action :set_reload
 
   def index
@@ -80,6 +79,7 @@ class MessageThreadsController < ApplicationController
         scope: message_thread_policy_scope.includes(:tags, :box),
         search_permissions: search_permissions,
         query: search_params[:q],
+        user_tag_name: Current.user.author_tag&.name,
         cursor: cursor
       )
 
@@ -103,6 +103,12 @@ class MessageThreadsController < ApplicationController
     redirect_back_or_to message_threads_path(@message_thread), notice: 'Archivácia vlákna bola úspešne upravená'
   end
 
+  def mark_read
+    authorize @message_thread
+    @message_thread.mark_all_messages_read
+    head :ok
+  end
+
   private
 
   def set_subscription
@@ -114,10 +120,6 @@ class MessageThreadsController < ApplicationController
 
   def set_message_thread
     @message_thread = message_thread_policy_scope.find(params[:id])
-  end
-
-  def mark_thread_as_read
-    @message_thread.mark_all_messages_read
   end
 
   def message_thread_policy_scope

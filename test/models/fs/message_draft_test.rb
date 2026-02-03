@@ -91,6 +91,78 @@ class Fs::MessageDraftTest < ActiveSupport::TestCase
     EventBus.class_variable_get(:@@subscribers_map)[:message_created].pop
   end
 
+  test "signable_by_author? returns false if author is not a signer" do
+    author = users(:basic)
+    author.group_memberships.where(group: author.tenant.signer_group).destroy_all
+
+    box = boxes(:fs_accountants)
+    box.api_connections.destroy_all
+    box.api_connections << api_connections(:fs_api_connection1).tap { |c| c.update(owner: nil) }
+
+    message_draft = Fs::MessageDraft.new(author: author, thread: MessageThread.new(box: box))
+
+    assert_not message_draft.signable_by_author?
+  end
+
+  test "signable_by_author? returns true if single global api connection without owner exists" do
+    author = users(:accountants_basic)
+    author.groups << author.tenant.signer_group
+
+    box = boxes(:fs_accountants)
+    box.api_connections.destroy_all
+
+    box.api_connections << api_connections(:fs_api_connection1).tap { |c| c.update(owner: nil) }
+
+    message_draft = Fs::MessageDraft.new(author: author, thread: MessageThread.new(box: box))
+
+    assert message_draft.signable_by_author?
+  end
+
+  test "signable_by_author? returns true if author owns an api connection for the box" do
+    author = users(:accountants_basic)
+    author.groups << author.tenant.signer_group
+
+    box = boxes(:fs_accountants)
+    box.api_connections.destroy_all
+
+    box.api_connections << api_connections(:fs_api_connection1).tap { |c| c.update(owner: author) }
+
+    message_draft = Fs::MessageDraft.new(author: author, thread: MessageThread.new(box: box))
+
+    assert message_draft.signable_by_author?
+  end
+
+  test "signable_by_author? returns false if only colleagues own api connections" do
+    author = users(:accountants_basic)
+    colleague = users(:accountants_user2)
+    author.groups << author.tenant.signer_group
+
+    box = boxes(:fs_accountants)
+    box.api_connections.destroy_all
+
+    box.api_connections << api_connections(:fs_api_connection1).tap { |c| c.update(owner: colleague) }
+
+    message_draft = Fs::MessageDraft.new(author: author, thread: MessageThread.new(box: box))
+
+    assert_not message_draft.signable_by_author?
+  end
+
+  test "signable_by_author? returns true if author owns one of multiple connections on the box" do
+    author = users(:accountants_basic)
+    colleague = users(:accountants_user2)
+    author.groups << author.tenant.signer_group
+
+    box = boxes(:fs_accountants)
+    box.api_connections.destroy_all
+
+    box.api_connections << api_connections(:fs_api_connection1).tap { |c| c.update(owner: colleague) }
+    box.api_connections << api_connections(:fs_api_connection2).tap { |c| c.update(owner: author) }
+
+    message_draft = Fs::MessageDraft.new(author: author, thread: MessageThread.new(box: box))
+
+    assert message_draft.signable_by_author?
+  end
+
   test "submittable? returns false for inactive box" do
     message_draft = messages(:fs_accountants_draft)
     message_draft.metadata["status"] = "created"

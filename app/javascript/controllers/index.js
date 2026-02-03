@@ -42,3 +42,6 @@ application.register("turbo-content", TurboContentController)
 
 import VisitedLinksController from "./visited_links_controller"
 application.register("visited-links", VisitedLinksController)
+
+import MarkReadController from "./mark_read_controller"
+application.register("mark-read", MarkReadController)
