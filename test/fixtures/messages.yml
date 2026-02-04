@@ -392,6 +392,9 @@ fs_accountants_thread1_inbox_message:
     fs_sent_message_id: 1234567/2025
     fs_message_type: 'ED.DeliveryReport'
     fs_submission_status: Prijaté a potvrdené
+    fs_submission_verification_status:
+      name: Platné
+      description: Overenie platnosti podpisov podania bolo ukončené. Všetky podpisy sú platné.
     fs_status: Vybavená
     fs_submitting_subject: GO FS subjekt
     fs_submission_type_name: Súhrnný výkaz pre daň z pridanej hodnoty (platný od 1.1.2020) - riadny

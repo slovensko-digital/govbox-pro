@@ -429,6 +429,12 @@ accountants_tag2:
   icon: pencil
   color: yellow
 
+accountants_s_potvrdenkou:
+  name: S potvrdenkou
+  type: SimpleTag
+  visible: true
+  tenant: accountants
+
 ssd_attachment_matched:
   name: AttachmentMatched
   type: SimpleTag
