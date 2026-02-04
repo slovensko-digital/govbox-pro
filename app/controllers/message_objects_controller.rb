@@ -12,7 +12,7 @@ class MessageObjectsController < ApplicationController
 
     MessageObject.create_message_objects(@message, params[:attachments])
 
-    render partial: 'list'
+    redirect_to @message.thread
   end
 
   def update
@@ -74,8 +74,9 @@ class MessageObjectsController < ApplicationController
     authorize @message_object
 
     @message_object.destroy
+    EventBus.publish(:message_attachments_changed_by_user, @message_object.message)
 
-    render partial: 'list'
+    redirect_to @message.thread
   end
 
   private

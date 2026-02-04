@@ -33,6 +33,13 @@ EventBus.subscribe :message_thread_with_message_created, ->(message) do
   EventBus.publish(:fs_message_draft_created, message) if message.is_a?(Fs::MessageDraft)
 end
 
+EventBus.subscribe :message_attachments_changed_by_user, ->(message) do
+  if message.is_a?(Fs::MessageDraft)
+    message.prepare_for_validation
+    Fs::ValidateMessageDraftJob.perform_later(message)
+  end
+end
+
 EventBus.subscribe :fs_message_draft_created, ->(message_draft) {
   Fs::ValidateMessageDraftJob.perform_later(message_draft)
 }

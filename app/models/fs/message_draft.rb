@@ -190,12 +190,28 @@ class Fs::MessageDraft < MessageDraft
     super
   end
 
+  def prepare_for_validation
+    metadata['status'] = 'being_validated'
+    metadata[:validation_errors] = {}
+    save!
+
+    remove_cascading_tag(tenant.submission_error_tag)
+
+    form_object.tags.where(type: SignatureRequestedFromTag.to_s).each do |tag|
+      form_object.unassign_tag(tag)
+    end
+
+    thread.tags.where(type: [SignatureRequestedTag.to_s, SignatureRequestedFromTag.to_s]).each do |tag|
+      thread.unassign_tag(tag)
+    end
+  end
+
   def submit
     Fs::SubmitMessageDraftAction.run(self)
   end
 
   def attachments_editable?
-    tenant.feature_enabled?(:fs_submissions_with_attachments) && not_yet_submitted? && form&.attachments_allowed?
+    tenant.feature_enabled?(:fs_submissions_with_attachments) && not_yet_submitted?
   end
 
   def build_html_visualization
