@@ -27,6 +27,7 @@ class Fs::Form < ApplicationRecord
     OZNDFTv25
     V2Pv25
     ZIA51g2v21
+    ZASDv02
   ].freeze
 
   has_many :related_documents, class_name: 'Fs::FormRelatedDocument', foreign_key: 'fs_form_id', dependent: :destroy
