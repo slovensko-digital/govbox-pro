@@ -64,6 +64,10 @@ class Message < ApplicationRecord
     thread.message_threads_tags.find_by(tag: tag)&.destroy unless thread.messages.reload.any? {|m| m.tags.include?(tag) }
   end
 
+  def prepare_and_validate_message
+    #   noop
+  end
+
   def draft?
     false
   end

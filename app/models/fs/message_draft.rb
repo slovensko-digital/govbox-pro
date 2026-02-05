@@ -190,7 +190,7 @@ class Fs::MessageDraft < MessageDraft
     super
   end
 
-  def prepare_for_validation
+  def prepare_and_validate_message
     metadata['status'] = 'being_validated'
     metadata[:validation_errors] = {}
     save!
@@ -204,6 +204,8 @@ class Fs::MessageDraft < MessageDraft
     thread.tags.where(type: [SignatureRequestedTag.to_s, SignatureRequestedFromTag.to_s]).each do |tag|
       thread.unassign_tag(tag)
     end
+
+    Fs::ValidateMessageDraftJob.set(job_context: :asap).perform_later(self)
   end
 
   def submit
