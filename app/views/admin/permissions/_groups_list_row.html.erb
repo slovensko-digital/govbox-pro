@@ -11,12 +11,24 @@
         <%= t("user", count: group.users.count) %>
       </div>
     </div>
-    <div class="flex justify-start items-start overflow-hidden gap-2 px-4">
-      <div class="flex flex-wrap justify-start items-start gap-2">
-        <% group.tags.each do |tag| %>
-          <%= render Common::TagComponent.new(tag) %>
-        <% end  %>
-      </div>
+    <div class="flex flex-col justify-start items-start gap-2 px-4 flex-grow">
+      <% if group.boxes.any? %>
+        <div class="flex flex-wrap justify-start items-start gap-2">
+          <% group.boxes.each do |box| %>
+            <div class="flex justify-center items-center gap-2 px-3 py-1 rounded-full bg-gray-100 border border-gray-300">
+              <span class="text-xs font-medium text-gray-500 uppercase tracking-wide"><%= t('admin.groups.permissions.type.box') %></span>
+              <p class="text-sm font-medium text-gray-900"><%= box.name %></p>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+      <% if group.tags.any? %>
+        <div class="flex flex-wrap justify-start items-start gap-2">
+          <% group.tags.each do |tag| %>
+            <%= render Common::TagComponent.new(tag) %>
+          <% end %>
+        </div>
+      <% end %>
     </div>
   </div>
   <div class="justify-start items-start gap-2 flex">

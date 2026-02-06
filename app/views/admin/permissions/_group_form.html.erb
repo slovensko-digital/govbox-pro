@@ -6,29 +6,29 @@
         <p class="text-gray-900 text-base font-medium leading-normal"><%= t('admin.groups.permissions.back') %></p>
       <% end %>
     </div>
-    
+    <div class="self-stretch p-6 border-b border-gray-200">
+      <%= form_with url: search_boxes_and_tags_admin_tenant_group_path(Current.tenant, group),
+                    data: { controller: 'debounce', debounce_target: 'form'},
+                    class: "flex justify-start items-center self-stretch gap-4" do |form| %>
+        <div class="relative w-full">
+          <div class="flex w-full items-center rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600">
+            <div class="p-2">
+              <%= render Icons::MagnifyingGlassComponent.gray(size: "5") %>
+            </div>
+            <%= form.search_field :name_search, value: params[:name_search], placeholder: t('admin.groups.permissions.search_placeholder.boxes_and_tags'),
+                data: { action: 'input->debounce#debounce' },
+                onreset: "this.form.requestSubmit()",
+                autocomplete: "off",
+                class: "block w-full flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" %>
+          </div>
+          <%= tag.turbo_frame id:'boxes-and-tags-search-results' %>
+        </div>
+      <% end %>
+    </div>
     <div class="self-stretch p-6 grid grid-cols-2 gap-6">
       <!-- Boxes Column -->
       <div class="flex flex-col gap-4 pb-6" id="boxes-column">
         <div class="text-lg font-semibold text-gray-900"><%= t('admin.groups.permissions.boxes') %></div>
-        
-        <%= form_with url: search_non_boxes_admin_tenant_group_path(Current.tenant, group),
-                      data: { controller: 'debounce', debounce_target: 'form'},
-                      class: "flex justify-start items-center self-stretch gap-4" do |form| %>
-          <div class="relative w-full">
-            <div class="flex w-full items-center rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600">
-              <div class="p-2">
-                <%= render Icons::MagnifyingGlassComponent.gray(size: "5") %>
-              </div>
-              <%= form.search_field :name_search, value: params[:name_search], placeholder: t('admin.groups.permissions.search_placeholder.box'),
-                  data: { action: 'input->debounce#debounce' },
-                  onreset: "this.form.requestSubmit()",
-                  class: "block w-full flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" %>
-            </div>
-            <%= tag.turbo_frame id:'box-search-results' %>
-          </div>
-        <% end %>
-        
         <div class="flex flex-col divide-y border rounded-md border-gray-200">
           <% if group.box_groups.empty? %>
             <div class="p-4 text-sm text-gray-500 text-center">
@@ -47,28 +47,9 @@
           <% end %>
         </div>
       </div>
-
       <!-- Tags Column -->
       <div class="flex flex-col gap-4" id="tags-column">
         <div class="text-lg font-semibold text-gray-900"><%= t('admin.groups.permissions.tags') %></div>
-        
-        <%= form_with url: search_non_tags_admin_tenant_group_path(Current.tenant, group),
-                      data: { controller: 'debounce', debounce_target: 'form'},
-                      class: "flex justify-start items-center self-stretch gap-4" do |form| %>
-          <div class="relative w-full">
-            <div class="flex w-full items-center rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600">
-              <div class="p-2">
-                <%= render Icons::MagnifyingGlassComponent.gray(size: "5") %>
-              </div>
-              <%= form.search_field :name_search, value: params[:name_search], placeholder: t('admin.groups.permissions.search_placeholder.tag'),
-                  data: { action: 'input->debounce#debounce' },
-                  onreset: "this.form.requestSubmit()",
-                  class: "block w-full flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" %>
-            </div>
-            <%= tag.turbo_frame id:'tag-search-results' %>
-          </div>
-        <% end %>
-        
         <div class="flex flex-col divide-y border rounded-md border-gray-200">
           <% if group.tag_groups.empty? %>
             <div class="p-4 text-sm text-gray-500 text-center">

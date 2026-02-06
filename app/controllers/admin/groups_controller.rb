@@ -2,7 +2,7 @@
 
 module Admin
   class GroupsController < ApplicationController
-    before_action :set_group, only: %i[show edit update destroy edit_members show_members edit_permissions search_non_members search_non_tags search_non_boxes]
+    before_action :set_group, only: %i[show edit update destroy edit_members show_members edit_permissions search_non_members search_boxes_and_tags]
 
     def index
       authorize([:admin, Group])
@@ -53,7 +53,7 @@ module Admin
         redirect_to admin_tenant_groups_url(Current.tenant), notice: t('.success')
       else
         render :edit, status: :unprocessable_content
-      end  
+      end
     end
 
     def destroy
@@ -68,16 +68,16 @@ module Admin
       @users = params[:name_search].blank? ? [] : non_members_search_clause
     end
 
-    def search_non_tags
+    def search_boxes_and_tags
       authorize([:admin, @group], policy_class: Admin::GroupPolicy)
 
-      @tags = params[:name_search].blank? ? [] : non_tags_search_clause
-    end
-
-    def search_non_boxes
-      authorize([:admin, @group], policy_class: Admin::GroupPolicy)
-
-      @boxes = params[:name_search].blank? ? [] : non_boxes_search_clause
+      if params[:name_search].blank?
+        @boxes = []
+        @tags = []
+      else
+        @boxes = non_boxes_search_clause
+        @tags = non_tags_search_clause
+      end
     end
 
     private
