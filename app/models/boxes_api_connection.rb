@@ -18,6 +18,7 @@ class BoxesApiConnection < ApplicationRecord
 
   scope :active, -> { where(active: true) }
 
+  after_create :add_owner_access_rights_to_box
   after_commit :update_box_active_state, on: [:create, :update, :destroy]
 
   private
@@ -27,5 +28,14 @@ class BoxesApiConnection < ApplicationRecord
     return if box.destroyed? || box.frozen?
 
     box.update_active_state_from_connections
+  end
+
+  private
+
+  def add_owner_access_rights_to_box
+    owner = api_connection.owner
+    return unless owner
+
+    box.box_groups.find_or_create_by!(group: owner.user_group)
   end
 end

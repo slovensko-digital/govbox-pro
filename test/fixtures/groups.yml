@@ -55,6 +55,11 @@ solver_other_user:
   type: UserGroup
   tenant: solver
 
+google_admins:
+  name: admins
+  type: AdminGroup
+  tenant: google
+
 accountants_admins:
   name: admins
   type: AdminGroup
@@ -72,5 +77,10 @@ accountants_signers:
 
 accountants_user2_group:
   name: Basic user 3
+  type: UserGroup
+  tenant: accountants
+
+accountants_user4_group:
+  name: Basic user 5
   type: UserGroup
   tenant: accountants

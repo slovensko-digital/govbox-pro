@@ -34,13 +34,14 @@ class Box < ApplicationRecord
   scope :syncable, -> { where(syncable: true) }
   scope :with_enabled_message_drafts_import, -> { active.where("(settings ->> 'message_drafts_import_enabled')::boolean = ?", true) }
 
+  before_create { self.color = Box.colors.keys[name.hash % Box.colors.size] if color.blank? }
+  after_create { box_groups.create!(group: tenant.admin_group) }
+
   before_destroy do |box|
     api_connection.destroy if api_connection.destroy_with_box?(self)
     boxes_api_connections.destroy_all
     EventBus.publish(:box_destroyed, box.id)
   end
-
-  before_create { self.color = Box.colors.keys[name.hash % Box.colors.size] if color.blank? }
 
   validates_presence_of :name, :short_name, :uri, :export_name
   
