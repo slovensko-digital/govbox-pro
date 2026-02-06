@@ -93,6 +93,19 @@ class BoxTest < ActiveSupport::TestCase
     assert_nil box.settings_obo
   end
 
+  test "after_create callback assigns admin group access rights to the new box" do
+    new_box = Upvs::Box.create!(
+      name: SecureRandom.hex,
+      short_name: SecureRandom.hex,
+      uri: SecureRandom.hex,
+      tenant: tenants(:google),
+      settings_obo: SecureRandom.uuid,
+      api_connections: [api_connections(:govbox_api_api_connection_with_obo_support)]
+    )
+
+    assert new_box.box_groups.exists?(group: tenants(:google).admin_group)
+  end
+
   test "after_destroy callback does not destroy api_connection if Govbox::ApiConnectionWithOboSupport" do
     box = boxes(:google_box_with_govbox_api_connection_with_obo_support)
     api_connection = box.api_connection

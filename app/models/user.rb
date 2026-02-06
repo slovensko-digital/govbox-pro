@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: users
@@ -58,6 +60,16 @@ class User < ApplicationRecord
               .where("tag_groups.tag_id = tags.id")
               .where(group_memberships: { user_id: id })
               .arel.exists
+    )
+  end
+
+  def accessible_boxes
+    Box.where(
+      BoxGroup.select(1)
+                      .joins(:group_memberships)
+                      .where("box_groups.box_id = boxes.id")
+                      .where(group_memberships: { user_id: id })
+                      .arel.exists
     )
   end
 
