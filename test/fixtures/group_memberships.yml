@@ -63,3 +63,7 @@ ssd_all_notification_user:
 accountants_user2_membership:
   user: accountants_user2
   group: accountants_user2_group
+
+accountants_user4_membership:
+  user: accountants_user4
+  group: accountants_user4_group
