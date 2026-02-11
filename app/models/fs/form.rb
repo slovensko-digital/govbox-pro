@@ -31,6 +31,7 @@ class Fs::Form < ApplicationRecord
   ].freeze
 
   has_many :related_documents, class_name: 'Fs::FormRelatedDocument', foreign_key: 'fs_form_id', dependent: :destroy
+  has_many :attachments, class_name: 'Fs::FormAttachment', foreign_key: 'fs_form_id', dependent: :destroy
 
   def xslt_html
     related_document('CLS_F_XSLT_HTML')
