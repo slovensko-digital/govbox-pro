@@ -21,6 +21,10 @@ module Fs
       request(:get, "forms", **args)
     end
 
+    def get_form_attachment(identifier)
+      request(:get, "form-attachments/#{CGI.escape(identifier)}")
+    end
+
     def parse_form(content)
       request(:post, "forms/parse", { content: Base64.strict_encode64(content) })[:body]
     end
