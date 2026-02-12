@@ -56,7 +56,12 @@ module Fs
     end
 
     def post_validation(form_identifier, content, attachments)
-      request(:post, "validations", {form_identifier: form_identifier, content: content, attachments: attachments}, jwt_header, accept_negative: true)
+      request(:post, "validations", {
+        form_identifier: form_identifier,
+        content: content,
+        attachments: attachments,
+        skip_attachment_validation: true
+      }.to_json, jwt_header.merge({"Content-Type": "application/json"}), accept_negative: true)
     end
 
     def delete_validation(validation_id)

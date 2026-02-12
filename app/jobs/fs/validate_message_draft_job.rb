@@ -49,18 +49,11 @@ class Fs::ValidateMessageDraftJob < ApplicationJob
           response_body['message']
         ]
       }
-      mark_message_draft_invalid(message_draft)
+      message_draft.mark_as_invalid
     end
   end
 
   def error_message(message_draft, response_status, response_body)
     "Box #{message_draft.box.id}, Message #{message_draft.uuid}: #{response_status}, #{response_body}"
-  end
-
-  def mark_message_draft_invalid(message_draft)
-    # TODO notification
-    message_draft.metadata[:status] = 'invalid'
-    message_draft.save
-    message_draft.add_cascading_tag(message_draft.tenant.submission_error_tag)
   end
 end

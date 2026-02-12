@@ -177,6 +177,9 @@ sk:
       too_long: je príliš dlhá/ý (max. %{count} znakov)
       too_short: je príliš krátky/a (min. %{count} znakov)
       wrong_length: nemá správnu dĺžku (očakáva sa %{count} znakov)
+    attachments:
+      missing_required: "Chýba požadovaná príloha pre %{document_type_identifier} (minimum je %{required_count})."
+      too_many: "Príliš veľa príloh pre %{document_type_identifier} (maximum je %{max_occurrences})."
     template:
       body: 'Nasledujúce polia obsahujú chybne vyplnené údaje:'
       header:

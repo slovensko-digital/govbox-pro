@@ -229,6 +229,51 @@ class Fs::MessageDraft < MessageDraft
     end
   end
 
+  def validate_and_process
+    valid?(:validate_data)
+
+    internal_errors = errors.full_messages
+    metadata['validation_errors']['internal_errors'] = internal_errors
+
+    if metadata['validation_errors']['errors'].any? || internal_errors.any?
+      mark_as_invalid
+      unassign_signature_request_tags
+    else
+      metadata['status'] = 'created'
+      if metadata['validation_errors']['warnings'].none?
+        remove_cascading_tag(tenant.submission_error_tag)
+      else
+        add_cascading_tag(tenant.submission_error_tag)
+      end
+    end
+
+    if metadata['status'] == 'created' && form.signature_required && !form_object.is_signed?
+      signature_target = signature_target_group
+
+      signature_target.signature_requested_from_tag&.assign_to_message_object(form_object)
+      signature_target.signature_requested_from_tag&.assign_to_thread(thread)
+    end
+
+    save
+  end
+
+  def mark_as_invalid
+    # TODO notification
+    metadata['status'] = 'invalid'
+    save
+    add_cascading_tag(tenant.submission_error_tag)
+  end
+
+  def unassign_signature_request_tags
+    form_object.tags.where(type: SignatureRequestedFromTag.to_s).each do |tag|
+      form_object.unassign_tag(tag)
+    end
+
+    thread.tags.where(type: [SignatureRequestedTag.to_s, SignatureRequestedFromTag.to_s]).each do |tag|
+      thread.unassign_tag(tag)
+    end
+  end
+
   private
 
   def validate_data
@@ -247,6 +292,24 @@ class Fs::MessageDraft < MessageDraft
       errors.add(:objects, "Message has to contain exactly one object") if objects.size != 1
     else
       super
+      validate_attachment_count_requirements
+    end
+  end
+
+  def validate_attachment_count_requirements
+    form.attachments.each do |form_attachment|
+      required_count = form_attachment.required_count(xml: form_object.xml_unsigned_content)
+      count = attachments.count
+
+      next if required_count.zero? && count.zero?
+
+      if count < required_count
+        return errors.add(:attachments, I18n.t('errors.attachments.missing_required', document_type_identifier: form_attachment.document_type_identifier, required_count: required_count))
+      end
+
+      if count > form_attachment.max_occurrences
+        return errors.add(:attachments, I18n.t('errors.attachments.too_many', document_type_identifier: form_attachment.document_type_identifier, max_occurrences: form_attachment.max_occurrences))
+      end
     end
   end
 

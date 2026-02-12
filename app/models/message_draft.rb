@@ -219,6 +219,10 @@ class MessageDraft < Message
     template&.message_data_validation_errors(self)
   end
 
+  def all_validation_errors
+    metadata.dig('validation_errors', 'errors').to_a + metadata.dig('validation_errors', 'internal_errors').to_a + template&.message_data_validation_errors(self).to_a
+  end
+
   def remove_form_signature
     return false unless form_object
     return false unless form_object.is_signed?
@@ -295,6 +299,10 @@ class MessageDraft < Message
     else
       errors.add(:metadata, "Correlation ID can't be blank")
     end
+  end
+
+  def prepare_and_validate
+    # noop
   end
 
   class InvalidSenderError < RuntimeError

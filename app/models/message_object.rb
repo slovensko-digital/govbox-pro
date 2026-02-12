@@ -130,6 +130,10 @@ class MessageObject < ApplicationRecord
     message_objects_tags.find_or_create_by!(tag: tag)
   end
 
+  def unassign_tag(tag)
+    message_objects_tags.find_by(tag: tag)&.destroy
+  end
+
   def fill_missing_info
     update(uuid: SecureRandom.uuid) unless uuid.present?
     update(name: name + Utils.file_extension_by_mimetype(mimetype).to_s) if Utils.file_name_without_extension?(self)
@@ -160,10 +164,6 @@ class MessageObject < ApplicationRecord
 
   def has_tag?(tag)
     message_objects_tags.joins(:tag).where(tag: tag).exists?
-  end
-
-  def unassign_tag(tag)
-    message_objects_tags.find_by(tag: tag)&.destroy
   end
 
   def remove_object_related_tags_from_thread
