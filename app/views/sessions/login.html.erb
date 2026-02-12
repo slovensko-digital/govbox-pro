@@ -5,26 +5,41 @@
   </div>
   <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
     <div class="bg-white px-6 py-12 shadow sm:rounded-lg sm:px-12">
-      <div class="space-y-6">
-        <% if ENV["GOOGLE_CLIENT_ID"] %>
-          <div>
-            <%= button_to "Prihlásiť cez Google", "/auth/google_oauth2", method: :post, data: { turbo: false }, class: "flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" %>
+      <% if ENV["IDENTITY_AUTH"] == "true" %>
+        <%= render "identity" %>
+        <div class="relative mt-10 mb-6">
+          <div class="absolute inset-0 flex items-center" aria-hidden="true">
+            <div class="w-full border-t border-gray-200"></div>
           </div>
+          <div class="relative flex justify-center text-sm font-medium leading-6">
+            <span class="bg-white px-6 text-gray-900">Alebo pokračujte cez</span>
+          </div>
+        </div>
+      <% end %>
+      <div class="grid grid-cols-1 gap-6">
+        <% if ENV["GOOGLE_CLIENT_ID"] %>
+          <%= button_to "/auth/google_oauth2", method: :post, data: { turbo: false }, class: "flex w-full items-center justify-center gap-3 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:ring-transparent" do %>
+            <svg class="h-5 w-5" aria-hidden="true" viewBox="0 0 48 48">
+              <path fill="#ffc107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C12.955 4 4 12.955 4 24s8.955 20 20 20s20-8.955 20-20c0-1.341-.138-2.65-.389-3.917" /><path fill="#ff3d00" d="m6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C16.318 4 9.656 8.337 6.306 14.691" /><path fill="#4caf50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.9 11.9 0 0 1 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44" /><path fill="#1976d2" d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l.003-.002l6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917" />
+            </svg>
+            <span class="text-sm font-semibold leading-6">Prihlásiť cez Google</span>
+          <% end %>
         <% end %>
         <% if ENV["AZURE_APPLICATION_CLIENT_ID"] %>
-          <div>
-            <%= button_to "Prihlásiť cez Microsoft", "/auth/microsoft_graph", method: :post, data: { turbo: false }, class: "flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" %>
-          </div>
+          <%= button_to "/auth/microsoft_graph", method: :post, data: { turbo: false }, class: "flex w-full items-center justify-center gap-3 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:ring-transparent" do %>
+            <svg class="h-5 w-5" aria-hidden="true" viewBox="0 0 256 256">
+              <path fill="#f1511b" d="M121.666 121.666H0V0h121.666z" /><path fill="#80cc28" d="M256 121.666H134.335V0H256z" /><path fill="#00adef" d="M121.663 256.002H0V134.336h121.663z" /><path fill="#fbbc09" d="M256 256.002H134.335V134.336H256z" />
+            </svg>
+            <span class="text-sm font-semibold leading-6">Prihlásiť cez Microsoft</span>
+          <% end %>
         <% end %>
         <% if UpvsEnvironment.sso_support? %>
-          <div>
-            <%= button_to "Prihlásiť cez slovensko.sk", "/auth/saml", method: :post, data: { turbo: false }, class: "flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" %>
-          </div>
-        <% end %>
-        <% if ENV["HTTP_AUTH"] == "true" %>
-          <div>
-            <%= button_to "Prihlásiť cez heslo", "/auth/http", method: :get, class: "flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" %>
-          </div>
+          <%= button_to "/auth/saml", method: :post, data: { turbo: false }, class: "flex w-full items-center justify-center gap-3 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:ring-transparent" do %>
+            <svg class="h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+            </svg>
+            <span class="text-sm font-semibold leading-6">Prihlásiť cez Slovensko.sk</span>
+          <% end %>
         <% end %>
       </div>
     </div>

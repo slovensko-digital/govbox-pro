@@ -12,7 +12,7 @@ class Admin::Boxes::UpvsBoxesController < Admin::BoxesController
     if @box.save
       redirect_to admin_tenant_boxes_url(Current.tenant), notice: "Schránka bola úspešne vytvorená"
     else
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
 
@@ -21,7 +21,7 @@ class Admin::Boxes::UpvsBoxesController < Admin::BoxesController
     if @box.update(type: "Upvs::Box", **box_params.except(:api_connection_id))
       redirect_to admin_tenant_boxes_url(Current.tenant), notice: "Schránka bola úspešne upravená"
     else
-      render :edit, status: :unprocessable_entity
+      render :edit, status: :unprocessable_content
     end
   end
 

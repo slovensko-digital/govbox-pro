@@ -14,7 +14,7 @@ class Fs::MessageDraftTest < ActiveSupport::TestCase
       "subject" => "1122334455",
       "form_identifier" => "3055_781"
     },
-    [file_fixture("fs/dic1122334455_fs3055_781__sprava_dani_2023.xml").read]
+                  [file_fixture("fs/dic1122334455_fs3055_781__sprava_dani_2023.xml").read]
 
     FsEnvironment.fs_client.stub :api, fs_api do
       assert_enqueued_with(job: Fs::ValidateMessageDraftJob) do
@@ -31,7 +31,7 @@ class Fs::MessageDraftTest < ActiveSupport::TestCase
       "subject" => "1122334455          ",
       "form_identifier" => "795_777"
     },
-    [file_fixture("fs/Accountants_main_FS_prehlad_0924.xml").read]
+                  [file_fixture("fs/Accountants_main_FS_prehlad_0924.xml").read]
 
     FsEnvironment.fs_client.stub :api, fs_api do
       Fs::MessageDraft.create_and_validate_with_fs_form(form_files: [fixture_file_upload("fs/Accountants_main_FS_prehlad_0924.xml", "application/xml")], author: author)
@@ -45,14 +45,14 @@ class Fs::MessageDraftTest < ActiveSupport::TestCase
     author = users(:accountants_basic)
 
     fs_api_handler = Minitest::Mock.new
-    fs_api_handler.expect :public_send, OpenStruct.new(status: 404, headers: nil, body: "null"), [:post, 'https://fsapi.test/api/v1/forms/parse', {:content=> Base64.strict_encode64(file_fixture("fs/random_xml.xml").read) }]
+    fs_api_handler.expect :public_send, OpenStruct.new(status: 404, headers: nil, body: "null"), [:post, 'https://fsapi.test/api/v1/forms/parse', { content: Base64.strict_encode64(file_fixture("fs/random_xml.xml").read) }]
 
     fs_api_handler_options = Minitest::Mock.new
     fs_api_handler.expect :options, fs_api_handler_options, []
-    fs_api_handler_options.expect :timeout=, nil, [900000]
+    fs_api_handler_options.expect :timeout=, nil, [900_000]
 
     assert_nothing_raised do
-      FsEnvironment.fs_client.stub :api, Fs::Api.new(ENV.fetch('FS_API_URL'), handler: fs_api_handler ) do
+      FsEnvironment.fs_client.stub :api, Fs::Api.new(ENV.fetch('FS_API_URL'), handler: fs_api_handler) do
         Fs::MessageDraft.create_and_validate_with_fs_form(form_files: [fixture_file_upload("fs/random_xml.xml", "application/xml")], author: author)
       end
     end
@@ -66,7 +66,7 @@ class Fs::MessageDraftTest < ActiveSupport::TestCase
       "subject" => "1122334455",
       "form_identifier" => "3055_781"
     },
-    [file_fixture("fs/dic1122334455_fs3055_781__sprava_dani_2023.xml").read]
+                  [file_fixture("fs/dic1122334455_fs3055_781__sprava_dani_2023.xml").read]
 
     skip("TODO EventBus fix")
 
@@ -89,5 +89,91 @@ class Fs::MessageDraftTest < ActiveSupport::TestCase
     # remove callback
     EventBus.class_variable_get(:@@subscribers_map)[:message_thread_created].pop
     EventBus.class_variable_get(:@@subscribers_map)[:message_created].pop
+  end
+
+  test "signable_by_author? returns false if author is not a signer" do
+    author = users(:basic)
+    author.group_memberships.where(group: author.tenant.signer_group).destroy_all
+
+    box = boxes(:fs_accountants)
+    box.api_connections.destroy_all
+    box.api_connections << api_connections(:fs_api_connection1).tap { |c| c.update(owner: nil) }
+
+    message_draft = Fs::MessageDraft.new(author: author, thread: MessageThread.new(box: box))
+
+    assert_not message_draft.signable_by_author?
+  end
+
+  test "signable_by_author? returns true if single global api connection without owner exists" do
+    author = users(:accountants_basic)
+    author.groups << author.tenant.signer_group
+
+    box = boxes(:fs_accountants)
+    box.api_connections.destroy_all
+
+    box.api_connections << api_connections(:fs_api_connection1).tap { |c| c.update(owner: nil) }
+
+    message_draft = Fs::MessageDraft.new(author: author, thread: MessageThread.new(box: box))
+
+    assert message_draft.signable_by_author?
+  end
+
+  test "signable_by_author? returns true if author owns an api connection for the box" do
+    author = users(:accountants_basic)
+    author.groups << author.tenant.signer_group
+
+    box = boxes(:fs_accountants)
+    box.api_connections.destroy_all
+
+    box.api_connections << api_connections(:fs_api_connection1).tap { |c| c.update(owner: author) }
+
+    message_draft = Fs::MessageDraft.new(author: author, thread: MessageThread.new(box: box))
+
+    assert message_draft.signable_by_author?
+  end
+
+  test "signable_by_author? returns false if only colleagues own api connections" do
+    author = users(:accountants_basic)
+    colleague = users(:accountants_user2)
+    author.groups << author.tenant.signer_group
+
+    box = boxes(:fs_accountants)
+    box.api_connections.destroy_all
+
+    box.api_connections << api_connections(:fs_api_connection1).tap { |c| c.update(owner: colleague) }
+
+    message_draft = Fs::MessageDraft.new(author: author, thread: MessageThread.new(box: box))
+
+    assert_not message_draft.signable_by_author?
+  end
+
+  test "signable_by_author? returns true if author owns one of multiple connections on the box" do
+    author = users(:accountants_basic)
+    colleague = users(:accountants_user2)
+    author.groups << author.tenant.signer_group
+
+    box = boxes(:fs_accountants)
+    box.api_connections.destroy_all
+
+    box.api_connections << api_connections(:fs_api_connection1).tap { |c| c.update(owner: colleague) }
+    box.api_connections << api_connections(:fs_api_connection2).tap { |c| c.update(owner: author) }
+
+    message_draft = Fs::MessageDraft.new(author: author, thread: MessageThread.new(box: box))
+
+    assert message_draft.signable_by_author?
+  end
+
+  test "submittable? returns false for inactive box" do
+    message_draft = messages(:fs_accountants_draft)
+    message_draft.metadata["status"] = "created"
+    message_draft.box.update!(active: false)
+
+    message_draft.define_singleton_method(:form_object) { Struct.new(:content).new("payload") }
+
+    message_draft.stub :any_objects_with_requested_signature?, false do
+      message_draft.stub :valid?, true do
+        assert_not message_draft.submittable?
+      end
+    end
   end
 end

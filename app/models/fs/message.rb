@@ -3,6 +3,10 @@ class Fs::Message
 
   def self.create_inbox_message_with_thread!(raw_message, box:)
     message = nil
+
+    submission_verification_status = raw_message['submission_verification_status']
+    raise 'Signatures not yet verified!' if submission_verification_status && !submission_verification_status['description']&.include?('Overenie platnosti podpisov podania bolo ukončené')
+
     associated_outbox_message = box.messages.where("messages.metadata ->> 'fs_message_id' = ?", raw_message['sent_message_id']).take
 
     MessageThread.with_advisory_lock!(associated_outbox_message.metadata['correlation_id'], transaction: true, timeout_seconds: 10) do

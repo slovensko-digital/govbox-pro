@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: users
@@ -35,6 +37,7 @@ class User < ApplicationRecord
   has_many :api_connections, foreign_key: :owner_id, dependent: :destroy
   has_secure_password validations: false
 
+
   validates_presence_of :name, :email
   validates_uniqueness_of :name, :email, scope: :tenant_id, case_sensitive: false
 
@@ -61,6 +64,16 @@ class User < ApplicationRecord
               .where("tag_groups.tag_id = tags.id")
               .where(group_memberships: { user_id: id })
               .arel.exists
+    )
+  end
+
+  def accessible_boxes
+    Box.where(
+      BoxGroup.select(1)
+                      .joins(:group_memberships)
+                      .where("box_groups.box_id = boxes.id")
+                      .where(group_memberships: { user_id: id })
+                      .arel.exists
     )
   end
 

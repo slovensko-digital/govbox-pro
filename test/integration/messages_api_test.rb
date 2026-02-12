@@ -129,6 +129,6 @@ class MessagesApiTest < ActionDispatch::IntegrationTest
 
     delete "/api/messages/#{message.id}", params: { token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }, as: :json
 
-    assert_response :unprocessable_entity
+    assert_response :unprocessable_content
   end
 end

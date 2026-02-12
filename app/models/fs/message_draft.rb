@@ -34,7 +34,7 @@ class Fs::MessageDraft < MessageDraft
     form_files.each do |form_file|
       form_content = form_file.read.force_encoding("UTF-8")
 
-      box, fs_form, period = get_parsed_box_and_form_from_content(form_content, tenant: author.tenant)
+      box, fs_form, period = get_parsed_box_and_form_from_content(form_content, tenant: author.tenant, author: author)
 
       if box.nil?
         failed_files << form_file
@@ -159,13 +159,18 @@ class Fs::MessageDraft < MessageDraft
     message
   end
 
-  def self.get_parsed_box_and_form_from_content(form_content, tenant:, fs_client: FsEnvironment.fs_client)
+  def self.get_parsed_box_and_form_from_content(form_content, tenant:, fs_client: FsEnvironment.fs_client, author: nil)
     form_information = fs_client.api.parse_form(form_content)
     dic = form_information&.dig('subject')&.strip
     fs_form_identifier = form_information&.dig('form_identifier')
     period = form_information&.dig('period')&.dig('pretty')
 
-    box = tenant.boxes.with_enabled_message_drafts_import.find_by("settings ->> 'dic' = ?", dic)
+    if author
+      box = author.accessible_boxes.with_enabled_message_drafts_import.find_by("settings ->> 'dic' = ?", dic)
+    else
+      box = tenant.boxes.with_enabled_message_drafts_import.find_by("settings ->> 'dic' = ?", dic)
+    end
+
     fs_form = Fs::Form.find_by(identifier: fs_form_identifier)
 
     return box, fs_form, period
@@ -194,8 +199,8 @@ class Fs::MessageDraft < MessageDraft
     Fs::SubmitMessageDraftAction.run(self)
   end
 
-  def attachments_allowed?
-    false
+  def attachments_editable?
+    tenant.feature_enabled?(:fs_submissions_with_attachments) && not_yet_submitted? && form&.attachments_allowed?
   end
 
   def build_html_visualization
@@ -203,7 +208,25 @@ class Fs::MessageDraft < MessageDraft
   end
 
   def form
-    Fs::Form.find(metadata['fs_form_id'])
+    Fs::Form.find_by(id: metadata['fs_form_id'])
+  end
+
+  def signable_by_author?
+    return false unless author
+    return false unless author.signer?
+    return true if global_api_connection?
+    return true if author_api_connection?
+    false
+  end
+
+  def signature_target_group
+    tenant = thread.box.tenant
+
+    if tenant.signature_request_mode == 'author' && signable_by_author?
+      author
+    else
+      tenant.signer_group
+    end
   end
 
   private
@@ -220,6 +243,18 @@ class Fs::MessageDraft < MessageDraft
   end
 
   def validate_objects
-    errors.add(:objects, "Message has to contain exactly one object") if objects.size != 1
+    if !tenant.feature_enabled?(:fs_submissions_with_attachments)
+      errors.add(:objects, "Message has to contain exactly one object") if objects.size != 1
+    else
+      super
+    end
+  end
+
+  def global_api_connection?
+    box.api_connections.where(owner: nil).one?
+  end
+
+  def author_api_connection?
+    box.api_connections.where(owner: author).present?
   end
 end

@@ -20,6 +20,16 @@ VP_DANv24:
   slug: VP_DANv24
   number_identifier: 583
 
+VP_DANv24_3078_781:
+  identifier: '3078_781'
+  name: Podanie pre FS (Správa daní) - platné od 1.4.2024
+  group_name: Správa daní/Podanie pre FS - Správa daní/Všeobecné podanie - Správa daní (platné od 1.4.2024)
+  subtype_name: Žiadosť o potvrdenie
+  signature_required: true
+  ez_signature: true
+  slug: VP_DANv24
+  number_identifier: 583
+
 PREHLADv24:
   identifier: '795_777'
   name: Prehľad o zrazených a odvedených preddavkoch na daň za zdaňovacie obdobie 2024
@@ -40,3 +50,14 @@ SVDPHv20:
   slug: SVDPHv20
   number_identifier: 471
   submission_type_identifier: 708
+
+DPFOBv24:
+  identifier: '803_800'
+  name: Daňové priznanie k dani z príjmov FO (typ B) za obdobie 2024 (platné od 1.1.2025)
+  group_name: Správa daní/Daň z príjmov fyzickej osoby/Daňové priznanie k dani z príjmov FO (typ B) za obdobie 2024 (platné od 1.1.2025)
+  subtype_name: Riadne
+  signature_required: true
+  ez_signature: true
+  slug: DPFOBv24
+  number_identifier: 601,
+  submission_type_identifier: 803

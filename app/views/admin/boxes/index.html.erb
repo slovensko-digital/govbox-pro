@@ -51,6 +51,11 @@
                 <div class="text-center text-gray-500 text-base font-normal leading-normal">
                   <%= box.name %>, DIČ: <%= box.settings_dic %>
                 </div>
+                <% unless box.active? %>
+                  <div class="inline-flex items-center px-2 py-1 rounded bg-red-50 text-red-700 text-sm font-medium">
+                    Neaktívna schránka
+                  </div>
+                <% end %>
               </div>
               <div class="justify-start items-start gap-2 flex">
                 <%= link_to edit_polymorphic_path([:admin, box.tenant, :boxes, box]), data: { turbo_frame: "modal" } do %>

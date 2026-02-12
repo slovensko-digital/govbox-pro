@@ -302,6 +302,7 @@ ssd_main_empty_draft:
   author: basic
 
 fs_accountants_outbox:
+  type: Fs::MessageDraft
   uuid: <%= SecureRandom.uuid %>
   title: FS podanie
   delivered_at: <%= 2.hours.ago %>
@@ -322,6 +323,7 @@ fs_accountants_multiple_api_connections_outbox:
   replyable: false
   metadata:
     fs_message_id: 1235/2024
+    fs_form_id: <%= ActiveRecord::FixtureSet.identify(:SVDPHv20) %>
     correlation_id: 4bc972bb-9364-47de-bb40-23720f24a4ab
   author: accountants_basic
 
@@ -333,6 +335,8 @@ fs_accountants_draft:
   thread: fs_accountants_multiple_api_connections_thread1
   replyable: false
   metadata:
+    status: created
+    fs_form_id: <%= ActiveRecord::FixtureSet.identify(:SVDPHv20) %>
     fs_message_id: 1234/2024
     correlation_id: 4bc972bb-9364-47de-bb40-23720f24a4ab
   author: accountants_basic
@@ -347,6 +351,19 @@ fs_accountants_draft2:
   metadata:
     fs_message_id: 1234/2025
     correlation_id: 2bc972bx-9364-47de-bb40-23720f24a4ab
+  author: accountants_basic
+
+fs_accountants_dp_fo_b_draft:
+  type: Fs::MessageDraft
+  uuid: <%= SecureRandom.uuid %>
+  title: FS podanie DP FO B
+  delivered_at: <%= 3.hours.ago %>
+  thread: fs_accountants_multiple_api_connections_thread1
+  replyable: false
+  metadata:
+    status: created
+    fs_form_id: <%= ActiveRecord::FixtureSet.identify(:DPFOBv24) %>
+    correlation_id: 13fd4cca-d9f8-4761-b604-b27bee1821f0
   author: accountants_basic
 
 fs_accountants_thread1_outbox_message:
@@ -375,6 +392,9 @@ fs_accountants_thread1_inbox_message:
     fs_sent_message_id: 1234567/2025
     fs_message_type: 'ED.DeliveryReport'
     fs_submission_status: Prijaté a potvrdené
+    fs_submission_verification_status:
+      name: Platné
+      description: Overenie platnosti podpisov podania bolo ukončené. Všetky podpisy sú platné.
     fs_status: Vybavená
     fs_submitting_subject: GO FS subjekt
     fs_submission_type_name: Súhrnný výkaz pre daň z pridanej hodnoty (platný od 1.1.2020) - riadny

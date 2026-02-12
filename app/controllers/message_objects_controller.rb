@@ -2,6 +2,11 @@ class MessageObjectsController < ApplicationController
   before_action :set_message_object, except: :create
   before_action :set_message, only: [:create, :update, :destroy, :signing_data]
 
+  def show
+    authorize @message_object
+    send_data @message_object.content, filename: MessageObjectHelper.displayable_name(@message_object), type: @message_object.mimetype, disposition: :inline
+  end
+
   def create
     authorize @message
 
@@ -17,11 +22,6 @@ class MessageObjectsController < ApplicationController
 
     last_thread_message_draft = @message.thread.message_drafts.includes(objects: :nested_message_objects, attachments: :nested_message_objects).order(delivered_at: :asc)&.last
     @is_last = @message == last_thread_message_draft
-  end
-
-  def show
-    authorize @message_object
-    send_data @message_object.content, filename: MessageObjectHelper.displayable_name(@message_object), type: @message_object.mimetype, disposition: :inline
   end
 
   def download
@@ -41,7 +41,7 @@ class MessageObjectsController < ApplicationController
 
       send_data pdf_content, filename: MessageObjectHelper.pdf_name(@message_object), type: 'application/pdf', disposition: :download
     else
-      redirect_back fallback_location: message_thread_path(@message_object.message.thread), alert: "Obsah nie je možné stiahnuť."
+      redirect_back_or_to(message_thread_path(@message_object.message.thread), alert: "Obsah nie je možné stiahnuť.")
     end
   end
 
@@ -57,15 +57,15 @@ class MessageObjectsController < ApplicationController
 
     return unless @message_object.form?
 
-    unless @message.valid?(:validate_data)
-      respond_to do |format|
-        format.turbo_stream do
-          render template: 'message_drafts/update_body'
-        end
+    return if @message.valid?(:validate_data)
 
-        format.json do
-          render json: { errors: @message.errors.full_messages }, status: :unprocessable_entity
-        end
+    respond_to do |format|
+      format.turbo_stream do
+        render template: 'message_drafts/update_body'
+      end
+
+      format.json do
+        render json: { errors: @message.errors.full_messages }, status: :unprocessable_content
       end
     end
   end

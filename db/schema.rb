@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_01_16_150542) do
+ActiveRecord::Schema[7.1].define(version: 2026_01_30_162220) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -162,6 +162,16 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_16_150542) do
     t.index ["tenant_id"], name: "index_automation_webhooks_on_tenant_id"
   end
 
+  create_table "box_groups", force: :cascade do |t|
+    t.bigint "box_id", null: false
+    t.bigint "group_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["box_id", "group_id"], name: "index_box_groups_on_box_id_and_group_id", unique: true
+    t.index ["box_id"], name: "index_box_groups_on_box_id"
+    t.index ["group_id"], name: "index_box_groups_on_group_id"
+  end
+
   create_table "boxes", force: :cascade do |t|
     t.string "name", null: false
     t.string "uri", null: false
@@ -174,6 +184,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_16_150542) do
     t.jsonb "settings", default: {}, null: false
     t.string "type"
     t.string "export_name", null: false
+    t.boolean "active", default: true, null: false
     t.index ["tenant_id", "short_name"], name: "index_boxes_on_tenant_id_and_short_name", unique: true
     t.index ["tenant_id"], name: "index_boxes_on_tenant_id"
   end
@@ -184,6 +195,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_16_150542) do
     t.jsonb "settings", default: {}
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "active", default: true, null: false
     t.index ["api_connection_id"], name: "index_boxes_api_connections_on_api_connection_id"
     t.index ["box_id", "api_connection_id"], name: "index_boxes_api_connections_on_box_id_and_api_connection_id", unique: true
     t.index ["box_id"], name: "index_boxes_api_connections_on_box_id"
@@ -421,6 +433,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_16_150542) do
     t.boolean "visualizable"
     t.uuid "uuid"
     t.string "description"
+    t.string "identifier"
     t.index ["message_id"], name: "index_message_objects_on_message_id"
   end
 
@@ -619,7 +632,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_16_150542) do
     t.enum "color", enum_type: "color"
     t.index ["owner_id"], name: "index_tags_on_owner_id"
     t.index ["tenant_id", "type", "name"], name: "index_tags_on_tenant_id_and_type_and_name", unique: true
-    t.index ["tenant_id", "type"], name: "signings_tags", unique: true, where: "((type)::text = ANY (ARRAY[('SignatureRequestedTag'::character varying)::text, ('SignedTag'::character varying)::text]))"
+    t.index ["tenant_id", "type"], name: "signings_tags", unique: true, where: "((type)::text = ANY ((ARRAY['SignatureRequestedTag'::character varying, 'SignedTag'::character varying])::text[]))"
     t.index ["tenant_id"], name: "index_tags_on_tenant_id"
   end
 
@@ -630,6 +643,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_16_150542) do
     t.string "feature_flags", default: [], array: true
     t.string "api_token_public_key"
     t.jsonb "settings", default: {}, null: false
+    t.string "signature_request_mode", default: "signer_group", null: false
   end
 
   create_table "upvs_form_related_documents", force: :cascade do |t|
@@ -690,6 +704,8 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_16_150542) do
   add_foreign_key "automation_rules", "tenants"
   add_foreign_key "automation_rules", "users"
   add_foreign_key "automation_webhooks", "tenants", on_delete: :cascade
+  add_foreign_key "box_groups", "boxes"
+  add_foreign_key "box_groups", "groups"
   add_foreign_key "boxes", "tenants"
   add_foreign_key "boxes_api_connections", "api_connections"
   add_foreign_key "boxes_api_connections", "boxes"

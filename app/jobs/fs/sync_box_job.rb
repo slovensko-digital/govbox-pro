@@ -9,6 +9,7 @@ module Fs
     def perform(box, api_connection:, from: Date.yesterday, to: Date.tomorrow, fs_client: FsEnvironment.fs_client, batch_size: 25)
       raise unless box.is_a?(Fs::Box)
       return unless box.syncable?
+      return unless box.active?
 
       fs_api = fs_client.api(api_connection: api_connection, box: box)
 
