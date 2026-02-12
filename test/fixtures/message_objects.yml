@@ -16,13 +16,13 @@ ssd_main_general_two_form:
 ssd_main_general_draft_one_form:
   message: ssd_main_general_draft_one
   name: MyString
-  mimetype: MyString
+  mimetype: application/x-eform-xml
   object_type: FORM
 
 ssd_main_general_draft_one_attachment:
   message: ssd_main_general_draft_one
-  name: Attachment
-  mimetype: MyString
+  name: MyString
+  mimetype: application/pdf
   object_type: ATTACHMENT
 
 ssd_main_general_draft_two_form:
@@ -129,12 +129,6 @@ ssd_main_empty_draft_form:
   message: ssd_main_empty_draft
   name: MyString
   mimetype: MyString
-  object_type: FORM
-
-ssd_main_draft_form:
-  message: ssd_main_draft
-  name: MyString
-  mimetype: application/x-eform-xml
   object_type: FORM
 
 fs_accountants_multiple_api_connections_outbox_form:
