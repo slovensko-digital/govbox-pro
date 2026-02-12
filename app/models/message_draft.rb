@@ -301,7 +301,7 @@ class MessageDraft < Message
     end
   end
 
-  def prepare_and_validate
+  def validate_and_process
     # noop
   end
 
