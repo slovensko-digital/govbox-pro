@@ -233,6 +233,10 @@ class MessageDraft < Message
     reload
   end
 
+  def validate_and_process
+    # noop
+  end
+
   private
 
   def validate_data
@@ -299,10 +303,6 @@ class MessageDraft < Message
     else
       errors.add(:metadata, "Correlation ID can't be blank")
     end
-  end
-
-  def validate_and_process
-    # noop
   end
 
   class InvalidSenderError < RuntimeError
