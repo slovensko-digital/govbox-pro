@@ -288,7 +288,7 @@ class Fs::MessageDraft < MessageDraft
 
   def validate_attachment_requirements
     form.attachments.each do |form_attachment|
-      required_count = form_attachment.required_count(xml: form_object.xml_unsigned_content)
+      required_count = form_attachment.required_count(form_object.xml_unsigned_content)
       count = attachments.count
 
       next if required_count.zero? && count.zero?
