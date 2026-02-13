@@ -245,12 +245,12 @@ ActiveRecord::Schema[7.1].define(version: 2026_02_10_152312) do
   end
 
   create_table "fs_form_attachment_groups", force: :cascade do |t|
-    t.string "document_type_identifier", null: false
+    t.string "identifier", null: false
     t.string "name"
     t.text "mime_types", default: [], array: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["document_type_identifier"], name: "index_fs_form_attachment_groups_on_document_type_identifier", unique: true
+    t.index ["identifier"], name: "index_fs_form_attachment_groups_on_identifier", unique: true
   end
 
   create_table "fs_form_attachments", force: :cascade do |t|

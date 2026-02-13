@@ -294,11 +294,11 @@ class Fs::MessageDraft < MessageDraft
       next if required_count.zero? && count.zero?
 
       if count < required_count
-        return errors.add(:attachments, I18n.t('errors.attachments.missing_required', document_type_identifier: form_attachment.document_type_identifier, required_count: required_count))
+        return errors.add(:attachments, I18n.t('errors.attachments.missing_required', identifier: form_attachment.identifier, required_count: required_count))
       end
 
       if count > form_attachment.max_occurrences
-        return errors.add(:attachments, I18n.t('errors.attachments.too_many', document_type_identifier: form_attachment.document_type_identifier, max_occurrences: form_attachment.max_occurrences))
+        return errors.add(:attachments, I18n.t('errors.attachments.too_many', identifier: form_attachment.identifier, max_occurrences: form_attachment.max_occurrences))
       end
     end
   end

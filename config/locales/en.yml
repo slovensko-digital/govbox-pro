@@ -46,8 +46,8 @@ en:
               empty_selection: "At least one export option must be selected"
   errors:
     attachments:
-      missing_required: "Missing required attachment for %{document_type_identifier} (minimum is %{required_count})."
-      too_many: "Too many attachments for %{document_type_identifier} (maximum is %{max_occurrences})."
+      missing_required: "Missing required attachment for %{identifier} (minimum is %{required_count})."
+      too_many: "Too many attachments for %{identifier} (maximum is %{max_occurrences})."
   exports:
     flash:
       started: "Export started."

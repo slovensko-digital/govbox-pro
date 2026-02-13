@@ -21,7 +21,7 @@ class Fs::FetchFormsJob < ApplicationJob
       fs_form_data['attachments'].each do |attachment_data|
         Fs::FormAttachment.find_or_initialize_by(
           fs_form_id: fs_form.id,
-          group: Fs::FormAttachmentGroup.find_or_create_by!(document_type_identifier: attachment_data['identifier'])
+          group: Fs::FormAttachmentGroup.find_or_create_by!(identifier: attachment_data['identifier'])
         ).tap do |attachment|
           attachment.update(
             min_occurrences: attachment_data['min_occurrences'],
