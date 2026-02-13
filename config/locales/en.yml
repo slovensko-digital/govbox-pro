@@ -46,7 +46,7 @@ en:
               empty_selection: "At least one export option must be selected"
   errors:
     attachments:
-      missing_required: "Missing required attachment for %{identifier} (minimum is %{required_count})."
+      missing_required: "Missing required attachment for %{identifier} (minimum is %{min_occurrences})."
       too_many: "Too many attachments for %{identifier} (maximum is %{max_occurrences})."
   exports:
     flash:

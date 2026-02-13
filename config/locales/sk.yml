@@ -151,7 +151,7 @@ sk:
       month: Mesiac
       year: Rok
   errors:
-    format: "%{attribute} %{message}"
+    format: "%{message}"
     attributes:
       api_connection: API prepojenie
     messages:
@@ -178,7 +178,7 @@ sk:
       too_short: je príliš krátky/a (min. %{count} znakov)
       wrong_length: nemá správnu dĺžku (očakáva sa %{count} znakov)
     attachments:
-      missing_required: "Chýba požadovaná príloha pre %{identifier} (minimum je %{required_count})."
+      missing_required: "Chýba požadovaná príloha pre %{identifier} (minimum je %{min_occurrences})."
       too_many: "Príliš veľa príloh pre %{identifier} (maximum je %{max_occurrences})."
     template:
       body: 'Nasledujúce polia obsahujú chybne vyplnené údaje:'

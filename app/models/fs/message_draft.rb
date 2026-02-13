@@ -288,17 +288,17 @@ class Fs::MessageDraft < MessageDraft
 
   def validate_attachment_requirements
     form.attachments.each do |form_attachment|
-      required_count = form_attachment.required_count(form_object.xml_unsigned_content)
+      required_min_count, required_max_count = form_attachment.required_occurrences(form_object.xml_unsigned_content)
       count = attachments.count
 
-      next if required_count.zero? && count.zero?
+      next if required_min_count.zero? && count.zero?
 
-      if count < required_count
-        return errors.add(:attachments, I18n.t('errors.attachments.missing_required', identifier: form_attachment.identifier, required_count: required_count))
+      if count < required_min_count
+        return errors.add(:attachments, I18n.t('errors.attachments.missing_required', identifier: form_attachment.identifier, min_occurrences: required_min_count))
       end
 
-      if count > form_attachment.max_occurrences
-        return errors.add(:attachments, I18n.t('errors.attachments.too_many', identifier: form_attachment.identifier, max_occurrences: form_attachment.max_occurrences))
+      if count > required_max_count
+        return errors.add(:attachments, I18n.t('errors.attachments.too_many', identifier: form_attachment.identifier, max_occurrences: required_max_count))
       end
     end
   end
