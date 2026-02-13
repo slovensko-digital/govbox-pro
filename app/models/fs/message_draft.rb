@@ -200,7 +200,7 @@ class Fs::MessageDraft < MessageDraft
   end
 
   def attachments_editable?
-    tenant.feature_enabled?(:fs_submissions_with_attachments) && not_yet_submitted? && form&.attachments_allowed?
+    not_yet_submitted? && form&.attachments_allowed?
   end
 
   def build_html_visualization
@@ -279,7 +279,6 @@ class Fs::MessageDraft < MessageDraft
   def validate_data
     validate_uuid_uniqueness
     validate_metadata
-    validate_form_object
     validate_objects
   end
 
@@ -287,16 +286,7 @@ class Fs::MessageDraft < MessageDraft
     errors.add(:metadata, 'No form ID') unless metadata&.dig('fs_form_id')
   end
 
-  def validate_objects
-    if !tenant.feature_enabled?(:fs_submissions_with_attachments)
-      errors.add(:objects, "Message has to contain exactly one object") if objects.size != 1
-    else
-      super
-      validate_attachment_count_requirements
-    end
-  end
-
-  def validate_attachment_count_requirements
+  def validate_attachment_requirements
     form.attachments.each do |form_attachment|
       required_count = form_attachment.required_count(xml: form_object.xml_unsigned_content)
       count = attachments.count

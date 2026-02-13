@@ -274,6 +274,10 @@ class MessageDraft < Message
     errors.add(:base, :invalid_form) if form_errors.any?
   end
 
+  def validate_attachment_requirements
+    # noop
+  end
+
   def validate_objects
     if objects.size == 0
       errors.add(:objects, "Message contains no objects")
@@ -287,6 +291,9 @@ class MessageDraft < Message
 
     forms = objects.select { |o| o.form? }
     errors.add(:objects, "Message has to contain exactly one form object") if forms.size != 1
+
+    validate_form_object
+    validate_attachment_requirements
   end
 
   def validate_with_message_template
