@@ -42,12 +42,12 @@ module GovboxPro
 
     if ENV['AUTO_SYNC_BOXES'] == "ON"
       config.good_job.cron = {
-        sync_boxes: {
-          cron: "1 */2 * * *", # run every 2 hours (even), "00:01", "02:01", "04:01", ...
-          class: "Govbox::SyncAllBoxesJob",
-          description: "Regular job to synchronize all boxes",
-          set: { job_context: :low }
-        }
+        # sync_boxes: {
+        #   cron: "1 */2 * * *", # run every 2 hours (even), "00:01", "02:01", "04:01", ...
+        #   class: "Govbox::SyncAllBoxesJob",
+        #   description: "Regular job to synchronize all boxes",
+        #   set: { job_context: :low }
+        # }
       }
 
       config.good_job.cron['sync_fs_boxes'] = {
@@ -86,14 +86,14 @@ module GovboxPro
       }
     end
 
-    if ENV['AUTO_SYNC_UPVS_FORMS'] == "ON"
-      config.good_job.cron['fetch_upvs_forms_related_documents'] = {
-        cron: "0 */12 * * *", # run every 12 hours
-        class: "Upvs::FetchFormRelatedDocumentsJob",
-        description: "Regular job to fetch Upvs::FormRelatedDocuments",
-        set: { job_context: :later }
-      }
-    end
+    # if ENV['AUTO_SYNC_UPVS_FORMS'] == "ON"
+    #   config.good_job.cron['fetch_upvs_forms_related_documents'] = {
+    #     cron: "0 */12 * * *", # run every 12 hours
+    #     class: "Upvs::FetchFormRelatedDocumentsJob",
+    #     description: "Regular job to fetch Upvs::FormRelatedDocuments",
+    #     set: { job_context: :later }
+    #   }
+    # end
 
     # Configuration for the application, engines, and railties goes here.
     #
