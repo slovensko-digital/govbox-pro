@@ -22,13 +22,7 @@ class Fs::ValidateMessageDraftJob < ApplicationJob
 
     response = fs_client.api(box: message_draft.thread.box).post_validation(
       message_draft.form.identifier,
-      Base64.strict_encode64(message_draft.form_object.content),
-      message_draft.attachments.map do |attachment|
-        {
-          mime_type: attachment.mimetype,
-          identifier: attachment.identifier
-        }
-      end
+      Base64.strict_encode64(message_draft.form_object.content)
     )
 
     handle_validation_fail(message_draft, response[:status], response[:body]) unless response[:status] == 202

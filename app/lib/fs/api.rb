@@ -55,11 +55,10 @@ module Fs
       request(:get, "received-messages/#{CGI.escape(message_id)}", {}, jwt_header(obo).merge(fs_credentials_header))[:body]
     end
 
-    def post_validation(form_identifier, content, attachments)
+    def post_validation(form_identifier, content)
       request(:post, "validations", {
         form_identifier: form_identifier,
         content: content,
-        attachments: attachments,
         skip_attachment_validation: true
       }.to_json, jwt_header.merge({"Content-Type": "application/json"}), accept_negative: true)
     end
