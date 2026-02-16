@@ -180,6 +180,7 @@ sk:
     attachments:
       missing_required: "Chýba požadovaná príloha pre %{identifier} (minimum je %{min_occurrences})."
       too_many: "Príliš veľa príloh pre %{identifier} (maximum je %{max_occurrences})."
+      disallowed_mimetype: "Nepovolený typ súboru: %{name}."
     template:
       body: 'Nasledujúce polia obsahujú chybne vyplnené údaje:'
       header:

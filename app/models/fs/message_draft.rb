@@ -286,7 +286,7 @@ class Fs::MessageDraft < MessageDraft
     errors.add(:metadata, 'No form ID') unless metadata&.dig('fs_form_id')
   end
 
-  def validate_attachment_requirements
+  def validate_attachment_objects
     form.attachments.each do |form_attachment|
       required_min_count, required_max_count = form_attachment.required_occurrences(form_object.xml_unsigned_content)
       count = attachments.count

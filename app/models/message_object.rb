@@ -160,6 +160,14 @@ class MessageObject < ApplicationRecord
     else
       errors.add(:mimetype, "MimeType of #{name} object is disallowed, allowed file types: #{Utils::EXTENSIONS_ALLOW_LIST.join(", ")}")
     end
+
+    return if form?
+
+    if message.form.respond_to?(:attachments) && message.form.attachments.any?
+      form_attachments = message.form&.attachments.joins(:group).where("fs_form_attachment_groups.mime_types @> ARRAY[?]::text[]", mimetype).all
+      mimetypes = message.form&.attachments.joins(:group).flat_map { |attachment| attachment.group.mime_types }.uniq
+      errors.add(:mimetype, I18n.t('errors.attachments.disallowed_mimetype', name: name, mimetypes: mimetypes)) unless form_attachments.present?
+    end
   end
 
   def has_tag?(tag)

@@ -48,6 +48,7 @@ en:
     attachments:
       missing_required: "Missing required attachment for %{identifier} (minimum is %{min_occurrences})."
       too_many: "Too many attachments for %{identifier} (maximum is %{max_occurrences})."
+      disallowed_mimetype: "MimeType of %{name} object is disallowed, allowed MimeTypes: %{mimetypes}"
   exports:
     flash:
       started: "Export started."
