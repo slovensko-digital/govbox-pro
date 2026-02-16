@@ -40,7 +40,7 @@ class Fs::Form < ApplicationRecord
   end
 
   def attachments_allowed?
-    attachments.any?
+    attachments.count == 1
   end
 
   def short_name(include_version: true)
