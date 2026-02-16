@@ -1,0 +1,21 @@
+DPFOBUA:
+  identifier: DPFOB-UA
+  name: Daňové priznanie k dani z príjmov FO (typ B) - príloha
+  mime_types: [ "application/vnd.gov.sk.xmldatacontainer+xml",
+                "application/rtf",
+                "text/plain",
+                "image/jpeg",
+                "image/tiff",
+                "image/png",
+                "application/vnd.ms-excel",
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "application/vnd.oasis.opendocument.text",
+                "application/vnd.oasis.opendocument.spreadsheet",
+                "image/gif",
+                "text/csv",
+                "application/zip",
+                "application/x-gzip",
+                "application/x-tar",
+                "application/gnutar",
+                "application/pdf" ]
