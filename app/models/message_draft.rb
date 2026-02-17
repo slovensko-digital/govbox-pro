@@ -94,6 +94,7 @@ class MessageDraft < Message
       thread.box.tenant.signed_externally_tag!.assign_to_message_object(message_object) if message_object.is_signed
 
       if ActiveModel::Type::Boolean.new.cast(object_params[:to_be_signed])
+        raise SignatureAssignmentError, "Cannot mark object as to_be_signed if it is not signable" unless message_object.signable?
         tenant.signer_group.signature_requested_from_tag&.assign_to_message_object(message_object)
         tenant.signer_group.signature_requested_from_tag&.assign_to_thread(thread)
       end
