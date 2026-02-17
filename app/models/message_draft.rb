@@ -79,8 +79,17 @@ class MessageDraft < Message
 
       object_params.fetch(:tags, []).each do |tag_name|
         tag = tenant.user_signature_tags.find_by(name: tag_name)
-        tag.assign_to_message_object(message_object)
-        tag.assign_to_thread(thread)
+        if tag.is_a?(SignatureRequestedFromTag)
+          if message_object.signable?
+            tag.assign_to_message_object(message_object)
+            tag.assign_to_thread(thread)
+          else
+            raise SignatureAssignmentError, "Cannot assign SignatureRequestedFromTag to an object that is not signable"
+          end
+        else
+          tag.assign_to_message_object(message_object)
+          tag.assign_to_thread(thread)
+        end
       end
       thread.box.tenant.signed_externally_tag!.assign_to_message_object(message_object) if message_object.is_signed
 
@@ -320,6 +329,9 @@ class MessageDraft < Message
   end
 
   class InvalidSenderError < RuntimeError
+  end
+
+  class SignatureAssignmentError < StandardError
   end
 
   class MissingFormObjectError < RuntimeError
