@@ -203,6 +203,14 @@ class Fs::MessageDraft < MessageDraft
     not_yet_submitted? && form&.attachments_allowed?
   end
 
+  def attachments_signable?
+    false
+  end
+
+  def signable_objects
+    [form_object]
+  end
+
   def build_html_visualization
     Fs::MessageHelper.build_html_visualization_from_form(self)
   end

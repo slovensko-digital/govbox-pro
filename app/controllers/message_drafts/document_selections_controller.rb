@@ -45,7 +45,7 @@ module MessageDrafts
     def select_message_objects(message_draft, next_step, current_ids)
       return current_ids if current_ids.present? || action_name != "new"
 
-      all_ids = message_draft.objects.pluck(:id).map(&:to_s)
+      all_ids = message_draft.signable_objects.pluck(:id).map(&:to_s)
       requested_ids = select_requested_object_ids(message_draft).map(&:to_s)
 
       if next_step == "sign" && Current.user.signer? && requested_ids.present?

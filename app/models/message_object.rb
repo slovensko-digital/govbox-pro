@@ -113,6 +113,12 @@ class MessageObject < ApplicationRecord
     Utils::ASICE_MIMETYPES.include?(mimetype)
   end
 
+  def signable?
+    return true if form?
+
+    message.attachments_signable?
+  end
+
   def destroyable?
     # TODO: avoid loading message association if we have
     message.draft? && message.attachments_editable? && !form
