@@ -312,6 +312,11 @@ fs_accountants_outbox:
     fs_message_id: 1234/2024
     correlation_id: 4bc972bb-9364-47de-bb40-23720f24a4ab
     fs_form_id: <%= ActiveRecord::FixtureSet.identify(:SVDPHv20) %>
+    validation_errors:
+      result: OK
+      warnings: [ ]
+      errors: [ ]
+      diff: [ ]
   author: accountants_basic
 
 fs_accountants_draft_vp_danv24:
@@ -324,6 +329,11 @@ fs_accountants_draft_vp_danv24:
   metadata:
     correlation_id: 4bc972bb-9364-47de-bb40-23720f24a4ab
     fs_form_id: <%= ActiveRecord::FixtureSet.identify(:VP_DANv24_3078_781) %>
+    validation_errors:
+      result: OK
+      warnings: [ ]
+      errors: [ ]
+      diff: [ ]
   author: accountants_basic
 
 fs_accountants_draft_uzmujv14:
@@ -336,6 +346,11 @@ fs_accountants_draft_uzmujv14:
   metadata:
     correlation_id: 1d71fc24-05d3-4938-80e4-05bdc3be19fa
     fs_form_id: <%= ActiveRecord::FixtureSet.identify(:UZMUJv14) %>
+    validation_errors:
+      result: OK
+      warnings: [ ]
+      errors: [ ]
+      diff: [ ]
   author: accountants_basic
 
 fs_accountants_multiple_api_connections_outbox:

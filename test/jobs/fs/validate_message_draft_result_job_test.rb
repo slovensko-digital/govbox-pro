@@ -163,7 +163,7 @@ class Fs::ValidateMessageDraftResultJobTest < ActiveJob::TestCase
       assert_equal 'invalid', outbox_message.metadata['status']
       assert_equal 'OK', outbox_message.metadata['validation_errors']['result']
       assert_equal [], outbox_message.metadata['validation_errors']['errors']
-      assert 'Nepovolený typ súboru: priloha.cer.'.in?(outbox_message.metadata['validation_errors']['internal_errors'])
+      assert_includes outbox_message.metadata['validation_errors']['internal_errors'], 'Nepovolený typ súboru: priloha.cer.'
 
       assert_not outbox_message.form_object.tags.include?(outbox_message.tenant.signer_group.signature_requested_from_tag)
       assert_not outbox_message.thread.tags.include?(outbox_message.tenant.signer_group.signature_requested_from_tag)
