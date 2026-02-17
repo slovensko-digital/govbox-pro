@@ -51,3 +51,7 @@ accountants_signers_signature_requested:
 drafts_accountants_basic_user:
   tag: accountants_basic_user_drafts
   group: accountants_basic_user
+
+accountants_basic_user_authors:
+  tag: accountants_basic_user_authors
+  group: accountants_basic_user

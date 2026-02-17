@@ -91,6 +91,13 @@ fs_accountants_draft_uzmujv14:
   delivered_at: <%= 2.hours.ago %>
   last_message_delivered_at: <%= 2.hours.ago %>
 
+fs_accountants_draft_uzmujv14_with_attachment:
+  box: fs_accountants
+  title: Podanie uzmujv14 s prilohou
+  original_title: MyString
+  delivered_at: <%= 2.hours.ago %>
+  last_message_delivered_at: <%= 2.hours.ago %>
+
 fs_accountants_outbox:
   box: fs_accountants
   title: Podanie
