@@ -28,7 +28,7 @@ module MessageDrafts
     end
 
     def redirect_to_next_step
-      if @message_draft.objects.length == 1
+      if @message_draft.signable_objects.length == 1
         if @next_step == "sign"
           if @message_draft.valid?(:validate_data)
             redirect_to new_message_draft_signing_path(@message_draft, object_ids: @message_draft.objects.map(&:id))
