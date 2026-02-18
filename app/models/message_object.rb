@@ -161,7 +161,7 @@ class MessageObject < ApplicationRecord
   private
 
   def allowed_mimetype?
-    if !form && message.form.respond_to?(:attachments) && message.form.attachments.any?
+    if !form? && message.form.respond_to?(:attachments) && message.form.attachments.any?
       # TODO remove UPVS, FS stuff from core domain
       form_attachments = message.form&.attachments.joins(:group).where("fs_form_attachment_groups.mime_types @> ARRAY[?]::text[]", mimetype).all
       mimetypes = message.form&.attachments.joins(:group).flat_map { |attachment| attachment.group.mime_types }.uniq
