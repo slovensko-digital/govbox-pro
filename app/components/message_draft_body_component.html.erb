@@ -95,10 +95,33 @@
         <div class="w-full">
           <%= tag.iframe class: "relative border-none overflow-hidden h-full w-full", srcdoc: raw(@message.html_visualization), onload: "(
               function(iframe) {
-                iframe.contentWindow.document.body.style['height'] = 'unset';
-                iframe.contentWindow.document.body.style['min-height'] = 'unset';
+                const doc = iframe.contentWindow.document;
+                doc.body.style['height'] = 'unset';
+                doc.body.style['min-height'] = 'unset';
 
-                iframe.parentElement.style.height = iframe.contentWindow.document.body.scrollHeight + 20 + 'px';
+                function updateHeight() {
+                  const height = Math.max(
+                    doc.body.scrollHeight,
+                    doc.body.offsetHeight,
+                    doc.documentElement.scrollHeight,
+                    doc.documentElement.offsetHeight
+                  );
+                  iframe.parentElement.style.height = height + 'px';
+                }
+
+                // Use ResizeObserver to dynamically adjust height
+                if ('ResizeObserver' in window) {
+                  const observer = new ResizeObserver(updateHeight);
+                  observer.observe(doc.body);
+                  observer.observe(doc.documentElement);
+                } else {
+                  // Fallback for older browsers
+                  updateHeight();
+                  setTimeout(updateHeight, 100);
+                  setTimeout(updateHeight, 500);
+                }
+
+                doc.querySelectorAll('img').forEach(img => img.addEventListener('load', updateHeight));
               }
               (this)
             )" %>
