@@ -22,13 +22,7 @@ class Fs::ValidateMessageDraftJob < ApplicationJob
 
     response = fs_client.api(box: message_draft.thread.box).post_validation(
       message_draft.form.identifier,
-      Base64.strict_encode64(message_draft.form_object.content),
-      message_draft.attachments.map do |attachment|
-        {
-          mime_type: attachment.mimetype,
-          identifier: attachment.identifier
-        }
-      end
+      Base64.strict_encode64(message_draft.form_object.content)
     )
 
     handle_validation_fail(message_draft, response[:status], response[:body]) unless response[:status] == 202
@@ -49,18 +43,11 @@ class Fs::ValidateMessageDraftJob < ApplicationJob
           response_body['message']
         ]
       }
-      mark_message_draft_invalid(message_draft)
+      message_draft.mark_as_invalid
     end
   end
 
   def error_message(message_draft, response_status, response_body)
     "Box #{message_draft.box.id}, Message #{message_draft.uuid}: #{response_status}, #{response_body}"
-  end
-
-  def mark_message_draft_invalid(message_draft)
-    # TODO notification
-    message_draft.metadata[:status] = 'invalid'
-    message_draft.save
-    message_draft.add_cascading_tag(message_draft.tenant.submission_error_tag)
   end
 end

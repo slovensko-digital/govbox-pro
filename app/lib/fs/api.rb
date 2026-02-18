@@ -21,6 +21,10 @@ module Fs
       request(:get, "forms", **args)
     end
 
+    def get_form_attachment(identifier)
+      request(:get, "form-attachments/#{CGI.escape(identifier)}")
+    end
+
     def parse_form(content)
       request(:post, "forms/parse", { content: Base64.strict_encode64(content) })[:body]
     end
@@ -51,8 +55,12 @@ module Fs
       request(:get, "received-messages/#{CGI.escape(message_id)}", {}, jwt_header(obo).merge(fs_credentials_header))[:body]
     end
 
-    def post_validation(form_identifier, content, attachments)
-      request(:post, "validations", {form_identifier: form_identifier, content: content, attachments: attachments}, jwt_header, accept_negative: true)
+    def post_validation(form_identifier, content)
+      request(:post, "validations", {
+        form_identifier: form_identifier,
+        content: content,
+        skip_attachment_validation: true
+      }.to_json, jwt_header.merge({"Content-Type": "application/json"}), accept_negative: true)
     end
 
     def delete_validation(validation_id)

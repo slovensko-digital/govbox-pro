@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_01_30_162220) do
+ActiveRecord::Schema[7.1].define(version: 2026_02_10_152312) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -242,6 +242,26 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_30_162220) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["box_id"], name: "index_folders_on_box_id"
+  end
+
+  create_table "fs_form_attachment_groups", force: :cascade do |t|
+    t.string "identifier", null: false
+    t.string "name"
+    t.text "mime_types", default: [], array: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["identifier"], name: "index_fs_form_attachment_groups_on_identifier", unique: true
+  end
+
+  create_table "fs_form_attachments", force: :cascade do |t|
+    t.integer "min_occurrences", default: 0, null: false
+    t.integer "max_occurrences", default: 99, null: false
+    t.bigint "fs_form_id", null: false
+    t.bigint "fs_form_attachment_group_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["fs_form_attachment_group_id"], name: "index_fs_form_attachments_on_fs_form_attachment_group_id"
+    t.index ["fs_form_id"], name: "index_fs_form_attachments_on_fs_form_id"
   end
 
   create_table "fs_form_related_documents", force: :cascade do |t|
@@ -716,6 +736,8 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_30_162220) do
   add_foreign_key "filters", "tenants", on_delete: :cascade
   add_foreign_key "filters", "users", column: "author_id", on_delete: :nullify
   add_foreign_key "folders", "boxes"
+  add_foreign_key "fs_form_attachments", "fs_form_attachment_groups"
+  add_foreign_key "fs_form_attachments", "fs_forms"
   add_foreign_key "fs_form_related_documents", "fs_forms"
   add_foreign_key "govbox_folders", "govbox_folders", column: "parent_folder_id"
   add_foreign_key "govbox_messages", "govbox_folders", column: "folder_id"

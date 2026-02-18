@@ -37,6 +37,10 @@ EventBus.subscribe :fs_message_draft_created, ->(message_draft) {
   Fs::ValidateMessageDraftJob.perform_later(message_draft)
 }
 
+EventBus.subscribe :message_attachments_modified, ->(message_draft) {
+  message_draft.validate_and_process
+}
+
 # automation
 [:message_thread_created, :message_created, :message_draft_validated, :message_draft_submitted, :message_object_downloaded].each do |event|
   EventBus.subscribe_job event, Automation::ApplyRulesForEventJob

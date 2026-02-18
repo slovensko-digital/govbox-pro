@@ -34,7 +34,12 @@ class Api::MessagesController < Api::TenantController
 
       @message.save
 
-      @message.create_message_objects_from_params(permitted_message_draft_params.fetch(:objects, []))
+      begin
+        @message.create_message_objects_from_params(permitted_message_draft_params.fetch(:objects, []))
+      rescue => e
+        @message.destroy
+        render_unprocessable_content(e.message) and return
+      end
       @message.assign_tags_from_params(permitted_message_draft_params.fetch(:tags, []))
 
       if @message.valid?(:validate_data)

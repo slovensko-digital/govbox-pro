@@ -79,12 +79,23 @@ class MessageDraft < Message
 
       object_params.fetch(:tags, []).each do |tag_name|
         tag = tenant.user_signature_tags.find_by(name: tag_name)
-        tag.assign_to_message_object(message_object)
-        tag.assign_to_thread(thread)
+        if tag.is_a?(SignatureRequestedFromTag)
+          if message_object.signable?
+            tag.assign_to_message_object(message_object)
+            tag.assign_to_thread(thread)
+          else
+            raise SignatureAssignmentError, "Cannot assign SignatureRequestedFromTag to an object that is not signable"
+          end
+        else
+          tag.assign_to_message_object(message_object)
+          tag.assign_to_thread(thread)
+        end
       end
       thread.box.tenant.signed_externally_tag!.assign_to_message_object(message_object) if message_object.is_signed
 
       if ActiveModel::Type::Boolean.new.cast(object_params[:to_be_signed])
+        raise SignatureAssignmentError, "Cannot mark object as to_be_signed if it is not signable" unless message_object.signable?
+
         tenant.signer_group.signature_requested_from_tag&.assign_to_message_object(message_object)
         tenant.signer_group.signature_requested_from_tag&.assign_to_thread(thread)
       end
@@ -211,12 +222,24 @@ class MessageDraft < Message
     not_yet_submitted?
   end
 
+  def attachments_signable?
+    true
+  end
+
+  def signable_objects
+    objects
+  end
+
   def original_message
     Message.find(metadata["original_message_id"]) if metadata["original_message_id"]
   end
 
   def template_validation_errors
     template&.message_data_validation_errors(self)
+  end
+
+  def all_validation_errors
+    metadata.dig('validation_errors', 'errors').to_a + metadata.dig('validation_errors', 'internal_errors').to_a + template&.message_data_validation_errors(self).to_a
   end
 
   def remove_form_signature
@@ -229,10 +252,13 @@ class MessageDraft < Message
     reload
   end
 
+  def validate_and_process
+    # noop
+  end
+
   private
 
   def validate_data
-    validate_form_object
     validate_objects
     validate_with_message_template
   end
@@ -277,8 +303,15 @@ class MessageDraft < Message
       errors.merge!(object.errors)
     end
 
-    forms = objects.select { |o| o.form? }
-    errors.add(:objects, "Message has to contain exactly one form object") if forms.size != 1
+    form_objects = objects.select { |o| o.form? }
+    errors.add(:objects, "Message has to contain exactly one form object") if form_objects.size != 1
+
+    validate_form_object
+    validate_attachment_objects
+  end
+
+  def validate_attachment_objects
+    # noop
   end
 
   def validate_with_message_template
@@ -298,6 +331,9 @@ class MessageDraft < Message
   end
 
   class InvalidSenderError < RuntimeError
+  end
+
+  class SignatureAssignmentError < StandardError
   end
 
   class MissingFormObjectError < RuntimeError

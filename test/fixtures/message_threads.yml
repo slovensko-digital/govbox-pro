@@ -77,6 +77,27 @@ ssd_main_empty_draft:
   delivered_at: 2023-05-18 16:05:00
   last_message_delivered_at: 2023-05-18 16:05:00
 
+fs_accountants_draft_vp_danv24:
+  box: fs_accountants
+  title: Podanie vp_danv24
+  original_title: MyString
+  delivered_at: <%= 2.hours.ago %>
+  last_message_delivered_at: <%= 2.hours.ago %>
+
+fs_accountants_draft_uzmujv14:
+  box: fs_accountants
+  title: Podanie uzmujv14
+  original_title: MyString
+  delivered_at: <%= 2.hours.ago %>
+  last_message_delivered_at: <%= 2.hours.ago %>
+
+fs_accountants_draft_uzmujv14_with_attachment:
+  box: fs_accountants
+  title: Podanie uzmujv14 s prilohou
+  original_title: MyString
+  delivered_at: <%= 2.hours.ago %>
+  last_message_delivered_at: <%= 2.hours.ago %>
+
 fs_accountants_outbox:
   box: fs_accountants
   title: Podanie

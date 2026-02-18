@@ -61,3 +61,14 @@ DPFOBv24:
   slug: DPFOBv24
   number_identifier: 601,
   submission_type_identifier: 803
+
+UZMUJv14:
+  identifier: '2416_607'
+  name: Účtovná závierka mikro účtovnej jednotky - ver.3
+  group_name: SÚčtovné dokumenty/Účtovné výkazy pre podnikateľské subjekty účtujúce v sústave podvojného účtovníctva/Účtovná závierka podnikateľskej účtovnej jednotky v sústave podvojného účtovníctva/Účtovná závierka mikro účtovnej jednotky (účinná od 31.12.2014)
+  subtype_name: Účtovná závierka - riadna
+  signature_required: true
+  ez_signature: true
+  slug: UZMUJv14
+  number_identifier: 301,
+  submission_type_identifier: 2416
