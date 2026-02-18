@@ -3,14 +3,12 @@
 # Table name: filters
 #
 #  id         :bigint           not null, primary key
-#  icon       :string
 #  name       :string           not null
 #  position   :integer          not null
-#  query      :string
+#  query      :string           not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
-#  author_id  :bigint
-#  tag_id     :bigint
+#  author_id  :bigint           not null
 #  tenant_id  :bigint           not null
 #
 class Filter < ApplicationRecord
