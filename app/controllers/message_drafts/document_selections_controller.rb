@@ -31,13 +31,13 @@ module MessageDrafts
       if @message_draft.signable_objects.length == 1
         if @next_step == "sign"
           if @message_draft.valid?(:validate_data)
-            redirect_to new_message_draft_signing_path(@message_draft, object_ids: @message_draft.objects.map(&:id))
+            redirect_to new_message_draft_signing_path(@message_draft, object_ids: @message_draft.signable_objects.map(&:id))
           else
             @message = @message_draft
             render template: 'message_drafts/update_body' and return
           end
         else
-          redirect_to edit_message_draft_signature_requests_path(@message_draft, object_ids: @message_draft.objects.map(&:id))
+          redirect_to edit_message_draft_signature_requests_path(@message_draft, object_ids: @message_draft.signable_objects.map(&:id))
         end
       end
     end
