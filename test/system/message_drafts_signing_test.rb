@@ -46,9 +46,7 @@ class MessageDraftsSigningTest < ApplicationSystemTestCase
       click_link "Podpísať"
     end
 
-    within "form[action='#{message_draft_document_selections_path(@message)}']" do
-      assert_text "Hlavný dokument"
-      assert_no_text "priloha.pdf"
-    end
+    assert_text "Prebieha podpisovanie"
+    assert_text "Spustite aplikáciu Autogram"
   end
 end
