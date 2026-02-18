@@ -48,5 +48,7 @@ class MessageDraftsSigningTest < ApplicationSystemTestCase
 
     assert_text "Prebieha podpisovanie"
     assert_text "Spustite aplikáciu Autogram"
+
+    page.go_back
   end
 end
