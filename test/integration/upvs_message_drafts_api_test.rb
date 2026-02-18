@@ -1165,7 +1165,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_content
 
     json_response = JSON.parse(response.body)
-    assert json_response['message'].start_with? 'Objects is not valid, MimeType of Attachment.txt object is disallowed, allowed mimetypes:'
+    assert json_response['message'].start_with? 'Objects is not valid, MimeType of Attachment.txt object is disallowed, allowed MimeTypes:'
 
     assert_equal Message.count, @before_request_messages_count
   end

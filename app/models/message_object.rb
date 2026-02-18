@@ -161,19 +161,13 @@ class MessageObject < ApplicationRecord
   private
 
   def allowed_mimetype?
-    if mimetype
-      errors.add(:mimetype, "MimeType of #{name} object is disallowed, allowed mimetypes: #{Utils::MIMETYPES_ALLOW_LIST.join(", ")}") unless Utils::MIMETYPES_ALLOW_LIST.include?(mimetype)
-    else
-      errors.add(:mimetype, "MimeType of #{name} object is disallowed, allowed file types: #{Utils::EXTENSIONS_ALLOW_LIST.join(", ")}")
-    end
-
-    return if form?
-
-    if message.form.respond_to?(:attachments) && message.form.attachments.any?
+    if !form && message.form.respond_to?(:attachments) && message.form.attachments.any?
       # TODO remove UPVS, FS stuff from core domain
       form_attachments = message.form&.attachments.joins(:group).where("fs_form_attachment_groups.mime_types @> ARRAY[?]::text[]", mimetype).all
       mimetypes = message.form&.attachments.joins(:group).flat_map { |attachment| attachment.group.mime_types }.uniq
       errors.add(:mimetype, I18n.t('errors.attachments.disallowed_mimetype', name: name, mimetypes: mimetypes)) unless form_attachments.present?
+    else
+      errors.add(:mimetype, I18n.t('errors.attachments.disallowed_mimetype', name: name, mimetypes: Utils::MIMETYPES_ALLOW_LIST.join(", "))) unless Utils::MIMETYPES_ALLOW_LIST.include?(mimetype)
     end
   end
 
