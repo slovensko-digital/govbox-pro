@@ -33,6 +33,7 @@ class Tenant < ApplicationRecord
   has_one :signed_tag
   has_one :signed_externally_tag
   has_one :archived_tag
+  has_one :problem_tag
   has_one :submitted_tag
   has_one :submission_error_tag
   has_one :unprocessable_tag
@@ -105,6 +106,10 @@ class Tenant < ApplicationRecord
     submission_error_tag || raise(ActiveRecord::RecordNotFound, "`SubmissionErrorTag` not found in tenant: #{id}")
   end
 
+  def problem_tag!
+    problem_tag || raise(ActiveRecord::RecordNotFound, "`ProblemTag` not found in tenant: #{id}")
+  end
+
   def feature_enabled?(feature)
     raise "Unknown feature #{feature}" unless feature.in? ALL_FEATURE_FLAGS
 
@@ -167,8 +172,9 @@ class Tenant < ApplicationRecord
     create_signed_tag!(name: "Podpísané", visible: true, color: "green", icon: "fingerprint")
     signer_group.create_signature_requested_tag!
     create_signed_externally_tag!(name: "Externe podpísané", visible: false, color: "purple", icon: "shield-check")
+    create_problem_tag!(name: 'Problémové')
     create_submitted_tag!(name: 'Odoslané na spracovanie')
-    create_submission_error_tag!(name: 'Problémové')
+    create_submission_error_tag!(name: 'Chyba pri odoslaní')
     create_unprocessable_tag!(name: 'Chybné', color: 'red', icon: 'exclamation-triangle')
     create_validation_error_tag!(name: "Chybné údaje", color: 'red', icon: "exclamation-triangle")
     create_validation_warning_tag!(name: "Upozornenia", color: "orange", icon: "exclamation-triangle")

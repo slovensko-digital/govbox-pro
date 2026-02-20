@@ -286,8 +286,14 @@ accountants_inbox:
   tenant: accountants
 
 accountants_submission_error_tag:
-  name: Problémové
+  name: Chyba pri odoslaní
   type: SubmissionErrorTag
+  visible: true
+  tenant: accountants
+
+accountants_problem_tag:
+  name: Problémové
+  type: ProblemTag
   visible: true
   tenant: accountants
 
