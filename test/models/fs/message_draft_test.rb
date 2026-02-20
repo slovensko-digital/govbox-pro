@@ -96,7 +96,8 @@ class Fs::MessageDraftTest < ActiveSupport::TestCase
     message_draft.validate_and_process
 
     assert_equal 'invalid', message_draft.metadata['status']
-    assert message_draft.thread.tags.include?(message_draft.tenant.submission_error_tag)
+    assert message_draft.thread.tags.include?(message_draft.tenant.validation_error_tag)
+    assert message_draft.thread.tags.include?(message_draft.tenant.problem_tag)
     assert_includes message_draft.metadata['validation_errors']['internal_errors'], "Chýba požadovaná príloha pre UVPOD3_UA (minimum je 1)."
   end
 
@@ -119,21 +120,23 @@ class Fs::MessageDraftTest < ActiveSupport::TestCase
     assert_not message_draft.metadata['validation_errors']['internal_errors'].any?
   end
 
-  test "validate_and_process removes submission error tag if no errors or warnings" do
+  test "validate_and_process removes problem and validation error tags if no errors or warnings" do
     message_draft = messages(:fs_accountants_outbox)
-    message_draft.thread.assign_tag(message_draft.tenant.submission_error_tag)
+    message_draft.thread.assign_tag(message_draft.tenant.problem_tag)
     message_draft.validate_and_process
 
-    assert_not message_draft.thread.tags.include?(message_draft.tenant.submission_error_tag)
+    assert_not message_draft.thread.tags.include?(message_draft.tenant.validation_error_tag)
+    assert_not message_draft.thread.tags.include?(message_draft.tenant.problem_tag)
   end
 
-  test "validate_and_process adds submission error tag if warnings exist" do
+  test "validate_and_process adds problem and validation warning tags if warnings exist" do
     message_draft = messages(:fs_accountants_outbox)
     message_draft.metadata['validation_errors']['warnings'] << "A warning"
     message_draft.validate_and_process
 
     assert_equal 'created', message_draft.metadata['status']
-    assert message_draft.thread.tags.include?(message_draft.tenant.submission_error_tag)
+    assert message_draft.thread.tags.include?(message_draft.tenant.validation_warning_tag)
+    assert message_draft.thread.tags.include?(message_draft.tenant.problem_tag)
   end
 
   test "validate_and_process requests signature if required and not signed" do
