@@ -35,6 +35,6 @@ module ApplicationHelper
   end
 
   def sort_tags(tags)
-    tags.sort_by(&:name).sort_by { |i| i.type.in?(%w[ValidationWarningTag ValidationErrorTag]) ? 1 : 0 }
+    tags.sort_by(&:name).sort_by { |i| i.type.in?(%w[ValidationWarningTag ValidationErrorTag ProblemTag SubmissionErrorTag UnprocessableTag]) ? 1 : 0 }
   end
 end
