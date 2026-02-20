@@ -1,5 +1,7 @@
 class UpdateMessageSubjects < ActiveRecord::Migration[7.0]
   def up
+    return unless Message.any?
+
     upvs_client = UpvsEnvironment.upvs_client
 
     Message.find_each do |message|

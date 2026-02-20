@@ -42,6 +42,26 @@ GOOGLE_CLIENT_ID=some-numbers-and-characters.apps.googleusercontent.com
 GOOGLE_CLIENT_SECRET=GOCSPX-and-other-secret-part
 ```
 
+### Microsoft Entra ID (AAD)
+
+- [Create AAD APP](https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade)
+  - don't forget to Add a Redirect URI `http://localhost:3000/auth/microsoft_graph/callback`
+- write `Application (client) ID` and `Certificates & secrets` to `.env.local`, example:
+
+```dotenv
+AZURE_APPLICATION_CLIENT_ID=some-numbers-and-characters
+AZURE_APPLICATION_CLIENT_SECRET=some-secret
+```
+
+- in the portal, open the Manifest tab under Manage section and set the following properties:
+
+```json
+"accessTokenAcceptedVersion": 2,
+"signInAudience": "AzureADandPersonalMicrosoftAccount"
+```
+
+> For more details, see the [official documentation](https://learn.microsoft.com/en-us/entra/identity-platform/reference-app-manifest#signinaudience-attribute)
+
 ## Running
 
 ### Run database
@@ -57,6 +77,17 @@ docker-compose up
 env RAILS_ENV=test ././bin/setup
 yarn
 ```
+
+### Seed the database
+
+After configuring your admin email and setting up the database, run:
+
+```console
+./bin/rails db:seed
+```
+
+> [!NOTE]
+> Make sure you have set `SITE_ADMIN_EMAILS` in your `.env.local` file before running the seed command, as this creates the admin account and other initial data.
 
 ### Run local development environment
 

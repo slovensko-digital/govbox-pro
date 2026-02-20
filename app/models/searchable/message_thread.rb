@@ -65,12 +65,9 @@ class Searchable::MessageThread < ApplicationRecord
 
     scope = scope.where(tenant_id: search_permissions.fetch(:tenant))
     scope = scope.where(box_id: search_permissions.fetch(:box)) if search_permissions[:box]
+    scope = scope.where(box_id: search_permissions[:accessible_box_ids]) if search_permissions[:accessible_box_ids]
 
-    if search_permissions[:tag_ids]
-      if search_permissions[:tag_ids].any?
-        scope = scope.where("tag_ids && ARRAY[?]", search_permissions[:tag_ids])
-      end
-    end
+    scope = scope.where("tag_ids && ARRAY[?]", search_permissions[:tag_ids]) if search_permissions[:tag_ids]&.any?
 
     if query_filter[:filter_tag_ids].present?
       if query_filter[:filter_tag_ids] == :missing_tag
@@ -85,6 +82,8 @@ class Searchable::MessageThread < ApplicationRecord
 
     # remove default order rule given by pg_search
     scope = scope.reorder("")
+
+    count_estimate = calculate_count_estimate(scope:, per_page:)
 
     collection, next_cursor = Pagination.paginate(
       collection: scope,
@@ -102,12 +101,14 @@ class Searchable::MessageThread < ApplicationRecord
         ids: ids,
         next_cursor: next_cursor,
         highlights: highlights,
+        count_estimate:,
       }
     else
       {
         ids: ids,
         next_cursor: next_cursor,
         highlights: {},
+        count_estimate:,
       }
     end
   end
@@ -120,5 +121,9 @@ class Searchable::MessageThread < ApplicationRecord
 
   def self.reindex_all
     ::MessageThread.includes(:tags, :messages, :message_thread_note, :box).find_each { |mt| ::Searchable::Indexer.index_message_thread(mt) }
+  end
+
+  def self.calculate_count_estimate(scope:, per_page:)
+    scope.limit(101).pluck(:id).count
   end
 end

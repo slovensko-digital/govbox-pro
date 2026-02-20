@@ -121,7 +121,7 @@ module PdfVisualizationOperations
           #{body_content}
         </body>
       </html>
-    HTML
+      HTML
     end
   end
 end

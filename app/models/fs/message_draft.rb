@@ -5,6 +5,7 @@
 #  id                 :bigint           not null, primary key
 #  collapsed          :boolean          default(FALSE), not null
 #  delivered_at       :datetime         not null
+#  export_metadata    :jsonb            not null
 #  html_visualization :text
 #  metadata           :json
 #  outbox             :boolean          default(FALSE), not null
@@ -33,7 +34,7 @@ class Fs::MessageDraft < MessageDraft
     form_files.each do |form_file|
       form_content = form_file.read.force_encoding("UTF-8")
 
-      box, fs_form, period = get_parsed_box_and_form_from_content(form_content, tenant: author.tenant)
+      box, fs_form, period = get_parsed_box_and_form_from_content(form_content, tenant: author.tenant, author: author)
 
       if box.nil?
         failed_files << form_file
@@ -85,10 +86,6 @@ class Fs::MessageDraft < MessageDraft
       form_object.update(is_signed: form_object.asice?)
       message.thread.box.tenant.signed_externally_tag!.assign_to_message_object(form_object) if form_object.is_signed?
 
-      if fs_form.signature_required && !form_object.is_signed?
-        message.thread.box.tenant.signer_group.signature_requested_from_tag&.assign_to_message_object(form_object)
-        message.thread.box.tenant.signer_group.signature_requested_from_tag&.assign_to_thread(message.thread)
-      end
       message.thread.assign_tag(message.thread.box.tenant.simple_tags.find_or_create_by!(name: period)) if period
 
       MessageObjectDatum.create(
@@ -162,24 +159,29 @@ class Fs::MessageDraft < MessageDraft
     message
   end
 
-  def self.get_parsed_box_and_form_from_content(form_content, tenant:, fs_client: FsEnvironment.fs_client)
+  def self.get_parsed_box_and_form_from_content(form_content, tenant:, fs_client: FsEnvironment.fs_client, author: nil)
     form_information = fs_client.api.parse_form(form_content)
     dic = form_information&.dig('subject')&.strip
     fs_form_identifier = form_information&.dig('form_identifier')
     period = form_information&.dig('period')&.dig('pretty')
 
-    box = tenant.boxes.with_enabled_message_drafts_import.find_by("settings ->> 'dic' = ?", dic)
+    if author
+      box = author.accessible_boxes.with_enabled_message_drafts_import.find_by("settings ->> 'dic' = ?", dic)
+    else
+      box = tenant.boxes.with_enabled_message_drafts_import.find_by("settings ->> 'dic' = ?", dic)
+    end
+
     fs_form = Fs::Form.find_by(identifier: fs_form_identifier)
 
     return box, fs_form, period
   end
 
   def find_api_connection_for_submission
-    return box.api_connection if box.api_connections.count == 1
+    return box.api_connection if box.api_connections.count == 1 && !box.api_connection.owner
 
-    raise "Multiple signatures found. Can't choose API connection" if thread.tags.where(type: "SignedByTag").count > 1
+    raise "Multiple signatures found. Can't choose API connection" if form_object.tags.where(type: "SignedByTag").count > 1
 
-    signed_by = thread.tags.where(type: "SignedByTag")&.first&.owner
+    signed_by = form_object.tags.where(type: "SignedByTag")&.first&.owner
 
     return box.api_connections.find_by(owner: signed_by) if signed_by && box.api_connections.find_by(owner: signed_by)
 
@@ -197,8 +199,16 @@ class Fs::MessageDraft < MessageDraft
     Fs::SubmitMessageDraftAction.run(self)
   end
 
-  def attachments_allowed?
+  def attachments_editable?
+    not_yet_submitted? && form&.attachments_allowed?
+  end
+
+  def attachments_signable?
     false
+  end
+
+  def signable_objects
+    [form_object]
   end
 
   def build_html_visualization
@@ -206,7 +216,72 @@ class Fs::MessageDraft < MessageDraft
   end
 
   def form
-    Fs::Form.find(metadata['fs_form_id'])
+    Fs::Form.find_by(id: metadata['fs_form_id'])
+  end
+
+  def signable_by_author?
+    return false unless author
+    return false unless author.signer?
+    return true if global_api_connection?
+    return true if author_api_connection?
+    false
+  end
+
+  def signature_target_group
+    tenant = thread.box.tenant
+
+    if tenant.signature_request_mode == 'author' && signable_by_author?
+      author
+    else
+      tenant.signer_group
+    end
+  end
+
+  def validate_and_process
+    valid?(:validate_data)
+
+    internal_errors = errors.full_messages
+    metadata['validation_errors']['internal_errors'] = internal_errors
+
+    if metadata['validation_errors']['errors'].any? || internal_errors.any?
+      mark_as_invalid
+      unassign_signature_request_tags
+    else
+      metadata['status'] = 'created'
+      if metadata['validation_errors']['warnings'].none?
+        remove_cascading_tag(tenant.submission_error_tag)
+      else
+        add_cascading_tag(tenant.validation_warning_tag)
+        add_cascading_tag(tenant.submission_error_tag)
+      end
+    end
+
+    if metadata['status'] == 'created' && form.signature_required && !form_object.is_signed?
+      signature_target = signature_target_group
+
+      signature_target.signature_requested_from_tag&.assign_to_message_object(form_object)
+      signature_target.signature_requested_from_tag&.assign_to_thread(thread)
+    end
+
+    save
+  end
+
+  def mark_as_invalid
+    # TODO notification
+    metadata['status'] = 'invalid'
+    save
+    add_cascading_tag(tenant.validation_error_tag)
+    add_cascading_tag(tenant.submission_error_tag)
+  end
+
+  def unassign_signature_request_tags
+    form_object.tags.where(type: SignatureRequestedFromTag.to_s).each do |tag|
+      form_object.unassign_tag(tag)
+    end
+
+    thread.tags.where(type: [SignatureRequestedTag.to_s, SignatureRequestedFromTag.to_s]).each do |tag|
+      thread.unassign_tag(tag)
+    end
   end
 
   private
@@ -214,7 +289,6 @@ class Fs::MessageDraft < MessageDraft
   def validate_data
     validate_uuid_uniqueness
     validate_metadata
-    validate_form_object
     validate_objects
   end
 
@@ -222,7 +296,28 @@ class Fs::MessageDraft < MessageDraft
     errors.add(:metadata, 'No form ID') unless metadata&.dig('fs_form_id')
   end
 
-  def validate_objects
-    errors.add(:objects, "Message has to contain exactly one object") if objects.size != 1
+  def validate_attachment_objects
+    form.attachments.each do |form_attachment|
+      required_min_count, required_max_count = form_attachment.required_occurrences(form_object.xml_unsigned_content)
+      count = attachments.count
+
+      next if required_min_count.zero? && count.zero?
+
+      if count < required_min_count
+        return errors.add(:attachments, I18n.t('errors.attachments.missing_required', identifier: form_attachment.identifier, min_occurrences: required_min_count))
+      end
+
+      if count > required_max_count
+        return errors.add(:attachments, I18n.t('errors.attachments.too_many', identifier: form_attachment.identifier, max_occurrences: required_max_count))
+      end
+    end
+  end
+
+  def global_api_connection?
+    box.api_connections.where(owner: nil).one?
+  end
+
+  def author_api_connection?
+    box.api_connections.where(owner: author).present?
   end
 end

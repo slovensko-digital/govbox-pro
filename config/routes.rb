@@ -31,9 +31,11 @@ Rails.application.routes.draw do
         get :show_members, on: :member
         get :edit_permissions, on: :member
         post :search_non_members, on: :member
-        post :search_non_tags, on: :member
+        post :search_boxes_and_tags, on: :member
         resources :group_memberships do
         end
+        resources :box_groups, only: [:create, :destroy]
+        resources :tag_groups, only: [:create, :destroy]
       end
 
       resources :users
@@ -54,7 +56,7 @@ Rails.application.routes.draw do
       end
 
       resources :tags
-      resources :tag_groups
+      resources :permissions, only: [:index]
       resources :automation_webhooks
     end
     resources :audit_logs, only: :index do
@@ -112,6 +114,7 @@ Rails.application.routes.draw do
     get :history, on: :member
     get :confirm_unarchive, on: :member
     patch :archive, on: :member
+    post :mark_read, on: :member
     resources :messages
     resources :message_thread_notes
     scope module: 'message_threads' do
@@ -261,6 +264,8 @@ Rails.application.routes.draw do
     resources :message_objects, only: [] do
       get :pdf
     end
+
+    resources :boxes, only: :index
   end
 
   if UpvsEnvironment.sso_support?
@@ -280,8 +285,21 @@ Rails.application.routes.draw do
   resource :sticky_note
 
   get :auth, path: 'prihlasenie', to: 'sessions#login'
-  get 'auth/google_oauth2/callback', to: 'sessions#create'
-  get 'auth/google_oauth2/failure', to: 'sessions#failure'
+
+  if ENV["GOOGLE_CLIENT_ID"]
+    get 'auth/google_oauth2/callback', to: 'sessions#create'
+    get 'auth/google_oauth2/failure', to: 'sessions#failure'
+  end
+
+  if ENV["AZURE_APPLICATION_CLIENT_ID"]
+    get 'auth/microsoft_graph/callback', to: 'sessions#create'
+    get 'auth/microsoft_graph/failure', to: 'sessions#failure'
+  end
+
+  if ENV["IDENTITY_AUTH"] == "true"
+    post 'auth/identity/callback', to: 'sessions#create'
+    post 'auth/identity/failure', to: 'sessions#failure'
+  end
 
   get "/service-worker.js" => "service_worker#service_worker"
   get "/manifest.json" => "service_worker#manifest"

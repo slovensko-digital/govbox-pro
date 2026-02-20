@@ -5,6 +5,7 @@
 #  id                 :bigint           not null, primary key
 #  collapsed          :boolean          default(FALSE), not null
 #  delivered_at       :datetime         not null
+#  export_metadata    :jsonb            not null
 #  html_visualization :text
 #  metadata           :json
 #  outbox             :boolean          default(FALSE), not null
@@ -36,6 +37,8 @@ class Message < ApplicationRecord
   has_many :attachments, -> { where(object_type: "ATTACHMENT") }, class_name: 'MessageObject', inverse_of: :message
   # used for joins only
   has_many :message_threads_tags, primary_key: :message_thread_id, foreign_key: :message_thread_id
+
+  store_accessor :export_metadata, :box_name, prefix: true
 
   delegate :tenant, to: :thread
   delegate :box, to: :thread
@@ -148,7 +151,7 @@ class Message < ApplicationRecord
       message_draft_object.tags.signed.each { |tag| message_object.assign_tag(tag) }
     end
 
-    (message_draft.tags.simple + message_draft.tags.signed).each { |tag| assign_tag(tag) }
+    (message_draft.tags.simple + message_draft.tags.author + message_draft.tags.signed).each { |tag| assign_tag(tag) }
   end
 
   def export_summary
@@ -159,7 +162,8 @@ class Message < ApplicationRecord
       title: title,
       box: box.official_name,
       delivered_at: delivered_at,
-      tags: thread.tags.map(&:name)
+      tags: thread.tags.map(&:name),
+      outbox: outbox,
     }.merge!(metadata.slice(*metadata_whitelist))
   end
 

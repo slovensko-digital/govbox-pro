@@ -1,7 +1,7 @@
 <div class="flex flex-col justify-stretch items-stretch gap-4 sm:p-4">
-  <div class="flex flex-col justify-stretch items-stretch sm:rounded-md bg-white sm:border sm:border-gray-200" data-controller="form all-checkboxes">
-    <%= render MessageThreadsBulkActionsComponent.new(ids: [], filter: @filter, filter_subscription: @filter_subscription, signable: Current.user.signer?) %>
-    <%= form_with url: bulk_actions_message_threads_path, data: { "form-target": "form", "all-checkboxes-target": "form" } do %>
+  <div class="flex flex-col justify-stretch items-stretch sm:rounded-md bg-white sm:border sm:border-gray-200" data-controller="form all-checkboxes shift-select">
+    <%= render MessageThreadsBulkActionsComponent.new(ids: [], filter: @filter, count_estimate: @count_estimate, filter_subscription: @filter_subscription, signable: Current.user.signer?) %>
+    <%= form_with url: bulk_actions_message_threads_path(count_estimate: @count_estimate), data: { "form-target": "form", "all-checkboxes-target": "form" } do %>
       <ul role="list" id="message_threads" data-controller="visited-links" class="divide-y divide-gray-100">
         <% message_threads.each do |message_thread| %>
           <%= message_thread %>

@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 ruby '3.3.0'
 
-gem 'rails', '~> 7.1'
+gem 'rails', '~> 7.1.5'
 gem 'rails-i18n'
 
 gem 'pg', '~> 1.5'
@@ -15,6 +15,7 @@ gem 'turbo-rails'
 # Styles
 gem 'sprockets-rails'
 gem 'importmap-rails'
+gem 'initials'
 gem 'tailwindcss-rails'
 gem 'view_component'
 
@@ -25,7 +26,9 @@ gem 'clockwork'
 gem 'good_job', '= 3.29.4'
 
 # Auth
+gem 'omniauth-identity'
 gem 'omniauth-google-oauth2'
+gem 'omniauth-microsoft_graph'
 gem 'omniauth-saml', '~> 2.2.1'
 gem 'omniauth-rails_csrf_protection'
 gem 'pundit'
@@ -63,12 +66,8 @@ group :development do
   gem 'annotate'
   gem 'listen'
   gem 'web-console'
-  gem 'solargraph'
   gem 'htmlbeautifier'
-  gem 'erb_lint'
-  gem 'ruby-lsp-rails'
   gem 'rdbg'
-  gem 'rubocop'
   gem 'rubocop-rails'
 end
 
@@ -79,3 +78,5 @@ group :test do
   gem 'webmock'
   gem 'simplecov', require: false
 end
+
+gem "bcrypt", "~> 3.1"

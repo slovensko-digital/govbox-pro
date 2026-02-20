@@ -2,7 +2,20 @@
   <div class="flex justify-stretch items-center gap-4 px-4 lg:py-4 border-t-0 border-r-0 border-b border-l-0 border-gray-200 min-h-[3rem] sm:min-h-[5rem]">
     <%= check_box_tag("", nil, false, { class: "hidden sm:block h-4 w-4 rounded border-gray-300 text-blue-500 focus:ring-0", type: "checkbox", id: "checkbox-all", data: { action: "all-checkboxes#toggle", "all-checkboxes-target": "checkbox" } }) %>
 
-    <span class="grow sm:text-xl text-base font-semibold text-left text-gray-900"><%= @ids.present? ? t(:selected_message, count: @ids.count) : "Správy v schránke" %>
+    <span class="grow sm:text-xl text-base font-semibold text-left text-gray-900">
+      <% if @ids.present? %>
+        <%= t(:selected_message, count: @ids.count) %>
+      <% else %>
+        Správy v schránke
+        <% if @count_estimate %>
+          <% if @count_estimate.in?(20..100) %>
+            (<%= @count_estimate %>)
+          <% elsif @count_estimate > 100 %>
+            (100+)
+          <% end %>
+        <% end %>
+      <% end %>
+
       <% if @filter %>
         <% if @filter_subscription %>
           <%= link_to edit_filter_filter_subscription_path(@filter, @filter_subscription), title: "Nastaviť notifikácie", "data-turbo-frame": :modal, form_class: "inline" do %>
@@ -131,7 +144,7 @@
       <% end %>
     <% end %>
 
-    <% if Current.tenant.boxes.where(type: 'Upvs::Box').any? || (Current.tenant.feature_enabled?(:fs_api) && Current.tenant.boxes.where(type: 'Fs::Box').any?) %>
+    <% if (Current.tenant.feature_enabled?(:upvs) && Current.tenant.boxes.where(type: 'Upvs::Box').any?) || (Current.tenant.feature_enabled?(:fs_api) && Current.tenant.boxes.where(type: 'Fs::Box').any?) %>
       <div data-controller="dropdown" class="relative hidden sm:inline-block text-left">
       <div>
         <button type="button" data-action="dropdown#toggle click@window->dropdown#hide" class="inline-flex w-full justify-center items-center gap-x-1.5 rounded-md bg-white px-2 py-1 sm:px-3 sm:py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" id="menu-button" aria-expanded="true" aria-haspopup="true">
@@ -146,7 +159,7 @@
            aria-orientation="vertical"
            aria-labelledby="menu-button"
            tabindex="-1">
-        <% if Current.tenant.boxes.where(type: 'Upvs::Box').any? %>
+        <% if Current.tenant.feature_enabled?(:upvs) && Current.tenant.boxes.where(type: 'Upvs::Box').any? %>
           <div class="py-1" role="none">
             <%= link_to "Napísať novú správu na slovensko.sk", new_upvs_message_draft_path,
                            class: "w-full text-gray-700 group flex items-center px-4 py-2 text-sm hover:bg-gray-100 hover:text-gray-900", data: { turbo_frame: "_top" }, role: "menuitem" %>

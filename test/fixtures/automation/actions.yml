@@ -33,6 +33,11 @@ six:
   type: Automation::ChangeMessageThreadTitleAction
   value: "New title - {{title}}"
 
+add_box_name_to_export_metadata:
+  automation_rule: six
+  type: Automation::AddMessageExportMetadataBoxNameAction
+  value: "BOX NAME"
+
 seven:
   automation_rule: six
   type: Automation::AddMessageThreadTagAction
@@ -55,3 +60,8 @@ add_form_object_id_to_thread_title:
 request_signature_from_author:
   automation_rule: request_signature_from_author
   type: Automation::AddSignatureRequestedFromAuthorMessageThreadTagAction
+
+add_s_potvrdenkou_tag:
+  automation_rule: ed_delivery_report_rule
+  type: Automation::AddMessageThreadTagAction
+  action_object: accountants_s_potvrdenkou (Tag)

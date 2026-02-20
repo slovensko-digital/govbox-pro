@@ -35,6 +35,7 @@ class Tag < ApplicationRecord
   validates :name, uniqueness: { scope: :tenant_id, case_sensitive: true }
 
   scope :simple, -> { where(type: SimpleTag.to_s) }
+  scope :author, -> { where(type: AuthorTag.to_s) }
   scope :visible, -> { where(visible: true) }
   scope :signing_tags, -> { where(type: ["SignedTag", "SignedByTag", "SignatureRequestedTag", "SignatureRequestedFromTag"]) }
   scope :signed, -> { where(type: ["SignedTag", "SignedByTag", "SignedExternallyTag"]) }

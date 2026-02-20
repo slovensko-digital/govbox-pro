@@ -6,11 +6,12 @@ module Fs
       perform_limit: 2
     )
 
-    def perform(box, from: Date.yesterday, to: Date.tomorrow, fs_client: FsEnvironment.fs_client, batch_size: 25)
+    def perform(box, api_connection:, from: Date.yesterday, to: Date.tomorrow, fs_client: FsEnvironment.fs_client, batch_size: 25)
       raise unless box.is_a?(Fs::Box)
       return unless box.syncable?
+      return unless box.active?
 
-      fs_api = fs_client.api(api_connection: box.api_connection, box: box)
+      fs_api = fs_client.api(api_connection: api_connection, box: box)
 
       0.step do |k|
         received_messages = fs_api.fetch_received_messages(page: k + 1, count: batch_size, from: from, to: to)

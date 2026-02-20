@@ -30,7 +30,7 @@ class StatsApiTest < ActionDispatch::IntegrationTest
 
     assert_response :bad_request
     json_response = JSON.parse(response.body)
-    assert_match "From je povinná položka", json_response["message"]
+    assert_match "From can't be blank", json_response["message"]
   end
 
   test "can read number of messages" do

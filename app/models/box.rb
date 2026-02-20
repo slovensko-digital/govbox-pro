@@ -5,8 +5,9 @@
 #  id          :bigint           not null, primary key
 #  color       :enum
 #  export_name :string           not null
+#  active      :boolean          default(TRUE), not null
 #  name        :string           not null
-#  settings    :jsonb
+#  settings    :jsonb            not null
 #  short_name  :string
 #  syncable    :boolean          default(TRUE), not null
 #  type        :string
@@ -21,21 +22,26 @@ class Box < ApplicationRecord
   belongs_to :tenant
   has_many :boxes_api_connections
   has_many :api_connections, through: :boxes_api_connections
+  has_many :box_groups, dependent: :destroy
+  has_many :groups, through: :box_groups
   has_many :message_threads, extend: MessageThreadsExtensions, dependent: :destroy
   has_many :messages, through: :message_threads
   has_many :message_submission_requests, dependent: :destroy, class_name: '::Stats::MessageSubmissionRequest'
   has_many :message_drafts_imports, dependent: :destroy
   has_many :automation_conditions, as: :condition_object
 
-  scope :with_enabled_message_drafts_import, -> { where("(settings ->> 'message_drafts_import_enabled')::boolean = ?", true) }
+  scope :active, -> { where(active: true) }
+  scope :syncable, -> { where(syncable: true) }
+  scope :with_enabled_message_drafts_import, -> { active.where("(settings ->> 'message_drafts_import_enabled')::boolean = ?", true) }
+
+  before_create { self.color = Box.colors.keys[name.hash % Box.colors.size] if color.blank? }
+  after_create { box_groups.create!(group: tenant.admin_group) }
 
   before_destroy do |box|
     api_connection.destroy if api_connection.destroy_with_box?(self)
     boxes_api_connections.destroy_all
     EventBus.publish(:box_destroyed, box.id)
   end
-
-  before_create { self.color = Box.colors.keys[name.hash % Box.colors.size] if color.blank? }
 
   validates_presence_of :name, :short_name, :uri, :export_name
   
@@ -56,11 +62,16 @@ class Box < ApplicationRecord
   end
 
   def self.sync_all
-    find_each(&:sync)
+    active.syncable.find_each(&:sync)
   end
 
   def single_recipient?
     raise NotImplementedError
+  end
+
+  def update_active_state_from_connections
+    new_active_state = boxes_api_connections.active.exists?
+    update_columns(active: new_active_state) if !destroyed? && !frozen? && active != new_active_state
   end
 
   def official_name

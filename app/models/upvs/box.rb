@@ -3,10 +3,11 @@
 # Table name: boxes
 #
 #  id          :bigint           not null, primary key
+#  active      :boolean          default(TRUE), not null
 #  color       :enum
 #  export_name :string           not null
 #  name        :string           not null
-#  settings    :jsonb
+#  settings    :jsonb            not null
 #  short_name  :string
 #  syncable    :boolean          default(TRUE), not null
 #  type        :string

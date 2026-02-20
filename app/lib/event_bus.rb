@@ -37,14 +37,18 @@ EventBus.subscribe :fs_message_draft_created, ->(message_draft) {
   Fs::ValidateMessageDraftJob.perform_later(message_draft)
 }
 
+EventBus.subscribe :message_attachments_modified, ->(message_draft) {
+  message_draft.validate_and_process
+}
+
 # automation
 [:message_thread_created, :message_created, :message_draft_validated, :message_draft_submitted, :message_object_downloaded].each do |event|
   EventBus.subscribe_job event, Automation::ApplyRulesForEventJob
 end
 
 # notifications
-EventBus.subscribe :message_thread_changed, ->(thread) {
-  ReindexAndNotifyFilterSubscriptionsJob.perform_later(thread.id)
+EventBus.subscribe :message_thread_changed, ->(thread, author) {
+  ReindexAndNotifyFilterSubscriptionsJob.perform_later(thread.id, author)
 }
 
 # reindexing
@@ -60,7 +64,7 @@ EventBus.subscribe :tag_destroyed, ->(tag) do
 end
 
 # cleanup
-EventBus.subscribe :box_destroyed, ->(box_id) { Govbox::DestroyBoxDataJob.perform_later(box_id) }
+EventBus.subscribe :box_destroyed, ->(box_id) { Govbox::DestroyBoxDataJob.set(job_context: :later).perform_later(box_id) }
 
 # audit logs
 EventBus.subscribe :message_thread_note_created, ->(note) { AuditLog::MessageThreadNoteCreated.create_audit_record(note) }

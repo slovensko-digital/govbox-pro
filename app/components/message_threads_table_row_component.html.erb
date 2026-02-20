@@ -1,6 +1,6 @@
 <li class="flex px-4 py-5 hover:bg-blue-50 gap-2" data-test="<%= dom_id(@message_thread) %>" <% if @message_thread_iteration.last? %> data-all-checkboxes-target="refresh" <% end %>>
   <div class="hidden sm:flex pr-2 md:gap-4 md:pr-4 items-center justify-start mb-auto h-8">
-    <%= check_box_tag("message_thread_ids[]", @message_thread.id, false, { id: "message_thread_#{@message_thread.id}", class: "h-4 w-4 rounded border-gray-300 text-blue-500 focus:ring-0 hidden sm:block my-auto", type: "checkbox", data: { action: "form#send" } }) %>
+    <%= check_box_tag("message_thread_ids[]", @message_thread.id, false, { id: "message_thread_#{@message_thread.id}", class: "h-4 w-4 rounded border-gray-300 text-blue-500 focus:ring-0 hidden sm:block my-auto", type: "checkbox", data: { action: "form#send click->shift-select#toggle", shift_select_target: "checkbox" } }) %>
   </div>
   <%= link_to @message_thread, class: class_names("flex flex-col md:flex-row md:flex-nowrap justify-between grow gap-2", :group, visited: @message_thread.all_read), data: {action: 'visited-links#visit'} do %>
     <div class="flex flex-col gap-2">

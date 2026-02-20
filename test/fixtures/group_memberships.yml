@@ -51,3 +51,19 @@ solver_other_user_other_user:
 accountants_basic_user:
   user: accountants_basic
   group: accountants_basic_user
+
+accountants_admin_basic_user:
+  user: accountants_basic
+  group: accountants_admins
+
+ssd_all_notification_user:
+  user: notification_user
+  group: ssd_basic_user
+
+accountants_user2_membership:
+  user: accountants_user2
+  group: accountants_user2_group
+
+accountants_user4_membership:
+  user: accountants_user4
+  group: accountants_user4_group

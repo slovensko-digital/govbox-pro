@@ -1,5 +1,5 @@
 class ApiController < ActionController::API
-  include Localization
+  around_action :use_en_locale
   before_action :authenticate_user
   around_action :wrap_in_request_logger
 
@@ -15,7 +15,7 @@ class ApiController < ActionController::API
   rescue_from RestClient::Exceptions::Timeout, with: :render_request_timeout
   rescue_from ActiveRecord::RecordNotFound, with: :render_not_found
   rescue_from ActionController::ParameterMissing, with: :render_bad_request
-  rescue_from ArgumentError, with: :render_unprocessable_entity
+  rescue_from ArgumentError, with: :render_unprocessable_content
 
   private
 
@@ -41,6 +41,10 @@ class ApiController < ActionController::API
     )
   end
 
+  def use_en_locale(&)
+    I18n.with_locale(:en, &)
+  end
+
   def wrap_in_request_logger
     yield
   rescue Exception => e
@@ -60,7 +64,7 @@ class ApiController < ActionController::API
   end
 
   def render_unpermitted_param(**_options)
-    render status: :unprocessable_entity, json: { message: "Unprocessable entity" }
+    render status: :unprocessable_content, json: { message: "Unprocessable entity" }
   end
 
   def render_forbidden_no_key
@@ -95,7 +99,7 @@ class ApiController < ActionController::API
     render status: :conflict, json: { message: message }
   end
 
-  def render_unprocessable_entity(message)
-    render status: :unprocessable_entity, json: { message: message }
+  def render_unprocessable_content(message)
+    render status: :unprocessable_content, json: { message: message }
   end
 end

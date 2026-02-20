@@ -8,10 +8,10 @@ class Admin::GroupMembershipsController < ApplicationController
 
     if @group_membership.save
       @group = @group_membership.group
-      flash[:notice] = 'Group membership was successfully created'
+      flash[:notice] = 'Skupinové členstvo bolo úspešne vytvorené'
       redirect_to edit_members_admin_tenant_group_path(Current.tenant, @group_membership.group)
     else
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
 
@@ -19,7 +19,7 @@ class Admin::GroupMembershipsController < ApplicationController
     authorize([:admin, @group_membership])
     if @group_membership.destroy
       redirect_to edit_members_admin_tenant_group_path(Current.tenant, @group_membership.group),
-                  notice: 'Group was membership was successfully deleted'
+                  notice: 'Skupinové členstvo bolo úspešne odstránené'
     else
       flash[:alert] = @group_membership.errors.full_messages[0]
       redirect_to edit_members_admin_tenant_group_path(Current.tenant, @group_membership.group)

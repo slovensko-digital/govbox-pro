@@ -5,6 +5,7 @@
 #  id                 :bigint           not null, primary key
 #  collapsed          :boolean          default(FALSE), not null
 #  delivered_at       :datetime         not null
+#  export_metadata    :jsonb            not null
 #  html_visualization :text
 #  metadata           :json
 #  outbox             :boolean          default(FALSE), not null
@@ -34,7 +35,10 @@ class MessageDraft < Message
 
   after_create do
     add_cascading_tag(thread.box.tenant.draft_tag!)
-    add_cascading_tag(author.draft_tag) if author
+    if author
+      add_cascading_tag(author.draft_tag)
+      add_cascading_tag(author.author_tag)
+    end
   end
   after_update_commit ->(message) { EventBus.publish(:message_draft_changed, message) }
 
@@ -75,12 +79,23 @@ class MessageDraft < Message
 
       object_params.fetch(:tags, []).each do |tag_name|
         tag = tenant.user_signature_tags.find_by(name: tag_name)
-        tag.assign_to_message_object(message_object)
-        tag.assign_to_thread(thread)
+        if tag.is_a?(SignatureRequestedFromTag)
+          if message_object.signable?
+            tag.assign_to_message_object(message_object)
+            tag.assign_to_thread(thread)
+          else
+            raise SignatureAssignmentError, "Cannot assign SignatureRequestedFromTag to an object that is not signable"
+          end
+        else
+          tag.assign_to_message_object(message_object)
+          tag.assign_to_thread(thread)
+        end
       end
       thread.box.tenant.signed_externally_tag!.assign_to_message_object(message_object) if message_object.is_signed
 
-      if object_params[:to_be_signed]
+      if ActiveModel::Type::Boolean.new.cast(object_params[:to_be_signed])
+        raise SignatureAssignmentError, "Cannot mark object as to_be_signed if it is not signable" unless message_object.signable?
+
         tenant.signer_group.signature_requested_from_tag&.assign_to_message_object(message_object)
         tenant.signer_group.signature_requested_from_tag&.assign_to_thread(thread)
       end
@@ -90,8 +105,6 @@ class MessageDraft < Message
         blob: Base64.decode64(object_params[:content])
       )
     end
-
-    EventBus.publish(:message_thread_with_message_created, self)
   end
 
   def assign_tags_from_params(tags_params)
@@ -140,7 +153,7 @@ class MessageDraft < Message
   end
 
   def submittable?
-    form_object&.content&.present? && correctly_created? && valid?(:validate_data) && !any_objects_with_requested_signature?
+    box.active? && form_object&.content&.present? && correctly_created? && valid?(:validate_data) && !any_objects_with_requested_signature?
   end
 
   def not_submittable_errors
@@ -205,8 +218,16 @@ class MessageDraft < Message
     EventBus.publish(:message_draft_submitted, self)
   end
 
-  def attachments_allowed?
+  def attachments_editable?
+    not_yet_submitted?
+  end
+
+  def attachments_signable?
     true
+  end
+
+  def signable_objects
+    objects
   end
 
   def original_message
@@ -215,6 +236,10 @@ class MessageDraft < Message
 
   def template_validation_errors
     template&.message_data_validation_errors(self)
+  end
+
+  def all_validation_errors
+    metadata.dig('validation_errors', 'errors').to_a + metadata.dig('validation_errors', 'internal_errors').to_a + template&.message_data_validation_errors(self).to_a
   end
 
   def remove_form_signature
@@ -227,10 +252,13 @@ class MessageDraft < Message
     reload
   end
 
+  def validate_and_process
+    # noop
+  end
+
   private
 
   def validate_data
-    validate_form_object
     validate_objects
     validate_with_message_template
   end
@@ -275,8 +303,15 @@ class MessageDraft < Message
       errors.merge!(object.errors)
     end
 
-    forms = objects.select { |o| o.form? }
-    errors.add(:objects, "Message has to contain exactly one form object") if forms.size != 1
+    form_objects = objects.select { |o| o.form? }
+    errors.add(:objects, "Message has to contain exactly one form object") if form_objects.size != 1
+
+    validate_form_object
+    validate_attachment_objects
+  end
+
+  def validate_attachment_objects
+    # noop
   end
 
   def validate_with_message_template
@@ -296,6 +331,9 @@ class MessageDraft < Message
   end
 
   class InvalidSenderError < RuntimeError
+  end
+
+  class SignatureAssignmentError < StandardError
   end
 
   class MissingFormObjectError < RuntimeError

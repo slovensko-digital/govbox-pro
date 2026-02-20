@@ -13,11 +13,16 @@ module Fs::MessageHelper
   end
 
   def self.build_html_visualization_from_form(message)
-    raise 'Missing Fs::Form XSLT' unless message.form&.xslt_txt
     return unless message.form_object&.unsigned_content
 
-    template = Nokogiri::XSLT(message.form.xslt_txt)
+    xslt = message.form&.xslt_txt
 
-    ActionController::Base.new.render_to_string('fs/messages/_style', layout: false, locals: { message: message }) + ActionController::Base.helpers.simple_format(template.transform(message.form_object.xml_unsigned_content).to_s)
+    raise 'Missing Fs::Form TXT XSLT' unless xslt
+
+    template = Nokogiri::XSLT(xslt)
+    transformed_content = template.transform(message.form_object.xml_unsigned_content).to_s
+    transformed_content = ActionController::Base.helpers.simple_format(transformed_content)
+
+    ActionController::Base.new.render_to_string('fs/messages/_style', layout: false, locals: { message: message }) + transformed_content
   end
 end

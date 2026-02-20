@@ -1,8 +1,0 @@
-<%= button_to admin_tenant_tag_groups_path(@group.tenant, tag_group: { group_id: @group.id, tag_id: @tag.id }), data: { turbo_frame: "modal" } do %>
-  <div class="flex justify-center items-center gap-1 px-2 py-1 rounded-md bg-blue-50 border border-blue-300">
-    <p class="text-sm text-left text-blue-600"><%= @tag.name %></p>
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" class="flex-grow-0 flex-shrink-0 w-3.5 h-3.5 relative" preserveAspectRatio="xMidYMid meet">
-      <path d="M3.5 3.5L10.5 10.5M3.5 10.5L10.5 3.5L3.5 10.5Z" stroke="#3B82F6" stroke-linecap="round" stroke-linejoin="round"></path>
-    </svg>
-  </div>
-<% end %>

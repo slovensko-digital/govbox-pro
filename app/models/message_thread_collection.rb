@@ -23,20 +23,20 @@ class MessageThreadCollection
   # TODO
   # def self.exists_by_query()
 
-  def self.all(scope: MessageThread, search_permissions:, query: "", cursor:)
-    parsed_query = Searchable::MessageThreadQuery.parse(query)
+  def self.all(scope: MessageThread, search_permissions:, query: "", user_tag_name: nil, cursor:)
+    parsed_query = Searchable::MessageThreadQuery.parse(query, user_tag_name: user_tag_name)
     filter = Searchable::MessageThreadQuery.labels_to_ids(
       parsed_query,
       tenant: search_permissions.fetch(:tenant)
     )
 
-    ids, next_cursor, highlights = Searchable::MessageThread.search_ids(
+    ids, next_cursor, highlights, count_estimate = Searchable::MessageThread.search_ids(
       filter,
       search_permissions: search_permissions,
       cursor: cursor,
       direction: DIRECTION,
       per_page: PER_PAGE
-    ).fetch_values(:ids, :next_cursor, :highlights)
+    ).fetch_values(:ids, :next_cursor, :highlights, :count_estimate)
 
     message_thread_scope = scope.
       where(id: ids).
@@ -57,7 +57,8 @@ class MessageThreadCollection
 
     {
       records: records,
-      next_cursor: next_cursor
+      next_cursor: next_cursor,
+      count_estimate:,
     }
   end
 

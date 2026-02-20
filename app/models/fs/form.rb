@@ -17,6 +17,7 @@
 #
 class Fs::Form < ApplicationRecord
   has_many :related_documents, class_name: 'Fs::FormRelatedDocument', foreign_key: 'fs_form_id', dependent: :destroy
+  has_many :attachments, class_name: 'Fs::FormAttachment', foreign_key: 'fs_form_id', dependent: :destroy
 
   def xslt_html
     related_document('CLS_F_XSLT_HTML')
@@ -36,6 +37,10 @@ class Fs::Form < ApplicationRecord
 
   def related_document(type)
     related_documents.where(document_type: type).where("lower(language) = 'sk'")&.first&.data
+  end
+
+  def attachments_allowed?
+    attachments.count == 1
   end
 
   def short_name(include_version: true)

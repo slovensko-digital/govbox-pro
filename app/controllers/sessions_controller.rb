@@ -4,8 +4,7 @@ class SessionsController < ApplicationController
   skip_before_action :set_menu_context
   layout 'login'
 
-  def login
-  end
+  def login; end
 
   def create
     Current.user = User.find_by(email: auth_hash.info.email)
@@ -17,9 +16,7 @@ class SessionsController < ApplicationController
   def destroy
     EventBus.publish(:user_logged_out, User.find_by(id: session[:user_id])) if session[:user_id]
 
-    if session[:upvs_login]
-      redirect_to upvs_logout_path and return
-    end
+    redirect_to upvs_logout_path and return if session[:upvs_login]
 
     clean_session
 

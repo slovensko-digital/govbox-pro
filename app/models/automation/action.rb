@@ -23,7 +23,8 @@ module Automation
       'Automation::FireWebhookAction',
       'Automation::ChangeMessageThreadTitleAction',
       'Automation::AddFormObjectIdentifierToMessageThreadTitleAction',
-      'Automation::AddSignatureRequestedFromAuthorMessageThreadTagAction'
+      'Automation::AddSignatureRequestedFromAuthorMessageThreadTagAction',
+      'Automation::AddMessageExportMetadataBoxNameAction'
     ].freeze
 
     def tag_list
@@ -127,6 +128,17 @@ module Automation
 
     def object_based?
       true
+    end
+  end
+
+  class AddMessageExportMetadataBoxNameAction < Automation::Action
+    def run!(thing, _event)
+      thing.export_metadata["box_name"] = value
+      thing.save!
+    end
+
+    def object_based?
+      false
     end
   end
 end

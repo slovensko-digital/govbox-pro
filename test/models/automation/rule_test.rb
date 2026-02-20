@@ -70,7 +70,7 @@ class Automation::RuleTest < ActiveSupport::TestCase
     assert_not_includes message.tags, tags(:ssd_print)
   end
 
-  test 'should run an automation on message created AttachmentContainsConidition AddMessageThreadTagAction' do
+  test 'should run an automation on message created AttachmentContainsConidition AddMessageThreadTagAction AddMessageExportMetadataBoxNameAction' do
     govbox_message = govbox_messages(:ssd_crac)
 
     Govbox::Message.create_message_with_thread!(govbox_message)
@@ -79,6 +79,7 @@ class Automation::RuleTest < ActiveSupport::TestCase
 
     assert_includes message.thread.tags, tags(:ssd_crac_success)
     assert_not_includes message.tags, tags(:ssd_crac_success)
+    assert_equal "BOX NAME", message.export_metadata["box_name"]
   end
 
   test 'should run an automation on message created outbox BooleanCondition, edesk_class MessageMetadataValueNotCondition UnassignMessageThreadTagAction if conditions satisfied' do
@@ -92,6 +93,19 @@ class Automation::RuleTest < ActiveSupport::TestCase
     travel_to(15.minutes.from_now) { GoodJob.perform_inline }
 
     assert_not_includes message_thread.tags.reload, tag
+  end
+
+  test 'should run an automation on message - adds s Potvrdenkou tag if conditions satisfied' do
+    tag = tags(:accountants_s_potvrdenkou)
+    message_thread = message_threads(:ssd_main_done)
+    inbox_message = messages(:fs_accountants_thread1_inbox_message)
+
+    assert_not_includes message_thread.tags, tag
+
+    Automation::ApplyRulesForEventJob.perform_later("message_created", inbox_message)
+    travel_to(15.minutes.from_now) { GoodJob.perform_inline }
+
+    assert_includes inbox_message.thread.tags.reload, tag
   end
 
   test 'should not run an automation on message created outbox BooleanCondition, edesk_class MessageMetadataValueNotCondition UnassignMessageThreadTagAction if outbox message delivered' do
