@@ -62,6 +62,10 @@ class Tag < ApplicationRecord
     tag_groups_count.positive?
   end
 
+  def error?
+    false
+  end
+
   def destroyable?
     raise NotImplementedError
   end
