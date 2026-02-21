@@ -52,7 +52,7 @@ jobs:
         uses: actions/upload-artifact@v6
         if: failure()
         with:
-          name: screenshots
+          name: screenshots.zip
           path: ${{ github.workspace }}/tmp/screenshots
           if-no-files-found: ignore
       - run: bundle exec rails test:integration
