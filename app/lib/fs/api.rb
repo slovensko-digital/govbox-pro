@@ -77,7 +77,7 @@ module Fs
         content: content,
         allow_warn_status: allow_warn_status,
         attachments: attachments
-      }, jwt_header(obo).merge(fs_credentials_header))
+      }.to_json, jwt_header(obo).merge(fs_credentials_header).merge({"Content-Type": "application/json"}))
     end
 
     def submission_url
