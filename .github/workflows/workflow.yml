@@ -48,6 +48,13 @@ jobs:
       - run: bundle exec rails db:setup --trace
       - run: bundle exec rails test
       - run: bundle exec rails test:system
+      - name: Keep screenshots from failed system tests
+        uses: actions/upload-artifact@v6
+        if: failure()
+        with:
+          name: screenshots
+          path: ${{ github.workspace }}/tmp/screenshots
+          if-no-files-found: ignore
       - run: bundle exec rails test:integration
 
   gitlab-push:
