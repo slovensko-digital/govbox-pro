@@ -25,6 +25,8 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   driver = ENV['DRIVER'] ? ENV['DRIVER'].to_sym : :headless_chrome
   driven_by :selenium, using: driver, screen_size: [1400, 1400]
 
+  Capybara.default_max_wait_time = 5
+
   include AuthHelper
   include PagePartsHelper
   include TenantHelper
