@@ -42,7 +42,6 @@ class MessageDraftsSigningTest < ApplicationSystemTestCase
     visit message_thread_path(@thread)
 
     within_message_in_thread(@message) do
-      click_button "option-menu-button"
       click_link "Podpísať"
     end
 
