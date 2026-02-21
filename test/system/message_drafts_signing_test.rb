@@ -16,6 +16,7 @@ class MessageDraftsSigningTest < ApplicationSystemTestCase
       click_link "Vyžiadať podpis"
     end
 
+    assert_text "Dokumenty na podpis"
     uncheck "Hlavný dokument"
     click_button "Vybrať podpisujúcich"
 
@@ -42,7 +43,6 @@ class MessageDraftsSigningTest < ApplicationSystemTestCase
     visit message_thread_path(@thread)
 
     within_message_in_thread(@message) do
-      click_button "option-menu-button"
       click_link "Podpísať"
     end
 

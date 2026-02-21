@@ -72,7 +72,7 @@ group :development do
 end
 
 group :test do
-  gem 'selenium-webdriver'
+  gem 'selenium-webdriver', '~> 4.27.0'
   gem 'capybara'
   gem 'capybara-screenshot'
   gem 'webmock'

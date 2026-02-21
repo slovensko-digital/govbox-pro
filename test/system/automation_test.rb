@@ -16,9 +16,11 @@ class AutomationTest < ApplicationSystemTestCase
     click_button "Pokračovať"
 
     click_button "Pridať podmienku"
+    assert_selector "#conditions turbo-frame"
     click_button "Pokračovať"
 
     click_button "Pridať akciu"
+    assert_selector "button[title='Zmazať akciu']"
     click_button "Uložiť zmeny"
 
     assert_text "Nová správa, kde Schránka správy je"
@@ -42,12 +44,17 @@ class AutomationTest < ApplicationSystemTestCase
     click_button "Pridať podmienku"
     click_button "Pokračovať"
 
+    assert_selector "button[title='Zmazať akciu']"
     click_button "Zmazať akciu"
+    assert_no_selector "button[title='Zmazať akciu']"
     click_button "Pridať akciu"
+    assert_selector "button[title='Zmazať akciu']"
     click_button "Uložiť zmeny"
 
     # TODO assert_text "Changed rule name"
-    assert_text "Pridaj štítok na vlákno Finance"
+    within("##{dom_id(automation_rules(:one))}") do
+      assert_text "Pridaj štítok na vlákno"
+    end
   end
 
   test "admin can remove an automation rule" do
