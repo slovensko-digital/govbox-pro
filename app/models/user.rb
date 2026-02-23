@@ -32,7 +32,6 @@ class User < ApplicationRecord
   has_many :exports
   has_many :identities, dependent: :destroy
 
-
   validates_presence_of :name, :email
   validates_uniqueness_of :name, :email, scope: :tenant_id, case_sensitive: false
 

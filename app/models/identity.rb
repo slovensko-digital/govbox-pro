@@ -12,7 +12,7 @@
 class Identity < OmniAuth::Identity::Models::ActiveRecord
   auth_key :email
 
-  belongs_to :user, optional: true
+  belongs_to :user
 
   validates :email, presence: true, uniqueness: true
 end
