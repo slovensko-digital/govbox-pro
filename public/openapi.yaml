@@ -1089,7 +1089,7 @@ components:
               description: Príloha 1
               is_signed: true
               mimetype: application/vnd.etsi.asic-e+zip
-              form: false
+              object_type: ATTACHMENT
               content: base64 asice content
         tags:
           description: Štítky, ktorými majú byť správy označené
@@ -1159,7 +1159,7 @@ components:
               object_type:
                 description: Typ objektu
                 type: string
-                enum: [ 'FORM' ]
+                enum: [ 'FORM', 'ATTACHMENT' ]
               content:
                 description: Obsah objektu zakódovaný podľa Base64
                 type: string
@@ -1174,12 +1174,18 @@ components:
               - object_type
               - content
           example:
-            - name: svdph20.xml
-              description: Súhrnný výkaz pre daň z pridanej hodnoty (platný od 1.1.2020)
+            - name: uctovna_zavierka.xml
+              description: Účtovná závierka mikro účtovnej jednotky - ver.3
               is_signed: false
               mimetype: text/xml
               object_type: FORM
               content: base64 XML content
+            - name: priloha1.pdf
+              description: Príloha 1
+              is_signed: false
+              mimetype: application/pdf
+              object_type: ATTACHMENT
+              content: base64 PDF content
         tags:
           description: Štítky, ktorými majú byť správy označené
           type: array
