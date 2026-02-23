@@ -193,6 +193,8 @@ class MessageThreadsTest < ApplicationSystemTestCase
       click_button "Odpovedať"
     end
 
+    assert_selector "#new_drafts input"
+
     within '#new_drafts' do
       fill_in "message_draft_Text", with: "Testovacie telo"
       fill_in "message_draft_Predmet", with: "Testovaci predmet"
