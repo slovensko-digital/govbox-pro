@@ -82,11 +82,11 @@ module Automation
 
   class MetadataValueCondition < Automation::Condition
     validates :value, presence: true
-    VALID_ATTR_LIST = %w[sender_uri recipient_uri edesk_class fs_submission_status fs_message_type].freeze
+    VALID_ATTR_LIST = %w[sender_uri recipient_uri edesk_class fs_submission_status fs_message_type fs_submission_verification_status.name fs_submission_verification_status.description].freeze
     validates :attr, inclusion: { in: VALID_ATTR_LIST }
 
     def satisfied?(thing)
-      thing.metadata && thing.metadata[attr]&.match?(value)
+      thing.metadata && thing.metadata.dig(*attr.split('.'))&.match?(value)
     end
 
     def cleanup_record

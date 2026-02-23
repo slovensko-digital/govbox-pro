@@ -1,0 +1,64 @@
+<%= turbo_stream.update "boxes-and-tags-search-results" do %>
+  <% if !params[:name_search].empty? %>
+    <div class="flex flex-col absolute z-50 mt-2 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+      <div class="flex flex-col justify-start items-start rounded-lg bg-white border border-gray-300" style="box-shadow: 1px 1px 4px 0 rgba(0,0,0,0.1);">
+        <% if (@boxes.present? || @tags.present?) %>
+          <div class="flex justify-start items-center self-stretch gap-6 p-4 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
+            <div class="flex flex-col justify-start items-start flex-grow relative">
+              <p class="self-stretch flex-grow text-m font-semibold text-left text-gray-900"><%= t('admin.groups.permissions.add_popup.title.boxes_and_tags') %></p>
+            </div>
+            <%= render Common::CloseButtonComponent.new(link_to: edit_permissions_admin_tenant_group_path(Current.tenant, @group), target_frame: "_top") %>
+          </div>
+          <% if @boxes.present? %>
+            <div class="flex flex-wrap gap-2 p-4 max-w-3xl">
+              <% @boxes.each do |box| %>
+                <%= render layout: "admin/permissions/item_add", locals: {
+                      url: admin_tenant_group_box_groups_path(Current.tenant, @group),
+                      params: { box_id: box.id, group_id: @group.id }
+                    } do %>
+                  <div class="flex justify-center items-center gap-2 px-3 py-1.5 rounded-full bg-gray-100 hover:bg-gray-200 border border-gray-300">
+                    <span class="text-xs font-medium text-gray-500 uppercase tracking-wide"><%= t('admin.groups.permissions.type.box') %></span>
+                    <p class="text-sm font-medium text-gray-900"><%= box.name %></p>
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4">
+                      <path d="M10 5V10M10 10V15M10 10H15M10 10H5" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                  </div>
+                <% end %>
+              <% end %>
+            </div>
+          <% end %>
+          <% if @tags.present? %>
+            <div class="flex flex-wrap gap-2 p-4 max-w-3xl <%= 'border-t border-gray-200' if @boxes.present? %>">
+              <% @tags.each do |tag| %>
+                <%= render layout: "admin/permissions/item_add", locals: {
+                      url: admin_tenant_group_tag_groups_path(Current.tenant, @group),
+                      params: { tag_group: { tag_id: tag.id, group_id: @group.id } }
+                    } do %>
+                  <div class="flex justify-center items-center gap-2 px-3 py-1.5 rounded-md bg-blue-50 hover:bg-blue-100 border border-blue-300">
+                    <span class="text-xs font-medium text-blue-400 uppercase tracking-wide"><%= t('admin.groups.permissions.type.tag') %></span>
+                    <p class="text-sm text-left text-blue-600"><%= tag.name %></p>
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" class="flex-grow-0 flex-shrink-0 w-3.5 h-3.5 relative" preserveAspectRatio="xMidYMid meet">
+                      <path d="M3.5 3.5L10.5 10.5M3.5 10.5L10.5 3.5L3.5 10.5Z" stroke="#3B82F6" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                  </div>
+                <% end %>
+              <% end %>
+            </div>
+          <% end %>
+        <% else %>
+          <div class="flex flex-col justify-start items-start self-stretch">
+            <div class="flex justify-start items-center self-stretch gap-6 p-4 border-t-0 border-r-0 border-b border-l-0 border-gray-200">
+              <div class="flex flex-col justify-start items-start flex-grow relative">
+                <p class="self-stretch flex-grow text-m font-semibold text-left text-gray-900"><%= t('admin.groups.permissions.add_popup.title.boxes_and_tags') %></p>
+              </div>
+              <%= render Common::CloseButtonComponent.new(link_to: edit_permissions_admin_tenant_group_path(Current.tenant, @group), target_frame: "_top") %>
+            </div>
+            <div class="flex justify-start items-center self-stretch gap-4 p-4">
+              <%= t('admin.groups.permissions.add_popup.empty.boxes_and_tags') %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+<% end %>

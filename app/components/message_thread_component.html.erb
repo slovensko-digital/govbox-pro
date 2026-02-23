@@ -1,4 +1,4 @@
-<div id="messages" class="flex flex-col justify-stretch items-stretch overflow-x-hidden" data-test="thread-detail">
+<div id="messages" class="flex flex-col justify-stretch items-stretch overflow-x-hidden" data-test="thread-detail" data-controller="mark-read" data-mark-read-url-value="<%= mark_read_message_thread_path(@message_thread) %>">
   <%= render MessageThreadHeaderComponent.new(@message_thread, @thread_tags) %>
   <%= render MessageThreadNoteComponent.new(@message_thread.message_thread_note) %>
   <div class="flex flex-col justify-stretch items-stretch gap-2 pt-4 pb-16 sm:px-4" data-test="messages">

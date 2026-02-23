@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_01_27_090434) do
+ActiveRecord::Schema[7.1].define(version: 2026_02_10_152312) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -162,6 +162,16 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_27_090434) do
     t.index ["tenant_id"], name: "index_automation_webhooks_on_tenant_id"
   end
 
+  create_table "box_groups", force: :cascade do |t|
+    t.bigint "box_id", null: false
+    t.bigint "group_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["box_id", "group_id"], name: "index_box_groups_on_box_id_and_group_id", unique: true
+    t.index ["box_id"], name: "index_box_groups_on_box_id"
+    t.index ["group_id"], name: "index_box_groups_on_group_id"
+  end
+
   create_table "boxes", force: :cascade do |t|
     t.string "name", null: false
     t.string "uri", null: false
@@ -215,7 +225,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_27_090434) do
 
   create_table "filters", force: :cascade do |t|
     t.bigint "tenant_id", null: false
-    t.bigint "author_id", null: false
+    t.bigint "author_id"
     t.string "name", null: false
     t.string "query", null: false
     t.integer "position", null: false
@@ -232,6 +242,26 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_27_090434) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["box_id"], name: "index_folders_on_box_id"
+  end
+
+  create_table "fs_form_attachment_groups", force: :cascade do |t|
+    t.string "identifier", null: false
+    t.string "name"
+    t.text "mime_types", default: [], array: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["identifier"], name: "index_fs_form_attachment_groups_on_identifier", unique: true
+  end
+
+  create_table "fs_form_attachments", force: :cascade do |t|
+    t.integer "min_occurrences", default: 0, null: false
+    t.integer "max_occurrences", default: 99, null: false
+    t.bigint "fs_form_id", null: false
+    t.bigint "fs_form_attachment_group_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["fs_form_attachment_group_id"], name: "index_fs_form_attachments_on_fs_form_attachment_group_id"
+    t.index ["fs_form_id"], name: "index_fs_form_attachments_on_fs_form_id"
   end
 
   create_table "fs_form_related_documents", force: :cascade do |t|
@@ -632,7 +662,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_27_090434) do
     t.enum "color", enum_type: "color"
     t.index ["owner_id"], name: "index_tags_on_owner_id"
     t.index ["tenant_id", "type", "name"], name: "index_tags_on_tenant_id_and_type_and_name", unique: true
-    t.index ["tenant_id", "type"], name: "signings_tags", unique: true, where: "((type)::text = ANY (ARRAY[('SignatureRequestedTag'::character varying)::text, ('SignedTag'::character varying)::text]))"
+    t.index ["tenant_id", "type"], name: "signings_tags", unique: true, where: "((type)::text = ANY ((ARRAY['SignatureRequestedTag'::character varying, 'SignedTag'::character varying])::text[]))"
     t.index ["tenant_id"], name: "index_tags_on_tenant_id"
   end
 
@@ -643,6 +673,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_27_090434) do
     t.string "feature_flags", default: [], array: true
     t.string "api_token_public_key"
     t.jsonb "settings", default: {}, null: false
+    t.string "signature_request_mode", default: "signer_group", null: false
   end
 
   create_table "upvs_form_related_documents", force: :cascade do |t|
@@ -702,6 +733,8 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_27_090434) do
   add_foreign_key "automation_rules", "tenants"
   add_foreign_key "automation_rules", "users"
   add_foreign_key "automation_webhooks", "tenants", on_delete: :cascade
+  add_foreign_key "box_groups", "boxes"
+  add_foreign_key "box_groups", "groups"
   add_foreign_key "boxes", "tenants"
   add_foreign_key "boxes_api_connections", "api_connections"
   add_foreign_key "boxes_api_connections", "boxes"
@@ -712,6 +745,8 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_27_090434) do
   add_foreign_key "filters", "tenants", on_delete: :cascade
   add_foreign_key "filters", "users", column: "author_id", on_delete: :nullify
   add_foreign_key "folders", "boxes"
+  add_foreign_key "fs_form_attachments", "fs_form_attachment_groups"
+  add_foreign_key "fs_form_attachments", "fs_forms"
   add_foreign_key "fs_form_related_documents", "fs_forms"
   add_foreign_key "govbox_folders", "govbox_folders", column: "parent_folder_id"
   add_foreign_key "govbox_messages", "govbox_folders", column: "folder_id"

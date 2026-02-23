@@ -106,11 +106,10 @@ module Utils
     when '.pdf'
       begin
         reader = PDF::Reader.new(StringIO.new(content))
+        reader.objects.to_a.flatten.select { |o| o.is_a?(Hash) }.select { |o| o[:Type] == :Sig }.first.present?
       rescue StandardError
         return false # NOTE: if pdf reading fails it is not signed
       end
-
-      reader.objects.to_a.flatten.select { |o| o.is_a?(Hash) }.select { |o| o[:Type] == :Sig }.first.present?
     else
       false
     end

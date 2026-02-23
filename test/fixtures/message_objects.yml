@@ -155,6 +155,30 @@ fs_accountants_outbox_xml_form:
   mimetype: application/xml
   object_type: FORM
 
+fs_accountants_draft_vp_danv24_form:
+  message: fs_accountants_draft_vp_danv24
+  name: vp_danv24.xml
+  mimetype: application/xml
+  object_type: FORM
+
+fs_accountants_draft_uzmujv14_form:
+  message: fs_accountants_draft_uzmujv14
+  name: uzmujv14.xml
+  mimetype: application/xml
+  object_type: FORM
+
+fs_accountants_draft_uzmujv14_form2:
+  message: fs_accountants_draft_uzmujv14_with_attachment
+  name: uzmujv14.xml
+  mimetype: application/xml
+  object_type: FORM
+
+fs_accountants_draft_uzmujv14_attachment:
+  message: fs_accountants_draft_uzmujv14_with_attachment
+  name: priloha.pdf
+  mimetype: application/pdf
+  object_type: ATTACHMENT
+
 fs_accountants_draft_form:
   message: fs_accountants_draft
   name: SVDPHv20.asice

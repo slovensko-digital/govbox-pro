@@ -1,6 +1,29 @@
 require "test_helper"
 
 class Fs::ApiConnectionTest < ActiveSupport::TestCase
+  test ".boxify creates boxes and assigns owner access rights" do
+    original_fs_boxes_count = Fs::Box.count
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :get_subjects, [
+      {"name" => "SSD s.r.o." , "dic" => "2120515056" , "subject_id" => SecureRandom.uuid, "authorization_type" => "6"},
+      {"name" => "SD" , "dic" => "2120264674" , "subject_id" => SecureRandom.uuid, "authorization_type" => "6"},
+    ]
+
+    api_connection = api_connections(:fs_api_connection4)
+    api_connection_owner = api_connection.owner
+
+    FsEnvironment.fs_client.stub :api, fs_api do
+      api_connection.boxify
+    end
+
+    assert_equal original_fs_boxes_count + 2, Fs::Box.count
+    assert api_connection.boxes.find_by(name: 'FS SSD s.r.o.').present?
+    assert api_connection.boxes.find_by(name: 'FS SSD s.r.o.').box_groups.exists?(group: api_connection_owner.user_group)
+    assert api_connection.boxes.find_by(name: 'FS SD').present?
+    assert api_connection.boxes.find_by(name: 'FS SD').box_groups.exists?(group: api_connection_owner.user_group)
+  end
+
   test ".boxify sets message_drafts_import_enabled attribute in settings" do
     original_fs_boxes_count = Fs::Box.count
 

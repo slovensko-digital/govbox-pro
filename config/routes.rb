@@ -31,9 +31,11 @@ Rails.application.routes.draw do
         get :show_members, on: :member
         get :edit_permissions, on: :member
         post :search_non_members, on: :member
-        post :search_non_tags, on: :member
+        post :search_boxes_and_tags, on: :member
         resources :group_memberships do
         end
+        resources :box_groups, only: [:create, :destroy]
+        resources :tag_groups, only: [:create, :destroy]
       end
 
       resources :users
@@ -54,7 +56,7 @@ Rails.application.routes.draw do
       end
 
       resources :tags
-      resources :tag_groups
+      resources :permissions, only: [:index]
       resources :automation_webhooks
     end
     resources :audit_logs, only: :index do
@@ -112,6 +114,7 @@ Rails.application.routes.draw do
     get :history, on: :member
     get :confirm_unarchive, on: :member
     patch :archive, on: :member
+    post :mark_read, on: :member
     resources :messages
     resources :message_thread_notes
     scope module: 'message_threads' do

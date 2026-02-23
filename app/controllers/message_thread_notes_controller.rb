@@ -7,7 +7,7 @@ class MessageThreadNotesController < ApplicationController
     if @message_thread_note.update(message_thread_note_params)
       redirect_back_or_to message_threads_path(@message_thread)
     else
-      render :edit, status: :unprocessable_entity
+      render :edit, status: :unprocessable_content
     end
   end
 
@@ -27,7 +27,7 @@ class MessageThreadNotesController < ApplicationController
     if @message_thread_note.save
       redirect_back_or_to message_threads_path(@message_thread)
     else
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
 

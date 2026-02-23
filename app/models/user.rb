@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: users
@@ -23,14 +25,16 @@ class User < ApplicationRecord
   has_many :group_memberships, dependent: :destroy
   has_many :groups, through: :group_memberships
   has_many :own_tags, class_name: 'Tag', inverse_of: :owner, foreign_key: :owner_id, dependent: :nullify
-  has_many :message_drafts, foreign_key: :author_id
+  has_many :message_drafts, foreign_key: :author_id, dependent: :destroy
+  has_many :messages, foreign_key: :author_id, dependent: :nullify
   has_many :automation_rules, class_name: 'Automation::Rule', dependent: :nullify
-  has_many :filters, foreign_key: :author_id
-  has_many :filter_subscriptions
-  has_many :notifications
+  has_many :filters, foreign_key: :author_id, dependent: :nullify
+  has_many :filter_subscriptions, dependent: :destroy
+  has_many :notifications, dependent: :destroy
   has_one :sticky_note, dependent: :destroy
   has_many :exports
   has_many :identities, dependent: :destroy
+  has_many :api_connections, foreign_key: :owner_id, dependent: :destroy
 
   validates_presence_of :name, :email
   validates_uniqueness_of :name, :email, scope: :tenant_id, case_sensitive: false
@@ -58,6 +62,16 @@ class User < ApplicationRecord
               .where("tag_groups.tag_id = tags.id")
               .where(group_memberships: { user_id: id })
               .arel.exists
+    )
+  end
+
+  def accessible_boxes
+    Box.where(
+      BoxGroup.select(1)
+                      .joins(:group_memberships)
+                      .where("box_groups.box_id = boxes.id")
+                      .where(group_memberships: { user_id: id })
+                      .arel.exists
     )
   end
 

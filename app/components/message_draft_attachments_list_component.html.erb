@@ -18,7 +18,7 @@
             <%
               attachments_form_id = "#{dom_id(@message, :attachments)}_form"
             %>
-            <%= form_tag message_message_objects_path(@message), id: attachments_form_id, method: :post, multipart: true do %>
+            <%= form_tag message_message_objects_path(@message), id: attachments_form_id, method: :post, multipart: true, "data-turbo": false do %>
               <%= content_tag(:div,
                 {
                   "data-controller": "message-drafts",

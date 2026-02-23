@@ -2,13 +2,14 @@
 #
 # Table name: tenants
 #
-#  id                   :bigint           not null, primary key
-#  api_token_public_key :string
-#  feature_flags        :string           default([]), is an Array
-#  name                 :string           not null
-#  settings             :jsonb            not null
-#  created_at           :datetime         not null
-#  updated_at           :datetime         not null
+#  id                     :bigint           not null, primary key
+#  api_token_public_key   :string
+#  feature_flags          :string           default([]), is an Array
+#  name                   :string           not null
+#  settings               :jsonb            not null
+#  signature_request_mode :string           default("signer_group"), not null
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
 #
 class Tenant < ApplicationRecord
   has_many :boxes, dependent: :destroy
@@ -50,9 +51,12 @@ class Tenant < ApplicationRecord
 
   validates_presence_of :name
 
-  ALL_FEATURE_FLAGS = [:audit_log, :archive, :api, :message_draft_import, :fs_api, :fs_sync, :upvs, :fs_submissions_with_attachments]
+  ALL_FEATURE_FLAGS = [:audit_log, :archive, :api, :message_draft_import, :fs_api, :fs_sync, :upvs]
 
   PDF_SIGNATURE_FORMATS = %w[PAdES XAdES CAdES]
+  SIGNATURE_REQUEST_MODES = %w[signer_group author].freeze
+
+  validates :signature_request_mode, inclusion: { in: SIGNATURE_REQUEST_MODES }
 
   def set_pdf_signature_format(pdf_signature_format)
     raise "Unknown pdf_signature_format #{pdf_signature_format}" unless pdf_signature_format.in? PDF_SIGNATURE_FORMATS

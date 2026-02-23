@@ -91,6 +91,132 @@ class Fs::MessageDraftTest < ActiveSupport::TestCase
     EventBus.class_variable_get(:@@subscribers_map)[:message_created].pop
   end
 
+  test "validate_and_process marks message as invalid if there are validation errors" do
+    message_draft = messages(:fs_accountants_draft_uzmujv14)
+    message_draft.validate_and_process
+
+    assert_equal 'invalid', message_draft.metadata['status']
+    assert message_draft.thread.tags.include?(message_draft.tenant.submission_error_tag)
+    assert_includes message_draft.metadata['validation_errors']['internal_errors'], "Chýba požadovaná príloha pre UVPOD3_UA (minimum je 1)."
+  end
+
+  test "validate_and_process unassigns signature requested tags if there are validation errors" do
+    message_draft = messages(:fs_accountants_draft_uzmujv14)
+    signature_requested_tag = tags(:accountants_signers_signature_requested)
+    message_draft.thread.assign_tag(signature_requested_tag)
+    message_draft.form_object.assign_tag(signature_requested_tag)
+    message_draft.validate_and_process
+
+    assert_not message_draft.thread.tags.include?(signature_requested_tag)
+    assert_not message_draft.form_object.tags.include?(signature_requested_tag)
+  end
+
+  test "validate_and_process sets status to created if no errors or warnings" do
+    message_draft = messages(:fs_accountants_outbox)
+    message_draft.validate_and_process
+
+    assert_equal 'created', message_draft.metadata['status']
+    assert_not message_draft.metadata['validation_errors']['internal_errors'].any?
+  end
+
+  test "validate_and_process removes submission error tag if no errors or warnings" do
+    message_draft = messages(:fs_accountants_outbox)
+    message_draft.thread.assign_tag(message_draft.tenant.submission_error_tag)
+    message_draft.validate_and_process
+
+    assert_not message_draft.thread.tags.include?(message_draft.tenant.submission_error_tag)
+  end
+
+  test "validate_and_process adds submission error tag if warnings exist" do
+    message_draft = messages(:fs_accountants_outbox)
+    message_draft.metadata['validation_errors']['warnings'] << "A warning"
+    message_draft.validate_and_process
+
+    assert_equal 'created', message_draft.metadata['status']
+    assert message_draft.thread.tags.include?(message_draft.tenant.submission_error_tag)
+  end
+
+  test "validate_and_process requests signature if required and not signed" do
+    message_draft = messages(:fs_accountants_outbox)
+    message_draft.validate_and_process
+
+    assert_equal 'created', message_draft.metadata['status']
+    assert message_draft.form_object.tags.any? { |tag| tag.type == 'SignatureRequestedFromTag' }
+    assert message_draft.thread.tags.any? { |tag| tag.type == 'SignatureRequestedFromTag' }
+  end
+
+  test "signable_by_author? returns false if author is not a signer" do
+    author = users(:basic)
+    author.group_memberships.where(group: author.tenant.signer_group).destroy_all
+
+    box = boxes(:fs_accountants)
+    box.api_connections.destroy_all
+    box.api_connections << api_connections(:fs_api_connection1).tap { |c| c.update(owner: nil) }
+
+    message_draft = Fs::MessageDraft.new(author: author, thread: MessageThread.new(box: box))
+
+    assert_not message_draft.signable_by_author?
+  end
+
+  test "signable_by_author? returns true if single global api connection without owner exists" do
+    author = users(:accountants_basic)
+    author.groups << author.tenant.signer_group
+
+    box = boxes(:fs_accountants)
+    box.api_connections.destroy_all
+
+    box.api_connections << api_connections(:fs_api_connection1).tap { |c| c.update(owner: nil) }
+
+    message_draft = Fs::MessageDraft.new(author: author, thread: MessageThread.new(box: box))
+
+    assert message_draft.signable_by_author?
+  end
+
+  test "signable_by_author? returns true if author owns an api connection for the box" do
+    author = users(:accountants_basic)
+    author.groups << author.tenant.signer_group
+
+    box = boxes(:fs_accountants)
+    box.api_connections.destroy_all
+
+    box.api_connections << api_connections(:fs_api_connection1).tap { |c| c.update(owner: author) }
+
+    message_draft = Fs::MessageDraft.new(author: author, thread: MessageThread.new(box: box))
+
+    assert message_draft.signable_by_author?
+  end
+
+  test "signable_by_author? returns false if only colleagues own api connections" do
+    author = users(:accountants_basic)
+    colleague = users(:accountants_user2)
+    author.groups << author.tenant.signer_group
+
+    box = boxes(:fs_accountants)
+    box.api_connections.destroy_all
+
+    box.api_connections << api_connections(:fs_api_connection1).tap { |c| c.update(owner: colleague) }
+
+    message_draft = Fs::MessageDraft.new(author: author, thread: MessageThread.new(box: box))
+
+    assert_not message_draft.signable_by_author?
+  end
+
+  test "signable_by_author? returns true if author owns one of multiple connections on the box" do
+    author = users(:accountants_basic)
+    colleague = users(:accountants_user2)
+    author.groups << author.tenant.signer_group
+
+    box = boxes(:fs_accountants)
+    box.api_connections.destroy_all
+
+    box.api_connections << api_connections(:fs_api_connection1).tap { |c| c.update(owner: colleague) }
+    box.api_connections << api_connections(:fs_api_connection2).tap { |c| c.update(owner: author) }
+
+    message_draft = Fs::MessageDraft.new(author: author, thread: MessageThread.new(box: box))
+
+    assert message_draft.signable_by_author?
+  end
+
   test "submittable? returns false for inactive box" do
     message_draft = messages(:fs_accountants_draft)
     message_draft.metadata["status"] = "created"
