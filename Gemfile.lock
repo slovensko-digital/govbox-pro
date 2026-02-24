@@ -176,7 +176,7 @@ GEM
       domain_name (~> 0.5)
     i18n (1.14.1)
       concurrent-ruby (~> 1.0)
-    importmap-rails (2.2.3)
+    importmap-rails (2.0.1)
       actionpack (>= 6.0.0)
       activesupport (>= 6.0.0)
       railties (>= 6.0.0)
@@ -257,14 +257,16 @@ GEM
       logger
       rack (>= 2.2.3)
       rack-protection
-    omniauth-google-oauth2 (1.1.3)
+    omniauth-google-oauth2 (1.1.1)
       jwt (>= 2.0)
-      oauth2 (~> 2.0)
+      oauth2 (~> 2.0.6)
       omniauth (~> 2.0)
-      omniauth-oauth2 (~> 1.8)
-    omniauth-identity (3.0.9)
-      bcrypt
-      omniauth
+      omniauth-oauth2 (~> 1.8.0)
+    omniauth-identity (3.1.5)
+      bcrypt (~> 3.1)
+      mutex_m (~> 0.1)
+      omniauth (>= 1)
+      version_gem (~> 1.1, >= 1.1.9)
     omniauth-microsoft_graph (2.1.0)
       jwt (~> 2.0)
       omniauth (~> 2.0)
@@ -309,19 +311,20 @@ GEM
       activesupport (>= 3.0.0)
     raabro (1.4.0)
     racc (1.8.1)
-    rack (2.2.22)
+    rack (3.2.4)
     rack-attack (6.7.0)
       rack (>= 1.0, < 4)
-    rack-protection (3.2.0)
+    rack-protection (4.2.1)
       base64 (>= 0.1.0)
-      rack (~> 2.2, >= 2.2.4)
-    rack-session (1.0.2)
-      rack (< 3)
+      logger (>= 1.6.0)
+      rack (>= 3.0.0, < 4)
+    rack-session (2.0.0)
+      rack (>= 3.0.0)
     rack-test (2.1.0)
       rack (>= 1.3)
-    rackup (1.0.1)
-      rack (< 3)
-      webrick
+    rackup (2.1.0)
+      rack (>= 3)
+      webrick (~> 1.8)
     rails (7.1.6)
       actioncable (= 7.1.6)
       actionmailbox (= 7.1.6)
@@ -447,7 +450,7 @@ GEM
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.5.0)
     uri (0.13.0)
-    version_gem (1.1.3)
+    version_gem (1.1.9)
     view_component (3.10.0)
       activesupport (>= 5.2.0, < 8.0)
       concurrent-ruby (~> 1.0)
@@ -503,7 +506,7 @@ DEPENDENCIES
   jwt
   listen
   omniauth-google-oauth2
-  omniauth-identity
+  omniauth-identity (~> 3.1, >= 3.1.5)
   omniauth-microsoft_graph
   omniauth-rails_csrf_protection
   omniauth-saml (~> 2.2.1)
@@ -514,7 +517,6 @@ DEPENDENCIES
   pry-rails
   puma (~> 6.4)
   pundit
-  rack (< 3)
   rack-attack
   rails (~> 7.1.5)
   rails-i18n

@@ -26,7 +26,7 @@ gem 'clockwork'
 gem 'good_job', '= 3.29.4'
 
 # Auth
-gem 'omniauth-identity'
+gem 'omniauth-identity', '~> 3.1', '>= 3.1.5'
 gem 'omniauth-google-oauth2'
 gem 'omniauth-microsoft_graph'
 gem 'omniauth-saml', '~> 2.2.1'
@@ -80,4 +80,3 @@ group :test do
 end
 
 gem "bcrypt", "~> 3.1"
-gem 'rack', "< 3"
