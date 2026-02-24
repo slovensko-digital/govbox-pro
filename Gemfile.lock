@@ -506,7 +506,7 @@ DEPENDENCIES
   jwt
   listen
   omniauth-google-oauth2
-  omniauth-identity (~> 3.1, >= 3.1.5)
+  omniauth-identity
   omniauth-microsoft_graph
   omniauth-rails_csrf_protection
   omniauth-saml (~> 2.2.1)
