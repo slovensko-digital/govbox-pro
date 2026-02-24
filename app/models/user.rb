@@ -32,7 +32,7 @@ class User < ApplicationRecord
   has_many :filter_subscriptions, dependent: :destroy
   has_many :notifications, dependent: :destroy
   has_one :sticky_note, dependent: :destroy
-  has_many :exports
+  has_many :exports, dependent: :destroy
   has_many :identities, dependent: :destroy
   has_many :api_connections, foreign_key: :owner_id, dependent: :destroy
 
