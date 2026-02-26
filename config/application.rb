@@ -61,7 +61,8 @@ module GovboxPro
     config.good_job.cron['autoload_fs_boxes'] = {
       cron: "00 6 * * *", # run every day at 6:00 am
       class: "Fs::BoxifyAllApiConnectionsJob",
-      description: "Regular job to autoload FS boxes"
+      description: "Regular job to autoload FS boxes",
+      set: { job_context: :later }
     }
 
     config.good_job.cron['check_messages_mapping'] = {
@@ -74,7 +75,8 @@ module GovboxPro
     config.good_job.cron['check_archived_documents'] = {
       cron: "30 3 * * *", # run every day at 3:30 am
       class: "Archivation::ArchiveAllArchivedMessageThreadsJob",
-      description: "Regular job to archive message_threads"
+      description: "Regular job to archive message_threads",
+      set: { job_context: :later }
     }
 
     if ENV['AUTO_SYNC_FS_FORMS'] == "ON"
