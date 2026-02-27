@@ -17,10 +17,10 @@ class Fs::ValidateMessageDraftResultJob < ApplicationJob
     errors = response[:body]['problems']&.reject { |problem| problem['level'].in?(['warning', 'warning section-error', 'diff']) }&.map{ |problem| problem['message'] } || []
 
     result = if errors.none? && warnings.none? && diff.any?
-      'OK'
-    else
-      response[:body]['result']
-    end
+               'OK'
+             else
+               response[:body]['result']
+             end
 
     message_draft.metadata['validation_errors'] = {
       'result'=> result,

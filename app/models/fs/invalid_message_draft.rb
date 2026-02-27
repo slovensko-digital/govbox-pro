@@ -24,6 +24,7 @@
 #
 class Fs::InvalidMessageDraft < Fs::MessageDraft
   after_create do
+    add_cascading_tag(thread.box.tenant.problem_tag)
     add_cascading_tag(thread.box.tenant.unprocessable_tag!)
   end
 end

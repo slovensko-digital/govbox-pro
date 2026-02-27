@@ -286,8 +286,26 @@ accountants_inbox:
   tenant: accountants
 
 accountants_submission_error_tag:
-  name: Problémové
+  name: Chyba pri odoslaní
   type: SubmissionErrorTag
+  visible: true
+  tenant: accountants
+
+accountants_problem_tag:
+  name: Problémové
+  type: ProblemTag
+  visible: true
+  tenant: accountants
+
+accountants_validation_error_tag:
+  name: Chybné údaje
+  type: ValidationErrorTag
+  visible: true
+  tenant: accountants
+
+accountants_validation_warning_tag:
+  name: Upozornenia
+  type: ValidationWarningTag
   visible: true
   tenant: accountants
 
