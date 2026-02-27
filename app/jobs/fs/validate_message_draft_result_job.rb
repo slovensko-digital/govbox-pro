@@ -12,9 +12,9 @@ class Fs::ValidateMessageDraftResultJob < ApplicationJob
       raise RuntimeError.new("Unexpected response status: #{response[:status]}")
     end
 
-    errors = response[:body]['problems']&.select { |problem| problem['level'] == 'error' }&.map{ |problem| problem['message'] } || []
-    warnings = response[:body]['problems']&.select { |problem| problem['level'] == 'warning' }&.map{ |problem| problem['message'] } || []
+    warnings = response[:body]['problems']&.select { |problem| problem['level'].in?(['warning', 'warning section-error']) }&.map{ |problem| problem['message'] } || []
     diff = response[:body]['problems']&.select { |problem| problem['level'] == 'diff' }&.map{ |problem| problem['message'] } || []
+    errors = response[:body]['problems']&.reject { |problem| problem['level'].in?(['warning', 'warning section-error', 'diff']) }&.map{ |problem| problem['message'] } || []
 
     result = if errors.none? && warnings.none? && diff.any?
       'OK'

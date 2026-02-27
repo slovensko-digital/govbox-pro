@@ -118,6 +118,36 @@ class Fs::ValidateMessageDraftResultJobTest < ActiveJob::TestCase
     end
   end
 
+  test "message is marked as invalid & signature is not requested if FS API returns section errors" do
+    outbox_message = messages(:fs_accountants_outbox)
+    url = "https://fsapi.test/submissions/#{outbox_message.id}"
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :get_location, {
+      :status => 200,
+      :body => {
+        'result' => 'FAIL',
+        'problems' => [
+          {
+            'message' => "Časť V. - položka 'Identifikačné číslo na daňové účely' musí obsahovať alfabetické znaky v min. dĺžke 8 znakov alebo dátum v tvare DD.MM.RRRR",
+            'level' => 'error section-error'
+          }
+        ]
+      }
+    },
+    [url]
+
+    FsEnvironment.fs_client.stub :api, fs_api do
+      Fs::ValidateMessageDraftResultJob.new.perform(outbox_message, url)
+      assert_equal 'invalid', outbox_message.metadata['status']
+      assert_equal 'FAIL', outbox_message.metadata['validation_errors']['result']
+      assert_equal ["Časť V. - položka 'Identifikačné číslo na daňové účely' musí obsahovať alfabetické znaky v min. dĺžke 8 znakov alebo dátum v tvare DD.MM.RRRR"], outbox_message.metadata['validation_errors']['errors']
+
+      assert_not outbox_message.form_object.tags.include?(outbox_message.tenant.signer_group.signature_requested_from_tag)
+      assert_not outbox_message.thread.tags.include?(outbox_message.tenant.signer_group.signature_requested_from_tag)
+    end
+  end
+
   test "message is marked as invalid & signature is not requested if missing required attachment" do
     outbox_message = messages(:fs_accountants_draft_vp_danv24)
     url = "https://fsapi.test/submissions/#{outbox_message.id}"
