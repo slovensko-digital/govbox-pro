@@ -10,7 +10,6 @@
 #  notifications_last_opened_at :datetime
 #  notifications_opened         :boolean          default(FALSE), not null
 #  notifications_reset_at       :datetime
-#  password_digest              :string
 #  saml_identifier              :string
 #  created_at                   :datetime         not null
 #  updated_at                   :datetime         not null
@@ -34,9 +33,8 @@ class User < ApplicationRecord
   has_many :notifications, dependent: :destroy
   has_one :sticky_note, dependent: :destroy
   has_many :exports, dependent: :destroy
+  has_many :identities, dependent: :destroy
   has_many :api_connections, foreign_key: :owner_id, dependent: :destroy
-  has_secure_password validations: false
-
 
   validates_presence_of :name, :email
   validates_uniqueness_of :name, :email, scope: :tenant_id, case_sensitive: false
