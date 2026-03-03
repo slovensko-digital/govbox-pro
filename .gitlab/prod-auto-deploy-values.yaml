@@ -22,9 +22,9 @@ eadinessProbe:
 resources:
   requests:
     cpu: 250m
-    memory: 700Mi
+    memory: 1200Mi
   limits:
-    memory: 1Gi
+    memory: 1500Mi
 persistence:
   enabled: true
   volumes:
