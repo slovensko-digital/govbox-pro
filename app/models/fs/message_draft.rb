@@ -245,6 +245,7 @@ class Fs::MessageDraft < MessageDraft
 
     if metadata['validation_errors']['errors'].any? || internal_errors.any?
       mark_as_invalid
+      add_cascading_tag(tenant.validation_warning_tag) if metadata['validation_errors']['warnings'].any?
       unassign_signature_request_tags
     else
       metadata['status'] = 'created'
