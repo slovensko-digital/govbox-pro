@@ -19,4 +19,8 @@ class UnprocessableTag < Tag
   def destroyable?
     false
   end
+
+  def error?
+    true
+  end
 end

@@ -25,6 +25,8 @@ class MessageThreadsTag < ApplicationRecord
 
   after_commit ->(message_threads_tag) { EventBus.publish(:message_thread_tag_changed, message_threads_tag) }
 
+  delegate :name, :type, to: :tag
+
   def thread_and_tag_tenants_matches
     return if message_thread.box.tenant == tag.tenant && tag.tenant
 

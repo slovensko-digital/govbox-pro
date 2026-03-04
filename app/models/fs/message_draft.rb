@@ -248,10 +248,14 @@ class Fs::MessageDraft < MessageDraft
       unassign_signature_request_tags
     else
       metadata['status'] = 'created'
+      remove_cascading_tag(tenant.validation_error_tag)
+
       if metadata['validation_errors']['warnings'].none?
-        remove_cascading_tag(tenant.submission_error_tag)
+        remove_cascading_tag(tenant.validation_warning_tag)
+        remove_cascading_tag(tenant.problem_tag)
       else
-        add_cascading_tag(tenant.submission_error_tag)
+        add_cascading_tag(tenant.validation_warning_tag)
+        add_cascading_tag(tenant.problem_tag)
       end
     end
 
@@ -269,7 +273,8 @@ class Fs::MessageDraft < MessageDraft
     # TODO notification
     metadata['status'] = 'invalid'
     save
-    add_cascading_tag(tenant.submission_error_tag)
+    add_cascading_tag(tenant.validation_error_tag)
+    add_cascading_tag(tenant.problem_tag)
   end
 
   def unassign_signature_request_tags
