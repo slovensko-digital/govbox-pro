@@ -123,7 +123,7 @@ class Fs::DownloadReceivedMessageJobTest < ActiveJob::TestCase
     assert_equal 'Z02031014/2024', message.metadata['fs_message_id']
   end
 
-  test "does not fetch received message unless ED.DeliveryReport signatures verified" do
+  test "fetches received message even if ED.DeliveryReport signatures not verified and raises" do
     outbox_message = messages(:fs_accountants_outbox)
 
     fs_api = Minitest::Mock.new
@@ -134,7 +134,7 @@ class Fs::DownloadReceivedMessageJobTest < ActiveJob::TestCase
     fs_api.expect :obo_without_delegate, "obo_without_delegate"
     fs_api.expect :fetch_received_message, {
       "created_at"=>"2024-11-11T15:53:59.830Z",
-      "message_id" => "12356/2024",
+      "message_id" => "123567/2024",
       "submission_type_id" => "123",
       "submission_type_name" => "Daňové priznanie k dani z pridanej hodnoty (platné od 1.7.2025) - riadne",
       "message_type_id" => "DRSR_POPP_v02",
@@ -171,10 +171,262 @@ class Fs::DownloadReceivedMessageJobTest < ActiveJob::TestCase
         ]
       },
       "other_attributes" => {} },
-      ['12356/2024']
+      ['123567/2024']
 
     assert_raise('Signatures not yet verified!') do
-      Fs::DownloadReceivedMessageJob.new.perform('12356/2024', box: outbox_message.box, fs_client: fs_client)
+      Fs::DownloadReceivedMessageJob.new.perform('123567/2024', box: outbox_message.box, fs_client: fs_client)
     end
+    message = Message.last
+
+    assert_not message.outbox
+    assert_equal 'Informácia o podaní', message.title
+    assert_equal 'Finančná správa', message.sender_name
+    assert_equal '123567/2024', message.metadata['fs_message_id']
+    assert_equal 'Prijaté a potvrdené', message.metadata['fs_submission_status']
+    assert_equal 'Predbežne platné', message.metadata['fs_submission_verification_status']['name']
+    assert_equal 'Overenie platnosti podpisov podania ešte nebolo ukončené. Podpisy sú zatiaľ považované za predbežne platné.', message.metadata['fs_submission_verification_status']['description']
+  end
+
+  test "updates received message submission verification status of existing ED.DeliveryReport during next runs" do
+    outbox_message = messages(:fs_accountants_outbox)
+
+    fs_api = Minitest::Mock.new
+
+    fs_client = Minitest::Mock.new
+    fs_client.expect :api, fs_api, **{ api_connection: api_connections(:fs_api_connection1), box: outbox_message.box }
+
+    # First job run
+    fs_api.expect :obo_without_delegate, "obo_without_delegate"
+    fs_api.expect :fetch_received_message, {
+      "created_at"=>"2024-11-11T15:53:59.830Z",
+      "message_id" => "123567/2024",
+      "submission_type_id" => "123",
+      "submission_type_name" => "Daňové priznanie k dani z pridanej hodnoty (platné od 1.7.2025) - riadne",
+      "message_type_id" => "DRSR_POPP_v02",
+      "message_type_name" => "Informácia o podaní",
+      "sent_message_id" => "1234/2024",
+      "seen" => true,
+      "is_ekr2" => true,
+      "status" => "Vybavená",
+      "submission_status" => "Prijaté a potvrdené",
+      "dic" => "9988665533",
+      "subject" => "XY s. r. o.",
+      "submitting_subject" => "XYZ 123",
+      "submission_created_at"=>"2024-11-11T15:53:58.721Z",
+      "period" => "092024",
+      "dismissal_reason"=>nil,
+      "submission_verification_status"=>{"name"=>"Neoverené", "description"=>"Overenie platnosti podpisov podania ešte neprebehlo."},
+      "message_container" => {
+        "message_id" => "78b6c5f1-02e9-47ad-9fab-47f03aef1e65",
+        "sender_id" => "FSSR",
+        "recipient_id" => "123",
+        "message_type" => "ED.DeliveryReport",
+        "subject" => "Doručenka k eDANEjava",
+        "objects" => [
+          {
+            "class" => "FORM",
+            "description"=>"DeliveryReport",
+            "encoding" => "Base64",
+            "id" => "51e13e67-316a-48cb-934c-c63b20ac5b5a",
+            "signed" => true,
+            "mime_type" => "application/vnd.etsi.asic-e+zip",
+            "name" => "DeliveryReport",
+            "content" => "UEsFBgAAAAAAAAAAAAAAAAAAAAAAAA=="
+          }
+        ]
+      },
+      "other_attributes" => {} },
+      ['123567/2024']
+
+    assert_raise('Signatures not yet verified!') do
+      Fs::DownloadReceivedMessageJob.new.perform('123567/2024', box: outbox_message.box, fs_client: fs_client)
+    end
+    
+    message = Message.last
+
+    assert_not message.outbox
+    assert_equal 'Informácia o podaní', message.title
+    assert_equal 'Finančná správa', message.sender_name
+    assert_equal '123567/2024', message.metadata['fs_message_id']
+    assert_equal 'Prijaté a potvrdené', message.metadata['fs_submission_status']
+    assert_equal 'Neoverené', message.metadata['fs_submission_verification_status']['name']
+    assert_equal 'Overenie platnosti podpisov podania ešte neprebehlo.', message.metadata['fs_submission_verification_status']['description']
+
+    # Next job run
+    fs_client.expect :api, fs_api, **{ api_connection: api_connections(:fs_api_connection1), box: outbox_message.box }
+    fs_api.expect :obo_without_delegate, "obo_without_delegate"
+    fs_api.expect :fetch_received_message, {
+      "created_at"=>"2024-11-11T15:53:59.830Z",
+      "message_id" => "123567/2024",
+      "submission_type_id" => "123",
+      "submission_type_name" => "Daňové priznanie k dani z pridanej hodnoty (platné od 1.7.2025) - riadne",
+      "message_type_id" => "DRSR_POPP_v02",
+      "message_type_name" => "Informácia o podaní",
+      "sent_message_id" => "1234/2024",
+      "seen" => true,
+      "is_ekr2" => true,
+      "status" => "Vybavená",
+      "submission_status" => "Prijaté a potvrdené",
+      "dic" => "9988665533",
+      "subject" => "XY s. r. o.",
+      "submitting_subject" => "XYZ 123",
+      "submission_created_at"=>"2024-11-11T15:53:58.721Z",
+      "period" => "092024",
+      "dismissal_reason"=>nil,
+      "submission_verification_status"=>{"name"=>"Platné", "description"=>"Overenie platnosti podpisov podania bolo ukončené. Všetky podpisy sú platné."},
+      "message_container" => {
+        "message_id" => "78b6c5f1-02e9-47ad-9fab-47f03aef1e65",
+        "sender_id" => "FSSR",
+        "recipient_id" => "123",
+        "message_type" => "ED.DeliveryReport",
+        "subject" => "Doručenka k eDANEjava",
+        "objects" => [
+          {
+            "class" => "FORM",
+            "description"=>"DeliveryReport",
+            "encoding" => "Base64",
+            "id" => "51e13e67-316a-48cb-934c-c63b20ac5b5a",
+            "signed" => true,
+            "mime_type" => "application/vnd.etsi.asic-e+zip",
+            "name" => "DeliveryReport",
+            "content" => "UEsFBgAAAAAAAAAAAAAAAAAAAAAAAA=="
+          }
+        ]
+      },
+      "other_attributes" => {} },
+      ['123567/2024']
+
+    assert_nothing_raised do
+      Fs::DownloadReceivedMessageJob.new.perform('123567/2024', box: outbox_message.box, fs_client: fs_client)
+    end
+
+    message.reload
+
+    assert_equal 'Informácia o podaní', message.title
+    assert_equal 'Finančná správa', message.sender_name
+    assert_equal '123567/2024', message.metadata['fs_message_id']
+    assert_equal 'Prijaté a potvrdené', message.metadata['fs_submission_status']
+    assert_equal 'Platné', message.metadata['fs_submission_verification_status']['name']
+    assert_equal 'Overenie platnosti podpisov podania bolo ukončené. Všetky podpisy sú platné.', message.metadata['fs_submission_verification_status']['description']
+  end
+
+  test "nothing changes if job runs multiple times on same messages and no changes of submission verification status" do
+    outbox_message = messages(:fs_accountants_outbox)
+
+    fs_api = Minitest::Mock.new
+
+    fs_client = Minitest::Mock.new
+    fs_client.expect :api, fs_api, **{ api_connection: api_connections(:fs_api_connection1), box: outbox_message.box }
+
+    # First job run
+    fs_api.expect :obo_without_delegate, "obo_without_delegate"
+    fs_api.expect :fetch_received_message, {
+      "created_at"=>"2024-11-11T15:53:59.830Z",
+      "message_id" => "123567/2024",
+      "submission_type_id" => "123",
+      "submission_type_name" => "Daňové priznanie k dani z pridanej hodnoty (platné od 1.7.2025) - riadne",
+      "message_type_id" => "DRSR_POPP_v02",
+      "message_type_name" => "Informácia o podaní",
+      "sent_message_id" => "1234/2024",
+      "seen" => true,
+      "is_ekr2" => true,
+      "status" => "Vybavená",
+      "submission_status" => "Prijaté a potvrdené",
+      "dic" => "9988665533",
+      "subject" => "XY s. r. o.",
+      "submitting_subject" => "XYZ 123",
+      "submission_created_at"=>"2024-11-11T15:53:58.721Z",
+      "period" => "092024",
+      "dismissal_reason"=>nil,
+      "submission_verification_status"=>{"name"=>"Neoverené", "description"=>"Overenie platnosti podpisov podania ešte neprebehlo."},
+      "message_container" => {
+        "message_id" => "78b6c5f1-02e9-47ad-9fab-47f03aef1e65",
+        "sender_id" => "FSSR",
+        "recipient_id" => "123",
+        "message_type" => "ED.DeliveryReport",
+        "subject" => "Doručenka k eDANEjava",
+        "objects" => [
+          {
+            "class" => "FORM",
+            "description"=>"DeliveryReport",
+            "encoding" => "Base64",
+            "id" => "51e13e67-316a-48cb-934c-c63b20ac5b5a",
+            "signed" => true,
+            "mime_type" => "application/vnd.etsi.asic-e+zip",
+            "name" => "DeliveryReport",
+            "content" => "UEsFBgAAAAAAAAAAAAAAAAAAAAAAAA=="
+          }
+        ]
+      },
+      "other_attributes" => {} },
+      ['123567/2024']
+
+    assert_raise('Signatures not yet verified!') do
+      Fs::DownloadReceivedMessageJob.new.perform('123567/2024', box: outbox_message.box, fs_client: fs_client)
+    end
+
+    message = Message.last
+
+    assert_not message.outbox
+    assert_equal 'Informácia o podaní', message.title
+    assert_equal 'Finančná správa', message.sender_name
+    assert_equal '123567/2024', message.metadata['fs_message_id']
+    assert_equal 'Prijaté a potvrdené', message.metadata['fs_submission_status']
+    assert_equal 'Neoverené', message.metadata['fs_submission_verification_status']['name']
+    assert_equal 'Overenie platnosti podpisov podania ešte neprebehlo.', message.metadata['fs_submission_verification_status']['description']
+
+    # Next job run
+    fs_client.expect :api, fs_api, **{ api_connection: api_connections(:fs_api_connection1), box: outbox_message.box }
+    fs_api.expect :obo_without_delegate, "obo_without_delegate"
+    fs_api.expect :fetch_received_message, {
+      "created_at"=>"2024-11-11T15:53:59.830Z",
+      "message_id" => "123567/2024",
+      "submission_type_id" => "123",
+      "submission_type_name" => "Daňové priznanie k dani z pridanej hodnoty (platné od 1.7.2025) - riadne",
+      "message_type_id" => "DRSR_POPP_v02",
+      "message_type_name" => "Informácia o podaní",
+      "sent_message_id" => "1234/2024",
+      "seen" => true,
+      "is_ekr2" => true,
+      "status" => "Vybavená",
+      "submission_status" => "Prijaté a potvrdené",
+      "dic" => "9988665533",
+      "subject" => "XY s. r. o.",
+      "submitting_subject" => "XYZ 123",
+      "submission_created_at"=>"2024-11-11T15:53:58.721Z",
+      "period" => "092024",
+      "dismissal_reason"=>nil,
+      "submission_verification_status"=>{"name"=>"Neoverené", "description"=>"Overenie platnosti podpisov podania ešte neprebehlo."},
+      "message_container" => {
+        "message_id" => "78b6c5f1-02e9-47ad-9fab-47f03aef1e65",
+        "sender_id" => "FSSR",
+        "recipient_id" => "123",
+        "message_type" => "ED.DeliveryReport",
+        "subject" => "Doručenka k eDANEjava",
+        "objects" => [
+          {
+            "class" => "FORM",
+            "description"=>"DeliveryReport",
+            "encoding" => "Base64",
+            "id" => "51e13e67-316a-48cb-934c-c63b20ac5b5a",
+            "signed" => true,
+            "mime_type" => "application/vnd.etsi.asic-e+zip",
+            "name" => "DeliveryReport",
+            "content" => "UEsFBgAAAAAAAAAAAAAAAAAAAAAAAA=="
+          }
+        ]
+      },
+      "other_attributes" => {} },
+      ['123567/2024']
+
+    original_attributes = message.attributes
+
+    assert_raise('Signatures not yet verified!') do
+      Fs::DownloadReceivedMessageJob.new.perform('123567/2024', box: outbox_message.box, fs_client: fs_client)
+    end
+
+    message.reload
+
+    assert_equal original_attributes, message.attributes
   end
 end
