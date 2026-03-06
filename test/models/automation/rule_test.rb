@@ -119,7 +119,7 @@ class Automation::RuleTest < ActiveSupport::TestCase
     assert_includes inbox_message.thread.tags.reload, tag
   end
 
-  test 'should run an automation on message - removes S neoverenou potvrdenkou tag and add S potvrdenkou tag if conditions satisfied' do
+  test 'should run an automation on message - removes S neoverenou potvrdenkou tag and adds S potvrdenkou tag if conditions satisfied' do
     neoverena_potvrdenka_tag = tags(:accountants_s_neoverenou_potvrdenkou)
     inbox_message = messages(:fs_accountants_thread2_inbox_message)
     inbox_message.thread.assign_tag(neoverena_potvrdenka_tag)
