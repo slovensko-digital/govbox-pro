@@ -65,3 +65,15 @@ ed_delivery_report_rule:
   tenant: accountants
   name: Add S potvrdenkou tag
   trigger_event: message_created
+
+ed_delivery_report_rule2:
+  user: basic
+  tenant: accountants
+  name: Add S neoverenou potvrdenkou tag
+  trigger_event: message_created
+
+ed_delivery_report_rule3:
+  user: basic
+  tenant: accountants
+  name: Add S potvrdenkou tag
+  trigger_event: message_updated

@@ -196,3 +196,9 @@ fs_accountants_inbox_form:
   name: DeliveryReport.asice
   mimetype: application/vnd.etsi.asic-e+zip
   object_type: FORM
+
+fs_accountants_inbox2_form:
+  message: fs_accountants_thread2_inbox_message
+  name: DeliveryReport.asice
+  mimetype: application/vnd.etsi.asic-e+zip
+  object_type: FORM

@@ -42,7 +42,7 @@ EventBus.subscribe :message_attachments_modified, ->(message_draft) {
 }
 
 # automation
-[:message_thread_created, :message_created, :message_draft_validated, :message_draft_submitted, :message_object_downloaded].each do |event|
+[:message_thread_created, :message_created, :message_updated, :message_draft_validated, :message_draft_submitted, :message_object_downloaded].each do |event|
   EventBus.subscribe_job event, Automation::ApplyRulesForEventJob
 end
 

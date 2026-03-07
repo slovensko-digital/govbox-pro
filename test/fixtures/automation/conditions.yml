@@ -89,3 +89,51 @@ fs_submission_verification_status_description:
   attr: fs_submission_verification_status.description
   type: Automation::MetadataValueCondition
   value: Overenie platnosti podpisov podania bolo ukončené. Všetky podpisy sú platné.
+
+fs_submission_status_rule2:
+  automation_rule: ed_delivery_report_rule2
+  attr: fs_submission_status
+  type: Automation::MetadataValueCondition
+  value: Prijaté a potvrdené
+
+fs_message_type_rule2:
+  automation_rule: ed_delivery_report_rule2
+  attr: fs_message_type
+  type: Automation::MetadataValueCondition
+  value: ED.DeliveryReport
+
+fs_submission_verification_status_name_rule2:
+  automation_rule: ed_delivery_report_rule2
+  attr: fs_submission_verification_status.name
+  type: Automation::MetadataValueNotCondition
+  value: Platné
+
+fs_submission_verification_status_description_rule2:
+  automation_rule: ed_delivery_report_rule2
+  attr: fs_submission_verification_status.description
+  type: Automation::MetadataValueNotCondition
+  value: Overenie platnosti podpisov podania bolo ukončené. Všetky podpisy sú platné.
+
+fs_submission_status_rule3:
+  automation_rule: ed_delivery_report_rule3
+  attr: fs_submission_status
+  type: Automation::MetadataValueCondition
+  value: Prijaté a potvrdené
+
+fs_message_type_rule3:
+  automation_rule: ed_delivery_report_rule3
+  attr: fs_message_type
+  type: Automation::MetadataValueCondition
+  value: ED.DeliveryReport
+
+fs_submission_verification_status_name_rule3:
+  automation_rule: ed_delivery_report_rule3
+  attr: fs_submission_verification_status.name
+  type: Automation::MetadataValueCondition
+  value: Platné
+
+fs_submission_verification_status_description_rule3:
+  automation_rule: ed_delivery_report_rule3
+  attr: fs_submission_verification_status.description
+  type: Automation::MetadataValueCondition
+  value: Overenie platnosti podpisov podania bolo ukončené. Všetky podpisy sú platné.
