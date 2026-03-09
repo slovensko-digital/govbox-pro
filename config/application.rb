@@ -81,7 +81,7 @@ module GovboxPro
 
     if ENV['AUTO_SYNC_FS_FORMS'] == "ON"
       config.good_job.cron[:fetch_fs_forms] = {
-        cron: "0 */12 * * *", # run every 12 hours
+        cron: "30 2 * * *", # run every day at 2:30 am
         class: "Fs::FetchFormsJob",
         description: "Regular job to fetch Fs::Forms",
         set: { job_context: :later }
@@ -90,7 +90,7 @@ module GovboxPro
 
     if ENV['AUTO_SYNC_UPVS_FORMS'] == "ON"
       config.good_job.cron[:fetch_upvs_forms_related_documents] = {
-        cron: "0 */12 * * *", # run every 12 hours
+        cron: "30 1 * * *", # run every day at 1:30 am
         class: "Upvs::FetchFormRelatedDocumentsJob",
         description: "Regular job to fetch Upvs::FormRelatedDocuments",
         set: { job_context: :later }
