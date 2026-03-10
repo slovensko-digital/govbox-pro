@@ -1,4 +1,4 @@
-class UpdateSPotvrdenkouAutomationRule2 < ActiveRecord::Migration[7.1]
+class CreateMoreSPotvrdenkouAutomationRules < ActiveRecord::Migration[7.1]
   def up
     Automation::Condition.where(attr: "fs_submission_status", type: "Automation::MetadataValueCondition", value: "Prijaté a potvrdené").find_each do |condition|
       # Existing rule - if ED.DeliveryReport is created with verified signatures
