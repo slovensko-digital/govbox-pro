@@ -95,17 +95,48 @@ class Automation::RuleTest < ActiveSupport::TestCase
     assert_not_includes message_thread.tags.reload, tag
   end
 
-  test 'should run an automation on message - adds s Potvrdenkou tag if conditions satisfied' do
+  test 'should run an automation on message - adds S potvrdenkou tag if conditions satisfied' do
     tag = tags(:accountants_s_potvrdenkou)
-    message_thread = message_threads(:ssd_main_done)
     inbox_message = messages(:fs_accountants_thread1_inbox_message)
 
-    assert_not_includes message_thread.tags, tag
+    assert_not_includes inbox_message.thread.tags, tag
 
     Automation::ApplyRulesForEventJob.perform_later("message_created", inbox_message)
     travel_to(15.minutes.from_now) { GoodJob.perform_inline }
 
     assert_includes inbox_message.thread.tags.reload, tag
+  end
+
+  test 'should run an automation on message - adds S neoverenou potvrdenkou tag if conditions satisfied' do
+    tag = tags(:accountants_s_neoverenou_potvrdenkou)
+    inbox_message = messages(:fs_accountants_thread2_inbox_message)
+
+    assert_not_includes inbox_message.thread.tags, tag
+
+    Automation::ApplyRulesForEventJob.perform_later("message_created", inbox_message)
+    travel_to(15.minutes.from_now) { GoodJob.perform_inline }
+
+    assert_includes inbox_message.thread.tags.reload, tag
+  end
+
+  test 'should run an automation on message - removes S neoverenou potvrdenkou tag and adds S potvrdenkou tag if conditions satisfied' do
+    neoverena_potvrdenka_tag = tags(:accountants_s_neoverenou_potvrdenkou)
+    inbox_message = messages(:fs_accountants_thread2_inbox_message)
+    inbox_message.thread.assign_tag(neoverena_potvrdenka_tag)
+
+    inbox_message.metadata["fs_submission_verification_status"] = {
+      "name" => "Platné",
+      "description" => "Overenie platnosti podpisov podania bolo ukončené. Všetky podpisy sú platné."
+    }
+    inbox_message.save
+
+    Automation::ApplyRulesForEventJob.perform_later("message_updated", inbox_message)
+    travel_to(15.minutes.from_now) { GoodJob.perform_inline }
+
+    overena_potvrdenka_tag = tags(:accountants_s_potvrdenkou)
+
+    assert_not_includes inbox_message.thread.tags.reload, neoverena_potvrdenka_tag
+    assert_includes inbox_message.thread.tags.reload, overena_potvrdenka_tag
   end
 
   test 'should not run an automation on message created outbox BooleanCondition, edesk_class MessageMetadataValueNotCondition UnassignMessageThreadTagAction if outbox message delivered' do

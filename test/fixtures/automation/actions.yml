@@ -65,3 +65,18 @@ add_s_potvrdenkou_tag:
   automation_rule: ed_delivery_report_rule
   type: Automation::AddMessageThreadTagAction
   action_object: accountants_s_potvrdenkou (Tag)
+
+add_s_neoverenou_potvrdenkou_tag_rule2:
+  automation_rule: ed_delivery_report_rule2
+  type: Automation::AddMessageThreadTagAction
+  action_object: accountants_s_neoverenou_potvrdenkou (Tag)
+
+add_s_potvrdenkou_tag_rule3:
+  automation_rule: ed_delivery_report_rule3
+  type: Automation::AddMessageThreadTagAction
+  action_object: accountants_s_potvrdenkou (Tag)
+
+unassign_s_neoverenou_potvrdenkou_tag_rule3:
+  automation_rule: ed_delivery_report_rule3
+  type: Automation::UnassignMessageThreadTagAction
+  action_object: accountants_s_neoverenou_potvrdenkou (Tag)

@@ -453,6 +453,12 @@ accountants_s_potvrdenkou:
   visible: true
   tenant: accountants
 
+accountants_s_neoverenou_potvrdenkou:
+  name: S neoverenou potvrdenkou
+  type: SimpleTag
+  visible: true
+  tenant: accountants
+
 ssd_attachment_matched:
   name: AttachmentMatched
   type: SimpleTag
