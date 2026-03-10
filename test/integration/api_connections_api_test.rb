@@ -10,7 +10,7 @@ class ApiConnectionsApiTest < ActionDispatch::IntegrationTest
     get "/api/api_connections", params: { token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }, as: :json
 
     assert_response :success
-    json_response = JSON.parse(response.body)
+    json_response = response.parsed_body
 
     assert json_response.is_a?(Array)
 
@@ -37,7 +37,7 @@ class ApiConnectionsApiTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :success
-    json_response = JSON.parse(response.body)
+    json_response = response.parsed_body
 
     assert_equal connection.id, json_response["id"]
     assert_equal 0, json_response["new_boxes_count"]
@@ -56,7 +56,8 @@ class ApiConnectionsApiTest < ActionDispatch::IntegrationTest
          as: :json
 
     assert_response :unprocessable_content
-    json_response = JSON.parse(response.body)
+
+    json_response = response.parsed_body
     assert_equal "Only FS API connections support the boxify action", json_response["message"]
   end
 end
