@@ -66,6 +66,8 @@ class User < ApplicationRecord
   end
 
   def accessible_boxes
+    return tenant.boxes.all if groups.where(all_boxes_permission: true).exists?
+
     Box.where(
       BoxGroup.select(1)
                       .joins(:group_memberships)

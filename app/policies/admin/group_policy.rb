@@ -37,7 +37,7 @@ class Admin::GroupPolicy < ApplicationPolicy
   end
 
   def update_all_boxes_permission?
-    update?
+    @user.admin?
   end
 
   def edit?
