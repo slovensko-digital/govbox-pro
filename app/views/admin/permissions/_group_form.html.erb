@@ -29,7 +29,20 @@
       <!-- Boxes Column -->
       <div class="flex flex-col gap-4 pb-6" id="boxes-column">
         <div class="text-lg font-semibold text-gray-900"><%= t('admin.groups.permissions.boxes') %></div>
-        <div class="flex flex-col divide-y border rounded-md border-gray-200">
+        <div class="flex justify-between items-center gap-4">
+          <div class="flex flex-col justify-start items-start flex-grow relative gap-1">
+            <p class="self-stretch flex-grow-0 flex-shrink-0 text-left">Oprávnenie na všetky schránky</p>
+          </div>
+          <%= form_with url: update_all_boxes_permission_admin_tenant_group_path(Current.tenant, group), title: "Zmeniť oprávnenie skupiny na všetky schránky", method: :patch, scope: nil do |form| %>
+            <%= form.hidden_field :all_boxes_permission, value: !group.all_boxes_permission %>
+            <%= form.button class: "#{group.all_boxes_permission ? "bg-indigo-600" : "bg-gray-200"} relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2", role: :switch, aria: { checked: group.all_boxes_permission.to_s } do %>
+              <span class="sr-only">Use setting</span>
+              <span aria-hidden="true" class="<%= group.all_boxes_permission ? "translate-x-5" : "translate-x-0" %> pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"></span>
+            <% end %>
+          <% end %>
+        </div>
+        <% unless group.all_boxes_permission? %>
+          <div class="flex flex-col divide-y border rounded-md border-gray-200">
           <% if group.box_groups.empty? %>
             <div class="p-4 text-sm text-gray-500 text-center">
               <%= t('admin.groups.permissions.empty_list.box') %>
@@ -46,6 +59,7 @@
             <% end %>
           <% end %>
         </div>
+        <% end %>
       </div>
       <!-- Tags Column -->
       <div class="flex flex-col gap-4" id="tags-column">

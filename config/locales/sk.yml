@@ -429,3 +429,5 @@ sk:
         type:
           box: Schránka
           tag: Štítok
+      update_all_boxes_permission:
+        success: Oprávnenie bolo úspešne upravené
