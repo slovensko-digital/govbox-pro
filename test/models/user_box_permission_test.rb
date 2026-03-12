@@ -32,6 +32,14 @@ class UserBoxPermissionTest < ActiveSupport::TestCase
     assert_includes @user.accessible_boxes, @box2
   end
 
+  test "accessible_boxes returns all tenant's boxes if user in a group with all boxes permission" do
+    assert_empty @user.accessible_boxes
+
+    @group.update(all_boxes_permission: true)
+
+    assert_equal @user.accessible_boxes, @user.tenant.boxes
+  end
+
   test "accessible_boxes returns empty if no boxes assigned" do
     assert_empty @user.accessible_boxes
   end
