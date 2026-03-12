@@ -2,7 +2,7 @@
 
 module Admin
   class GroupsController < ApplicationController
-    before_action :set_group, only: %i[show edit update destroy edit_members show_members edit_permissions search_non_members search_boxes_and_tags]
+    before_action :set_group, only: %i[show edit update destroy edit_members show_members edit_permissions search_non_members search_boxes_and_tags update_all_boxes_permission]
 
     def index
       authorize([:admin, Group])
@@ -53,6 +53,15 @@ module Admin
         redirect_to admin_tenant_groups_url(Current.tenant), notice: t('.success')
       else
         render :edit, status: :unprocessable_content
+      end
+    end
+
+    def update_all_boxes_permission
+      authorize([:admin, @group], policy_class: Admin::GroupPolicy)
+
+      if params[:all_boxes_permission].in?(%w[true false])
+        @group.update(all_boxes_permission: ActiveModel::Type::Boolean.new.cast(params[:all_boxes_permission]))
+        redirect_to edit_permissions_admin_tenant_group_url(Current.tenant, @group), notice: t('.success')
       end
     end
 
