@@ -267,6 +267,12 @@ Rails.application.routes.draw do
     end
 
     resources :boxes, only: :index
+
+    namespace :fs do
+      resources :api_connections, only: [:index] do
+        post :boxify, on: :member
+      end
+    end
   end
 
   if UpvsEnvironment.sso_support?
