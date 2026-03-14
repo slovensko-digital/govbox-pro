@@ -7,7 +7,7 @@ class ApiConnectionsApiTest < ActionDispatch::IntegrationTest
   end
 
   test "index returns api connections without sensitive fields" do
-    get "/api/api_connections", params: { token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }, as: :json
+    get "/api/fs/api_connections", params: { token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }, as: :json
 
     assert_response :success
     json_response = response.parsed_body
@@ -18,8 +18,7 @@ class ApiConnectionsApiTest < ActionDispatch::IntegrationTest
     connection_json = json_response.find { |it| it["id"] == connection.id }
 
     assert connection_json.present?
-    assert_equal connection.type, connection_json["type"]
-    assert_equal connection.sub, connection_json["sub"]
+    assert_not connection_json.key?("sub")
     assert_not connection_json.key?("settings")
     assert_not connection_json.key?("api_token_private_key")
   end
@@ -31,7 +30,7 @@ class ApiConnectionsApiTest < ActionDispatch::IntegrationTest
     fs_api.expect :get_subjects, []
 
     FsEnvironment.fs_client.stub :api, fs_api do
-      post "/api/api_connections/#{connection.id}/boxify",
+      post "/api/fs/api_connections/#{connection.id}/boxify",
            params: { token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) },
            as: :json
     end
@@ -51,13 +50,10 @@ class ApiConnectionsApiTest < ActionDispatch::IntegrationTest
       tenant: @tenant
     )
 
-    post "/api/api_connections/#{non_fs.id}/boxify",
+    post "/api/fs/api_connections/#{non_fs.id}/boxify",
          params: { token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) },
          as: :json
 
-    assert_response :unprocessable_content
-
-    json_response = response.parsed_body
-    assert_equal "Only FS API connections support the boxify action", json_response["message"]
+    assert_response :not_found
   end
 end

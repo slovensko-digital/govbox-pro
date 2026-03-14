@@ -267,8 +267,10 @@ Rails.application.routes.draw do
 
     resources :boxes, only: :index
 
-    resources :api_connections, only: [:index] do
-      post :boxify, on: :member
+    namespace :fs do
+      resources :api_connections, only: [:index] do
+        post :boxify, on: :member
+      end
     end
   end
 
