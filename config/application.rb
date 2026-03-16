@@ -51,12 +51,37 @@ module GovboxPro
       }
 
       config.good_job.cron[:sync_fs_boxes] = {
-        cron: "1 5,13 * * *", # run at 5:01 and 13:01
+        cron: "30 0 * * *", # run every day at 0:30 am
         class: "Fs::SyncAllBoxesJob",
         description: "Regular job to synchronize all boxes",
         set: { job_context: :later }
       }
     end
+
+    if ENV['AUTO_SYNC_UPVS_FORMS'] == "ON"
+      config.good_job.cron[:fetch_upvs_forms_related_documents] = {
+        cron: "30 1 * * *", # run every day at 1:30 am
+        class: "Upvs::FetchFormRelatedDocumentsJob",
+        description: "Regular job to fetch Upvs::FormRelatedDocuments",
+        set: { job_context: :later }
+      }
+    end
+
+    if ENV['AUTO_SYNC_FS_FORMS'] == "ON"
+      config.good_job.cron[:fetch_fs_forms] = {
+        cron: "30 2 * * *", # run every day at 2:30 am
+        class: "Fs::FetchFormsJob",
+        description: "Regular job to fetch Fs::Forms",
+        set: { job_context: :later }
+      }
+    end
+
+    config.good_job.cron[:check_archived_documents] = {
+      cron: "30 3 * * *", # run every day at 3:30 am
+      class: "Archivation::ArchiveAllArchivedMessageThreadsJob",
+      description: "Regular job to archive message_threads",
+      set: { job_context: :later }
+    }
 
     config.good_job.cron[:autoload_fs_boxes] = {
       cron: "00 6 * * *", # run every day at 6:00 am
@@ -71,31 +96,6 @@ module GovboxPro
       description: "Regular job to check messages mapping",
       set: { job_context: :later }
     }
-
-    config.good_job.cron[:check_archived_documents] = {
-      cron: "30 3 * * *", # run every day at 3:30 am
-      class: "Archivation::ArchiveAllArchivedMessageThreadsJob",
-      description: "Regular job to archive message_threads",
-      set: { job_context: :later }
-    }
-
-    if ENV['AUTO_SYNC_FS_FORMS'] == "ON"
-      config.good_job.cron[:fetch_fs_forms] = {
-        cron: "30 2 * * *", # run every day at 2:30 am
-        class: "Fs::FetchFormsJob",
-        description: "Regular job to fetch Fs::Forms",
-        set: { job_context: :later }
-      }
-    end
-
-    if ENV['AUTO_SYNC_UPVS_FORMS'] == "ON"
-      config.good_job.cron[:fetch_upvs_forms_related_documents] = {
-        cron: "30 1 * * *", # run every day at 1:30 am
-        class: "Upvs::FetchFormRelatedDocumentsJob",
-        description: "Regular job to fetch Upvs::FormRelatedDocuments",
-        set: { job_context: :later }
-      }
-    end
 
     # Configuration for the application, engines, and railties goes here.
     #
