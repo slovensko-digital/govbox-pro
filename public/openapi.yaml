@@ -166,7 +166,7 @@ paths:
       tags: [FS API Prepojenia]
       summary: Vráti zoznam FS API prepojení tenanta
       description: |
-        Vráti zoznam prístupných FS API prepojení pre daný tenant.
+        Vráti zoznam prístupných FS API prepojení pre daného tenanta.
       responses:
         200:
           description: Úspešné získanie zoznamu FS API prepojení
