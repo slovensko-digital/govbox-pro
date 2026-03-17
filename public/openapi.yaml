@@ -161,6 +161,73 @@ paths:
       security:
         - "Tenant_Token": []
 
+  /api/fs/api_connections:
+    get:
+      tags: [FS API Prepojenia]
+      summary: Vráti zoznam FS API prepojení tenanta
+      description: |
+        Vráti zoznam prístupných FS API prepojení pre daného tenanta.
+      responses:
+        200:
+          description: Úspešné získanie zoznamu FS API prepojení
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      description: Identifikátor API prepojenia v systéme Govbox Pro
+                      type: integer
+                    custom_name:
+                      description: Vlastný názov prepojenia
+                      type: string
+                      nullable: true
+                    created_at:
+                      description: Dátum a čas vytvorenia
+                      type: string
+                      format: date-time
+                    updated_at:
+                      description: Dátum a čas poslednej úpravy
+                      type: string
+                      format: date-time
+      security:
+        - "Tenant_Token": []
+
+  /api/fs/api_connections/{id}/boxify:
+    post:
+      tags: [FS API Prepojenia]
+      summary: Spustí synchronizáciu schránok z Finančnej správy
+      description: |
+        Okamžite vyvolá synchronizáciu (stiahnutie) zoznamu zastupovaných subjektov z Finančnej správy pre vybrané FS API prepojenie. Z nových zistených subjektov sa automaticky založia nové schránky v systéme.
+      parameters:
+        - name: id
+          in: path
+          description: Identifikátor FS API prepojenia
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: Úspešné vykonanie synchronizácie
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    description: Identifikátor API prepojenia, pre ktoré prebehol sync
+                    type: integer
+                  new_boxes_count:
+                    description: Počet novo založených schránok z tejto synchronizácie
+                    type: integer
+        404:
+          description: API prepojenie s daným ID neexistuje, prípadne nejde o prepojenie Finančnej správy (FS)
+      security:
+        - "Tenant_Token": []
+
   /api/messages/{id}:
     get:
       tags: [Správy]
