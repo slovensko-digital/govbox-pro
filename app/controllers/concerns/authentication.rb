@@ -8,9 +8,7 @@ module Authentication
   SESSION_TIMEOUT = 20.minutes
 
   def authenticate
-    if request.path != login_path && request.get? && !turbo_frame_request?
-      session[:after_login_path] = request.fullpath
-    end
+    session[:after_login_path] = request.fullpath if store_after_login_path?
 
     if valid_session?(session)
       session[:login_expires_at] = SESSION_TIMEOUT.from_now
@@ -54,6 +52,14 @@ module Authentication
   end
 
   private
+
+  def store_after_login_path?
+    request.path != login_path &&
+      request.get? &&
+      request.format.html? &&
+      !turbo_frame_request? &&
+      lookup_context.exists?(action_name, [controller_path], false)
+  end
 
   def auth_hash
     request.env['omniauth.auth']
