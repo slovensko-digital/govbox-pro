@@ -1,5 +1,4 @@
 require "test_helper"
-require "ostruct"
 
 class MessagesAuthenticationRedirectTest < ActionController::TestCase
   tests MessagesController
