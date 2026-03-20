@@ -19,7 +19,7 @@ class Admin::BoxGroupsController < ApplicationController
   private
 
   def set_box_group
-    @box_group = BoxGroup.find(params[:id])
+    @box_group = policy_scope([:admin, BoxGroup]).find(params[:id])
   end
 
   def box_group_params

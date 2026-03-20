@@ -6,15 +6,23 @@ class Admin::BoxGroupPolicy < ApplicationPolicy
     @box_group = box_group
   end
 
+  class Scope < Scope
+    def resolve
+      scope.joins(:box, :group)
+           .where(boxes: { tenant: @user.tenant })
+           .where(groups: { tenant: @user.tenant })
+    end
+  end
+
   def create?
     return false unless @user.admin?
-    return false unless @box_group.box.tenant == Current.tenant
-    return false unless @box_group.group.tenant == Current.tenant
+    return false unless @box_group.box.tenant == @user.tenant
+    return false unless @box_group.group.tenant == @user.tenant
 
     true
   end
 
   def destroy?
-    @user.admin?
+    create?
   end
 end

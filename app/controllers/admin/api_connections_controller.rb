@@ -36,6 +36,6 @@ class Admin::ApiConnectionsController < ApplicationController
   private
 
   def set_api_connection
-    @api_connection = ApiConnection.find(params[:id])
+    @api_connection = policy_scope([:admin, ApiConnection]).find(params[:id])
   end
 end
