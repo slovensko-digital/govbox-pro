@@ -56,7 +56,7 @@ class Admin::TagsController < ApplicationController
   private
 
   def set_tag
-    @tag = policy_scope([:admin, Tag]).find(params[:id])
+    @tag = SimpleTag.where(tenant: Current.tenant).find(params[:id])
   end
 
   def simple_tag_params
