@@ -87,7 +87,7 @@ class MessageObjectsController < ApplicationController
   end
 
   def set_message
-    @message = Message.find(params[:message_id])
+    @message = policy_scope(Message).find(params[:message_id])
   end
 
   def message_object_params
