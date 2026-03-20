@@ -11,7 +11,6 @@ class Admin::TagsController < ApplicationController
   end
 
   def show
-    @tag = policy_scope([:admin, Tag]).find(params[:id])
     authorize([:admin, @tag])
   end
 
@@ -57,7 +56,7 @@ class Admin::TagsController < ApplicationController
   private
 
   def set_tag
-    @tag = SimpleTag.find(params[:id])
+    @tag = policy_scope([:admin, Tag]).find(params[:id])
   end
 
   def simple_tag_params

@@ -7,7 +7,6 @@ class Admin::BoxesController < ApplicationController
   end
 
   def show
-    @box = policy_scope([:admin, Box]).find(params[:id])
     authorize([:admin, @box])
   end
 
@@ -30,6 +29,6 @@ class Admin::BoxesController < ApplicationController
   private
 
   def set_box
-    @box = Box.find(params[:id])
+    @box = policy_scope([:admin, Box]).find(params[:id])
   end
 end

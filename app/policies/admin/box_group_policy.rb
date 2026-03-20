@@ -15,6 +15,6 @@ class Admin::BoxGroupPolicy < ApplicationPolicy
   end
 
   def destroy?
-    @user.admin?
+    create?
   end
 end
