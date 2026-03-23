@@ -22,6 +22,6 @@ class Admin::ApiConnections::FsApiConnectionsController < Admin::ApiConnectionsC
   private
 
   def api_connection_params
-    params.require(:fs_api_connection).permit(:tenant_id, :custom_name, :settings_username, :settings_password).compact_blank!
+    params.require(:fs_api_connection).permit(:custom_name, :settings_username, :settings_password).compact_blank!
   end
 end
