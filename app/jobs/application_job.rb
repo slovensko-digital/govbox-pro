@@ -35,14 +35,23 @@ class ApplicationJob < ActiveJob::Base
   end
 
   queue_with_priority do
-    case queue_name.to_sym
-    when :asap then -1000
-    when :default, :automation then 0
-    when :low then 500
-    when :later then 1000
-    else
-      raise "Unable to assign default priority to a job on #{queue_name} queue"
+    base_priority = case queue_name.to_sym
+                    when :asap then -1000
+                    when :asap_bulk then -500
+                    when :default, :automation then 0
+                    when :medium then 250
+                    when :low then 500
+                    when :later then 1000
+                    else
+                      raise "Unable to assign default priority to a job on #{queue_name} queue"
+                    end
+
+    # Adjust priority for specific jobs
+    if is_a?(Searchable::ReindexMessageThreadJob) || is_a?(Automation::ApplyRulesForEventJob)
+      base_priority -= 100
     end
+
+    base_priority
   end
 
   retry_on StandardError, wait: :polynomially_longer, attempts: Float::INFINITY
