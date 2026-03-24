@@ -37,7 +37,7 @@ class Export < ApplicationRecord
       type: Notifications::ExportStarted,
       export: self
     )
-    ExportJob.perform_later(self)
+    ExportJob.set(job_context: :medium).perform_later(self)
   end
 
   def message_threads
