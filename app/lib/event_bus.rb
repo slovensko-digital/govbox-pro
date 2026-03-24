@@ -34,7 +34,7 @@ EventBus.subscribe :message_thread_with_message_created, ->(message) do
 end
 
 EventBus.subscribe :fs_message_draft_created, ->(message_draft) {
-  Fs::ValidateMessageDraftJob.perform_later(message_draft)
+  Fs::ValidateMessageDraftJob.set(job_context: :asap_bulk).perform_later(message_draft)
 }
 
 EventBus.subscribe :message_attachments_modified, ->(message_draft) {
