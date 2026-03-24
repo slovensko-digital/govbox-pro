@@ -1,18 +1,11 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["topButton", "bottomButton"]
-
-  static values = {
-    topThreshold: { type: Number, default: 300 },
-    bottomShowThreshold: { type: Number, default: 320 },
-    bottomHideThreshold: { type: Number, default: 180 }
-  }
+  static targets =["topButton", "bottomButton"]
 
   connect() {
     this.scrollContainer = this.resolveScrollContainer()
     this.updateVisibility = this.updateVisibility.bind(this)
-    this.bottomVisible = false
 
     this.scrollContainer.addEventListener("scroll", this.updateVisibility, { passive: true })
     window.addEventListener("resize", this.updateVisibility)
@@ -40,23 +33,27 @@ export default class extends Controller {
   }
 
   updateVisibility() {
-    const distance = this.distanceFromBottom()
+    const scrollTop = this.scrollTop()
+    const scrollHeight = this.scrollHeight()
+    const clientHeight = this.clientHeight()
 
-    if (!this.bottomVisible && distance >= this.bottomShowThresholdValue) {
-      this.bottomVisible = true
-    } else if (this.bottomVisible && distance <= this.bottomHideThresholdValue) {
-      this.bottomVisible = false
+    const totalScrollable = scrollHeight - clientHeight
+    if (totalScrollable < 100) {
+      this.toggleButtons(false, false)
+      return
     }
 
-    const topVisible = this.scrollTop() > this.topThresholdValue
+    const isCloserToBottom = scrollTop > (totalScrollable / 2)
+    this.toggleButtons(isCloserToBottom, !isCloserToBottom)
+  }
 
+  toggleButtons(showTop, showBottom) {
     this.topButtonTargets.forEach((button) => {
-      button.toggleAttribute("data-visible", topVisible)
-      button.toggleAttribute("data-bottom-hidden", !this.bottomVisible)
+      button.toggleAttribute("data-visible", showTop)
     })
 
     this.bottomButtonTargets.forEach((button) => {
-      button.toggleAttribute("data-visible", this.bottomVisible)
+      button.toggleAttribute("data-visible", showBottom)
     })
   }
 
@@ -72,10 +69,6 @@ export default class extends Controller {
 
   clientHeight() {
     return this.isWindow ? (window.innerHeight || document.documentElement.clientHeight) : this.scrollContainer.clientHeight
-  }
-
-  distanceFromBottom() {
-    return this.scrollHeight() - (this.scrollTop() + this.clientHeight())
   }
 
   resolveScrollContainer() {

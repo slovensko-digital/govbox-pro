@@ -17,4 +17,32 @@
       <div id="new_message_placeholder" is="turbo-frame"></div>
     </div>
   </div>
+
+  <div data-controller="scroll"
+       class="fixed bottom-8 inset-x-0 mx-auto z-[100] pointer-events-none w-11 h-11">
+
+    <button data-scroll-target="topButton"
+            data-action="click->scroll#scrollToTop"
+            type="button"
+            title="Hore"
+            class="absolute inset-0 opacity-0 scale-95 pointer-events-none
+                 data-[visible]:opacity-100 data-[visible]:scale-100 data-[visible]:pointer-events-auto
+                 transform-gpu transition-all duration-300 ease-out flex items-center justify-center rounded-full bg-white text-gray-500 shadow-md ring-1 ring-inset ring-gray-300 hover:bg-gray-50 hover:text-gray-900 focus:outline-none cursor-pointer">
+      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+      </svg>
+    </button>
+
+    <button data-scroll-target="bottomButton"
+            data-action="click->scroll#scrollToBottom"
+            type="button"
+            title="Dole"
+            class="absolute inset-0 opacity-0 scale-95 pointer-events-none
+                 data-[visible]:opacity-100 data-[visible]:scale-100 data-[visible]:pointer-events-auto
+                 transform-gpu transition-all duration-300 ease-out flex items-center justify-center rounded-full bg-white text-gray-500 shadow-md ring-1 ring-inset ring-gray-300 hover:bg-gray-50 hover:text-gray-900 focus:outline-none cursor-pointer">
+      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+      </svg>
+    </button>
+  </div>
 </div>
