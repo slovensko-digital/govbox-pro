@@ -25,7 +25,7 @@ module Utils
   def file_name_without_extension?(object)
     object.name.present? && !object.name&.include?(file_extension_by_mimetype(object.mimetype).to_s)
   end
-    
+
   def csv?(name)
     File.extname(name).downcase == '.csv'
   end
@@ -56,6 +56,10 @@ module Utils
       'application/pkix-cert'
     when '.docx'
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    when '.xls'
+      'application/vnd.ms-excel'
+    when '.xlsx'
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     when '.jpg', '.jpeg'
       'image/jpeg'
     when '.png'
@@ -96,6 +100,18 @@ module Utils
     when 'image/tiff'
       '.tiff'
     end
+  end
+
+  def from_fs_mimetype(mimetype)
+    return "application/x-zip-compressed" if mimetype == "application/zip"
+
+    mimetype
+  end
+
+  def to_fs_mimetype(mimetype)
+    return "application/zip" if mimetype == "application/x-zip-compressed"
+
+    mimetype
   end
 
   # TODO use UPVS API to detect if document is signed
