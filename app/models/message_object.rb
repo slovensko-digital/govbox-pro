@@ -142,6 +142,7 @@ class MessageObject < ApplicationRecord
 
   def fill_missing_info
     update(uuid: SecureRandom.uuid) unless uuid.present?
+    update(name: Utils.filename_with_lowercase_extension(name)) if name.present?
     update(name: name + Utils.file_extension_by_mimetype(mimetype).to_s) if Utils.file_name_without_extension?(self)
     update(mimetype: Utils.file_mimetype_by_name(entry_name: name)) if mimetype == Utils::OCTET_STREAM_MIMETYPE
   end
