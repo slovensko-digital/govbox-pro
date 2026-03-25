@@ -3,7 +3,11 @@ class Fs::SubmitMessageDraftAction
     is_submittable = message.submittable?
 
     if is_submittable
-      Fs::SubmitMessageDraftJob.perform_later(message, bulk_submit: bulk)
+      if bulk
+        Fs::SubmitMessageDraftJob.set(job_context: :asap_bulk).perform_later(message, bulk_submit: bulk)
+      else
+        Fs::SubmitMessageDraftJob.set(job_context: :asap).perform_later(message)
+      end
       message.being_submitted!
     end
 
