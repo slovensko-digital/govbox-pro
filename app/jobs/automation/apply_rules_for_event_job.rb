@@ -7,5 +7,9 @@ module Automation
     def perform(event, thing)
       Automation.run_rules_for(thing, event)
     end
+
+    def adjust_priority?
+      true
+    end
   end
 end

@@ -47,11 +47,13 @@ class ApplicationJob < ActiveJob::Base
                     end
 
     # Adjust priority for specific jobs
-    if is_a?(Searchable::ReindexMessageThreadJob) || is_a?(Automation::ApplyRulesForEventJob)
-      base_priority -= 100
-    end
+    base_priority -= 100 if adjust_priority?
 
     base_priority
+  end
+
+  def adjust_priority?
+    false
   end
 
   retry_on StandardError, wait: :polynomially_longer, attempts: Float::INFINITY
