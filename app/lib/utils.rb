@@ -26,6 +26,15 @@ module Utils
     object.name.present? && !object.name&.include?(file_extension_by_mimetype(object.mimetype).to_s)
   end
 
+  def filename_with_lowercase_extension(name)
+    return name unless name.include?('.')
+
+    extension = File.extname(name)
+    basename = File.basename(name, extension)
+
+    "#{basename}#{extension.downcase}"
+  end
+
   def csv?(name)
     File.extname(name).downcase == '.csv'
   end
