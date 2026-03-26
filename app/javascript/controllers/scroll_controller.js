@@ -1,21 +1,20 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets =["topButton", "bottomButton"]
+  static targets = ["topButton", "bottomButton"]
 
   connect() {
     this.scrollContainer = this.resolveScrollContainer()
-    this.updateVisibility = this.updateVisibility.bind(this)
+    this.scrollElement = this.scrollContainer === window ? document.documentElement : this.scrollContainer
 
     this.scrollContainer.addEventListener("scroll", this.updateVisibility, { passive: true })
     window.addEventListener("resize", this.updateVisibility)
 
     this.resizeObserver = new ResizeObserver(this.updateVisibility)
-    this.resizeObserver.observe(document.documentElement)
+    this.resizeObserver.observe(this.scrollElement)
 
     this.updateVisibility()
     requestAnimationFrame(this.updateVisibility)
-    setTimeout(this.updateVisibility, 150)
   }
 
   disconnect() {
@@ -29,46 +28,25 @@ export default class extends Controller {
   }
 
   scrollToBottom() {
-    this.scrollContainer.scrollTo({ top: this.scrollHeight(), behavior: "smooth" })
+    this.scrollContainer.scrollTo({ top: this.scrollElement.scrollHeight, behavior: "smooth" })
   }
 
-  updateVisibility() {
-    const scrollTop = this.scrollTop()
-    const scrollHeight = this.scrollHeight()
-    const clientHeight = this.clientHeight()
-
+  updateVisibility = () => {
+    const { scrollTop, scrollHeight, clientHeight } = this.scrollElement
     const totalScrollable = scrollHeight - clientHeight
-    if (totalScrollable < 100) {
-      this.toggleButtons(false, false)
-      return
+
+    let showTop = false, showBottom = false
+
+    if (totalScrollable >= 100) {
+      const isCloserToBottom = scrollTop > (totalScrollable / 2)
+      const distanceFromBottom = totalScrollable - scrollTop
+
+      showTop = isCloserToBottom && distanceFromBottom > 150
+      showBottom = !isCloserToBottom && scrollTop > 150
     }
 
-    const isCloserToBottom = scrollTop > (totalScrollable / 2)
-    this.toggleButtons(isCloserToBottom, !isCloserToBottom)
-  }
-
-  toggleButtons(showTop, showBottom) {
-    this.topButtonTargets.forEach((button) => {
-      button.toggleAttribute("data-visible", showTop)
-    })
-
-    this.bottomButtonTargets.forEach((button) => {
-      button.toggleAttribute("data-visible", showBottom)
-    })
-  }
-
-  get isWindow() { return this.scrollContainer === window }
-
-  scrollTop() {
-    return this.isWindow ? (window.scrollY || document.documentElement.scrollTop || 0) : this.scrollContainer.scrollTop
-  }
-
-  scrollHeight() {
-    return this.isWindow ? Math.max(document.body.scrollHeight, document.documentElement.scrollHeight) : this.scrollContainer.scrollHeight
-  }
-
-  clientHeight() {
-    return this.isWindow ? (window.innerHeight || document.documentElement.clientHeight) : this.scrollContainer.clientHeight
+    this.topButtonTargets.forEach(b => b.toggleAttribute("data-visible", showTop))
+    this.bottomButtonTargets.forEach(b => b.toggleAttribute("data-visible", showBottom))
   }
 
   resolveScrollContainer() {
