@@ -15,7 +15,7 @@ sk:
         uri: URI
         settings_obo: ID identity
       tenant:
-        api_token_public_key: Verejný kľúč pre API tokeny
+        api_token_public_key: Verejný kľúč
     errors:
       messages:
         record_invalid: 'Validácia neúspešná: %{errors}'
