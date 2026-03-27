@@ -38,6 +38,7 @@ class SidebarMenu
       TW::SidebarMenuItemComponent.new(name: 'Prístup', url: admin_tenant_permissions_path(Current.tenant), icon: Icons::LockClosedComponent.new),
       TW::SidebarMenuItemComponent.new(name: 'Schránky', url: admin_tenant_boxes_path(Current.tenant), icon: Common::IconComponent.new("inbox-stack")),
       TW::SidebarMenuItemComponent.new(name: 'API Prepojenia', url: admin_tenant_api_connections_path(Current.tenant), icon: Icons::RectangleStackComponent.new),
+      *(TW::SidebarMenuItemComponent.new(name: 'API Prístup', url: admin_tenant_api_access_path(Current.tenant), icon: Icons::RectangleStackComponent.new) if Current.tenant.feature_enabled?(:api)),
       TW::SidebarMenuItemComponent.new(name: 'Skupiny', url: admin_tenant_groups_path(Current.tenant), icon: Icons::UserGroupsComponent.new),
       TW::SidebarMenuItemComponent.new(name: 'Štítky', url: admin_tenant_tags_path(Current.tenant), icon: Icons::TagComponent.new),
       TW::SidebarMenuItemComponent.new(name: 'Integrácie', url: admin_tenant_automation_webhooks_path(Current.tenant), icon: Common::IconComponent.new("code-bracket")),

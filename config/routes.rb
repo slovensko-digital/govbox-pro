@@ -55,10 +55,12 @@ Rails.application.routes.draw do
         end
       end
 
+      resource :api_access, only: [:show, :update]
       resources :tags
       resources :permissions, only: [:index]
       resources :automation_webhooks
     end
+
     resources :audit_logs, only: :index do
       get :scroll, on: :collection
     end
