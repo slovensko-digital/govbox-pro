@@ -7,8 +7,6 @@ class ApiTokenPublicKeyValidator
   end
 
   def valid?
-    return true if blank?
-
     validate
     @error.nil?
   end
@@ -18,17 +16,11 @@ class ApiTokenPublicKeyValidator
   end
 
   def sanitized_key
-    return nil if blank?
-
     validate
     @error.nil? ? @public_key_string : nil
   end
 
   private
-
-  def blank?
-    @public_key_string.blank?
-  end
 
   def validate
     return if @error
