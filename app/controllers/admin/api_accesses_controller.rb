@@ -6,9 +6,9 @@ class Admin::ApiAccessesController < ApplicationController
   def update
     authorize([:admin, :api_access])
 
-    if api_access_params[:api_token_public_key].blank?
+    if params[:delete_api_token_public_key] == "true" || api_access_params[:api_token_public_key].blank?
       Current.tenant.update(api_token_public_key: nil)
-      redirect_to admin_tenant_api_access_path, notice: "API prístup bol úspešne aktualizovaný"
+      redirect_to admin_tenant_api_access_path, notice: "Verejný kľúč bol úspešne odstránený"
       return
     end
 
@@ -21,7 +21,7 @@ class Admin::ApiAccessesController < ApplicationController
     end
 
     Current.tenant.update(api_token_public_key: validator.sanitized_key)
-    redirect_to admin_tenant_api_access_path, notice: "API prístup bol úspešne aktualizovaný"
+    redirect_to admin_tenant_api_access_path, notice: "Verejný kľúč bol úspešne aktualizovaný"
   end
 
   private

@@ -15,10 +15,10 @@ class Admin::ApiAccessPolicy < ApplicationPolicy
   end
 
   def show?
-    @user.admin?
+    @user.admin? && Current.tenant.feature_enabled?(:api)
   end
 
   def update?
-    @user.admin?
+    @user.admin? && Current.tenant.feature_enabled?(:api)
   end
 end

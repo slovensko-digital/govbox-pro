@@ -36,18 +36,18 @@ class ApiTokenPublicKeyValidator
     begin
       key = OpenSSL::PKey::RSA.new(@public_key_string)
     rescue OpenSSL::PKey::RSAError
-      @error = "Neplatný RSA kľúč. Uistite sa, že vstup obsahuje PEM formát verejného kľúča"
+      @error = "Neplatný RSA kľúč. Uistite sa, že vstup obsahuje PEM formát verejného kľúča."
       return
     end
 
     if key.private?
-      @error = "Je povolený iba verejný kľúč, nie súkromný"
+      @error = "Vložte verejný RSA kľúč, nie súkromný."
       return
     end
 
     return unless key.n.num_bits != EXPECTED_BITS
 
-    @error = "Kľúč musí mať presne #{EXPECTED_BITS} bitov. Aktuálny kľúč má #{key.n.num_bits} bitov"
+    @error = "Kľúč musí mať #{EXPECTED_BITS} bitov. Aktuálny kľúč má #{key.n.num_bits} bitov."
     nil
   end
 end
