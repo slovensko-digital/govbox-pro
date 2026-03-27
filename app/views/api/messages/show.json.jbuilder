@@ -5,6 +5,7 @@ json.title @message.title
 json.sender_name @message.sender_name
 json.recipient_name @message.recipient_name
 json.delivered_at @message.delivered_at
+json.authorizable_delivery @message.can_be_authorized?
 json.status @message.metadata.dig('status') if @message.metadata.dig('status').present?
 json.metadata Hash[@message.metadata.map {|k,v| [k, (v.respond_to?(:except) ? v.except("diff") : v)] }]
 json.tags @message.tags.pluck(:name)

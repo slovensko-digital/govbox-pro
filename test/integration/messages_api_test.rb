@@ -63,6 +63,22 @@ class MessagesApiTest < ActionDispatch::IntegrationTest
     assert_response :not_found
   end
 
+  test "can authorize delivery" do
+    message = messages(:ssd_main_general_two)
+
+    post "/api/messages/#{message.id}/authorize_delivery", params: { token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }, as: :json
+
+    assert_response :created
+  end
+
+  test "returns unprocessable_content if the message cannot be authorized for delivery" do
+    message = messages(:ssd_main_fs_one)
+
+    post "/api/messages/#{message.id}/authorize_delivery", params: { token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }, as: :json
+
+    assert_response :unprocessable_content
+  end
+
   test "can search message by UUID" do
     message = messages(:ssd_main_general_one)
 
