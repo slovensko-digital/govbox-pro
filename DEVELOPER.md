@@ -5,7 +5,7 @@
 - [asdf version manager](https://asdf-vm.com/)
 - `docker` with `docker-compose`
 
-## Instalation steps
+## Installation steps
 
 ### Install Ruby and Node.js to versions specified in [.tool-versions](.tool-versions)
 
@@ -105,6 +105,52 @@ After configuring your admin email and setting up the database, run:
 
 ```console
 ./bin/rails c
+```
+
+## API
+
+### OpenAPI Documentation
+
+[public/openapi.yaml](public/openapi.yaml)
+
+### Setup API credentials for development
+
+1. Generate RSA keypair:
+
+```console
+openssl genrsa -out govbox_dev_api_token.private.pem 2048
+openssl rsa -in govbox_dev_api_token.private.pem -pubout -out govbox_dev_api_token.public.pem
+```
+
+2. Set the public key on your tenant, enable API feature, Generate API token (in Rails console):
+
+```rb
+# bin/rails console
+
+TENANT_ID = 1 # your tenant id
+PEM = 'govbox_dev_api_token.private.pem'
+
+tenant = Tenant.find(TENANT_ID)
+tenant.api_token_public_key = File.read(PEM)
+tenant.feature_flags << :api
+tenant.save!
+
+def api_token_private_key
+  OpenSSL::PKey::RSA.new(File.read(PEM))
+end
+
+def generate_api_token(tenant)
+  JWT.encode({ sub: tenant.id, exp: 5.minutes.from_now.to_i, jti: SecureRandom.uuid }, api_token_private_key, 'RS256')
+end
+
+token = generate_api_token(tenant) # max 5 minutes validity
+```
+
+3. Use the token in API requests:
+
+```console
+export GOVBOX_TOKEN=token-from-rails-console
+curl -H "Authorization: Bearer $GOVBOX_TOKEN" http://localhost:3000/api/boxes
 ```
 
 ## Other
