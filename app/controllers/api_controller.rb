@@ -3,6 +3,8 @@ class ApiController < ActionController::API
   before_action :authenticate_user
   around_action :wrap_in_request_logger
 
+  rescue_from Exception, with: :render_internal_server_error
+
   rescue_from JWT::DecodeError do |error|
     if error.message == 'Nil JSON web token'
       render_bad_request(RuntimeError.new(:no_credentials))
@@ -10,8 +12,6 @@ class ApiController < ActionController::API
       render_unauthorized(error.message)
     end
   end
-
-  rescue_from Exception, with: :render_internal_server_error
   rescue_from RestClient::Exceptions::Timeout, with: :render_request_timeout
   rescue_from ActiveRecord::RecordNotFound, with: :render_not_found
   rescue_from ActionController::ParameterMissing, with: :render_bad_request
