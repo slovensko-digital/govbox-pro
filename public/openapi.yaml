@@ -12,9 +12,9 @@ info:
     email: podpora@slovensko.digital
 
 servers:
-  - description: Server Govbox PRO v PROD prostredí
+  - description: Server GovBox PRO v PROD prostredí
     url: https://pro.govbox.sk
-  - description: Server Govbox PRO v Staging prostredí
+  - description: Server GovBox PRO v Staging prostredí
     url: https://govbox-pro.staging.slovensko.digital
   - description: Lokálne vývojové prostredie
     url: http://localhost:3000
@@ -130,7 +130,7 @@ paths:
                   type: object
                   properties:
                     id:
-                      description: Identifikátor schránky v systéme Govbox Pro
+                      description: Identifikátor schránky v systéme GovBox Pro
                       type: integer
                     name:
                       description: Názov schránky
@@ -178,7 +178,7 @@ paths:
                   type: object
                   properties:
                     id:
-                      description: Identifikátor API prepojenia v systéme Govbox Pro
+                      description: Identifikátor API prepojenia v systéme GovBox Pro
                       type: integer
                     custom_name:
                       description: Vlastný názov prepojenia
@@ -251,7 +251,7 @@ paths:
                 type: object
                 properties:
                   id:
-                    description: Identifikátor správy v systéme Govbox Pro
+                    description: Identifikátor správy v systéme GovBox Pro
                     type: integer
                   thread_id:
                     description: Identifikátor vlákna, ktorému prislúcha správa
@@ -300,7 +300,7 @@ paths:
                       type: object
                       properties:
                         id:
-                          description: Identifikátor objektu v systéme Govbox Pro
+                          description: Identifikátor objektu v systéme GovBox Pro
                           type: integer
                         name:
                           description: Názov objektu
@@ -369,7 +369,7 @@ paths:
                 type: object
                 properties:
                   id:
-                    description: Identifikátor správy v systéme Govbox Pro
+                    description: Identifikátor správy v systéme GovBox Pro
                     type: integer
                   thread_id:
                     description: Identifikátor vlákna, ktorému prislúcha správa
@@ -419,7 +419,7 @@ paths:
                       type: object
                       properties:
                         id:
-                          description: Identifikátor objektu v systéme Govbox Pro
+                          description: Identifikátor objektu v systéme GovBox Pro
                           type: integer
                         name:
                           description: Názov objektu
@@ -470,7 +470,7 @@ paths:
                 type: object
                 properties:
                   id:
-                    description: Identifikátor správy v systéme Govbox Pro
+                    description: Identifikátor správy v systéme GovBox Pro
                     type: integer
                   thread_id:
                     description: Identifikátor vlákna, ktorému prislúcha správa
@@ -503,7 +503,7 @@ paths:
                   type: object
                   properties:
                     id:
-                      description: Identifikátor správy v systéme Govbox Pro
+                      description: Identifikátor správy v systéme GovBox Pro
                       type: integer
                     thread_id:
                       description: Identifikátor vlákna, ktorému prislúcha správa
@@ -553,7 +553,7 @@ paths:
                         type: object
                         properties:
                           id:
-                            description: Identifikátor objektu v systéme Govbox Pro
+                            description: Identifikátor objektu v systéme GovBox Pro
                             type: integer
                           name:
                             description: Názov objektu
@@ -718,7 +718,7 @@ paths:
                       type: string
                 api_connection_id:
                   type: integer
-                  description: V prípade použitia spoločného prístupu k schránke identifikátor pripojenia v systéme Govbox Pro
+                  description: V prípade použitia spoločného prístupu k schránke identifikátor pripojenia v systéme GovBox Pro
                 api_connection:
                   type: object
                   description: Parametre pripojenia na ÚPVS
@@ -743,7 +743,7 @@ paths:
                 type: object
                 properties:
                   id:
-                    description: Identifikátor založenej schránky v systéme Govbox Pro
+                    description: Identifikátor založenej schránky v systéme GovBox Pro
                     type: integer
       security:
         - "Site_Admin_Token": []
@@ -823,7 +823,7 @@ paths:
                       type: string
                 api_connection_id:
                   type: integer
-                  description: V prípade použitia spoločného prístupu k schránke identifikátor pripojenia v systéme Govbox Pro
+                  description: V prípade použitia spoločného prístupu k schránke identifikátor pripojenia v systéme GovBox Pro
                 api_connection:
                   type: object
                   description: Parametre pripojenia na FS
@@ -858,7 +858,7 @@ paths:
                 type: object
                 properties:
                   id:
-                    description: Identifikátor založenej schránky v systéme Govbox Pro
+                    description: Identifikátor založenej schránky v systéme GovBox Pro
                     type: integer
       security:
         - "Site_Admin_Token": []
