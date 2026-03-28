@@ -1,11 +1,12 @@
 <div class="w-full p-4 flex-col justify-start items-start gap-4 inline-flex">
-
-  <div class="self-stretch bg-white rounded-md border border-gray-200 p-6 flex justify-between items-center">
-    <div class="text-gray-900 text-lg font-semibold">
-      ID tenanta
+  <div class="self-stretch bg-white rounded-md border border-gray-200 flex-col justify-start items-start flex">
+    <div class="self-stretch p-6 border-b border-gray-200">
+      <h3 class="text-gray-900 text-xl font-semibold leading-7">ID tenanta</h3>
     </div>
-    <div class="text-gray-900 text-base font-mono bg-gray-50 px-3 py-1.5 rounded border border-gray-200">
-      <%= Current.tenant.id %>
+    <div class="p-6">
+      <div class="text-gray-900 text-base font-mono leading-normal bg-gray-50 px-3 py-1.5 rounded border border-gray-200 w-fit select-all">
+        <%= Current.tenant.id %>
+      </div>
     </div>
   </div>
 
@@ -40,5 +41,4 @@
       <% end %>
     </div>
   </div>
-
 </div>
