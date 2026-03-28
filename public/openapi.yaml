@@ -349,7 +349,7 @@ paths:
   /api/messages/{id}/authorize_delivery:
     post:
       tags: [Správy]
-      summary: Authorizuje správu na doručenie. Preberie doručenku.
+      summary: Autorizuje doručenku v schránke
       description: |
         Authorizuje správu na doručenie. Preberie doručenku.
       parameters:
