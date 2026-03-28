@@ -8,8 +8,7 @@ class Admin::ApiAccessesController < ApplicationController
 
     if api_access_params[:api_token_public_key].blank?
       Current.tenant.update(api_token_public_key: nil)
-      redirect_to admin_tenant_api_access_path, notice: "Verejný kľúč bol úspešne odstránený"
-      return
+      redirect_to admin_tenant_api_access_path, notice: "Verejný kľúč bol úspešne odstránený" and return
     end
 
     if Current.tenant.update(api_access_params)
