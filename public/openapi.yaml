@@ -362,7 +362,7 @@ paths:
             format: int64
       responses:
         201:
-          description: Spr=ava
+          description: Úspešne autorizovaná doručenka v schránke
           content:
             application/json:
               schema:
