@@ -257,6 +257,7 @@ Rails.application.routes.draw do
     end
 
     resources :messages, only: [:show, :destroy] do
+      post :authorize_delivery_notification, on: :member
       get :search, on: :collection
       post :message_drafts, on: :collection
       get :sync, on: :collection

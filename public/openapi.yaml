@@ -346,6 +346,36 @@ paths:
       security:
         - "Tenant_Token": []
 
+  /api/messages/{id}/authorize_delivery_notification:
+    post:
+      tags: [Správy]
+      summary: Autorizuje doručenku v schránke
+      description: |
+        Autorizuje doručenku v schránke.
+      parameters:
+        - name: id
+          in: path
+          description: Identifikátor správy
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        201:
+          description: Úspešne autorizovaná doručenka v schránke
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  thread_id:
+                    description: Identifikátor vlákna, v ktorom sa objaví nová správa.
+                    type: integer
+        422:
+          description: "Správu nie je možné prevziať. Možné dôvody: Správa je už doručená, správa sa aktuálne preberá, lehota na prebratie vypršala, správa nepodporuje autorizáciu."
+      security:
+        - "Tenant_Token": []
+
   /api/messages/search:
     get:
       tags: [Správy]

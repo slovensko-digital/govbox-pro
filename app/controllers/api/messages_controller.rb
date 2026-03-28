@@ -9,6 +9,18 @@ class Api::MessagesController < Api::TenantController
     @message = @tenant.messages.find(params[:id])
   end
 
+  def authorize_delivery_notification
+    @message = @tenant.messages.find(params[:id])
+
+    @message.transaction do
+      if Govbox::AuthorizeDeliveryNotificationAction.run(@message)
+        render status: :created
+      else
+        render_unprocessable_content("Message cannot be authorized for delivery")
+      end
+    end
+  end
+
   def destroy
     @message = @tenant.messages.find(params[:id])
 
