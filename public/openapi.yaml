@@ -493,7 +493,7 @@ paths:
           schema:
             type: integer
       responses:
-        204:
+        200:
           description: Úspešne vrátený zoznam správ
           content:
             application/json:
@@ -601,7 +601,7 @@ paths:
       security:
         - "Tenant_Token": [ ]
 
-  /api/site_admin/tenant/:
+  /api/site_admin/tenants:
     post:
       tags: [Správa tenantov (Administrácia)]
       summary: Založí nového tenanta v systéme
@@ -613,23 +613,28 @@ paths:
             schema:
               type: object
               properties:
-                name:
-                  description: Názov nového tenanta, typicky názov spoločnosti
-                  type: string
-                admin:
+                tenant:
                   type: object
                   properties:
                     name:
-                      description: Meno administrátora pre daného tenanta
+                      description: Názov nového tenanta, typicky názov spoločnosti
                       type: string
-                    email:
-                      description: email administrátora, bude použitý na OAuth2 autentifikáciu
-                      type: string
+                    admin:
+                      type: object
+                      properties:
+                        name:
+                          description: Meno administrátora pre daného tenanta
+                          type: string
+                        email:
+                          description: email administrátora, bude použitý na OAuth2 autentifikáciu
+                          type: string
+                      required:
+                        - name
                   required:
                     - name
+                    - admin
               required:
-                - name
-                - admin
+                - tenant
       responses:
         200:
           description: Úspešne založený tenant v systéme
@@ -672,6 +677,9 @@ paths:
                   description: URI schránky na slovensko.sk
                   type: string
                   example: "ico://12345678/"
+                export_name:
+                  description: Názov schránky určený na exporty a zobrazovanie
+                  type: string
                 short_name:
                   description: Skrátený názov pre odlíšenie vlákien/správ z rôznych schránok v používateľskom rozhraní. Odporúčame maximálne 3 znaky
                   type: string
@@ -740,7 +748,7 @@ paths:
       security:
         - "Site_Admin_Token": []
 
-  /api/site_admin/tenant/{id}/fs/boxes:
+  /api/site_admin/tenants/{id}/fs/boxes:
     post:
       tags: [Správa tenantov (Administrácia)]
       summary: Založí novú FS schránku v rámci tenanta
@@ -875,7 +883,7 @@ paths:
       security:
         - "Site_Admin_Token": []
 
-  /api/site_admin/stats/tenants/{id}/user_count:
+  /api/site_admin/stats/tenants/{id}/users_count:
     get:
       tags: [Štatistiky]
       summary: Vráti počet používateľov v rámci tenanta
@@ -1262,7 +1270,6 @@ components:
         - type
         - uuid
         - title
-        - correlation_id
         - metadata
         - objects
 
