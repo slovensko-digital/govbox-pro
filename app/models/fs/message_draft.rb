@@ -179,13 +179,13 @@ class Fs::MessageDraft < MessageDraft
   def find_api_connection_for_submission
     return box.api_connection if box.api_connections.count == 1 && !box.api_connection.owner
 
-    raise "Multiple signatures found. Can't choose API connection" if form_object.tags.where(type: "SignedByTag").count > 1
+    raise I18n.t("activerecord.errors.models.fs/message_draft.multiple_signatures") if form_object.tags.where(type: "SignedByTag").count > 1
 
     signed_by = form_object.tags.where(type: "SignedByTag")&.first&.owner
 
     return box.api_connections.find_by(owner: signed_by) if signed_by && box.api_connections.find_by(owner: signed_by)
 
-    raise "Signer not allowed to submit the message"
+    raise I18n.t("activerecord.errors.models.fs/message_draft.signer_not_allowed_to_submit")
   end
 
   def assign_tags_from_params(tags_params)
