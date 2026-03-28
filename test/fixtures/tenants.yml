@@ -6,14 +6,14 @@ ssd:
     - audit_log
     - archive
     - api
-  api_token_public_key: "-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAMIpyOBmP6R5hkFzBlNIbhX4t2CpAaoE\nyDDRzog4rvycPQNXnvZXuIm1shVq0XCrx+2nMWNHFrKqH3QViQR0QGMCAwEAAQ==\n-----END PUBLIC KEY-----"
+  api_token_public_key: "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvO34+6i01sVH3joFNTo6\n/w2bCd2lLEZ+GYJ//bIniOW4mT8WIqM8SP/iFJQQkY206a7kGpE+mJoeoo3ss3ov\nskDjyBonRB/AXdZb0+hMADfGeNhYS64WxkHhlGT0tgdzmeMD6IFDNfCviA2Fh4Ei\nwQEp3iC9Tf+iaQ1u+1PHHcKxN/06RKSryqXKmYNDbZYWy75UQGu1Bd726nQYYmmS\nmMpMVaGHxh+cOeu82y68W54znSdni6TJlPETF3f/QasQv7m8ZkdFjWcSUPt68qhT\nvBtfJMz/b76G2XwrE8Y0HpmAPA3euVogIpDjNdpQeJO8msoLhkEhB/igNUKdwR8U\nnQIDAQAB\n-----END PUBLIC KEY-----"
 
 solver:
   name: Solver
   feature_flags:
     - api
     - fs_api
-  api_token_public_key: "-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAMIpyOBmP6R5hkFzBlNIbhX4t2CpAaoE\nyDDRzog4rvycPQNXnvZXuIm1shVq0XCrx+2nMWNHFrKqH3QViQR0QGMCAwEAAQ==\n-----END PUBLIC KEY-----"
+  api_token_public_key: "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvO34+6i01sVH3joFNTo6\n/w2bCd2lLEZ+GYJ//bIniOW4mT8WIqM8SP/iFJQQkY206a7kGpE+mJoeoo3ss3ov\nskDjyBonRB/AXdZb0+hMADfGeNhYS64WxkHhlGT0tgdzmeMD6IFDNfCviA2Fh4Ei\nwQEp3iC9Tf+iaQ1u+1PHHcKxN/06RKSryqXKmYNDbZYWy75UQGu1Bd726nQYYmmS\nmMpMVaGHxh+cOeu82y68W54znSdni6TJlPETF3f/QasQv7m8ZkdFjWcSUPt68qhT\nvBtfJMz/b76G2XwrE8Y0HpmAPA3euVogIpDjNdpQeJO8msoLhkEhB/igNUKdwR8U\nnQIDAQAB\n-----END PUBLIC KEY-----"
 
 google:
   name: Google
@@ -23,5 +23,5 @@ accountants:
   feature_flags:
     - api
     - fs_api
-  api_token_public_key: "-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAMIpyOBmP6R5hkFzBlNIbhX4t2CpAaoE\nyDDRzog4rvycPQNXnvZXuIm1shVq0XCrx+2nMWNHFrKqH3QViQR0QGMCAwEAAQ==\n-----END PUBLIC KEY-----"
+  api_token_public_key: "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvO34+6i01sVH3joFNTo6\n/w2bCd2lLEZ+GYJ//bIniOW4mT8WIqM8SP/iFJQQkY206a7kGpE+mJoeoo3ss3ov\nskDjyBonRB/AXdZb0+hMADfGeNhYS64WxkHhlGT0tgdzmeMD6IFDNfCviA2Fh4Ei\nwQEp3iC9Tf+iaQ1u+1PHHcKxN/06RKSryqXKmYNDbZYWy75UQGu1Bd726nQYYmmS\nmMpMVaGHxh+cOeu82y68W54znSdni6TJlPETF3f/QasQv7m8ZkdFjWcSUPt68qhT\nvBtfJMz/b76G2XwrE8Y0HpmAPA3euVogIpDjNdpQeJO8msoLhkEhB/igNUKdwR8U\nnQIDAQAB\n-----END PUBLIC KEY-----"
 

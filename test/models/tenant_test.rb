@@ -71,4 +71,45 @@ class TenantTest < ActiveSupport::TestCase
       assert_not_includes @tenant.feature_flags, "api"
     end
   end
+
+  test "api_token_public_key is valid when nil" do
+    @tenant.api_token_public_key = nil
+    assert @tenant.valid?
+  end
+
+  test "api_token_public_key is invalid when an empty string" do
+    @tenant.api_token_public_key = ""
+    assert_not @tenant.valid?
+    assert_includes @tenant.errors[:api_token_public_key], I18n.t('activerecord.errors.models.tenant.attributes.api_token_public_key.public_key_invalid_format')
+  end
+
+  test "api_token_public_key is valid with a correct 2048-bit RSA public key" do
+    key = OpenSSL::PKey::RSA.generate(2048)
+    @tenant.api_token_public_key = key.public_key.to_pem
+    assert @tenant.valid?
+  end
+
+  test "api_token_public_key is invalid with a private key" do
+    key = OpenSSL::PKey::RSA.generate(2048)
+    @tenant.api_token_public_key = key.to_pem
+
+    assert_not @tenant.valid?
+    assert_includes @tenant.errors[:api_token_public_key], I18n.t('activerecord.errors.models.tenant.attributes.api_token_public_key.public_key_is_private')
+  end
+
+  test "api_token_public_key is invalid with a key of incorrect bit size" do
+    key = OpenSSL::PKey::RSA.generate(1024)
+    @tenant.api_token_public_key = key.public_key.to_pem
+
+    assert_not @tenant.valid?
+    expected_error = I18n.t('activerecord.errors.models.tenant.attributes.api_token_public_key.public_key_invalid_bits', current_bits: 1024)
+    assert_includes @tenant.errors[:api_token_public_key], expected_error
+  end
+
+  test "api_token_public_key is invalid with a malformed string" do
+    @tenant.api_token_public_key = "invalid-api-token-public-key"
+
+    assert_not @tenant.valid?
+    assert_includes @tenant.errors[:api_token_public_key], I18n.t('activerecord.errors.models.tenant.attributes.api_token_public_key.public_key_invalid_format')
+  end
 end
