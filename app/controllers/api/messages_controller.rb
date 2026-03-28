@@ -14,7 +14,7 @@ class Api::MessagesController < Api::TenantController
 
     @message.transaction do
       if Govbox::AuthorizeDeliveryNotificationAction.run(@message)
-        render json: { thread_id: @message.message_thread_id }.to_json, status: :created
+        render status: :created
       else
         render_unprocessable_content("Message cannot be authorized for delivery")
       end
