@@ -372,7 +372,7 @@ paths:
                     description: Identifikátor vlákna, v ktorom sa objaví nová správa.
                     type: integer
         422:
-          description: "Správu nie je možné prevziať. Možné dôvody: Správa je už doručená, správa sa aktuálne preberá, lehota na prebratie vypršala, správa nepodporuje authorizáciu."
+          description: "Správu nie je možné prevziať. Možné dôvody: Správa je už doručená, správa sa aktuálne preberá, lehota na prebratie vypršala, správa nepodporuje autorizáciu."
       security:
         - "Tenant_Token": []
 
