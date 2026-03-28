@@ -346,7 +346,7 @@ paths:
       security:
         - "Tenant_Token": []
 
-  /api/messages/{id}/authorize_delivery:
+  /api/messages/{id}/authorize_delivery_notification:
     post:
       tags: [Správy]
       summary: Autorizuje doručenku v schránke

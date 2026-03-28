@@ -66,7 +66,7 @@ class MessagesApiTest < ActionDispatch::IntegrationTest
   test "can authorize delivery" do
     message = messages(:ssd_main_general_two)
 
-    post "/api/messages/#{message.id}/authorize_delivery", params: { token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }, as: :json
+    post "/api/messages/#{message.id}/authorize_delivery_notification", params: { token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }, as: :json
 
     assert_response :created
   end
@@ -74,7 +74,7 @@ class MessagesApiTest < ActionDispatch::IntegrationTest
   test "returns unprocessable_content if the message cannot be authorized for delivery" do
     message = messages(:ssd_main_fs_one)
 
-    post "/api/messages/#{message.id}/authorize_delivery", params: { token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }, as: :json
+    post "/api/messages/#{message.id}/authorize_delivery_notification", params: { token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }, as: :json
 
     assert_response :unprocessable_content
   end
