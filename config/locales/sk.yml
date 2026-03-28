@@ -43,6 +43,9 @@ sk:
           attributes:
             base:
               empty_selection: Musí byť zvolené aspoň jedno z nastavení exportu
+        fs/message_draft:
+          multiple_signatures: "Správa má viacero podpisov. Nie je možné vybrať API prepojenie."
+          signer_not_allowed_to_submit: "Podpisujúci nemá oprávnenie na odoslanie správy."
   date:
     abbr_day_names:
     - Ne
