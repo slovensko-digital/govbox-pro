@@ -49,9 +49,11 @@ class Fs::SubmitMessageDraftResultJobTest < ActiveJob::TestCase
     }, ["location123"]
 
     FsEnvironment.fs_client.stub :api, fs_api do
-      Fs::SubmitMessageDraftResultJob.new.perform(message_draft, "location123")
+      Automation::ApplyRulesForEventJob.stub :perform_later, nil do
+        Fs::SubmitMessageDraftResultJob.new.perform(message_draft, "location123")
+      end
 
-      assert_equal "submitted", message_draft.metadata["status"]
+      assert_equal "submitted", message_draft.reload.metadata["status"]
       assert_equal "12345/2024", message_draft.metadata["fs_message_id"]
     end
   end
