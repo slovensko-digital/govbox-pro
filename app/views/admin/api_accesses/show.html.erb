@@ -35,15 +35,6 @@
 
           <div class="flex items-center gap-4 mt-2">
             <%= form.button "Uložiť", type: "submit", class: "px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 font-medium text-sm transition-colors" %>
-
-            <% if Current.tenant.api_token_public_key.present? %>
-              <%= form.button "Odstrániť kľúč",
-                              type: "submit",
-                              name: "delete_api_token_public_key",
-                              value: "true",
-                              class: "px-4 py-2 bg-white text-red-600 border border-red-200 rounded-md hover:bg-red-50 hover:border-red-300 font-medium text-sm transition-colors",
-                              data: { turbo_confirm: "Naozaj chcete odstrániť verejný kľúč? Bez neho nebude možné overovať API tokeny." } %>
-            <% end %>
           </div>
         </div>
       <% end %>
