@@ -62,6 +62,7 @@ class Fs::SubmitMessageDraftJob < ApplicationJob
     message_draft.save!
 
     message_draft.add_cascading_tag(message_draft.tenant.submission_error_tag)
+    message_draft.add_cascading_tag(message_draft.tenant.problem_tag)
 
     raise SubmissionError, error_message
   end
