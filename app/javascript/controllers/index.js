@@ -28,8 +28,14 @@ application.register("dropzone", DropzoneController)
 import FormController from "./form_controller"
 application.register("form", FormController)
 
+import MarkReadController from "./mark_read_controller"
+application.register("mark-read", MarkReadController)
+
 import MessageDraftsController from "./message_drafts_controller"
 application.register("message-drafts", MessageDraftsController)
+
+import ScrollController from "./scroll_controller"
+application.register("scroll", ScrollController)
 
 import ShiftSelectController from "./shift_select_controller"
 application.register("shift-select", ShiftSelectController)
@@ -42,6 +48,3 @@ application.register("turbo-content", TurboContentController)
 
 import VisitedLinksController from "./visited_links_controller"
 application.register("visited-links", VisitedLinksController)
-
-import MarkReadController from "./mark_read_controller"
-application.register("mark-read", MarkReadController)
