@@ -18,7 +18,7 @@ class Fs::SubmitMessageDraftResultJob < ApplicationJob
       message_draft.metadata[:status] = 'submit_fail'
 
       error_msg = response[:body] && response[:body]["message"]
-      message_draft.metadata[:submit_error_message] = error_msg if error_msg&.include?("používateľ nemá")
+      message_draft.metadata[:submit_error_message] = error_msg&.include?("používateľ nemá") ? error_msg : nil
 
       message_draft.add_cascading_tag(message_draft.tenant.submission_error_tag)
       message_draft.add_cascading_tag(message_draft.tenant.problem_tag)
