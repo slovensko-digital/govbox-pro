@@ -8,7 +8,10 @@ class Fs::SubmitMessageDraftResultJob < ApplicationJob
 
     if 200 == response[:status]
       message_draft.submitted!
+
       message_draft.metadata[:fs_message_id] = response[:body]['sent_message_id']
+      message_draft.metadata[:submit_error_message] = nil
+
       message_draft.remove_cascading_tag(message_draft.tenant.submission_error_tag)
       message_draft.remove_cascading_tag(message_draft.tenant.problem_tag)
       message_draft.save
