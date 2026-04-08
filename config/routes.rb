@@ -56,10 +56,12 @@ Rails.application.routes.draw do
         end
       end
 
+      resource :api_access, only: [:show, :update]
       resources :tags
       resources :permissions, only: [:index]
       resources :automation_webhooks
     end
+
     resources :audit_logs, only: :index do
       get :scroll, on: :collection
     end
@@ -257,6 +259,7 @@ Rails.application.routes.draw do
     end
 
     resources :messages, only: [:show, :destroy] do
+      post :authorize_delivery_notification, on: :member
       get :search, on: :collection
       post :message_drafts, on: :collection
       get :sync, on: :collection

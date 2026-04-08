@@ -5,6 +5,8 @@ class Api::SiteAdmin::TenantsController < Api::SiteAdminController
     Tenant.transaction do
       @tenant = Tenant.create_with_admin!(tenant_params, tenant_params.require(:admin))
     end
+
+    render status: :created
   end
 
   def destroy

@@ -1,7 +1,7 @@
 class AddDeliveryNotificationTagToThreads < ActiveRecord::Migration[7.0]
   def up
     MessageThread.find_each do |message_thread|
-      to_be_authorized_messages = message_thread.messages.select(&:can_be_authorized?)
+      to_be_authorized_messages = message_thread.messages.select(&:authorizable_delivery_notification?)
 
       if to_be_authorized_messages.any?
         delivery_notification_tag = Tag.find_or_create_by!(

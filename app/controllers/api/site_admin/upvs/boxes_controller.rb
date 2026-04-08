@@ -3,6 +3,8 @@ class Api::SiteAdmin::Upvs::BoxesController < Api::SiteAdminController
     Box.transaction do
       @box = Upvs::Box.create_with_api_connection!(box_params)
     end
+
+    render status: :created
   end
 
   private

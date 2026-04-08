@@ -53,6 +53,7 @@ class Tenant < ApplicationRecord
   after_create :create_default_objects
 
   validates_presence_of :name
+  validate :validate_api_token_public_key_format, unless: -> { api_token_public_key.nil? }
 
   ALL_FEATURE_FLAGS = [:audit_log, :archive, :api, :message_draft_import, :fs_api, :fs_sync, :upvs]
 
@@ -180,5 +181,17 @@ class Tenant < ApplicationRecord
     create_validation_warning_tag!(name: "Upozornenia", color: "orange", icon: "exclamation-triangle")
 
     make_admins_see_everything!
+  end
+
+  def validate_api_token_public_key_format
+    key = OpenSSL::PKey::RSA.new(api_token_public_key)
+
+    if key.private?
+      errors.add(:api_token_public_key, :public_key_is_private)
+    elsif key.n.num_bits != 2048
+      errors.add(:api_token_public_key, :public_key_invalid_bits, current_bits: key.n.num_bits)
+    end
+  rescue OpenSSL::PKey::RSAError, TypeError
+    errors.add(:api_token_public_key, :public_key_invalid_format)
   end
 end

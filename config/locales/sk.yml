@@ -14,6 +14,8 @@ sk:
         short_name: Krátky názov
         uri: URI
         settings_obo: ID identity
+      tenant:
+        api_token_public_key: Verejný kľúč
     errors:
       messages:
         record_invalid: 'Validácia neúspešná: %{errors}'
@@ -46,6 +48,12 @@ sk:
         fs/message_draft:
           multiple_signatures: "Správa má viacero podpisov. Nie je možné vybrať API prepojenie."
           signer_not_allowed_to_submit: "Podpisujúci nemá oprávnenie na odoslanie správy."
+        tenant:
+          attributes:
+            api_token_public_key:
+              public_key_is_private: "Je povolený iba verejný kľúč, nie súkromný."
+              public_key_invalid_bits: "Kľúč musí mať presne 2048 bitov. Aktuálny kľúč má %{current_bits} bitov."
+              public_key_invalid_format: "Neplatný RSA kľúč. Uistite sa, že vstup obsahuje PEM formát verejného kľúča."
   date:
     abbr_day_names:
     - Ne

@@ -154,7 +154,7 @@ class Govbox::Message < ApplicationRecord
     end
     message.add_cascading_tag(upvs_tag)
 
-    add_delivery_notification_tag(message) if message.can_be_authorized?
+    add_delivery_notification_tag(message) if message.authorizable_delivery_notification?
   end
 
   def self.add_delivery_notification_tag(message)

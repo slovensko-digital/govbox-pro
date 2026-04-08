@@ -1,6 +1,6 @@
 class Govbox::AuthorizeDeliveryNotificationAction
   def self.run(message)
-    can_be_authorized = message.can_be_authorized?
+    can_be_authorized = message.authorizable_delivery_notification?
 
     if can_be_authorized
       message.metadata["authorized"] = "in_progress"
