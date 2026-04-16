@@ -1,0 +1,52 @@
+---
+title: "Welcome"
+description: "Welcome to your new documentation site."
+---
+
+# GovBox PRO - Používateľská dokumentácia
+
+## Obsah
+
+- [Úvod](./introduction.md)
+- [Základné pojmy](./concepts/)
+  - [Prehľad](./concepts/overview.md)
+  - [Schránka](./concepts/mailbox.md)
+  - [Správa](./concepts/message.md)
+  - [Vlákno](./concepts/thread.md)
+  - [Štítok](./concepts/label.md)
+  - [Tenant](./concepts/tenant.md)
+  - [Používateľ](./concepts/user.md)
+  - [Skupina](./concepts/group.md)
+  - [Filter](./concepts/filter.md)
+  - [Notifikácia](./concepts/notification.md)
+  - [Pravidlo](./concepts/rule.md)
+- [Začíname](getting-started/)
+  - [Prihlásenie](getting-startedogin.md)
+  - [Správa používateľov](getting-startedser-management.md)
+  - [Správa skupín](getting-startedroup-management.md)
+  - [Správa schránok](getting-startedailbox-management.md)
+- [Správy a vlákna](messages/)
+  - [Zobrazenie správ](messagesiewing-messages.md)
+  - [Zobrazenie vlákna](messagesiewing-thread.md)
+  - [Odpovedanie na správy](messageseplying.md)
+  - [Prevzatie správ](messageseceiving.md)
+  - [Stiahnutie správy](messagesownloading.md)
+  - [Vyhľadávanie](messagesearching.md)
+  - [Premenovanie vlákna](messagesenaming-thread.md)
+- [Notifikácie](notifications/)
+  - [Nastavenie notifikácií](notificationsetting-up.md)
+- [Podpisovanie](signing/)
+  - [Podpis dokumentu](signingign-document.md)
+  - [Vyžiadanie podpisu](signingequest-signature.md)
+  - [Hromadné podpisovanie](signingulk-signing.md)
+- [Pravidlá](rules/)
+  - [Vytvorenie pravidla](rulesreating.md)
+- [Štítky](labels/)
+  - [Vytvorenie štítka](labelsreating.md)
+  - [Úprava štítka](labelsditing.md)
+  - [Prístup k štítkom](labelsccess-control.md)
+- [Prílohy](docs/attachments/)
+  - [Zobrazenie príloh](attachments/viewing.md)
+  - [Stiahnutie príloh](attachments/downloading.md)
+- [Filtre](filters/)
+  - [Vytvorenie filtra](filtersreating.md)
