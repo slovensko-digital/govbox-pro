@@ -35,16 +35,3 @@ Aby používateľ mohol čokoľvek podpisovať, musí byť súčasťou skupiny *
 ::: callout success "Hotovo!"
 Hromadné podpisovanie umožňuje efektívne podpísať viacero dokumentov naraz.
 :::
-
-## Súvisiace témy
-
-### Podpis dokumentu
-Priame podpísanie jedného dokumentu.
-
-- **[Podpis dokumentu](/signing/sign-document)**
-
-### Vyžiadanie podpisu
-Vyžiadanie podpisu od iného používateľa.
-
-- **[Vyžiadanie podpisu](/signing/request-signature)**
-

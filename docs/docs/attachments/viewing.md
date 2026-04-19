@@ -22,18 +22,5 @@ Po kliknutí na konkrétne vlákno sa zobrazí obsah správy.
 ![Informácia o prílohách](../../assets/images/attachments/attachments-info.png)
 
 ::: callout tip "Podporované formáty"
-Prílohy sa zobrazujú priamo v prehliadači, ak je toto формат podporovaný. Inak si ich môžete stiahnuť.
+Prílohy sa zobrazujú priamo v prehliadači, ak je daný formát podporovaný. V opačnom prípade si ich môžete stiahnuť do počítača.
 :::
-
-## Súvisiace témy
-
-### Stiahnutie prílohy
-Ako stiahnuť prílohy do počítača.
-
-- **[Stiahnutie prílohy](/attachments/downloading)**
-
-### Odpovedanie na správy
-Ako pridať vlastné prílohy pri odpovedaní na správy.
-
-- **[Odpovedanie](/messages/replying)**
-

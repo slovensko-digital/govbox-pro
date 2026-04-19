@@ -30,16 +30,3 @@ Používateľ môže vyžiadať podpis od iných používateľov, typicky naprí
 ::: callout info "Informácia pre podpisovateľa"
 Používateľ, ktorému bol podpis vyžiadaný, uvidí dokumenty potrebné na podpísanie po prihlásení do GovBox PRO.
 :::
-
-## Súvisiace témy
-
-### Podpis dokumentu
-Priame podpísanie dokumentu Autogramom.
-
-- **[Podpis dokumentu](/signing/sign-document)**
-
-### Hromadné podpisovanie
-Podpisovanie viacerých dokumentov naraz.
-
-- **[Hromadné podpisovanie](/signing/bulk-signing)**
-

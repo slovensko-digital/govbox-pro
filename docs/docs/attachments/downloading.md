@@ -24,10 +24,3 @@ Pri každej pripojenej prílohe v správe sa nachádza ikona troch bodiek.
 ::: callout info "Poznámka"
 Stiahnuté prílohy sa štandardne ukladajú do priečinka pre stiahnuté súbory vo vašom prehliadači.
 :::
-
-## Súvisiace témy
-
-### Zobrazenie prílohy
-Namiesto stiahnutia môžete prílohy aj priamo zobraziť v prehliadači.
-
-- **[Zobrazenie prílohy](/attachments/viewing)**

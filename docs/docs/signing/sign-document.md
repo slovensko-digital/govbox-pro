@@ -38,16 +38,3 @@ Aby používateľ mohol čokoľvek podpisovať, musí byť súčasťou skupiny *
 
 ### Podpísané dokumenty
 ![Podpísané dokumenty](../../assets/images/signing/signed-documents.png)
-
-## Súvisiace témy
-
-### Vyžiadanie podpisu
-Vyžiadajte podpis od iného používateľa.
-
-- **[Vyžiadanie podpisu](/signing/request-signature)**
-
-### Hromadné podpisovanie
-Podpište viacero dokumentov naraz.
-
-- **[Hromadné podpisovanie](/signing/bulk-signing)**
-
