@@ -67,7 +67,7 @@ class Fs::SubmitMessageDraftJobTest < ActiveJob::TestCase
 
     message_draft.reload
     assert_equal "submit_fail", message_draft.metadata["status"]
-    assert_equal "Správa má viacero podpisov. Nie je možné vybrať API prepojenie.", message_draft.metadata["submit_error_message"]
+    assert_equal "Správa obsahuje viacero podpisov. Nie je možné vybrať FS prepojenie.", message_draft.metadata["submit_error_message"]
     assert_includes message_draft.tags, submission_error_tag
     assert_includes message_draft.thread.tags, submission_error_tag
   ensure
