@@ -164,7 +164,9 @@ class Message < ApplicationRecord
       delivered_at: delivered_at,
       tags: thread.tags.map(&:name),
       outbox: outbox,
-    }.merge!(metadata.slice(*metadata_whitelist))
+      dph_r33: parse_value_from_form_object('//r33'),
+      dph_r35: parse_value_from_form_object('//r35')
+    }.merge!(metadata.slice(*metadata_whitelist)).symbolize_keys
   end
 
   def assign_tag(tag)
@@ -177,5 +179,9 @@ class Message < ApplicationRecord
 
   def template
     MessageTemplate.find(metadata.dig("template_id")) if metadata.dig("template_id")
+  end
+
+  def parse_value_from_form_object(xpath)
+    form_object&.xml_unsigned_content&.at_xpath(xpath)&.text
   end
 end

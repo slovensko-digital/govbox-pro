@@ -336,6 +336,28 @@ fs_accountants_draft_vp_danv24:
       diff: [ ]
   author: accountants_basic
 
+fs_accountants_dphv21:
+  type: Fs::MessageDraft
+  uuid: <%= SecureRandom.uuid %>
+  title: FS podanie
+  delivered_at: <%= 2.hours.ago %>
+  thread: fs_accountants_dphv21_thread
+  replyable: false
+  outbox: true
+  metadata:
+    correlation_id: 0d71fc24-05d3-4938-80e4-05bdc3be19fa
+    fs_message_id: 12345678/2025
+    fs_status: Prijaté a potvrdené
+    fs_submitting_subject: GO FS subjekt
+    fs_period: Q22025
+    fs_form_id: <%= ActiveRecord::FixtureSet.identify(:DPHv21) %>
+    validation_errors:
+      result: OK
+      warnings: [ ]
+      errors: [ ]
+      diff: [ ]
+  author: accountants_basic
+
 fs_accountants_draft_uzmujv14:
   type: Fs::MessageDraft
   uuid: <%= SecureRandom.uuid %>

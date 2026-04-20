@@ -128,6 +128,15 @@ fs_accountants_thread1:
   metadata:
     period: Q22025
 
+fs_accountants_dphv21_thread:
+  box: fs_accountants
+  title: Podanie
+  original_title: MyString
+  delivered_at: <%= 2.hours.ago %>
+  last_message_delivered_at: <%= 2.hours.ago %>
+  metadata:
+    period: Q22025
+
 fs_accountants_thread2:
   box: fs_accountants
   title: Podanie s neoverenou potvrdenkou
