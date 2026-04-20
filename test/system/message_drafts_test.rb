@@ -65,7 +65,7 @@ class MessageDraftsTest < ApplicationSystemTestCase
 
     visit message_thread_path(message_thread)
 
-    within("#attachments_fs_message_draft_#{message_draft.id}") do
+    within("#attachments_fs_message_draft_#{message_draft.id}", visible: :all) do
       assert_no_text "Pridať prílohu"
     end
   end
@@ -78,7 +78,7 @@ class MessageDraftsTest < ApplicationSystemTestCase
 
     visit message_thread_path(message_thread)
 
-    within("#attachments_fs_message_draft_#{message_draft.id}") do
+    within("#attachments_fs_message_draft_#{message_draft.id}", visible: :all) do
       assert_text "Pridať prílohu"
     end
   end
