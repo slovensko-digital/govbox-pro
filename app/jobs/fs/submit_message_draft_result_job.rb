@@ -8,7 +8,10 @@ class Fs::SubmitMessageDraftResultJob < ApplicationJob
 
     if 200 == response[:status]
       message_draft.submitted!
+
       message_draft.metadata[:fs_message_id] = response[:body]['sent_message_id']
+      message_draft.metadata[:submit_error_message] = nil
+
       message_draft.remove_cascading_tag(message_draft.tenant.submission_error_tag)
       message_draft.remove_cascading_tag(message_draft.tenant.problem_tag)
       message_draft.save
@@ -16,6 +19,10 @@ class Fs::SubmitMessageDraftResultJob < ApplicationJob
       ::Fs::DownloadSentMessageJob.perform_later(response[:body]['sent_message_id'], message_draft: message_draft)
     elsif [400, 422].include?(response[:status])
       message_draft.metadata[:status] = 'submit_fail'
+
+      error_msg = response[:body] && response[:body]["message"]
+      message_draft.metadata[:submit_error_message] = error_msg&.include?("používateľ nemá") ? error_msg : nil
+
       message_draft.add_cascading_tag(message_draft.tenant.submission_error_tag)
       message_draft.add_cascading_tag(message_draft.tenant.problem_tag)
       message_draft.save
