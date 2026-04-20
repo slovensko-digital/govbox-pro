@@ -1,21 +1,13 @@
 module Searchable::IndexHelpers
   extend self
 
-  BODY_REGEXP = /<body[^>]*>(.*?)<\/body>/im
+  BODY_PATTERN = %r{<body[^>]*>(.*?)</body>}im
+  NON_SEARCHABLE_CSS = "head, script, style, noscript, template"
 
   def html_to_searchable_string(html)
     return html unless html
 
-    match = html.match(BODY_REGEXP)
-    body = match ? match[1] : html
-
-    create_single_line_string(
-      transliterate(
-        remove_html_tags(
-          add_spaces_between_tags(body)
-        )
-      )
-    )
+    searchable_string(extract_visible_text(html))
   end
 
   def searchable_string(string)
@@ -26,12 +18,13 @@ module Searchable::IndexHelpers
 
   private
 
-  def add_spaces_between_tags(html_string)
-    html_string.gsub(/<\/([^>]*)><([^>]*)>/, '</\1> <\2>')
-  end
+  def extract_visible_text(html)
+    source_html = html.to_s.scrub
+    source = source_html[BODY_PATTERN, 1] || source_html
 
-  def remove_html_tags(html)
-    ActionView::Base.full_sanitizer.sanitize(html)
+    fragment = Nokogiri::HTML4::DocumentFragment.parse(source)
+    fragment.css(NON_SEARCHABLE_CSS).remove
+    fragment.text
   end
 
   def create_single_line_string(string)
