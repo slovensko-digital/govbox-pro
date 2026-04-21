@@ -163,10 +163,13 @@ class Message < ApplicationRecord
       box: box.official_name,
       delivered_at: delivered_at,
       tags: thread.tags.map(&:name),
-      outbox: outbox,
-      dph_r33: parse_value_from_form_object('//r33'),
-      dph_r35: parse_value_from_form_object('//r35')
-    }.merge!(metadata.slice(*metadata_whitelist)).symbolize_keys
+      outbox: outbox
+    }.merge!(
+      form&.slug&.match?(/\ADPH/) ? {
+        dph_r33: parse_value_from_form_object('//r33'),
+        dph_r35: parse_value_from_form_object('//r35')
+      }.compact : {}
+    ).merge!(metadata.slice(*metadata_whitelist)).symbolize_keys
   end
 
   def assign_tag(tag)
