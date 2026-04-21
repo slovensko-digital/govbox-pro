@@ -161,6 +161,12 @@ fs_accountants_draft_vp_danv24_form:
   mimetype: application/xml
   object_type: FORM
 
+fs_accountants_dphv21_form:
+  message: fs_accountants_dphv21
+  name: dphv21.xml
+  mimetype: application/xml
+  object_type: FORM
+
 fs_accountants_draft_uzmujv14_form:
   message: fs_accountants_draft_uzmujv14
   name: uzmujv14.xml

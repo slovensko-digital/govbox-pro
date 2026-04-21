@@ -72,3 +72,14 @@ UZMUJv14:
   slug: UZMUJv14
   number_identifier: 301,
   submission_type_identifier: 2416
+
+DPHv21:
+  identifier: '716_626'
+  name: Daňové priznanie k dani z pridanej hodnoty (platné od 1.1.2021)
+  group_name: Správa daní/Daň z pridanej hodnoty/Daňové priznanie k dani z pridanej hodnoty/Daňové priznanie k dani z pridanej hodnoty (platné od 1.1.2021)
+  subtype_name: Dodatočné
+  signature_required: true
+  ez_signature: true
+  slug: DPHv21
+  number_identifier: 503,
+  submission_type_identifier: 716
