@@ -61,7 +61,7 @@ Filter je dopyt vyhľadávania uložený spoločne s názvom na neskoršie využ
 4. **Zadajte údaje**
    Zadajte názov a dopyt na vyhľadávanie
 
-![Filtre v bočnom menu](assets/filters-sidebar-menu.png)
+![Filtre v bočnom menu](../../assets/images/filters/filters-sidebar-menu.png)
 
 :::
 
