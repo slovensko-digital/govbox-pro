@@ -1,8 +1,8 @@
-// docmd.config.js
+import { defineConfig } from "@docmd/core";
+
 export default defineConfig({
-  // --- Core Metadata ---
   title: 'GovBox PRO - Dokumentácia',
-  url: 'https://pro.govbox.sk', // e.g. https://mysite.com (Critical for SEO/Sitemap)
+  url: 'https://pro.govbox.sk',
 
   // --- Branding ---
   logo: {
@@ -19,7 +19,7 @@ export default defineConfig({
 
   // --- Layout & UI Architecture ---
   layout: {
-    spa: true, // Enable seamless page transitions
+    spa: true,
     header: {
       enabled: true,
     },
@@ -36,10 +36,10 @@ export default defineConfig({
       }
     },
     footer: {
-      style: 'complete', // 'minimal' or 'complete'
-      description: 'GovBox PRO - Prehľadná a efektívna elektronická komunikácia s orgánmi verejnej moci.',
+      style: 'complete',
+      description: 'Jednoduchá, intuitívna a rýchla schránka.',
       content: '© Služby Slovensko.Digital, s.r.o.',
-      branding: false    // Config for "Built with docmd" badge
+      branding: false
     }
   },
 
@@ -61,7 +61,7 @@ export default defineConfig({
   
   customJs: [],           
 
-  // --- Navigation (Sidebar) ---
+  // --- Navigation ---
   navigation: [
     { title: 'Úvod', path: '/', icon: 'home' },
     {
@@ -162,9 +162,7 @@ export default defineConfig({
       twitter: { cardType: 'summary_large_image' }
     },
     sitemap: { defaultChangefreq: 'weekly' },
-    analytics: { 
-      googleV4: { measurementId: 'G-X9WTDL262N' } // Example Google Analytics ID, replace with your own
-    },
+    analytics: {},
     search: {},
     mermaid: {},
     llms: {}

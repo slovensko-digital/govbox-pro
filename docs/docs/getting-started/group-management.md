@@ -42,16 +42,3 @@ Administrátor môže vytvárať a spravovať skupiny používateľov.
 ::: callout tip "Praktický príklad"
 > **Vytvorím skupinu pre prístup k správam so štítkom "Financie" pre zamestnancov účtovného oddelenia.**
 :::
-
-## Súvisiace témy
-
-### Správa používateľov
-Vytváranie a úprava používateľov.
-
-- **[Správa používateľov](/getting-started/user-management)**
-
-### Prístup k štítkom
-Nastavenie oprávnení pre prístup k štítkom na základe skupín.
-
-- **[Prístup k štítkom](/labels/access-control)**
-

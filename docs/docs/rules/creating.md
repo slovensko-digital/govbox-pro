@@ -50,16 +50,3 @@ Pravidlo je skupina podmienok a akcií, ktoré sa majú vykonať pri nejakej uda
 
 ### Akcie pravidla
 ![Akcie pravidla](../../assets/images/rules/rule-actions-step.png)
-
-## Súvisiace témy
-
-### Štítky
-Vytvorte štítky, ktoré budú priradené pravidlami.
-
-- **[Vytvorenie štítka](/labels/creating)**
-
-### Pravidlo (pojem)
-Čo je pravidlo a ako funguje.
-
-- **[Pravidlo (pojem)](/concepts/rule)**
-

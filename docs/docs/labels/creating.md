@@ -37,21 +37,3 @@ keywords: ["štítok", "label", "vlákno", "kategória"]
 ::: callout success "Hotovo!"
 Po týchto krokoch sa vybraný štítok zobrazí pri konkrétnom vlákne.
 :::
-
-## Súvisiace témy
-
-### Úprava štítkov
-Upravte existujúce štítky alebo ich odoberte z vlákien.
-
-- **[Úprava štítkov](/labels/editing)**
-
-### Prístup k štítkom
-Nastavte, ktorí používatelia majú prístup k vláknam s konkrétnym štítkom.
-
-- **[Prístup k štítkom](/labels/access-control)**
-
-### Filter
-Uložte si vyhľadávanie podľa štítkov pre rýchly prístup.
-
-- **[Vytvorenie filtra](/filters/creating)**
-

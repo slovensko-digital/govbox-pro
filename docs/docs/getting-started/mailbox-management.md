@@ -12,7 +12,7 @@ Administrátor môže do aplikácie pridať ďalšie elektronické schránky.
 Pridať je možné iba také schránky, na ktoré má tenant oprávnenie na zastupovanie.
 :::
 
-## Zistenie oprávnení na slovensko.sk
+## <span>Zistenie oprávnení na slovensko.sk</span>
 
 1. **Prihláste sa do el. schránky tenanta**
    Prejdite na [zoznam identít na slovensko.sk](https://www.slovensko.sk/sk/moj-profil/zobrazenie-zastupovania)

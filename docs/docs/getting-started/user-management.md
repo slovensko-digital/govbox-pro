@@ -41,21 +41,3 @@ Novému používateľovi je možné udeliť plný alebo čiastočný prístup k 
 ::: callout tip
 Podľa potreby administrátor priradí nového používateľa do skupín.
 :::
-
-## Súvisiace témy
-
-### Skupiny
-Vytváranie a správa skupín používateľov.
-
-- **[Správa skupín](/getting-started/group-management)**
-
-### Štítky
-Vytváranie štítkov a priradenie k vláknam.
-
-- **[Vytvorenie štítka](/labels/creating)**
-
-### Prístup k štítkom
-Nastavenie oprávnení pre prístup k štítkom.
-
-- **[Prístup k štítkom](/labels/access-control)**
-

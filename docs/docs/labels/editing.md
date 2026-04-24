@@ -35,16 +35,3 @@ keywords: ["štítok", "úprava", "priradenie", "vlákno"]
 ::: callout success "Hotovo!"
 Štítky boli úspešne pridané alebo odobraté z vlákna.
 :::
-
-## Súvisiace témy
-
-### Vytvorenie štítka
-Ako vytvoriť nový štítok.
-
-- **[Vytvorenie štítka](/labels/creating)**
-
-### Prístup k štítkom
-Nastavenie oprávnení pre prístup k štítkom.
-
-- **[Prístup k štítkom](/labels/access-control)**
-

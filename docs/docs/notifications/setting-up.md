@@ -38,15 +38,3 @@ Notifikácie sa budú týkať iba správ, ktoré spĺňajú podmienky vybraného
 ### Kde nájsť notifikácie
 Notifikácie sú k dispozícii po kliknutí na ikonu používateľa v pravom hornom menu a voľbe **"Notifikácie"**.
 
-## Súvisiace témy
-
-### Filtre
-Vytvorte filter pre správy, na ktoré chcete dostávať notifikácie.
-
-- **[Vytvorenie filtra](/filters/creating)**
-
-### Notifikácia (pojem)
-Čo je notifikácia a aké typy existujú.
-
-- **[Notifikácia (pojem)](/concepts/notification)**
-
