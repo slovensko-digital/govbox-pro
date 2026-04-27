@@ -11,7 +11,7 @@ Pre lepšiu orientáciu v pošte je možné vlákno premenovať.
 ## Postup premenovania
 
 1. **Otvorte menu správy**
-   Pri zobrazení konkrétnej správy sa pri názve v pravom rohu ikona s troma bodkami
+   Pri zobrazení konkrétnej správy sa pri názve v pravom rohu zobrazí ikona s troma bodkami
 
 2. **Kliknite na ikonu**
    Kliknite na ikonu s troma bodkami
