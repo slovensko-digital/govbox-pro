@@ -36,6 +36,7 @@ gem 'pundit'
 # Utilities
 gem 'rest-client'
 gem 'rack-attack'
+gem 'rack-session', '>= 2.1.2'
 gem 'jbuilder'
 gem 'rubyzip', require: 'zip'
 gem 'jwt'
