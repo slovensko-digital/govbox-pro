@@ -12,6 +12,7 @@ export default class extends Controller {
     this.pollingInFlight = false
     this.isSigning = false
 
+    this.configureAutogramLaunchUrl()
     this.signAll()
   }
 
@@ -96,7 +97,7 @@ export default class extends Controller {
       return true
     }
 
-    this.openAutogramAppTarget.click()
+    this.launchAutogramApp()
     this.showWaitingForAutogramState()
 
     const isRunning = await this.waitForAutogramStart()
@@ -113,17 +114,7 @@ export default class extends Controller {
     let settled = false
 
     return await new Promise((resolve) => {
-      this.pollTimeoutId = setTimeout(() => {
-        if (settled) {
-          return
-        }
-
-        settled = true
-        this.stopAutogramPolling()
-        resolve(false)
-      }, this.pollTimeoutMs)
-
-      this.pollIntervalId = setInterval(async () => {
+      const checkRunning = async () => {
         if (settled || this.pollingInFlight) {
           return
         }
@@ -139,7 +130,32 @@ export default class extends Controller {
         } finally {
           this.pollingInFlight = false
         }
-      }, this.pollIntervalMs)
+      }
+
+      this.pollTimeoutId = setTimeout(async () => {
+        if (settled) {
+          return
+        }
+
+        // Final readiness check to avoid a false negative near timeout boundary.
+        try {
+          if (await isAutogramRunning()) {
+            settled = true
+            this.stopAutogramPolling()
+            resolve(true)
+            return
+          }
+        } catch {
+          // ignore and fall through to unresolved state
+        }
+
+        settled = true
+        this.stopAutogramPolling()
+        resolve(false)
+      }, this.pollTimeoutMs)
+
+      checkRunning()
+      this.pollIntervalId = setInterval(checkRunning, this.pollIntervalMs)
     })
   }
 
@@ -204,5 +220,33 @@ export default class extends Controller {
     if (modalTitle) {
       modalTitle.textContent = text
     }
+  }
+
+  configureAutogramLaunchUrl() {
+    const launchUrl = this.autogramLaunchUrl()
+    this.openAutogramAppTarget.setAttribute("href", launchUrl)
+  }
+
+  launchAutogramApp() {
+    const launchUrl = this.autogramLaunchUrl()
+    this.openAutogramAppTarget.setAttribute("href", launchUrl)
+
+    try {
+      window.location.assign(launchUrl)
+    } catch {
+      // Fallback for browsers that may block assign for custom protocols in specific contexts.
+      this.openAutogramAppTarget.click()
+    }
+  }
+
+  autogramLaunchUrl() {
+    return this.isSafariOnMacOS() ? "autogram://go?protocol=https" : "autogram://go"
+  }
+
+  isSafariOnMacOS() {
+    const isMacOS = /Macintosh|MacIntel|MacPPC|Mac68K/.test(navigator.platform)
+    const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome|Chromium|CriOS|Edg|OPR|Firefox/.test(navigator.userAgent)
+
+    return isMacOS && isSafari
   }
 }
