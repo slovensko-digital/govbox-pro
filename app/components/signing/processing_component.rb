@@ -5,5 +5,9 @@ module Signing
       @signature_settings = signature_settings
       @after_singing_path = after_singing_path
     end
+
+    def remove_content_action
+      "turbo-content#remove"
+    end
   end
 end

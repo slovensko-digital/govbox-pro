@@ -348,8 +348,20 @@ sk:
       update: Notifikacie boli zmenené!
       destroy: Notifikácie boli zrušené!
   signing:
+    modal_header_signing: Prebieha podpisovanie
+    modal_header_app_not_running: Autogram sa nepodarilo spustiť
     processed: Dokumenty boli úspešne podpísané
     failed: Pri podpisovaní dokumentov sa vyskytla chyba
+    waiting_for_autogram_launch: Spúšťa sa aplikácia Autogram...
+    signing_in_progress: Prebieha podpisovanie. Prosím, nezatvárajte okno prehliadača.
+    signing_in_progress_with_progress: Prebieha podpisovanie dokumentu %{current}/%{total}. Prosím, nezatvárajte okno prehliadača.
+    signing_in_progress_hint: Chvíľu počkajte – v aplikácii Autogram sa vám automaticky otvorí okno so zeleným tlačidlom.
+    app_not_running_heading: Autogram sa nepodarilo spustiť
+    app_not_running_description_prefix: Uistite sa, že máte nainštalovanú aplikáciu
+    app_not_running_description_suffix: a skúste podpisovanie zopakovať.
+    app_not_running_macos_hint: Ak Autogram už máte spustený, skúste ho vypnúť a podpíšte dokumenty znovu. Aplikácia sa potom spustí automaticky.
+    download_autogram: Autogram
+    close: Zavrieť
     documents:
       one: 1 dokument
       few: "%{count} dokumenty"
