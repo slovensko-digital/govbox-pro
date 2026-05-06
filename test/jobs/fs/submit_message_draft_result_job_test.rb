@@ -49,8 +49,10 @@ class Fs::SubmitMessageDraftResultJobTest < ActiveJob::TestCase
     }, ["location123"]
 
     FsEnvironment.fs_client.stub :api, fs_api do
-      Automation::ApplyRulesForEventJob.stub :perform_later, nil do
-        Fs::SubmitMessageDraftResultJob.new.perform(message_draft, "location123")
+      assert_enqueued_with(job: Fs::DownloadSentMessageJob) do
+        assert_enqueued_with(job: Automation::ApplyRulesForEventJob) do
+          Fs::SubmitMessageDraftResultJob.new.perform(message_draft, "location123")
+        end
       end
 
       assert_equal "submitted", message_draft.reload.metadata["status"]
