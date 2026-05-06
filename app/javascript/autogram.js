@@ -1,7 +1,28 @@
 import { patch } from '@rails/request.js'
 
+const isSafariOnMacOS = () => {
+  if (typeof navigator === "undefined") {
+    return false
+  }
+
+  const isMacOS = /Macintosh|MacIntel|MacPPC|Mac68K/.test(navigator.platform)
+  const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome|Chromium|CriOS|Edg|OPR|Firefox/.test(navigator.userAgent)
+
+  return isMacOS && isSafari
+}
+
+const autogramServerBaseUrl = () => {
+  if (isSafariOnMacOS()) {
+    return "https://loopback.autogram.slovensko.digital:37200"
+  }
+
+  return "http://localhost:37200"
+}
+
+const autogramServerUrl = (path) => `${autogramServerBaseUrl()}${path}`
+
 export const isAutogramRunning = async () => {
-  const response = await fetch(`http://localhost:37200/info`).catch(err => {
+  const response = await fetch(autogramServerUrl("/info")).catch(err => {
     // maybe the 'Failed to fetch' is enough?
     if (["Failed to fetch", "NetworkError when attempting to fetch resource.", "Load failed"].includes(err.message)) {
       return false
@@ -14,7 +35,7 @@ export const isAutogramRunning = async () => {
 }
 
 export const startBatch = async (numberOfDocuments) => {
-  const result = await fetch("http://localhost:37200/batch", {
+  const result = await fetch(autogramServerUrl("/batch"), {
     method: "POST",
     headers: {"Content-Type": "application/json"},
     body: JSON.stringify({
@@ -26,7 +47,7 @@ export const startBatch = async (numberOfDocuments) => {
 }
 
 export const endBatch = async (batchId) => {
-  await fetch("http://localhost:37200/batch", {
+  await fetch(autogramServerUrl("/batch"), {
     method: "DELETE",
     headers: {"Content-Type": "application/json"},
     body: JSON.stringify({
@@ -163,7 +184,7 @@ const loadSigningData = async (messageObjectPath) => {
 }
 
 const makeSignRequest = async (requestBody) => {
-  const response = await fetch("http://localhost:37200/sign", {
+  const response = await fetch(autogramServerUrl("/sign"), {
     method: "POST",
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify(requestBody)
