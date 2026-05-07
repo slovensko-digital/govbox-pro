@@ -112,6 +112,31 @@ paths:
       security:
         - "Tenant_Token": []
 
+  /api/users:
+    get:
+      tags: [Používatelia]
+      summary: Vráti zoznam používateľov tenanta
+      description: |
+        Vráti zoznam používateľov pre daného tenanta.
+      responses:
+        200:
+          description: Úspešné získanie zoznamu používateľov
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      description: Identifikátor používateľa v systéme GovBox Pro
+                      type: integer
+                    name:
+                      description: Meno používateľa
+                      type: string
+      security:
+        - "Tenant_Token": []
+
   /api/boxes:
     get:
       tags: [Schránky]
