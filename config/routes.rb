@@ -269,6 +269,7 @@ Rails.application.routes.draw do
       get :pdf
     end
 
+    resources :users, only: :index
     resources :boxes, only: :index
 
     namespace :fs do

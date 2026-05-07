@@ -54,6 +54,28 @@ class BoxesApiTest < ActionDispatch::IntegrationTest
     assert_equal fs_box.settings_dic, fs_box_json["dic"]
   end
 
+  test "includes boxes API connections" do
+    tenant = tenants(:accountants)
+
+    get "/api/boxes", params: { token: generate_api_token(sub: tenant.id, key_pair: @key_pair) }, as: :json
+
+    assert_response :success
+    json_response = JSON.parse(response.body)
+
+    fs_box = boxes(:fs_accountants)
+    fs_box_json = json_response.find { |box| box["id"] == fs_box.id }
+    assert fs_box_json
+    assert_equal fs_box.settings_dic, fs_box_json["dic"]
+    assert_equal fs_box.settings_dic, fs_box_json["dic"]
+
+    fs_box_multiple_connections = boxes(:fs_accountants_multiple_api_connections)
+    fs_box_multiple_connections_json = json_response.find { |box| box["id"] == fs_box_multiple_connections.id }
+
+    assert_equal 3, fs_box_multiple_connections_json["api_connections"].count
+    assert_equal ["FS account 4", "FS account 5", "FS account 6"].to_set, fs_box_multiple_connections_json["api_connections"].pluck("custom_name").to_set
+
+  end
+
   test "includes active flag for boxes" do
     tenant = tenants(:accountants)
     inactive_box = boxes(:fs_accountants)

@@ -112,6 +112,31 @@ paths:
       security:
         - "Tenant_Token": []
 
+  /api/users:
+    get:
+      tags: [Používatelia]
+      summary: Vráti zoznam používateľov tenanta
+      description: |
+        Vráti zoznam používateľov pre daného tenanta.
+      responses:
+        200:
+          description: Úspešné získanie zoznamu používateľov
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      description: Identifikátor používateľa v systéme GovBox Pro
+                      type: integer
+                    name:
+                      description: Meno používateľa
+                      type: string
+      security:
+        - "Tenant_Token": []
+
   /api/boxes:
     get:
       tags: [Schránky]
@@ -158,6 +183,23 @@ paths:
                     active:
                       description: Indikuje, či je možné schránku používať (napr. platná autorizácia na zastupovanie)
                       type: boolean
+                    api_connections:
+                        description: Zoznam API prepojení, cez ktoré je možné ku schránke pristupovať
+                        type: array
+                        items:
+                            type: object
+                            properties:
+                            id:
+                                description: Identifikátor API prepojenia v systéme GovBox Pro
+                                type: integer
+                            custom_name:
+                                description: Vlastný názov prepojenia, pokiaľ je nastavený
+                                type: string
+                                nullable: true
+                            owner_id:
+                                description: Identifikátor používateľa, ktorému prislúcha API prepojenie
+                                type: integer
+                                nullable: true
       security:
         - "Tenant_Token": []
 
@@ -183,6 +225,10 @@ paths:
                     custom_name:
                       description: Vlastný názov prepojenia
                       type: string
+                      nullable: true
+                    owner_id:
+                      description: Identifikátor používateľa, ktorému prislúcha API prepojenie
+                      type: integer
                       nullable: true
                     created_at:
                       description: Dátum a čas vytvorenia
