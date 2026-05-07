@@ -5,7 +5,7 @@
 # Table name: users
 #
 #  id                           :bigint           not null, primary key
-#  email                        :string           not null
+#  email                        :string
 #  name                         :string           not null
 #  notifications_last_opened_at :datetime
 #  notifications_opened         :boolean          default(FALSE), not null
@@ -36,8 +36,10 @@ class User < ApplicationRecord
   has_many :identities, dependent: :destroy
   has_many :api_connections, foreign_key: :owner_id, dependent: :destroy
 
-  validates_presence_of :name, :email
-  validates_uniqueness_of :name, :email, scope: :tenant_id, case_sensitive: false
+  validates :name, presence: true
+  validates :email, presence: true, unless: -> { saml_identifier.present? }
+  validates_uniqueness_of :name, :email, scope: :tenant_id, case_sensitive: false, allow_nil: true
+  validates_uniqueness_of :saml_identifier, scope: :tenant_id, case_sensitive: false, allow_nil: true
 
   before_destroy :delete_user_group, prepend: true
   after_create :handle_default_settings
