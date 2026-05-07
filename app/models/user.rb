@@ -39,7 +39,7 @@ class User < ApplicationRecord
   validates :name, presence: true
   validates :email, presence: true, unless: -> { saml_identifier.present? }
   validates_uniqueness_of :name, :email, scope: :tenant_id, case_sensitive: false, allow_nil: true
-  validates_uniqueness_of :saml_identifier, scope: :tenant_id, case_sensitive: false, allow_nil: true
+  validates_uniqueness_of :saml_identifier, case_sensitive: false, allow_nil: true
 
   before_destroy :delete_user_group, prepend: true
   after_create :handle_default_settings
