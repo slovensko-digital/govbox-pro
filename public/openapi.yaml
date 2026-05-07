@@ -226,6 +226,10 @@ paths:
                       description: Vlastný názov prepojenia
                       type: string
                       nullable: true
+                    owner_id:
+                      description: Identifikátor používateľa, ktorému prislúcha API prepojenie
+                      type: integer
+                      nullable: true
                     created_at:
                       description: Dátum a čas vytvorenia
                       type: string
