@@ -25,7 +25,16 @@ module Utils
   def file_name_without_extension?(object)
     object.name.present? && !object.name&.include?(file_extension_by_mimetype(object.mimetype).to_s)
   end
-    
+
+  def filename_with_lowercase_extension(name)
+    return name unless name.include?('.')
+
+    extension = File.extname(name)
+    basename = File.basename(name, extension)
+
+    "#{basename}#{extension.downcase}"
+  end
+
   def csv?(name)
     File.extname(name).downcase == '.csv'
   end
@@ -56,6 +65,10 @@ module Utils
       'application/pkix-cert'
     when '.docx'
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    when '.xls'
+      'application/vnd.ms-excel'
+    when '.xlsx'
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     when '.jpg', '.jpeg'
       'image/jpeg'
     when '.png'
@@ -98,6 +111,18 @@ module Utils
     end
   end
 
+  def from_fs_mimetype(mimetype)
+    return "application/x-zip-compressed" if mimetype == "application/zip"
+
+    mimetype
+  end
+
+  def to_fs_mimetype(mimetype)
+    return "application/zip" if mimetype == "application/x-zip-compressed"
+
+    mimetype
+  end
+
   # TODO use UPVS API to detect if document is signed
   def is_signed?(entry_name:, content:)
     case File.extname(entry_name).downcase
@@ -106,11 +131,10 @@ module Utils
     when '.pdf'
       begin
         reader = PDF::Reader.new(StringIO.new(content))
+        reader.objects.to_a.flatten.select { |o| o.is_a?(Hash) }.select { |o| o[:Type] == :Sig }.first.present?
       rescue StandardError
         return false # NOTE: if pdf reading fails it is not signed
       end
-
-      reader.objects.to_a.flatten.select { |o| o.is_a?(Hash) }.select { |o| o[:Type] == :Sig }.first.present?
     else
       false
     end

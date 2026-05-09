@@ -18,7 +18,21 @@ class Fs::FetchFormsJob < ApplicationJob
         )
       end
 
+      fs_form_data['attachments'].each do |attachment_data|
+        Fs::FormAttachment.find_or_initialize_by(
+          fs_form_id: fs_form.id,
+          group: Fs::FormAttachmentGroup.find_or_create_by!(identifier: attachment_data['identifier'])
+        ).tap do |attachment|
+          attachment.update(
+            min_occurrences: attachment_data['min_occurrences'],
+            max_occurrences: attachment_data['max_occurrences'],
+          )
+        end
+      end
+
       download_related_documents_job.perform_later(fs_form)
     end
+
+    Fs::FetchFormAttachmentGroupsJob.perform_later
   end
 end

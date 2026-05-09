@@ -4,7 +4,10 @@
 
       <%= render MessageDraftBodyComponent.new(message: @message, is_last: @is_last) %>
 
-      <%= render MessageDraftAttachmentsListComponent.new(message: @message) %>
+      <div class="sticky bottom-0 z-20 bg-white border-t border-gray-200">
+        <div class="max-h-[35vh] overflow-y-auto">
+          <%= render MessageDraftAttachmentsListComponent.new(message: @message) %>
+        </div>
 
         <div class="flex justify-between w-full">
           <% if @message.correctly_created? %>
@@ -26,6 +29,7 @@
             </div>
           <% end %>
         </div>
+      </div>
     </div>
   </div>
 <% end %>

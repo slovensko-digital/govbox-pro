@@ -109,13 +109,15 @@ class ExportJob < ApplicationJob
     path = export.export_object_filepath(object)
     return unless path
 
-    extension = pdf ? ".pdf" : File.extname(object.name)
-    path_without_extension = path.delete_suffix(File.extname(object.name))
+    object_name = MessageObjectHelper.displayable_name(object)
+
+    extension = pdf ? ".pdf" : File.extname(object_name)
+    path_without_extension = path.delete_suffix(File.extname(object_name))
     path_with_extension = "#{path_without_extension}#{extension}"
 
     return path_with_extension unless path_with_extension.in?(other_file_names)
 
-    matches_count = other_file_names.count { |name| /#{path_without_extension}( \(\d+\))?#{extension}/ =~ name }
+    matches_count = other_file_names.count { |name| /#{Regexp.escape(path_without_extension)}( \(\d+\))?#{Regexp.escape(extension)}/ =~ name }
     "#{path_without_extension} (#{matches_count})#{extension}"
   end
 end

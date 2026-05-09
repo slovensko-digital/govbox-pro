@@ -21,9 +21,10 @@ eadinessProbe:
   path: "/health"
 resources:
   requests:
-    memory: 700Mi
+    cpu: 250m
+    memory: 1200Mi
   limits:
-    memory: 1Gi
+    memory: 1500Mi
 persistence:
   enabled: true
   volumes:
@@ -49,6 +50,7 @@ workers:
       path: "/status/started"
     resources:
       requests:
+        cpu: 1
         memory: 3Gi
       limits:
         memory: 3Gi

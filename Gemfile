@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 ruby '3.3.0'
 
-gem 'rails', '~> 7.1'
+gem 'rails', '~> 7.1.5'
 gem 'rails-i18n'
 
 gem 'pg', '~> 1.5'
@@ -26,7 +26,9 @@ gem 'clockwork'
 gem 'good_job', '= 3.29.4'
 
 # Auth
+gem 'omniauth-identity'
 gem 'omniauth-google-oauth2'
+gem 'omniauth-microsoft_graph'
 gem 'omniauth-saml', '~> 2.2.1'
 gem 'omniauth-rails_csrf_protection'
 gem 'pundit'
@@ -34,6 +36,7 @@ gem 'pundit'
 # Utilities
 gem 'rest-client'
 gem 'rack-attack'
+gem 'rack-session', '>= 2.1.2'
 gem 'jbuilder'
 gem 'rubyzip', require: 'zip'
 gem 'jwt'
@@ -72,7 +75,7 @@ group :development do
 end
 
 group :test do
-  gem 'selenium-webdriver'
+  gem 'selenium-webdriver', '~> 4.27.0'
   gem 'capybara'
   gem 'capybara-screenshot'
   gem 'webmock'

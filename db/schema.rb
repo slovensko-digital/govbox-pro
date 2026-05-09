@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_10_12_084553) do
+ActiveRecord::Schema[7.1].define(version: 2026_03_11_121856) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -148,7 +148,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_12_084553) do
     t.string "trigger_event", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
+    t.bigint "user_id"
     t.index ["tenant_id"], name: "index_automation_rules_on_tenant_id"
     t.index ["user_id"], name: "index_automation_rules_on_user_id"
   end
@@ -160,6 +160,16 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_12_084553) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["tenant_id"], name: "index_automation_webhooks_on_tenant_id"
+  end
+
+  create_table "box_groups", force: :cascade do |t|
+    t.bigint "box_id", null: false
+    t.bigint "group_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["box_id", "group_id"], name: "index_box_groups_on_box_id_and_group_id", unique: true
+    t.index ["box_id"], name: "index_box_groups_on_box_id"
+    t.index ["group_id"], name: "index_box_groups_on_group_id"
   end
 
   create_table "boxes", force: :cascade do |t|
@@ -174,6 +184,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_12_084553) do
     t.jsonb "settings", default: {}, null: false
     t.string "type"
     t.string "export_name", null: false
+    t.boolean "active", default: true, null: false
     t.index ["tenant_id", "short_name"], name: "index_boxes_on_tenant_id_and_short_name", unique: true
     t.index ["tenant_id"], name: "index_boxes_on_tenant_id"
   end
@@ -184,6 +195,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_12_084553) do
     t.jsonb "settings", default: {}
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "active", default: true, null: false
     t.index ["api_connection_id"], name: "index_boxes_api_connections_on_api_connection_id"
     t.index ["box_id", "api_connection_id"], name: "index_boxes_api_connections_on_box_id_and_api_connection_id", unique: true
     t.index ["box_id"], name: "index_boxes_api_connections_on_box_id"
@@ -213,7 +225,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_12_084553) do
 
   create_table "filters", force: :cascade do |t|
     t.bigint "tenant_id", null: false
-    t.bigint "author_id", null: false
+    t.bigint "author_id"
     t.string "name", null: false
     t.string "query", null: false
     t.integer "position", null: false
@@ -230,6 +242,26 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_12_084553) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["box_id"], name: "index_folders_on_box_id"
+  end
+
+  create_table "fs_form_attachment_groups", force: :cascade do |t|
+    t.string "identifier", null: false
+    t.string "name"
+    t.text "mime_types", default: [], array: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["identifier"], name: "index_fs_form_attachment_groups_on_identifier", unique: true
+  end
+
+  create_table "fs_form_attachments", force: :cascade do |t|
+    t.integer "min_occurrences", default: 0, null: false
+    t.integer "max_occurrences", default: 99, null: false
+    t.bigint "fs_form_id", null: false
+    t.bigint "fs_form_attachment_group_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["fs_form_attachment_group_id"], name: "index_fs_form_attachments_on_fs_form_attachment_group_id"
+    t.index ["fs_form_id"], name: "index_fs_form_attachments_on_fs_form_id"
   end
 
   create_table "fs_form_related_documents", force: :cascade do |t|
@@ -389,7 +421,18 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_12_084553) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "type", null: false
+    t.boolean "all_boxes_permission", default: false, null: false
     t.index ["tenant_id"], name: "index_groups_on_tenant_id"
+  end
+
+  create_table "identities", force: :cascade do |t|
+    t.string "email", null: false
+    t.string "password_digest", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_identities_on_email", unique: true
+    t.index ["user_id"], name: "index_identities_on_user_id"
   end
 
   create_table "message_drafts_imports", force: :cascade do |t|
@@ -421,6 +464,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_12_084553) do
     t.boolean "visualizable"
     t.uuid "uuid"
     t.string "description"
+    t.string "identifier"
     t.index ["message_id"], name: "index_message_objects_on_message_id"
   end
 
@@ -516,8 +560,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_12_084553) do
     t.bigint "author_id"
     t.boolean "collapsed", default: false, null: false
     t.boolean "outbox", default: false, null: false
-    t.index "((metadata ->> 'fs_message_id'::text))", name: "index_messages_on_metadata_fs_message_id", using: :hash
     t.jsonb "export_metadata", default: {}, null: false
+    t.index "((metadata ->> 'fs_message_id'::text))", name: "index_messages_on_metadata_fs_message_id", using: :hash
     t.index ["author_id"], name: "index_messages_on_author_id"
     t.index ["import_id"], name: "index_messages_on_import_id"
     t.index ["message_thread_id"], name: "index_messages_on_message_thread_id"
@@ -629,7 +673,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_12_084553) do
     t.enum "color", enum_type: "color"
     t.index ["owner_id"], name: "index_tags_on_owner_id"
     t.index ["tenant_id", "type", "name"], name: "index_tags_on_tenant_id_and_type_and_name", unique: true
-    t.index ["tenant_id", "type"], name: "signings_tags", unique: true, where: "((type)::text = ANY (ARRAY[('SignatureRequestedTag'::character varying)::text, ('SignedTag'::character varying)::text]))"
+    t.index ["tenant_id", "type"], name: "signings_tags", unique: true, where: "((type)::text = ANY ((ARRAY['SignatureRequestedTag'::character varying, 'SignedTag'::character varying])::text[]))"
     t.index ["tenant_id"], name: "index_tags_on_tenant_id"
   end
 
@@ -640,6 +684,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_12_084553) do
     t.string "feature_flags", default: [], array: true
     t.string "api_token_public_key"
     t.jsonb "settings", default: {}, null: false
+    t.string "signature_request_mode", default: "signer_group", null: false
   end
 
   create_table "upvs_form_related_documents", force: :cascade do |t|
@@ -681,7 +726,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_12_084553) do
     t.string "saml_identifier"
     t.datetime "notifications_last_opened_at"
     t.datetime "notifications_reset_at"
-    t.string "password_digest"
     t.boolean "notifications_opened", default: false, null: false
     t.index "tenant_id, lower((email)::text)", name: "index_users_on_tenant_id_and_lowercase_email", unique: true
   end
@@ -700,6 +744,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_12_084553) do
   add_foreign_key "automation_rules", "tenants"
   add_foreign_key "automation_rules", "users"
   add_foreign_key "automation_webhooks", "tenants", on_delete: :cascade
+  add_foreign_key "box_groups", "boxes"
+  add_foreign_key "box_groups", "groups"
   add_foreign_key "boxes", "tenants"
   add_foreign_key "boxes_api_connections", "api_connections"
   add_foreign_key "boxes_api_connections", "boxes"
@@ -708,14 +754,17 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_12_084553) do
   add_foreign_key "filter_subscriptions", "tenants"
   add_foreign_key "filter_subscriptions", "users"
   add_foreign_key "filters", "tenants", on_delete: :cascade
-  add_foreign_key "filters", "users", column: "author_id", on_delete: :cascade
+  add_foreign_key "filters", "users", column: "author_id", on_delete: :nullify
   add_foreign_key "folders", "boxes"
+  add_foreign_key "fs_form_attachments", "fs_form_attachment_groups"
+  add_foreign_key "fs_form_attachments", "fs_forms"
   add_foreign_key "fs_form_related_documents", "fs_forms"
   add_foreign_key "govbox_folders", "govbox_folders", column: "parent_folder_id"
   add_foreign_key "govbox_messages", "govbox_folders", column: "folder_id"
   add_foreign_key "group_memberships", "groups"
   add_foreign_key "group_memberships", "users"
   add_foreign_key "groups", "tenants"
+  add_foreign_key "identities", "users"
   add_foreign_key "message_drafts_imports", "boxes"
   add_foreign_key "message_object_data", "message_objects"
   add_foreign_key "message_objects", "messages"

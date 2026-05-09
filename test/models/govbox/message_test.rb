@@ -29,12 +29,21 @@ class Govbox::MessageTest < ActiveSupport::TestCase
     assert_equal message.tags.first, message.thread.tags.simple.first
   end
 
-  test "#create_message_with_thread! migrates tags from associated MessageDraft" do
+  test "#create_message_with_thread! migrates tags and author from associated MessageDraft" do
     govbox_message = govbox_messages(:ssd_general_created_from_draft)
+
+    draft = Upvs::MessageDraft.find_by(uuid: govbox_message.message_id)
 
     Govbox::Message.create_message_with_thread!(govbox_message)
 
     message = Message.last
+
+    # Author copied to Message
+    assert_equal draft.author, message.author, "Author should be copied from draft to message"
+
+    # Author tag copied to Message and MessageThread
+    assert message.tags.include?(draft.author.author_tag), "Author tag should be preserved on message"
+    assert message.thread.tags.include?(draft.author.author_tag), "Author tag should be preserved on thread"
 
     # Simple and Signed tags copied to MessageThread
     assert ['Finance', 'Podpísané', 'Podpísané: Signer user'].map { |tag_name| message.thread.tags.include?(tag_name) }

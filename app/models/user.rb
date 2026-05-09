@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: users
@@ -8,7 +10,6 @@
 #  notifications_last_opened_at :datetime
 #  notifications_opened         :boolean          default(FALSE), not null
 #  notifications_reset_at       :datetime
-#  password_digest              :string
 #  saml_identifier              :string
 #  created_at                   :datetime         not null
 #  updated_at                   :datetime         not null
@@ -20,18 +21,23 @@ class User < ApplicationRecord
   belongs_to :tenant
 
   has_one :draft_tag, foreign_key: :owner_id
+  has_one :author_tag, foreign_key: :owner_id
   has_many :group_memberships, dependent: :destroy
   has_many :groups, through: :group_memberships
   has_many :own_tags, class_name: 'Tag', inverse_of: :owner, foreign_key: :owner_id, dependent: :nullify
-  has_many :message_drafts, foreign_key: :author_id
-  has_many :automation_rules, class_name: 'Automation::Rule'
-  has_many :filters, foreign_key: :author_id
-  has_many :filter_subscriptions
-  has_many :notifications
+  has_many :message_drafts, foreign_key: :author_id, dependent: :destroy
+  has_many :messages, foreign_key: :author_id, dependent: :nullify
+  has_many :automation_rules, class_name: 'Automation::Rule', dependent: :nullify
+  has_many :filters, foreign_key: :author_id, dependent: :nullify
+  has_many :filter_subscriptions, dependent: :destroy
+  has_many :notifications, dependent: :destroy
   has_one :sticky_note, dependent: :destroy
   has_many :exports
   has_secure_password validations: false
   has_many :push_endpoints
+  has_many :exports, dependent: :destroy
+  has_many :identities, dependent: :destroy
+  has_many :api_connections, foreign_key: :owner_id, dependent: :destroy
 
   validates_presence_of :name, :email
   validates_uniqueness_of :name, :email, scope: :tenant_id, case_sensitive: false
@@ -60,6 +66,18 @@ class User < ApplicationRecord
               .where("tag_groups.tag_id = tags.id")
               .where(group_memberships: { user_id: id })
               .arel.exists
+    )
+  end
+
+  def accessible_boxes
+    return tenant.boxes.all if groups.where(all_boxes_permission: true).exists?
+
+    Box.where(
+      BoxGroup.select(1)
+                      .joins(:group_memberships)
+                      .where("box_groups.box_id = boxes.id")
+                      .where(group_memberships: { user_id: id })
+                      .arel.exists
     )
   end
 
@@ -105,10 +123,18 @@ class User < ApplicationRecord
       visible: false
     )
     draft_tag.mark_readable_by_groups([user_group])
+
+    author_tag = tenant.tags.create(
+      owner: self,
+      name: "Author-#{name}",
+      type: "AuthorTag",
+      visible: false
+    )
+    author_tag.mark_readable_by_groups([user_group])
   end
 
   def broadcast_badge_update
-    Turbo::StreamsChannel.broadcast_replace_to(
+    Turbo::StreamsChannel.broadcast_update_to(
       self,
       target: "notification_badge",
       partial: "notifications/badge",

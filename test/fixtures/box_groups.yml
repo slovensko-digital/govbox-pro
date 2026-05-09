@@ -1,0 +1,119 @@
+# ----------------------------------------------------
+# 1. SSD Tenant (Groups: ssd_all, ssd_admins, ssd_basic_user, ssd_signer_user, ssd_signer_user2, ssd_signers)
+# ----------------------------------------------------
+
+# SSD ALL Group Access (Grants access to almost everything for convenience)
+ssd_all_to_main:
+  group: ssd_all
+  box: ssd_main
+
+ssd_all_to_other:
+  group: ssd_all
+  box: ssd_other
+
+# SSD Admin Group Access
+ssd_admins_to_main:
+  group: ssd_admins
+  box: ssd_main
+
+ssd_admins_to_other:
+  group: ssd_admins
+  box: ssd_other
+
+# SSD Basic User Group Access (Must see main box)
+ssd_basic_user_to_main:
+  group: ssd_basic_user
+  box: ssd_main
+
+# SSD Signer Groups (Signers need to see main box)
+ssd_signer_user_to_main:
+  group: ssd_signer_user
+  box: ssd_main
+
+ssd_signer_user2_to_main:
+  group: ssd_signer_user2
+  box: ssd_main
+
+ssd_signers_to_main:
+  group: ssd_signers
+  box: ssd_main
+
+# ----------------------------------------------------
+# 2. SOLVER Tenant (Groups: solver_admin, solver_other_user)
+# ----------------------------------------------------
+
+# Solver Admin Access (Must see all solver boxes)
+solver_admin_to_solver_main:
+  group: solver_admin
+  box: solver_main
+
+solver_admin_to_fs_solver:
+  group: solver_admin
+  box: fs_solver
+
+solver_admin_to_fs_delegate:
+  group: solver_admin
+  box: fs_delegate
+
+solver_admin_to_fs_false_creg:
+  group: solver_admin
+  box: fs_false_creg
+
+# Solver Other User Access (Must see main box)
+solver_other_user_to_solver_main:
+  group: solver_other_user
+  box: solver_main
+
+# ----------------------------------------------------
+# 3. ACCOUNTANTS Tenant (Groups: accountants_basic_user, accountants_signers)
+# ----------------------------------------------------
+
+# Accountants Basic User Access (Must see all accountants boxes)
+accountants_basic_user_to_fs_accountants:
+  group: accountants_basic_user
+  box: fs_accountants
+
+accountants_basic_user_to_fs_accountants2:
+  group: accountants_basic_user
+  box: fs_accountants2
+
+accountants_basic_user_to_fs_delegate:
+  group: accountants_basic_user
+  box: fs_accountants_multiple_api_connections
+
+# Accountants Signers Access (Must see all accountants boxes)
+accountants_signers_to_fs_accountants:
+  group: accountants_signers
+  box: fs_accountants
+
+accountants_signers_to_fs_accountants2:
+  group: accountants_signers
+  box: fs_accountants2
+
+accountants_signers_to_fs_delegate:
+  group: accountants_signers
+  box: fs_accountants_multiple_api_connections
+
+accountants_user2_to_fs_delegate:
+  group: accountants_user2_group
+  box: fs_accountants_multiple_api_connections
+
+# ----------------------------------------------------
+# 4. GOOGLE/API Boxes (Often granted to SSD_ALL group for generic tests)
+# ----------------------------------------------------
+
+ssd_all_to_google_box2:
+  group: ssd_all
+  box: google_box_with_govbox_api_connection
+
+ssd_all_to_google_box3:
+  group: ssd_all
+  box: google_box_with_govbox_api_connection_with_obo_support
+
+ssd_all_to_google_box4:
+  group: ssd_all
+  box: google_box_with_sk_api_api_connection_with_obo_support
+
+ssd_all_to_google_box5:
+  group: ssd_all
+  box: google_box_with_govbox_api_connection_with_obo_support_without_obo_value

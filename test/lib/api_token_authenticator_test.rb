@@ -47,11 +47,16 @@ class ApiTokenAuthenticatorTest < ActiveSupport::TestCase
     assert_raises(JWT::ExpiredSignature) { @api_token_authenticator.verify_token(token) }
   end
 
-  test 'verifies EXP claim value' do
+  test 'verifies EXP claim value and raises if token expired' do
     token = generate_token
     travel_to(Time.now + 5.minutes) do
       assert_raises(JWT::ExpiredSignature) { @api_token_authenticator.verify_token(token) }
     end
+  end
+
+  test 'verifies EXP claim value and raises if exp value too high' do
+    token = generate_token(exp: (Time.now + 5.minutes + 2.seconds).to_i)
+    assert_raises(JWT::InvalidPayload) { @api_token_authenticator.verify_token(token) }
   end
 
   test 'verifies JTI claim presence' do

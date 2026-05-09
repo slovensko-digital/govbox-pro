@@ -21,7 +21,7 @@
            data-transition-leave-from="transform opacity-100 scale-100"
            data-transition-leave-to="transform opacity-0 scale-95"
            data-turbo-temporary-hide
-           class="absolute hidden right-0 z-10 mt-2 w-52 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="option-menu-button" tabindex="-1">
+           class="absolute hidden right-0 bottom-full z-50 mb-2 w-52 origin-bottom-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="option-menu-button" tabindex="-1">
         <div class="py-1 text-gray-700 text-sm [&>*]:px-4 [&>*]:py-2 [&>*:hover]:bg-gray-100" role="none">
           <%= link_to new_message_draft_document_selections_path(@message, next_step: "sign"),
                       data: { turbo_frame: "modal" },

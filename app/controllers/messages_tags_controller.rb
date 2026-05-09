@@ -8,7 +8,7 @@ class MessagesTagsController < ApplicationController
     if @messages_tag.save
       redirect_back fallback_location: "/", notice: "Štítok bol úspešne vytvorený"
     else
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
 

@@ -21,4 +21,8 @@ class Searchable::ReindexMessageThreadJob < ApplicationJob
 
     ::Searchable::Indexer.index_message_thread(message_thread)
   end
+
+  def adjust_priority?
+    true
+  end
 end

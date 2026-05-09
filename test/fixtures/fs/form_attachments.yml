@@ -1,0 +1,17 @@
+VP_DANv24_3078_781:
+  min_occurrences: 1
+  max_occurrences: 99
+  fs_form_id: <%= ActiveRecord::FixtureSet.identify(:VP_DANv24_3078_781) %>
+  fs_form_attachment_group_id: <%= ActiveRecord::FixtureSet.identify(:VP_PRI_UA) %>
+
+DPFOBv24:
+  min_occurrences: 0
+  max_occurrences: 99
+  fs_form_id: <%= ActiveRecord::FixtureSet.identify(:DPFOBv24) %>
+  fs_form_attachment_group_id: <%= ActiveRecord::FixtureSet.identify(:DPFOBUA) %>
+
+UZMUJv14:
+  min_occurrences: 1
+  max_occurrences: 1
+  fs_form_id: <%= ActiveRecord::FixtureSet.identify(:UZMUJv14) %>
+  fs_form_attachment_group_id: <%= ActiveRecord::FixtureSet.identify(:UVPOD3_UA) %>

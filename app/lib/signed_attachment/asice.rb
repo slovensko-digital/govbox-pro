@@ -77,7 +77,7 @@ class SignedAttachment::Asice
     payload_documents.each do |payload_document|
       next unless Utils.mimetype_without_optional_params(payload_document.mimetype) == Utils::OCTET_STREAM_MIMETYPE
 
-      mimetype_from_manifest = xml_manifest.xpath("//manifest:file-entry[@manifest:full-path = '#{payload_document.name}']/@manifest:media-type")&.first&.value
+      mimetype_from_manifest = xml_manifest.xpath("//manifest:file-entry[@manifest:full-path = $name]/@manifest:media-type", nil, name: payload_document.name)&.first&.value
 
       next unless mimetype_from_manifest.present?
 

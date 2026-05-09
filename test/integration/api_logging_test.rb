@@ -22,6 +22,16 @@ class ApiLoggingTest < ActionDispatch::IntegrationTest
     assert_equal api_request.authenticity_token, token
   end
 
+  test "returns bad request when no credentials provided" do
+    thread = message_threads(:ssd_main_general)
+
+    get "/api/message_threads/#{thread.id}", as: :json
+
+    assert_response :bad_request
+    json_response = JSON.parse(response.body)
+    assert_equal "no_credentials", json_response["message"]
+  end
+
   test "can log errored call" do
     thread_id = 1
     thread_id += 1 while MessageThread.exists?(thread_id)

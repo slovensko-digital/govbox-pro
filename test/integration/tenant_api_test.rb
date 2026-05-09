@@ -93,7 +93,7 @@ class TenantApiTest < ActionDispatch::IntegrationTest
                    token: generate_api_token },
          as: :json
 
-    assert_response :unprocessable_entity
+    assert_response :unprocessable_content
     json_response = JSON.parse(response.body)
     assert_equal "Api connection must be provided", json_response["message"]
     assert_not tenant.boxes.find_by(name: "Test box")
@@ -143,7 +143,7 @@ class TenantApiTest < ActionDispatch::IntegrationTest
                    token: generate_api_token },
          as: :json
 
-    assert_response :unprocessable_entity
+    assert_response :unprocessable_content
     json_response = JSON.parse(response.body)
     assert_equal "Api connection must be provided", json_response["message"]
     assert_not tenant.boxes.find_by(name: "Test box")

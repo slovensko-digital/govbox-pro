@@ -71,6 +71,18 @@
       </td>
     </tr>
     <tr>
+      <th>Stav overenia podania:</th>
+      <td>
+        <b><%= message.metadata.dig('fs_submission_verification_status', 'name') %></b>
+      </td>
+    </tr>
+    <tr>
+      <th>Popis stavu overenia podania:</th>
+      <td>
+        <b><%= message.metadata.dig('fs_submission_verification_status', 'description') %></b>
+      </td>
+    </tr>
+    <tr>
       <th>Dôvod zmeny stavu podania:</th>
       <td>
         <b><%= message.metadata['fs_dismissal_reason'] %></b>

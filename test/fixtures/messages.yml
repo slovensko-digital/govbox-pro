@@ -302,6 +302,7 @@ ssd_main_empty_draft:
   author: basic
 
 fs_accountants_outbox:
+  type: Fs::MessageDraft
   uuid: <%= SecureRandom.uuid %>
   title: FS podanie
   delivered_at: <%= 2.hours.ago %>
@@ -310,6 +311,86 @@ fs_accountants_outbox:
   metadata:
     fs_message_id: 1234/2024
     correlation_id: 4bc972bb-9364-47de-bb40-23720f24a4ab
+    fs_form_id: <%= ActiveRecord::FixtureSet.identify(:SVDPHv20) %>
+    validation_errors:
+      result: OK
+      warnings: [ ]
+      errors: [ ]
+      diff: [ ]
+  author: accountants_basic
+
+fs_accountants_draft_vp_danv24:
+  type: Fs::MessageDraft
+  uuid: <%= SecureRandom.uuid %>
+  title: FS podanie
+  delivered_at: <%= 2.hours.ago %>
+  thread: fs_accountants_draft_vp_danv24
+  replyable: false
+  metadata:
+    correlation_id: 4bc972bb-9364-47de-bb40-23720f24a4ab
+    fs_form_id: <%= ActiveRecord::FixtureSet.identify(:VP_DANv24_3078_781) %>
+    validation_errors:
+      result: OK
+      warnings: [ ]
+      errors: [ ]
+      diff: [ ]
+  author: accountants_basic
+
+fs_accountants_dphv21:
+  type: Fs::MessageDraft
+  uuid: <%= SecureRandom.uuid %>
+  title: FS podanie
+  delivered_at: <%= 2.hours.ago %>
+  thread: fs_accountants_dphv21_thread
+  replyable: false
+  outbox: true
+  metadata:
+    correlation_id: 0d71fc24-05d3-4938-80e4-05bdc3be19fa
+    fs_message_id: 12345678/2025
+    fs_status: Prijaté a potvrdené
+    fs_submitting_subject: GO FS subjekt
+    fs_period: Q22025
+    fs_form_id: <%= ActiveRecord::FixtureSet.identify(:DPHv21) %>
+    validation_errors:
+      result: OK
+      warnings: [ ]
+      errors: [ ]
+      diff: [ ]
+  author: accountants_basic
+
+fs_accountants_draft_uzmujv14:
+  type: Fs::MessageDraft
+  uuid: <%= SecureRandom.uuid %>
+  title: FS podanie
+  delivered_at: <%= 2.hours.ago %>
+  thread: fs_accountants_draft_uzmujv14
+  replyable: false
+  metadata:
+    correlation_id: 1d71fc24-05d3-4938-80e4-05bdc3be19fa
+    fs_form_id: <%= ActiveRecord::FixtureSet.identify(:UZMUJv14) %>
+    validation_errors:
+      result: OK
+      warnings: [ ]
+      errors: [ ]
+      diff: [ ]
+  author: accountants_basic
+
+fs_accountants_draft_uzmujv14_with_attachment:
+  type: Fs::MessageDraft
+  uuid: <%= SecureRandom.uuid %>
+  title: FS podanie
+  delivered_at: <%= 2.hours.ago %>
+  thread: fs_accountants_draft_uzmujv14_with_attachment
+  replyable: false
+  metadata:
+    status: created
+    correlation_id: 1d71fc24-05d3-4938-80e4-05bdc3be19fa
+    fs_form_id: <%= ActiveRecord::FixtureSet.identify(:UZMUJv14) %>
+    validation_errors:
+      result: OK
+      warnings: [ ]
+      errors: [ ]
+      diff: [ ]
   author: accountants_basic
 
 fs_accountants_multiple_api_connections_outbox:
@@ -321,6 +402,7 @@ fs_accountants_multiple_api_connections_outbox:
   replyable: false
   metadata:
     fs_message_id: 1235/2024
+    fs_form_id: <%= ActiveRecord::FixtureSet.identify(:SVDPHv20) %>
     correlation_id: 4bc972bb-9364-47de-bb40-23720f24a4ab
   author: accountants_basic
 
@@ -332,6 +414,8 @@ fs_accountants_draft:
   thread: fs_accountants_multiple_api_connections_thread1
   replyable: false
   metadata:
+    status: created
+    fs_form_id: <%= ActiveRecord::FixtureSet.identify(:SVDPHv20) %>
     fs_message_id: 1234/2024
     correlation_id: 4bc972bb-9364-47de-bb40-23720f24a4ab
   author: accountants_basic
@@ -346,6 +430,19 @@ fs_accountants_draft2:
   metadata:
     fs_message_id: 1234/2025
     correlation_id: 2bc972bx-9364-47de-bb40-23720f24a4ab
+  author: accountants_basic
+
+fs_accountants_dp_fo_b_draft:
+  type: Fs::MessageDraft
+  uuid: <%= SecureRandom.uuid %>
+  title: FS podanie DP FO B
+  delivered_at: <%= 3.hours.ago %>
+  thread: fs_accountants_multiple_api_connections_thread1
+  replyable: false
+  metadata:
+    status: created
+    fs_form_id: <%= ActiveRecord::FixtureSet.identify(:DPFOBv24) %>
+    correlation_id: 13fd4cca-d9f8-4761-b604-b27bee1821f0
   author: accountants_basic
 
 fs_accountants_thread1_outbox_message:
@@ -374,6 +471,46 @@ fs_accountants_thread1_inbox_message:
     fs_sent_message_id: 1234567/2025
     fs_message_type: 'ED.DeliveryReport'
     fs_submission_status: Prijaté a potvrdené
+    fs_submission_verification_status:
+      name: Platné
+      description: Overenie platnosti podpisov podania bolo ukončené. Všetky podpisy sú platné.
+    fs_status: Vybavená
+    fs_submitting_subject: GO FS subjekt
+    fs_submission_type_name: Súhrnný výkaz pre daň z pridanej hodnoty (platný od 1.1.2020) - riadny
+    fs_submission_created_at: <%= 2.hours.ago %>
+    fs_period: Q22025
+    correlation_id: <%= SecureRandom.uuid %>
+  author: accountants_basic
+
+fs_accountants_thread2_outbox_message:
+  uuid: <%= SecureRandom.uuid %>
+  title: FS odoslane podanie
+  delivered_at: <%= 2.hours.ago %>
+  thread: fs_accountants_thread2
+  replyable: false
+  metadata:
+    fs_message_id: 1234567/2025
+    fs_status: Prijaté a potvrdené
+    fs_submitting_subject: GO FS subjekt
+    fs_period: Q22025
+    correlation_id: <%= SecureRandom.uuid %>
+  author: accountants_basic
+
+fs_accountants_thread2_inbox_message:
+  uuid: <%= SecureRandom.uuid %>
+  title: FS potvrdenka
+  delivered_at: <%= 2.hours.ago %>
+  thread: fs_accountants_thread2
+  outbox: false
+  replyable: false
+  metadata:
+    fs_message_id: 7654321/2025
+    fs_sent_message_id: 1234567/2025
+    fs_message_type: 'ED.DeliveryReport'
+    fs_submission_status: Prijaté a potvrdené
+    fs_submission_verification_status:
+      name: Neoverené
+      description: Overenie platnosti podpisov podania ešte neprebehlo.
     fs_status: Vybavená
     fs_submitting_subject: GO FS subjekt
     fs_submission_type_name: Súhrnný výkaz pre daň z pridanej hodnoty (platný od 1.1.2020) - riadny

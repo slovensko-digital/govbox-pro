@@ -17,7 +17,7 @@ class MessageThreadPolicy < ApplicationPolicy
           .where("message_threads_tags.message_thread_id = message_threads.id")
           .where(group_memberships: { user_id: @user.id })
           .arel.exists
-      )
+      ).where(box: @user.accessible_boxes)
     end
   end
 
@@ -58,6 +58,10 @@ class MessageThreadPolicy < ApplicationPolicy
   end
 
   def archive?
+    true
+  end
+
+  def mark_read?
     true
   end
 end

@@ -31,6 +31,7 @@ class Govbox::Message < ApplicationRecord
 
     MessageThread.with_advisory_lock!(govbox_message.correlation_id, transaction: true, timeout_seconds: 10) do
       message = create_message(govbox_message)
+      message.author = message_draft&.author
 
       message.thread = message_draft&.thread
       message.thread ||= govbox_message.box.message_threads.find_or_create_by_merge_uuid!(
@@ -153,7 +154,7 @@ class Govbox::Message < ApplicationRecord
     end
     message.add_cascading_tag(upvs_tag)
 
-    add_delivery_notification_tag(message) if message.can_be_authorized?
+    add_delivery_notification_tag(message) if message.authorizable_delivery_notification?
   end
 
   def self.add_delivery_notification_tag(message)

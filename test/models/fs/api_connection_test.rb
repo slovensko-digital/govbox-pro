@@ -1,6 +1,29 @@
 require "test_helper"
 
 class Fs::ApiConnectionTest < ActiveSupport::TestCase
+  test ".boxify creates boxes and assigns owner access rights" do
+    original_fs_boxes_count = Fs::Box.count
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :get_subjects, [
+      {"name" => "SSD s.r.o." , "dic" => "2120515056" , "subject_id" => SecureRandom.uuid, "authorization_type" => "6"},
+      {"name" => "SD" , "dic" => "2120264674" , "subject_id" => SecureRandom.uuid, "authorization_type" => "6"},
+    ]
+
+    api_connection = api_connections(:fs_api_connection4)
+    api_connection_owner = api_connection.owner
+
+    FsEnvironment.fs_client.stub :api, fs_api do
+      api_connection.boxify
+    end
+
+    assert_equal original_fs_boxes_count + 2, Fs::Box.count
+    assert api_connection.boxes.find_by(name: 'FS SSD s.r.o.').present?
+    assert api_connection.boxes.find_by(name: 'FS SSD s.r.o.').box_groups.exists?(group: api_connection_owner.user_group)
+    assert api_connection.boxes.find_by(name: 'FS SD').present?
+    assert api_connection.boxes.find_by(name: 'FS SD').box_groups.exists?(group: api_connection_owner.user_group)
+  end
+
   test ".boxify sets message_drafts_import_enabled attribute in settings" do
     original_fs_boxes_count = Fs::Box.count
 
@@ -99,6 +122,82 @@ class Fs::ApiConnectionTest < ActiveSupport::TestCase
     assert_equal existing_box.reload.settings_is_subject_c_reg, false
   end
 
+  test ".boxify deactivates boxes missing from the API response" do
+    box = boxes(:fs_accountants2)
+    api_connection = api_connections(:fs_api_connection1)
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :get_subjects, []
+
+    FsEnvironment.fs_client.stub :api, fs_api do
+      api_connection.boxify
+    end
+
+    assert_not box.reload.active
+    assert_equal false, box.boxes_api_connections.find_by(api_connection: api_connection).active
+  end
+
+  test ".boxify reactivates connections present in the API response" do
+    api_connection = api_connections(:fs_api_connection1)
+    box = boxes(:fs_accountants)
+    connection = api_connection.boxes_api_connections.find_by(box: box)
+    connection.update!(active: false)
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :get_subjects, [
+      {"name" => "Accountants main FS", "dic" => box.settings_dic, "subject_id" => box.settings_subject_id, "authorization_type" => "6"}
+    ]
+
+    FsEnvironment.fs_client.stub :api, fs_api do
+      api_connection.boxify
+    end
+
+    assert connection.reload.active
+    assert box.reload.active
+  end
+
+  test ".boxify keeps box active when another API connection is still active" do
+    box = boxes(:fs_accountants_multiple_api_connections)
+    api_connection = api_connections(:fs_api_connection4)
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :get_subjects, []
+
+    FsEnvironment.fs_client.stub :api, fs_api do
+      api_connection.boxify
+    end
+
+    assert box.reload.active
+    assert_equal false, box.boxes_api_connections.find_by(api_connection: api_connection).active
+  end
+
+  test ".boxify reactivates box and connection when subject reappears" do
+    box = boxes(:fs_accountants2)
+    api_connection = api_connections(:fs_api_connection1)
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :get_subjects, []
+
+    FsEnvironment.fs_client.stub :api, fs_api do
+      api_connection.boxify
+    end
+
+    assert_not box.reload.active
+    assert_equal false, box.boxes_api_connections.find_by(api_connection: api_connection).active
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :get_subjects, [
+      {"name" => box.name.sub(/^FS /, ''), "dic" => box.settings_dic, "subject_id" => box.settings_subject_id, "authorization_type" => "6"}
+    ]
+
+    FsEnvironment.fs_client.stub :api, fs_api do
+      api_connection.boxify
+    end
+
+    assert box.reload.active
+    assert_equal true, box.boxes_api_connections.find_by(api_connection: api_connection).active
+  end
+
   test ".generate_short_name_from_name generates short name without number if unique" do
     api_connection = api_connections(:fs_api_connection1)
     assert_equal 'FSJH', api_connection.send(:generate_short_name_from_name, 'Janko Hraško')
@@ -137,7 +236,7 @@ class Fs::ApiConnectionTest < ActiveSupport::TestCase
     new_box.save
 
     assert_equal "FSJJ4", new_box.short_name
-
+    
 
     new_box = box.dup
     new_box.api_connections = box.api_connections

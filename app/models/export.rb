@@ -29,7 +29,7 @@ class Export < ApplicationRecord
     "{{ vlakno.datum_podania }}" => ->(o) { o.message.thread.messages.outbox&.first&.delivered_at&.to_date },
     "{{ vlakno.datum_dorucenia }}" => ->(o) { o.message.delivered_at.to_date },
     "{{ sprava.id }}" => ->(o) { o.message.id },
-    "{{ subor.nazov }}" => ->(o) { o.name }
+    "{{ subor.nazov }}" => ->(o) { MessageObjectHelper.displayable_name(o) }
   }.freeze
 
   def start
@@ -37,7 +37,7 @@ class Export < ApplicationRecord
       type: Notifications::ExportStarted,
       export: self
     )
-    ExportJob.perform_later(self)
+    ExportJob.set(job_context: :medium).perform_later(self)
   end
 
   def message_threads
@@ -78,7 +78,9 @@ class Export < ApplicationRecord
   end
 
   def file_name
-    "#{user.tenant.id}/govbox-pro-export-#{created_at.to_date}.zip"
+    old_name = "#{user.tenant.id}/govbox-pro-export-#{created_at.to_date}.zip" # Old naming logic
+    new_name = "#{user.tenant.id}/govbox-pro-export-##{id}-#{created_at.to_date}.zip"
+    File.exist?(File.join(Rails.root, "storage", "exports", old_name)) ? old_name : new_name
   end
 
   private

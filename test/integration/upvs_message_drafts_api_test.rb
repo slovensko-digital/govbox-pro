@@ -285,7 +285,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
 
     post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
-    assert_response :unprocessable_entity
+    assert_response :unprocessable_content
 
     json_response = JSON.parse(response.body)
     assert_equal "Title can't be blank", json_response['message']
@@ -324,7 +324,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
 
     post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
-    assert_response :unprocessable_entity
+    assert_response :unprocessable_content
 
     json_response = JSON.parse(response.body)
     assert_equal 'Invalid sender', json_response['message']
@@ -363,7 +363,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
 
     post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
-    assert_response :unprocessable_entity
+    assert_response :unprocessable_content
 
     json_response = JSON.parse(response.body)
     assert_equal 'Invalid sender', json_response['message']
@@ -402,7 +402,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
 
     post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
-    assert_response :unprocessable_entity
+    assert_response :unprocessable_content
 
     json_response = JSON.parse(response.body)
     assert_equal 'Recipient does not accept the form type', json_response['message']
@@ -488,7 +488,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
 
     post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
-    assert_response :unprocessable_entity
+    assert_response :unprocessable_content
 
     json_response = JSON.parse(response.body)
     assert_equal 'Recipient does not accept the form type', json_response['message']
@@ -526,7 +526,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
 
     post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
-    assert_response :unprocessable_entity
+    assert_response :unprocessable_content
 
     json_response = JSON.parse(response.body)
     assert_equal 'Recipient does not accept the form type', json_response['message']
@@ -565,7 +565,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
 
     post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }) , as: :json
 
-    assert_response :unprocessable_entity
+    assert_response :unprocessable_content
 
     json_response = JSON.parse(response.body)
     assert_equal 'Form XSD validation failed', json_response['message']
@@ -605,7 +605,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
 
     post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
-    assert_response :unprocessable_entity
+    assert_response :unprocessable_content
 
     json_response = JSON.parse(response.body)
     assert_equal 'Form XSD validation failed', json_response['message']
@@ -643,7 +643,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
 
     post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
-    assert_response :unprocessable_entity
+    assert_response :unprocessable_content
 
     json_response = JSON.parse(response.body)
 
@@ -682,7 +682,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
 
     post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
-    assert_response :unprocessable_entity
+    assert_response :unprocessable_content
 
     json_response = JSON.parse(response.body)
     assert_equal "Correlation ID can't be blank", json_response['message']
@@ -720,7 +720,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
 
     post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
-    assert_response :unprocessable_entity
+    assert_response :unprocessable_content
 
     json_response = JSON.parse(response.body)
     assert_equal "No recipient URI", json_response['message']
@@ -758,7 +758,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
 
     post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
-    assert_response :unprocessable_entity
+    assert_response :unprocessable_content
 
     json_response = JSON.parse(response.body)
     assert_equal "No message type", json_response['message']
@@ -798,7 +798,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
 
     post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
-    assert_response :unprocessable_entity
+    assert_response :unprocessable_content
 
     json_response = JSON.parse(response.body)
     assert_equal "Reference ID must be UUID", json_response['message']
@@ -825,7 +825,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
 
     post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
-    assert_response :unprocessable_entity
+    assert_response :unprocessable_content
 
     json_response = JSON.parse(response.body)
     assert_equal 'Message contains no objects', json_response['message']
@@ -859,7 +859,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
 
     post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
-    assert_response :unprocessable_entity
+    assert_response :unprocessable_content
 
     json_response = JSON.parse(response.body)
     assert_equal 'Message has to contain exactly one form object', json_response['message']
@@ -905,7 +905,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
 
     post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
-    assert_response :unprocessable_entity
+    assert_response :unprocessable_content
 
     json_response = JSON.parse(response.body)
     assert_equal 'Message has to contain exactly one form object', json_response['message']
@@ -1116,7 +1116,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
 
     post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
-    assert_response :unprocessable_entity
+    assert_response :unprocessable_content
 
     json_response = JSON.parse(response.body)
     assert_equal "Objects is not valid, Name can't be blank", json_response['message']
@@ -1162,10 +1162,10 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
 
     post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
-    assert_response :unprocessable_entity
+    assert_response :unprocessable_content
 
     json_response = JSON.parse(response.body)
-    assert json_response['message'].start_with? 'Objects is not valid, MimeType of Attachment.txt object is disallowed, allowed mimetypes:'
+    assert json_response['message'].start_with? 'Objects is not valid, MimeType of Attachment.txt object is disallowed, allowed MimeTypes:'
 
     assert_equal Message.count, @before_request_messages_count
   end
@@ -1202,7 +1202,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
 
     post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
-    assert_response :unprocessable_entity
+    assert_response :unprocessable_content
 
     json_response = JSON.parse(response.body)
     assert_equal 'Tag with name Special does not exist', json_response['message']
@@ -1243,7 +1243,7 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
 
     post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
-    assert_response :unprocessable_entity
+    assert_response :unprocessable_content
 
     json_response = JSON.parse(response.body)
     assert_equal 'Signature tag with name Podpisane does not exist', json_response['message']

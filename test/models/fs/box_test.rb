@@ -140,4 +140,14 @@ class Fs::BoxTest < ActiveSupport::TestCase
 
     assert_enqueued_jobs Fs::Box.joins(:boxes_api_connections).group("boxes_api_connections.settings->>'delegate_id'").count.values.sum
   end
+
+  test ".with_enabled_message_drafts_import excludes inactive boxes" do
+    active_box = boxes(:fs_accountants)
+    inactive_box = boxes(:fs_solver)
+    inactive_box.update!(active: false)
+
+    boxes = Fs::Box.with_enabled_message_drafts_import
+    assert_includes boxes, active_box
+    assert_not_includes boxes, inactive_box
+  end
 end

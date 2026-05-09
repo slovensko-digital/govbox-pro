@@ -2,28 +2,43 @@ class Fs::Message
   FS_SUBJECT_NAME = 'Finančná správa'
 
   def self.create_inbox_message_with_thread!(raw_message, box:)
-    message = nil
+    message = Message.find_by(uuid: raw_message.dig('message_container', 'message_id'))
+
+    submission_verification_status = raw_message['submission_verification_status']
     associated_outbox_message = box.messages.where("messages.metadata ->> 'fs_message_id' = ?", raw_message['sent_message_id']).take
 
     MessageThread.with_advisory_lock!(associated_outbox_message.metadata['correlation_id'], transaction: true, timeout_seconds: 10) do
-      message = create_inbox_message(raw_message)
+      if message
+        return message if message.metadata["fs_submission_verification_status"] == submission_verification_status
 
-      message.thread = associated_outbox_message.thread
-      message.thread.assign_tag(message.thread.tenant.inbox_tag)
+        message.metadata["fs_submission_verification_status"] = submission_verification_status
+        message.save!
 
-      message.metadata['fs_period'] ||= message.thread.metadata&.dig('period')
+        update_html_visualization(message)
 
-      message.save!
+        EventBus.publish(:message_updated, message)
+      else
+        message = create_inbox_message(raw_message)
 
-      create_message_objects(message, raw_message)
-      update_html_visualization(message)
+        message.thread = associated_outbox_message.thread
+        message.thread.assign_tag(message.thread.tenant.inbox_tag)
 
-      MessageObject.mark_message_objects_externally_signed(message.objects)
+        message.metadata['fs_period'] ||= message.thread.metadata&.dig('period')
+
+        message.save!
+
+        create_message_objects(message, raw_message)
+        update_html_visualization(message)
+
+        MessageObject.mark_message_objects_externally_signed(message.objects)
+
+        associated_outbox_message.update(collapsed: true)
+
+        EventBus.publish(:message_thread_with_message_created, message)
+      end
     end
 
-    associated_outbox_message.update(collapsed: true)
-
-    EventBus.publish(:message_thread_with_message_created, message)
+    message
   end
 
   def self.create_outbox_message_with_thread!(raw_message, box:)
@@ -63,6 +78,14 @@ class Fs::Message
     message
   end
 
+  def self.find_api_connection_for_outbox_message(outbox_message)
+    return outbox_message.box.api_connection if outbox_message.box.api_connections.count == 1
+
+    signed_by = outbox_message.form_object.tags.where(type: "SignedByTag")&.first&.owner
+    signers_api_connection = outbox_message.box.api_connections.find_by(owner: signed_by)
+    signers_api_connection if signed_by && signers_api_connection
+  end
+
   private
 
   def self.create_inbox_message(raw_message)
@@ -81,6 +104,7 @@ class Fs::Message
         "fs_status": raw_message['status'],
         "fs_submitting_subject": raw_message['submitting_subject'],
         "fs_submission_status": raw_message['submission_status'],
+        "fs_submission_verification_status": raw_message['submission_verification_status'],
         "fs_message_type": raw_message.dig('message_container', 'message_type'),
         "fs_submission_type_id": raw_message['submission_type_id'], # TODO kde pouzit? asi napr. pri vytvarani nazvu suboru pri exporte
         "fs_submission_type_name": raw_message['submission_type_name'],
@@ -103,6 +127,7 @@ class Fs::Message
       replyable: false,
       collapsed: collapsed?,
       outbox: true,
+      author: associated_message_draft&.author,
       metadata: {
         "fs_form_id": (associated_message_draft.metadata['fs_form_id'] if associated_message_draft) || Fs::Form.find_by(submission_type_identifier: raw_message['submission_type_id'])&.id,
         "fs_message_id": raw_message['message_id'],

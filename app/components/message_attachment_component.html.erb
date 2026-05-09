@@ -31,7 +31,7 @@
         <%= render Icons::ArrowDownTrayComponent.new(css_classes: "w-5 h-5") %>
       <% end %>
       <% if @message_attachment.destroyable? %>
-        <%= button_to message_message_object_path(@message_attachment.message, @message_attachment), method: :delete, class: "flex justify-end items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300 hover:bg-gray-100", "aria-label": "Zmazať" do %>
+        <%= button_to message_message_object_path(@message_attachment.message, @message_attachment), method: :delete, class: "flex justify-end items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300 hover:bg-gray-100", "aria-label": "Zmazať", "data-turbo": false do %>
           <%= render Icons::TrashComponent.new(css_classes: "w-5 h-5 text-red-600") %>
         <% end %>
       <% end %>

@@ -18,7 +18,7 @@ class Govbox::ProcessUnauthorizedDeliveryNotificationJob < ApplicationJob
     delivery_notification_tag = Upvs::DeliveryNotificationTag.find_or_create_for_tenant!(message.thread.box.tenant)
 
     message.tags.delete(delivery_notification_tag) if message.tags.include?(delivery_notification_tag)
-    unless message.thread.messages.any?(&:can_be_authorized?)
+    unless message.thread.messages.any?(&:authorizable_delivery_notification?)
       message.thread.tags.delete(delivery_notification_tag)
     end
   end

@@ -50,3 +50,4 @@ yarn-debug.log*
 
 coverage
 
+govbox_dev_api_token.*.pem

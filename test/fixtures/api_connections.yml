@@ -171,6 +171,7 @@ fs_api_connection3:
 
 fs_api_connection4:
   sub: fs_sub4
+  custom_name: 'FS account 4'
   type: 'Fs::ApiConnection'
   tenant: accountants
   settings: {"username": "123456789", "password": "fs_password1"}
@@ -207,6 +208,7 @@ fs_api_connection4:
 
 fs_api_connection5:
   sub: fs_sub5
+  custom_name: 'FS account 5'
   type: 'Fs::ApiConnection'
   tenant: accountants
   settings: {"username": "123456789", "password": "fs_password1"}
@@ -243,6 +245,7 @@ fs_api_connection5:
 
 fs_api_connection6:
   sub: fs_sub6
+  custom_name: 'FS account 6'
   type: 'Fs::ApiConnection'
   tenant: accountants
   settings: {"username": "123456789", "password": "fs_password1"}

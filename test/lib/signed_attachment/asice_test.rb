@@ -12,4 +12,13 @@ class SignedAttachment::AsiceTest < ActiveSupport::TestCase
     assert_equal 'application/vnd.gov.sk.xmldatacontainer+xml; charset=UTF-8', asice_payload_documents.second.mimetype
     assert_equal 'COO.2253.102.2.6897875.xml', asice_payload_documents.second.name
   end
+
+  test "fills payload documents missing mimetype, file extension from manifest even if apostrophe in filename" do
+    asice_content = file_fixture("User's_test_document.asice").read
+
+    asice_payload_documents = SignedAttachment::Asice.extract_documents_from_content(asice_content)
+
+    assert_equal 'application/vnd.gov.sk.xmldatacontainer+xml; charset=UTF-8', asice_payload_documents.first.mimetype
+    assert_equal "User's_test_document.xdcf.xml", asice_payload_documents.first.name
+  end
 end

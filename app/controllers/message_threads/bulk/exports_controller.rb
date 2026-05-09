@@ -35,7 +35,7 @@ module MessageThreads
           redirect_to edit_message_threads_bulk_export_path(@export), notice: t("exports.flash.updated")
         else
           load_export_context
-          render :edit, status: :unprocessable_entity
+          render :edit, status: :unprocessable_content
         end
       end
 
@@ -45,7 +45,7 @@ module MessageThreads
         if params[:export].present?
           unless @export.update(export_params)
             load_export_context
-            return render :edit, status: :unprocessable_entity
+            return render :edit, status: :unprocessable_content
           end
         end
 

@@ -22,7 +22,7 @@ class Admin::UsersController < ApplicationController
     if @user.save
       redirect_to admin_tenant_users_url(Current.tenant), notice: 'Používateľ bol úspešne vytvorený'
     else
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
 
@@ -31,7 +31,7 @@ class Admin::UsersController < ApplicationController
     if @user.update(user_params)
       redirect_to admin_tenant_users_url(Current.tenant), notice: 'Používateľ bol úspešne upravený'
     else
-      render :edit, status: :unprocessable_entity
+      render :edit, status: :unprocessable_content
     end
   end
 

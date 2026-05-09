@@ -18,7 +18,7 @@ class Fs::FormRelatedDocumentsDownloader < ::Utils::Downloader
       related_document_path = XSD_PATH
       related_document_type = 'CLS_F_XSD_EDOC'
     when :xslt_html
-      related_document_path = xml_manifest.xpath('//manifest:file-entry[@media-destination="screen" or @media-destination="view"]')&.first['full-path']
+      related_document_path = xml_manifest.xpath('//manifest:file-entry[@media-destination="x-xslt-ro"]')&.first&.[]('full-path')
       related_document_path&.gsub!(/\\/, '/')
       related_document_type = 'CLS_F_XSLT_HTML'
     when :xslt_txt
@@ -31,7 +31,7 @@ class Fs::FormRelatedDocumentsDownloader < ::Utils::Downloader
       related_document_type = 'CLS_F_XSL_FO'
     end
 
-    download_related_document(path: related_document_path, type: related_document_type)
+    download_related_document(path: related_document_path, type: related_document_type) if related_document_path
   end
 
   def download_related_document(path:, type:)

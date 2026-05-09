@@ -206,10 +206,24 @@ ssd_basic_user_drafts:
   visible: false
   tenant: ssd
 
+ssd_basic_user_authors:
+  name: Author-Basic user
+  owner: basic
+  type: AuthorTag
+  visible: false
+  tenant: ssd
+
 ssd_admin_user_drafts:
   name: Drafts-Admin user
   owner: admin
   type: DraftTag
+  visible: false
+  tenant: ssd
+
+ssd_admin_user_author:
+  name: Author-Admin user
+  owner: basic
+  type: AuthorTag
   visible: false
   tenant: ssd
 
@@ -223,6 +237,13 @@ solver_other_user_drafts:
   name: Drafts-Other user
   owner: solver_other
   type: DraftTag
+  visible: false
+  tenant: solver
+
+solver_other_user_author:
+  name: Author-Other user
+  owner: solver_other
+  type: AuthorTag
   visible: false
   tenant: solver
 
@@ -265,8 +286,26 @@ accountants_inbox:
   tenant: accountants
 
 accountants_submission_error_tag:
-  name: Problémové
+  name: Chyba pri odoslaní
   type: SubmissionErrorTag
+  visible: true
+  tenant: accountants
+
+accountants_problem_tag:
+  name: Problémové
+  type: ProblemTag
+  visible: true
+  tenant: accountants
+
+accountants_validation_error_tag:
+  name: Chybné údaje
+  type: ValidationErrorTag
+  visible: true
+  tenant: accountants
+
+accountants_validation_warning_tag:
+  name: Upozornenia
+  type: ValidationWarningTag
   visible: true
   tenant: accountants
 
@@ -302,6 +341,13 @@ accountants_basic_user_drafts:
   name: Drafts-Basic user
   owner: accountants_basic
   type: DraftTag
+  visible: false
+  tenant: accountants
+
+accountants_basic_user_authors:
+  name: Author-Basic user
+  owner: accountants_basic
+  type: AuthorTag
   visible: false
   tenant: accountants
 
@@ -400,6 +446,18 @@ accountants_tag2:
   tenant: accountants
   icon: pencil
   color: yellow
+
+accountants_s_potvrdenkou:
+  name: S potvrdenkou
+  type: SimpleTag
+  visible: true
+  tenant: accountants
+
+accountants_s_neoverenou_potvrdenkou:
+  name: S neoverenou potvrdenkou
+  type: SimpleTag
+  visible: true
+  tenant: accountants
 
 ssd_attachment_matched:
   name: AttachmentMatched
