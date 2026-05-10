@@ -18,6 +18,6 @@ class TagGroup < ApplicationRecord
   has_many :group_memberships, primary_key: :group_id, foreign_key: :group_id
 
   def restricted?
-    group.is_a?(UserGroup) && tag.type.in?(%w[DraftTag AuthorTag SignatureRequestedFromTag SignedByTag]) && group.users.exists?(tag.owner_id)
+    group.is_a?(UserGroup) && !tag.destroyable? && group.users.exists?(tag.owner_id)
   end
 end
