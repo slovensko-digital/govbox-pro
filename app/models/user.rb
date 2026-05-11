@@ -5,6 +5,7 @@
 # Table name: users
 #
 #  id                           :bigint           not null, primary key
+#  contact_email                :string
 #  email                        :string
 #  name                         :string           not null
 #  notifications_last_opened_at :datetime
