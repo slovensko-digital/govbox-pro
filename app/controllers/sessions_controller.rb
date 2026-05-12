@@ -4,7 +4,13 @@ class SessionsController < ApplicationController
   skip_before_action :set_menu_context
   layout 'login'
 
-  def login; end
+  def login
+    @ssd_trial = params[:ssd_trial].present?
+
+    if @ssd_trial
+      session[:ssd_trial_return_url] = params[:return_url]
+    end
+  end
 
   def create
     Current.user = User.find_by(email: auth_hash.info.email)
