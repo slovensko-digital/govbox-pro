@@ -1,9 +1,9 @@
 class Fs::OnboardTenant
-  def initialize(tenant_name:, admin_user_name:, saml_identifier:, admin_user_email: nil, fs_api_sub:, fs_api_private_key:)
+  def initialize(tenant_name:, admin_user_name:, saml_identifier:, admin_user_contact_email: nil, fs_api_sub:, fs_api_private_key:)
     @tenant_name = tenant_name
     @admin_user_name = admin_user_name
     @saml_identifier = saml_identifier
-    @admin_user_email = admin_user_email
+    @admin_user_contact_email = admin_user_contact_email
     @fs_api_sub = fs_api_sub
     @fs_api_private_key = fs_api_private_key
   end
@@ -12,7 +12,7 @@ class Fs::OnboardTenant
     Tenant.transaction do
       tenant = Tenant.find_or_create_by!(name: @tenant_name)
 
-      user = tenant.users.find_or_create_by!(contact_email: @admin_user_email, name: @admin_user_name, saml_identifier: @saml_identifier).tap do |user|
+      user = tenant.users.find_or_create_by!(contact_email: @admin_user_contact_email, name: @admin_user_name, saml_identifier: @saml_identifier).tap do |user|
         user.groups << tenant.admin_group
         user.groups << tenant.groups.find_by(type: "SignerGroup")
         user.save!
@@ -21,7 +21,7 @@ class Fs::OnboardTenant
       tenant.feature_flags = %w[fs_api fs_sync]
       tenant.save!
 
-      Fs::ApiConnection.create(tenant: tenant, sub: @fs_api_sub, api_token_private_key: @fs_api_private_key, owner: user)
+      Fs::ApiConnection.create!(tenant: tenant, sub: @fs_api_sub, api_token_private_key: @fs_api_private_key, owner: user)
 
       setup_automation_rules(tenant, user)
 
