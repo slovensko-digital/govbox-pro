@@ -1,8 +1,7 @@
 # Štítok
 
-Štítky majú dve hlavné funkcie:
-
 ## Funkcie štítkov
+Štítky majú dve hlavné funkcie.
 
 ### 1. Označovanie vlákien
 Štítky sa používajú na označenie vlákien spĺňajúcich určené kritériá. Označenie môže byť založené na:
@@ -16,11 +15,11 @@
 
 ## Príklady použitia
 
-| Štítok | Účel |
-|--------|------|
-| Finance | Správy od účtovného oddelenia |
+| Štítok             | Účel |
+|--------------------|------|
+| Financie           | Správy od účtovného oddelenia |
 | Sociálna poisťovňa | Komunikácia so Sociálnou poisťovňou |
-| Vybavené | Vlákna, ktoré už nevyžadujú pozornosť |
+| Vybavené           | Vlákna, ktoré už nevyžadujú pozornosť |
 
 ## Súvisiace témy
 

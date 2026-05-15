@@ -11,6 +11,8 @@ Tenantom sa rozumie skupina schránok, používateľov a pravidiel, ktorá riadi
 
 ## Súvisiace témy
 
-- [Správa schránok](../getting-started/mailbox-management.md)
+- [Správa slovensko.sk schránok](../slovensko.sk/mailbox-management.md)
+- [Správa FS schránok](../financna-sprava/mailbox-management.md)
+- [Prepojenie s účtami na Finančnej správe](../financna-sprava/connections.md)
 - [Správa používateľov](../getting-started/user-management.md)
 - [Pravidlá](../rules/)

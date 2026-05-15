@@ -69,7 +69,6 @@ export default defineConfig({
       icon: 'rocket',
       children: [
         { title: 'Prihlásenie', path: '/getting-started/login' },
-        { title: 'Správa schránok', path: '/getting-started/mailbox-management' },
         { title: 'Správa používateľov', path: '/getting-started/user-management' },
         { title: 'Správa skupín', path: '/getting-started/group-management' },
       ],
@@ -89,20 +88,21 @@ export default defineConfig({
         { title: 'Filter', path: '/concepts/filter' },
         { title: 'Notifikácia', path: '/concepts/notification' },
         { title: 'Pravidlo', path: '/concepts/rule' },
+        { title: 'Hromadný export', path: '/concepts/export' },
       ],
     },
     {
       title: 'Správy',
       icon: 'mail',
       children: [
-        { title: 'Prevzatie správ', path: '/messages/receiving' },
         { title: 'Zobrazenie správ', path: '/messages/viewing-messages' },
         { title: 'Zobrazenie vlákna', path: '/messages/viewing-thread' },
-        { title: 'Odpovedanie', path: '/messages/replying' },
+        { title: 'Odosielanie správ', path: '/messages/submitting' },
         { title: 'Premenovanie vlákna', path: '/messages/renaming-thread' },
         { title: 'Vyhľadávanie', path: '/messages/searching' },
         { title: 'História komunikácie', path: '/messages/communication-history' },
         { title: 'Stiahnutie správy', path: '/messages/downloading' },
+        { title: 'Hromadný export správ', path: '/messages/export' },
       ],
     },
     {
@@ -150,6 +150,25 @@ export default defineConfig({
       icon: 'bell',
       children: [
         { title: 'Nastavenie notifikácií', path: '/notifications/setting-up' },
+      ],
+    },
+    {
+      title: 'Finančná správa',
+      icon: 'bell',
+      children: [
+        { title: 'Prepojenie s účtami na Finančnej správe', path: '/financna-sprava/connections' },
+        { title: 'Správa schránok', path: '/financna-sprava/mailbox-management' },
+        { title: 'Hromadné podania', path: '/financna-sprava/submissions' },
+        { title: 'Kontrola potvrdení', path: '/financna-sprava/delivery-reports' },
+      ],
+    },
+    {
+      title: 'slovensko.sk',
+      icon: 'bell',
+      children: [
+        { title: 'Prevzatie správ', path: '/slovensko.sk/receiving' },
+        { title: 'Odpovedanie na správy', path: '/slovensko.sk/replying' },
+        { title: 'Správa schránok', path: '/slovensko.sk/mailbox-management' },
       ],
     },
   ],

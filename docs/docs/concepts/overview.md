@@ -59,3 +59,8 @@ Upozornenie na aktivitu v schránke - nové správy, zmeny alebo udalosti.
 Automatizácia spracovania správ na základe definovaných podmienok a akcií.
 
 - **[Viac o pravidlách](/concepts/rule)**
+
+### Hromadný export
+Hromadné stiahnutie správ a príloh pre zálohovanie alebo archiváciu.
+
+- **[Viac o hromadných exportoch](/concepts/export)**

@@ -23,8 +23,6 @@ Pri zobrazení konkrétnej správy sa pri názve správy v pravom rohu nachádza
 ![Panel histórie komunikácie](../../assets/images/messages/communication-history-panel.png)
 
 ## Využitie histórie komunikácie
-
-### Výhody histórie
 História komunikácie umožňuje:
 
 - Prehľad všetkých správ v rámci vlákna

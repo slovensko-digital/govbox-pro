@@ -14,13 +14,13 @@ Administrátor môže vytvárať a spravovať skupiny používateľov.
    Administrátor klikne v ľavom bočnom menu na **"Nastavenia"**
 
 2. **Prejdite do sekcie Administrácia**
-   Kliknite na možnosť **"Skupiny"**
+   Klikne na možnosť **"Skupiny"**
 
 3. **Vytvorte novú skupinu**
-   Kliknite na tlačidlo **"Vytvoriť skupinu"** a zvolte si jej názov
+   Administrátor klikne na tlačidlo **"Vytvoriť skupinu"** a zvolí si jej názov
 
 4. **Pridajte členov**
-   Vyhľadajte v zobrazenom zozname používateľov tých, ktorých chcete do skupiny pridať a pri každom používateľovi kliknite na tlačidlo **"+"**
+   Administrátor vyhľadá v zobrazenom zozname používateľov tých, ktorých chce do skupiny pridať a pri každom používateľovi klikne na tlačidlo **"+"**
 
 5. **Ukončite pridávanie**
    Kliknutím na tlačidlo **"Zatvoriť"**
@@ -31,13 +31,13 @@ Administrátor môže vytvárať a spravovať skupiny používateľov.
    Administrátor klikne v ľavom bočnom menu na **"Nastavenia"**
 
 2. **Prejdite do sekcie Skupiny**
-   Kliknite na možnosť **"Skupiny"**
+   Klikne na možnosť **"Skupiny"**
 
 3. **Upravte skupinu**
-   Kliknite na tlačidlo **"Zmeniť členov skupiny"** pri skupine, do ktorej chcete používateľa pridať
+   Administrátor klikne na tlačidlo **"Zmeniť členov skupiny"** pri skupine, do ktorej chce používateľa pridať
 
 4. **Pridajte používateľa**
-   Vyhľadajte používateľa a kliknite pri ňom na tlačidlo **"+"**
+   Administrátor vyhľadá používateľa a klikne pri ňom na tlačidlo **"+"**
 
 ::: callout tip "Praktický príklad"
 > **Vytvorím skupinu pre prístup k správam so štítkom "Financie" pre zamestnancov účtovného oddelenia.**

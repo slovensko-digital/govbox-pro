@@ -1,6 +1,6 @@
 ---
 title: "Správa schránok"
-description: "Ako pridať a spravovať elektronické schránky v GovBox PRO."
+description: "Ako pridať a spravovať elektronické slovensko.sk schránky v GovBox PRO."
 keywords: ["schránky", "administrácia", "pridanie schránky"]
 ---
 

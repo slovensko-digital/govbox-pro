@@ -4,7 +4,7 @@ Skupina je množina používateľov v rámci tenanta.
 
 ## Funkcie skupín
 
-- Skupinám (alebo jednotlivcom) je možné udeľovať prístup k štítkom
+- Skupinám (alebo jednotlivcom) je možné udeľovať prístup k štítkom a schránkam
 - Používatelia v skupine môžu vidieť a vykonávať akcie nad priradenými vláknami (napr. preberať správy)
 - Administrátori môžu vytvárať ľubovoľné skupiny používateľov
 

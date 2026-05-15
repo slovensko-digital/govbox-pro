@@ -2,7 +2,7 @@
 
 Schránka je elektronická schránka spoločnosti (právnickej osoby), pričom každá spoločnosť má jednu vlastnú schránku.
 
-**Zjednodušene platí:** Jedno IČO = jedna schránka.
+**Zjednodušene platí:** Jedno IČO/DIČ = jedna schránka.
 
 ## Funkcie schránky
 
@@ -12,5 +12,6 @@ Schránka je elektronická schránka spoločnosti (právnickej osoby), pričom k
 
 ## Súvisiace témy
 
-- [Správa schránok](../getting-started/mailbox-management.md)
+- [Správa slovensko.sk schránok](../slovensko.sk/mailbox-management.md)
+- [Správa FS schránok](../financna-sprava/mailbox-management.md)
 - [Zobrazenie správ](../messages/viewing-messages.md)

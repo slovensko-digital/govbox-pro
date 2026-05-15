@@ -6,10 +6,10 @@ keywords: ["podpis", "autogram", "dokument", "príloha"]
 
 # Podpis dokumentu alebo prílohy
 
-Elektronický podpis dokumentu či prílohy je možné zrealizovať priamo v schránke pomocou integrovaného podpisovača Autogram.
+Elektronický podpis dokumentu či prílohy je možné zrealizovať priamo v schránke pomocou integrovaného podpisovača [Autogram](https://sluzby.slovensko.digital/autogram/).
 
 ::: callout warning "Predpoklady"
-Aby používateľ mohol čokoľvek podpisovať, musí byť súčasťou skupiny **"Podpisovatelia"**.
+Aby používateľ mohol čokoľvek podpisovať, musí byť súčasťou skupiny **"Podpisovatelia" a mať [Autogram](https://sluzby.slovensko.digital/autogram/) nainštalovaný**.
 :::
 
 ## Postup podpisu dokumentu

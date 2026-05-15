@@ -7,7 +7,7 @@ keywords: ["podpis", "hromadné", "autogram", "dokumenty"]
 # Hromadné podpisovanie dokumentov
 
 ::: callout warning "Predpoklady"
-Aby používateľ mohol čokoľvek podpisovať, musí byť súčasťou skupiny **"Podpisovatelia"**.
+Aby používateľ mohol čokoľvek podpisovať, musí byť súčasťou skupiny **"Podpisovatelia" a mať [Autogram](https://sluzby.slovensko.digital/autogram/) nainštalovaný**.
 :::
 
 ## Postup hromadného podpisu

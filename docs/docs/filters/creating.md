@@ -9,7 +9,7 @@ keywords: ["filter", "vyhľadávanie", "label", "dopyt"]
 Filter je dopyt vyhľadávania uložený spoločne s názvom na neskoršie využitie.
 
 ::: callout tip "Praktický príklad"
-> **Vytvorím filter "Nevybavené", kde sa budem dopytovať na všetky správy, ktoré nemajú štítok "Vybavené". Zobrazenie tohto filtra zabezpeční prehľad agendy, ktorá vyžaduje riešenie či odpoveď.**
+> Vytvorím filter "Nevybavené", kde sa budem dopytovať na všetky správy, ktoré nemajú štítok "Vybavené". Zobrazenie tohto filtra zabezpeční prehľad agendy, ktorá vyžaduje riešenie či odpoveď.
 > 
 > Dopyt: `-label:(Vybavené)`
 :::

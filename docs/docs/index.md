@@ -1,19 +1,18 @@
 ---
 title: "Vitajte v dokumentácii GovBox PRO"
-description: "GovBox PRO - prehľadnejšia a efektívnejšia alternatíva k oficiálnej štátnej schránke na slovensko.sk."
+description: "GovBox PRO - prehľadnejšia a efektívnejšia alternatíva k oficiálnej štátnym schránkam na slovensko.sk a Finančnej správe."
 keywords: ["govbox", "slovensko", "schránka", "dokumentácia"]
 ---
 
 # Vitajte v GovBox PRO
 
-GovBox Pro je produkt slúžiaci na komunikáciu s orgánmi verejnej moci. Je prehľadnejšou a efektívnejšou alternatívou k oficiálnej štátnej schránke na slovensko.sk.
+GovBox Pro je produkt slúžiaci na komunikáciu s orgánmi verejnej moci. Je prehľadnejšou a efektívnejšou alternatívou k oficiálnym štátnym schránkam na slovensko.sk a Finančnej správe.
 
 ::: callout success "Výhody GovBox PRO"
-Oproti oficiálnej štátnej schránke na slovensko.sk ponúka GovBox PRO:
-- **Bez eID** - nie je potrebné používať elektronický občiansky preukaz
-- **Bez čítačky** - nie je potrebná čítačka kariet
-- **Bez BOK** - nie je potrebné zadávať BOK
+Oproti oficiálnym štátnym schránkam ponúka GovBox PRO:
+- **Jednoduché prihlásenie** - nie je potrebné používať elektronický občiansky preukaz na prihlasovanie sa
 - **Tímový prístup** - umožňuje prístup viacerým oprávneným osobám
+- **Nastavenie oprávnení** - umožňuje nastaviť rôzne oprávnenia jednotlivým používateľom
 - **Viaceré schránky** - zjednodušuje prácu s viacerými schránkami
 - **Hromadné spracovanie** - umožňuje hromadné spracovanie elektronickej úradnej pošty
 :::
@@ -24,7 +23,6 @@ Oproti oficiálnej štátnej schránke na slovensko.sk ponúka GovBox PRO:
 Ak ste nový používateľ GovBox PRO, začnite tu:
 
 - **[Prihlásenie](/getting-started/login)**
-- **[Správa schránok](/getting-started/mailbox-management)**
 - **[Správa používateľov](/getting-started/user-management)**
 
 ### Základné pojmy
@@ -52,10 +50,10 @@ Vytvárajte pravidlá a filtre pre automatizáciu spracovania správ.
 ::: tabs
 
 == tab "Správy"
-- Prevzatie správ do vlastných rúk
 - Zobrazenie vlákien a správ
 - Vyhľadávanie s filtrami
-- Odpovedanie na správy
+- Odosielanie správ
+- Hromadné exporty správ
 
 == tab "Organizácia"
 - Vytváranie štítkov
@@ -72,6 +70,17 @@ Vytvárajte pravidlá a filtre pre automatizáciu spracovania správ.
 - Nastavenie upozornení
 - Notifikácie podľa filtrov
 - Prehľad všetkých upozornení
+
+== tab "Finančná správa"
+- Prepojenie s účtami na Finančnej správe
+- Správa schránok
+- Hromadné podania
+- Kontrola potvrdení
+
+== tab "slovensko.sk"
+- Prevzatie správ do vlastných rúk
+- Odpovedanie na správy
+- Správa schránok
 
 :::
 

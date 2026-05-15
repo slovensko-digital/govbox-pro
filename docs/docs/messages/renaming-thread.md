@@ -11,7 +11,7 @@ Pre lepšiu orientáciu v pošte je možné vlákno premenovať.
 ## Postup premenovania
 
 1. **Otvorte menu správy**
-   Pri zobrazení konkrétnej správy sa pri názve v pravom rohu zobrazí ikona s troma bodkami
+   Pri zobrazení konkrétneho vlákna správ sa pri názve v pravom rohu zobrazí ikona s troma bodkami
 
 2. **Kliknite na ikonu**
    Kliknite na ikonu s troma bodkami
@@ -22,11 +22,11 @@ Pre lepšiu orientáciu v pošte je možné vlákno premenovať.
 4. **Upravte názov**
    Zobrazí sa nové okno pre zmenu názvu vlákna
    - Pole pre zmenu názvu bude predvyplnené podľa aktuálneho názvu
-   - Vymazať predvyplnený názov
-   - Napísať nový názov
+   - Vymažte predvyplnený názov
+   - Napíšte nový názov
 
 5. **Uložte zmenu**
-   Kliknúť na modré tlačidlo **"Zmeniť názov"**
+   Kliknite na modré tlačidlo **"Zmeniť názov"**
 
 6. **Overte úspech**
    V pravom hornom rohu sa zobrazí notifikácia o úspešnej zmene názvu vlákna
@@ -38,5 +38,5 @@ Pre lepšiu orientáciu v pošte je možné vlákno premenovať.
 ![Dialóg premenovania vlákna](../../assets/images/messages/rename-thread-dialog.png)
 
 ::: callout tip "Tip"
-Zmena názvu vlákna je užitočná najmä pri správach od rôznych inštitúcií, kde pôvodný názov nie je dostatočne výrečný.
+Zmena názvu vlákna je užitočná najmä pri správach od rôznych inštitúcií, kde pôvodný názov nie je dostatočne prehľadný.
 :::

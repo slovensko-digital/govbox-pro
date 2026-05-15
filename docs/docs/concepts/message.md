@@ -14,5 +14,5 @@ Správa v elektronickej schránke je komunikáciou s orgánom verejnej moci a sp
 ## Súvisiace témy
 
 - [Zobrazenie správ](../messages/viewing-messages.md)
-- [Odpovedanie na správy](../messages/replying.md)
+- [Odpovedanie na správy](../slovensko.sk/replying.md)
 - [Prílohy](../attachments/)

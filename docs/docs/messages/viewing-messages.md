@@ -23,6 +23,21 @@ Po prihlásení do GovBox Pro si používateľ má možnosť zobraziť všetky v
 
 ![Tlačidlo všetky správy](../../assets/images/messages/all-messages-button.png)
 
+### Zobrazenie zbalenej správy
+
+1. **Nájdite zbalenú správu**
+   Niektoré správy (nepodstatné) môžu byť automaticky zbalené
+
+2. **Zobrazte celý obsah**
+   Kliknite na ikonu šípky nadol
+   Zobrazí sa celý obsah správy
+
+![Zbalená správa](../../assets/images/messages/collapsed-message.png)
+
+::: callout tip "Tip"
+Zbalené správy sú zvyčajne automaticky označené ako menej dôležité. Ak ich potrebujete vidieť, stačí kliknúť na šípku.
+:::
+
 ## Prepojenie správ so schránkami
 
 ::: callout info
@@ -41,9 +56,4 @@ Ak máte prístup k viacerým schránkam, môžete:
 Ako otvoriť a čítať konkrétne vlákno.
 
 - **[Zobrazenie vlákna](/messages/viewing-thread)**
-
-### Správa schránok
-Ako pridať a spravovať schránky.
-
-- **[Správa schránok](/getting-started/mailbox-management)**
 

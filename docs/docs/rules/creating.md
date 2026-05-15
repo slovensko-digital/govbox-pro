@@ -9,7 +9,7 @@ keywords: ["pravidlo", "automatizácia", "podmienka", "akcia"]
 Pravidlo je skupina podmienok a akcií, ktoré sa majú vykonať pri nejakej udalosti v schránke.
 
 ::: callout info "Praktický príklad"
-> **Vytvorím štítok "Financie", pre ktorý definujem pravidlo označovania pre správy prichádzajúce od poisťovní, Úradu Práce, sociálnych vecí a rodiny, Daňového úradu a správy.**
+> Vytvorím štítok "Financie", pre ktorý definujem pravidlo označovania pre správy prichádzajúce od poisťovní, Úradu Práce, sociálnych vecí a rodiny, Daňového úradu a správy.
 :::
 
 ## Postup vytvorenia pravidla

@@ -7,7 +7,7 @@ keywords: ["štítok", "label", "vlákno", "kategória"]
 # Vytvorenie štítka a označenie vlákna
 
 ::: callout tip "Praktický príklad"
-> **Vytvorím štítok "Vybavené". Týmto štítkom budem označovať vlákna, ktoré už sú vybavené a nevyžadujú ďalej moju pozornosť.**
+> Vytvorím štítok "Vybavené". Týmto štítkom budem označovať vlákna, ktoré už sú vybavené a nevyžadujú ďalej moju pozornosť.
 :::
 
 ## Postup vytvorenia štítka

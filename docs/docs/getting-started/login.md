@@ -6,16 +6,13 @@ keywords: ["prihlásenie", "govbox", "slovensko.sk", "autentifikácia"]
 
 # Prihlásenie do GovBox PRO
 
-GovBox Pro je produkt slúžiaci na komunikáciu s orgánmi verejnej moci. Je prehľadnejšou a efektívnejšou alternatívou k oficiálnej štátnej schránke na slovensko.sk.
+GovBox Pro je produkt slúžiaci na komunikáciu s orgánmi verejnej moci. Je prehľadnejšou a efektívnejšou alternatívou k oficiálnym štátnym schránkam na slovensko.sk a Finančnej správe.
 
-::: callout info "Výhody oproti slovensko.sk"
-Oproti oficiálnej štátnej schránke na slovensko.sk ponúka GovBox PRO:
+::: callout info "Výhody prihlasovania do GovBox PRO"
+Oproti oficiálnym štátnym schránkam, v GovBox PRO:
 - Nie je potrebné používať elektronický občiansky preukaz
 - Nie je potrebná čítačka kariet
 - Nie je potrebné zadávať BOK
-- Umožňuje prístup viacerým oprávneným osobám
-- Zjednodušuje prácu s viacerými schránkami
-- Umožňuje hromadné spracovanie elektronickej úradnej pošty
 :::
 
 ## Možnosti prihlásenia
@@ -30,6 +27,9 @@ Prostredníctvom autentifikačných prostriedkov cez slovensko.sk (eID).
 == tab "Google"
 Pomocou Google účtu pre rýchlejšie prihlásenie.
 
+== tab "Microsoft"
+Pomocou Microsoft účtu pre rýchlejšie prihlásenie.
+
 :::
 
 ## Prihlasovacie údaje
@@ -42,9 +42,7 @@ Prihlasovacie údaje sú prvotne nastavené pri zriaďovaní konta pri registrá
 
 ## Zmena prihlasovacích údajov
 
-::: callout tip
-Pri potrebe zmeny prihlasovacích údajov kontaktujte podporu na: **podpora@slovensko.digital**
-:::
+Používateľ s administrátorskými oprávneniami môže zmeniť prihlasovacie údaje pre seba alebo pro iných používateľov v nastaveniach GovBox PRO, viď [správa používateľov](/getting-started/user-management).
 
 ### Potrebujete pomôcť?
 Ak máte problém s prihlásením alebo nemáte prístupové údaje, obráťte sa na našu podporu.

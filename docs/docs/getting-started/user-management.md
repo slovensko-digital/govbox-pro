@@ -6,7 +6,7 @@ keywords: ["používatelia", "administrácia", "prístup"]
 
 # Správa používateľov
 
-Administrátor môže udeliť prístup do aplikácie ďalším používateľom.
+Administrátor môže udeliť prístup do aplikácie ďalším používateľom alebo upraviť ich prihlasovacie údaje.
 
 1. **Otvorte Nastavenia**
    Administrátor klikne v ľavom bočnom menu na **"Nastavenia"**
@@ -14,8 +14,8 @@ Administrátor môže udeliť prístup do aplikácie ďalším používateľom.
 2. **Prejdite do sekcie Administrácia**
    V sekcii **"Administrácia"**, klikne na možnosť **"Používatelia"**
 
-3. **Vytvorte nového používateľa**
-   Administrátor klikne na tlačidlo **"Vytvoriť používateľa"** v pravom hornom rohu
+3. **Vytvorte nového používateľa** alebo upravte existujúceho
+   Administrátor klikne na tlačidlo **"Vytvoriť používateľa"** v pravom hornom rohu alebo klikne na ikonu ceruzky pri existujúcom používateľovi, ktorého chce upraviť
 
 4. **Vyplňte údaje**
    Zadajte základné údaje o používateľovi
@@ -36,6 +36,7 @@ Novému používateľovi je možné udeliť plný alebo čiastočný prístup k 
 
 ### Spôsoby prístupu
 - **Štítkov** - umožňujú filtrovať prístup podľa kategórie správ
+- **Schránok** - umožňuje udeliť používateľovi prístup iba k vybraných schránkam
 - **Skupín** - umožňujú zdieľať prístup medzi viacerými používateľmi
 
 ::: callout tip

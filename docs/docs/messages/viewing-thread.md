@@ -8,13 +8,11 @@ keywords: ["vlákno", "správa", "zobrazenie", "prílohy"]
 
 Po kliknutí na konkrétne vlákno sa zobrazí jeho obsah, ktorý obsahuje jednu alebo viacero správ.
 
-## Zobrazenie správy pozostáva z
-
-### Štruktúra zobrazenia
-1. **Názov** - identifikácia správy
+## Štruktúra zobrazenia
+1. **Názov** - identifikácia vlákna správ
 2. **Štítky** - označenie kategórie
-3. **Obsah správy** - text správy s možnosťou odpovedať (ak je to možné)
-4. **Prílohy** - dokumenty pripojené k správe
+3. **Obsah správ** - text konkrétnej správy s možnosťou odpovedať (ak je to možné)
+4. **Prílohy k správam** - dokumenty pripojené ku konkrétnej správe
 
 ![Zobrazenie vlákna](../../assets/images/messages/thread-view.png)
 
@@ -36,9 +34,9 @@ Pomocou ikony s troma bodkami môžete tiež premenovať vlákno, upraviť ští
 ## Súvisiace témy
 
 ### Odpovedanie na správy
-Ako odpovedať na správy priamo z GovBox PRO.
+Ako odpovedať na správy zo slovensko.sk schránky priamo v GovBox PRO:
 
-- **[Odpovedanie](/messages/replying)**
+- **[Odpovedanie](/slovensko.sk/replying)**
 
 ### Prílohy
 Zobrazenie a stiahnutie príloh zo správ.
