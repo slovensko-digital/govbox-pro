@@ -1,21 +1,26 @@
 class Fs::OnboardTenant
-  def initialize(tenant_name:, admin_user_name:, saml_identifier:, admin_user_contact_email: nil, fs_api_sub:, fs_api_private_key:)
-    @tenant_name = tenant_name
-    @admin_user_name = admin_user_name
-    @saml_identifier = saml_identifier
-    @admin_user_contact_email = admin_user_contact_email
-    @fs_api_sub = fs_api_sub
-    @fs_api_private_key = fs_api_private_key
+  include ActiveModel::API
+  attr_accessor :tenant_name, :admin_user_name, :saml_identifier, :admin_user_contact_email, :fs_api_sub, :fs_api_private_key
+
+  validates :tenant_name, :saml_identifier, :admin_user_name, :admin_user_contact_email, :fs_api_sub, :fs_api_private_key, presence: true
+
+  def initialize(params)
+    @tenant_name = params[:tenant_name] if params[:tenant_name]
+    @saml_identifier = params[:saml_identifier] if params[:saml_identifier]
+    @admin_user_name = params[:admin_user_name] if params[:admin_user_name]
+    @admin_user_contact_email = params[:admin_user_contact_email] if params[:admin_user_contact_email]
+    @fs_api_sub = params[:fs_api_sub] if params[:fs_api_sub]
+    @fs_api_private_key = params[:fs_api_private_key] if params[:fs_api_private_key]
   end
 
   def call
     Tenant.transaction do
       tenant = Tenant.find_or_create_by!(name: @tenant_name)
 
-      user = tenant.users.find_or_create_by!(contact_email: @admin_user_contact_email, name: @admin_user_name, saml_identifier: @saml_identifier).tap do |user|
-        user.groups << tenant.admin_group
-        user.groups << tenant.groups.find_by(type: "SignerGroup")
-        user.save!
+      user = tenant.users.find_or_create_by!(contact_email: @admin_user_contact_email, name: @admin_user_name, saml_identifier: @saml_identifier).tap do |tenant_user|
+        tenant_user.groups << tenant.admin_group
+        tenant_user.groups << tenant.groups.find_by(type: "SignerGroup")
+        tenant_user.save!
       end
 
       tenant.feature_flags = %w[fs_api fs_sync]
