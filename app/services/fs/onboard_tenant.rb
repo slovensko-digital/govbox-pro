@@ -18,15 +18,18 @@ class Fs::OnboardTenant
       tenant = Tenant.find_or_create_by!(name: @tenant_name)
 
       user = tenant.users.find_or_create_by!(contact_email: @admin_user_contact_email, name: @admin_user_name, saml_identifier: @saml_identifier).tap do |tenant_user|
-        tenant_user.groups << tenant.admin_group
-        tenant_user.groups << tenant.groups.find_by(type: "SignerGroup")
+        tenant_user.groups << tenant.admin_group unless tenant_user.groups.include?(tenant.admin_group)
+
+        signer_group = tenant.groups.find_by(type: "SignerGroup")
+        tenant_user.groups << signer_group unless tenant_user.groups.include?(signer_group)
+
         tenant_user.save!
       end
 
       tenant.feature_flags = %w[fs_api fs_sync]
       tenant.save!
 
-      Fs::ApiConnection.create!(tenant: tenant, sub: @fs_api_sub, api_token_private_key: @fs_api_private_key, owner: user)
+      Fs::ApiConnection.find_or_create_by!(tenant: tenant, sub: @fs_api_sub, api_token_private_key: @fs_api_private_key, owner: user)
 
       setup_automation_rules(tenant, user)
 
