@@ -31,6 +31,16 @@ module GovboxPro
     config.active_record.encryption.deterministic_key = ENV['ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY']
     config.active_record.encryption.key_derivation_salt = ENV['ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT']
 
+    previous_primary_key = ENV['ACTIVE_RECORD_ENCRYPTION_PREVIOUS_PRIMARY_KEY']
+    if previous_primary_key.present?
+      config.active_record.encryption.previous = [{
+        primary_key: previous_primary_key,
+        deterministic_key: ENV.fetch('ACTIVE_RECORD_ENCRYPTION_PREVIOUS_DETERMINISTIC_KEY', ENV['ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY']),
+        key_derivation_salt: ENV.fetch('ACTIVE_RECORD_ENCRYPTION_PREVIOUS_KEY_DERIVATION_SALT', ENV['ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT'])
+      }]
+      config.active_record.encryption.extend_queries = true
+    end
+
     config.active_job.queue_adapter = :good_job
     config.active_job.default_queue_name = :default
     config.action_mailer.deliver_later_queue_name = :asap
