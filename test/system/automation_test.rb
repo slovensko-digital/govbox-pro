@@ -11,14 +11,17 @@ class AutomationTest < ApplicationSystemTestCase
 
   test "admin can create an automation rule" do
     click_link "Vytvoriť pravidlo"
+    assert_text "Krok 1 z 3 – Hlavička pravidla"
 
     fill_in "Názov pravidla", with: "Test rule"
     click_button "Pokračovať"
 
+    assert_text "Krok 2 z 3 – Podmienky pravidla"
     click_button "Pridať podmienku"
     assert_selector "#conditions turbo-frame"
     click_button "Pokračovať"
 
+    assert_text "Krok 3 z 3 – Akcie pravidla"
     click_button "Pridať akciu"
     assert_selector "button[title='Zmazať akciu']"
     click_button "Uložiť zmeny"
@@ -33,10 +36,12 @@ class AutomationTest < ApplicationSystemTestCase
     within("##{dom_id(automation_rules(:one))}") do
       click_link "Upraviť pravidlo"
     end
+    assert_text "Krok 1 z 3 – Hlavička pravidla"
 
     fill_in "Názov pravidla", with: "Changed rule name"
     click_button "Pokračovať"
 
+    assert_text "Krok 2 z 3 – Podmienky pravidla"
     within("##{dom_id(automation_conditions(:one))}") do
       click_button "Zmazať podmienku"
     end
@@ -44,6 +49,7 @@ class AutomationTest < ApplicationSystemTestCase
     click_button "Pridať podmienku"
     click_button "Pokračovať"
 
+    assert_text "Krok 3 z 3 – Akcie pravidla"
     assert_selector "button[title='Zmazať akciu']"
     click_button "Zmazať akciu"
     assert_no_selector "button[title='Zmazať akciu']"
