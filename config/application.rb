@@ -33,10 +33,19 @@ module GovboxPro
 
     previous_primary_key = ENV['ACTIVE_RECORD_ENCRYPTION_PREVIOUS_PRIMARY_KEY']
     if previous_primary_key.present?
+      previous_key_derivation_salt = ENV.fetch(
+        'ACTIVE_RECORD_ENCRYPTION_PREVIOUS_KEY_DERIVATION_SALT',
+        ENV['ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT']
+      )
+      derived_secret = ActiveSupport::KeyGenerator.new(
+        previous_primary_key,
+        hash_digest_class: config.active_record.encryption.hash_digest_class
+      ).generate_key(previous_key_derivation_salt, ActiveRecord::Encryption.cipher.key_length)
+
       config.active_record.encryption.previous = [{
-        primary_key: previous_primary_key,
-        deterministic_key: ENV.fetch('ACTIVE_RECORD_ENCRYPTION_PREVIOUS_DETERMINISTIC_KEY', ENV['ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY']),
-        key_derivation_salt: ENV.fetch('ACTIVE_RECORD_ENCRYPTION_PREVIOUS_KEY_DERIVATION_SALT', ENV['ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT'])
+        key_provider: ActiveRecord::Encryption::KeyProvider.new(
+          ActiveRecord::Encryption::Key.new(derived_secret)
+        )
       }]
       config.active_record.encryption.extend_queries = true
     end
