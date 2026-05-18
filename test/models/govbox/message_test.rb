@@ -97,7 +97,7 @@ class Govbox::MessageTest < ActiveSupport::TestCase
 
     # Significant inbox messages is marked unread
     assert_not egov_document_message.reload.read?
-    assert_not message_thread.messages.reload.where.not(id: egov_document_message.id).where(read: false).exists?
+    assert_equal 0, message_thread.messages.reload.where.not(id: egov_document_message.id).where(read: false).count
   end
 
   test "#create_message_with_thread! should include general agenda subject in message title" do
