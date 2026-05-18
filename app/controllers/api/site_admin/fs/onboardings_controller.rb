@@ -14,6 +14,7 @@ class Api::SiteAdmin::Fs::OnboardingsController < Api::SiteAdminController
   def onboarding_params
     params.require(:onboarding).permit(
       :tenant_name,
+      :ico,
       :admin_user_name,
       :saml_identifier,
       :admin_user_contact_email,

@@ -4,7 +4,9 @@
 #
 #  id                     :bigint           not null, primary key
 #  api_token_public_key   :string
+#  contact_email          :string
 #  feature_flags          :string           default([]), is an Array
+#  ico                    :string(8)
 #  name                   :string           not null
 #  settings               :jsonb            not null
 #  signature_request_mode :string           default("signer_group"), not null

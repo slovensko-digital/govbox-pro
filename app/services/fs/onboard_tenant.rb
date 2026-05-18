@@ -1,11 +1,13 @@
 class Fs::OnboardTenant
   include ActiveModel::API
-  attr_accessor :tenant_name, :admin_user_name, :saml_identifier, :admin_user_contact_email, :fs_api_sub, :fs_api_private_key
+  attr_accessor :tenant_name, :ico, :admin_user_name, :saml_identifier, :admin_user_contact_email, :fs_api_sub, :fs_api_private_key
 
   validates :tenant_name, :saml_identifier, :admin_user_name, :admin_user_contact_email, :fs_api_sub, :fs_api_private_key, presence: true
+  validates :ico, presence: true, length: { is: 8 }
 
   def initialize(params)
     @tenant_name = params[:tenant_name] if params[:tenant_name]
+    @ico = params[:ico] if params[:ico]
     @saml_identifier = params[:saml_identifier] if params[:saml_identifier]
     @admin_user_name = params[:admin_user_name] if params[:admin_user_name]
     @admin_user_contact_email = params[:admin_user_contact_email] if params[:admin_user_contact_email]
@@ -15,9 +17,9 @@ class Fs::OnboardTenant
 
   def call
     Tenant.transaction do
-      tenant = Tenant.find_or_create_by!(name: @tenant_name)
+      tenant = Tenant.find_or_create_by!(name: @tenant_name, contact_email: @admin_user_contact_email, ico: @ico)
 
-      user = tenant.users.find_or_create_by!(contact_email: @admin_user_contact_email, name: @admin_user_name, saml_identifier: @saml_identifier).tap do |tenant_user|
+      user = tenant.users.find_or_create_by!(name: @admin_user_name, saml_identifier: @saml_identifier).tap do |tenant_user|
         tenant_user.groups << tenant.admin_group unless tenant_user.groups.include?(tenant.admin_group)
 
         signer_group = tenant.groups.find_by(type: "SignerGroup")
