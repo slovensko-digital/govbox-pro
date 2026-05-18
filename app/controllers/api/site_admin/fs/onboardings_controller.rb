@@ -3,8 +3,7 @@ class Api::SiteAdmin::Fs::OnboardingsController < Api::SiteAdminController
     onboard = ::Fs::OnboardTenant.new(onboarding_params)
 
     if onboard.valid?
-      onboard.call
-      head :created
+      @tenant = onboard.call
     else
       render status: :bad_request, json: { message: onboard.errors.first.full_message }
     end

@@ -316,6 +316,12 @@ Rails.application.routes.draw do
     post 'auth/identity/failure', to: 'sessions#failure'
   end
 
+  if Rails.env.development?
+    namespace :dev do
+      get 'mock_saml_callback', to: 'mock#saml_callback'
+    end
+  end
+
   get "/service-worker.js" => "service_worker#service_worker"
   get "/manifest.json" => "service_worker#manifest"
 
