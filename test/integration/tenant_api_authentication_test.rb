@@ -34,4 +34,10 @@ class TenantApiAuthenticationTest < ActionDispatch::IntegrationTest
 
     assert_response :unauthorized
   end
+
+  test "returns 401 if exp verification failed" do
+    get "/api/messages/sync", params: { token: generate_api_token(sub: @tenant.id.to_s, key_pair: @key_pair, exp: (Time.now + 5.minutes + 2.seconds).to_i) }, as: :json
+
+    assert_response :unauthorized
+  end
 end

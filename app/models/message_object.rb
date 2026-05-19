@@ -4,6 +4,7 @@
 #
 #  id           :bigint           not null, primary key
 #  description  :string
+#  identifier   :string
 #  is_signed    :boolean
 #  mimetype     :string
 #  name         :string
@@ -128,9 +129,15 @@ class MessageObject < ApplicationRecord
     Utils::ASICE_MIMETYPES.include?(mimetype)
   end
 
+  def signable?
+    return true if form?
+
+    message.attachments_signable?
+  end
+
   def destroyable?
     # TODO: avoid loading message association if we have
-    message.draft? && message.not_yet_submitted? && !form?
+    message.draft? && message.attachments_editable? && !form
   end
 
   def archived?
@@ -145,8 +152,13 @@ class MessageObject < ApplicationRecord
     message_objects_tags.find_or_create_by!(tag: tag)
   end
 
+  def unassign_tag(tag)
+    message_objects_tags.find_by(tag: tag)&.destroy
+  end
+
   def fill_missing_info
     update(uuid: SecureRandom.uuid) unless uuid.present?
+    update(name: Utils.filename_with_lowercase_extension(name)) if name.present?
     update(name: name + Utils.file_extension_by_mimetype(mimetype).to_s) if Utils.file_name_without_extension?(self)
     update(mimetype: Utils.file_mimetype_by_name(entry_name: name)) if mimetype == Utils::OCTET_STREAM_MIMETYPE
   end
@@ -166,19 +178,18 @@ class MessageObject < ApplicationRecord
   private
 
   def allowed_mimetype?
-    if mimetype
-      errors.add(:mimetype, "MimeType of #{name} object is disallowed, allowed mimetypes: #{Utils::MIMETYPES_ALLOW_LIST.join(", ")}") unless Utils::MIMETYPES_ALLOW_LIST.include?(mimetype)
+    if !form? && message.form.respond_to?(:attachments) && message.form.attachments.any?
+      # TODO remove UPVS, FS stuff from core domain
+      form_attachments = message.form&.attachments.joins(:group).where("fs_form_attachment_groups.mime_types @> ARRAY[?]::text[]", mimetype).all
+      mimetypes = message.form&.attachments.joins(:group).flat_map { |attachment| attachment.group.mime_types }.uniq
+      errors.add(:mimetype, I18n.t('errors.attachments.disallowed_mimetype', name: name, mimetypes: mimetypes)) unless form_attachments.present?
     else
-      errors.add(:mimetype, "MimeType of #{name} object is disallowed, allowed file types: #{Utils::EXTENSIONS_ALLOW_LIST.join(", ")}")
+      errors.add(:mimetype, I18n.t('errors.attachments.disallowed_mimetype', name: name, mimetypes: Utils::MIMETYPES_ALLOW_LIST.join(", "))) unless Utils::MIMETYPES_ALLOW_LIST.include?(mimetype)
     end
   end
 
   def has_tag?(tag)
     message_objects_tags.joins(:tag).where(tag: tag).exists?
-  end
-
-  def unassign_tag(tag)
-    message_objects_tags.find_by(tag: tag)&.destroy
   end
 
   def remove_object_related_tags_from_thread

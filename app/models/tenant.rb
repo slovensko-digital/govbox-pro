@@ -2,15 +2,20 @@
 #
 # Table name: tenants
 #
-#  id                   :bigint           not null, primary key
-#  api_token_public_key :string
-#  feature_flags        :string           default([]), is an Array
-#  name                 :string           not null
-#  settings             :jsonb            not null
-#  created_at           :datetime         not null
-#  updated_at           :datetime         not null
+#  id                     :bigint           not null, primary key
+#  api_token_public_key   :string
+#  feature_flags          :string           default([]), is an Array
+#  name                   :string           not null
+#  settings               :jsonb            not null
+#  signature_request_mode :string           default("signer_group"), not null
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
 #
 class Tenant < ApplicationRecord
+  has_many :boxes, dependent: :destroy
+  has_many :api_connections, dependent: :destroy
+  has_many :automation_rules, class_name: "Automation::Rule", dependent: :destroy
+
   has_many :users, dependent: :destroy
 
   has_one :all_group
@@ -19,6 +24,8 @@ class Tenant < ApplicationRecord
   has_many :groups, dependent: :destroy
   has_many :custom_groups
 
+  has_many :message_templates, dependent: :destroy
+
   has_one :draft_tag, -> { where(owner_id: nil) }
   has_one :everything_tag
   has_one :inbox_tag
@@ -26,17 +33,17 @@ class Tenant < ApplicationRecord
   has_one :signed_tag
   has_one :signed_externally_tag
   has_one :archived_tag
+  has_one :problem_tag
   has_one :submitted_tag
   has_one :submission_error_tag
   has_one :unprocessable_tag
+  has_one :validation_warning_tag
+  has_one :validation_error_tag
   has_many :tags, dependent: :destroy
   has_many :signature_requested_from_tags
   has_many :signed_by_tags
   has_many :simple_tags
 
-  has_many :boxes, dependent: :destroy
-  has_many :api_connections, dependent: :destroy
-  has_many :automation_rules, class_name: "Automation::Rule", dependent: :destroy
   has_many :filters
   has_many :filter_subscriptions
   has_many :automation_webhooks, class_name: "Automation::Webhook", dependent: :destroy
@@ -46,11 +53,14 @@ class Tenant < ApplicationRecord
   after_create :create_default_objects
 
   validates_presence_of :name
+  validate :validate_api_token_public_key_format, unless: -> { api_token_public_key.nil? }
 
-  AVAILABLE_FEATURE_FLAGS = [:audit_log, :archive, :api, :fs_sync]
-  ALL_FEATURE_FLAGS = [:audit_log, :archive, :api, :message_draft_import, :fs_api, :fs_sync, :autogram_portal]
+  ALL_FEATURE_FLAGS = [:audit_log, :archive, :api, :message_draft_import, :fs_api, :fs_sync, :upvs, :autogram_portal]
 
   PDF_SIGNATURE_FORMATS = %w[PAdES XAdES CAdES]
+  SIGNATURE_REQUEST_MODES = %w[signer_group author].freeze
+
+  validates :signature_request_mode, inclusion: { in: SIGNATURE_REQUEST_MODES }
 
   def agp_sub
     # TODO
@@ -102,22 +112,26 @@ class Tenant < ApplicationRecord
     submission_error_tag || raise(ActiveRecord::RecordNotFound, "`SubmissionErrorTag` not found in tenant: #{id}")
   end
 
+  def problem_tag!
+    problem_tag || raise(ActiveRecord::RecordNotFound, "`ProblemTag` not found in tenant: #{id}")
+  end
+
   def feature_enabled?(feature)
     raise "Unknown feature #{feature}" unless feature.in? ALL_FEATURE_FLAGS
 
     feature.to_s.in? feature_flags
   end
 
-  def enable_feature(feature)
-    raise "Unknown feature #{feature}" unless feature.in? AVAILABLE_FEATURE_FLAGS
+  def enable_feature(feature, force: false)
+    raise "Unknown feature #{feature}" if !force && !(feature.in? list_available_features)
     raise "Feature already enabled" if feature.to_s.in? feature_flags
 
     feature_flags << feature
     save!
   end
 
-  def disable_feature(feature)
-    raise "Unknown feature #{feature}" unless feature.in? AVAILABLE_FEATURE_FLAGS
+  def disable_feature(feature, force: false)
+    raise "Unknown feature #{feature}" if !force && !(feature.in? list_available_features)
     raise "Feature not enabled" unless feature.to_s.in? feature_flags
 
     feature_flags.delete_if { |f| f == feature.to_s }
@@ -125,7 +139,13 @@ class Tenant < ApplicationRecord
   end
 
   def list_available_features
-    AVAILABLE_FEATURE_FLAGS
+    env_flags = ENV.fetch("TENANT_AVAILABLE_FEATURE_FLAGS", nil)
+    return [] if env_flags.blank?
+
+    parsed_flags = env_flags.split(",").map(&:strip).map(&:to_sym)
+    invalid_flags = parsed_flags - ALL_FEATURE_FLAGS
+    Rails.logger.warn("Unknown feature flags configured: #{invalid_flags.join(", ")}") if invalid_flags.any?
+    parsed_flags & ALL_FEATURE_FLAGS
   end
 
   def list_all_features
@@ -158,10 +178,25 @@ class Tenant < ApplicationRecord
     create_signed_tag!(name: "Podpísané", visible: true, color: "green", icon: "fingerprint")
     signer_group.create_signature_requested_tag!
     create_signed_externally_tag!(name: "Externe podpísané", visible: false, color: "purple", icon: "shield-check")
+    create_problem_tag!(name: 'Problémové')
     create_submitted_tag!(name: 'Odoslané na spracovanie')
-    create_submission_error_tag!(name: 'Problémové')
+    create_submission_error_tag!(name: 'Chyba pri odoslaní')
     create_unprocessable_tag!(name: 'Chybné', color: 'red', icon: 'exclamation-triangle')
+    create_validation_error_tag!(name: "Chybné údaje", color: 'red', icon: "exclamation-triangle")
+    create_validation_warning_tag!(name: "Upozornenia", color: "orange", icon: "exclamation-triangle")
 
     make_admins_see_everything!
+  end
+
+  def validate_api_token_public_key_format
+    key = OpenSSL::PKey::RSA.new(api_token_public_key)
+
+    if key.private?
+      errors.add(:api_token_public_key, :public_key_is_private)
+    elsif key.n.num_bits != 2048
+      errors.add(:api_token_public_key, :public_key_invalid_bits, current_bits: key.n.num_bits)
+    end
+  rescue OpenSSL::PKey::RSAError, TypeError
+    errors.add(:api_token_public_key, :public_key_invalid_format)
   end
 end

@@ -3,6 +3,8 @@ class ApiController < ActionController::API
   before_action :authenticate_user
   around_action :wrap_in_request_logger
 
+  rescue_from Exception, with: :render_internal_server_error
+
   rescue_from JWT::DecodeError do |error|
     if error.message == 'Nil JSON web token'
       render_bad_request(RuntimeError.new(:no_credentials))
@@ -10,12 +12,10 @@ class ApiController < ActionController::API
       render_unauthorized(error.message)
     end
   end
-
-  rescue_from Exception, with: :render_internal_server_error
   rescue_from RestClient::Exceptions::Timeout, with: :render_request_timeout
   rescue_from ActiveRecord::RecordNotFound, with: :render_not_found
   rescue_from ActionController::ParameterMissing, with: :render_bad_request
-  rescue_from ArgumentError, with: :render_unprocessable_entity
+  rescue_from ArgumentError, with: :render_unprocessable_content
 
   private
 
@@ -41,8 +41,8 @@ class ApiController < ActionController::API
     )
   end
 
-  def use_en_locale(&action)
-    I18n.with_locale(:en, &action)
+  def use_en_locale(&)
+    I18n.with_locale(:en, &)
   end
 
   def wrap_in_request_logger
@@ -64,7 +64,7 @@ class ApiController < ActionController::API
   end
 
   def render_unpermitted_param(**_options)
-    render status: :unprocessable_entity, json: { message: "Unprocessable entity" }
+    render status: :unprocessable_content, json: { message: "Unprocessable entity" }
   end
 
   def render_forbidden_no_key
@@ -99,7 +99,7 @@ class ApiController < ActionController::API
     render status: :conflict, json: { message: message }
   end
 
-  def render_unprocessable_entity(message)
-    render status: :unprocessable_entity, json: { message: message }
+  def render_unprocessable_content(message)
+    render status: :unprocessable_content, json: { message: message }
   end
 end

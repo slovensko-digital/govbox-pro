@@ -169,6 +169,9 @@ class Fs::MessageDraftsTest < ApplicationSystemTestCase
   test "user can upload message draft only if any FS box exists & :fs_api feature is enabled" do
     sign_in_as(:basic)
 
+    tenant = users(:basic).tenant
+    tenant.enable_feature(:upvs, force: true)
+
     visit message_threads_path
 
     click_button "Vytvoriť novú správu"
@@ -195,6 +198,59 @@ class Fs::MessageDraftsTest < ApplicationSystemTestCase
       click_button "Nahrať správy"
 
       assert_text "Chyba pri spracovaní"
+    end
+  end
+
+  test "shows detailed error message when submit failed with signer error" do
+    message_draft = messages(:fs_accountants_draft_uzmujv14_with_attachment)
+    message_draft.update!(
+      metadata: message_draft.metadata.merge({
+                                               status: "submit_fail",
+                                               submit_error_message: "Podpisujúci nemá oprávnenie na odoslanie správy."
+                                             })
+    )
+
+    visit message_thread_path(message_draft.thread)
+
+    within_message_in_thread(message_draft) do
+      assert_text "Správu sa nepodarilo odoslať"
+      assert_text "Chyba pri odoslaní"
+      assert_text "Podpisujúci nemá oprávnenie na odoslanie správy."
+    end
+  end
+
+  test "shows detailed error message when submit failed with multiple signatures error" do
+    message_draft = messages(:fs_accountants_draft_uzmujv14_with_attachment)
+    message_draft.update!(
+      metadata: message_draft.metadata.merge({
+                                               status: "submit_fail",
+                                               submit_error_message: "Správa má viacero podpisov. Nie je možné vybrať API prepojenie."
+                                             })
+    )
+
+    visit message_thread_path(message_draft.thread)
+
+    within_message_in_thread(message_draft) do
+      assert_text "Správu sa nepodarilo odoslať"
+      assert_text "Chyba pri odoslaní"
+      assert_text "Správa má viacero podpisov. Nie je možné vybrať API prepojenie."
+    end
+  end
+
+  test "shows only basic error when submit failed without error message" do
+    message_draft = messages(:fs_accountants_draft_uzmujv14_with_attachment)
+    message_draft.update!(
+      metadata: message_draft.metadata.merge({
+                                               status: "submit_fail",
+                                               submit_error_message: nil
+                                             })
+    )
+
+    visit message_thread_path(message_draft.thread)
+
+    within_message_in_thread(message_draft) do
+      assert_text "Správu sa nepodarilo odoslať"
+      assert_no_text "Chyba pri odoslaní"
     end
   end
 end

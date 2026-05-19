@@ -6,6 +6,8 @@ require_relative "../config/environment"
 require "rails/test_help"
 require "minitest/mock"
 
+require "helpers/tenant_helper"
+
 Rails.application.eager_load! # see https://github.com/simplecov-ruby/simplecov?tab=readme-ov-file#want-to-use-spring-with-simplecov
 
 class ActiveSupport::TestCase
@@ -16,6 +18,7 @@ class ActiveSupport::TestCase
   fixtures :all
 
   # Add more helper methods to be used by all tests here...
+  include TenantHelper
 end
 
 def generate_api_token(sub: 'site_admin', exp: 5.minutes.since(Time.now).to_i, jti: SecureRandom.uuid, key_pair: default_key_pair, **payload)

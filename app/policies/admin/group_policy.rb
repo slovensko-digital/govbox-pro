@@ -36,6 +36,10 @@ class Admin::GroupPolicy < ApplicationPolicy
     @user.admin?
   end
 
+  def update_all_boxes_permission?
+    @user.admin?
+  end
+
   def edit?
     update?
   end
@@ -62,7 +66,7 @@ class Admin::GroupPolicy < ApplicationPolicy
     @user.admin?
   end
 
-  def search_non_tags?
+  def search_boxes_and_tags?
     @user.admin?
   end
 end

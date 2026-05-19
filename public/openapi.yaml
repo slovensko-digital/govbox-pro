@@ -12,9 +12,9 @@ info:
     email: podpora@slovensko.digital
 
 servers:
-  - description: Server Govbox PRO v PROD prostredí
+  - description: Server GovBox PRO v PROD prostredí
     url: https://pro.govbox.sk
-  - description: Server Govbox PRO v Staging prostredí
+  - description: Server GovBox PRO v Staging prostredí
     url: https://govbox-pro.staging.slovensko.digital
   - description: Lokálne vývojové prostredie
     url: http://localhost:3000
@@ -112,6 +112,168 @@ paths:
       security:
         - "Tenant_Token": []
 
+  /api/users:
+    get:
+      tags: [Používatelia]
+      summary: Vráti zoznam používateľov tenanta
+      description: |
+        Vráti zoznam používateľov pre daného tenanta.
+      responses:
+        200:
+          description: Úspešné získanie zoznamu používateľov
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      description: Identifikátor používateľa v systéme GovBox Pro
+                      type: integer
+                    name:
+                      description: Meno používateľa
+                      type: string
+      security:
+        - "Tenant_Token": []
+
+  /api/boxes:
+    get:
+      tags: [Schránky]
+      summary: Vráti zoznam schránok tenanta
+      description: |
+        Vráti zoznam schránok dostupných pre daný tenant vrátane údajov potrebných na identifikáciu schránky.
+        Hodí sa napríklad pre overovanie, či už bola udelená autorizácia na zastupovanie konkrétnej schránky.
+      responses:
+        200:
+          description: Úspešné získanie zoznamu schránok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      description: Identifikátor schránky v systéme GovBox Pro
+                      type: integer
+                    name:
+                      description: Názov schránky
+                      type: string
+                    short_name:
+                      description: Skrátený názov schránky používaný v rozhraní
+                      type: string
+                    export_name:
+                      description: Názov schránky určený na exporty a zobrazovanie
+                      type: string
+                    uri:
+                      description: URI schránky
+                      type: string
+                    type:
+                      description: Typ schránky, napr. Upvs::Box alebo Fs::Box
+                      type: string
+                    obo:
+                      description: OBO identifikátor schránky ak je k dispozícii
+                      type: string
+                      nullable: true
+                    dic:
+                      description: DIČ schránky ak je k dispozícii
+                      type: string
+                      nullable: true
+                    active:
+                      description: Indikuje, či je možné schránku používať (napr. platná autorizácia na zastupovanie)
+                      type: boolean
+                    api_connections:
+                        description: Zoznam API prepojení, cez ktoré je možné ku schránke pristupovať
+                        type: array
+                        items:
+                            type: object
+                            properties:
+                            id:
+                                description: Identifikátor API prepojenia v systéme GovBox Pro
+                                type: integer
+                            custom_name:
+                                description: Vlastný názov prepojenia, pokiaľ je nastavený
+                                type: string
+                                nullable: true
+                            owner_id:
+                                description: Identifikátor používateľa, ktorému prislúcha API prepojenie
+                                type: integer
+                                nullable: true
+      security:
+        - "Tenant_Token": []
+
+  /api/fs/api_connections:
+    get:
+      tags: [FS API Prepojenia]
+      summary: Vráti zoznam FS API prepojení tenanta
+      description: |
+        Vráti zoznam prístupných FS API prepojení pre daného tenanta.
+      responses:
+        200:
+          description: Úspešné získanie zoznamu FS API prepojení
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      description: Identifikátor API prepojenia v systéme GovBox Pro
+                      type: integer
+                    custom_name:
+                      description: Vlastný názov prepojenia
+                      type: string
+                      nullable: true
+                    owner_id:
+                      description: Identifikátor používateľa, ktorému prislúcha API prepojenie
+                      type: integer
+                      nullable: true
+                    created_at:
+                      description: Dátum a čas vytvorenia
+                      type: string
+                      format: date-time
+                    updated_at:
+                      description: Dátum a čas poslednej úpravy
+                      type: string
+                      format: date-time
+      security:
+        - "Tenant_Token": []
+
+  /api/fs/api_connections/{id}/boxify:
+    post:
+      tags: [FS API Prepojenia]
+      summary: Spustí synchronizáciu schránok z Finančnej správy
+      description: |
+        Okamžite vyvolá synchronizáciu (stiahnutie) zoznamu zastupovaných subjektov z Finančnej správy pre vybrané FS API prepojenie. Z nových zistených subjektov sa automaticky založia nové schránky v systéme.
+      parameters:
+        - name: id
+          in: path
+          description: Identifikátor FS API prepojenia
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: Úspešné vykonanie synchronizácie
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    description: Identifikátor API prepojenia, pre ktoré prebehol sync
+                    type: integer
+                  new_boxes_count:
+                    description: Počet novo založených schránok z tejto synchronizácie
+                    type: integer
+        404:
+          description: API prepojenie s daným ID neexistuje, prípadne nejde o prepojenie Finančnej správy (FS)
+      security:
+        - "Tenant_Token": []
+
   /api/messages/{id}:
     get:
       tags: [Správy]
@@ -135,7 +297,7 @@ paths:
                 type: object
                 properties:
                   id:
-                    description: Identifikátor správy v systéme Govbox Pro
+                    description: Identifikátor správy v systéme GovBox Pro
                     type: integer
                   thread_id:
                     description: Identifikátor vlákna, ktorému prislúcha správa
@@ -184,7 +346,7 @@ paths:
                       type: object
                       properties:
                         id:
-                          description: Identifikátor objektu v systéme Govbox Pro
+                          description: Identifikátor objektu v systéme GovBox Pro
                           type: integer
                         name:
                           description: Názov objektu
@@ -230,6 +392,36 @@ paths:
       security:
         - "Tenant_Token": []
 
+  /api/messages/{id}/authorize_delivery_notification:
+    post:
+      tags: [Správy]
+      summary: Autorizuje doručenku v schránke
+      description: |
+        Autorizuje doručenku v schránke.
+      parameters:
+        - name: id
+          in: path
+          description: Identifikátor správy
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        201:
+          description: Úspešne autorizovaná doručenka v schránke
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  thread_id:
+                    description: Identifikátor vlákna, v ktorom sa objaví nová správa.
+                    type: integer
+        422:
+          description: "Správu nie je možné prevziať. Možné dôvody: Správa je už doručená, správa sa aktuálne preberá, lehota na prebratie vypršala, správa nepodporuje autorizáciu."
+      security:
+        - "Tenant_Token": []
+
   /api/messages/search:
     get:
       tags: [Správy]
@@ -253,7 +445,7 @@ paths:
                 type: object
                 properties:
                   id:
-                    description: Identifikátor správy v systéme Govbox Pro
+                    description: Identifikátor správy v systéme GovBox Pro
                     type: integer
                   thread_id:
                     description: Identifikátor vlákna, ktorému prislúcha správa
@@ -303,7 +495,7 @@ paths:
                       type: object
                       properties:
                         id:
-                          description: Identifikátor objektu v systéme Govbox Pro
+                          description: Identifikátor objektu v systéme GovBox Pro
                           type: integer
                         name:
                           description: Názov objektu
@@ -354,7 +546,7 @@ paths:
                 type: object
                 properties:
                   id:
-                    description: Identifikátor správy v systéme Govbox Pro
+                    description: Identifikátor správy v systéme GovBox Pro
                     type: integer
                   thread_id:
                     description: Identifikátor vlákna, ktorému prislúcha správa
@@ -377,7 +569,7 @@ paths:
           schema:
             type: integer
       responses:
-        204:
+        200:
           description: Úspešne vrátený zoznam správ
           content:
             application/json:
@@ -387,7 +579,7 @@ paths:
                   type: object
                   properties:
                     id:
-                      description: Identifikátor správy v systéme Govbox Pro
+                      description: Identifikátor správy v systéme GovBox Pro
                       type: integer
                     thread_id:
                       description: Identifikátor vlákna, ktorému prislúcha správa
@@ -437,7 +629,7 @@ paths:
                         type: object
                         properties:
                           id:
-                            description: Identifikátor objektu v systéme Govbox Pro
+                            description: Identifikátor objektu v systéme GovBox Pro
                             type: integer
                           name:
                             description: Názov objektu
@@ -485,7 +677,7 @@ paths:
       security:
         - "Tenant_Token": [ ]
 
-  /api/site_admin/tenant/:
+  /api/site_admin/tenants:
     post:
       tags: [Správa tenantov (Administrácia)]
       summary: Založí nového tenanta v systéme
@@ -497,25 +689,30 @@ paths:
             schema:
               type: object
               properties:
-                name:
-                  description: Názov nového tenanta, typicky názov spoločnosti
-                  type: string
-                admin:
+                tenant:
                   type: object
                   properties:
                     name:
-                      description: Meno administrátora pre daného tenanta
+                      description: Názov nového tenanta, typicky názov spoločnosti
                       type: string
-                    email:
-                      description: email administrátora, bude použitý na OAuth2 autentifikáciu
-                      type: string
+                    admin:
+                      type: object
+                      properties:
+                        name:
+                          description: Meno administrátora pre daného tenanta
+                          type: string
+                        email:
+                          description: email administrátora, bude použitý na OAuth2 autentifikáciu
+                          type: string
+                      required:
+                        - name
                   required:
                     - name
+                    - admin
               required:
-                - name
-                - admin
+                - tenant
       responses:
-        200:
+        201:
           description: Úspešne založený tenant v systéme
           content:
             application/json:
@@ -556,6 +753,9 @@ paths:
                   description: URI schránky na slovensko.sk
                   type: string
                   example: "ico://12345678/"
+                export_name:
+                  description: Názov schránky určený na exporty a zobrazovanie
+                  type: string
                 short_name:
                   description: Skrátený názov pre odlíšenie vlákien/správ z rôznych schránok v používateľskom rozhraní. Odporúčame maximálne 3 znaky
                   type: string
@@ -594,7 +794,7 @@ paths:
                       type: string
                 api_connection_id:
                   type: integer
-                  description: V prípade použitia spoločného prístupu k schránke identifikátor pripojenia v systéme Govbox Pro
+                  description: V prípade použitia spoločného prístupu k schránke identifikátor pripojenia v systéme GovBox Pro
                 api_connection:
                   type: object
                   description: Parametre pripojenia na ÚPVS
@@ -611,7 +811,7 @@ paths:
                 - short_name
                 - color
       responses:
-        200:
+        201:
           description: Úspešne založená schránka v systéme
           content:
             application/json:
@@ -619,12 +819,12 @@ paths:
                 type: object
                 properties:
                   id:
-                    description: Identifikátor založenej schránky v systéme Govbox Pro
+                    description: Identifikátor založenej schránky v systéme GovBox Pro
                     type: integer
       security:
         - "Site_Admin_Token": []
 
-  /api/site_admin/tenant/{id}/fs/boxes:
+  /api/site_admin/tenants/{id}/fs/boxes:
     post:
       tags: [Správa tenantov (Administrácia)]
       summary: Založí novú FS schránku v rámci tenanta
@@ -699,7 +899,7 @@ paths:
                       type: string
                 api_connection_id:
                   type: integer
-                  description: V prípade použitia spoločného prístupu k schránke identifikátor pripojenia v systéme Govbox Pro
+                  description: V prípade použitia spoločného prístupu k schránke identifikátor pripojenia v systéme GovBox Pro
                 api_connection:
                   type: object
                   description: Parametre pripojenia na FS
@@ -726,7 +926,7 @@ paths:
                 - short_name
                 - color
       responses:
-        200:
+        201:
           description: Úspešne založená schránka v systéme
           content:
             application/json:
@@ -734,7 +934,7 @@ paths:
                 type: object
                 properties:
                   id:
-                    description: Identifikátor založenej schránky v systéme Govbox Pro
+                    description: Identifikátor založenej schránky v systéme GovBox Pro
                     type: integer
       security:
         - "Site_Admin_Token": []
@@ -759,7 +959,7 @@ paths:
       security:
         - "Site_Admin_Token": []
 
-  /api/site_admin/stats/tenants/{id}/user_count:
+  /api/site_admin/stats/tenants/{id}/users_count:
     get:
       tags: [Štatistiky]
       summary: Vráti počet používateľov v rámci tenanta
@@ -1040,7 +1240,7 @@ components:
               description: Príloha 1
               is_signed: true
               mimetype: application/vnd.etsi.asic-e+zip
-              form: false
+              object_type: ATTACHMENT
               content: base64 asice content
         tags:
           description: Štítky, ktorými majú byť správy označené
@@ -1084,6 +1284,10 @@ components:
           items:
             type: object
             properties:
+              identifier:
+                description: FS Identifikátor typu prílohy
+                type: string
+                nullable: true
               name:
                 description: Názov objektu
                 type: string
@@ -1106,7 +1310,7 @@ components:
               object_type:
                 description: Typ objektu
                 type: string
-                enum: [ 'FORM' ]
+                enum: [ 'FORM', 'ATTACHMENT' ]
               content:
                 description: Obsah objektu zakódovaný podľa Base64
                 type: string
@@ -1121,12 +1325,18 @@ components:
               - object_type
               - content
           example:
-            - name: svdph20.xml
-              description: Súhrnný výkaz pre daň z pridanej hodnoty (platný od 1.1.2020)
+            - name: uctovna_zavierka.xml
+              description: Účtovná závierka mikro účtovnej jednotky - ver.3
               is_signed: false
               mimetype: text/xml
               object_type: FORM
               content: base64 XML content
+            - name: priloha1.pdf
+              description: Príloha 1
+              is_signed: false
+              mimetype: application/pdf
+              object_type: ATTACHMENT
+              content: base64 PDF content
         tags:
           description: Štítky, ktorými majú byť správy označené
           type: array
@@ -1136,7 +1346,6 @@ components:
         - type
         - uuid
         - title
-        - correlation_id
         - metadata
         - objects
 

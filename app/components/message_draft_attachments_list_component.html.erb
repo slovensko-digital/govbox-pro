@@ -1,5 +1,5 @@
 <div id="<%= dom_id(@message, :attachments) %>" is="turbo-frame" class="border-b-0 w-full">
-  <% if @message.attachments_allowed? && (@message.not_yet_submitted? || @attachments.present?) %>
+  <% if @message.attachments_editable? || @attachments.present? %>
     <div class="justify-stretch items-center self-stretch flex-grow-0 flex-shrink-0 gap-3 px-6 py-4 border-b">
       <div class="flex justify-between items-center gap-4 overflow-clip">
         <div class="flex justify-start items-center gap-4 overflow-clip">
@@ -8,17 +8,17 @@
             <p class="flex-grow-0 flex-shrink-0 text-base text-left text-gray-900">
               <% if @attachments.present? %>
                 Správa obsahuje <b><%= t("message_object", count: @attachments.length) %></b>
-              <% elsif @message.not_yet_submitted? %>
+              <% elsif @message.attachments_editable? %>
                 <b>Pridať prílohu</b>
               <% end %>
             </p>
           </div>
 
-          <% if @message.not_yet_submitted? %>
+          <% if @message.attachments_editable? %>
             <%
               attachments_form_id = "#{dom_id(@message, :attachments)}_form"
             %>
-            <%= form_tag message_message_objects_path(@message), id: attachments_form_id, method: :post, multipart: true do %>
+            <%= form_tag message_message_objects_path(@message), id: attachments_form_id, method: :post, multipart: true, "data-turbo": false do %>
               <%= content_tag(:div,
                 {
                   "data-controller": "message-drafts",

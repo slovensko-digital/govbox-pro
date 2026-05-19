@@ -26,7 +26,7 @@ class MessageObjectPolicy < ApplicationPolicy
   end
 
   def update?
-    show?
+    @message_object.signable?
   end
 
   def download?

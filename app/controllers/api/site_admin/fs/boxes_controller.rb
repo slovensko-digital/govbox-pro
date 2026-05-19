@@ -3,6 +3,8 @@ class Api::SiteAdmin::Fs::BoxesController < Api::SiteAdminController
     Box.transaction do
       @box = Fs::Box.create_with_api_connection!(box_params)
     end
+
+    render status: :created
   end
 
   private

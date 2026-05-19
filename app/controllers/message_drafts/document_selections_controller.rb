@@ -33,16 +33,16 @@ module MessageDrafts
           if @message_draft.valid?(:validate_data)
             redirect_to case @next_step
                         when "sign"
-                          new_message_draft_signing_path(@message_draft, object_ids: @message_draft.objects.map(&:id))
+                          new_message_draft_signing_path(@message_draft, object_ids: @message_draft.signable_objects.map(&:id))
                         when "sign-agp"
-                          new_agp_bundle_path(message_draft_id: @message_draft.id, object_ids: @message_draft.objects.map(&:id))
+                          new_agp_bundle_path(message_draft_id: @message_draft.id, object_ids: @message_draft.signable_objects.map(&:id))
                         end
           else
             @message = @message_draft
             render template: 'message_drafts/update_body' and return
           end
         else
-          redirect_to edit_message_draft_signature_requests_path(@message_draft, object_ids: @message_draft.objects.map(&:id))
+          redirect_to edit_message_draft_signature_requests_path(@message_draft, object_ids: @message_draft.signable_objects.map(&:id))
         end
       end
     end
@@ -50,7 +50,7 @@ module MessageDrafts
     def select_message_objects(message_draft, next_step, current_ids)
       return current_ids if current_ids.present? || action_name != "new"
 
-      all_ids = message_draft.objects.pluck(:id).map(&:to_s)
+      all_ids = message_draft.signable_objects.pluck(:id).map(&:to_s)
       requested_ids = select_requested_object_ids(message_draft).map(&:to_s)
 
       if next_step.in?(["sign", "sign-agp"]) && Current.user.signer? && requested_ids.present?

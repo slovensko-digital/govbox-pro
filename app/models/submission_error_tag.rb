@@ -23,4 +23,8 @@ class SubmissionErrorTag < Tag
   def gives_access?
     false
   end
+
+  def error?
+    true
+  end
 end

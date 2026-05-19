@@ -5,7 +5,7 @@
           Open user menu
         </span>
 		    <div class="relative h-8 w-8">
-			    <img class="h-8 w-8 rounded-full bg-gray-50" alt="Avatar" src="<%= session[:user_profile_picture_url] %>">
+			    <img class="h-8 w-8 rounded-full bg-gray-50" alt="Avatar" src="<%= helpers.user_avatar_src(Current.user, sso_picture_url: session[:user_profile_picture_url]) %>">
 			    <div id="permanent_badge_wrapper" data-turbo-permanent>
 				    <turbo-frame id="notification_badge">
 					    <%= render "notifications/badge", user: Current.user %>

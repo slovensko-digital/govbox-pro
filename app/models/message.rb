@@ -92,7 +92,7 @@ class Message < ApplicationRecord
     html_visualization.present? || (form_object && form_object.nested_message_objects.count > 1)
   end
 
-  def can_be_authorized?
+  def authorizable_delivery_notification?
     metadata["delivery_notification"] && !metadata["authorized"] && Time.parse(metadata.dig("delivery_notification", "delivery_period_end_at")) > Time.now
   end
 
@@ -151,7 +151,7 @@ class Message < ApplicationRecord
       message_draft_object.tags.signed.each { |tag| message_object.assign_tag(tag) }
     end
 
-    (message_draft.tags.simple + message_draft.tags.signed).each { |tag| assign_tag(tag) }
+    (message_draft.tags.simple + message_draft.tags.author + message_draft.tags.signed).each { |tag| assign_tag(tag) }
   end
 
   def export_summary
@@ -162,8 +162,14 @@ class Message < ApplicationRecord
       title: title,
       box: box.official_name,
       delivered_at: delivered_at,
-      tags: thread.tags.map(&:name)
-    }.merge!(metadata.slice(*metadata_whitelist))
+      tags: thread.tags.map(&:name),
+      outbox: outbox
+    }.merge!(
+      form&.slug&.match?(/\ADPH/) ? {
+        dph_r33: parse_value_from_form_object('//r33'),
+        dph_r35: parse_value_from_form_object('//r35')
+      }.compact : {}
+    ).merge!(metadata.slice(*metadata_whitelist)).symbolize_keys
   end
 
   def assign_tag(tag)
@@ -176,5 +182,9 @@ class Message < ApplicationRecord
 
   def template
     MessageTemplate.find(metadata.dig("template_id")) if metadata.dig("template_id")
+  end
+
+  def parse_value_from_form_object(xpath)
+    form_object&.xml_unsigned_content&.at_xpath(xpath)&.text
   end
 end

@@ -3,6 +3,5 @@ class Layout::BoxSelectorPopupComponent < ViewComponent::Base
 
   def initialize(boxes)
     @boxes = boxes
-    @next_sync_at = GoodJob::CronEntry.find("sync_boxes").next_at
   end
 end

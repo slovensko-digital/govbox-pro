@@ -81,7 +81,6 @@ class Upvs::MessageDraft < MessageDraft
     validate_uuid_uniqueness
     validate_metadata
     validate_allow_rules
-    validate_form_object
     validate_objects
     validate_with_message_template
   end

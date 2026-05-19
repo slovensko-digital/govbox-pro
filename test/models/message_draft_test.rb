@@ -40,6 +40,27 @@ class MessageDraftTest < ActiveSupport::TestCase
     EventBus.class_variable_get(:@@subscribers_map)[:message_thread_created].pop
   end
 
+  test "automatically assigns author tag on creation" do
+    author = users(:basic)
+    box = boxes(:ssd_main)
+
+    message = MessageDraft.create!(
+      uuid: SecureRandom.uuid,
+      title: 'Author Tag Test',
+      sender_name: 'Sender',
+      recipient_name: 'Recipient',
+      delivered_at: Time.now,
+      thread: box.message_threads.first,
+      read: true,
+      replyable: false,
+      author: author,
+      metadata: { correlation_id: SecureRandom.uuid }
+    )
+
+    assert message.tags.include?(author.author_tag), "Message draft should have author tag"
+    assert message.thread.tags.include?(author.author_tag), "Message thread should have author tag"
+  end
+
   test ".find_api_connection_for_submission finds API connection according to signatures" do
     message_draft = messages(:fs_accountants_draft)
 
@@ -64,7 +85,7 @@ class MessageDraftTest < ActiveSupport::TestCase
     assert_equal user3_api_connection, message_draft.find_api_connection_for_submission
   end
 
-  test ".find_api_connection_for_submission is not affected by signatures if a single API connection present" do
+  test ".find_api_connection_for_submission is not affected by signatures if a single API connection without owner present" do
     message_draft = messages(:fs_accountants_draft2)
 
     assert_equal api_connections(:fs_api_connection1), message_draft.find_api_connection_for_submission
@@ -73,6 +94,18 @@ class MessageDraftTest < ActiveSupport::TestCase
     message_draft.thread.assign_tag(SignedByTag.find_by(owner: user3))
 
     assert_equal api_connections(:fs_api_connection1), message_draft.find_api_connection_for_submission
+  end
+
+  test ".find_api_connection_for_submission raises if a single API connection with owner present but message signed by other user" do
+    message_draft = messages(:fs_accountants_draft2)
+    api_connections(:fs_api_connection1).update(owner: users(:accountants_user2))
+
+    user3 = users(:accountants_user3)
+    message_draft.thread.assign_tag(SignedByTag.find_by(owner: user3))
+
+    assert_raises(RuntimeError) do
+      message_draft.find_api_connection_for_submission
+    end
   end
 
   test ".find_api_connection_for_submission raises if messages is signed by multiple users" do

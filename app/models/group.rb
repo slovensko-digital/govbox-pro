@@ -2,13 +2,14 @@
 #
 # Table name: groups
 #
-#  id         :bigint           not null, primary key
-#  group_type :enum
-#  name       :string           not null
-#  type       :string           not null
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  tenant_id  :bigint           not null
+#  id                   :bigint           not null, primary key
+#  all_boxes_permission :boolean          default(FALSE), not null
+#  group_type           :enum
+#  name                 :string           not null
+#  type                 :string           not null
+#  created_at           :datetime         not null
+#  updated_at           :datetime         not null
+#  tenant_id            :bigint           not null
 #
 class Group < ApplicationRecord
   include AuditableEvents
@@ -18,6 +19,8 @@ class Group < ApplicationRecord
   has_many :users, through: :group_memberships
   has_many :tag_groups, dependent: :destroy
   has_many :tags, through: :tag_groups
+  has_many :box_groups, dependent: :destroy
+  has_many :boxes, through: :box_groups
 
   EDITABLE_GROUP_TYPES = %w[AdminGroup SignerGroup CustomGroup]
 

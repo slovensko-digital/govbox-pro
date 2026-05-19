@@ -14,7 +14,7 @@
 class Filter < ApplicationRecord
   include AuditableEvents
 
-  belongs_to :author, class_name: 'User'
+  belongs_to :author, class_name: 'User', foreign_key: :author_id, optional: true
   belongs_to :tenant
   has_many :filter_subscriptions, dependent: :destroy
 

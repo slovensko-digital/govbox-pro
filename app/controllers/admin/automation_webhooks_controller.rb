@@ -24,7 +24,7 @@ module Admin
       if @webhook.save!
         redirect_to admin_tenant_automation_webhooks_url(Current.tenant), notice: "Webhook bol úspešne vytvorený"
       else
-        render :new, status: :unprocessable_entity
+        render :new, status: :unprocessable_content
       end
     end
 
@@ -33,7 +33,7 @@ module Admin
       if @webhook.update(webhook_params)
         redirect_to admin_tenant_automation_webhooks_url(Current.tenant), notice: "Webhook bol úspešne upravený"
       else
-        render :edit, status: :unprocessable_entity
+        render :edit, status: :unprocessable_content
       end
     end
 

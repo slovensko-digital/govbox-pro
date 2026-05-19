@@ -45,6 +45,51 @@ class FsMessageDraftsApiTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test 'can upload valid message with attachment' do
+    message_params = {
+      type: 'Fs::MessageDraft',
+      title: 'VP_DANv24_fo Podanie',
+      uuid: SecureRandom.uuid,
+      metadata: {
+        correlation_id: SecureRandom.uuid
+      },
+      objects: [
+        {
+          name: 'vp_danv24_fo.xml',
+          is_signed: false,
+          to_be_signed: true,
+          mimetype: 'text/xml',
+          object_type: 'FORM',
+          content: Base64.encode64(file_fixture("fs/vp_danv24_fo.xml").read)
+        },
+        {
+          name: 'priloha.pdf',
+          is_signed: false,
+          to_be_signed: false,
+          mimetype: 'application/pdf',
+          object_type: 'ATTACHMENT',
+          content: Base64.encode64(file_fixture("lorem_ipsum.pdf").read)
+        }
+      ]
+    }
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :parse_form, {
+      "subject" => "1122334456",
+      "form_identifier" => "3078_781"
+    },
+    [file_fixture("fs/vp_danv24_fo.xml").read]
+
+
+    FsEnvironment.fs_client.stub :api, fs_api do
+      post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair)} ), as: :json
+
+      assert_response :created
+      assert_not_equal Message.count, @before_request_messages_count
+      assert @box, Message.last.box
+    end
+  end
+
   test 'sets metadata' do
     message_params = {
       type: 'Fs::MessageDraft',
@@ -191,10 +236,107 @@ class FsMessageDraftsApiTest < ActionDispatch::IntegrationTest
     FsEnvironment.fs_client.stub :api, fs_api do
       post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
-      assert_response :unprocessable_entity
+      assert_response :unprocessable_content
 
       json_response = JSON.parse(response.body)
       assert_equal 'Tag with name Special does not exist', json_response['message']
+
+      assert_equal Message.count, @before_request_messages_count
+    end
+  end
+
+  test 'does not create message if SignatureRequestedTag on an attachment' do
+    message_params = {
+      type: 'Fs::MessageDraft',
+      title: 'VP_DANv24_fo Podanie',
+      uuid: SecureRandom.uuid,
+      metadata: {
+        correlation_id: SecureRandom.uuid
+      },
+      objects: [
+        {
+          name: 'vp_danv24_fo.xml',
+          is_signed: false,
+          to_be_signed: true,
+          mimetype: 'text/xml',
+          object_type: 'FORM',
+          content: Base64.encode64(file_fixture("fs/vp_danv24_fo.xml").read)
+        },
+        {
+          name: 'priloha.pdf',
+          is_signed: false,
+          to_be_signed: false,
+          mimetype: 'application/pdf',
+          object_type: 'ATTACHMENT',
+          content: Base64.encode64(file_fixture("lorem_ipsum.pdf").read),
+          tags: ['Na podpis: Basic user 2']
+        }
+      ]
+    }
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :parse_form, {
+      "subject" => "1122334456",
+      "form_identifier" => "3078_781"
+    },
+                  [file_fixture("fs/vp_danv24_fo.xml").read]
+
+
+    FsEnvironment.fs_client.stub :api, fs_api do
+      post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
+
+      assert_response :unprocessable_content
+
+      json_response = JSON.parse(response.body)
+      assert_equal 'Cannot assign SignatureRequestedFromTag to an object that is not signable', json_response['message']
+
+      assert_equal Message.count, @before_request_messages_count
+    end
+  end
+
+  test 'does not create message if signature requested on an attachment' do
+    message_params = {
+      type: 'Fs::MessageDraft',
+      title: 'VP_DANv24_fo Podanie',
+      uuid: SecureRandom.uuid,
+      metadata: {
+        correlation_id: SecureRandom.uuid
+      },
+      objects: [
+        {
+          name: 'vp_danv24_fo.xml',
+          is_signed: false,
+          to_be_signed: true,
+          mimetype: 'text/xml',
+          object_type: 'FORM',
+          content: Base64.encode64(file_fixture("fs/vp_danv24_fo.xml").read)
+        },
+        {
+          name: 'priloha.pdf',
+          is_signed: false,
+          to_be_signed: true,
+          mimetype: 'application/pdf',
+          object_type: 'ATTACHMENT',
+          content: Base64.encode64(file_fixture("lorem_ipsum.pdf").read)
+        }
+      ]
+    }
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :parse_form, {
+      "subject" => "1122334456",
+      "form_identifier" => "3078_781"
+    },
+                  [file_fixture("fs/vp_danv24_fo.xml").read]
+
+
+    FsEnvironment.fs_client.stub :api, fs_api do
+      post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
+
+      assert_response :unprocessable_content
+
+      json_response = JSON.parse(response.body)
+      assert_equal 'Cannot mark object as to_be_signed if it is not signable', json_response['message']
 
       assert_equal Message.count, @before_request_messages_count
     end
@@ -270,7 +412,7 @@ class FsMessageDraftsApiTest < ActionDispatch::IntegrationTest
     FsEnvironment.fs_client.stub :api, fs_api do
       post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
-      assert_response :unprocessable_entity
+      assert_response :unprocessable_content
 
       json_response = JSON.parse(response.body)
       assert_equal "Title can't be blank", json_response['message']
@@ -312,7 +454,7 @@ class FsMessageDraftsApiTest < ActionDispatch::IntegrationTest
     FsEnvironment.fs_client.stub :api, fs_api do
       post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
-      assert_response :unprocessable_entity
+      assert_response :unprocessable_content
 
       json_response = JSON.parse(response.body)
       assert_equal 'Invalid sender', json_response['message']
@@ -350,7 +492,7 @@ class FsMessageDraftsApiTest < ActionDispatch::IntegrationTest
     FsEnvironment.fs_client.stub :api, fs_api do
       post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
-      assert_response :unprocessable_entity
+      assert_response :unprocessable_content
 
       json_response = JSON.parse(response.body)
       assert_equal 'Invalid sender', json_response['message']
@@ -390,7 +532,7 @@ class FsMessageDraftsApiTest < ActionDispatch::IntegrationTest
     FsEnvironment.fs_client.stub :api, fs_api do
       post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
-      assert_response :unprocessable_entity
+      assert_response :unprocessable_content
 
       json_response = JSON.parse(response.body)
       assert_equal 'Unknown form', json_response['message']
@@ -429,7 +571,7 @@ class FsMessageDraftsApiTest < ActionDispatch::IntegrationTest
     FsEnvironment.fs_client.stub :api, fs_api do
       post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
-      assert_response :unprocessable_entity
+      assert_response :unprocessable_content
 
       json_response = JSON.parse(response.body)
       assert_equal 'Invalid sender', json_response['message']
@@ -470,7 +612,7 @@ class FsMessageDraftsApiTest < ActionDispatch::IntegrationTest
     FsEnvironment.fs_client.stub :api, fs_api do
       post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }) , as: :json
 
-      assert_response :unprocessable_entity
+      assert_response :unprocessable_content
 
       json_response = JSON.parse(response.body)
       assert_equal 'Form XSD validation failed', json_response['message']
@@ -508,7 +650,7 @@ class FsMessageDraftsApiTest < ActionDispatch::IntegrationTest
     FsEnvironment.fs_client.stub :api, fs_api do
       post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
-      assert_response :unprocessable_entity
+      assert_response :unprocessable_content
 
       json_response = JSON.parse(response.body)
 
@@ -545,7 +687,7 @@ class FsMessageDraftsApiTest < ActionDispatch::IntegrationTest
     FsEnvironment.fs_client.stub :api, fs_api do
       post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
-      assert_response :unprocessable_entity
+      assert_response :unprocessable_content
 
       json_response = JSON.parse(response.body)
       assert_equal "Correlation ID can't be blank", json_response['message']
@@ -574,7 +716,7 @@ class FsMessageDraftsApiTest < ActionDispatch::IntegrationTest
     FsEnvironment.fs_client.stub :api, fs_api do
       post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
-      assert_response :unprocessable_entity
+      assert_response :unprocessable_content
 
       json_response = JSON.parse(response.body)
       assert_equal 'Message has to contain exactly one form object', json_response['message']
@@ -583,7 +725,7 @@ class FsMessageDraftsApiTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test 'does not create message if more than one object present' do
+  test 'does not create message if more than one form object present' do
     message_params = {
       type: 'Fs::MessageDraft',
       title: 'SVDPH Podanie',
@@ -604,7 +746,7 @@ class FsMessageDraftsApiTest < ActionDispatch::IntegrationTest
           name: 'attachment.xml',
           is_signed: false,
           mimetype: 'application/xml',
-          object_type: 'ATTACHMENT',
+          object_type: 'FORM',
           content: Base64.encode64('<Attachment><Content>Hello!</Content></Attachment>')
         }
       ]
@@ -620,10 +762,10 @@ class FsMessageDraftsApiTest < ActionDispatch::IntegrationTest
     FsEnvironment.fs_client.stub :api, fs_api do
       post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
-      assert_response :unprocessable_entity
+      assert_response :unprocessable_content
 
       json_response = JSON.parse(response.body)
-      assert_equal 'Message has to contain exactly one object', json_response['message']
+      assert_equal 'Message has to contain exactly one form object', json_response['message']
 
       assert_equal Message.count, @before_request_messages_count
     end
@@ -734,10 +876,10 @@ class FsMessageDraftsApiTest < ActionDispatch::IntegrationTest
     FsEnvironment.fs_client.stub :api, fs_api do
       post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
-      assert_response :unprocessable_entity
+      assert_response :unprocessable_content
 
       json_response = JSON.parse(response.body)
-      assert_equal "Objects is not valid", json_response['message']
+      assert_equal "Objects is not valid, Name can't be blank", json_response['message']
 
       assert_equal Message.count, @before_request_messages_count
     end
@@ -774,7 +916,7 @@ class FsMessageDraftsApiTest < ActionDispatch::IntegrationTest
     FsEnvironment.fs_client.stub :api, fs_api do
       post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
 
-      assert_response :unprocessable_entity
+      assert_response :unprocessable_content
 
       json_response = JSON.parse(response.body)
       assert_equal 'Signature tag with name Podpísané Ferko does not exist', json_response['message']

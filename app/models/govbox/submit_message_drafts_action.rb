@@ -5,7 +5,7 @@ class Govbox::SubmitMessageDraftsAction
     messages = []
     message_threads.each { |thread| messages << thread.messages.where(type: 'Upvs::MessageDraft') }
 
-    results = messages.flatten.map { |message| ::Govbox::SubmitMessageDraftAction.run(message, jobs_batch: jobs_batch) }
+    results = messages.flatten.uniq.map { |message| ::Govbox::SubmitMessageDraftAction.run(message, jobs_batch: jobs_batch) }
     submittable_messages = results.select { |value| value }.present?
 
     if submittable_messages

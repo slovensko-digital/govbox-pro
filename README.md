@@ -21,7 +21,7 @@ GovBox pro je zameraný primárne na používateľov, ktorí majú väčšie mno
 
 Autorom tohto projektu je Solver IT, s.r.o. v spolupráci so občianskym združením Slovensko.Digital, ďaľší rozvoj a prevádzku v SaaS režime zabezpečujú Služby Slovensko.Digital, s.r.o.
 
-*Tento projekt je spolufinancovaný z prostriedkov Európskeho fondu regionálneho rozvoja v rámci Operačného programu Integrovaná infraštruktúra. **Govbox Pro/NFP311070CTK1**.* 
+*Tento projekt je spolufinancovaný z prostriedkov Európskeho fondu regionálneho rozvoja v rámci Operačného programu Integrovaná infraštruktúra. **GovBox Pro/NFP311070CTK1**.*
 
 ## Vývoj
 

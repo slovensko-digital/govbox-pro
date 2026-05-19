@@ -32,7 +32,15 @@ class Fs::SubmitMessageDraftJob < ApplicationJob
       form_object_uuid: message_draft.form_object.uuid,
       allow_warn_status: true,
       is_signed: message_draft.form_object.is_signed,
-      mime_type: message_draft.form_object.mimetype
+      mime_type: message_draft.form_object.mimetype,
+      attachments: message_draft.attachments.map do |attachment|
+        {
+          mime_type: Utils.to_fs_mimetype(attachment.mimetype),
+          content: Base64.strict_encode64(attachment.content),
+          object_id: attachment.uuid,
+          identifier: attachment.identifier
+        }
+      end
     )
 
     message_draft.thread.box.message_submission_requests.create(
@@ -41,18 +49,20 @@ class Fs::SubmitMessageDraftJob < ApplicationJob
       bulk: bulk_submit
     )
 
-    handle_submit_fail(message_draft, "Response status is not 202. Message #{response[:body][:errors]}") unless response[:status] == 202
+    handle_submit_fail(message_draft, "Response status is not 202. Message #{response[:body][:errors]}", expose_error: false) unless response[:status] == 202
 
     Fs::SubmitMessageDraftStatusJob.perform_later(message_draft, response[:headers][:location])
   end
 
   private
 
-  def handle_submit_fail(message_draft, error_message)
+  def handle_submit_fail(message_draft, error_message, expose_error: true)
     message_draft.metadata["status"] = "submit_fail"
+    message_draft.metadata[:submit_error_message] = error_message if expose_error
     message_draft.save!
 
     message_draft.add_cascading_tag(message_draft.tenant.submission_error_tag)
+    message_draft.add_cascading_tag(message_draft.tenant.problem_tag)
 
     raise SubmissionError, error_message
   end

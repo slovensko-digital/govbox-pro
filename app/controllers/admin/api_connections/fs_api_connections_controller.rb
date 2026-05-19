@@ -4,7 +4,7 @@ class Admin::ApiConnections::FsApiConnectionsController < Admin::ApiConnectionsC
     if @api_connection.update(api_connection_params)
       redirect_to admin_tenant_api_connections_url(Current.tenant), notice: "API prepojenie bolo úspešne upravené"
     else
-      render :edit, status: :unprocessable_entity
+      render :edit, status: :unprocessable_content
     end
   end
 
@@ -22,6 +22,6 @@ class Admin::ApiConnections::FsApiConnectionsController < Admin::ApiConnectionsC
   private
 
   def api_connection_params
-    params.require(:fs_api_connection).permit(:tenant_id, :custom_name, :settings_username, :settings_password)
+    params.require(:fs_api_connection).permit(:custom_name, :settings_username, :settings_password).compact_blank!
   end
 end

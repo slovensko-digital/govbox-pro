@@ -34,8 +34,10 @@ class UserManagementTest < ApplicationSystemTestCase
     assert_text "Another user"
 
     within("##{dom_id(users(:basic_two))}") do
-       click_button "Vymazať používateľa"
-     end
+      accept_alert do
+        click_button "Vymazať používateľa"
+      end
+    end
 
     assert_no_text "Another user"
   end

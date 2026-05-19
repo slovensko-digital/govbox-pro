@@ -67,4 +67,26 @@ class MessageTest < ActiveSupport::TestCase
     assert_equal reply.author_id, user.id
     assert_not reply.collapsed
   end
+
+  test "#export_summary returns correct summary data" do
+    message = messages(:fs_accountants_dphv21)
+
+    expected_summary = {
+      message_thread_id: message.message_thread_id,
+      title: "FS podanie",
+      box: "Accountants main FS",
+      delivered_at: message.delivered_at,
+      tags: [],
+      outbox: true,
+      dph_r33: "16002.44",
+      dph_r35: "",
+      fs_message_id: "12345678/2025",
+      fs_status: "Prijaté a potvrdené",
+      fs_submitting_subject: "GO FS subjekt",
+      fs_period: "Q22025",
+      correlation_id: "0d71fc24-05d3-4938-80e4-05bdc3be19fa"
+    }
+
+    assert_equal expected_summary, message.export_summary
+  end
 end

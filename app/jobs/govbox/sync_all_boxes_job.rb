@@ -1,7 +1,7 @@
 module Govbox
   class SyncAllBoxesJob < ApplicationJob
     def perform
-      Upvs::Box.where(syncable: true).find_each do |box|
+      Upvs::Box.syncable.find_each do |box|
         SyncBoxJob.perform_later(box)
       end
 

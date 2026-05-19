@@ -27,6 +27,33 @@ class Fs::SyncAllBoxesJobTest < ActiveJob::TestCase
     end
   end
 
+  test "does not schedule sync for inactive boxes" do
+    inactive_box = boxes(:fs_accountants)
+    inactive_box.update!(active: false)
+
+    Fs::SyncAllBoxesJob.perform_now
+
+    enqueued_jobs = enqueued_jobs_for(Fs::SyncBoxJob)
+    inactive_box_jobs = enqueued_jobs.select { |job| job[:args].first["_aj_globalid"].include?(inactive_box.id.to_s) }
+
+    assert_equal 0, inactive_box_jobs.count
+  end
+
+  test "schedules sync only for active boxes when mixed" do
+    active_box = boxes(:fs_delegate)
+    inactive_box = boxes(:fs_accountants)
+    inactive_box.update!(active: false)
+
+    Fs::SyncAllBoxesJob.perform_now
+
+    enqueued_jobs = enqueued_jobs_for(Fs::SyncBoxJob)
+    active_jobs = enqueued_jobs.select { |job| job[:args].first["_aj_globalid"].include?(active_box.id.to_s) }
+    inactive_jobs = enqueued_jobs.select { |job| job[:args].first["_aj_globalid"].include?(inactive_box.id.to_s) }
+
+    assert active_jobs.any?
+    assert_equal 0, inactive_jobs.count
+  end
+
   private
 
   def enqueued_jobs_for(job_class)

@@ -29,12 +29,21 @@ class Govbox::MessageTest < ActiveSupport::TestCase
     assert_equal message.tags.first, message.thread.tags.simple.first
   end
 
-  test "#create_message_with_thread! migrates tags from associated MessageDraft" do
+  test "#create_message_with_thread! migrates tags and author from associated MessageDraft" do
     govbox_message = govbox_messages(:ssd_general_created_from_draft)
+
+    draft = Upvs::MessageDraft.find_by(uuid: govbox_message.message_id)
 
     Govbox::Message.create_message_with_thread!(govbox_message)
 
     message = Message.last
+
+    # Author copied to Message
+    assert_equal draft.author, message.author, "Author should be copied from draft to message"
+
+    # Author tag copied to Message and MessageThread
+    assert message.tags.include?(draft.author.author_tag), "Author tag should be preserved on message"
+    assert message.thread.tags.include?(draft.author.author_tag), "Author tag should be preserved on thread"
 
     # Simple and Signed tags copied to MessageThread
     assert ['Finance', 'Podpísané', 'Podpísané: Signer user'].map { |tag_name| message.thread.tags.include?(tag_name) }
@@ -62,33 +71,32 @@ class Govbox::MessageTest < ActiveSupport::TestCase
   end
 
   test "#create_message_with_thread! should handle adding inbox tag to thread" do
-    Govbox::Message.create_message_with_thread!(govbox_messages(:ssd_egov_application))
+    application_message = Govbox::Message.create_message_with_thread!(govbox_messages(:ssd_egov_application))
 
-    message_thread = MessageThread.last
+    message_thread = application_message.thread
 
     # Inbox tag not added when outbox message processed
     assert_not message_thread.tags.include?(tags(:ssd_inbox))
 
-    Govbox::Message.create_message_with_thread!(govbox_messages(:ssd_posting_confirmation))
+    posting_confirmation_message = Govbox::Message.create_message_with_thread!(govbox_messages(:ssd_posting_confirmation))
     # Inbox tag not added when insignificant inbox message processed
     assert_not message_thread.tags.include?(tags(:ssd_inbox))
 
-    Govbox::Message.create_message_with_thread!(govbox_messages(:ssd_delivery_report))
+    delivery_report_message = Govbox::Message.create_message_with_thread!(govbox_messages(:ssd_delivery_report))
     # Inbox tag not added when another insignificant inbox message processed
     assert_not message_thread.tags.include?(tags(:ssd_inbox))
 
     # Outbox or insignificant messages are automatically marked read
-    assert message_thread.messages.reload.all?{|m| m.read?}
+    assert_predicate application_message.reload, :read?
+    assert_predicate posting_confirmation_message.reload, :read?
+    assert_predicate delivery_report_message.reload, :read?
 
-    Govbox::Message.create_message_with_thread!(govbox_messages(:ssd_egov_document))
+    egov_document_message = Govbox::Message.create_message_with_thread!(govbox_messages(:ssd_egov_document))
     # Inbox tag is added when significant inbox message processed
     assert message_thread.tags.include?(tags(:ssd_inbox))
 
-    message_thread.messages.reload
-
     # Significant inbox messages is marked unread
-    assert_not message_thread.messages.all?{|m| m.read?}
-    assert_not message_thread.messages.last.read?
+    assert_not egov_document_message.reload.read?
   end
 
   test "#create_message_with_thread! should include general agenda subject in message title" do

@@ -4,8 +4,10 @@ module AuthHelper
 
     visit auth_path
 
+    assert_selector "button", text: "Prihlásiť cez Google"
     click_on "Prihlásiť cez Google"
 
+    assert_current_path root_path, ignore_query: true
     assert_text "Správy v schránke"
   end
 
