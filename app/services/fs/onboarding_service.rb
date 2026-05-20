@@ -1,8 +1,8 @@
 class Fs::OnboardingService
   include ActiveModel::API
-  attr_accessor :tenant_name, :ico, :admin_user_name, :saml_identifier, :admin_user_contact_email, :fs_api_sub, :fs_api_private_key
+  attr_accessor :tenant_name, :ico, :admin_user_name, :saml_identifier, :admin_user_contact_email
 
-  validates :tenant_name, :saml_identifier, :admin_user_name, :admin_user_contact_email, :fs_api_sub, :fs_api_private_key, presence: true
+  validates :tenant_name, :saml_identifier, :admin_user_name, :admin_user_contact_email, presence: true
   validates :ico, presence: true, length: { is: 8 }
 
   def initialize(params)
@@ -11,11 +11,16 @@ class Fs::OnboardingService
     @saml_identifier = params[:saml_identifier] if params[:saml_identifier]
     @admin_user_name = params[:admin_user_name] if params[:admin_user_name]
     @admin_user_contact_email = params[:admin_user_contact_email] if params[:admin_user_contact_email]
-    @fs_api_sub = params[:fs_api_sub] if params[:fs_api_sub]
-    @fs_api_private_key = params[:fs_api_private_key] if params[:fs_api_private_key]
+    @fs_api_sub = "1"
+    @fs_api_key = OpenSSL::PKey::RSA.new(2048)
   end
 
-  def call
+  def call(fs_client: FsEnvironment.fs_client)
+    fs_client.admin_api.create_user(
+      crm_identifier: @tenant_name,
+      api_token_public_key: @fs_api_key.public_key.to_pem
+    )
+
     Tenant.transaction do
       tenant = Tenant.create!(name: @tenant_name, contact_email: @admin_user_contact_email, ico: @ico)
 
@@ -29,7 +34,7 @@ class Fs::OnboardingService
       tenant.feature_flags = %w[fs_api fs_sync]
       tenant.save!
 
-      Fs::ApiConnection.create!(tenant: tenant, sub: @fs_api_sub, api_token_private_key: @fs_api_private_key, owner: user)
+      Fs::ApiConnection.create!(tenant: tenant, sub: @fs_api_sub, api_token_private_key: @fs_api_key.to_pem, owner: user)
 
       setup_automation_rules(tenant, user)
 

@@ -229,11 +229,13 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :site_admin do
-      namespace :fs do
-        resources :onboardings, only: [:create]
-      end
-
       resources :tenants, only: [:create, :destroy] do
+        collection do
+          namespace :fs do
+            resources :onboardings, only: [:create]
+          end
+        end
+
         namespace :upvs do
           resources :boxes, only: :create
         end

@@ -25,9 +25,7 @@ class Api::SiteAdmin::Fs::OnboardingsController < Api::SiteAdminController
       :ico,
       :admin_user_name,
       :saml_identifier,
-      :admin_user_contact_email,
-      :fs_api_sub,
-      :fs_api_private_key
+      :admin_user_contact_email
     )
   end
 end
