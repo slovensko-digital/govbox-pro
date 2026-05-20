@@ -162,7 +162,8 @@ class Fs::OnboardingService
       action_object_id: neoverena_potvrdenka_tag.id
     )
 
-    tag2 = tenant.tags.create!(
+    # Fourth rule - Potvrdenka stiahnutá
+    stiahnuta_potvrdenka_tag = tenant.tags.create!(
       name: "Potvrdenka stiahnutá",
       owner: user,
       type: "SimpleTag",
@@ -176,25 +177,25 @@ class Fs::OnboardingService
       query: "-label:(Potvrdenka stiahnutá) -label:(Rozpracované)"
     )
 
-    rule2 = tenant.automation_rules.create!(
+    stiahnuta_potvrdenka_rule = tenant.automation_rules.create!(
       name: "Pridaj štítok 'Potvrdenka stiahnutá'",
       trigger_event: "message_object_downloaded",
       user: user
     )
-    rule2.conditions.create!(
+    stiahnuta_potvrdenka_rule.conditions.create!(
       attr: "object_type",
       type: "Automation::ContainsCondition",
       value: "FORM"
     )
-    rule2.conditions.create!(
+    stiahnuta_potvrdenka_rule.conditions.create!(
       attr: "fs_message_type",
       type: "Automation::MessageMetadataValueCondition",
       value: "ED.DeliveryReport"
     )
-    rule2.actions.create!(
+    stiahnuta_potvrdenka_rule.actions.create!(
       type: "Automation::AddMessageThreadTagAction",
       action_object_type: "Tag",
-      action_object_id: tag2.id
+      action_object_id: stiahnuta_potvrdenka_tag.id
     )
   end
 end
