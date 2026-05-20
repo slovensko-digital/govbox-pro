@@ -5,11 +5,7 @@ class SessionsController < ApplicationController
   layout 'login'
 
   def login
-    @ssd_trial = params[:ssd_trial].present?
-
-    if @ssd_trial
-      session[:ssd_trial_return_url] = params[:return_url]
-    end
+    session[:ssd_trial_return_url] = params[:return_url] if params[:ssd_trial].present?
   end
 
   def create
