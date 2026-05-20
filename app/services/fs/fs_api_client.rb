@@ -11,7 +11,7 @@ class Fs::FsApiClient
     @admin_api ||= Fs::AdminApi.new(
       @host,
       ENV.fetch('FS_ADMIN_SUB'),
-      Base64.decode64(ENV.fetch('FS_ADMIN_PRIVATE_KEY_B64'))
+      ENV.fetch('FS_ADMIN_PRIVATE_KEY')
     )
   end
 end
