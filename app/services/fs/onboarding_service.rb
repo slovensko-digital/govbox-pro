@@ -1,4 +1,4 @@
-class Fs::OnboardTenant
+class Fs::OnboardingService
   include ActiveModel::API
   attr_accessor :tenant_name, :ico, :admin_user_name, :saml_identifier, :admin_user_contact_email, :fs_api_sub, :fs_api_private_key
 
@@ -17,13 +17,11 @@ class Fs::OnboardTenant
 
   def call
     Tenant.transaction do
-      tenant = Tenant.find_or_create_by!(name: @tenant_name, contact_email: @admin_user_contact_email, ico: @ico)
+      tenant = Tenant.create!(name: @tenant_name, contact_email: @admin_user_contact_email, ico: @ico)
 
-      user = tenant.users.find_or_create_by!(name: @admin_user_name, saml_identifier: @saml_identifier).tap do |tenant_user|
-        tenant_user.groups << tenant.admin_group unless tenant_user.groups.include?(tenant.admin_group)
-
-        signer_group = tenant.groups.find_by(type: "SignerGroup")
-        tenant_user.groups << signer_group unless tenant_user.groups.include?(signer_group)
+      user = tenant.users.create!(name: @admin_user_name, saml_identifier: @saml_identifier).tap do |tenant_user|
+        tenant_user.groups << tenant.admin_group
+        tenant_user.groups << tenant.groups.find_by(type: "SignerGroup")
 
         tenant_user.save!
       end
@@ -31,7 +29,7 @@ class Fs::OnboardTenant
       tenant.feature_flags = %w[fs_api fs_sync]
       tenant.save!
 
-      Fs::ApiConnection.find_or_create_by!(tenant: tenant, sub: @fs_api_sub, api_token_private_key: @fs_api_private_key, owner: user)
+      Fs::ApiConnection.create!(tenant: tenant, sub: @fs_api_sub, api_token_private_key: @fs_api_private_key, owner: user)
 
       setup_automation_rules(tenant, user)
 
@@ -42,14 +40,14 @@ class Fs::OnboardTenant
   private
 
   def setup_automation_rules(tenant, user)
-    overena_potvrdenka_tag = tenant.tags.find_or_create_by!(
+    overena_potvrdenka_tag = tenant.tags.create!(
       name: "S potvrdenkou",
       owner: user, type: "SimpleTag",
       color: "green",
       icon: "check"
     )
 
-    neoverena_potvrdenka_tag = tenant.tags.find_or_create_by!(
+    neoverena_potvrdenka_tag = tenant.tags.create!(
       name: "S neoverenou potvrdenkou",
       owner: user,
       type: "SimpleTag",
@@ -57,114 +55,114 @@ class Fs::OnboardTenant
       icon: "check"
     )
 
-    tenant.filters.find_or_create_by!(
+    tenant.filters.create!(
       author: user,
       name: "Bez potvrdenky",
       query: "-label:(S potvrdenkou) -label:(S neoverenou potvrdenkou) -label:(Rozpracované)"
     )
 
     # First rule - if ED.DeliveryReport is created with verified signatures
-    overena_potvrdenka_rule = tenant.automation_rules.find_or_create_by!(
+    overena_potvrdenka_rule = tenant.automation_rules.create!(
       name: "Pridaj štítok 'S potvrdenkou'",
       trigger_event: "message_created",
       user: user
     )
-    overena_potvrdenka_rule.conditions.find_or_create_by!(
+    overena_potvrdenka_rule.conditions.create!(
       attr: "fs_submission_status",
       type: "Automation::MetadataValueCondition",
       value: "Prijaté a potvrdené"
     )
-    overena_potvrdenka_rule.conditions.find_or_create_by!(
+    overena_potvrdenka_rule.conditions.create!(
       attr: "fs_message_type",
       type: "Automation::MetadataValueCondition",
       value: "ED.DeliveryReport"
     )
-    overena_potvrdenka_rule.conditions.find_or_create_by!(
+    overena_potvrdenka_rule.conditions.create!(
       attr: "fs_submission_verification_status.name",
       type: "Automation::MetadataValueCondition",
       value: "Platné"
     )
-    overena_potvrdenka_rule.conditions.find_or_create_by!(
+    overena_potvrdenka_rule.conditions.create!(
       attr: "fs_submission_verification_status.description",
       type: "Automation::MetadataValueCondition",
       value: "Overenie platnosti podpisov podania bolo ukončené. Všetky podpisy sú platné."
     )
-    overena_potvrdenka_rule.actions.find_or_create_by!(
+    overena_potvrdenka_rule.actions.create!(
       type: "Automation::AddMessageThreadTagAction",
       action_object_type: "Tag",
       action_object_id: overena_potvrdenka_tag.id
     )
 
     # Second rule - if ED.DeliveryReport is created without verified signatures
-    neoverena_potvrdenka_rule = tenant.automation_rules.find_or_create_by!(
+    neoverena_potvrdenka_rule = tenant.automation_rules.create!(
       name: "Pridaj štítok 'S neoverenou potvrdenkou'",
       trigger_event: "message_created",
       user: user
     )
-    neoverena_potvrdenka_rule.conditions.find_or_create_by!(
+    neoverena_potvrdenka_rule.conditions.create!(
       attr: "fs_submission_status",
       type: "Automation::MetadataValueCondition",
       value: "Prijaté a potvrdené"
     )
-    neoverena_potvrdenka_rule.conditions.find_or_create_by!(
+    neoverena_potvrdenka_rule.conditions.create!(
       attr: "fs_message_type",
       type: "Automation::MetadataValueCondition",
       value: "ED.DeliveryReport"
     )
-    neoverena_potvrdenka_rule.conditions.find_or_create_by!(
+    neoverena_potvrdenka_rule.conditions.create!(
       attr: "fs_submission_verification_status.name",
       type: "Automation::MetadataValueNotCondition",
       value: "Platné"
     )
-    neoverena_potvrdenka_rule.conditions.find_or_create_by!(
+    neoverena_potvrdenka_rule.conditions.create!(
       attr: "fs_submission_verification_status.description",
       type: "Automation::MetadataValueNotCondition",
       value: "Overenie platnosti podpisov podania bolo ukončené. Všetky podpisy sú platné."
     )
-    neoverena_potvrdenka_rule.actions.find_or_create_by!(
+    neoverena_potvrdenka_rule.actions.create!(
       type: "Automation::AddMessageThreadTagAction",
       action_object_type: "Tag",
       action_object_id: neoverena_potvrdenka_tag.id
     )
 
     # Third rule - when ED.DeliveryReport is updated - signatures are verified
-    zmena_overenia_potvrdenky_rule = tenant.automation_rules.find_or_create_by!(
+    zmena_overenia_potvrdenky_rule = tenant.automation_rules.create!(
       name: "Pridaj štítok 'S neoverenou potvrdenkou' zmena",
       trigger_event: "message_updated",
       user: user
     )
-    zmena_overenia_potvrdenky_rule.conditions.find_or_create_by!(
+    zmena_overenia_potvrdenky_rule.conditions.create!(
       attr: "fs_submission_status",
       type: "Automation::MetadataValueCondition",
       value: "Prijaté a potvrdené"
     )
-    zmena_overenia_potvrdenky_rule.conditions.find_or_create_by!(
+    zmena_overenia_potvrdenky_rule.conditions.create!(
       attr: "fs_message_type",
       type: "Automation::MetadataValueCondition",
       value: "ED.DeliveryReport"
     )
-    zmena_overenia_potvrdenky_rule.conditions.find_or_create_by!(
+    zmena_overenia_potvrdenky_rule.conditions.create!(
       attr: "fs_submission_verification_status.name",
       type: "Automation::MetadataValueCondition",
       value: "Platné"
     )
-    zmena_overenia_potvrdenky_rule.conditions.find_or_create_by!(
+    zmena_overenia_potvrdenky_rule.conditions.create!(
       attr: "fs_submission_verification_status.description",
       type: "Automation::MetadataValueCondition",
       value: "Overenie platnosti podpisov podania bolo ukončené. Všetky podpisy sú platné."
     )
-    zmena_overenia_potvrdenky_rule.actions.find_or_create_by!(
+    zmena_overenia_potvrdenky_rule.actions.create!(
       type: "Automation::AddMessageThreadTagAction",
       action_object_type: "Tag",
       action_object_id: overena_potvrdenka_tag.id
     )
-    zmena_overenia_potvrdenky_rule.actions.find_or_create_by!(
+    zmena_overenia_potvrdenky_rule.actions.create!(
       type: "Automation::UnassignMessageThreadTagAction",
       action_object_type: "Tag",
       action_object_id: neoverena_potvrdenka_tag.id
     )
 
-    tag2 = tenant.tags.find_or_create_by!(
+    tag2 = tenant.tags.create!(
       name: "Potvrdenka stiahnutá",
       owner: user,
       type: "SimpleTag",
@@ -172,28 +170,28 @@ class Fs::OnboardTenant
       icon: 'paper_clip'
     )
 
-    tenant.filters.find_or_create_by!(
+    tenant.filters.create!(
       author: user,
       name: "Potvrdenka nestiahnutá",
       query: "-label:(Potvrdenka stiahnutá) -label:(Rozpracované)"
     )
 
-    rule2 = tenant.automation_rules.find_or_create_by!(
+    rule2 = tenant.automation_rules.create!(
       name: "Pridaj štítok 'Potvrdenka stiahnutá'",
       trigger_event: "message_object_downloaded",
       user: user
     )
-    rule2.conditions.find_or_create_by!(
+    rule2.conditions.create!(
       attr: "object_type",
       type: "Automation::ContainsCondition",
       value: "FORM"
     )
-    rule2.conditions.find_or_create_by!(
+    rule2.conditions.create!(
       attr: "fs_message_type",
       type: "Automation::MessageMetadataValueCondition",
       value: "ED.DeliveryReport"
     )
-    rule2.actions.find_or_create_by!(
+    rule2.actions.create!(
       type: "Automation::AddMessageThreadTagAction",
       action_object_type: "Tag",
       action_object_id: tag2.id
