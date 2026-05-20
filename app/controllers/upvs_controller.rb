@@ -9,6 +9,7 @@ class UpvsController < ActionController::API
   def callback
     response = request.env['omniauth.auth']['extra']['response_object']
     saml_identifier = response.attributes["Subject.UPVSIdentityID"]
+    username = response.attributes["Actor.FormattedName"]
 
     Current.user = User.find_by(saml_identifier: saml_identifier)
 
@@ -18,6 +19,7 @@ class UpvsController < ActionController::API
       token = JWT.encode(
         {
           saml_identifier: saml_identifier,
+          username: username,
           exp: 5.minutes.from_now.to_i
         },
         ENV.fetch("SSD_TRIAL_SHARED_SECRET"),

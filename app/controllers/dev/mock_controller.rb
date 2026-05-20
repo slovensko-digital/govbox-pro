@@ -6,9 +6,12 @@ module Dev
 
     def saml_callback
       return_url = params[:return_url]
-      saml_identifier = "dev-saml-id-#{Time.now.to_i}"
 
-      payload = { saml_identifier: saml_identifier, exp: 5.minutes.from_now.to_i }
+      t = Time.now.to_i
+      saml_identifier = "dev-saml-id-#{t}"
+      username = "Dev User #{t}"
+
+      payload = { saml_identifier: saml_identifier, username: username, exp: 5.minutes.from_now.to_i }
       token = JWT.encode(payload, ENV['SSD_TRIAL_SHARED_SECRET'], 'HS256')
 
       uri = URI.parse(return_url.to_s)
