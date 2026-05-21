@@ -8,6 +8,7 @@ module Agp
 
       agp_api = SigningEnvironment.signing_client.api(tenant: message_object.tenant)
       signed_contract = agp_api.retrieve_signed_contract(contract_id)
+      signer_user = contract.signer_user || message_object.tenant.users.first
 
       message_object.mark_as_signed!(
         {
@@ -15,7 +16,7 @@ module Agp
           mimetype: signed_contract["content_type"],
           content: signed_contract["content"]
         },
-        message_object.tenant.users.first # TODO: change to real user (Current.user is not available in jobs)
+        signer_user
       )
     end
   end

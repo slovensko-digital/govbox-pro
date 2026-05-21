@@ -12,6 +12,8 @@
 #  updated_at             :datetime         not null
 #
 class Tenant < ApplicationRecord
+  store_accessor :settings, :agp_api_url, :agp_api_token_private_key, :agp_sub, :agp_webhook_public_key, prefix: true
+
   has_many :boxes, dependent: :destroy
   has_many :api_connections, dependent: :destroy
   has_many :automation_rules, class_name: "Automation::Rule", dependent: :destroy
@@ -54,6 +56,8 @@ class Tenant < ApplicationRecord
 
   validates_presence_of :name
   validate :validate_api_token_public_key_format, unless: -> { api_token_public_key.nil? }
+  validate :validate_agp_api_token_private_key_format, unless: -> { settings_agp_api_token_private_key.nil? }
+  validate :validate_agp_webhook_public_key_format, unless: -> { settings_agp_webhook_public_key.nil? }
 
   ALL_FEATURE_FLAGS = [:audit_log, :archive, :api, :message_draft_import, :fs_api, :fs_sync, :upvs, :autogram_portal]
 
@@ -62,9 +66,29 @@ class Tenant < ApplicationRecord
 
   validates :signature_request_mode, inclusion: { in: SIGNATURE_REQUEST_MODES }
 
+  def agp_api_url
+    settings_agp_api_url.presence || ENV.fetch("AGP_API_URL", nil).presence
+  end
+
+  def agp_api_token_private_key
+    return settings_agp_api_token_private_key if settings_agp_api_token_private_key.present?
+
+    encoded_private_key = ENV.fetch("AGP_API_TOKEN_PRIVATE_KEY", nil).presence
+    return if encoded_private_key.blank?
+
+    Base64.decode64(encoded_private_key)
+  end
+
   def agp_sub
-    # TODO
-    ENV.fetch("AGP_API_SUB", "1")
+    settings_agp_sub.presence || ENV.fetch("AGP_API_SUB", "1")
+  end
+
+  def agp_webhook_public_key
+    normalize_pem(settings_agp_webhook_public_key.presence || ENV.fetch("AGP_WEBHOOK_PUBLIC_KEY", nil).presence)
+  end
+
+  def agp_signing_enabled?
+    feature_enabled?(:autogram_portal) && agp_api_url.present? && agp_api_token_private_key.present? && agp_sub.present?
   end
 
   def set_pdf_signature_format(pdf_signature_format)
@@ -198,5 +222,29 @@ class Tenant < ApplicationRecord
     end
   rescue OpenSSL::PKey::RSAError, TypeError
     errors.add(:api_token_public_key, :public_key_invalid_format)
+  end
+
+  def validate_agp_api_token_private_key_format
+    key = OpenSSL::PKey::RSA.new(settings_agp_api_token_private_key)
+
+    if !key.private?
+      errors.add(:settings_agp_api_token_private_key, :private_key_missing)
+    elsif key.n.num_bits != 2048
+      errors.add(:settings_agp_api_token_private_key, :private_key_invalid_bits, current_bits: key.n.num_bits)
+    end
+  rescue OpenSSL::PKey::RSAError, TypeError
+    errors.add(:settings_agp_api_token_private_key, :private_key_invalid_format)
+  end
+
+  def validate_agp_webhook_public_key_format
+    key = OpenSSL::PKey::EC.new(settings_agp_webhook_public_key)
+
+    errors.add(:settings_agp_webhook_public_key, :public_key_is_private) if key.private?
+  rescue OpenSSL::PKey::PKeyError, ArgumentError
+    errors.add(:settings_agp_webhook_public_key, :public_key_invalid_format)
+  end
+
+  def normalize_pem(value)
+    value&.gsub("\\n", "\n")
   end
 end

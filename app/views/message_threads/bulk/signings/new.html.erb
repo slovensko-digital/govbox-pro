@@ -11,14 +11,21 @@
         <% end %>
 
         <div class="w-full my-4">
-          <p class="pb-4">Vybrané vlákna obsahujú <%= t("signing.documents", count: @message_objects.length) %> na podpis.</p>
+          <p class="pb-2">Vybrané vlákna obsahujú <%= t("signing.documents", count: @message_objects.length) %> na podpis.</p>
+          <% if Current.tenant.agp_signing_enabled? %>
+            <p class="text-sm text-gray-600">
+              V prípade problémov s novým podpisovaním použite
+              <%= button_tag "starší spôsob", type: :submit, class: "inline p-0 text-sm font-medium text-blue-700 underline underline-offset-2 hover:text-blue-800 hover:no-underline" %>.
+            </p>
+          <% end %>
         </div>
 
         <%= render Common::ModalActionsComponent.new do |actions| %>
           <% actions.with_submit_button do %>
-            <%= submit_tag "Podpísať Autogramom", class: "inline-flex w-full justify-center items-center px-3 py-2 rounded-md font-medium text-left text-sm text-white bg-blue-700 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 focus:outline-none dark:focus:ring-blue-800 hover:cursor-pointer sm:w-auto" %>
-            <% if Current.tenant.feature_enabled?(:autogram_portal) %>
-              <%= link_to "Podpísať cez Autogram Portal", new_agp_bundle_path(message_thread_ids: @message_thread_ids), data: { turbo_frame: "modal" }, class: "inline-flex w-full justify-center items-center px-3 py-2 rounded-md font-medium text-left text-sm text-white bg-blue-700 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 focus:outline-none dark:focus:ring-blue-800 hover:cursor-pointer sm:w-auto" %>
+            <% if Current.tenant.agp_signing_enabled? %>
+              <%= link_to "Podpísať", new_agp_bundle_path(message_thread_ids: @message_thread_ids), data: { turbo_frame: "modal" }, class: "inline-flex w-full justify-center items-center px-3 py-2 rounded-md font-medium text-left text-sm text-white bg-blue-700 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 focus:outline-none dark:focus:ring-blue-800 hover:cursor-pointer sm:w-auto" %>
+            <% else %>
+              <%= submit_tag "Podpísať Autogramom", class: "inline-flex w-full justify-center items-center px-3 py-2 rounded-md font-medium text-left text-sm text-white bg-blue-700 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 focus:outline-none dark:focus:ring-blue-800 hover:cursor-pointer sm:w-auto" %>
             <% end %>
           <% end %>
         <% end %>

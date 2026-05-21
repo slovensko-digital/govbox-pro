@@ -18,24 +18,27 @@ module Agp
 
     accepts_nested_attributes_for :contracts
 
-    def self.find_or_initialize_from_message_objects(tenant, message_objects)
-      uuid = generate_uuid_from_message_objects(message_objects)
+    def self.find_or_initialize_from_message_objects(tenant, message_objects, signer_user:)
+      uuid = generate_uuid_from_message_objects(message_objects, signer_user: signer_user)
       bundle = find_or_initialize_by(bundle_identifier: uuid)
       raise "Different tenant" if bundle.tenant && bundle.tenant != tenant
 
+      existing_contracts = bundle.contracts.index_by(&:message_object_id)
+
       bundle.contracts = message_objects.map do |mo|
-        Agp::Contract.new(
+        existing_contracts[mo.id] || Agp::Contract.new(
           message_object: mo,
           message_object_updated_at: mo.updated_at,
-          contract_identifier: SecureRandom.uuid
+          contract_identifier: SecureRandom.uuid,
+          signer_user: signer_user
         )
       end
 
       bundle
     end
 
-    def self.generate_uuid_from_message_objects(message_objects)
-      digest_input = message_objects.map { |mo| "#{mo.id}#{mo.updated_at}" }.sort.join
+    def self.generate_uuid_from_message_objects(message_objects, signer_user:)
+      digest_input = [signer_user.id, *message_objects.map { |mo| "#{mo.id}#{mo.updated_at}" }.sort].join(":")
       digest = Digest::SHA256.hexdigest(digest_input)
       "#{digest[0..7]}-#{digest[8..11]}-#{digest[12..15]}-#{digest[16..19]}-#{digest[20..31]}"
     end

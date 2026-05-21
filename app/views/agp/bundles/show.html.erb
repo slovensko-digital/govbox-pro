@@ -1,7 +1,7 @@
 <%= tag.turbo_frame id: "modal" do %>
-  <%= render Common::ModalComponent.new(closable: true) do |modal| %>
+  <%= render Common::ModalComponent.new(closable: true, max_size: "max-w-2xl") do |modal| %>
     <% modal.with_header do %>
-      Podpisovanie cez Autogram Portal
+      Podpisovanie
     <% end %>
     <% modal.with_modal_content do %>
       <div class="py-4">

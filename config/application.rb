@@ -127,5 +127,6 @@ module GovboxPro
 end
 
 Rails.application.routes.default_url_options = {
-  host: ENV['APP_HOST'] || 'localhost'
+  host: ENV['APP_HOST'] || 'localhost',
+  port: ENV['PORT'] || 3000
 }

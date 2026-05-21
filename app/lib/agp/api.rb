@@ -17,6 +17,7 @@ module Agp
     def upload_bundle(bundle)
       body = {
         id: bundle.bundle_identifier,
+        publiclyVisible: true,
         contracts: bundle.contracts.map do |contract|
           {
             id: contract.contract_identifier,

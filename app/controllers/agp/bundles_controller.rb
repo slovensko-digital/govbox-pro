@@ -7,21 +7,33 @@ module Agp
 
     def show
       authorize @bundle
+
+      respond_to do |format|
+        format.html
+        format.json { render json: bundle_sync_status }
+      end
     end
 
     def new
       authorize(Agp::Bundle)
-      @bundle = Agp::Bundle.find_or_initialize_from_message_objects(Current.tenant, @message_objects)
+      @bundle = Agp::Bundle.find_or_initialize_from_message_objects(Current.tenant, @message_objects, signer_user: Current.user)
     end
 
     def create
       authorize(Agp::Bundle)
-      @bundle = Agp::Bundle.find_by(bundle_identifier: bundle_params[:bundle_identifier]) || Agp::Bundle.new(**bundle_params, tenant: Current.tenant)
+      @bundle = find_or_build_bundle
+      @bundle.contracts.each { |contract| contract.signer_user ||= Current.user }
+
       if @bundle.save
-        Agp::UploadBundleJob.new.perform(@bundle)
-        redirect_to @bundle
+        begin
+          Agp::UploadBundleJob.new.perform(@bundle)
+          redirect_to @bundle
+        rescue => e
+          Rails.logger.warn("AGP bundle #{@bundle.bundle_identifier} initialization failed, falling back to direct Autogram signing: #{e.message}")
+          render_direct_signing_fallback || raise
+        end
       else
-        render :new, status: :unprocessable_entity
+        render_direct_signing_fallback || render(:new, status: :unprocessable_entity)
       end
     end
 
@@ -32,7 +44,15 @@ module Agp
     end
 
     def ensure_tenant_agp_feature
-      head :not_found and return unless Current.tenant.feature_enabled?(:autogram_portal)
+      head :not_found and return unless Current.tenant.agp_signing_enabled?
+    end
+
+    def find_or_build_bundle
+      bundle = Agp::Bundle.find_by(bundle_identifier: bundle_params[:bundle_identifier])
+      return Agp::Bundle.new(**bundle_params, tenant: Current.tenant) unless bundle
+
+      bundle.status = :init if bundle.init_failed? || bundle.failed?
+      bundle
     end
 
     def set_bundle
@@ -40,7 +60,7 @@ module Agp
     end
 
     def set_agp_sdk_file
-      @agp_sdk_file = File.join(ENV.fetch("AGP_API_URL", nil), "sdk.js")
+      @agp_sdk_file = File.join(Current.tenant.agp_api_url, "sdk.js")
     end
 
     def set_message_objects
@@ -57,6 +77,27 @@ module Agp
       ids += message_ids if message_ids.present?
 
       @message_objects = policy_scope(MessageObject).where(id: ids.compact).distinct
+    end
+
+    def render_direct_signing_fallback
+      if params[:message_draft_id].present?
+        @message_draft = policy_scope(MessageDraft).find(params[:message_draft_id])
+        render template: "message_drafts/signings/new", status: :ok
+      elsif params[:message_thread_ids].present?
+        @message_thread_ids = policy_scope(MessageThread).where(id: params[:message_thread_ids] || []).pluck(:id)
+        render template: "message_threads/bulk/signings/start", status: :ok
+      end
+    end
+
+    def bundle_sync_status
+      total_contracts_count = @bundle.contracts.count
+      signed_contracts_count = @bundle.contracts.joins(:message_object).where(message_objects: { is_signed: true }).count
+
+      {
+        total_contracts_count: total_contracts_count,
+        signed_contracts_count: signed_contracts_count,
+        fully_synced: total_contracts_count.positive? && signed_contracts_count == total_contracts_count
+      }
     end
   end
 end

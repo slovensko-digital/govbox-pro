@@ -6,13 +6,8 @@ class Admin::ApiAccessesController < ApplicationController
   def update
     authorize([:admin, :api_access])
 
-    if api_access_params[:api_token_public_key].blank?
-      Current.tenant.update(api_token_public_key: nil)
-      redirect_to admin_tenant_api_access_path, notice: "Verejný kľúč bol úspešne odstránený" and return
-    end
-
-    if Current.tenant.update(api_access_params)
-      redirect_to admin_tenant_api_access_path, notice: "Verejný kľúč bol úspešne aktualizovaný"
+    if Current.tenant.update(normalized_api_access_params)
+      redirect_to admin_tenant_api_access_path, notice: "Nastavenia API prístupu boli úspešne aktualizované"
     else
       render :show, status: :unprocessable_content
     end
@@ -21,6 +16,12 @@ class Admin::ApiAccessesController < ApplicationController
   private
 
   def api_access_params
-    params.require(:tenant).permit(:api_token_public_key)
+    params.require(:tenant).permit(:api_token_public_key, :settings_agp_api_url, :settings_agp_sub, :settings_agp_api_token_private_key, :settings_agp_webhook_public_key)
+  end
+
+  def normalized_api_access_params
+    api_access_params.to_h.transform_values do |value|
+      value.is_a?(String) ? value.presence : value
+    end
   end
 end

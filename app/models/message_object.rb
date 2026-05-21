@@ -24,6 +24,7 @@ class MessageObject < ApplicationRecord
   has_many :message_objects_tags, dependent: :destroy
   has_many :tags, through: :message_objects_tags
   has_one :archived_object, dependent: :destroy
+  has_many :agp_contracts, class_name: "Agp::Contract", foreign_key: "message_object_id", dependent: :destroy, inverse_of: :message_object
 
   delegate :tenant, to: :message
 
