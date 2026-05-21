@@ -18,6 +18,7 @@ class Upvs::MessageDraftsTest < ApplicationSystemTestCase
 
   test "user can upload message draft only if tenant messages limit not exceeded" do
     tenant = users(:basic).tenant
+    tenant.enable_feature(:upvs, force: true)
     tenant.update(outbox_messages_limit: tenant.messages.outbox.count)
 
     sign_in_as(:basic)

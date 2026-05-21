@@ -3,7 +3,6 @@
 ssd:
   name: SSD
   feature_flags:
-    - upvs
     - audit_log
     - archive
     - api
