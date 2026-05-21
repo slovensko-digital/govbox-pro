@@ -44,6 +44,8 @@ en:
           attributes:
             base:
               empty_selection: "At least one export option must be selected"
+        message:
+          limit_exceeded: 'Limit of %{limit} messages exceeded'
   errors:
     attachments:
       missing_required: "Missing required attachment for %{identifier} (minimum is %{min_occurrences})."

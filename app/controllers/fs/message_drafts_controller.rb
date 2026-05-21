@@ -1,4 +1,6 @@
 class Fs::MessageDraftsController < ApplicationController
+  before_action :check_messages_limit, only: :create
+
   def new
     @message = Fs::MessageDraft.new
     @boxes = Current.tenant&.boxes.where(type: 'Fs::Box')
@@ -28,6 +30,13 @@ class Fs::MessageDraftsController < ApplicationController
   end
 
   private
+
+  def check_messages_limit
+    messages_limit = Current.tenant.outbox_messages_limit
+    if messages_limit && Current.tenant.messages.outbox.count + message_draft_params[:content]&.count > messages_limit
+      redirect_to message_threads_path, alert: I18n.t("activerecord.errors.models.message.limit_exceeded", limit: messages_limit)
+    end
+  end
 
   def message_draft_params
     params.permit(

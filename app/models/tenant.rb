@@ -6,6 +6,7 @@
 #  api_token_public_key   :string
 #  feature_flags          :string           default([]), is an Array
 #  name                   :string           not null
+#  outbox_messages_limit  :integer
 #  settings               :jsonb            not null
 #  signature_request_mode :string           default("signer_group"), not null
 #  created_at             :datetime         not null

@@ -201,6 +201,29 @@ class Fs::MessageDraftsTest < ApplicationSystemTestCase
     end
   end
 
+  test "user can upload message draft only if tenant messages limit not exceeded" do
+    tenant = users(:solver_other).tenant
+    tenant.update(outbox_messages_limit: tenant.messages.outbox.count)
+
+    sign_in_as(:solver_other)
+
+    visit message_threads_path
+
+    click_button "Vytvoriť novú správu"
+    click_link "Vytvoriť novú správu na finančnú správu"
+    fs_api = Minitest::Mock.new
+    fs_api.expect :parse_form, {
+      "subject" => "1122334455",
+      "form_identifier" => "3055_781"
+    },
+    [file_fixture("fs/dic1122334455_fs3055_781__sprava_dani_2023.xml").read]
+
+    attach_file "content[]", file_fixture("fs/dic1122334455_fs3055_781__sprava_dani_2023.xml")
+    click_button "Nahrať správy"
+
+    assert_text "Dosiahli ste limit #{tenant.outbox_messages_limit} správ"
+  end
+
   test "shows detailed error message when submit failed with signer error" do
     message_draft = messages(:fs_accountants_draft_uzmujv14_with_attachment)
     message_draft.update!(

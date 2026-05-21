@@ -67,8 +67,8 @@ class ApiController < ActionController::API
     render status: :unprocessable_content, json: { message: "Unprocessable entity" }
   end
 
-  def render_forbidden_no_key
-    render status: :forbidden, json: { message: "Forbidden" }
+  def render_forbidden_no_key(message: "Forbidden")
+    render status: :forbidden, json: { message: message }
   end
 
   def render_forbidden(_key, **_options)

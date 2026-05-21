@@ -3,6 +3,7 @@ class Upvs::MessageDraftsController < ApplicationController
   before_action :load_box, only: :create
   before_action :load_message_template, only: :create
   before_action :load_message_draft, except: [:new, :create]
+  before_action :check_messages_limit, only: :create
 
   include ActionView::RecordIdentifier
   include MessagesConcern
@@ -55,6 +56,13 @@ class Upvs::MessageDraftsController < ApplicationController
   end
 
   private
+
+  def check_messages_limit
+    messages_limit = Current.tenant.outbox_messages_limit
+    if messages_limit && Current.tenant.messages.outbox.count >= messages_limit
+      redirect_to message_threads_path, alert: I18n.t("activerecord.errors.models.message.limit_exceeded", limit: messages_limit)
+    end
+  end
 
   def load_original_message
     @original_message = policy_scope(Message).find(params[:original_message_id]) if params[:original_message_id]

@@ -1,4 +1,5 @@
 class Api::MessagesController < Api::TenantController
+  before_action :check_messages_limit, only: :message_drafts
   before_action :load_box, only: :message_drafts
   before_action :check_message_type, only: :message_drafts
   before_action :check_tags, only: :message_drafts
@@ -70,6 +71,13 @@ class Api::MessagesController < Api::TenantController
   end
 
   private
+
+  def check_messages_limit
+    messages_limit = @tenant.outbox_messages_limit
+    if messages_limit && @tenant.messages.outbox.count >= messages_limit
+      render_forbidden_no_key(message: I18n.t("activerecord.errors.models.message.limit_exceeded", limit: messages_limit))
+    end
+  end
 
   def permitted_search_params
     params.permit(:uuid)
