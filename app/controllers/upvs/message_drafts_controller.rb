@@ -58,10 +58,7 @@ class Upvs::MessageDraftsController < ApplicationController
   private
 
   def check_messages_limit
-    messages_limit = Current.tenant.outbox_messages_limit
-    if messages_limit && Current.tenant.messages.outbox.count >= messages_limit
-      redirect_to message_threads_path, alert: I18n.t("activerecord.errors.models.message.limit_exceeded", limit: messages_limit)
-    end
+    redirect_to message_threads_path, alert: I18n.t("activerecord.errors.models.message.limit_exceeded", limit: Current.tenant.outbox_messages_limit) if Current.tenant.outbox_messages_limit_exceeded?
   end
 
   def load_original_message

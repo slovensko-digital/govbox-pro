@@ -112,6 +112,12 @@ class Tenant < ApplicationRecord
     problem_tag || raise(ActiveRecord::RecordNotFound, "`ProblemTag` not found in tenant: #{id}")
   end
 
+  def outbox_messages_limit_exceeded?(extra_messages_count: 1)
+    return false unless outbox_messages_limit
+
+    messages.outbox.count + extra_messages_count > outbox_messages_limit
+  end
+
   def feature_enabled?(feature)
     raise "Unknown feature #{feature}" unless feature.in? ALL_FEATURE_FLAGS
 

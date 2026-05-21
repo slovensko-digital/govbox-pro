@@ -32,10 +32,7 @@ class Fs::MessageDraftsController < ApplicationController
   private
 
   def check_messages_limit
-    messages_limit = Current.tenant.outbox_messages_limit
-    if messages_limit && Current.tenant.messages.outbox.count + message_draft_params[:content]&.count > messages_limit
-      redirect_to message_threads_path, alert: I18n.t("activerecord.errors.models.message.limit_exceeded", limit: messages_limit)
-    end
+    redirect_to message_threads_path, alert: I18n.t("activerecord.errors.models.message.limit_exceeded", limit: Current.tenant.outbox_messages_limit) if Current.tenant.outbox_messages_limit_exceeded?(extra_messages_count: message_draft_params[:content]&.count.to_i)
   end
 
   def message_draft_params
