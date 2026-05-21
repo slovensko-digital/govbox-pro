@@ -188,6 +188,7 @@ class MessageThreadsTest < ApplicationSystemTestCase
     visit message_thread_path thread_issue
 
     assert_no_selector "#next_page_area"
+    assert_selector "#message_#{message_two.id}"
 
     within_message_in_thread message_two do
       click_button "Odpovedať"
