@@ -118,6 +118,12 @@ class Tenant < ApplicationRecord
     messages.outbox.count + extra_messages_count > outbox_messages_limit
   end
 
+  def remaining_outbox_messages_count
+    return unless outbox_messages_limit
+
+    [outbox_messages_limit - messages.outbox.count, 0].max
+  end
+
   def feature_enabled?(feature)
     raise "Unknown feature #{feature}" unless feature.in? ALL_FEATURE_FLAGS
 

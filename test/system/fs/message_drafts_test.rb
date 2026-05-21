@@ -221,7 +221,7 @@ class Fs::MessageDraftsTest < ApplicationSystemTestCase
     attach_file "content[]", file_fixture("fs/dic1122334455_fs3055_781__sprava_dani_2023.xml")
     click_button "Nahrať správy"
 
-    assert_text "Dosiahli ste limit #{tenant.outbox_messages_limit} správ"
+    assert_text "Správy nie je možné nahrať. Môžete nahrať iba #{tenant.remaining_outbox_messages_count} správ, kým nedosiahnete limit"
   end
 
   test "shows detailed error message when submit failed with signer error" do

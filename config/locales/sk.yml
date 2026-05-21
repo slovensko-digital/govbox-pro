@@ -56,6 +56,7 @@ sk:
               public_key_invalid_format: "Neplatný RSA kľúč. Uistite sa, že vstup obsahuje PEM formát verejného kľúča."
         message:
           limit_exceeded: 'Dosiahli ste limit %{limit} správ'
+          remaining_limit: 'Správy nie je možné nahrať. Môžete nahrať iba %{remaining} správ, kým nedosiahnete limit'
   date:
     abbr_day_names:
     - Ne
