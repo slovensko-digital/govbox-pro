@@ -14,7 +14,7 @@
           </div>
         <% elsif @bundle.init_failed? %>
           <p class="pb-4 text-red-600">
-            Nastala chyba pri inicializácii bundle. Skúste to prosím znova.
+            Nastala chyba pri inicializácii podpisového balíka. Skúste to prosím znova.
           </p>
         <% elsif @bundle.created? %>
           <%= render "created" %>
