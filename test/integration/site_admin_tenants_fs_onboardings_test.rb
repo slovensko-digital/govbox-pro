@@ -1,6 +1,6 @@
 require "test_helper"
 
-class SiteAdminFsOnboardingsTest < ActionDispatch::IntegrationTest
+class SiteAdminTenantsFsOnboardingsTest < ActionDispatch::IntegrationTest
   test "creates onboarding" do
     onboarding_params = {
       tenant_name: "Test tenant",
@@ -12,7 +12,7 @@ class SiteAdminFsOnboardingsTest < ActionDispatch::IntegrationTest
       fs_api_private_key: "fs-api-private-key"
     }
 
-    post "/api/site_admin/fs/onboardings",
+    post "/api/site_admin/tenants/fs/onboardings",
          params: { onboarding: onboarding_params, token: generate_api_token },
          as: :json
 
@@ -25,7 +25,7 @@ class SiteAdminFsOnboardingsTest < ActionDispatch::IntegrationTest
     invalid_key_pair = OpenSSL::PKey::RSA.new(512)
 
     Fs::OnboardingService.stub(:new, ->(_) { flunk "service should not be called for unauthorized requests" }) do
-      post "/api/site_admin/fs/onboardings",
+      post "/api/site_admin/tenants/fs/onboardings",
            params: {
              onboarding: {
                tenant_name: "Test tenant",
@@ -45,7 +45,7 @@ class SiteAdminFsOnboardingsTest < ActionDispatch::IntegrationTest
   end
 
   test "returns bad request when onboarding params are missing" do
-    post "/api/site_admin/fs/onboardings",
+    post "/api/site_admin/tenants/fs/onboardings",
          params: { token: generate_api_token },
          as: :json
 
@@ -66,13 +66,13 @@ class SiteAdminFsOnboardingsTest < ActionDispatch::IntegrationTest
       fs_api_private_key: "fs-api-private-key"
     }
 
-    post "/api/site_admin/fs/onboardings",
+    post "/api/site_admin/tenants/fs/onboardings",
          params: { onboarding: onboarding_params, token: generate_api_token },
          as: :json
 
     assert_response :ok
 
-    post "/api/site_admin/fs/onboardings",
+    post "/api/site_admin/tenants/fs/onboardings",
          params: { onboarding: onboarding_params, token: generate_api_token },
          as: :json
 
