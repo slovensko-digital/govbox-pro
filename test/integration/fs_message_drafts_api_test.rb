@@ -245,6 +245,38 @@ class FsMessageDraftsApiTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test 'does not create message if tenant messages limit exceeded' do
+    @tenant.update(outbox_messages_limit: @tenant.messages.outbox.count)
+
+    message_params = {
+      type: 'Fs::MessageDraft',
+      title: 'SVDPH Podanie',
+      uuid: SecureRandom.uuid,
+      metadata: {
+        correlation_id: SecureRandom.uuid
+      },
+      objects: [
+        {
+          name: 'test_svdph.xml',
+          is_signed: false,
+          to_be_signed: true,
+          mimetype: 'text/xml',
+          object_type: 'FORM',
+          content: Base64.encode64(file_fixture("fs/svdph_valid.xml").read)
+        }
+      ]
+    }
+
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
+
+    assert_response :forbidden
+
+    json_response = JSON.parse(response.body)
+    assert_equal "Limit of #{@tenant.outbox_messages_limit} messages exceeded", json_response['message']
+
+    assert_equal Message.count, @before_request_messages_count
+  end
+
   test 'does not create message if SignatureRequestedTag on an attachment' do
     message_params = {
       type: 'Fs::MessageDraft',

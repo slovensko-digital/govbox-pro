@@ -6,6 +6,7 @@
 #  api_token_public_key   :string
 #  feature_flags          :string           default([]), is an Array
 #  name                   :string           not null
+#  outbox_messages_limit  :integer
 #  settings               :jsonb            not null
 #  signature_request_mode :string           default("signer_group"), not null
 #  created_at             :datetime         not null
@@ -109,6 +110,18 @@ class Tenant < ApplicationRecord
 
   def problem_tag!
     problem_tag || raise(ActiveRecord::RecordNotFound, "`ProblemTag` not found in tenant: #{id}")
+  end
+
+  def outbox_messages_limit_exceeded?(extra_messages_count: 1)
+    return false unless outbox_messages_limit
+
+    messages.outbox.count + extra_messages_count > outbox_messages_limit
+  end
+
+  def remaining_outbox_messages_count
+    return unless outbox_messages_limit
+
+    [outbox_messages_limit - messages.outbox.count, 0].max
   end
 
   def feature_enabled?(feature)
