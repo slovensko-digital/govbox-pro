@@ -1,4 +1,5 @@
 class Api::MessagesController < Api::TenantController
+  before_action :check_messages_limit, only: :message_drafts
   before_action :load_box, only: :message_drafts
   before_action :check_message_type, only: :message_drafts
   before_action :check_tags, only: :message_drafts
@@ -106,6 +107,10 @@ class Api::MessagesController < Api::TenantController
       ],
       tags: []
     )
+  end
+
+  def check_messages_limit
+    render_forbidden_no_key(message: "Limit of #{@tenant.outbox_messages_limit} messages exceeded") if @tenant.outbox_messages_limit_exceeded?
   end
 
   def check_message_type

@@ -216,6 +216,47 @@ class UpvsMessageDraftsApiTest < ActionDispatch::IntegrationTest
     assert_equal Message.count, @before_request_messages_count
   end
 
+  test 'does not create message if tenant messages limit exceeded' do
+    @tenant.update(outbox_messages_limit: @tenant.messages.outbox.count)
+
+    message_params = {
+      type: 'Upvs::MessageDraft',
+      title: 'Všeobecná agenda',
+      uuid: SecureRandom.uuid,
+      metadata: {
+        posp_id: 'App.GeneralAgenda',
+        posp_version: '1.9',
+        message_type: 'App.GeneralAgenda',
+        correlation_id: SecureRandom.uuid,
+        sender_uri: 'SSDMainURI',
+        recipient_uri: 'ico://sk/12345678',
+      },
+      objects: [
+        {
+          name: 'Form.xml',
+          is_signed: false,
+          to_be_signed: true,
+          mimetype: 'application/x-eform-xml',
+          object_type: 'FORM',
+          content: Base64.encode64('<?xml version="1.0" encoding="utf-8"?>
+<GeneralAgenda xmlns="http://schemas.gov.sk/form/App.GeneralAgenda/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <subject>Všeobecný predmet</subject>
+  <text>Všeobecný text</text>
+</GeneralAgenda>')
+        }
+      ]
+    }
+
+    post '/api/messages/message_drafts', params: message_params.merge({ token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }), as: :json
+
+    assert_response :forbidden
+
+    json_response = JSON.parse(response.body)
+    assert_equal "Limit of #{@tenant.outbox_messages_limit} messages exceeded", json_response['message']
+
+    assert_equal Message.count, @before_request_messages_count
+  end
+
   test 'does not create message unless unique UUID in the box' do
     message_params = {
       type: 'Upvs::MessageDraft',

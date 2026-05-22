@@ -13,16 +13,20 @@ class MessageDraftsSigningTest < ApplicationSystemTestCase
 
     within_message_in_thread(@first_draft) do
       click_button "option-menu-button"
+      assert_link "Vyžiadať podpis"
       click_link "Vyžiadať podpis"
     end
 
-    assert_text "Dokumenty na podpis"
+    assert_selector "h3#modal-title", text: "Dokumenty na podpis"
     uncheck "Hlavný dokument"
     click_button "Vybrať podpisujúcich"
 
+    assert_selector "h3#modal-title", text: "Podpisujúci"
     click_button "Späť na výber dokumentov"
+    assert_selector "h3#modal-title", text: "Dokumenty na podpis"
     click_button "Vybrať podpisujúcich"
 
+    assert_selector "h3#modal-title", text: "Podpisujúci"
     check "Basic user"
     click_button "Uložiť zmeny"
 
