@@ -3,6 +3,7 @@ require 'json'
 module Govbox
   class ProcessMessageJob < ApplicationJob
     retry_on ::ApplicationRecord::FailedToAcquireLockError, wait: :polynomially_longer, attempts: Float::INFINITY
+    retry_on StandardError, attempts: 1
 
     def perform(govbox_message)
       processed_message = ::Message.not_drafts.where(uuid: govbox_message.message_id).joins(:thread).where(thread: { box_id: govbox_message.box.id }).take
