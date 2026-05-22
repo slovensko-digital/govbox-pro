@@ -12,7 +12,7 @@ class Fs::OnboardingService
     @admin_user_name = params[:admin_user_name] if params[:admin_user_name]
     @admin_user_contact_email = params[:admin_user_contact_email] if params[:admin_user_contact_email]
     @fs_api_key = OpenSSL::PKey::RSA.new(2048)
-    @trial = params[:trial] || false
+    @trial = ActiveModel::Type::Boolean.new.cast(params[:trial])
   end
 
   def call(fs_client: FsEnvironment.fs_client)
