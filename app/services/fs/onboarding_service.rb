@@ -1,6 +1,6 @@
 class Fs::OnboardingService
   include ActiveModel::API
-  attr_accessor :tenant_name, :ico, :admin_user_name, :saml_identifier, :admin_user_contact_email
+  attr_accessor :tenant_name, :ico, :admin_user_name, :saml_identifier, :admin_user_contact_email, :trial
 
   validates :tenant_name, :saml_identifier, :admin_user_name, :admin_user_contact_email, presence: true
   validates :ico, presence: true, length: { is: 8 }
@@ -13,6 +13,7 @@ class Fs::OnboardingService
     @admin_user_contact_email = params[:admin_user_contact_email] if params[:admin_user_contact_email]
     @fs_api_sub = "1"
     @fs_api_key = OpenSSL::PKey::RSA.new(2048)
+    @trial = params[:trial] || false
   end
 
   def call(fs_client: FsEnvironment.fs_client)
@@ -23,6 +24,7 @@ class Fs::OnboardingService
 
     Tenant.transaction do
       tenant = Tenant.create!(name: @tenant_name, contact_email: @admin_user_contact_email, ico: @ico)
+      tenant.update!(outbox_messages_limit: 50) if trial
 
       user = tenant.users.create!(name: @admin_user_name, saml_identifier: @saml_identifier).tap do |tenant_user|
         tenant_user.groups << tenant.admin_group
