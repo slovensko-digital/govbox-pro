@@ -1,0 +1,83 @@
+# GovBox Pro - Documentation
+
+This directory contains the user documentation for GovBox Pro.
+
+<<<<<<< HEAD
+- [Úvod](./introduction.md)
+- [Základné pojmy](./concepts/)
+  - [Prehľad](./concepts/overview.md)
+  - [Schránka](./concepts/mailbox.md)
+  - [Správa](./concepts/message.md)
+  - [Vlákno](./concepts/thread.md)
+  - [Štítok](./concepts/label.md)
+  - [Tenant](./concepts/tenant.md)
+  - [Používateľ](./concepts/user.md)
+  - [Skupina](./concepts/group.md)
+  - [Filter](./concepts/filter.md)
+  - [Notifikácia](./concepts/notification.md)
+  - [Pravidlo](./concepts/rule.md)
+  - [Hromadný export](./concepts/export.md)
+- [Začíname](./getting-started/)
+  - [Prihlásenie](./getting-started/login.md)
+  - [Správa používateľov](./getting-started/user-management.md)
+  - [Správa skupín](./getting-started/group-management.md)
+- [Správy a vlákna](./messages/)
+  - [Zobrazenie správ](./messages/viewing-messages.md)
+  - [Zobrazenie vlákna](./messages/viewing-thread.md)
+  - [Odosielanie správ](./messages/submitting.md)
+  - [Stiahnutie správy](./messages/downloading.md)
+  - [Hromadný export správ](./messages/export.md)
+  - [Vyhľadávanie](./messages/searching.md)
+  - [Premenovanie vlákna](./messages/renaming-thread.md)
+- [Notifikácie](./notifications/)
+  - [Nastavenie notifikácií](./notifications/setting-up.md)
+- [Podpisovanie](./signing/)
+  - [Podpis dokumentu](./signing/sign-document.md)
+  - [Vyžiadanie podpisu](./signing/request-signature.md)
+  - [Hromadné podpisovanie](./signing/bulk-signing.md)
+- [Pravidlá](./rules/)
+  - [Vytvorenie pravidla](./rules/creating.md)
+- [Štítky](./labels/)
+  - [Vytvorenie štítka](./labels/creating.md)
+  - [Úprava štítka](./labels/editing.md)
+  - [Prístup k štítkom](./labels/access-control.md)
+- [Prílohy](./attachments/)
+  - [Zobrazenie príloh](./attachments/viewing.md)
+  - [Stiahnutie príloh](./attachments/downloading.md)
+- [Filtre](./filters/)
+  - [Vytvorenie filtra](./filters/creating.md)
+- [Finančná správa](./fs)
+  - [Prepojenie s účtami na Finančnej správe](./fs/connections.md)
+  - [Správa schránok](./fs/mailbox-management.md)
+  - [Hromadné podania](./fs/submissions.md)
+  - [Kontrola potvrdení](./fs/delivery-reports.md)
+- [slovensko.sk](./slovensko.sk)
+  - [Prevzatie správ](./slovensko.sk/receiving.md)
+  - [Odpovedanie na správy](./slovensko.sk/replying.md)
+  - [Správa schránok](./slovensko.sk/mailbox-management.md)
+
+
+=======
+## Running locally
+
+To serve the documentation locally and see your changes in real-time, follow these steps:
+
+### 1. Install dependencies
+
+Make sure you are in the `docs` directory and install the required packages using yarn:
+
+```console
+cd docs
+yarn
+```
+
+### 2. Run the development server
+
+Start the local development server:
+
+```console
+yarn dev
+```
+
+The server will start and the documentation will be available locally. Check the terminal output for the exact URL (usually `http://localhost:3000` or similar).
+>>>>>>> 5491ea92 (docs: dev steps)

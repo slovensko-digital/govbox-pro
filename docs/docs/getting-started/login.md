@@ -21,7 +21,7 @@ Prihlásiť sa do GovBox PRO je možné:
 
 ::: tabs
 
-== tab "slovensko.sk"
+== tab "<span>slovensko.sk</span>"
 Prostredníctvom autentifikačných prostriedkov cez slovensko.sk (eID).
 
 == tab "Google"
