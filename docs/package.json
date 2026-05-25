@@ -3,7 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "docmd dev"
+    "dev": "docmd dev",
+    "build": "docmd build"
   },
   "devDependencies": {
     "@docmd/core": "^0.6.8"
