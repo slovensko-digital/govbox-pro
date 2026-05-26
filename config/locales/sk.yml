@@ -16,6 +16,10 @@ sk:
         settings_obo: ID identity
       tenant:
         api_token_public_key: Verejný kľúč
+        settings_agp_api_url: AGP API URL
+        settings_agp_api_token_private_key: AGP súkromný kľúč
+        settings_agp_sub: AGP subject
+        settings_agp_webhook_public_key: AGP webhook verejný kľúč
     errors:
       messages:
         record_invalid: 'Validácia neúspešná: %{errors}'
@@ -54,6 +58,13 @@ sk:
               public_key_is_private: "Je povolený iba verejný kľúč, nie súkromný."
               public_key_invalid_bits: "Kľúč musí mať presne 2048 bitov. Aktuálny kľúč má %{current_bits} bitov."
               public_key_invalid_format: "Neplatný RSA kľúč. Uistite sa, že vstup obsahuje PEM formát verejného kľúča."
+            settings_agp_api_token_private_key:
+              private_key_missing: "Je potrebné zadať súkromný RSA kľúč."
+              private_key_invalid_bits: "Kľúč musí mať presne 2048 bitov. Aktuálny kľúč má %{current_bits} bitov."
+              private_key_invalid_format: "Neplatný RSA súkromný kľúč. Uistite sa, že vstup obsahuje PEM formát súkromného kľúča."
+            settings_agp_webhook_public_key:
+              public_key_is_private: "Je povolený iba verejný EC kľúč, nie súkromný."
+              public_key_invalid_format: "Neplatný EC verejný kľúč. Uistite sa, že vstup obsahuje PEM formát verejného kľúča."
         message:
           limit_exceeded: 'Dosiahli ste limit %{limit} správ'
           remaining_limit: 'Správy nie je možné nahrať. Môžete nahrať iba %{remaining} správ, kým nedosiahnete limit'
@@ -410,6 +421,9 @@ sk:
     fs_sync:
       name: Synchronizácia schránky z finančnej správy
       description: Synchronizácia schránky z finančnej správy
+    autogram_portal:
+      name: Autogram Portal
+      description: Podpisovanie dokumentov cez AGP
     upvs:
       name: ÚPVS
       description: Funkčnosť prepojenia s ústredným portálom verejnej správy (slovensko.sk)

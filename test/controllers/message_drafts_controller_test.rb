@@ -13,6 +13,38 @@ class MessageDraftsControllerTest < ActionController::TestCase
       MessageDraft.find(message_draft.id)
     end
   end
+
+  test "should destroy draft together with all agp contracts referencing its message objects" do
+    message_draft = messages(:ssd_main_draft)
+    message_object = message_objects(:ssd_main_draft_form)
+    tenant = tenants(:ssd)
+
+    bundle_one = Agp::Bundle.create!(tenant: tenant, bundle_identifier: SecureRandom.uuid)
+    bundle_two = Agp::Bundle.create!(tenant: tenant, bundle_identifier: SecureRandom.uuid)
+
+    Agp::Contract.create!(
+      bundle: bundle_one,
+      message_object: message_object,
+      message_object_updated_at: message_object.updated_at,
+      contract_identifier: SecureRandom.uuid
+    )
+    Agp::Contract.create!(
+      bundle: bundle_two,
+      message_object: message_object,
+      message_object_updated_at: message_object.updated_at,
+      contract_identifier: SecureRandom.uuid
+    )
+
+    assert_equal 2, Agp::Contract.where(message_object: message_object).count
+
+    assert_difference('Agp::Contract.count', -2) do
+      delete :destroy, params: { id: message_draft.id }
+    end
+
+    assert_redirected_to message_threads_path
+    assert_equal "Správa bola zmazaná", flash[:notice]
+    assert_not MessageDraft.exists?(message_draft.id)
+  end
   
   test "should not destroy draft that is being submitted" do
     message_draft = messages(:ssd_main_draft)

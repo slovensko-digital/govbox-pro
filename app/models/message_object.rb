@@ -24,6 +24,7 @@ class MessageObject < ApplicationRecord
   has_many :message_objects_tags, dependent: :destroy
   has_many :tags, through: :message_objects_tags
   has_one :archived_object, dependent: :destroy
+  has_many :agp_contracts, class_name: "Agp::Contract", foreign_key: "message_object_id", dependent: :destroy, inverse_of: :message_object
 
   delegate :tenant, to: :message
 
@@ -73,6 +74,22 @@ class MessageObject < ApplicationRecord
     unassign_tag(user.tenant.signer_group.signature_requested_from_tag)
 
     thread.mark_signed_by_user(user)
+  end
+
+  def mark_as_signed!(params, user)
+    transaction do
+      update!(
+        name: params[:name],
+        mimetype: params[:mimetype],
+        is_signed: true
+      )
+
+      message_object_datum.update!(
+        blob: Base64.decode64(params[:content])
+      )
+
+      mark_signed_by_user(user)
+    end
   end
 
   def add_signature_requested_from_group(group)

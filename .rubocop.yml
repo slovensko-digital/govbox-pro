@@ -4,6 +4,14 @@ AllCops:
   NewCops: enable
 Layout/LineLength:
   Enabled: false
+Metrics/AbcSize:
+  Enabled: false
+Metrics/MethodLength:
+  Max: 20
+Style/Documentation:
+  Enabled: false
+Style/FrozenStringLiteralComment:
+  Enabled: false
 Style/HashSyntax:
   EnforcedShorthandSyntax: never
 Style/StringLiterals:

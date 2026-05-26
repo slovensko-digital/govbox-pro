@@ -1,0 +1,151 @@
+<div id="agp-container"></div>
+
+<script>
+  window.agpInitialized = false;
+  window.agpSyncInProgress = false;
+  window.agpSyncPollAttempts = 0;
+
+  window.renderAgpSyncState = function(title, message, counts = null, showRefresh = false) {
+    const container = document.getElementById("agp-container");
+
+    if (!container) {
+      return;
+    }
+
+    const progress = counts
+      ? `<p class="mt-2 text-sm text-gray-500">Synchronizovaných dokumentov: ${counts.signed} / ${counts.total}</p>`
+      : "";
+    const refreshButton = showRefresh
+      ? `<div class="mt-6 flex justify-center"><button type="button" class="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700" onclick="window.location.reload()">Obnoviť stránku</button></div>`
+      : "";
+
+    container.innerHTML = `
+      <div class="mx-auto max-w-md rounded-lg border border-gray-200 bg-white px-6 py-10 text-center shadow-sm">
+        <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-100 text-green-600">
+          <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+          </svg>
+        </div>
+        <h3 class="text-lg font-semibold text-gray-900">${title}</h3>
+        <p class="mt-2 text-sm text-gray-600">${message}</p>
+        ${progress}
+        ${refreshButton}
+      </div>
+    `;
+  };
+
+  window.fetchAgpBundleSyncStatus = async function() {
+    const response = await fetch("<%= agp_bundle_path(@bundle, format: :json) %>", {
+      headers: {
+        Accept: "application/json"
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`Unable to load AGP bundle sync status: ${response.status}`);
+    }
+
+    return await response.json();
+  };
+
+  window.finishAgpSigningFlow = function() {
+    if (window.Turbo) {
+      window.Turbo.visit(window.location.href, { action: "replace" });
+      return;
+    }
+
+    window.location.reload();
+  };
+
+  window.pollAgpBundleSyncStatus = async function() {
+    try {
+      const syncStatus = await window.fetchAgpBundleSyncStatus();
+
+      if (syncStatus.fully_synced) {
+        window.finishAgpSigningFlow();
+        return;
+      }
+
+      window.renderAgpSyncState(
+        "Dokumenty sú podpísané",
+        "Čakáme na synchronizáciu zmien v GovBoxe.",
+        {
+          signed: syncStatus.signed_contracts_count,
+          total: syncStatus.total_contracts_count
+        }
+      );
+    } catch (error) {
+      console.error("AGP sync polling failed", error);
+    }
+
+    window.agpSyncPollAttempts += 1;
+
+    if (window.agpSyncPollAttempts >= 45) {
+      window.agpSyncInProgress = false;
+      window.renderAgpSyncState(
+        "Dokumenty sú podpísané",
+        "Podpis je hotový, ale synchronizácia v GovBoxe trvá dlhšie ako zvyčajne. Obnovte stránku a skontrolujte stav dokumentov.",
+        null,
+        true
+      );
+      return;
+    }
+
+    setTimeout(window.pollAgpBundleSyncStatus, 1000);
+  };
+
+  window.startAgpSyncPolling = function(event) {
+    if (window.agpSyncInProgress) {
+      return;
+    }
+
+    window.agpSyncInProgress = true;
+    window.agpSyncPollAttempts = 0;
+    window.renderAgpSyncState(
+      "Dokumenty sú podpísané",
+      "Čakáme na synchronizáciu zmien v GovBoxe.",
+      event.total_contracts_count ? {
+        signed: event.total_contracts_count - event.remaining_contracts_count,
+        total: event.total_contracts_count
+      } : null
+    );
+    window.pollAgpBundleSyncStatus();
+  };
+  
+  window.initializeAGPWhenReady = function() {
+    if (window.agpInitialized) {
+      console.log("AGP already initialized, skipping...");
+      return;
+    }
+    
+    if (!document.getElementById("agp-container")) {
+      console.log("AGP container not found, retrying...");
+      setTimeout(window.initializeAGPWhenReady, 100);
+      return;
+    }
+    
+    if (typeof window.agp === 'undefined') {
+      console.log("AGP SDK not loaded yet, retrying...");
+      setTimeout(window.initializeAGPWhenReady, 100);
+      return;
+    }
+    
+    console.log("Initializing AGP iframe for bundle <%= @bundle.bundle_identifier %>");
+    window.agpInitialized = true;
+    window.agp.initBundleIframe("<%= @bundle.bundle_identifier %>", {
+      mode: 'iframe',
+      previewLevel: 'no_onboarding',
+      parentElement: "#agp-container", 
+      width: '100%',
+      height: '650px',
+      onMessage: (event) => {
+        if (event.status === 'document-signed' && event.close_iframe) {
+          console.log("AGP signing completed, waiting for GovBox sync before closing...");
+          window.startAgpSyncPolling(event);
+        }
+      }
+    });
+  };
+</script>
+
+<script src="<%= @agp_sdk_file %>" onload="window.initializeAGPWhenReady()"></script>
