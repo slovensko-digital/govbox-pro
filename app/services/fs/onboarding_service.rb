@@ -2,8 +2,7 @@ class Fs::OnboardingService
   include ActiveModel::API
   attr_accessor :tenant_name, :ico, :admin_user_name, :saml_identifier, :admin_user_contact_email, :trial
 
-  validates :tenant_name, :saml_identifier, :admin_user_name, :admin_user_contact_email, presence: true
-  validates :ico, presence: true, length: { is: 8 }
+  validates :tenant_name, :ico, :saml_identifier, :admin_user_name, :admin_user_contact_email, presence: true
 
   def initialize(params)
     @tenant_name = params[:tenant_name] if params[:tenant_name]
@@ -16,13 +15,6 @@ class Fs::OnboardingService
   end
 
   def call(fs_client: FsEnvironment.fs_client)
-    response = fs_client.admin_api.create_user(
-      crm_identifier: @tenant_name,
-      api_token_public_key: @fs_api_key.public_key.to_pem
-    )[:body]
-
-    fs_api_sub = response["id"]
-
     Tenant.transaction do
       tenant = Tenant.create!(name: @tenant_name, contact_email: @admin_user_contact_email, ico: @ico)
       tenant.update!(outbox_messages_limit: 50) if trial
@@ -36,6 +28,13 @@ class Fs::OnboardingService
 
       tenant.feature_flags = %w[fs_api fs_sync]
       tenant.save!
+
+      response = fs_client.admin_api.create_user(
+        crm_identifier: @tenant_name,
+        api_token_public_key: @fs_api_key.public_key.to_pem
+      )[:body]
+
+      fs_api_sub = response["id"]
 
       Fs::ApiConnection.create!(tenant: tenant, sub: fs_api_sub, api_token_private_key: @fs_api_key.to_pem, owner: user)
 
