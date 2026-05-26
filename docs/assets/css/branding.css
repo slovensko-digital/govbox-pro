@@ -1,3 +1,7 @@
 :root {
     --link-color: oklch(48.8% 0.243 264.376);
 }
+
+a:any-link {
+    text-decoration: underline;
+}
