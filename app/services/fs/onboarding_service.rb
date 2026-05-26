@@ -36,7 +36,7 @@ class Fs::OnboardingService
 
       fs_api_sub = response["id"]
 
-      Fs::ApiConnection.create!(tenant: tenant, sub: fs_api_sub, api_token_private_key: @fs_api_key.to_pem, owner: user)
+      Fs::ApiConnection.create!(tenant: tenant, sub: fs_api_sub, api_token_private_key: @fs_api_key.to_pem, owner: user, custom_name: "Prepojenie na portál finančnej správy")
 
       setup_automation_rules(tenant, user)
 
