@@ -35,8 +35,6 @@ Pomocou Microsoft účtu pre rýchlejšie prihlásenie.
 ## Prihlasovacie údaje
 
 ::: callout warning "Dôležité"
-Prihlasovanie do služby GovBox PRO je cez adresu: [https://pro.govbox.sk/](https://pro.govbox.sk/)
-
 Prihlasovacie údaje sú prvotne nastavené pri zriaďovaní konta pri registrácii.
 :::
 
