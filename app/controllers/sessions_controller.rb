@@ -5,7 +5,9 @@ class SessionsController < ApplicationController
   layout 'login'
 
   def login
-    session[:ssd_trial_return_url] = params[:return_url] if params[:ssd_trial].present?
+    return unless params[:ssd_trial].present? && valid_return_url?(params[:return_url])
+
+    session[:ssd_trial_return_url] = params[:return_url]
   end
 
   def create
@@ -27,5 +29,20 @@ class SessionsController < ApplicationController
 
   def failure
     render html: "Authorization failed (#{request.params["message"]})", status: :forbidden
+  end
+
+  private
+
+  ALLOWED_RETURN_HOSTS = ENV.fetch('SSD_TRIAL_RETURN_URL_ALLOWLIST', '').split(/\s*,\s*/).freeze
+
+  def valid_return_url?(url)
+    return false if url.blank?
+
+    uri = URI.parse(url.to_s)
+    return true if uri.host.nil? && uri.scheme.nil?
+
+    %w[http https].include?(uri.scheme) && ALLOWED_RETURN_HOSTS.include?(uri.host)
+  rescue URI::InvalidURIError
+    false
   end
 end
