@@ -10,6 +10,12 @@ class SessionsController < ApplicationController
     session[:ssd_trial_return_url] = params[:return_url]
   end
 
+  def trial_login
+    return unless params[:ssd_trial].present? && valid_return_url?(params[:return_url])
+
+    session[:ssd_trial_return_url] = params[:return_url]
+  end
+
   def create
     Current.user = User.find_by(email: auth_hash.info.email)
 

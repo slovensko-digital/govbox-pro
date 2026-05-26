@@ -302,6 +302,7 @@ Rails.application.routes.draw do
   resource :sticky_note
 
   get :auth, path: 'prihlasenie', to: 'sessions#login'
+  get :trial_auth, path: 'trial/prihlasenie', to: 'sessions#trial_login'
 
   if ENV["GOOGLE_CLIENT_ID"]
     get 'auth/google_oauth2/callback', to: 'sessions#create'
