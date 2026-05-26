@@ -26,6 +26,16 @@ Aby používateľ mohol čokoľvek podpisovať, musí byť súčasťou skupiny *
 
 ![Ponuka hromadných akcií](../../assets/images/signing/bulk-actions-menu.png)
 
+## Hromadný podpis na 1xPIN v Autograme
+
+Aby ste nemuseli zadávať podpisový PIN k vašej karte pre každý dokument, zapnite v Autograme možnosť hromadného podpisovania.
+
+1. Na hlavnej obrazovke **Autogramu** kliknite na **"Nastavenia"**
+![Úvodná obrazovka Autogramu](../../assets/images/signing/autogram-home-settings.png)
+
+2. Hneď v prvej záložke **"Podpisovanie"** sa posuňte trochu nižšie a zapnite **"Hromadné podpisovanie"**. Následne uložte nastavenia.
+![NAstavenia Autogramu](../../assets/images/signing/autogram-settings-bulk.png)
+
 ## Výsledok podpisu
 
 ### Po úspešnom podpísaní
