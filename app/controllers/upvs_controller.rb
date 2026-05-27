@@ -13,7 +13,7 @@ class UpvsController < ActionController::API
 
     Current.user = User.find_by(saml_identifier: saml_identifier)
 
-    if Current.user.nil? && return_url.present?
+    if Current.user.nil? && session[:ssd_trial_return_url].present?
       return_url = session.delete(:ssd_trial_return_url)
       token = JWT.encode(
         {
