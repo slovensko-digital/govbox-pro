@@ -15,7 +15,7 @@ module Fs
       request(:post, "users", {
         crm_identifier: crm_identifier,
         api_token_public_key: api_token_public_key
-      }.to_json, jwt_header.merge({"Content-Type": "application/json"}))
+      }.to_json, jwt_header.merge({"Content-Type": "application/json"}))[:body]
     end
 
     private

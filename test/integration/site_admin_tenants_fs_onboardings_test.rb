@@ -7,14 +7,20 @@ class SiteAdminTenantsFsOnboardingsTest < ActionDispatch::IntegrationTest
       ico: "09173804",
       admin_user_name: "Test admin",
       saml_identifier: "test-saml-identifier",
-      admin_user_contact_email: "admin@test.sk",
-      fs_api_sub: "fs-api-sub",
-      fs_api_private_key: "fs-api-private-key"
+      admin_user_contact_email: "admin@test.sk"
     }
 
-    post "/api/site_admin/tenants/fs/onboardings",
-         params: { onboarding: onboarding_params, token: generate_api_token },
-         as: :json
+    fs_api = Minitest::Mock.new
+    fs_api.expect :create_user, {
+      "id" => 1
+    },
+    **{crm_identifier: onboarding_params[:tenant_name], api_token_public_key: String}
+
+    FsEnvironment.fs_client.stub :admin_api, fs_api do
+      post "/api/site_admin/tenants/fs/onboardings",
+           params: { onboarding: onboarding_params, token: generate_api_token },
+           as: :json
+    end
 
     assert_response :ok
     json_response = JSON.parse(response.body)
@@ -66,9 +72,17 @@ class SiteAdminTenantsFsOnboardingsTest < ActionDispatch::IntegrationTest
       fs_api_private_key: "fs-api-private-key"
     }
 
-    post "/api/site_admin/tenants/fs/onboardings",
-         params: { onboarding: onboarding_params, token: generate_api_token },
-         as: :json
+    fs_api = Minitest::Mock.new
+    fs_api.expect :create_user, {
+      "id" => 1
+    },
+    **{crm_identifier: onboarding_params[:tenant_name], api_token_public_key: String}
+
+    FsEnvironment.fs_client.stub :admin_api, fs_api do
+      post "/api/site_admin/tenants/fs/onboardings",
+           params: { onboarding: onboarding_params, token: generate_api_token },
+           as: :json
+    end
 
     assert_response :ok
 
