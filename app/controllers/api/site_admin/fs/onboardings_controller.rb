@@ -1,10 +1,10 @@
 class Api::SiteAdmin::Fs::OnboardingsController < Api::SiteAdminController
-  rescue_from ActiveRecord::RecordNotUnique do
-    render_conflict("Tenant with the same name, ico or saml identifier already exists")
-  end
-
-  rescue_from ActiveRecord::RecordInvalid do
-    render_conflict("Tenant with the same name, ico or saml identifier already exists")
+  rescue_from ActiveRecord::RecordInvalid do |e|
+    if e.record.errors.details[:saml_identifier]&.any? { |error| error[:error] == :taken }
+      render_conflict("Saml identifier has already been taken")
+    else
+      render status: :unprocessable_content, json: { message: "Invalid onboarding data" }
+    end
   end
 
   def create

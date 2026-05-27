@@ -4,6 +4,8 @@ module Dev
     skip_before_action :authenticate
     skip_after_action :verify_authorized
 
+    ALLOWED_RETURN_HOSTS = ENV.fetch('SSD_TRIAL_RETURN_URL_ALLOWLIST', '').split(",")
+
     def saml_callback
       return_url = params[:return_url]
       return render plain: "Invalid return_url", status: :bad_request unless valid_return_url?(return_url)
@@ -25,15 +27,13 @@ module Dev
 
     private
 
-    ALLOWED_RETURN_HOSTS = ENV.fetch('SSD_TRIAL_RETURN_URL_ALLOWLIST', '').split(/\s*,\s*/).freeze
-
     def valid_return_url?(url)
       return false if url.blank?
 
       uri = URI.parse(url.to_s)
       return true if uri.host.nil? && uri.scheme.nil?
 
-      %w[http https].include?(uri.scheme) && ALLOWED_RETURN_HOSTS.include?(uri.host)
+      %w[http https].include?(uri.scheme) && ALLOWED_RETURN_HOSTS.include?(url)
     rescue URI::InvalidURIError
       false
     end
