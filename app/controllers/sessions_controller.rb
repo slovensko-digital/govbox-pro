@@ -4,14 +4,16 @@ class SessionsController < ApplicationController
   skip_before_action :set_menu_context
   layout 'login'
 
-  ALLOWED_RETURN_URLS = ENV.fetch('SSD_TRIAL_RETURN_URL_ALLOWLIST', '').split(",")
-
   def login; end
 
   def trial_login
     return unless params[:ssd_trial].present? && valid_return_url?(params[:return_url])
 
     session[:ssd_trial_return_url] = params[:return_url]
+    @ssd_trial_relay_state = Rails.application.message_verifier(:ssd_trial_return_url).generate(
+      params[:return_url],
+      expires_in: 15.minutes
+    )
   end
 
   def create
@@ -43,8 +45,12 @@ class SessionsController < ApplicationController
     uri = URI.parse(url.to_s)
     return true if uri.host.nil? && uri.scheme.nil?
 
-    %w[http https].include?(uri.scheme) && ALLOWED_RETURN_URLS.include?(url)
+    %w[http https].include?(uri.scheme) && allowed_return_urls.include?(url)
   rescue URI::InvalidURIError
     false
+  end
+
+  def allowed_return_urls
+    ENV.fetch('SSD_TRIAL_RETURN_URL_ALLOWLIST', '').split(',')
   end
 end
