@@ -4,7 +4,7 @@ class SessionsController < ApplicationController
   skip_before_action :set_menu_context
   layout 'login'
 
-  ALLOWED_RETURN_HOSTS = ENV.fetch('SSD_TRIAL_RETURN_URL_ALLOWLIST', '').split(",")
+  ALLOWED_RETURN_URLS = ENV.fetch('SSD_TRIAL_RETURN_URL_ALLOWLIST', '').split(",")
 
   def login; end
 
@@ -43,7 +43,7 @@ class SessionsController < ApplicationController
     uri = URI.parse(url.to_s)
     return true if uri.host.nil? && uri.scheme.nil?
 
-    %w[http https].include?(uri.scheme) && ALLOWED_RETURN_HOSTS.include?(url)
+    %w[http https].include?(uri.scheme) && ALLOWED_RETURN_URLS.include?(url)
   rescue URI::InvalidURIError
     false
   end

@@ -4,7 +4,7 @@ module Dev
     skip_before_action :authenticate
     skip_after_action :verify_authorized
 
-    ALLOWED_RETURN_HOSTS = ENV.fetch('SSD_TRIAL_RETURN_URL_ALLOWLIST', '').split(",")
+    ALLOWED_RETURN_URLS = ENV.fetch('SSD_TRIAL_RETURN_URL_ALLOWLIST', '').split(",")
 
     def saml_callback
       return_url = params[:return_url]
@@ -33,7 +33,7 @@ module Dev
       uri = URI.parse(url.to_s)
       return true if uri.host.nil? && uri.scheme.nil?
 
-      %w[http https].include?(uri.scheme) && ALLOWED_RETURN_HOSTS.include?(url)
+      %w[http https].include?(uri.scheme) && ALLOWED_RETURN_URLS.include?(url)
     rescue URI::InvalidURIError
       false
     end
