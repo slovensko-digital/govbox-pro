@@ -36,9 +36,7 @@ class SiteAdminTenantsFsOnboardingsTest < ActionDispatch::IntegrationTest
              onboarding: {
                tenant_name: "Test tenant",
                admin_user_name: "Test admin",
-               saml_identifier: "test-saml-identifier",
-               fs_api_sub: "fs-api-sub",
-               fs_api_private_key: "fs-api-private-key"
+               saml_identifier: "test-saml-identifier"
              },
              token: generate_api_token(key_pair: invalid_key_pair)
            },
@@ -67,9 +65,7 @@ class SiteAdminTenantsFsOnboardingsTest < ActionDispatch::IntegrationTest
       ico: "87654321",
       admin_user_name: "Admin",
       saml_identifier: "admin-dup@example.com",
-      admin_user_contact_email: "admin-dup@example.com",
-      fs_api_sub: "fs-api-sub",
-      fs_api_private_key: "fs-api-private-key"
+      admin_user_contact_email: "admin-dup@example.com"
     }
 
     fs_api = Minitest::Mock.new
