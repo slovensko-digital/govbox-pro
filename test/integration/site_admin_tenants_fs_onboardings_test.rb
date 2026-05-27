@@ -88,7 +88,6 @@ class SiteAdminTenantsFsOnboardingsTest < ActionDispatch::IntegrationTest
 
     assert_response :conflict
     json_response = JSON.parse(response.body)
-    assert_match "already exists", json_response["message"].downcase
+    assert_match "already been taken", json_response["message"].downcase
   end
 end
-
