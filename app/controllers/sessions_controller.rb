@@ -14,10 +14,6 @@ class SessionsController < ApplicationController
     return unless params[:ssd_trial].present? && valid_return_url?(params[:return_url])
 
     session[:ssd_trial_return_url] = params[:return_url]
-    @ssd_trial_relay_state = Rails.application.message_verifier(:ssd_trial_return_url).generate(
-      params[:return_url],
-      expires_in: 15.minutes
-    )
   end
 
   def create

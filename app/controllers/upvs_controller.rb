@@ -12,9 +12,9 @@ class UpvsController < ActionController::API
     username = response.attributes["Actor.FormattedName"]
 
     Current.user = User.find_by(saml_identifier: saml_identifier)
-    return_url = session.delete(:ssd_trial_return_url).presence || relay_state_trial_return_url
 
     if Current.user.nil? && return_url.present?
+      return_url = session.delete(:ssd_trial_return_url)
       token = JWT.encode(
         {
           saml_identifier: saml_identifier,
@@ -55,31 +55,6 @@ class UpvsController < ActionController::API
   end
 
   private
-
-  def relay_state_trial_return_url
-    relay_state = params[:RelayState].presence
-    return if relay_state.blank?
-
-    return_url = Rails.application.message_verifier(:ssd_trial_return_url).verify(relay_state)
-    valid_return_url?(return_url) ? return_url : nil
-  rescue ActiveSupport::MessageVerifier::InvalidSignature
-    nil
-  end
-
-  def valid_return_url?(url)
-    return false if url.blank?
-
-    uri = URI.parse(url.to_s)
-    return true if uri.host.nil? && uri.scheme.nil?
-
-    %w[http https].include?(uri.scheme) && allowed_return_urls.include?(url)
-  rescue URI::InvalidURIError
-    false
-  end
-
-  def allowed_return_urls
-    ENV.fetch('SSD_TRIAL_RETURN_URL_ALLOWLIST', '').split(',')
-  end
 
   def slo_request_params
     params.permit(:SAMLRequest, :SigAlg, :Signature)
