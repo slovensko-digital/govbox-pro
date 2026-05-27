@@ -9,8 +9,33 @@ class UpvsController < ActionController::API
   def callback
     response = request.env['omniauth.auth']['extra']['response_object']
     saml_identifier = response.attributes["Subject.UPVSIdentityID"]
+    username = response.attributes["Actor.FormattedName"]
 
     Current.user = User.find_by(saml_identifier: saml_identifier)
+
+    if Current.user.nil? && session[:ssd_trial_return_url].present?
+      return_url = session.delete(:ssd_trial_return_url)
+
+      token = JWT.encode(
+        {
+          saml_identifier: saml_identifier,
+          username: username,
+          exp: 5.minutes.from_now.to_i
+        },
+        ENV.fetch("SSD_TRIAL_SHARED_SECRET"),
+        "HS256"
+      )
+
+      uri = URI.parse(return_url)
+
+      uri.query = URI.encode_www_form(
+        URI.decode_www_form(uri.query.to_s).append(["token", token])
+      )
+
+      return redirect_to(uri.to_s)
+    end
+
+    session.delete(:ssd_trial_return_url)
 
     create_session(saml_identifier: saml_identifier)
     EventBus.publish(:user_logged_in, Current.user) if Current.user

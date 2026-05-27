@@ -1,0 +1,50 @@
+<div class="flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8">
+  <div class="sm:mx-auto sm:w-full sm:max-w-md">
+    <%= image_tag("SD_icon.png", alt: "logo", class: "mx-auto h-10 w-auto") %>
+    <h2 class="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Vyskúšajte GovBox PRO na 30 dní zadarmo</h2>
+  </div>
+  <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
+    <div class="bg-white px-6 py-12 shadow sm:rounded-lg sm:px-12">
+      <div class="mb-6" style="margin-bottom: 1.5rem">
+        <ul class="text-sm text-gray-600 space-y-4">
+          <li class="flex items-start">
+            <svg class="h-5 w-5 text-indigo-600 mr-3 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>Overíme vašu identitu cez Slovensko.sk</span>
+          </li>
+          <li class="flex items-start">
+            <svg class="h-5 w-5 text-indigo-600 mr-3 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>Vyplníte základné údaje o vašej spoločnosti</span>
+          </li>
+          <li class="flex items-start">
+            <svg class="h-5 w-5 text-indigo-600 mr-3 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>Získate <strong>30 dní používania GovBox PRO zadarmo</strong></span>
+          </li>
+        </ul>
+      </div>
+      <div class="grid grid-cols-1 gap-6">
+        <% if UpvsEnvironment.sso_support? %>
+          <%= button_to "/auth/saml", method: :post, data: { turbo: false }, class: "flex w-full items-center justify-center gap-3 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:ring-transparent" do %>
+            <svg class="h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+            </svg>
+            <span class="text-sm font-semibold leading-6">Prihlásiť cez Slovensko.sk</span>
+          <% end %>
+        <% end %>
+        <% if Rails.env.development? %>
+          <%= link_to dev_mock_saml_callback_path(return_url: params[:return_url]), data: { turbo: false }, class: "flex w-full items-center justify-center gap-3 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:ring-transparent" do %>
+            <svg class="h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+            </svg>
+            <span class="text-sm font-semibold leading-6">Mock SAML callback (dev only)</span>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

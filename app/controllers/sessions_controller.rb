@@ -4,7 +4,15 @@ class SessionsController < ApplicationController
   skip_before_action :set_menu_context
   layout 'login'
 
+  ALLOWED_RETURN_URLS = ENV.fetch('SSD_TRIAL_RETURN_URL_ALLOWLIST', '').split(",")
+
   def login; end
+
+  def trial_login
+    return unless params[:ssd_trial].present? && valid_return_url?(params[:return_url])
+
+    session[:ssd_trial_return_url] = params[:return_url]
+  end
 
   def create
     Current.user = User.find_by(email: auth_hash.info.email)
@@ -25,5 +33,18 @@ class SessionsController < ApplicationController
 
   def failure
     render html: "Authorization failed (#{request.params["message"]})", status: :forbidden
+  end
+
+  private
+
+  def valid_return_url?(url)
+    return false if url.blank?
+
+    uri = URI.parse(url.to_s)
+    return true if uri.host.nil? && uri.scheme.nil?
+
+    %w[http https].include?(uri.scheme) && ALLOWED_RETURN_URLS.include?(url)
+  rescue URI::InvalidURIError
+    false
   end
 end

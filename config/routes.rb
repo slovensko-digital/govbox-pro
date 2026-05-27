@@ -230,6 +230,12 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :site_admin do
       resources :tenants, only: [:create, :destroy] do
+        collection do
+          namespace :fs do
+            resources :onboardings, only: [:create]
+          end
+        end
+
         namespace :upvs do
           resources :boxes, only: :create
         end
@@ -296,6 +302,7 @@ Rails.application.routes.draw do
   resource :sticky_note
 
   get :auth, path: 'prihlasenie', to: 'sessions#login'
+  get :trial_auth, path: 'trial/prihlasenie', to: 'sessions#trial_login'
 
   if ENV["GOOGLE_CLIENT_ID"]
     get 'auth/google_oauth2/callback', to: 'sessions#create'
@@ -310,6 +317,12 @@ Rails.application.routes.draw do
   if ENV["IDENTITY_AUTH"] == "true"
     post 'auth/identity/callback', to: 'sessions#create'
     post 'auth/identity/failure', to: 'sessions#failure'
+  end
+
+  if Rails.env.development?
+    namespace :dev do
+      get 'mock_saml_callback', to: 'mock#saml_callback'
+    end
   end
 
   get "/service-worker.js" => "service_worker#service_worker"

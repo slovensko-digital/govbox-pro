@@ -4,7 +4,9 @@
 #
 #  id                     :bigint           not null, primary key
 #  api_token_public_key   :string
+#  contact_email          :string
 #  feature_flags          :string           default([]), is an Array
+#  ico                    :string(8)
 #  name                   :string           not null
 #  outbox_messages_limit  :integer
 #  settings               :jsonb            not null
@@ -54,6 +56,10 @@ class Tenant < ApplicationRecord
   after_create :create_default_objects
 
   validates_presence_of :name
+
+  validates :contact_email, format: { with: URI::MailTo::EMAIL_REGEXP, message: "must be valid" }, allow_blank: true
+  validates :ico, format: { with: /\A\d{8}\z/, message: "must be 8 digits" }, allow_blank: true
+
   validate :validate_api_token_public_key_format, unless: -> { api_token_public_key.nil? }
 
   ALL_FEATURE_FLAGS = [:audit_log, :archive, :api, :message_draft_import, :fs_api, :fs_sync, :upvs]

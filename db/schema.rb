@@ -675,6 +675,8 @@ ActiveRecord::Schema[7.1].define(version: 2026_05_20_170600) do
     t.string "api_token_public_key"
     t.jsonb "settings", default: {}, null: false
     t.string "signature_request_mode", default: "signer_group", null: false
+    t.string "contact_email"
+    t.string "ico", limit: 8
     t.integer "outbox_messages_limit"
   end
 
