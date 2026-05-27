@@ -39,7 +39,7 @@ class SessionsController < ApplicationController
 
   private
 
-  ALLOWED_RETURN_HOSTS = ENV.fetch('SSD_TRIAL_RETURN_URL_ALLOWLIST').split(/\s*,\s*/).freeze
+  ALLOWED_RETURN_HOSTS = ENV.fetch('SSD_TRIAL_RETURN_URL_ALLOWLIST', '').split(/\s*,\s*/).freeze
 
   def valid_return_url?(url)
     return false if url.blank?
