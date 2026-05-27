@@ -1,21 +1,22 @@
 <div class="flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8">
   <div class="sm:mx-auto sm:w-full sm:max-w-md">
     <%= image_tag("SD_icon.png", alt: "logo", class: "mx-auto h-10 w-auto") %>
-    <h2 class="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Nemáte vytvorený účet</h2>
+    <h2 class="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Ešte nemáte vytvorený účet</h2>
   </div>
   <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
     <div class="bg-white px-6 py-12 shadow sm:rounded-lg sm:px-12">
-      <p class="text-center text-gray-900">
-        <a href="#" class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">Kontaktujte nás</a> s požiadavkou o vytvorenie účtu
-        <%= (" spolu s Vašim identifikátorom: " + params[:saml_identifier]) if params[:saml_identifier] %>
-      </p>
-
       <% if @no_account_trial_enabled %>
+        <p class="text-center text-gray-900">Pokračujte kliknutím na tlačidlo nižšie a získate bezplatný 30-dňový účet GovBox PRO.</p>
         <div class="mt-8">
           <%= button_to no_account_trial_sessions_path, method: :post, params: { saml_identifier: params[:saml_identifier], username: params[:username] }, class: "flex w-full items-center justify-center gap-3 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-offset-2" do %>
             <span class="text-sm font-semibold leading-6">Vytvoriť bezplatný 30-dňový účet</span>
           <% end %>
         </div>
+      <% else %>
+        <p class="text-center text-gray-900">
+          <a href="#" class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">Kontaktujte nás</a> s požiadavkou o vytvorenie účtu
+          <%= (" spolu s Vašim identifikátorom: " + params[:saml_identifier]) if params[:saml_identifier] %>
+        </p>
       <% end %>
     </div>
   </div>
