@@ -19,7 +19,7 @@ module Authentication
     load_current_user
   end
 
-  def create_session(saml_identifier: nil)
+  def create_session(saml_identifier: nil, username: nil)
     if Current.user
       session[:user_id] = Current.user.id
       session[:login_expires_at] = SESSION_TIMEOUT.from_now
@@ -29,7 +29,7 @@ module Authentication
       session[:upvs_login] = saml_identifier.present?
       redirect_to session[:after_login_path] || default_after_login_path
     else
-      redirect_to no_account_sessions_path(saml_identifier: saml_identifier)
+      redirect_to no_account_sessions_path(saml_identifier: saml_identifier, username: username)
     end
   end
 

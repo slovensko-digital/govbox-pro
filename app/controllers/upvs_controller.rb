@@ -36,7 +36,7 @@ class UpvsController < ActionController::API
 
     session.delete(:ssd_trial_return_url)
 
-    create_session(saml_identifier: saml_identifier)
+    create_session(saml_identifier: saml_identifier, username: username)
     EventBus.publish(:user_logged_in, Current.user) if Current.user
   end
 

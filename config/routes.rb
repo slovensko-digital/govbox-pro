@@ -224,6 +224,7 @@ Rails.application.routes.draw do
   resources :sessions do
     get :login, on: :collection
     get :no_account, on: :collection
+    get :no_account_trial, on: :collection
     delete :destroy, on: :collection
   end
 
