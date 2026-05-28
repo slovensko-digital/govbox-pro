@@ -38,12 +38,12 @@ class SessionsController < ApplicationController
   end
 
   def no_account_trial
-    return redirect_to no_account_sessions_path(saml_identifier: params[:saml_identifier], username: params[:username]) unless no_account_trial_enabled?
+    return redirect_to no_account_sessions_path unless no_account_trial_enabled?
 
-    saml_identifier = params[:saml_identifier]
-    username = params[:username]
+    saml_identifier = session[:saml_identifier]
+    username = session[:username]
 
-    return redirect_to no_account_sessions_path(saml_identifier: saml_identifier, username: username) if saml_identifier.blank? || username.blank?
+    return redirect_to no_account_sessions_path if saml_identifier.blank? || username.blank?
 
     token = JWT.encode(
       {

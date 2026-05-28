@@ -29,7 +29,9 @@ module Authentication
       session[:upvs_login] = saml_identifier.present?
       redirect_to session[:after_login_path] || default_after_login_path
     else
-      redirect_to no_account_sessions_path(saml_identifier: saml_identifier, username: username)
+      session[:saml_identifier] = saml_identifier
+      session[:username] = username
+      redirect_to no_account_sessions_path
     end
   end
 
