@@ -15,7 +15,6 @@ class UpvsController < ActionController::API
 
     if Current.user.nil? && session[:ssd_trial_return_url].present?
       return_url = session.delete(:ssd_trial_return_url)
-
       token = JWT.encode(
         {
           saml_identifier: saml_identifier,
@@ -32,12 +31,12 @@ class UpvsController < ActionController::API
         URI.decode_www_form(uri.query.to_s).append(["token", token])
       )
 
-      return redirect_to(uri.to_s)
+      return redirect_to(uri.to_s, allow_other_host: true)
     end
 
     session.delete(:ssd_trial_return_url)
 
-    create_session(saml_identifier: saml_identifier)
+    create_session(saml_identifier: saml_identifier, username: username)
     EventBus.publish(:user_logged_in, Current.user) if Current.user
   end
 
