@@ -20,7 +20,7 @@ class Box < ApplicationRecord
   include Colorized
 
   belongs_to :tenant
-  has_many :boxes_api_connections
+  has_many :boxes_api_connections, dependent: :destroy
   has_many :api_connections, through: :boxes_api_connections
   has_many :box_groups, dependent: :destroy
   has_many :groups, through: :box_groups
