@@ -21,7 +21,7 @@ module Automation
     attr_accessor :delete_record
 
     # when adding items, check defaults in condition_form_component.rb
-    ATTR_LIST = %i[box sender_name recipient_name title sender_uri recipient_uri outbox attachment edesk_class fs_submission_status fs_message_type object_type api_connection type authors_api_connection].freeze
+    ATTR_LIST = %i[box sender_name recipient_name title sender_uri recipient_uri outbox attachment attachments edesk_class fs_submission_status fs_message_type object_type api_connection type authors_api_connection].freeze
 
     def valid_condition_type_list_for_attr
       Automation::Condition.subclasses.map do |subclass|
@@ -214,6 +214,19 @@ module Automation
     def cleanup_record
       self.value = nil
       self.attr = 'authors_api_connection'
+    end
+  end
+
+  class AttachmentsPresentCondition < Automation::Condition
+    VALID_ATTR_LIST = ['attachments'].freeze
+
+    def satisfied?(message)
+      message.attachments.any?
+    end
+
+    def cleanup_record
+      self.value = nil
+      self.attr = 'attachments'
     end
   end
 end
