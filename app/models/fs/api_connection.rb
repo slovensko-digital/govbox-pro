@@ -20,6 +20,9 @@ class Fs::ApiConnection < ::ApiConnection
 
   store_accessor :settings, :username, prefix: true
   store_accessor :settings, :password, prefix: true
+  store_accessor :settings, :authentication_failed_at, prefix: true
+
+  before_save :clear_authentication_failure, if: :credentials_changed?
 
   def box_obo(box)
     raise "OBO not allowed!" if invalid_obo?(box)
@@ -47,6 +50,23 @@ class Fs::ApiConnection < ::ApiConnection
 
   def upvs_type?
     false
+  end
+
+  def authentication_failed?
+    settings_authentication_failed_at.present?
+  end
+
+  def mark_authentication_failed!
+    update!(settings_authentication_failed_at: Time.current)
+    create_authentication_failed_sticky_notes
+  end
+
+  def credentials_configured?
+    settings_username.present? && settings_password.present?
+  end
+
+  def needs_credentials_setup?
+    !credentials_configured? || authentication_failed?
   end
 
   def boxify
@@ -106,6 +126,34 @@ class Fs::ApiConnection < ::ApiConnection
     stale.update_all(active: false)
 
     Fs::Box.where(id: affected_box_ids).find_each(&:update_active_state_from_connections)
+  end
+
+  def create_authentication_failed_sticky_notes
+    tenant.admin_group.users.find_each do |user|
+      sticky_note = user.sticky_note || user.build_sticky_note
+      sticky_note.update!(
+        note_type: "fs_authentication_failed",
+        data: {
+          "api_connection_id" => id,
+          "api_connection_name" => name,
+          "tenant_id" => tenant_id
+        }
+      )
+    end
+  end
+
+  def credentials_changed?
+    return false unless will_save_change_to_settings?
+
+    old_settings, new_settings = changes["settings"]
+    old_credentials = (old_settings || {}).stringify_keys.slice("username", "password")
+    new_credentials = (new_settings || {}).stringify_keys.slice("username", "password")
+
+    old_credentials != new_credentials
+  end
+
+  def clear_authentication_failure
+    self.settings_authentication_failed_at = nil
   end
 
   def generate_short_name_from_name(name)

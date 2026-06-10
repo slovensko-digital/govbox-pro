@@ -36,21 +36,26 @@ class Fs::SyncApiConnectionJobTest < ActiveJob::TestCase
     api_connection = api_connections(:fs_api_connection1)
     first_box = eligible_boxes(api_connection).first
 
-    fs_api = Minitest::Mock.new
-    fs_api.expect :fetch_received_messages, nil do |**|
-      raise Fs::AuthenticationError, "bad credentials"
-    end
+    expected_api_connection = api_connection
+    fs_client = Class.new do
+      define_method(:api) do |api_connection:, box:|
+        raise "unexpected api connection" unless api_connection == expected_api_connection
+        raise "unexpected box" unless box == first_box
 
-    fs_client = Minitest::Mock.new
-    fs_client.expect :api, fs_api, api_connection: api_connection, box: first_box
+        Class.new do
+          def fetch_received_messages(**)
+            raise Fs::AuthenticationError, "bad credentials"
+          end
+        end.new
+      end
+    end.new
 
     FsEnvironment.stub :fs_client, fs_client do
       Fs::SyncApiConnectionJob.perform_now(api_connection)
     end
 
     assert_no_enqueued_jobs only: Fs::SyncBoxJob
-    fs_api.verify
-    fs_client.verify
+    assert api_connection.reload.authentication_failed?
   end
 
   test "does not enqueue remaining sync boxes after non-authentication errors" do

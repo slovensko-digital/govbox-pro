@@ -1,10 +1,12 @@
 module Fs
   class SyncApiConnectionJob < ApplicationJob
+    retry_on StandardError, attempts: 3
+
     def perform(api_connection, from: Date.yesterday, to: Date.tomorrow, fs_client: FsEnvironment.fs_client, batch_size: 25)
       first_box, *remaining_boxes = eligible_boxes(api_connection).to_a
       return unless first_box
 
-      SyncBoxJob.perform_now(
+      SyncBoxJob.new.perform(
         first_box,
         api_connection: api_connection,
         from: from,
@@ -23,6 +25,7 @@ module Fs
         )
       end
     rescue Fs::AuthenticationError
+      api_connection.mark_authentication_failed!
       Rails.logger.info("Skipping FS sync for api_connection_id=#{api_connection.id} after authentication failure")
     end
 
