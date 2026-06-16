@@ -22,8 +22,6 @@ class Fs::ApiConnection < ::ApiConnection
   store_accessor :settings, :password, prefix: true
   store_accessor :settings, :authentication_failed_at, prefix: true
 
-  before_save :clear_authentication_failure, if: :credentials_changed?
-
   def box_obo(box)
     raise "OBO not allowed!" if invalid_obo?(box)
     obo.presence
@@ -59,6 +57,11 @@ class Fs::ApiConnection < ::ApiConnection
   def mark_authentication_failed!
     update!(settings_authentication_failed_at: Time.current)
     create_authentication_failed_sticky_notes
+  end
+
+  def clear_authentication_failure!
+    update!(settings_authentication_failed_at: nil)
+    dismiss_authentication_failed_sticky_notes
   end
 
   def credentials_configured?
@@ -115,6 +118,8 @@ class Fs::ApiConnection < ::ApiConnection
       deactivate_stale_connections(processed_connection_ids)
     end
 
+    clear_authentication_failure! if authentication_failed?
+
     count
   end
 
@@ -142,18 +147,11 @@ class Fs::ApiConnection < ::ApiConnection
     end
   end
 
-  def credentials_changed?
-    return false unless will_save_change_to_settings?
-
-    old_settings, new_settings = changes["settings"]
-    old_credentials = (old_settings || {}).stringify_keys.slice("username", "password")
-    new_credentials = (new_settings || {}).stringify_keys.slice("username", "password")
-
-    old_credentials != new_credentials
-  end
-
-  def clear_authentication_failure
-    self.settings_authentication_failed_at = nil
+  def dismiss_authentication_failed_sticky_notes
+    tenant.admin_group.users.find_each do |user|
+      note = user.sticky_note
+      note.destroy if note&.note_type == "fs_authentication_failed" && note.data&.dig("api_connection_id") == id
+    end
   end
 
   def generate_short_name_from_name(name)
