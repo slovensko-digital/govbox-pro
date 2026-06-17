@@ -1,8 +1,10 @@
 module Fs
   class SyncAllBoxesJob < ApplicationJob
     def perform
-      api_connections_to_sync.find_each.with_index do |api_connection, index|
-        SyncApiConnectionJob.set(wait: index.seconds).perform_later(api_connection)
+      wait = 0
+      api_connections_to_sync.find_each do |api_connection|
+        SyncApiConnectionJob.set(wait: wait.seconds).perform_later(api_connection)
+        wait += api_connection.boxes.count
       end
 
       BetterUptimeApi.ping_heartbeat('FS_SYNC')

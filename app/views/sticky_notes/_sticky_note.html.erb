@@ -1,9 +1,6 @@
 <% if @sticky_note.present? %>
   <%= turbo_frame_tag "sticky_note" do %>
-    <% color_classes = @sticky_note.note_type == "fs_authentication_failed" \
-         ? "border-red-300 bg-red-50 text-red-900" \
-         : "border-red-300 bg-red-50 text-red-900" %>
-    <div class="sm:mx-4 sm:mt-4 sm:rounded-md border <%= color_classes %> p-4 text-sm">
+    <div class="sm:mx-4 sm:mt-4 sm:rounded-md border border-yellow-300 bg-yellow-50 text-yellow-900 p-4 text-sm">
       <div class="flex items-start justify-between gap-x-6">
         <div>
           <%= render partial: "sticky_notes/#{@sticky_note.note_type}", locals: { sticky_note: @sticky_note } %>
