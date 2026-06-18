@@ -31,7 +31,7 @@ class FsAuthenticationFailedStickyNoteTest < ApplicationSystemTestCase
     end
 
     visit message_threads_path
-    assert_text "Prihlásenie do finančnej správy zlyhalo"
+    assert_text "Prihlásenie na finančnú správu zlyhalo"
     assert_text "FS test prepojenie"
     save_screenshot "tmp/fs-auth-sticky-02-after-failure.png"
 
