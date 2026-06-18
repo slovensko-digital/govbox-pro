@@ -29,7 +29,7 @@ class MessageThreads::FsApiConnectionSetupNoticeTest < ActionController::TestCas
     get :index
 
     assert_response :success
-    assert_includes @response.body, "Nastavte prepojenie s finančnou správou"
+    assert_includes @response.body, "Nastavte prihlasovacie údaje pre finančnú správu"
     assert_includes @response.body, init_admin_tenant_api_connections_fs_api_connection_path(@tenant, connection)
   end
 
@@ -44,7 +44,7 @@ class MessageThreads::FsApiConnectionSetupNoticeTest < ActionController::TestCas
     get :index
 
     assert_response :success
-    assert_includes @response.body, "Nastavte prepojenie s finančnou správou"
+    assert_includes @response.body, "Nastavte prihlasovacie údaje pre finančnú správu"
     assert_includes @response.body, init_admin_tenant_api_connections_fs_api_connection_path(@tenant, connection)
   end
 
@@ -56,7 +56,7 @@ class MessageThreads::FsApiConnectionSetupNoticeTest < ActionController::TestCas
     get :index
 
     assert_response :success
-    assert_not_includes @response.body, "Nastavte prepojenie s finančnou správou"
+    assert_not_includes @response.body, "Nastavte prihlasovacie údaje pre finančnú správu"
   end
 
   test "index does not show setup notice for non-fs or other tenant missing credentials" do
@@ -76,7 +76,7 @@ class MessageThreads::FsApiConnectionSetupNoticeTest < ActionController::TestCas
     get :index
 
     assert_response :success
-    assert_not_includes @response.body, "Nastavte prepojenie s finančnou správou"
+    assert_not_includes @response.body, "Nastavte prihlasovacie údaje pre finančnú správu"
     assert_not_includes @response.body, init_admin_tenant_api_connections_fs_api_connection_path(other_connection.tenant, other_connection)
   end
 end
