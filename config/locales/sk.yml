@@ -293,6 +293,7 @@ sk:
   fs_message_type: Typ FS správy
   box: Schránka správy
   attachment: Príloha
+  attachments: Prílohy
   api_connection: API Prepojenie
   authors_api_connection: Autor svoje API prepojenie
   boxes:
@@ -314,6 +315,7 @@ sk:
   Automation::BoxCondition: je
   Automation::ApiConnectionCondition: je
   Automation::AuthorHasApiConnectionCondition: má
+  Automation::AttachmentsPresentCondition: sú prítomné
   Automation::AddMessageThreadTagAction: Pridaj štítok na vlákno
   Automation::AddSignatureRequestedFromAuthorMessageThreadTagAction: Pridaj štítok pre vyžiadanie podpisu autora
   Automation::UnassignMessageThreadTagAction: Odober štítok z vlákna

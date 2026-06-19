@@ -9,6 +9,7 @@ ssd_main_general_one:
   delivered_at: 2023-05-18 16:16:26
   thread: ssd_main_general
   read: true
+  outbox: false
   replyable: false
   metadata:
     authorized: true
