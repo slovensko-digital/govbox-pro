@@ -52,7 +52,11 @@ Rails.application.routes.draw do
       namespace :api_connections do
         resources :upvs_api_connections, except: [:index, :destroy]
         resources :fs_api_connections, except: [:index, :destroy] do
-          post :boxify, on: :member
+          member do
+            get :init
+            patch :init
+            post :boxify
+          end
         end
       end
 

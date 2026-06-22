@@ -6,6 +6,7 @@ class MessageThreadsController < ApplicationController
   before_action :set_thread_tags, only: %i[show history]
   before_action :set_thread_messages, only: %i[show history confirm_unarchive archive]
   before_action :load_threads, only: %i[index scroll]
+  before_action :set_unconfigured_fs_api_connections, only: :index
   before_action :set_subscription, only: :index
   before_action :set_reload
 
@@ -110,6 +111,12 @@ class MessageThreadsController < ApplicationController
   end
 
   private
+
+  def set_unconfigured_fs_api_connections
+    @unconfigured_fs_api_connections = Current.tenant.api_connections.where(type: "Fs::ApiConnection").select do |api_connection|
+      !api_connection.credentials_configured? && policy([:admin, api_connection]).init?
+    end
+  end
 
   def set_subscription
     return unless params[:q]
