@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
 module Fs
+  class AuthenticationError < StandardError; end
+
   class Api
+    AUTHENTICATION_ERROR_STATUSES = [401, 403].freeze
+
     attr_accessor :obo, :obo_without_delegate
 
     def initialize(url, api_connection: nil, box: nil, handler: Faraday)
@@ -126,10 +130,11 @@ module Fs
 
     def request_url(method, path, *args, accept_negative: false)
       response = @handler.public_send(method, path, *args)
+      raise AuthenticationError, response_body(response) if !accept_negative && authentication_error_response?(response)
+
       structure = response.body.empty? ? nil : JSON.parse(response.body)
     rescue StandardError => error
-      raise StandardError.new(error.response) if error.respond_to?(:response) && error.response
-      raise error
+      handle_response_error(error) || raise(error)
     else
       raise StandardError.new(response.body) if !accept_negative && response.status != 404 && response.status > 400
       return {
@@ -137,6 +142,26 @@ module Fs
         body: structure,
         headers: response.headers
       }
+    end
+
+    def handle_response_error(error)
+      return unless error.respond_to?(:response) && error.response
+
+      response = error.response
+      raise AuthenticationError, response_body(response) if authentication_error_response?(response)
+      raise StandardError, response_body(response)
+    end
+
+    def authentication_error_response?(response)
+      response_status(response).in?(AUTHENTICATION_ERROR_STATUSES)
+    end
+
+    def response_status(response)
+      response.respond_to?(:status) ? response.status : response[:status]
+    end
+
+    def response_body(response)
+      response.respond_to?(:body) ? response.body : response[:body]
     end
   end
 end

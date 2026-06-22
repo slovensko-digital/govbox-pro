@@ -20,6 +20,7 @@ class Fs::ApiConnection < ::ApiConnection
 
   store_accessor :settings, :username, prefix: true
   store_accessor :settings, :password, prefix: true
+  store_accessor :settings, :authentication_failed_at, prefix: true
 
   def box_obo(box)
     raise "OBO not allowed!" if invalid_obo?(box)
@@ -49,9 +50,28 @@ class Fs::ApiConnection < ::ApiConnection
     false
   end
 
+  def authentication_failed?
+    settings_authentication_failed_at.present?
+  end
+
+  def mark_authentication_failed!
+    update!(settings_authentication_failed_at: Time.current)
+    create_authentication_failed_sticky_notes
+  end
+
+  def clear_authentication_failure!
+    update!(settings_authentication_failed_at: nil)
+    dismiss_authentication_failed_sticky_notes
+  end
+
   def credentials_configured?
     settings_username.present? && settings_password.present?
   end
+
+  def needs_credentials_setup?
+    !credentials_configured? || authentication_failed?
+  end
+
 
   def boxify
     count = 0
@@ -99,6 +119,8 @@ class Fs::ApiConnection < ::ApiConnection
       deactivate_stale_connections(processed_connection_ids)
     end
 
+    clear_authentication_failure! if authentication_failed?
+
     count
   end
 
@@ -110,6 +132,27 @@ class Fs::ApiConnection < ::ApiConnection
     stale.update_all(active: false)
 
     Fs::Box.where(id: affected_box_ids).find_each(&:update_active_state_from_connections)
+  end
+
+  def create_authentication_failed_sticky_notes
+    tenant.admin_group.users.find_each do |user|
+      sticky_note = user.sticky_note || user.build_sticky_note
+      sticky_note.update!(
+        note_type: "fs_authentication_failed",
+        data: {
+          "api_connection_id" => id,
+          "api_connection_name" => name,
+          "tenant_id" => tenant_id
+        }
+      )
+    end
+  end
+
+  def dismiss_authentication_failed_sticky_notes
+    tenant.admin_group.users.find_each do |user|
+      note = user.sticky_note
+      note.destroy if note&.note_type == "fs_authentication_failed" && note.data&.dig("api_connection_id") == id
+    end
   end
 
   def generate_short_name_from_name(name)

@@ -1,13 +1,22 @@
 module Fs
   class SyncAllBoxesJob < ApplicationJob
     def perform
-      Fs::Box.active.syncable.find_each.with_index do |box, index|
-        box.boxes_api_connections.group_by(&:settings_delegate_id).each do |settings_delegate_id, boxes_api_connections|
-          SyncBoxJob.set(wait: index*1.second).perform_later(box, api_connection: boxes_api_connections.first.api_connection)
-        end
+      wait = 0
+      api_connections_to_sync.find_each do |api_connection|
+        SyncApiConnectionJob.set(wait: wait.seconds).perform_later(api_connection)
+        wait += api_connection.boxes.count
       end
 
       BetterUptimeApi.ping_heartbeat('FS_SYNC')
+    end
+
+    private
+
+    def api_connections_to_sync
+      Fs::ApiConnection.joins(boxes_api_connections: :box)
+                       .merge(BoxesApiConnection.active)
+                       .merge(Fs::Box.active.syncable)
+                       .distinct
     end
   end
 end

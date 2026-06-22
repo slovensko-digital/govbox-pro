@@ -1,0 +1,8 @@
+<p class="font-semibold">Prihlásenie na finančnú správu zlyhalo</p>
+<p class="mt-1">
+  Skontrolujte prihlasovacie údaje pre
+  <%= link_to sticky_note.data["api_connection_name"],
+              edit_admin_tenant_api_connections_fs_api_connection_path(sticky_note.data["tenant_id"], sticky_note.data["api_connection_id"]),
+              class: "font-semibold underline",
+              data: { turbo_frame: "modal" } %>.
+</p>
