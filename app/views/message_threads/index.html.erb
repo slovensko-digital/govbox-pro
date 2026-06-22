@@ -6,6 +6,8 @@
 
 <%= render partial: "sticky_notes/sticky_note" %>
 
+<%= render partial: "fs_api_connection_setup_notice", locals: { api_connections: @unconfigured_fs_api_connections } %>
+
 <%= render MessageThreadsTableComponent.new(filter: @filter, filter_subscription: @filter_subscription, count_estimate: @count_estimate) do |component| %>
   <% if @message_threads.any? %>
     <% component.with_message_thread do %>

@@ -137,3 +137,14 @@ fs_submission_verification_status_description_rule3:
   attr: fs_submission_verification_status.description
   type: Automation::MetadataValueCondition
   value: Overenie platnosti podpisov podania bolo ukončené. Všetky podpisy sú platné.
+
+inbox_message_with_attachments_rule_condition1:
+  automation_rule: inbox_message_with_attachments_rule
+  attr: attachments
+  type: Automation::AttachmentsPresentCondition
+
+inbox_message_with_attachments_rule_condition2:
+  automation_rule: inbox_message_with_attachments_rule
+  attr: outbox
+  type: Automation::BooleanCondition
+  value: false

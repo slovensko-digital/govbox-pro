@@ -72,6 +72,7 @@ class Fs::ApiConnection < ::ApiConnection
     !credentials_configured? || authentication_failed?
   end
 
+
   def boxify
     count = 0
     fs_api = FsEnvironment.fs_client.api(api_connection: self)
