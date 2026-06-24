@@ -451,6 +451,7 @@ fs_accountants_thread1_outbox_message:
   title: FS odoslane podanie
   delivered_at: <%= 2.hours.ago %>
   thread: fs_accountants_thread1
+  outbox: true
   replyable: false
   metadata:
     fs_message_id: 1234567/2025

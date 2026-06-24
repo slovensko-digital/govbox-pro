@@ -9,7 +9,7 @@ class ExportJob < ApplicationJob
     export_content = ::Zip::OutputStream.write_buffer do |zip|
       if export.settings.dig("messages")
         export.message_threads.each do |message_thread|
-          message_thread.messages.each do |message|
+          export.filtered_messages(message_thread).includes(:thread).each do |message|
             message.objects.each do |object|
               prepare_original_object(object, export: export, zip: zip, file_paths: file_paths)
               prepare_pdf_object(object, export: export, zip: zip, file_paths: file_paths) if export.settings["pdf"]
@@ -79,8 +79,9 @@ class ExportJob < ApplicationJob
   end
 
   def prepare_summary(export:, zip:)
-    headers = export.message_threads
-                    .flat_map(&:messages)
+    messages = export.message_threads.flat_map { |t| export.filtered_messages(t).to_a }
+
+    headers = messages
                     .flat_map(&:export_summary)
                     .map(&:keys)
                     .flatten
@@ -90,7 +91,7 @@ class ExportJob < ApplicationJob
       p.workbook.add_worksheet(:name => "Sumár") do |sheet|
         sheet.add_row(headers)
 
-        export.message_threads.flat_map(&:messages).each do |message|
+        messages.each do |message|
           row_hash = message.export_summary
           row = headers.map do |h|
             v = row_hash[h]

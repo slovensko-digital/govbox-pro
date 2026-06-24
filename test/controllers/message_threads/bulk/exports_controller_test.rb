@@ -71,6 +71,22 @@ module MessageThreads
         @export.reload
         refute(@export.settings['summary'] == false && @export.settings['messages'] == false)
       end
+
+      test 'update persists message_direction setting' do
+        patch :update, params: { id: @export.id, export: { settings: { 'summary' => '1', 'message_direction' => 'outbox' } } }
+        assert_equal 'outbox', @export.reload.settings['message_direction']
+      end
+
+      test 'start with message_direction inbox enqueues ExportJob' do
+        assert_enqueued_with(job: ExportJob) do
+          post :start, params: { export_id: @export.id, export: { settings: { 'messages' => '1', 'default' => '1', 'message_direction' => 'inbox' } } }
+        end
+      end
+
+      test 'edit renders message_direction radio buttons' do
+        get :edit, params: { id: @export.id }
+        assert_select "input[type=radio][name='export[settings][message_direction]']", count: 3
+      end
     end
   end
 end

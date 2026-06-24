@@ -23,6 +23,7 @@ class Export < ApplicationRecord
     "{{ schranka.export_nazov }}" => -> (o) { o.message.export_metadata_box_name.presence || o.message.thread.box.export_name },
     "{{ schranka.dic }}" => -> (o) { o.message.thread.box.settings["dic"] },
     "{{ vlakno.id }}" => ->(o) { o.message.thread.id },
+    "{{ vlakno.nazov }}" => ->(o) { o.message.thread.title },
     "{{ vlakno.obdobie }}" => ->(o) { o.message.thread.metadata["period"] if o.message.thread.metadata&.dig("period") },
     "{{ vlakno.formular }}" => ->(o) { form_name(o) },
     "{{ vlakno.formular_bez_verzie }}" => ->(o) { form_name(o, include_version: false) },
@@ -66,6 +67,7 @@ class Export < ApplicationRecord
       out.gsub!(key) { value_function.call(message_object) }
     end
 
+    out.gsub!(/\.\.\//, '')
     out.sub(/^\/+/, '')
   end
 
@@ -81,6 +83,14 @@ class Export < ApplicationRecord
     old_name = "#{user.tenant.id}/govbox-pro-export-#{created_at.to_date}.zip" # Old naming logic
     new_name = "#{user.tenant.id}/govbox-pro-export-##{id}-#{created_at.to_date}.zip"
     File.exist?(File.join(Rails.root, "storage", "exports", old_name)) ? old_name : new_name
+  end
+
+  def filtered_messages(message_thread)
+    case settings["message_direction"]
+    when "outbox" then message_thread.messages.outbox
+    when "inbox"  then message_thread.messages.inbox
+    else               message_thread.messages
+    end
   end
 
   private
@@ -100,5 +110,8 @@ class Export < ApplicationRecord
     %w[summary messages pdf default].each do |flag|
       settings[flag] = ActiveModel::Type::Boolean.new.cast(settings[flag]) if settings.key?(flag)
     end
+    settings["message_direction"] = settings["message_direction"].presence&.then { |v|
+      %w[all inbox outbox].include?(v) ? v : "all"
+    } || "all"
   end
 end
