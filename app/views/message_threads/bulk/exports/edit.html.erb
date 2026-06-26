@@ -36,7 +36,7 @@
             <div class="mt-4 flex items-center gap-x-6">
               <span class="text-sm text-gray-700">Zahrnúť správy:</span>
               <% [["all", "Všetky"], ["inbox", "Len prijaté"], ["outbox", "Len odoslané"]].each do |value, label| %>
-                <div class="flex items-center gap-x-2">
+                <div class="flex items-center gap-x-3">
                   <%= radio_button_tag "export[settings][message_direction]", value,
                         @export.settings["message_direction"] == value || (@export.settings["message_direction"].blank? && value == "all"),
                         class: "h-4 w-4 border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer",
