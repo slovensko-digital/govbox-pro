@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_05_20_170600) do
+ActiveRecord::Schema[7.1].define(version: 2026_06_26_100524) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -720,6 +720,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_05_20_170600) do
     t.datetime "notifications_last_opened_at"
     t.datetime "notifications_reset_at"
     t.boolean "notifications_opened", default: false, null: false
+    t.boolean "is_site_admin", default: false, null: false
     t.index "tenant_id, lower((email)::text)", name: "index_users_on_tenant_id_and_lowercase_email", unique: true
     t.check_constraint "email IS NOT NULL OR saml_identifier IS NOT NULL", name: "email_or_saml_identifier_required"
   end

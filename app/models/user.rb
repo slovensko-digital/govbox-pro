@@ -6,6 +6,7 @@
 #
 #  id                           :bigint           not null, primary key
 #  email                        :string
+#  is_site_admin                :boolean          default(FALSE), not null
 #  name                         :string           not null
 #  notifications_last_opened_at :datetime
 #  notifications_opened         :boolean          default(FALSE), not null
@@ -37,6 +38,7 @@ class User < ApplicationRecord
   has_many :api_connections, foreign_key: :owner_id, dependent: :destroy
 
   validates :name, presence: true
+  validates :email, uniqueness: { case_sensitive: false }, allow_nil: true
   validates :email, presence: true, unless: -> { saml_identifier.present? }
   validates_uniqueness_of :name, :email, scope: :tenant_id, case_sensitive: false, allow_nil: true
   validates_uniqueness_of :saml_identifier, case_sensitive: false, allow_nil: true
@@ -46,7 +48,7 @@ class User < ApplicationRecord
   after_update :broadcast_badge_update
 
   def site_admin?
-    ENV['SITE_ADMIN_EMAILS'].to_s.split(',').include?(email)
+    is_site_admin
   end
 
   def admin?
