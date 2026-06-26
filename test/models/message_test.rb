@@ -73,6 +73,7 @@ class MessageTest < ActiveSupport::TestCase
 
     expected_summary = {
       message_thread_id: message.message_thread_id,
+      thread_title: message.thread.title,
       title: "FS podanie",
       box: "Accountants main FS",
       delivered_at: message.delivered_at,
