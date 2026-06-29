@@ -37,7 +37,7 @@ persistence:
       storageClass: nfs-client
 workers:
   worker:
-    replicaCount: "2"
+    replicaCount: "1"
     command: ["bundle", "exec", "good_job", "start"]
     startupProbe:
       probeType: "httpGet"
