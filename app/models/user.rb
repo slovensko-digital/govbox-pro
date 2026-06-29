@@ -47,6 +47,8 @@ class User < ApplicationRecord
   after_create :handle_default_settings
   after_update :broadcast_badge_update
 
+  normalizes :saml_identifier, with: -> (saml_identifier) { saml_identifier.presence }
+
   def site_admin?
     is_site_admin
   end
