@@ -2,6 +2,54 @@ require "test_helper"
 require "zip"
 
 class ExportJobTest < ActiveJob::TestCase
+  test "thread title with slash is replaced with dash in ZIP entry path" do
+    thread = message_threads(:fs_accountants_thread1)
+    thread.update!(title: "DPH/2025/Q1")
+
+    export = Export.create!(
+      user: users(:accountants_basic),
+      message_thread_ids: [thread.id],
+      settings: { "default" => "1", "templates" => { "default" => "{{ vlakno.nazov }}/{{ subor.nazov }}" } }
+    )
+
+    object = message_objects(:fs_accountants_outbox_form)
+    file_paths = []
+    path = ExportJob.new.unique_path_within_export(object, export: export, other_file_names: file_paths)
+
+    parts = path.split("/")
+    assert_equal "DPH-2025-Q1", parts.first, "Slash in thread title should produce dash, not extra directory level"
+    assert_equal 2, parts.length, "Path should have exactly 2 segments (sanitized title / filename)"
+  end
+
+  test "filtered_messages with date range only yields messages within range" do
+    thread = message_threads(:fs_accountants_thread1)
+    outbox_message = messages(:fs_accountants_thread1_outbox_message)
+    past_date = (outbox_message.delivered_at.to_date - 1.year).iso8601
+
+    export = Export.create!(
+      user: users(:accountants_basic),
+      message_thread_ids: [thread.id],
+      settings: { "messages" => true, "default" => true, "delivered_at_to" => past_date }
+    )
+
+    messages = export.message_threads.flat_map { |t| export.filtered_messages(t).to_a }
+    assert_not_includes messages, outbox_message, "Messages after 'to' date should be excluded"
+  end
+
+  test "filtered_messages with from date after all messages returns empty set" do
+    thread = message_threads(:fs_accountants_thread1)
+    future_date = (Date.today + 1.year).iso8601
+
+    export = Export.create!(
+      user: users(:accountants_basic),
+      message_thread_ids: [thread.id],
+      settings: { "messages" => true, "default" => true, "delivered_at_from" => future_date }
+    )
+
+    messages = export.message_threads.flat_map { |t| export.filtered_messages(t).to_a }
+    assert_empty messages, "No messages should match a from date in the future"
+  end
+
   test "vlakno.nazov appears in ZIP file path when used in template" do
     thread = message_threads(:fs_accountants_thread1)
     export = Export.create!(

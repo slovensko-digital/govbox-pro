@@ -44,6 +44,7 @@ en:
           attributes:
             base:
               empty_selection: "At least one export option must be selected"
+              invalid_date_range: "\"From\" date must be before \"To\" date"
         message:
           limit_exceeded: 'Limit of %{limit} messages exceeded'
           remaining_limit: 'Messages cannot be uploaded. You only have %{remaining} messages left until the limit of %{limit}'
