@@ -1,14 +1,41 @@
 function onInstall(event) {
-  console.log('[Serviceworker]', "Installing!", event);
+  console.log("[Serviceworker]", "Installing!", event);
 }
 
 function onActivate(event) {
-  console.log('[Serviceworker]', "Activating!", event);
+  console.log("[Serviceworker]", "Activating!", event);
 }
 
 function onFetch(event) {
-  console.log('[Serviceworker]', "Fetching!", event);
+  console.log("[Serviceworker]", "Fetching!", event);
 }
-self.addEventListener('install', onInstall);
-self.addEventListener('activate', onActivate);
-self.addEventListener('fetch', onFetch);
+self.addEventListener("install", onInstall);
+self.addEventListener("activate", onActivate);
+self.addEventListener("fetch", onFetch);
+
+// Add event listeners for processing Web Push notifications:
+self.addEventListener("push", async (event) => {
+  const { title, options } = await event.data.json();
+  event.waitUntil(self.registration.showNotification(title, options));
+});
+
+// Add event listeners for processing Web Push notifications clicks:
+self.addEventListener("notificationclick", function (event) {
+  event.notification.close();
+  event.waitUntil(
+    clients.matchAll({ type: "window" }).then((clientList) => {
+      for (let i = 0; i < clientList.length; i++) {
+        let client = clientList[i];
+        let clientPath = new URL(client.url).pathname;
+
+        if (clientPath == event.notification.data.url && "focus" in client) {
+          return client.focus();
+        }
+      }
+
+      if (clients.openWindow) {
+        return clients.openWindow(event.notification.data.url);
+      }
+    })
+  );
+});

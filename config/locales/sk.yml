@@ -349,6 +349,12 @@ sk:
         name: Zmena poznámky
         description: Dostanete notifikáciu o zmene poznámky k vláknu.
     flash:
+      create: "Notifikácie boli nastavené!"
+      update: "Notifikacie boli zmenené!"
+      destroy: "Notifikácie boli zrušené!"
+  webpush:
+    generic_title: "Nová notifikácia"
+    generic_body: "Máte novu notifikáciu"
       create: Notifikácie boli nastavené!
       update: Notifikacie boli zmenené!
       destroy: Notifikácie boli zrušené!

@@ -279,6 +279,8 @@ GEM
       omniauth (~> 2.0)
     omniauth-saml (2.2.4)
       omniauth (~> 2.1)
+      ruby-saml (~> 1.17)
+    openssl (3.3.0)
       ruby-saml (~> 1.18)
     parallel (1.24.0)
     parser (3.3.0.5)
@@ -461,6 +463,9 @@ GEM
       activemodel (>= 6.0.0)
       bindex (>= 0.4.0)
       railties (>= 6.0.0)
+    web-push (3.0.1)
+      jwt (~> 2.0)
+      openssl (~> 3.0)
     webmock (3.20.0)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
@@ -535,6 +540,7 @@ DEPENDENCIES
   turbo-rails
   view_component
   web-console
+  web-push
   webmock
   with_advisory_lock
 
