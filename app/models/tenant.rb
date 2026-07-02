@@ -3,6 +3,7 @@
 # Table name: tenants
 #
 #  id                     :bigint           not null, primary key
+#  active_until           :datetime
 #  api_token_public_key   :string
 #  contact_email          :string
 #  feature_flags          :string           default([]), is an Array
@@ -68,6 +69,12 @@ class Tenant < ApplicationRecord
   SIGNATURE_REQUEST_MODES = %w[signer_group author].freeze
 
   validates :signature_request_mode, inclusion: { in: SIGNATURE_REQUEST_MODES }
+
+  scope :active, -> { where("active_until IS NULL OR active_until > ?", Time.current) }
+
+  def active?
+    active_until.nil? || active_until > Time.current
+  end
 
   def set_pdf_signature_format(pdf_signature_format)
     raise "Unknown pdf_signature_format #{pdf_signature_format}" unless pdf_signature_format.in? PDF_SIGNATURE_FORMATS

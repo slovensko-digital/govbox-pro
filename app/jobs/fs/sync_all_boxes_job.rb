@@ -16,6 +16,7 @@ module Fs
       Fs::ApiConnection.joins(boxes_api_connections: :box)
                        .merge(BoxesApiConnection.active)
                        .merge(Fs::Box.active.syncable)
+                       .where(tenant_id: Tenant.active.select(:id))
                        .distinct
     end
   end
