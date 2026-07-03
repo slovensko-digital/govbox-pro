@@ -20,6 +20,8 @@ class ApiConnection < ApplicationRecord
   has_many :boxes_api_connections, dependent: :destroy
   has_many :boxes, through: :boxes_api_connections
 
+  scope :active, -> { joins(:boxes_api_connections).where(boxes_api_connections: { active: true }).distinct }
+
   def box_obo(box)
     raise NotImplementedError
   end

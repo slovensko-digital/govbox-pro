@@ -54,7 +54,7 @@ class Box < ApplicationRecord
   end
 
   def api_connection
-    boxes_api_connections.active.first&.api_connection
+    api_connections.active.first
   end
 
   def sync

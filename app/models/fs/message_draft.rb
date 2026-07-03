@@ -183,7 +183,7 @@ class Fs::MessageDraft < MessageDraft
 
     signed_by = form_object.tags.where(type: "SignedByTag")&.first&.owner
 
-    return box.api_connections.find_by(owner: signed_by) if signed_by && box.api_connections.find_by(owner: signed_by)
+    return box.api_connections.active.find_by(owner: signed_by) if signed_by && box.api_connections.active.find_by(owner: signed_by)
 
     raise I18n.t("activerecord.errors.models.fs/message_draft.signer_not_allowed_to_submit")
   end
