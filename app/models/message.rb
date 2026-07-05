@@ -46,6 +46,7 @@ class Message < ApplicationRecord
   scope :not_drafts, -> { where(type: [nil, 'Message']) }
   scope :outbox, -> { where(outbox: true) }
   scope :inbox, -> { not_drafts.where.not(outbox: true) }
+  scope :delivered_between, ->(from, to) { where(delivered_at: from.beginning_of_day..to.end_of_day) }
 
   after_update_commit ->(message) { EventBus.publish(:message_changed, message) }
   after_destroy_commit ->(message) { EventBus.publish(:message_destroyed, message) }

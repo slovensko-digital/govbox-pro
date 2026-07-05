@@ -45,3 +45,6 @@ application.register("visited-links", VisitedLinksController)
 
 import MarkReadController from "./mark_read_controller"
 application.register("mark-read", MarkReadController)
+
+import ExpandTextController from "./expand_text_controller"
+application.register("expand-text", ExpandTextController)

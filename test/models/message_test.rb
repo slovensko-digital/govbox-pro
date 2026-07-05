@@ -68,6 +68,46 @@ class MessageTest < ActiveSupport::TestCase
     assert_not reply.collapsed
   end
 
+  test "delivered_between includes messages within range" do
+    thread = message_threads(:fs_accountants_thread1)
+    msg = messages(:fs_accountants_thread1_outbox_message)
+    from = msg.delivered_at.to_date - 1.day
+    to   = msg.delivered_at.to_date + 1.day
+    assert_includes thread.messages.delivered_between(from, to), msg
+  end
+
+  test "delivered_between excludes messages before range" do
+    thread = message_threads(:fs_accountants_thread1)
+    msg = messages(:fs_accountants_thread1_outbox_message)
+    from = msg.delivered_at.to_date + 1.day
+    to   = msg.delivered_at.to_date + 2.days
+    assert_not_includes thread.messages.delivered_between(from, to), msg
+  end
+
+  test "delivered_between excludes messages after range" do
+    thread = message_threads(:fs_accountants_thread1)
+    msg = messages(:fs_accountants_thread1_outbox_message)
+    from = msg.delivered_at.to_date - 2.days
+    to   = msg.delivered_at.to_date - 1.day
+    assert_not_includes thread.messages.delivered_between(from, to), msg
+  end
+
+  test "delivered_between includes message exactly at beginning_of_day boundary" do
+    thread = message_threads(:fs_accountants_thread1)
+    msg = messages(:fs_accountants_thread1_outbox_message)
+    date = msg.delivered_at.to_date
+    msg.update_column(:delivered_at, date.beginning_of_day)
+    assert_includes thread.messages.delivered_between(date, date), msg
+  end
+
+  test "delivered_between includes message exactly at end_of_day boundary" do
+    thread = message_threads(:fs_accountants_thread1)
+    msg = messages(:fs_accountants_thread1_outbox_message)
+    date = msg.delivered_at.to_date
+    msg.update_column(:delivered_at, date.end_of_day)
+    assert_includes thread.messages.delivered_between(date, date), msg
+  end
+
   test "#export_summary returns correct summary data" do
     message = messages(:fs_accountants_dphv21)
 

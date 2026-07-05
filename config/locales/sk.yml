@@ -45,6 +45,7 @@ sk:
           attributes:
             base:
               empty_selection: Musí byť zvolené aspoň jedno z nastavení exportu
+              invalid_date_range: Dátum „od" musí byť pred dátumom „do"
         fs/message_draft:
           multiple_signatures: "Správa obsahuje viacero podpisov. Nie je možné vybrať FS prepojenie."
           signer_not_allowed_to_submit: "Podpisujúci nemá oprávnenie na odoslanie správy."
