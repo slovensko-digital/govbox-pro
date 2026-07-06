@@ -18,7 +18,7 @@ class BoxTest < ActiveSupport::TestCase
 
     box.api_connection.update(obo: SecureRandom.uuid)
 
-    assert_not box.valid?
+    assert_not box.reload.valid?
   end
 
   test "should not be valid if obo value present in SkApi::ApiConnectionWithOboSupport" do
@@ -27,7 +27,7 @@ class BoxTest < ActiveSupport::TestCase
 
     box.api_connection.update(obo: SecureRandom.uuid)
 
-    assert_not box.valid?
+    assert_not box.reload.valid?
   end
 
   test "should not be valid if same obo value present in other boxes within connection" do

@@ -42,7 +42,7 @@ class Fs::Box < Box
   def sync
     return unless active?
 
-    boxes_api_connections.group_by { |boxes_api_connection| boxes_api_connection.settings_delegate_id }.each do |settings_delegate_id, boxes_api_connections|
+    boxes_api_connections.active.group_by { |boxes_api_connection| boxes_api_connection.settings_delegate_id }.each do |settings_delegate_id, boxes_api_connections|
       ::Fs::SyncBoxJob.set(job_context: :asap).perform_later(self, api_connection: boxes_api_connections.first.api_connection)
     end
   end
