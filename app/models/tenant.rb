@@ -55,7 +55,7 @@ class Tenant < ApplicationRecord
   validates_presence_of :name
   validate :validate_api_token_public_key_format, unless: -> { api_token_public_key.nil? }
 
-  ALL_FEATURE_FLAGS = [:audit_log, :archive, :api, :message_draft_import, :fs_api, :fs_sync, :upvs]
+  ALL_FEATURE_FLAGS = [:audit_log, :archive, :api, :message_draft_import, :fs_api, :fs_sync, :upvs, :fs_html_visualizations_indexing]
 
   PDF_SIGNATURE_FORMATS = %w[PAdES XAdES CAdES]
   SIGNATURE_REQUEST_MODES = %w[signer_group author].freeze

@@ -4,10 +4,27 @@ module Searchable::IndexHelpers
   BODY_PATTERN = %r{<body[^>]*>(.*?)</body>}im
   NON_SEARCHABLE_CSS = "head, script, style, noscript, template"
 
+  LEGACY_BODY_PATTERN = /<body[^>]*>(.*?)<\/body>/im
+
   def html_to_searchable_string(html)
     return html unless html
 
     searchable_string(extract_visible_text(html))
+  end
+
+  def legacy_html_to_searchable_string(html)
+    return html unless html
+
+    match = html.match(LEGACY_BODY_PATTERN)
+    body = match ? match[1] : html
+
+    create_single_line_string(
+      transliterate(
+        ActionView::Base.full_sanitizer.sanitize(
+          body.gsub(/<\/([^>]*)><([^>]*)>/, '</\1> <\2>')
+        )
+      )
+    )
   end
 
   def searchable_string(string)

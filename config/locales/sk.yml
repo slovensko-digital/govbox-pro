@@ -398,6 +398,9 @@ sk:
     message_draft_import:
       name: Import správ
       description: Funkcionalita pre hromadné zasielanie správ
+    fs_html_visualizations_indexing:
+      name: HTML vizualizácie FS
+      description: HTML vizualizácie správ z finančnej správy
   exports:
     flash:
       started: Export správ bol zaradený na spracovanie.
