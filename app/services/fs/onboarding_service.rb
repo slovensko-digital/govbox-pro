@@ -30,7 +30,7 @@ class Fs::OnboardingService
       tenant.save!
 
       response = fs_client.admin_api.create_user(
-        crm_identifier: @tenant_name,
+        crm_identifier: "TRIAL GO - #{@tenant_name}",
         api_token_public_key: @fs_api_key.public_key.to_pem
       )
 

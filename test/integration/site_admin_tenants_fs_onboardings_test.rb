@@ -14,7 +14,7 @@ class SiteAdminTenantsFsOnboardingsTest < ActionDispatch::IntegrationTest
     fs_api.expect :create_user, {
       "id" => 1
     },
-    **{crm_identifier: onboarding_params[:tenant_name], api_token_public_key: String}
+    **{crm_identifier: "TRIAL GO - #{onboarding_params[:tenant_name]}", api_token_public_key: String}
 
     FsEnvironment.fs_client.stub :admin_api, fs_api do
       post "/api/site_admin/tenants/fs/onboardings",
@@ -72,7 +72,7 @@ class SiteAdminTenantsFsOnboardingsTest < ActionDispatch::IntegrationTest
     fs_api.expect :create_user, {
       "id" => 1
     },
-    **{crm_identifier: onboarding_params[:tenant_name], api_token_public_key: String}
+    **{crm_identifier: "TRIAL GO - #{onboarding_params[:tenant_name]}", api_token_public_key: String}
 
     FsEnvironment.fs_client.stub :admin_api, fs_api do
       post "/api/site_admin/tenants/fs/onboardings",
