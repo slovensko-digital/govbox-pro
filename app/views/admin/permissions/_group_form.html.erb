@@ -73,7 +73,8 @@
             <% group.tag_groups.each do |group_permission| %>
               <%= render layout: "admin/permissions/item_row", locals: {
                 delete_path: admin_tenant_group_tag_group_path(Current.tenant, group, group_permission),
-                id: dom_id(group_permission.tag, :permission_row)
+                id: dom_id(group_permission.tag, :permission_row),
+                restricted: group_permission.restricted?
               } do %>
                 <%= render Common::TagComponent.new(group_permission.tag) %>
               <% end %>

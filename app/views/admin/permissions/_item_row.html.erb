@@ -2,7 +2,9 @@
   <div class="flex flex-col justify-start items-start flex-grow relative gap-1">
     <%= yield %>
   </div>
-  <%= button_to delete_path, method: :delete, title: t('admin.groups.permissions.actions.delete'), data: { turbo_frame: "_top" } do %>
-    <%= render Common::DeleteButtonComponent.new %>
+  <% unless local_assigns[:restricted] %>
+    <%= button_to delete_path, method: :delete, title: t('admin.groups.permissions.actions.delete'), data: { turbo_frame: "_top" } do %>
+      <%= render Common::DeleteButtonComponent.new %>
+    <% end %>
   <% end %>
 </div>
