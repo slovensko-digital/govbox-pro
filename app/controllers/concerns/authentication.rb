@@ -13,7 +13,7 @@ module Authentication
     if valid_session?(session)
       session[:login_expires_at] = SESSION_TIMEOUT.from_now
     else
-      redirect_to login_path
+      redirect_to login_path and return
     end
 
     load_current_user
