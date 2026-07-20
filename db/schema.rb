@@ -563,6 +563,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_07_01_155715) do
     t.jsonb "export_metadata", default: {}, null: false
     t.index "((metadata ->> 'fs_message_id'::text))", name: "index_messages_on_metadata_fs_message_id", using: :hash
     t.index ["author_id"], name: "index_messages_on_author_id"
+    t.index ["delivered_at"], name: "index_messages_on_delivered_at"
     t.index ["import_id"], name: "index_messages_on_import_id"
     t.index ["message_thread_id"], name: "index_messages_on_message_thread_id"
     t.unique_constraint ["uuid", "message_thread_id"], deferrable: :deferred

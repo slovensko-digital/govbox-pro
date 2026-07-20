@@ -25,7 +25,7 @@ module Fs
 
           next unless related_outbox_message
 
-          ::Fs::DownloadReceivedMessageJob.perform_later(received_message['message_id'], box: box)
+          ::Fs::DownloadReceivedMessageJob.perform_later(received_message['message_id'], box: box, api_connection: api_connection)
         end
 
         break if received_messages['messages'].size < batch_size

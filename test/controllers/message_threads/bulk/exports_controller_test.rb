@@ -87,6 +87,33 @@ module MessageThreads
         get :edit, params: { id: @export.id }
         assert_select "input[type=radio][name='export[settings][message_direction]']", count: 3
       end
+
+      test 'edit renders date range inputs' do
+        get :edit, params: { id: @export.id }
+        assert_select "input[type=date][name='export[settings][delivered_at_from]']", count: 1
+        assert_select "input[type=date][name='export[settings][delivered_at_to]']", count: 1
+      end
+
+      test 'update persists delivered_at_from date setting' do
+        patch :update, params: { id: @export.id, export: { settings: { 'summary' => '1', 'delivered_at_from' => '2025-01-01' } } }
+        assert_equal "2025-01-01", @export.reload.settings['delivered_at_from']
+      end
+
+      test 'update persists delivered_at_to date setting' do
+        patch :update, params: { id: @export.id, export: { settings: { 'summary' => '1', 'delivered_at_to' => '2025-06-30' } } }
+        assert_equal "2025-06-30", @export.reload.settings['delivered_at_to']
+      end
+
+      test 'update with from > to returns unprocessable_content' do
+        patch :update, params: { id: @export.id, export: { settings: { 'summary' => '1', 'delivered_at_from' => '2025-06-30', 'delivered_at_to' => '2025-01-01' } } }
+        assert_response :unprocessable_content
+      end
+
+      test 'start with date range enqueues ExportJob' do
+        assert_enqueued_with(job: ExportJob) do
+          post :start, params: { export_id: @export.id, export: { settings: { 'messages' => '1', 'default' => '1', 'delivered_at_from' => '2025-01-01', 'delivered_at_to' => '2025-06-30' } } }
+        end
+      end
     end
   end
 end

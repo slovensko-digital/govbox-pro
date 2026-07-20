@@ -22,13 +22,18 @@
         <%= render MessageStateComponent.new(message: @message, classes: "md:hidden") %>
       </div>
       <div class="flex flex-col items-end gap-2">
-        <div class="flex justify-end gap-0.5">
+        <div class="flex justify-end items-center gap-0.5">
           <time class="shrink-0 md:hidden text-sm py-0.5" datetime="<%= @message.delivered_at %>">
             <%= helpers.nice_datetime(@message.delivered_at) %>
           </time>
           <time class="shrink-0 hidden md:block text-sm py-0.5" datetime="<%= @message.delivered_at %>">
             <%= helpers.nice_datetime_with_time(@message.delivered_at) %>
           </time>
+          <% if @mode == :thread_view && @message.collapsible? && @message.collapsed? %>
+            <%= link_to message_thread_path(@message.thread), class: 'flex items-center rounded-full text-gray-400 hover:text-gray-600 ml-3' do %>
+              <%= render Icons::ChevronUpComponent.new(css_classes: "w-6 h-6") %>
+            <% end %>
+          <% end %>
           <%= render MessageOptionsComponent.new(message: @message, mode: @mode) %>
         </div>
         <%= render MessageStateComponent.new(message: @message, classes: "hidden md:flex") %>

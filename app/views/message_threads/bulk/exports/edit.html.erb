@@ -49,6 +49,24 @@
 
             <p class="mt-1 text-sm text-gray-500">Nastavte ako budú exportované jednotlivé typy správ.</p>
 
+            <div class="mt-4 flex items-center gap-x-6">
+              <span class="text-sm text-gray-700">Dátum doručenia:</span>
+              <div class="flex items-center gap-x-3">
+                <%= label_tag "export[settings][delivered_at_from]", "od", class: "text-sm text-gray-700 select-none" %>
+                <%= date_field_tag "export[settings][delivered_at_from]",
+                      @export.settings["delivered_at_from"],
+                      class: "rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500",
+                      onchange: "this.form.requestSubmit()" %>
+              </div>
+              <div class="flex items-center gap-x-3">
+                <%= label_tag "export[settings][delivered_at_to]", "do", class: "text-sm text-gray-700 select-none" %>
+                <%= date_field_tag "export[settings][delivered_at_to]",
+                      @export.settings["delivered_at_to"],
+                      class: "rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500",
+                      onchange: "this.form.requestSubmit()" %>
+              </div>
+            </div>
+
             <div class="mt-2">
               <details class="group">
                 <summary class="text-sm cursor-pointer select-none text-gray-500 hover:text-gray-800">Dostupné premenné pre šablónu</summary>
@@ -127,13 +145,13 @@
         <h3 class="text-base font-semibold text-gray-900">Náhľad exportu</h3>
       </div>
 
-      <table class="min-w-full divide-y divide-gray-300">
+      <table class="table-fixed w-full divide-y divide-gray-300">
         <thead>
         <tr>
-          <th scope="col" class="whitespace-nowrap py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">Schránka</th>
-          <th scope="col" class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Názov</th>
-          <th scope="col" class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Typ</th>
-          <th scope="col" class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Súbor</th>
+          <th scope="col" class="w-1/12 whitespace-nowrap py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">Schránka</th>
+          <th scope="col" class="w-1/3 px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Názov</th>
+          <th scope="col" class="w-1/6 whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Typ</th>
+          <th scope="col" class="px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Súbor</th>
           <th scope="col" class="relative whitespace-nowrap py-3.5 pl-3 pr-4 sm:pr-0">
             <span class="sr-only">Edit</span>
           </th>
@@ -145,7 +163,7 @@
               <td class="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-gray-500 sm:pl-0">-</td>
               <td class="px-2 py-2 text-sm font-medium text-gray-900">Sumár</td>
               <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900">-</td>
-              <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">sumar.xlsx</td>
+              <td class="px-2 py-2 text-sm text-gray-500">sumar.xlsx</td>
             </tr>
           <% end %>
 
@@ -153,35 +171,60 @@
             <% @message_threads.each do |message_thread| %>
               <tr>
                 <td class="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-gray-500 sm:pl-0"><%= message_thread.box.short_name %></td>
-                <td class="px-2 py-2 text-sm font-medium text-gray-900"><%= message_thread.title %>
-                  <div class="flex flex-wrap items-center gap-1">
+                <td class="px-2 py-2 text-sm font-medium text-gray-900 cursor-pointer select-none"
+                    data-controller="expand-text"
+                    data-action="click->expand-text#toggle">
+                  <div class="flex items-center gap-x-1 overflow-hidden">
+                    <span class="truncate min-w-0" data-expand-content><%= message_thread.title %></span>
+                    <span class="shrink-0 text-gray-400 text-xs" data-expand-indicator>▾</span>
+                  </div>
+                  <div class="flex flex-wrap items-center gap-1 mt-1">
                     <% message_thread.message_threads_tags.only_visible_tags.each do |tag| %>
                       <%= render Common::TagComponent.new(tag.tag) %>
                     <% end %>
                   </div>
                 </td>
                 <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900"></td>
-                <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500"></td>
+                <td class="px-2 py-2 text-sm text-gray-500"></td>
               </tr>
               <% @export.filtered_messages(message_thread).sort_by(&:delivered_at).each do |message| %>
                 <tr>
                   <td class="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-gray-500 sm:pl-0"></td>
-                  <td class="px-2 py-2 text-sm font-medium text-gray-900">
-                    <span class="text-gray-500">&#10551;</span> <%= message.title %></td>
+                  <td class="px-2 py-2 text-sm font-medium text-gray-900 cursor-pointer select-none"
+                      data-controller="expand-text"
+                      data-action="click->expand-text#toggle">
+                    <div class="flex items-center gap-x-1 overflow-hidden">
+                      <span class="truncate min-w-0" data-expand-content><span class="text-gray-500">&#10551;</span> <%= message.title %></span>
+                      <span class="shrink-0 text-gray-400 text-xs" data-expand-indicator>▾</span>
+                    </div>
+                  </td>
                   <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900"><%= message.message_type || '&mdash;'.html_safe %></td>
-                  <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500"></td>
+                  <td class="px-2 py-2 text-sm text-gray-500"></td>
                 </tr>
                 <% message.objects.each do |message_object| %>
+                  <% filepath = @export.export_object_filepath(message_object) %>
                   <tr>
                     <td class="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-gray-500 sm:pl-0"></td>
-                    <td class="px-2 py-2 text-sm font-medium text-gray-900"> &nbsp;&nbsp;<span class="text-gray-500">&#10551;</span> <%= message_object.name %>
+                    <td class="px-2 py-2 text-sm font-medium text-gray-900 cursor-pointer select-none"
+                        data-controller="expand-text"
+                        data-action="click->expand-text#toggle">
+                      <div class="flex items-center gap-x-1 overflow-hidden">
+                        <span class="truncate min-w-0" data-expand-content>&nbsp;&nbsp;<span class="text-gray-500">&#10551;</span> <%= message_object.name %></span>
+                        <span class="shrink-0 text-gray-400 text-xs" data-expand-indicator>▾</span>
+                      </div>
                     </td>
                     <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900"></td>
-                    <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
-                        <%=
-                          filepath = @export.export_object_filepath(message_object)
-                          filepath.present? ? content_tag(:code, filepath) : "&mdash;".html_safe
-                        %>
+                    <td class="px-2 py-2 text-sm text-gray-500 cursor-pointer select-none"
+                        data-controller="expand-text"
+                        data-action="click->expand-text#toggle">
+                      <% if filepath.present? %>
+                        <div class="flex items-center gap-x-1 overflow-hidden">
+                          <code class="truncate min-w-0" data-expand-content><%= filepath %></code>
+                          <span class="shrink-0 text-gray-400 text-xs" data-expand-indicator>▾</span>
+                        </div>
+                      <% else %>
+                        &mdash;
+                      <% end %>
                     </td>
                   </tr>
                 <% end %>
