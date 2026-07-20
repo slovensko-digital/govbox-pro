@@ -40,4 +40,12 @@ class TenantApiAuthenticationTest < ActionDispatch::IntegrationTest
 
     assert_response :unauthorized
   end
+
+  test "returns 401 if tenant is inactive" do
+    @tenant.update!(active_until: 1.hour.ago)
+
+    get "/api/messages/sync", params: { token: generate_api_token(sub: @tenant.id.to_s, key_pair: @key_pair) }, as: :json
+
+    assert_response :unauthorized
+  end
 end

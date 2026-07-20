@@ -61,3 +61,5 @@ en:
     flash:
       started: "Export started."
       updated: "Export settings saved."
+  sessions:
+    tenant_inactive: "Tenant is not active"

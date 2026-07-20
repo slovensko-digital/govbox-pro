@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_07_01_105030) do
+ActiveRecord::Schema[7.1].define(version: 2026_07_01_155715) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -679,6 +679,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_07_01_105030) do
     t.string "contact_email"
     t.string "ico", limit: 8
     t.integer "outbox_messages_limit"
+    t.datetime "active_until"
   end
 
   create_table "upvs_form_related_documents", force: :cascade do |t|

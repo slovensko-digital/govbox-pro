@@ -463,3 +463,5 @@ sk:
           tag: Štítok
       update_all_boxes_permission:
         success: Oprávnenie bolo úspešne upravené
+  sessions:
+    tenant_inactive: Tenant nie je aktívny
