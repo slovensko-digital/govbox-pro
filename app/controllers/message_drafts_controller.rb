@@ -40,6 +40,20 @@ class MessageDraftsController < ApplicationController
     end
   end
 
+  def apply_corrected_xml
+    authorize @message
+
+    unless @message.not_yet_submitted?
+      redirect_to message_thread_path(@message.thread), alert: "Správu nie je možné upraviť po zaradení na odoslanie" and return
+    end
+
+    if @message.apply_corrected_xml
+      redirect_to message_thread_path(@message.thread), notice: "Opravená verzia XML bola použitá, prebieha nová validácia správy"
+    else
+      redirect_to message_thread_path(@message.thread), alert: "Opravená verzia XML od Finančnej správy nie je k dispozícii"
+    end
+  end
+
   def unlock
     authorize @message
     if @message.remove_form_signature
