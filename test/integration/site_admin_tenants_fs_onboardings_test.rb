@@ -7,7 +7,8 @@ class SiteAdminTenantsFsOnboardingsTest < ActionDispatch::IntegrationTest
       ico: "09173804",
       admin_user_name: "Test admin",
       saml_identifier: "test-saml-identifier",
-      admin_user_contact_email: "admin@test.sk"
+      admin_user_contact_email: "admin@test.sk",
+      trial: true
     }
 
     fs_api = Minitest::Mock.new
@@ -65,7 +66,8 @@ class SiteAdminTenantsFsOnboardingsTest < ActionDispatch::IntegrationTest
       ico: "87654321",
       admin_user_name: "Admin",
       saml_identifier: "admin-dup@example.com",
-      admin_user_contact_email: "admin-dup@example.com"
+      admin_user_contact_email: "admin-dup@example.com",
+      trial: true
     }
 
     fs_api = Minitest::Mock.new

@@ -17,7 +17,7 @@ class Fs::OnboardingService
   def call(fs_client: FsEnvironment.fs_client)
     Tenant.transaction do
       tenant = Tenant.create!(name: @tenant_name, contact_email: @admin_user_contact_email, ico: @ico)
-      tenant.update!(outbox_messages_limit: 50) if trial
+      tenant.update!(outbox_messages_limit: 50, active_until: Time.now + 30.days) if trial
 
       user = tenant.users.create!(name: @admin_user_name, saml_identifier: @saml_identifier).tap do |tenant_user|
         tenant_user.groups << tenant.admin_group
@@ -29,8 +29,10 @@ class Fs::OnboardingService
       tenant.feature_flags = %w[fs_api fs_sync]
       tenant.save!
 
+      crm_identifier = trial ? "TRIAL GO - #{@tenant_name}" : @tenant_name
+
       response = fs_client.admin_api.create_user(
-        crm_identifier: "TRIAL GO - #{@tenant_name}",
+        crm_identifier: crm_identifier,
         api_token_public_key: @fs_api_key.public_key.to_pem
       )
 
