@@ -199,9 +199,9 @@ class Tenant < ApplicationRecord
     create_signed_tag!(name: "Podpísané", visible: true, color: "green", icon: "fingerprint")
     signer_group.create_signature_requested_tag!
     create_signed_externally_tag!(name: "Externe podpísané", visible: false, color: "purple", icon: "shield-check")
-    create_problem_tag!(name: 'Problémové')
+    create_problem_tag!(name: 'Problémové', color: 'red', icon: 'exclamation-triangle')
     create_submitted_tag!(name: 'Odoslané na spracovanie')
-    create_submission_error_tag!(name: 'Chyba pri odoslaní')
+    create_submission_error_tag!(name: 'Chyba pri odoslaní', color: 'red', icon: 'exclamation-triangle')
     create_unprocessable_tag!(name: 'Chybné', color: 'red', icon: 'exclamation-triangle')
     create_validation_error_tag!(name: "Chybné údaje", color: 'red', icon: "exclamation-triangle")
     create_validation_warning_tag!(name: "Upozornenia", color: "orange", icon: "exclamation-triangle")
