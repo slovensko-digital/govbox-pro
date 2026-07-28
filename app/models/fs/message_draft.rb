@@ -86,7 +86,7 @@ class Fs::MessageDraft < MessageDraft
       form_object.update(is_signed: form_object.asice?)
       message.thread.box.tenant.signed_externally_tag!.assign_to_message_object(form_object) if form_object.is_signed?
 
-      message.thread.assign_tag(message.thread.box.tenant.simple_tags.find_or_create_by!(name: period)) if period
+      message.thread.assign_tag(message.thread.box.tenant.simple_tags.find_or_create_by!(name: period)) if period && message.assign_period_tag?
 
       MessageObjectDatum.create(
         message_object: form_object,
@@ -190,7 +190,7 @@ class Fs::MessageDraft < MessageDraft
 
   def assign_tags_from_params(tags_params)
     period = thread.metadata.dig('period')
-    thread.assign_tag(thread.box.tenant.simple_tags.find_or_create_by!(name: period)) if period
+    thread.assign_tag(thread.box.tenant.simple_tags.find_or_create_by!(name: period)) if period && self.assign_period_tag?
 
     super
   end
@@ -268,6 +268,10 @@ class Fs::MessageDraft < MessageDraft
     end
 
     save
+  end
+
+  def assign_period_tag?
+    ActiveModel::Type::Boolean.new.cast(tenant.settings&.dig('assign_period_tag_to_thread')) != false
   end
 
   def mark_as_invalid
