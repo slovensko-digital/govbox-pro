@@ -56,7 +56,8 @@ class Tenant < ApplicationRecord
 
   after_create :create_default_objects
 
-  validates_presence_of :name
+  validates :name, presence: true, uniqueness: true
+  validates_uniqueness_of :ico, allow_nil: true
 
   validates :contact_email, format: { with: URI::MailTo::EMAIL_REGEXP, message: "must be valid" }, allow_blank: true
   validates :ico, format: { with: /\A\d{8}\z/, message: "must be 8 digits" }, allow_blank: true

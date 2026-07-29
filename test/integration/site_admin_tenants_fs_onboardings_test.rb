@@ -60,7 +60,7 @@ class SiteAdminTenantsFsOnboardingsTest < ActionDispatch::IntegrationTest
     assert_match "can't be blank", json_response["message"]
   end
 
-  test "returns conflict when creating the same tenant twice" do
+  test "returns conflict when creating the same tenant with same user twice" do
     onboarding_params = {
       tenant_name: "Duplicate tenant",
       ico: "87654321",
@@ -90,6 +90,43 @@ class SiteAdminTenantsFsOnboardingsTest < ActionDispatch::IntegrationTest
 
     assert_response :conflict
     json_response = JSON.parse(response.body)
-    assert_match "already been taken", json_response["message"].downcase
+    assert_match "Tenant already exists", json_response["message"]
+  end
+
+  test "returns conflict when creating the same tenant with different user twice" do
+    onboarding_params = {
+      tenant_name: "Duplicate tenant",
+      ico: "87654321",
+      admin_user_name: "Admin",
+      saml_identifier: "admin-dup@example.com",
+      admin_user_contact_email: "admin-dup@example.com",
+      trial: true
+    }
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :create_user, {
+      "id" => 1
+    },
+    **{crm_identifier: "TRIAL GO - #{onboarding_params[:tenant_name]}", api_token_public_key: String}
+
+    FsEnvironment.fs_client.stub :admin_api, fs_api do
+      post "/api/site_admin/tenants/fs/onboardings",
+           params: { onboarding: onboarding_params, token: generate_api_token },
+           as: :json
+    end
+
+    assert_response :ok
+
+    post "/api/site_admin/tenants/fs/onboardings",
+         params: { onboarding: onboarding_params.merge!({
+                                                          admin_user_name: "Another Admin",
+                                                          saml_identifier: "admin-dup2@example.com"
+                                                        }
+         ), token: generate_api_token },
+         as: :json
+
+    assert_response :conflict
+    json_response = JSON.parse(response.body)
+    assert_match "Tenant already exists", json_response["message"]
   end
 end
