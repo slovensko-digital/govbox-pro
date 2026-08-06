@@ -33,6 +33,9 @@ class User < ApplicationRecord
   has_many :filter_subscriptions, dependent: :destroy
   has_many :notifications, dependent: :destroy
   has_one :sticky_note, dependent: :destroy
+  has_many :exports
+  has_secure_password validations: false
+  has_many :push_endpoints
   has_many :exports, dependent: :destroy
   has_many :identities, dependent: :destroy
   has_many :api_connections, foreign_key: :owner_id, dependent: :destroy
@@ -43,9 +46,10 @@ class User < ApplicationRecord
   validates_uniqueness_of :name, :email, scope: :tenant_id, case_sensitive: false, allow_nil: true
   validates_uniqueness_of :saml_identifier, case_sensitive: false, allow_nil: true
 
-  before_destroy :delete_user_group, prepend: true
+  after_create :handle_default_settings
   after_create :handle_default_settings
   after_update :broadcast_badge_update
+  before_destroy :delete_user_group, prepend: true
 
   normalizes :saml_identifier, with: -> (saml_identifier) { saml_identifier.presence }
 
