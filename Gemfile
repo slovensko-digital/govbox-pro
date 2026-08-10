@@ -23,7 +23,7 @@ gem 'view_component'
 gem 'clockwork'
 
 # Workers
-gem 'good_job', '= 3.99'
+gem 'good_job'
 
 # Auth
 gem 'omniauth-identity'
