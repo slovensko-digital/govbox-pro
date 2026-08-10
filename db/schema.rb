@@ -343,6 +343,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_08_10_143031) do
     t.integer "error_event", limit: 2
     t.text "error_backtrace", array: true
     t.uuid "process_id"
+    t.interval "duration"
     t.index ["active_job_id", "created_at"], name: "index_good_job_executions_on_active_job_id_and_created_at"
     t.index ["process_id", "created_at"], name: "index_good_job_executions_on_process_id_and_created_at"
   end
@@ -701,7 +702,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_08_10_143031) do
     t.enum "color", enum_type: "color"
     t.index ["owner_id"], name: "index_tags_on_owner_id"
     t.index ["tenant_id", "type", "name"], name: "index_tags_on_tenant_id_and_type_and_name", unique: true
-    t.index ["tenant_id", "type"], name: "signings_tags", unique: true, where: "((type)::text = ANY ((ARRAY['SignatureRequestedTag'::character varying, 'SignedTag'::character varying])::text[]))"
+    t.index ["tenant_id", "type"], name: "signings_tags", unique: true, where: "((type)::text = ANY (ARRAY[('SignatureRequestedTag'::character varying)::text, ('SignedTag'::character varying)::text]))"
     t.index ["tenant_id"], name: "index_tags_on_tenant_id"
   end
 
