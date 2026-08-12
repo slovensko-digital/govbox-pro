@@ -17,50 +17,50 @@ class Settings::AutomationRulePolicy < ApplicationPolicy
   end
 
   def index?
-    true
+    @user.admin?
   end
 
   def show?
-    true
+    @user.admin?
   end
 
   def create?
-    true
+    @user.admin?
   end
 
   def new?
-    true
+    @user.admin?
   end
 
   def update?
-    true
+    @user.admin?
   end
 
   def edit?
-    true
+    @user.admin?
   end
 
   def header_step?
-    true
+    @user.admin?
   end
 
   def conditions_step?
-    true
+    @user.admin?
   end
 
   def actions_step?
-    true
+    @user.admin?
   end
 
   def edit_form?
-    true
+    @user.admin?
   end
 
   def destroy?
-    true
+    @user.admin?
   end
 
   def rerender?
-    true
+    @user.admin?
   end
 end
