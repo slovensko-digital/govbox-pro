@@ -424,6 +424,9 @@ sk:
       started: Export správ bol zaradený na spracovanie.
       updated: Nastavenia exportu správ boli zmenené.
   admin:
+    tag_groups:
+      destroy:
+        cannot_remove_restricted_tag: Tento štítok nie je možné odstrániť
     groups:
       create:
         success: Skupina bola úspešne vytvorená
@@ -460,3 +463,5 @@ sk:
           tag: Štítok
       update_all_boxes_permission:
         success: Oprávnenie bolo úspešne upravené
+  sessions:
+    tenant_inactive: Tenant nie je aktívny

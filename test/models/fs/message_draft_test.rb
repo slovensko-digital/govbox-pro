@@ -41,6 +41,51 @@ class Fs::MessageDraftTest < ActiveSupport::TestCase
     assert message_draft.thread.box.eql?(boxes(:fs_accountants))
   end
 
+  test "create_and_validate_with_fs_form method adds period tag to thread" do
+    author = users(:accountants_basic)
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :parse_form, {
+      "subject" => "1122334455",
+      "form_identifier" => "795_777",
+      "period" => {
+        "pretty" => "092024"
+      }
+    },
+                  [file_fixture("fs/Accountants_main_FS_prehlad_0924.xml").read]
+
+    FsEnvironment.fs_client.stub :api, fs_api do
+      Fs::MessageDraft.create_and_validate_with_fs_form(form_files: [fixture_file_upload("fs/Accountants_main_FS_prehlad_0924.xml", "application/xml")], author: author)
+    end
+
+    message_draft = Fs::MessageDraft.last
+    assert_equal message_draft.thread.tags.find_by(name: "092024").present?, true
+  end
+
+  test "create_and_validate_with_fs_form method does not add period tag to thread if it is off for the tenant" do
+    author = users(:accountants_basic)
+    tenant = tenants(:accountants)
+    tenant.settings["assign_period_tag_to_thread"] = false
+    tenant.save
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :parse_form, {
+      "subject" => "1122334455",
+      "form_identifier" => "795_777",
+      "period" => {
+        "pretty" => "092024"
+      }
+    },
+                  [file_fixture("fs/Accountants_main_FS_prehlad_0924.xml").read]
+
+    FsEnvironment.fs_client.stub :api, fs_api do
+      Fs::MessageDraft.create_and_validate_with_fs_form(form_files: [fixture_file_upload("fs/Accountants_main_FS_prehlad_0924.xml", "application/xml")], author: author)
+    end
+
+    message_draft = Fs::MessageDraft.last
+    assert_equal message_draft.thread.tags.find_by(name: "092024").present?, false
+  end
+
   test "create_and_validate_with_fs_form method does not raise if XML does not match any FS form" do
     author = users(:accountants_basic)
 

@@ -3,6 +3,7 @@
 # Table name: tenants
 #
 #  id                     :bigint           not null, primary key
+#  active_until           :datetime
 #  api_token_public_key   :string
 #  contact_email          :string
 #  feature_flags          :string           default([]), is an Array
@@ -55,7 +56,8 @@ class Tenant < ApplicationRecord
 
   after_create :create_default_objects
 
-  validates_presence_of :name
+  validates :name, presence: true, uniqueness: true
+  validates_uniqueness_of :ico, allow_nil: true
 
   validates :contact_email, format: { with: URI::MailTo::EMAIL_REGEXP, message: "must be valid" }, allow_blank: true
   validates :ico, format: { with: /\A\d{8}\z/, message: "must be 8 digits" }, allow_blank: true
@@ -68,6 +70,12 @@ class Tenant < ApplicationRecord
   SIGNATURE_REQUEST_MODES = %w[signer_group author].freeze
 
   validates :signature_request_mode, inclusion: { in: SIGNATURE_REQUEST_MODES }
+
+  scope :active, -> { where("active_until IS NULL OR active_until > ?", Time.current) }
+
+  def active?
+    active_until.nil? || active_until > Time.current
+  end
 
   def set_pdf_signature_format(pdf_signature_format)
     raise "Unknown pdf_signature_format #{pdf_signature_format}" unless pdf_signature_format.in? PDF_SIGNATURE_FORMATS
@@ -192,9 +200,9 @@ class Tenant < ApplicationRecord
     create_signed_tag!(name: "Podpísané", visible: true, color: "green", icon: "fingerprint")
     signer_group.create_signature_requested_tag!
     create_signed_externally_tag!(name: "Externe podpísané", visible: false, color: "purple", icon: "shield-check")
-    create_problem_tag!(name: 'Problémové')
+    create_problem_tag!(name: 'Problémové', color: 'red', icon: 'exclamation-triangle')
     create_submitted_tag!(name: 'Odoslané na spracovanie')
-    create_submission_error_tag!(name: 'Chyba pri odoslaní')
+    create_submission_error_tag!(name: 'Chyba pri odoslaní', color: 'red', icon: 'exclamation-triangle')
     create_unprocessable_tag!(name: 'Chybné', color: 'red', icon: 'exclamation-triangle')
     create_validation_error_tag!(name: "Chybné údaje", color: 'red', icon: "exclamation-triangle")
     create_validation_warning_tag!(name: "Upozornenia", color: "orange", icon: "exclamation-triangle")

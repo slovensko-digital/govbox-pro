@@ -167,7 +167,7 @@ class Message < ApplicationRecord
       tags: thread.tags.map(&:name),
       outbox: outbox
     }.merge!(
-      form&.slug&.match?(/\ADPH/) ? {
+      form&.respond_to?(:slug) && form&.slug&.match?(/\ADPH/) ? {
         dph_r33: parse_value_from_form_object('//r33'),
         dph_r35: parse_value_from_form_object('//r35')
       }.compact : {}

@@ -53,7 +53,13 @@ en:
       missing_required: "Missing required attachment for %{identifier} (minimum is %{min_occurrences})."
       too_many: "Too many attachments for %{identifier} (maximum is %{max_occurrences})."
       disallowed_mimetype: "MimeType of %{name} object is disallowed, allowed MimeTypes: %{mimetypes}"
+  admin:
+    tag_groups:
+      destroy:
+        cannot_remove_restricted_tag: This tag cannot be removed
   exports:
     flash:
       started: "Export started."
       updated: "Export settings saved."
+  sessions:
+    tenant_inactive: "Tenant is not active"

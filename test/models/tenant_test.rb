@@ -112,4 +112,36 @@ class TenantTest < ActiveSupport::TestCase
     assert_not @tenant.valid?
     assert_includes @tenant.errors[:api_token_public_key], I18n.t('activerecord.errors.models.tenant.attributes.api_token_public_key.public_key_invalid_format')
   end
+
+  test "active? returns true when active_until is nil" do
+    assert @tenant.active?
+  end
+
+  test "active? returns true when active_until is in the future" do
+    @tenant.update!(active_until: 1.hour.from_now)
+
+    assert @tenant.active?
+  end
+
+  test "active? returns false when active_until is in the past" do
+    @tenant.update!(active_until: 1.hour.ago)
+
+    assert_not @tenant.active?
+  end
+
+  test "active scope includes tenants with nil active_until" do
+    assert_includes Tenant.active, @tenant
+  end
+
+  test "active scope includes tenants with future active_until" do
+    @tenant.update!(active_until: 1.hour.from_now)
+
+    assert_includes Tenant.active, @tenant
+  end
+
+  test "active scope excludes tenants with past active_until" do
+    @tenant.update!(active_until: 1.hour.ago)
+
+    assert_not_includes Tenant.active, @tenant
+  end
 end
