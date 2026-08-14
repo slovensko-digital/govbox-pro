@@ -8,11 +8,7 @@ class Settings::AutomationRulePolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      if @user.admin?
-        scope.where(tenant: Current.tenant)
-      else
-        scope.where(tenant: Current.tenant, user: @user)
-      end
+      scope.where(tenant: Current.tenant) if @user.admin?
     end
   end
 
