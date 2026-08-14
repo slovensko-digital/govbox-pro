@@ -1,6 +1,6 @@
 class MessageObjectsController < ApplicationController
   before_action :set_message_object, except: :create
-  before_action :set_message, only: [:create, :update, :download, :download_pdf, :download_archived, :destroy, :signing_data]
+  before_action :set_message
 
   def show
     authorize @message_object
