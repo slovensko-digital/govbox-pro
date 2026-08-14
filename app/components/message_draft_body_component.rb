@@ -14,7 +14,7 @@ class MessageDraftBodyComponent < ViewComponent::Base
     "stat" => "Štát"
   }.freeze
 
-  GENERIC_DIFF_DESCRIPTION = "Finančná správa upravila obsah správy, pred odoslaním skontrolujte údaje vo formulári."
+  GENERIC_DIFF_DESCRIPTION = "Zmenili sa hodnoty niektorých atribútov, pred odoslaním skontrolujte údaje vo formulári."
 
   def initialize(message:, is_last:)
     @message = message

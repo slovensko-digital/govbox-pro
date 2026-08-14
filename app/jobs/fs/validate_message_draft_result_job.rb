@@ -3,6 +3,7 @@ class Fs::ValidateMessageDraftResultJob < ApplicationJob
 
   WARNING_LEVELS = ['warning', 'warning section-error'].freeze
   DIFF_LEVELS = ['diff', 'diff_warning', 'diff_error'].freeze
+  IGNORED_DIFF_LEVELS = ['diff', 'diff_warning'].freeze
 
   def perform(message_draft, location_header, fs_client: FsEnvironment.fs_client)
     response = fs_client.api(box: message_draft.thread.box).get_location(location_header)
@@ -23,7 +24,9 @@ class Fs::ValidateMessageDraftResultJob < ApplicationJob
     diff          = messages_for(problems, 'diff')
     errors        = problems.reject { |problem| problem['level'].in?(WARNING_LEVELS + DIFF_LEVELS) }.map { |problem| problem['message'] }
 
-    result = if errors.none? && warnings.none? && diff_errors.none? && diff_warnings.none? && diff.any?
+    ignored_diffs = messages_for(problems, *IGNORED_DIFF_LEVELS)
+
+    result = if errors.none? && warnings.none? && diff_errors.none? && ignored_diffs.any?
                'OK'
              else
                response[:body]['result']

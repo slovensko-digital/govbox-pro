@@ -156,6 +156,17 @@ class Fs::MessageDraftTest < ActiveSupport::TestCase
     assert_not message_draft.correctable_xml?
   end
 
+  test "correctable_xml? is false while a new validation is already running" do
+    message_draft = messages(:fs_accountants_draft_uzmujv14_with_attachment)
+    message_draft.metadata["validation_errors"] = { "corrected_xml" => "<xml/>" }
+
+    message_draft.metadata["status"] = "being_validated"
+    assert_not message_draft.correctable_xml?
+
+    message_draft.metadata["status"] = "invalid"
+    assert message_draft.correctable_xml?
+  end
+
   test "validate_and_process marks message as invalid if there are validation errors" do
     message_draft = messages(:fs_accountants_draft_uzmujv14)
     message_draft.validate_and_process

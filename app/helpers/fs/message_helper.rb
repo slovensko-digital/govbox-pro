@@ -17,7 +17,7 @@ module Fs::MessageHelper
 
     xslt = message.form&.xslt_txt
 
-    return unless xslt
+    raise 'Missing Fs::Form TXT XSLT' unless xslt
 
     template = Nokogiri::XSLT(xslt)
     transformed_content = template.transform(message.form_object.xml_unsigned_content).to_s

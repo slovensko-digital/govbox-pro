@@ -5,7 +5,7 @@ class Fs::MessageDraftXmlDiffTest < ApplicationSystemTestCase
     sign_in_as(:accountants_basic)
   end
 
-  test "draft with diff_warnings shows yellow warning box and is submittable" do
+  test "diff_warnings are ignored completely and draft stays submittable" do
     message_draft = messages(:fs_accountants_draft_uzmujv14_with_attachment)
     message_draft.update!(metadata: message_draft.metadata.merge(
       "validation_errors" => {
@@ -20,18 +20,16 @@ class Fs::MessageDraftXmlDiffTest < ApplicationSystemTestCase
     ))
 
     visit message_thread_path(message_draft.thread)
-    save_screenshot "tmp/diff-warn-01-shows-yellow-box.png"
 
     within_message_in_thread(message_draft) do
-      assert_text "Finančná správa upravila formátovanie správy"
-      assert_no_text "Finančná správa upravila obsah správy"
-      save_screenshot "tmp/diff-warn-02-within-message.png"
+      assert_no_text "Správa pravdepodobne obsahuje nesprávne údaje"
+      assert_no_button "Použiť opravené hodnoty"
     end
 
     assert_no_text "Správa nie je validná"
   end
 
-  test "draft with diff_warnings has validation_warning_tag and problem_tag on thread" do
+  test "diff_warnings do not assign validation_warning_tag or problem_tag" do
     message_draft = messages(:fs_accountants_draft_uzmujv14_with_attachment)
     message_draft.metadata["validation_errors"] = {
       "result"        => "WARN",
@@ -45,58 +43,11 @@ class Fs::MessageDraftXmlDiffTest < ApplicationSystemTestCase
     message_draft.validate_and_process
 
     assert_equal "created", message_draft.metadata["status"]
-    assert message_draft.thread.tags.include?(message_draft.tenant.validation_warning_tag),
-      "thread should carry validation_warning_tag when diff_warnings present"
-    assert message_draft.thread.tags.include?(message_draft.tenant.problem_tag),
-      "thread should carry problem_tag when diff_warnings present"
+    assert_not message_draft.thread.tags.include?(message_draft.tenant.validation_warning_tag)
+    assert_not message_draft.thread.tags.include?(message_draft.tenant.problem_tag)
   end
 
-  test "draft with diff_warnings shows apply correction button" do
-    message_draft = messages(:fs_accountants_draft_uzmujv14_with_attachment)
-    message_draft.update!(metadata: message_draft.metadata.merge(
-      "validation_errors" => {
-        "result"        => "WARN",
-        "errors"        => [],
-        "warnings"      => [],
-        "diff_warnings" => ["Normalizácia medzier"],
-        "diff_errors"   => [],
-        "diff"          => [],
-        "corrected_xml" => "<xml>corrected</xml>"
-      }
-    ))
-
-    visit message_thread_path(message_draft.thread)
-
-    within_message_in_thread(message_draft) do
-      assert_button "Použiť opravu formátovania"
-      save_screenshot "tmp/diff-warn-03-apply-button-visible.png"
-    end
-  end
-
-  test "draft with diff_warnings but no corrected_xml does not show apply button" do
-    message_draft = messages(:fs_accountants_draft_uzmujv14_with_attachment)
-    message_draft.update!(metadata: message_draft.metadata.merge(
-      "validation_errors" => {
-        "result"        => "WARN",
-        "errors"        => [],
-        "warnings"      => [],
-        "diff_warnings" => ["1c1\n< <?xml version=\"1.0\" encoding=\"UTF-8\"?>\n---\n> <?xml version=\"1.0\" encoding=\"utf-8\"?>"],
-        "diff_errors"   => [],
-        "diff"          => [],
-        "corrected_xml" => nil
-      }
-    ))
-
-    visit message_thread_path(message_draft.thread)
-
-    within_message_in_thread(message_draft) do
-      assert_no_button "Použiť opravu formátovania"
-      assert_text "Finančná správa upravila formátovanie správy"
-      save_screenshot "tmp/diff-warn-04-no-apply-button-without-corrected-xml.png"
-    end
-  end
-
-  test "draft with diff_errors shows red error box and is marked invalid" do
+  test "draft with diff_errors shows error box and is marked invalid" do
     message_draft = messages(:fs_accountants_draft_uzmujv14_with_attachment)
     message_draft.update!(metadata: message_draft.metadata.merge(
       "validation_errors" => {
@@ -112,15 +63,39 @@ class Fs::MessageDraftXmlDiffTest < ApplicationSystemTestCase
     ))
 
     visit message_thread_path(message_draft.thread)
-    save_screenshot "tmp/diff-error-01-shows-red-box.png"
 
     within_message_in_thread(message_draft) do
-      assert_text "Finančná správa upravila obsah správy"
-      assert_no_text "Finančná správa upravila formátovanie správy"
-      save_screenshot "tmp/diff-error-02-within-message.png"
+      assert_text "Správa pravdepodobne obsahuje nesprávne údaje"
+      assert_text "Pri nahratí súboru do HTML formulára došlo k zmenám hodnôt vybraných atribútov"
     end
 
     assert_text "Správa nie je validná"
+  end
+
+  test "changed values are listed in an expandable section" do
+    message_draft = messages(:fs_accountants_draft_uzmujv14_with_attachment)
+    message_draft.update!(metadata: message_draft.metadata.merge(
+      "validation_errors" => {
+        "result"        => "WARN",
+        "errors"        => [],
+        "warnings"      => [],
+        "diff_warnings" => [],
+        "diff_errors"   => ["3c3\n< <ico>12345678</ico>\n---\n> <ico>87654321</ico>"],
+        "diff"          => [],
+        "corrected_xml" => "<xml>corrected</xml>"
+      },
+      "status" => "invalid"
+    ))
+
+    visit message_thread_path(message_draft.thread)
+
+    within_message_in_thread(message_draft) do
+      assert_no_text "IČO: 12345678 → 87654321"
+
+      find("summary", text: "Zobraziť zmenené údaje").click
+
+      assert_text "IČO: 12345678 → 87654321"
+    end
   end
 
   test "validate_and_process with diff_errors marks draft invalid and assigns error tag" do
@@ -137,8 +112,7 @@ class Fs::MessageDraftXmlDiffTest < ApplicationSystemTestCase
     message_draft.validate_and_process
 
     assert_equal "invalid", message_draft.metadata["status"]
-    assert message_draft.thread.tags.include?(message_draft.tenant.validation_error_tag),
-      "thread should carry validation_error_tag when diff_errors present"
+    assert message_draft.thread.tags.include?(message_draft.tenant.validation_error_tag)
   end
 
   test "draft with diff_errors shows apply correction button" do
@@ -159,8 +133,7 @@ class Fs::MessageDraftXmlDiffTest < ApplicationSystemTestCase
     visit message_thread_path(message_draft.thread)
 
     within_message_in_thread(message_draft) do
-      assert_button "Použiť opravu od Finančnej správy"
-      save_screenshot "tmp/diff-error-03-apply-button-on-error.png"
+      assert_button "Použiť opravené hodnoty"
     end
   end
 
@@ -181,11 +154,10 @@ class Fs::MessageDraftXmlDiffTest < ApplicationSystemTestCase
     ))
 
     visit message_thread_path(message_draft.thread)
-    save_screenshot "tmp/diff-error-04-signed-no-apply-button.png"
 
     within_message_in_thread(message_draft) do
-      assert_text "Finančná správa upravila obsah správy"
-      assert_no_button "Použiť opravu od Finančnej správy"
+      assert_text "Správa pravdepodobne obsahuje nesprávne údaje"
+      assert_no_button "Použiť opravené hodnoty"
     end
   end
 
@@ -208,19 +180,16 @@ class Fs::MessageDraftXmlDiffTest < ApplicationSystemTestCase
     ))
 
     visit message_thread_path(message_draft.thread)
-    save_screenshot "tmp/apply-correction-01-before.png"
 
     within_message_in_thread(message_draft) do
-      assert_button "Použiť opravu od Finančnej správy"
+      assert_button "Použiť opravené hodnoty"
     end
 
     accept_confirm do
       within_message_in_thread(message_draft) do
-        click_button "Použiť opravu od Finančnej správy"
+        click_button "Použiť opravené hodnoty"
       end
     end
-
-    save_screenshot "tmp/apply-correction-02-after-apply.png"
 
     assert_text "Prebieha validácia správy"
 
@@ -246,10 +215,10 @@ class Fs::MessageDraftXmlDiffTest < ApplicationSystemTestCase
     ))
 
     visit message_thread_path(message_draft.thread)
-    save_screenshot "tmp/apply-correction-03-being-validated-state.png"
 
     within_message_in_thread(message_draft) do
       assert_text "Prebieha validácia správy"
+      assert_no_button "Použiť opravené hodnoty"
     end
   end
 
@@ -289,14 +258,12 @@ class Fs::MessageDraftXmlDiffTest < ApplicationSystemTestCase
     ))
 
     visit message_thread_path(message_draft.thread)
-    save_screenshot "tmp/legacy-diff-01-no-warning-box.png"
 
     within_message_in_thread(message_draft) do
-      assert_no_text "Finančná správa upravila obsah správy"
-      assert_no_text "Finančná správa upravila formátovanie správy"
+      assert_no_text "Správa pravdepodobne obsahuje nesprávne údaje"
+      assert_no_button "Použiť opravené hodnoty"
     end
 
     assert_no_text "Správa nie je validná"
   end
-
 end

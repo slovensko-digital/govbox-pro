@@ -50,7 +50,7 @@ class MessageDraftsControllerTest < ActionController::TestCase
     end
 
     assert_redirected_to message_thread_path(message_draft.thread)
-    assert_equal "Opravená verzia XML bola použitá, prebieha nová validácia správy", flash[:notice]
+    assert_equal "Opravené hodnoty boli použité, prebieha nová validácia správy", flash[:notice]
 
     message_draft.reload
     assert_equal corrected_xml, message_draft.form_object.content
@@ -104,7 +104,7 @@ class MessageDraftsControllerTest < ActionController::TestCase
     post :apply_corrected_xml, params: { id: message_draft.id }
 
     assert_redirected_to message_thread_path(message_draft.thread)
-    assert_equal "Opravená verzia XML od Finančnej správy nie je k dispozícii", flash[:alert]
+    assert_equal "Opravené hodnoty nie sú k dispozícii. Spustite validáciu správy znova.", flash[:alert]
   end
 
   test "apply_corrected_xml refuses to overwrite a signed form" do
@@ -123,7 +123,7 @@ class MessageDraftsControllerTest < ActionController::TestCase
       post :apply_corrected_xml, params: { id: message_draft.id }
     end
 
-    assert_equal "Opravená verzia XML od Finančnej správy nie je k dispozícii", flash[:alert]
+    assert_equal "Formulár je podpísaný, opravené hodnoty nie je možné použiť. Najskôr odstráňte podpis.", flash[:alert]
     assert_equal original_blob, message_draft.reload.form_object.content
   end
 end
