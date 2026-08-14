@@ -57,12 +57,8 @@ class Fs::SubmitMessageDraftJob < ApplicationJob
   private
 
   def handle_submit_fail(message_draft, error_message, expose_error: true)
-    message_draft.metadata["status"] = "submit_fail"
     message_draft.metadata[:submit_error_message] = error_message if expose_error
-    message_draft.save!
-
-    message_draft.add_cascading_tag(message_draft.tenant.submission_error_tag)
-    message_draft.add_cascading_tag(message_draft.tenant.problem_tag)
+    message_draft.submit_failed!
 
     raise SubmissionError, error_message
   end

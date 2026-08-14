@@ -24,6 +24,37 @@ class Fs::SubmitMessageDraftJobTest < ActiveJob::TestCase
     fs_client.verify if fs_client.respond_to?(:verify)
   end
 
+  test "replaces the submitted tag with the draft tag when submission fails" do
+    message_draft = messages(:fs_accountants_draft)
+    draft_tag = tags(:accountants_drafts)
+    submitted_tag = tags(:accountants_submitted)
+    problem_tag = tags(:accountants_problem_tag)
+    message_draft.thread.box.update!(active: false)
+
+    message_draft.being_submitted!
+    assert_includes message_draft.reload.tags, submitted_tag
+    assert_not_includes message_draft.tags, draft_tag
+
+    fs_client = Minitest::Mock.new
+
+    message_draft.stub :valid?, true do
+      FsEnvironment.stub :fs_client, fs_client do
+        assert_raises(Fs::SubmitMessageDraftJob::SubmissionError) do
+          Fs::SubmitMessageDraftJob.new.perform(message_draft)
+        end
+      end
+    end
+
+    message_draft.reload
+    assert_not_includes message_draft.tags, submitted_tag
+    assert_not_includes message_draft.thread.tags, submitted_tag
+    assert_includes message_draft.tags, draft_tag
+    assert_includes message_draft.thread.tags, draft_tag
+    assert_includes message_draft.tags, problem_tag
+  ensure
+    fs_client.verify if fs_client.respond_to?(:verify)
+  end
+
   test "saves signer_not_allowed error message when no API connection found" do
     message_draft = messages(:fs_accountants_draft)
     submission_error_tag = tags(:accountants_submission_error_tag)
