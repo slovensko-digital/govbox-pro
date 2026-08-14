@@ -55,14 +55,10 @@ module MessageDrafts
       Current.tenant.groups.where(id: signer_groups_ids).order(:name)
     end
 
-    def message_object_policy_scope
-      policy_scope(MessageObject)
-    end
-
     def set_message_objects
       ids = params[:object_ids] || []
 
-      @message_objects = message_object_policy_scope.where(id: ids)
+      @message_objects = @message_draft.objects.where(id: ids)
     end
 
     def signers_assignments
