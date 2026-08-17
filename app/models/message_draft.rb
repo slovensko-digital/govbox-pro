@@ -218,6 +218,16 @@ class MessageDraft < Message
     EventBus.publish(:message_draft_submitted, self)
   end
 
+  def submit_failed!
+    metadata["status"] = "submit_fail"
+    save!
+
+    remove_cascading_tag(tenant.submitted_tag)
+    add_cascading_tag(tenant.draft_tag!)
+    add_cascading_tag(tenant.submission_error_tag)
+    add_cascading_tag(tenant.problem_tag)
+  end
+
   def attachments_editable?
     not_yet_submitted?
   end

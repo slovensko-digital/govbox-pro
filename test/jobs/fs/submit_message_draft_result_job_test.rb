@@ -39,6 +39,35 @@ class Fs::SubmitMessageDraftResultJobTest < ActiveJob::TestCase
     end
   end
 
+  test "replaces the submitted tag with the draft tag when result reports a failure" do
+    message_draft = messages(:fs_accountants_outbox)
+    draft_tag = tags(:accountants_drafts)
+    submitted_tag = tags(:accountants_submitted)
+    problem_tag = tags(:accountants_problem_tag)
+
+    message_draft.being_submitted!
+    assert_includes message_draft.reload.tags, submitted_tag
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :get_location, {
+      status: 422,
+      body: { "message" => "Chýba povinná príloha" }
+    }, ["location123"]
+
+    FsEnvironment.fs_client.stub :api, fs_api do
+      assert_raises(RuntimeError) do
+        Fs::SubmitMessageDraftResultJob.new.perform(message_draft, "location123")
+      end
+    end
+
+    message_draft.reload
+    assert_equal "submit_fail", message_draft.metadata["status"]
+    assert_not_includes message_draft.tags, submitted_tag
+    assert_not_includes message_draft.thread.tags, submitted_tag
+    assert_includes message_draft.tags, draft_tag
+    assert_includes message_draft.tags, problem_tag
+  end
+
   test "marks message as submitted when response status is 200" do
     message_draft = messages(:fs_accountants_outbox)
 

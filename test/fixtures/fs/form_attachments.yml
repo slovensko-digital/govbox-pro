@@ -15,3 +15,9 @@ UZMUJv14:
   max_occurrences: 1
   fs_form_id: <%= ActiveRecord::FixtureSet.identify(:UZMUJv14) %>
   fs_form_attachment_group_id: <%= ActiveRecord::FixtureSet.identify(:UVPOD3_UA) %>
+
+VP_REGv24:
+  min_occurrences: 1
+  max_occurrences: 99
+  fs_form_id: <%= ActiveRecord::FixtureSet.identify(:VP_REGv24) %>
+  fs_form_attachment_group_id: <%= ActiveRecord::FixtureSet.identify(:VP_PRI_UA) %>
