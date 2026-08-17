@@ -14,6 +14,7 @@ class MessageObjectPolicy < ApplicationPolicy
         Message
           .select(1)
           .joins(message_threads_tags: { tag_groups: :group_memberships })
+          .joins(:thread).where(message_threads: { box_id: @user.accessible_boxes.pluck(:id) })
           .where("message_objects.message_id = messages.id")
           .where(group_memberships: { user_id: @user.id })
           .arel.exists

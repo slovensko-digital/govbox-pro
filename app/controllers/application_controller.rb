@@ -2,7 +2,7 @@ class ApplicationController < ActionController::Base
   include Authentication
   include Pundit::Authorization
   after_action :verify_authorized
-  after_action :verify_policy_scoped, only: :index if respond_to?(:index)
+  after_action :verify_policy_scoped, if: -> { action_name == "index" }
   before_action :set_menu_context
 
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized

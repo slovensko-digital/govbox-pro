@@ -8,59 +8,55 @@ class Settings::AutomationRulePolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      if @user.admin?
-        scope.where(tenant: Current.tenant)
-      else
-        scope.where(tenant: Current.tenant, user: @user)
-      end
+      scope.where(tenant: Current.tenant) if @user.admin?
     end
   end
 
   def index?
-    true
+    @user.admin?
   end
 
   def show?
-    true
+    @user.admin?
   end
 
   def create?
-    true
+    @user.admin?
   end
 
   def new?
-    true
+    @user.admin?
   end
 
   def update?
-    true
+    @user.admin?
   end
 
   def edit?
-    true
+    @user.admin?
   end
 
   def header_step?
-    true
+    @user.admin?
   end
 
   def conditions_step?
-    true
+    @user.admin?
   end
 
   def actions_step?
-    true
+    @user.admin?
   end
 
   def edit_form?
-    true
+    @user.admin?
   end
 
   def destroy?
-    true
+    @user.admin?
   end
 
   def rerender?
-    true
+    @user.admin?
   end
 end
