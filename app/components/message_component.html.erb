@@ -49,46 +49,11 @@
         <%= render Upvs::DeliveryNotificationFictionMessageBodyComponent.new(message: @message) %>
       <% elsif @message.html_visualization %>
         <div class="w-full invisible h-[150px] transition-all">
-            <%= tag.iframe class: "relative border-none overflow-hidden h-full w-full", scrolling: "no", srcdoc: @message.html_visualization, onload: "(
-            function(iframe) {
-              iframe.contentWindow.document.body.style['height'] = 'unset';
-              iframe.contentWindow.document.body.style['min-height'] = 'unset';
-              iframe.contentWindow.document.body.style['transform-origin'] = '0 0';
-
-              const getParentHeight = (height) => `${height + 20}px`;
-
-              iframe.parentElement.style.height = getParentHeight(iframe.contentWindow.document.body.scrollHeight);
-
-              const parentRo = new ResizeObserver(([parent]) => {
-                  const { scrollWidth: iframeWidth, clientHeight: iframeHeight } = iframe.contentWindow.document.body;
-                  const parentWidth = parent.contentRect.width - 24;
-                  const scale = parentWidth / iframeWidth;
-
-                  if (scale <= 1) {
-                    iframe.contentWindow.document.body.style.transform = `scale(${scale})`;
-                    iframe.parentElement.style.height = getParentHeight(iframeHeight * scale);
-                  }
-              });
-
-              parentRo.observe(iframe.parentNode);
-
-              let hasInvisibleClass = true;
-
-              const iframeRo = new ResizeObserver(() => {
-                  const height = iframe.contentWindow.document.body.clientHeight;
-
-                  iframe.parentElement.style.height = `${height}px`;
-
-                  if (hasInvisibleClass) {
-                    iframe.parentElement.classList.remove('invisible');
-                    hasInvisibleClass = false;
-                  }
-              });
-
-              iframeRo.observe(iframe.contentWindow.document.body);
-            }
-            (this)
-          )" %>
+            <%= tag.iframe class: "relative border-none overflow-hidden h-full w-full",
+                           scrolling: "no",
+                           sandbox: "allow-same-origin",
+                           srcdoc: @message.html_visualization,
+                           data: { controller: "visualization-frame", action: "load->visualization-frame#setup", "visualization-frame-scale-value": true } %>
           </div>
       <% end %>
 

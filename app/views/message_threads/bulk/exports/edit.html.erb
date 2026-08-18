@@ -24,12 +24,12 @@
 
         <div class="py-6">
           <div class="flex items-center gap-x-3 pd-3">
-            <%= check_box_tag "export[settings][summary]", "1", @export.settings["summary"], class: "h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer", onclick: "this.form.requestSubmit()" %>
+            <%= check_box_tag "export[settings][summary]", "1", @export.settings["summary"], class: "h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer", data: { controller: "auto-submit", action: "click->auto-submit#submit" } %>
             <%= label_tag "export[settings][summary]", "Exportovať sumár", class: "select-none text-sm/6 text-gray-900 cursor-pointer" %>
           </div>
 
           <div class="flex items-center gap-x-3 py-3">
-            <%= check_box_tag "export[settings][messages]", "1", @export.settings["messages"], class: "h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer", onclick: "this.form.requestSubmit()" %>
+            <%= check_box_tag "export[settings][messages]", "1", @export.settings["messages"], class: "h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer", data: { controller: "auto-submit", action: "click->auto-submit#submit" } %>
             <%= label_tag "export[settings][messages]", "Exportovať správy", class: "select-none text-sm/6 text-gray-900 cursor-pointer" %>
           </div>
           <div style="<%= @export.settings['messages'] ? '' : 'display: none;' %>">
@@ -40,7 +40,7 @@
                   <%= radio_button_tag "export[settings][message_direction]", value,
                         @export.settings["message_direction"] == value || (@export.settings["message_direction"].blank? && value == "all"),
                         class: "h-4 w-4 border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer",
-                        onclick: "this.form.requestSubmit()" %>
+                        data: { controller: "auto-submit", action: "click->auto-submit#submit" } %>
                   <%= label_tag "export_settings_message_direction_#{value}", label,
                         class: "select-none text-sm text-gray-900 cursor-pointer" %>
                 </div>
@@ -56,14 +56,14 @@
                 <%= date_field_tag "export[settings][delivered_at_from]",
                       @export.settings["delivered_at_from"],
                       class: "rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500",
-                      onchange: "this.form.requestSubmit()" %>
+                      data: { controller: "auto-submit", action: "change->auto-submit#submit" } %>
               </div>
               <div class="flex items-center gap-x-3">
                 <%= label_tag "export[settings][delivered_at_to]", "do", class: "text-sm text-gray-700 select-none" %>
                 <%= date_field_tag "export[settings][delivered_at_to]",
                       @export.settings["delivered_at_to"],
                       class: "rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500",
-                      onchange: "this.form.requestSubmit()" %>
+                      data: { controller: "auto-submit", action: "change->auto-submit#submit" } %>
               </div>
             </div>
 
@@ -137,7 +137,7 @@
       <% end %>
 
       <div class="flex items-center gap-x-4 mb-6">
-        <%= button_tag "Uložiť nastavenia", class: "rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50", onclick: "document.getElementById('export-form').requestSubmit()" %>
+        <%= button_tag "Uložiť nastavenia", form: "export-form", name: nil, class: "rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" %>
         <%= button_tag "Exportovať", form: "export-form", formaction: message_threads_bulk_export_start_path(@export), formmethod: "post", class: "rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500", data: { turbo_confirm: "Chcete vytvoriť export?" } %>
       </div>
 
