@@ -9,12 +9,11 @@
           <% if checkbox.indeterminate? %>
             <%= check_box_tag "tags_assignments[new][#{tag.id}]",
                               checkbox.value, checkbox.checked?,
-                              data: { controller: "tri-state-checkbox", action: "click->tri-state-checkbox#nextState", "tri-state-checkbox-checked-value": RelationChanges::ADD_SIGN, "tri-state-checkbox-indeterminate-value": RelationChanges::KEEP_SIGN },
-                              onchange: "this.form.requestSubmit(document.getElementById('assignments_update'));",
+                              data: { controller: "tri-state-checkbox auto-submit", action: "click->tri-state-checkbox#nextState change->auto-submit#submit", "tri-state-checkbox-checked-value": RelationChanges::ADD_SIGN, "tri-state-checkbox-indeterminate-value": RelationChanges::KEEP_SIGN, "auto-submit-submitter-param": "assignments_update" },
                               id: "new_tags_assignments_#{tag.id}",
                               class: "h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer" %>
           <% else %>
-            <%= check_box_tag "tags_assignments[new][#{tag.id}]", checkbox.value, checkbox.checked?, id: "new_tags_assignments_#{tag.id}", class: "h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer", onchange: "this.form.requestSubmit(document.getElementById('assignments_update'));" %>
+            <%= check_box_tag "tags_assignments[new][#{tag.id}]", checkbox.value, checkbox.checked?, id: "new_tags_assignments_#{tag.id}", class: "h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer", data: { controller: "auto-submit", action: "change->auto-submit#submit", "auto-submit-submitter-param": "assignments_update" } %>
           <% end %>
         </div>
         <div class="min-w-0 flex text-sm leading-6">
@@ -25,7 +24,7 @@
     <% if @tags_filter.filter_query.present? %>
       <div class="flex <%= "border-t border-gray-200 mt-1.5 pt-4 items-center" if @tags_filter.any_filtered_results? %>">
         <div class="mr-3 ml-1 flex items-center">
-          <%= check_box_tag "new_tag", @tags_filter.filter_query, false, class: "h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer", onchange: "this.form.requestSubmit(document.getElementById('create_tag')); this.disabled = true;" %>
+          <%= check_box_tag "new_tag", @tags_filter.filter_query, false, class: "h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer", data: { controller: "auto-submit", action: "change->auto-submit#submit", "auto-submit-submitter-param": "create_tag", "auto-submit-disable-param": true } %>
         </div>
         <div class="min-w-0 flex text-sm leading-6">
           <%= label_tag "new_tag", class: "flex gap-2 select-none text-gray-900 cursor-pointer text items-center" do %>
