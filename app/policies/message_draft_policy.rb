@@ -65,4 +65,8 @@ class MessageDraftPolicy < ApplicationPolicy
   def unlock?
     create?
   end
+
+  def apply_corrected_xml?
+    create?
+  end
 end

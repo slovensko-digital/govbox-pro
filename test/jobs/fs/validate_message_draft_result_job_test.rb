@@ -57,6 +57,71 @@ class Fs::ValidateMessageDraftResultJobTest < ActiveJob::TestCase
     end
   end
 
+  test "message draft validation result is OK if FS API returns WARN with only diff_warnings" do
+    outbox_message = messages(:fs_accountants_outbox)
+    url = "https://fsapi.test/submissions/#{outbox_message.id}"
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :get_location, {
+      :status => 200,
+      :body => {
+        'result' => 'WARN',
+        'problems' => [
+          {
+            'message' => 'Formatting only diff',
+            'level' => 'diff_warning'
+          }
+        ]
+      }
+    },
+    [url]
+
+    FsEnvironment.fs_client.stub :api, fs_api do
+      Fs::ValidateMessageDraftResultJob.new.perform(outbox_message, url)
+
+      assert_equal 'OK', outbox_message.metadata['validation_errors']['result']
+      assert_equal [], outbox_message.metadata['validation_errors']['errors']
+      assert_equal [], outbox_message.metadata['validation_errors']['warnings']
+      assert_equal ['Formatting only diff'], outbox_message.metadata['validation_errors']['diff_warnings']
+
+      assert_equal 'created', outbox_message.metadata['status']
+      assert_not outbox_message.thread.tags.include?(outbox_message.tenant.validation_warning_tag)
+      assert_not outbox_message.thread.tags.include?(outbox_message.tenant.problem_tag)
+    end
+  end
+
+  test "message draft with diff_errors keeps the FS result and is marked invalid" do
+    outbox_message = messages(:fs_accountants_outbox)
+    url = "https://fsapi.test/submissions/#{outbox_message.id}"
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :get_location, {
+      :status => 200,
+      :body => {
+        'result' => 'WARN',
+        'problems' => [
+          {
+            'message' => 'ICO changed',
+            'level' => 'diff_error'
+          }
+        ],
+        'corrected_xml' => '<xml>corrected</xml>'
+      }
+    },
+    [url]
+
+    FsEnvironment.fs_client.stub :api, fs_api do
+      Fs::ValidateMessageDraftResultJob.new.perform(outbox_message, url)
+
+      assert_equal 'WARN', outbox_message.metadata['validation_errors']['result']
+      assert_equal ['ICO changed'], outbox_message.metadata['validation_errors']['diff_errors']
+      assert_equal '<xml>corrected</xml>', outbox_message.metadata['validation_errors']['corrected_xml']
+
+      assert_equal 'invalid', outbox_message.metadata['status']
+      assert outbox_message.thread.tags.include?(outbox_message.tenant.validation_error_tag)
+    end
+  end
+
   test "message draft validation result is WARN with warnings if FS API returns warnings & signature is requested" do
     outbox_message = messages(:fs_accountants_outbox)
     url = "https://fsapi.test/submissions/#{outbox_message.id}"
