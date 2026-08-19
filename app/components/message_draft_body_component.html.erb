@@ -112,10 +112,11 @@
       <% end %>
 
       <% if @message.html_visualization.present? %>
+        <% visualization = @message.built_from_template? ? CGI.escapeHTML(@message.html_visualization) : @message.html_visualization %>
         <div class="w-full">
           <%= tag.iframe class: "relative border-none overflow-hidden h-full w-full",
                          sandbox: "allow-same-origin",
-                         srcdoc: @message.html_visualization,
+                         srcdoc: visualization,
                          data: { controller: "visualization-frame", action: "load->visualization-frame#setup" } %>
         </div>
       <% else %>

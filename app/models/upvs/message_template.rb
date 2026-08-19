@@ -109,7 +109,7 @@ class Upvs::MessageTemplate < ::MessageTemplate
     end
 
     message.update(
-      html_visualization: message.metadata["data"].map { _1.map { |value| ERB::Util.html_escape(value) }.join(": ") }.join(", ")
+      html_visualization: message.metadata["data"].map { _1.join(": ") }.join(", ")
     ) if message.metadata["data"]
 
     if message.form_object.message_object_datum

@@ -93,6 +93,10 @@ class Message < ApplicationRecord
     html_visualization.present? || (form_object && form_object.nested_message_objects.count > 1)
   end
 
+  def built_from_template?
+    metadata&.dig("template_id").present?
+  end
+
   def authorizable_delivery_notification?
     metadata["delivery_notification"] && !metadata["authorized"] && Time.parse(metadata.dig("delivery_notification", "delivery_period_end_at")) > Time.now
   end
