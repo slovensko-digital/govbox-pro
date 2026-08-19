@@ -21,7 +21,7 @@ module Authentication
 
   def create_session(saml_identifier: nil, username: nil)
     if Current.user
-      redirect_to login_path, alert: t("sessions.tenant_inactive") and return unless Current.user.tenant.active?
+      redirect_to login_path, alert: I18n.t("sessions.tenant_inactive") and return unless Current.user.tenant.active?
 
       session[:user_id] = Current.user.id
       session[:login_expires_at] = SESSION_TIMEOUT.from_now
@@ -51,7 +51,7 @@ module Authentication
 
     if Current.tenant && !Current.tenant.active?
       clean_session
-      redirect_to login_path, alert: t("sessions.tenant_inactive") and return
+      redirect_to login_path, alert: I18n.t("sessions.tenant_inactive") and return
     end
 
     Current.box = Current.tenant.boxes.find_by(id: session[:box_id]) if session[:box_id]
