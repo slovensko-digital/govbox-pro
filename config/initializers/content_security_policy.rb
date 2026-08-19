@@ -9,7 +9,7 @@ Rails.application.configure do
     policy.default_src :self
     policy.base_uri    :self
     policy.object_src  :none
-    policy.form_action :self
+    policy.form_action :self, "https://accounts.google.com", "https://login.microsoftonline.com"
     policy.frame_ancestors :self
     policy.frame_src   :self
     policy.script_src  :self

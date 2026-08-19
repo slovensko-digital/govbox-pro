@@ -28,12 +28,24 @@ class MessageComponentTest < ViewComponent::TestCase
     assert_equal "visualization-frame", iframe["data-controller"]
   end
 
-  test "escapes injected markup in the srcdoc attribute" do
+  test "escapes injected markup of a message built from a template" do
     message = messages(:ssd_main_general_one)
-    message.update!(html_visualization: '<img src=x onerror="alert(1)">')
+    message.update!(
+      html_visualization: 'Text: <img src=x onerror="alert(1)">',
+      metadata: message.metadata.merge("template_id" => upvs_message_templates(:general_agenda).id)
+    )
 
     render_inline(MessageComponent.new(message: message, mode: :thread_view))
 
-    assert_not_includes rendered_content, '<img src=x onerror="alert(1)">'
+    assert_includes page.find("iframe")[:srcdoc], '&lt;img src=x onerror=&quot;alert(1)&quot;&gt;'
+  end
+
+  test "keeps markup of a message not built from a template" do
+    message = messages(:ssd_main_general_one)
+    message.update!(html_visualization: '<p>Vizualizacia</p>')
+
+    render_inline(MessageComponent.new(message: message, mode: :thread_view))
+
+    assert_includes page.find("iframe")[:srcdoc], '<p>Vizualizacia</p>'
   end
 end
