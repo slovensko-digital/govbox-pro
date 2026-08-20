@@ -40,6 +40,19 @@ class MessageComponentTest < ViewComponent::TestCase
     assert_includes page.find("iframe")[:srcdoc], '&lt;img src=x onerror=&quot;alert(1)&quot;&gt;'
   end
 
+  test "keeps every xss payload inert in the thread view" do
+    XSS_PAYLOADS.each do |payload|
+      message = messages(:ssd_main_general_one)
+      message.update!(
+        html_visualization: "Text: #{payload}",
+        metadata: message.metadata.merge("template_id" => upvs_message_templates(:general_agenda).id)
+      )
+
+      render_inline(MessageComponent.new(message: message, mode: :thread_view))
+
+      assert_not_includes page.find("iframe")[:srcdoc], payload, "neescapovany payload v srcdoc: #{payload}"
+    end
+  end
   test "keeps markup of a message not built from a template" do
     message = messages(:ssd_main_general_one)
     message.update!(html_visualization: '<p>Vizualizacia</p>')
