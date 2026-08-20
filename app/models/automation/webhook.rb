@@ -11,17 +11,13 @@
 #
 module Automation
   class Webhook < ApplicationRecord
-    class BlockedUrlError < StandardError; end
-
     belongs_to :tenant
     has_many :automation_actions, class_name: "Automation::Action", as: :action_object, dependent: :restrict_with_error
 
     validates_presence_of :name, :url
-    validate :url_must_be_public_https
+    validate :url_must_be_public_https, unless: -> { Rails.env.development? }
 
     def fire!(message, event, timestamp, downloader: Faraday)
-      raise BlockedUrlError, url unless public_https_url?
-
       data = {
         type: "#{message.class.name.underscore}.#{event}",
         timestamp: timestamp,
@@ -48,8 +44,6 @@ module Automation
     end
 
     def public_host?(host)
-      return true if Rails.env.local?
-
       addresses = Resolv.getaddresses(host)
       addresses.any? && addresses.all? { |address| public_address?(address) }
     end

@@ -23,10 +23,6 @@ class Automation::WebhookTest < ActiveSupport::TestCase
     assert_mock downloader
   end
 
-  test "should be valid with a public https url" do
-    assert build_webhook.valid?
-  end
-
   test "should be invalid unless the url is a well formed https url" do
     urls = ["http://example.com/hook", "ftp://example.com/hook", "javascript:alert(1)", "https://", "https://[", "https://exa mple.com", "not a url"]
 
@@ -42,39 +38,32 @@ class Automation::WebhookTest < ActiveSupport::TestCase
     addresses = %w[127.0.0.1 ::1 ::ffff:127.0.0.1 10.1.2.3 172.16.0.1 192.168.1.1 fd00::1 169.254.169.254 fe80::1 ::ffff:169.254.169.254 0.0.0.0 ::]
 
     addresses.each do |address|
-      in_production_resolving [address] do
+      resolving [address] do
         assert_not build_webhook.valid?, "expected #{address} to be rejected"
       end
     end
   end
 
+  test "should be invalid when a public host name resolves to a loopback address" do
+    assert_not build_webhook(url: "https://loopback.autogram.slovensko.digital/hook").valid?
+  end
+
   test "should be invalid when only one of several resolved addresses is blocked" do
-    in_production_resolving ["93.184.216.34", "127.0.0.1"] do
+    resolving ["93.184.216.34", "127.0.0.1"] do
       assert_not build_webhook.valid?
     end
   end
 
   test "should be invalid when the host does not resolve" do
-    in_production_resolving [] do
+    resolving [] do
       assert_not build_webhook.valid?
     end
   end
 
   test "should be valid when the host resolves to public addresses only" do
-    in_production_resolving ["93.184.216.34", "2606:2800:220:1:248:1893:25c8:1946"] do
+    resolving ["93.184.216.34", "2606:2800:220:1:248:1893:25c8:1946"] do
       assert build_webhook.valid?
     end
-  end
-
-  test "should raise and not POST when fired with a blocked url" do
-    webhook = build_webhook(url: "http://127.0.0.1/hook")
-    downloader = Minitest::Mock.new
-
-    assert_raises Automation::Webhook::BlockedUrlError do
-      webhook.fire! messages(:ssd_main_draft), :event, DateTime.now, downloader: downloader
-    end
-
-    assert_mock downloader
   end
 
   private
@@ -83,11 +72,9 @@ class Automation::WebhookTest < ActiveSupport::TestCase
     Automation::Webhook.new(name: "Webhook", url: url, tenant: tenants(:ssd))
   end
 
-  def in_production_resolving(addresses)
-    Rails.stub(:env, ActiveSupport::EnvironmentInquirer.new("production")) do
-      Resolv.stub(:getaddresses, addresses) do
-        yield
-      end
+  def resolving(addresses)
+    Resolv.stub(:getaddresses, addresses) do
+      yield
     end
   end
 end

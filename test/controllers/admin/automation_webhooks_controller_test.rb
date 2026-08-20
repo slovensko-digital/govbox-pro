@@ -26,8 +26,10 @@ class Admin::AutomationWebhooksControllerTest < ActionController::TestCase
   end
 
   test "create saves the webhook when the url is a public https url" do
-    assert_difference -> { Automation::Webhook.count }, 1 do
-      post :create, params: { tenant_id: @tenant.id, automation_webhook: { name: "Webhook", url: "https://example.com/hook" } }
+    Resolv.stub(:getaddresses, ["93.184.216.34"]) do
+      assert_difference -> { Automation::Webhook.count }, 1 do
+        post :create, params: { tenant_id: @tenant.id, automation_webhook: { name: "Webhook", url: "https://example.com/hook" } }
+      end
     end
 
     assert_redirected_to admin_tenant_automation_webhooks_url(@tenant)
