@@ -18,7 +18,7 @@ class Upvs::MessageTemplateTest < ActiveSupport::TestCase
   end
 
   test 'escapes template data in PDF export document' do
-    ['<script>alert(1)</script>', '<img src=x onerror="alert(1)">', '<svg onload="alert(1)"></svg>', '</iframe><script>alert(1)</script>'].each do |payload|
+    XSS_PAYLOADS.each do |payload|
       assert_not_includes pdf_document_for(build_draft(Text: payload)), payload
     end
   end

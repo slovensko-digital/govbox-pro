@@ -1,7 +1,6 @@
 require_relative "boot"
 
 require "rails/all"
-require_relative "../lib/security_headers"
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -21,8 +20,6 @@ module GovboxPro
     config.action_dispatch.default_headers = config.action_dispatch.default_headers.merge(
       "Permissions-Policy" => "camera=(), microphone=(), geolocation=(), payment=(), usb=(), gyroscope=(), magnetometer=()"
     )
-
-    config.middleware.insert_before 0, SecurityHeaders
 
     config.active_record.schema_format = :ruby
 

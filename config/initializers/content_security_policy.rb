@@ -5,11 +5,13 @@
 # https://guides.rubyonrails.org/security.html#content-security-policy-header
 
 Rails.application.configure do
+  upvs_login_url = ENV.fetch("UPVS_ENV", "fix") == "prod" ? "https://prihlasenie.slovensko.sk" : "https://prihlasenie.upvsfix.gov.sk"
+
   config.content_security_policy do |policy|
     policy.default_src :self
     policy.base_uri    :self
     policy.object_src  :none
-    policy.form_action :self, "https://accounts.google.com", "https://login.microsoftonline.com"
+    policy.form_action :self, "https://accounts.google.com", "https://login.microsoftonline.com", upvs_login_url
     policy.frame_ancestors :self
     policy.frame_src   :self
     policy.script_src  :self
