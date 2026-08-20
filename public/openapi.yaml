@@ -422,6 +422,30 @@ paths:
       security:
         - "Tenant_Token": []
 
+  /api/messages/{id}/submit:
+    post:
+      tags: [Správy]
+      summary: Zaradí rozpracovanú správu na odoslanie
+      description: |
+        Zaradí rozpracovanú správu na asynchrónne odoslanie. Odpoveď potvrdzuje iba zaradenie na odoslanie; výsledný stav správy je možné získať cez rozhranie na čítanie alebo synchronizáciu správ.
+      parameters:
+        - name: id
+          in: path
+          description: Identifikátor rozpracovanej správy
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        201:
+          description: Správa bola zaradená na odoslanie
+        404:
+          description: Správa neexistuje alebo nepatrí tenantovi
+        422:
+          description: Správa nie je rozpracovaná alebo ju nie je možné odoslať
+      security:
+        - "Tenant_Token": []
+
   /api/messages/search:
     get:
       tags: [Správy]

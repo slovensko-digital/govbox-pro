@@ -79,6 +79,57 @@ class MessagesApiTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_content
   end
 
+  test "can submit an UPVS message draft" do
+    message = messages(:ssd_main_draft)
+
+    assert_enqueued_with(job: Govbox::SubmitMessageDraftJob, priority: -1000) do
+      post "/api/messages/#{message.id}/submit", params: { token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }, as: :json
+    end
+
+    assert_response :created
+    assert message.reload.being_submitted?
+  end
+
+  test "can submit an FS message draft" do
+    @tenant = tenants(:accountants)
+    message = messages(:fs_accountants_draft_uzmujv14_with_attachment)
+
+    assert_enqueued_with(job: Fs::SubmitMessageDraftJob, priority: -1000) do
+      post "/api/messages/#{message.id}/submit", params: { token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }, as: :json
+    end
+
+    assert_response :created
+    assert message.reload.being_submitted?
+  end
+
+  test "returns unprocessable_content when submitting a non-draft message" do
+    message = messages(:ssd_main_general_one)
+
+    post "/api/messages/#{message.id}/submit", params: { token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }, as: :json
+
+    assert_response :unprocessable_content
+    assert_equal "Message is not a draft", JSON.parse(response.body)["message"]
+  end
+
+  test "returns unprocessable_content when the message draft is not submittable" do
+    message = messages(:ssd_main_general_draft_one)
+
+    assert_no_enqueued_jobs(only: Govbox::SubmitMessageDraftJob) do
+      post "/api/messages/#{message.id}/submit", params: { token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }, as: :json
+    end
+
+    assert_response :unprocessable_content
+    assert message.reload.correctly_created?
+  end
+
+  test "returns not found when submitting a message from another tenant" do
+    message = messages(:solver_main_delivery_notification_one)
+
+    post "/api/messages/#{message.id}/submit", params: { token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }, as: :json
+
+    assert_response :not_found
+  end
+
   test "can search message by UUID" do
     message = messages(:ssd_main_general_one)
 
