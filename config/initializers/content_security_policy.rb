@@ -11,7 +11,10 @@ Rails.application.configure do
     policy.default_src :self
     policy.base_uri    :self
     policy.object_src  :none
-    policy.form_action :self, "https://accounts.google.com", "https://login.microsoftonline.com", upvs_login_url
+    policy.form_action :self,
+                       *("https://accounts.google.com" if ENV["GOOGLE_CLIENT_ID"].present?),
+                       *("https://login.microsoftonline.com" if ENV["AZURE_APPLICATION_CLIENT_ID"].present?),
+                       *(upvs_login_url if ENV["UPVS_SSO_SUBJECT"].present?)
     policy.frame_ancestors :self
     policy.frame_src   :self
     policy.script_src  :self
