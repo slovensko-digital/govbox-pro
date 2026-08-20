@@ -37,6 +37,8 @@ sk:
             base:
               restrict_dependent_destroy:
                 has_many: Integrácia je použitá v automatizačných pravidlách, nie je možné ju vymazať. Upravte najskôr pravidlá
+            url:
+              not_public_https: Musí byť verejná HTTPS adresa
         message_draft:
           attributes:
             metadata:
