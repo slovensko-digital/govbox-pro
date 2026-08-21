@@ -47,8 +47,10 @@ module PdfVisualizationOperations
       return unless form?
       return unless message.html_visualization.present?
 
+      visualization = message.built_from_template? ? CGI.escapeHTML(message.html_visualization) : message.html_visualization
+
       Grover.new(
-        full_html_document_from_body_content(message.html_visualization),
+        full_html_document_from_body_content(visualization),
         format: 'A4',
         margin: {
           top: '15px',

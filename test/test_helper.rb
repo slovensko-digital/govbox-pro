@@ -8,6 +8,14 @@ require "minitest/mock"
 
 require "helpers/tenant_helper"
 
+XSS_PAYLOADS = [
+  %q{<script>alert(1)</script>},
+  %q{<img src=x onerror="alert(1)">},
+  %q{<a href="javascript:alert(1)">klik</a>},
+  %q{<svg onload="alert(1)"></svg>},
+  %q{</iframe><script>alert(1)</script>}
+].freeze
+
 Rails.application.eager_load! # see https://github.com/simplecov-ruby/simplecov?tab=readme-ov-file#want-to-use-spring-with-simplecov
 
 class ActiveSupport::TestCase
