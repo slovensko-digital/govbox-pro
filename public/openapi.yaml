@@ -1062,6 +1062,16 @@ paths:
 webhooks:
   automationWebhook:
     post:
+      description: |
+        Volanie na URL adresu webhooku nastavenú v administrácii tenanta.
+
+        URL adresa sa overuje pri nastavení webhooku a musí spĺňať:
+
+        * musí používať schému `https`,
+        * jej doménové meno musí byť verejné, teda musí sa dať preložiť (DNS) a nesmie smerovať
+          do internej siete (napr. `localhost` alebo adresy v privátnych rozsahoch).
+
+        Ak volanie webhooku zlyhá, je opakované s postupne narastajúcim odstupom, najviac 10-krát.
       requestBody:
         content:
           application/json:
