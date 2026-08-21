@@ -40,17 +40,13 @@ module Automation
       return false unless url.to_s.match?(/\A#{URI::DEFAULT_PARSER.make_regexp("https")}\z/o)
 
       host = URI.parse(url).host
-      host.present? && public_host?(host)
-    end
+      return false if host.blank?
 
-    def public_host?(host)
       addresses = Resolv.getaddresses(host)
-      addresses.any? && addresses.all? { |address| public_address?(address) }
-    end
-
-    def public_address?(address)
-      ip = IPAddr.new(address).native
-      !ip.loopback? && !ip.private? && !ip.link_local? && !ip.to_i.zero?
+      addresses.any? && addresses.all? do |address|
+        ip = IPAddr.new(address).native
+        !ip.loopback? && !ip.private? && !ip.link_local? && !ip.to_i.zero?
+      end
     end
   end
 end
