@@ -6,24 +6,25 @@ class Searchable::Indexer
   ]
 
   def self.index_message_thread(message_thread)
+    tenant = message_thread.box.tenant
     record = ::Searchable::MessageThread.find_or_initialize_by(message_thread_id: message_thread.id)
     record.title = Searchable::IndexHelpers.searchable_string(message_thread.title)
     record.note = Searchable::IndexHelpers.searchable_string(message_thread.message_thread_note&.note.to_s)
     record.tag_ids = message_thread.tags.map(&:id)
     record.tag_names = Searchable::IndexHelpers.searchable_string(message_thread.tags.map(&:name).join(' ').gsub(/[:\/]/, " "))
-    record.content = message_thread.messages.map { |message| message_to_searchable_string(message) }.join(' ')
+    record.content = message_thread.messages.map { |message| message_to_searchable_string(message, tenant:) }.join(' ')
     record.last_message_delivered_at = message_thread.last_message_delivered_at
-    record.tenant_id = message_thread.box.tenant_id
+    record.tenant_id = tenant.id
     record.box_id = message_thread.box_id
 
     record.save!
   end
 
-  def self.message_to_searchable_string(message)
-    record_to_searchable_string(message, MESSAGE_SEARCHABLE_FIELDS)
+  def self.message_to_searchable_string(message, tenant:)
+    record_to_searchable_string(message, MESSAGE_SEARCHABLE_FIELDS, tenant:)
   end
 
-  def self.record_to_searchable_string(record, searchable_fields)
+  def self.record_to_searchable_string(record, searchable_fields, tenant: nil)
     searchable_fields.map do |searchable_field|
       field_name, formatter = searchable_field.fetch_values(:name, :formatter)
       value = record.public_send(field_name)
@@ -32,7 +33,11 @@ class Searchable::Indexer
         when :string
           Searchable::IndexHelpers.searchable_string(value)
         when :html_string
-          Searchable::IndexHelpers.html_to_searchable_string(value)
+          if tenant&.feature_enabled?(:fs_html_visualizations_indexing)
+            Searchable::IndexHelpers.html_to_searchable_string(value)
+          else
+            Searchable::IndexHelpers.legacy_html_to_searchable_string(value)
+          end
         else
           throw :unsupported_searchable_formatter
       end
