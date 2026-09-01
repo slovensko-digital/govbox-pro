@@ -96,6 +96,27 @@ module Fs
       assert_not_instance_of Fs::AuthenticationError, error
     end
 
+    test "post_pdf_visualization returns the pdf bytes" do
+      handler = pdf_visualization_handler(status: 200, content_type: "application/pdf", body: "%PDF-1.7 fake")
+      fs_api = Fs::Api.new(FS_API_URL, api_connection: api_connections(:fs_api_connection2), handler: handler)
+
+      assert_equal "%PDF-1.7 fake", fs_api.post_pdf_visualization("123_456", "<dokument/>")
+    end
+
+    test "post_pdf_visualization returns nil on error response" do
+      handler = pdf_visualization_handler(status: 422, content_type: "application/json", body: '{"result":"FAIL","message":"unsupported"}')
+      fs_api = Fs::Api.new(FS_API_URL, api_connection: api_connections(:fs_api_connection2), handler: handler)
+
+      assert_nil fs_api.post_pdf_visualization("123_456", "<dokument/>")
+    end
+
+    test "post_pdf_visualization returns nil when the response is not a pdf" do
+      handler = pdf_visualization_handler(status: 200, content_type: "application/json", body: '{"result":"OK"}')
+      fs_api = Fs::Api.new(FS_API_URL, api_connection: api_connections(:fs_api_connection2), handler: handler)
+
+      assert_nil fs_api.post_pdf_visualization("123_456", "<dokument/>")
+    end
+
     private
 
     def auth_error_handler(status:, body:)
@@ -126,6 +147,24 @@ module Fs
           error = StandardError.new("request failed")
           error.define_singleton_method(:response) { { status: status, body: body } }
           raise error
+        end
+      end
+    end
+
+    def pdf_visualization_handler(status:, content_type:, body:)
+      Class.new do
+        class << self
+          attr_accessor :response
+        end
+
+        self.response = OpenStruct.new(body: body, status: status, headers: { "content-type" => content_type })
+
+        def self.options
+          @options ||= OpenStruct.new
+        end
+
+        def self.post(*)
+          response
         end
       end
     end

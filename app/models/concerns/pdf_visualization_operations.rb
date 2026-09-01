@@ -7,7 +7,25 @@ module PdfVisualizationOperations
 
   included do
     def prepare_pdf_visualization
-      prepare_pdf_visualization_from_template || prepare_pdf_visualization_from_html
+      prepare_pdf_visualization_from_template || prepare_pdf_visualization_from_fs || prepare_pdf_visualization_from_html
+    end
+
+    def prepare_pdf_visualization_from_fs
+      return unless fs_pdf_visualization_supported?
+      return unless unsigned_content
+
+      api_connection = message.thread.box.api_connection
+      return unless api_connection
+
+      FsEnvironment.fs_client.api(api_connection: api_connection).post_pdf_visualization(fs_form.identifier, unsigned_content)
+    end
+
+    def fs_pdf_visualization_supported?
+      tenant.feature_enabled?(:fs_pdf_visualization) && xml? && fs_form&.pdf_supported?
+    end
+
+    def fs_form
+      @fs_form ||= Fs::Form.find_by(id: message.metadata["fs_form_id"])
     end
 
     def prepare_pdf_visualization_from_template
@@ -99,6 +117,7 @@ module PdfVisualizationOperations
 
     def downloadable_as_pdf?
       return true if xml? && form&.xsl_fo&.present?
+      return true if fs_pdf_visualization_supported?
       return true if form? && message.html_visualization.present?
       false
     end

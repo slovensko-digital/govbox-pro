@@ -8,6 +8,7 @@
 #  identifier                 :string           not null
 #  name                       :string           not null
 #  number_identifier          :integer
+#  pdf_supported              :boolean          default(FALSE), not null
 #  signature_required         :boolean
 #  slug                       :string
 #  submission_type_identifier :string
