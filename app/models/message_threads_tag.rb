@@ -22,6 +22,7 @@ class MessageThreadsTag < ApplicationRecord
   validate :thread_and_tag_tenants_matches
 
   scope :only_visible_tags, -> { includes(:tag).joins(:tag).where("tags.visible = ?", true).order("tags.name") }
+  scope :only_visible_tags_for, ->(user) { only_visible_tags.where(tag_id: user.listable_tags(user.tenant)) }
 
   after_commit ->(message_threads_tag) { EventBus.publish(:message_thread_tag_changed, message_threads_tag) }
 

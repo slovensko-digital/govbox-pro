@@ -49,7 +49,11 @@ class MessageThreadsTagPolicy < ApplicationPolicy
   end
 
   def destroy?
-    true
+    tag = message_threads_tag.tag
+    return true unless tag.gives_access?
+    return true if user.admin?
+
+    user.accessible_tags.exists?(id: tag.id)
   end
 
   def prepare?
