@@ -283,6 +283,19 @@ class MessageObjectTest < ActiveSupport::TestCase
     assert_not_equal nil, message_object.prepare_pdf_visualization
   end
 
+  test "prepare_pdf_visualization asks the form for the visualization" do
+    message_object = fs_message_object(pdf_supported: true, feature_enabled: true)
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :pdf_visualization, "%PDF-bytes", [message_object.message.form.identifier, message_object.unsigned_content]
+
+    FsEnvironment.fs_client.stub :api, ->(api_connection:) { fs_api } do
+      assert_equal "%PDF-bytes", message_object.prepare_pdf_visualization
+    end
+
+    fs_api.verify
+  end
+
   test "downloadable_as_pdf? is true for xml fs message object with pdf_supported form" do
     message_object = fs_message_object(pdf_supported: true, feature_enabled: true)
 

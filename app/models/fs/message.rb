@@ -78,26 +78,6 @@ class Fs::Message
     message
   end
 
-  def self.pdf_visualization(message_object)
-    return unless pdf_visualization_supported?(message_object)
-
-    content = message_object.unsigned_content
-    return unless content
-
-    api_connection = message_object.message.thread.box.api_connection
-    return unless api_connection
-
-    FsEnvironment.fs_client.api(api_connection: api_connection).post_pdf_visualization(message_object.message.form.identifier, content)
-  end
-
-  def self.pdf_visualization_supported?(message_object)
-    return false unless message_object.message.tenant.feature_enabled?(:fs_pdf_visualization)
-    return false unless message_object.xml?
-
-    form = message_object.message.form
-    form.is_a?(Fs::Form) && form.pdf_supported?
-  end
-
   def self.find_api_connection_for_outbox_message(outbox_message)
     return outbox_message.box.api_connection if outbox_message.box.api_connections.count == 1
 

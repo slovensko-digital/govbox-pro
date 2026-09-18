@@ -96,25 +96,25 @@ module Fs
       assert_not_instance_of Fs::AuthenticationError, error
     end
 
-    test "post_pdf_visualization returns the pdf bytes" do
+    test "pdf_visualization returns the pdf bytes" do
       handler = pdf_visualization_handler(status: 200, content_type: "application/pdf", body: "%PDF-1.7 fake")
       fs_api = Fs::Api.new(FS_API_URL, api_connection: api_connections(:fs_api_connection2), handler: handler)
 
-      assert_equal "%PDF-1.7 fake", fs_api.post_pdf_visualization("123_456", "<dokument/>")
+      assert_equal "%PDF-1.7 fake", fs_api.pdf_visualization("123_456", "<dokument/>")
     end
 
-    test "post_pdf_visualization returns nil on error response" do
+    test "pdf_visualization returns nil on error response" do
       handler = pdf_visualization_handler(status: 422, content_type: "application/json", body: '{"result":"FAIL","message":"unsupported"}')
       fs_api = Fs::Api.new(FS_API_URL, api_connection: api_connections(:fs_api_connection2), handler: handler)
 
-      assert_nil fs_api.post_pdf_visualization("123_456", "<dokument/>")
+      assert_nil fs_api.pdf_visualization("123_456", "<dokument/>")
     end
 
-    test "post_pdf_visualization returns nil when the response is not a pdf" do
+    test "pdf_visualization returns nil when the response is not a pdf" do
       handler = pdf_visualization_handler(status: 200, content_type: "application/json", body: '{"result":"OK"}')
       fs_api = Fs::Api.new(FS_API_URL, api_connection: api_connections(:fs_api_connection2), handler: handler)
 
-      assert_nil fs_api.post_pdf_visualization("123_456", "<dokument/>")
+      assert_nil fs_api.pdf_visualization("123_456", "<dokument/>")
     end
 
     private

@@ -33,7 +33,7 @@ module Fs
       request(:post, "forms/parse", { content: Base64.strict_encode64(content) })[:body]
     end
 
-    def post_pdf_visualization(form_identifier, content)
+    def pdf_visualization(form_identifier, content)
       response = @handler.post(
         "#{@url}/api/v1/pdf-visualizations",
         { form_identifier: form_identifier, content: Base64.strict_encode64(content) },
