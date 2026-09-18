@@ -275,11 +275,43 @@ class MessageObjectTest < ActiveSupport::TestCase
   end
 
   test "prepares PDF visualization" do
-    message_object = message_objects(:ssd_main_fs_one_form)
-
     skip('Test needs to be run in docker')
 
+    message_object = message_objects(:ssd_main_fs_one_form)
+    message_object.tenant.enable_feature(:fs_pdf_visualization, force: true)
+
     assert_not_equal nil, message_object.prepare_pdf_visualization
+  end
+
+  test "prepare_pdf_visualization asks the form for the visualization" do
+    message_object = fs_message_object(pdf_supported: true, feature_enabled: true)
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :pdf_visualization, "%PDF-bytes", [message_object.message.form.identifier, message_object.unsigned_content]
+
+    FsEnvironment.fs_client.stub :api, ->(api_connection:) { fs_api } do
+      assert_equal "%PDF-bytes", message_object.prepare_pdf_visualization
+    end
+
+    fs_api.verify
+  end
+
+  test "downloadable_as_pdf? is true for xml fs message object with pdf_supported form" do
+    message_object = fs_message_object(pdf_supported: true, feature_enabled: true)
+
+    assert message_object.downloadable_as_pdf?
+  end
+
+  test "downloadable_as_pdf? is false when the fs form does not support pdf" do
+    message_object = fs_message_object(pdf_supported: false, feature_enabled: true)
+
+    assert_not message_object.downloadable_as_pdf?
+  end
+
+  test "downloadable_as_pdf? is false when the fs_pdf_visualization feature flag is disabled" do
+    message_object = fs_message_object(pdf_supported: true, feature_enabled: false)
+
+    assert_not message_object.downloadable_as_pdf?
   end
 
   test "mark_signed_by_user removes SignatureRequestedFrom SignerGroup, SignatureRequested Tags and adds SignedBy, Signed Tags after message object is signed by a signer user" do
@@ -334,5 +366,15 @@ class MessageObjectTest < ActiveSupport::TestCase
     assert message_object.message.thread.tags.include?(user.signed_by_tag)
     assert message_object.message.thread.tags.include?(user.tenant.signature_requested_tag)
     assert message_object.message.thread.tags.include?(user.tenant.signer_group.signature_requested_from_tag)
+  end
+
+  private
+
+  def fs_message_object(pdf_supported:, feature_enabled:)
+    message_object = message_objects(:fs_accountants_dphv21_form)
+    message_object.message.form.update!(pdf_supported: pdf_supported)
+    message_object.tenant.enable_feature(:fs_pdf_visualization, force: true) if feature_enabled
+
+    message_object
   end
 end
