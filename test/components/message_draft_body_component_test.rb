@@ -10,26 +10,26 @@ class MessageDraftBodyComponentTest < ViewComponent::TestCase
   def test_humanize_diff_maps_identifier_field_change_to_friendly_label
     diff = "3c3\n<       <ico>12345678</ico>\n---\n>       <ico>87654321</ico>"
 
-    assert_equal ["IČO: 12345678 → 87654321"], component.humanize_diff(diff)
+    assert_equal ["IČO: pôvodne 12345678 → opravené 87654321"], component.humanize_diff(diff)
   end
 
   def test_humanize_diff_handles_namespaced_elements
     diff = "1c1\n< <ns0:dic>1020304050</ns0:dic>\n---\n> <ns0:dic>9999999999</ns0:dic>"
 
-    assert_equal ["DIČ: 1020304050 → 9999999999"], component.humanize_diff(diff)
+    assert_equal ["DIČ: pôvodne 1020304050 → opravené 9999999999"], component.humanize_diff(diff)
   end
 
   def test_humanize_diff_falls_back_to_raw_element_name_for_unknown_fields
     diff = "1c1\n< <nejakePole>a</nejakePole>\n---\n> <nejakePole>b</nejakePole>"
 
-    assert_equal ["nejakePole: a → b"], component.humanize_diff(diff)
+    assert_equal ["nejakePole: pôvodne a → opravené b"], component.humanize_diff(diff)
   end
 
   def test_humanize_diff_reports_multiple_changes
     diff = "3c3\n<   <ico>11111111</ico>\n---\n>   <ico>22222222</ico>\n" \
            "7c7\n<   <psc>81101</psc>\n---\n>   <psc>81102</psc>"
 
-    assert_equal ["IČO: 11111111 → 22222222", "PSČ: 81101 → 81102"], component.humanize_diff(diff)
+    assert_equal ["IČO: pôvodne 11111111 → opravené 22222222", "PSČ: pôvodne 81101 → opravené 81102"], component.humanize_diff(diff)
   end
 
   def test_humanize_diff_returns_generic_description_when_diff_is_unparseable

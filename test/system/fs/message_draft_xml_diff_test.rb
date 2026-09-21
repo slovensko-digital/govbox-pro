@@ -66,13 +66,13 @@ class Fs::MessageDraftXmlDiffTest < ApplicationSystemTestCase
 
     within_message_in_thread(message_draft) do
       assert_text "Správa pravdepodobne obsahuje nesprávne údaje"
-      assert_text "Pri nahratí súboru do HTML formulára došlo k zmenám hodnôt vybraných atribútov"
+      assert_text "Pri načítaní vášho súboru do formulára sa zmenili tieto údaje"
     end
 
     assert_text "Správa nie je validná"
   end
 
-  test "changed values are listed in an expandable section" do
+  test "changed values are listed without having to expand anything" do
     message_draft = messages(:fs_accountants_draft_uzmujv14_with_attachment)
     message_draft.update!(metadata: message_draft.metadata.merge(
       "validation_errors" => {
@@ -90,11 +90,7 @@ class Fs::MessageDraftXmlDiffTest < ApplicationSystemTestCase
     visit message_thread_path(message_draft.thread)
 
     within_message_in_thread(message_draft) do
-      assert_no_text "IČO: 12345678 → 87654321"
-
-      find("summary", text: "Zobraziť zmenené údaje").click
-
-      assert_text "IČO: 12345678 → 87654321"
+      assert_text "IČO: pôvodne 12345678 → opravené 87654321"
     end
   end
 

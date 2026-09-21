@@ -14,7 +14,7 @@ class MessageDraftBodyComponent < ViewComponent::Base
     "stat" => "Štát"
   }.freeze
 
-  GENERIC_DIFF_DESCRIPTION = "Zmenili sa hodnoty niektorých atribútov, pred odoslaním skontrolujte údaje vo formulári."
+  GENERIC_DIFF_DESCRIPTION = "Niektoré údaje sa zmenili, pred odoslaním ich skontrolujte vo formulári."
 
   def initialize(message:, is_last:)
     @message = message
@@ -42,7 +42,7 @@ class MessageDraftBodyComponent < ViewComponent::Base
       next unless old_field && new_field
       next unless old_field[:name] == new_field[:name] && old_field[:value] != new_field[:value]
 
-      "#{field_label(old_field[:name])}: #{old_field[:value]} → #{new_field[:value]}"
+      "#{field_label(old_field[:name])}: pôvodne #{old_field[:value]} → opravené #{new_field[:value]}"
     end
   end
 
