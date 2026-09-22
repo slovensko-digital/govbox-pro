@@ -117,6 +117,19 @@ class MessageThreadsTest < ApplicationSystemTestCase
     refute_selector(thread_in_listing_selector(thread_issue))
   end
 
+  test "user sees message visualization in a sandboxed iframe" do
+    thread_general = message_threads(:ssd_main_general)
+    message_one = messages(:ssd_main_general_one)
+
+    visit message_thread_path thread_general
+
+    within("#message_#{message_one.id}") do
+      assert_selector "iframe[sandbox='allow-same-origin']"
+
+      assert_no_selector ".invisible"
+    end
+  end
+
   test "user can go to a thread detail of the thread he has access to" do
     visit message_threads_path
 

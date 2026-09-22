@@ -13,6 +13,9 @@ application.register("autofocus", AutofocusController)
 import AutogramController from "./autogram_controller"
 application.register("autogram", AutogramController)
 
+import AutoSubmitController from "./auto_submit_controller"
+application.register("auto-submit", AutoSubmitController)
+
 import ContentWithSeparatorController from "./content_with_separator_controller"
 application.register("content-with-separator", ContentWithSeparatorController)
 
@@ -39,6 +42,9 @@ application.register("tri-state-checkbox", TriStateCheckboxController)
 
 import TurboContentController from "./turbo_content_controller"
 application.register("turbo-content", TurboContentController)
+
+import VisualizationFrameController from "./visualization_frame_controller"
+application.register("visualization-frame", VisualizationFrameController)
 
 import VisitedLinksController from "./visited_links_controller"
 application.register("visited-links", VisitedLinksController)

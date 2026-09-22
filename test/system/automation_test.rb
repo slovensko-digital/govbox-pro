@@ -63,6 +63,24 @@ class AutomationTest < ApplicationSystemTestCase
     end
   end
 
+  test "changing the condition attribute rerenders the condition form" do
+    click_link "Vytvoriť pravidlo"
+    assert_text "Krok 1 z 3 – Hlavička pravidla"
+
+    fill_in "Názov pravidla", with: "Rerender rule"
+    click_button "Pokračovať"
+
+    assert_text "Krok 2 z 3 – Podmienky pravidla"
+
+    within("#condition-new") do
+      assert_no_selector "option", text: "áno"
+
+      find("select", match: :first).find("option", text: "Odoslaná pošta").select_option
+
+      assert_selector "option", text: "áno"
+    end
+  end
+
   test "admin can remove an automation rule" do
     assert_text "Pridaj štítok na vlákno Construction"
 

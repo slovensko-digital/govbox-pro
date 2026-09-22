@@ -12,12 +12,11 @@
       <% if checkbox.indeterminate? %>
         <%= check_box_tag "assignments[new][#{group.id}]",
                           checkbox.value, checkbox.checked?,
-                          data: { controller: "tri-state-checkbox", action: "click->tri-state-checkbox#nextState", "tri-state-checkbox-checked-value": RelationChanges::ADD_SIGN, "tri-state-checkbox-indeterminate-value": RelationChanges::KEEP_SIGN },
-                          onchange: "this.form.requestSubmit();",
+                          data: { controller: "tri-state-checkbox auto-submit", action: "click->tri-state-checkbox#nextState change->auto-submit#submit", "tri-state-checkbox-checked-value": RelationChanges::ADD_SIGN, "tri-state-checkbox-indeterminate-value": RelationChanges::KEEP_SIGN },
                           id: "new_assignments_#{group.id}",
                           class: "h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer" %>
       <% else %>
-        <%= check_box_tag "assignments[new][#{group.id}]", checkbox.value, checkbox.checked?, id: "new_assignments_#{group.id}", class: "h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer", onchange: "this.form.requestSubmit();" %>
+        <%= check_box_tag "assignments[new][#{group.id}]", checkbox.value, checkbox.checked?, id: "new_assignments_#{group.id}", class: "h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer", data: { controller: "auto-submit", action: "change->auto-submit#submit" } %>
       <% end %>
     </div>
     <%= label_tag "new_assignments_#{group.id}", class: "px-2 select-none text-gray-900 cursor-pointer flex gap-2 items-center" do %>

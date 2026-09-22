@@ -17,6 +17,10 @@ module GovboxPro
 
     config.middleware.use Rack::Attack
 
+    config.action_dispatch.default_headers = config.action_dispatch.default_headers.merge(
+      "Permissions-Policy" => "camera=(), microphone=(), geolocation=(), payment=(), usb=(), gyroscope=(), magnetometer=()"
+    )
+
     config.active_record.schema_format = :ruby
 
     # config.i18n.load_path += Dir[Rails.root.join 'config', 'locales', '**', '*.{rb,yml}']
