@@ -199,6 +199,31 @@ class Fs::MessageDraft < MessageDraft
     Fs::SubmitMessageDraftAction.run(self)
   end
 
+  def correctable_xml?
+    return false unless form_object
+    return false if being_validated?
+
+    corrected_xml.present? && !form_object.is_signed?
+  end
+
+  def apply_corrected_xml
+    return false unless correctable_xml?
+
+    datum = form_object.message_object_datum
+    return false unless datum
+
+    transaction do
+      datum.update!(blob: corrected_xml)
+      metadata['validation_errors'] = {}
+      metadata['status'] = 'being_validated'
+      save!
+    end
+
+    Fs::ValidateMessageDraftJob.set(job_context: :asap_bulk).perform_later(self)
+
+    true
+  end
+
   def attachments_editable?
     not_yet_submitted? && form&.attachments_allowed?
   end
@@ -240,23 +265,28 @@ class Fs::MessageDraft < MessageDraft
   def validate_and_process
     valid?(:validate_data)
 
+    validation_errors = metadata['validation_errors'] ||= {}
     internal_errors = errors.full_messages
-    metadata['validation_errors']['internal_errors'] = internal_errors
+    validation_errors['internal_errors'] = internal_errors
 
-    if metadata['validation_errors']['errors'].any? || internal_errors.any?
+    form_errors = validation_errors['errors'].to_a
+    warnings = validation_errors['warnings'].to_a
+    diff_errors = validation_errors['diff_errors'].to_a
+
+    if form_errors.any? || diff_errors.any? || internal_errors.any?
       mark_as_invalid
-      add_cascading_tag(tenant.validation_warning_tag) if metadata['validation_errors']['warnings'].any?
+      add_cascading_tag(tenant.validation_warning_tag) if warnings.any?
       unassign_signature_request_tags
     else
       metadata['status'] = 'created'
       remove_cascading_tag(tenant.validation_error_tag)
 
-      if metadata['validation_errors']['warnings'].none?
-        remove_cascading_tag(tenant.validation_warning_tag)
-        remove_cascading_tag(tenant.problem_tag)
-      else
+      if warnings.any?
         add_cascading_tag(tenant.validation_warning_tag)
         add_cascading_tag(tenant.problem_tag)
+      else
+        remove_cascading_tag(tenant.validation_warning_tag)
+        remove_cascading_tag(tenant.problem_tag)
       end
     end
 
@@ -293,6 +323,10 @@ class Fs::MessageDraft < MessageDraft
   end
 
   private
+
+  def corrected_xml
+    metadata.dig('validation_errors', 'corrected_xml')
+  end
 
   def validate_data
     validate_uuid_uniqueness

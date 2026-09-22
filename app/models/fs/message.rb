@@ -65,7 +65,8 @@ class Fs::Message
 
       if associated_message_draft
         message.copy_tags_from_draft(associated_message_draft)
-        message.metadata["validation_errors"] = { diff: associated_message_draft.metadata.dig("validation_errors", "diff") }
+        draft_validation_errors = associated_message_draft.metadata["validation_errors"] || {}
+        message.metadata["validation_errors"] = draft_validation_errors.slice("diff", "diff_warnings", "diff_errors")
         message.save
         associated_message_draft.destroy
       end
