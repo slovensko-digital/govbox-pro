@@ -25,10 +25,6 @@ class Api::MessagesController < Api::TenantController
   def submit
     @message = @tenant.messages.find(params[:id])
 
-    unless @message.is_a?(MessageDraft)
-      render_unprocessable_content("Message is not a draft") and return
-    end
-
     if @message.submit
       head :created
     else

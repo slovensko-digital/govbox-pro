@@ -427,7 +427,7 @@ paths:
       tags: [Správy]
       summary: Zaradí rozpracovanú správu na odoslanie
       description: |
-        Zaradí rozpracovanú správu na asynchrónne odoslanie. Odpoveď potvrdzuje iba zaradenie na odoslanie; výsledný stav správy je možné získať cez rozhranie na čítanie alebo synchronizáciu správ.
+        Zaradí rozpracovanú správu na asynchrónne odoslanie. Odpoveď potvrdzuje iba zaradenie na odoslanie; výsledný stav správy je možné získať cez detail správy.
       parameters:
         - name: id
           in: path

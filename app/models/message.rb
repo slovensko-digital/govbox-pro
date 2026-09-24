@@ -77,8 +77,16 @@ class Message < ApplicationRecord
     false
   end
 
+  def submit
+    false
+  end
+
   def submittable?
     false
+  end
+
+  def not_submittable_errors
+    ["Message is not a draft"]
   end
 
   def collapsible?
