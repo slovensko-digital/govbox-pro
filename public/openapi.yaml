@@ -442,7 +442,7 @@ paths:
         404:
           description: Správa neexistuje alebo nepatrí tenantovi
         422:
-          description: Správa nie je rozpracovaná alebo ju nie je možné odoslať
+          description: "Správu nie je možné odoslať. Možné dôvody: správa nie je rozpracovaná, už bola zaradená na odoslanie, nemá vyplnený obsah, obsah nie je validný, nie sú podpísané všetky dokumenty na podpis, schránka nie je aktívna."
       security:
         - "Tenant_Token": []
 

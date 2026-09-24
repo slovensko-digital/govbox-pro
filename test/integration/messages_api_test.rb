@@ -119,6 +119,7 @@ class MessagesApiTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :unprocessable_content
+    assert_equal "Vyplňte obsah správy, Obsah správy nie je validný", JSON.parse(response.body)["message"]
     assert message.reload.correctly_created?
   end
 
@@ -128,6 +129,53 @@ class MessagesApiTest < ActionDispatch::IntegrationTest
     post "/api/messages/#{message.id}/submit", params: { token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }, as: :json
 
     assert_response :not_found
+  end
+
+  test "returns unprocessable_content when resubmitting an already submitted message draft" do
+    message = messages(:ssd_main_draft)
+
+    post "/api/messages/#{message.id}/submit", params: { token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }, as: :json
+    assert_response :created
+
+    assert_no_enqueued_jobs(only: Govbox::SubmitMessageDraftJob) do
+      post "/api/messages/#{message.id}/submit", params: { token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }, as: :json
+    end
+
+    assert_response :unprocessable_content
+    assert_equal "Správa už bola zaradená na odoslanie", JSON.parse(response.body)["message"]
+  end
+
+  test "returns unprocessable_content when submitting a message draft from an inactive box" do
+    message = messages(:ssd_main_draft)
+    message.box.update!(active: false)
+
+    assert_no_enqueued_jobs(only: Govbox::SubmitMessageDraftJob) do
+      post "/api/messages/#{message.id}/submit", params: { token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }, as: :json
+    end
+
+    assert_response :unprocessable_content
+    assert_equal "Schránka nie je aktívna", JSON.parse(response.body)["message"]
+  end
+
+  test "returns unprocessable_content when submitting a message draft without a form object" do
+    message = messages(:ssd_main_draft)
+    message.objects.where(object_type: "FORM").destroy_all
+
+    assert_no_enqueued_jobs(only: Govbox::SubmitMessageDraftJob) do
+      post "/api/messages/#{message.id}/submit", params: { token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }, as: :json
+    end
+
+    assert_response :unprocessable_content
+    assert_includes JSON.parse(response.body)["message"], "Vyplňte obsah správy"
+  end
+
+  test "returns unprocessable_content when submitting a message draft without a submission implementation" do
+    message = messages(:ssd_main_draft_to_be_signed_draft_two)
+
+    post "/api/messages/#{message.id}/submit", params: { token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }, as: :json
+
+    assert_response :unprocessable_content
+    assert_equal "Message cannot be submitted", JSON.parse(response.body)["message"]
   end
 
   test "can search message by UUID" do
