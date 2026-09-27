@@ -48,12 +48,11 @@
       <% elsif @message.metadata&.dig('delivery_notification', 'consignment', 'type') == 'Doc.GeneralAgendaFiction' %>
         <%= render Upvs::DeliveryNotificationFictionMessageBodyComponent.new(message: @message) %>
       <% elsif @message.html_visualization %>
-        <% visualization = @message.built_from_template? ? CGI.escapeHTML(@message.html_visualization) : @message.html_visualization %>
         <div class="w-full invisible h-[150px] transition-all">
             <%= tag.iframe class: "relative border-none overflow-hidden h-full w-full",
                            scrolling: "no",
                            sandbox: "allow-same-origin",
-                           srcdoc: visualization,
+                           srcdoc: @message.html_visualization_for_display,
                            data: { controller: "visualization-frame", action: "load->visualization-frame#setup", "visualization-frame-scale-value": true } %>
           </div>
       <% end %>
