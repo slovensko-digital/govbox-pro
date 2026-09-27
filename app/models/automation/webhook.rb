@@ -15,7 +15,7 @@ module Automation
     has_many :automation_actions, class_name: "Automation::Action", as: :action_object, dependent: :restrict_with_error
 
     validates_presence_of :name, :url
-    validate :url_must_be_public_https, unless: -> { Rails.env.development? }
+    validate :url_must_be_public_https, unless: -> { ENV["WEBHOOKS_ALLOW_PRIVATE_URLS"] == "true" }
 
     def fire!(message, event, timestamp, downloader: Faraday)
       data = {

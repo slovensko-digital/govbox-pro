@@ -1071,6 +1071,9 @@ webhooks:
         * jej doménové meno musí byť verejné, teda musí sa dať preložiť (DNS) a nesmie smerovať
           do internej siete (napr. `localhost` alebo adresy v privátnych rozsahoch).
 
+        Inštalácie prevádzkované v internej sieti vedia druhú podmienku vypnúť premennou
+        prostredia `WEBHOOKS_ALLOW_PRIVATE_URLS`.
+
         Ak volanie webhooku zlyhá, je opakované s postupne narastajúcim odstupom, najviac 10-krát.
       requestBody:
         content:
