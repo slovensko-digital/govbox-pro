@@ -7,13 +7,20 @@ module PdfVisualizationOperations
 
   included do
     def prepare_pdf_visualization
-      prepare_pdf_visualization_from_template || prepare_pdf_visualization_from_form || prepare_pdf_visualization_from_html
+      pdf = prepare_pdf_visualization_from_template || prepare_pdf_visualization_from_form
+      return pdf if pdf || fs_pdf_visualization_supported?
+
+      prepare_pdf_visualization_from_html
     end
 
     def prepare_pdf_visualization_from_form
       return unless xml?
 
       message.form.try(:pdf_visualization, self)
+    end
+
+    def fs_pdf_visualization_supported?
+      xml? && message.form.try(:pdf_visualization_supported?, self)
     end
 
     def prepare_pdf_visualization_from_template
@@ -105,7 +112,7 @@ module PdfVisualizationOperations
 
     def downloadable_as_pdf?
       return true if xml? && form&.xsl_fo&.present?
-      return true if xml? && message.form.try(:pdf_visualization_supported?, self)
+      return true if fs_pdf_visualization_supported?
       return true if form? && message.html_visualization.present?
       false
     end

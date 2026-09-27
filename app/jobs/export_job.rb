@@ -1,6 +1,10 @@
 require 'axlsx'
 
 class ExportJob < ApplicationJob
+  include GoodJob::ActiveJobExtensions::Concurrency
+
+  good_job_control_concurrency_with(perform_limit: 2)
+
   queue_as :default
 
   def perform(export)
@@ -49,6 +53,7 @@ class ExportJob < ApplicationJob
       return unless object.downloadable_as_pdf?
 
       pdf_content = object.prepare_pdf_visualization
+      raise StandardError, pdf_visualization_failure(object) unless pdf_content
 
       file_path = unique_path_within_export(object, export: export, other_file_names: file_paths, pdf: true)
       return unless file_path
@@ -67,15 +72,20 @@ class ExportJob < ApplicationJob
         pdf_content = nested_message_object.content
       else
         pdf_content = nested_message_object.prepare_pdf_visualization
+        raise StandardError, pdf_visualization_failure(nested_message_object) unless pdf_content
       end
 
       file_path = unique_path_within_export(object, export: export, other_file_names: file_paths, pdf: true)
-      return nil unless file_path
+      next unless file_path
 
       zip.put_next_entry(file_path)
       zip.write(pdf_content)
       file_paths << file_path
     end
+  end
+
+  def pdf_visualization_failure(object)
+    "Unable to prepare PDF visualization for #{object.class.name} ID #{object.id}"
   end
 
   def prepare_summary(export:, zip:)

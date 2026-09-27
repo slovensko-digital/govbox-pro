@@ -296,6 +296,29 @@ class MessageObjectTest < ActiveSupport::TestCase
     fs_api.verify
   end
 
+  test "prepare_pdf_visualization does not fall back to the html visualization for an fs form" do
+    message_object = fs_message_object(pdf_supported: true, feature_enabled: true)
+    message_object.message.update!(html_visualization: "<p>stara vizualizacia</p>")
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :pdf_visualization, nil, [message_object.message.form.identifier, message_object.unsigned_content]
+
+    FsEnvironment.fs_client.stub :api, ->(api_connection:) { fs_api } do
+      assert_nil message_object.prepare_pdf_visualization
+    end
+
+    fs_api.verify
+  end
+
+  test "prepare_pdf_visualization falls back to the html visualization without an fs form" do
+    message_object = fs_message_object(pdf_supported: false, feature_enabled: true)
+    message_object.message.update!(html_visualization: "<p>stara vizualizacia</p>")
+
+    message_object.stub(:prepare_pdf_visualization_from_html, "%PDF-html") do
+      assert_equal "%PDF-html", message_object.prepare_pdf_visualization
+    end
+  end
+
   test "downloadable_as_pdf? is true for xml fs message object with pdf_supported form" do
     message_object = fs_message_object(pdf_supported: true, feature_enabled: true)
 
