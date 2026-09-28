@@ -271,6 +271,7 @@ Rails.application.routes.draw do
 
     resources :messages, only: [:show, :destroy] do
       post :authorize_delivery_notification, on: :member
+      post :submit, on: :member
       get :search, on: :collection
       post :message_drafts, on: :collection
       get :sync, on: :collection
