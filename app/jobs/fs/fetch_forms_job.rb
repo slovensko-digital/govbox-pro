@@ -14,7 +14,8 @@ class Fs::FetchFormsJob < ApplicationJob
           slug: fs_form_data['form_group_slug'],
           signature_required: fs_form_data['signature_required'],
           ez_signature: fs_form_data['ez_signature'],
-          number_identifier: fs_form_data['form_group_number_identifier']
+          number_identifier: fs_form_data['form_group_number_identifier'],
+          pdf_supported: fs_form_data['pdf_supported'] == true,
         )
       end
 
