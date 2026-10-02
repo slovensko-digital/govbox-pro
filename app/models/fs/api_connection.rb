@@ -16,8 +16,7 @@
 #
 class Fs::ApiConnection < ::ApiConnection
   validates :tenant_id, presence: true
-  self.encrypted_attributes = encrypted_attributes.dup
-  encrypts :settings
+  encrypts :api_token_private_key, :settings
 
   store_accessor :settings, :username, prefix: true
   store_accessor :settings, :password, prefix: true
