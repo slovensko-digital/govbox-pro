@@ -15,5 +15,8 @@
 #
 module Notifications
   class ExportStarted < ::Notification
+    def sends_webpush?
+      false
+    end
   end
 end
