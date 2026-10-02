@@ -33,6 +33,7 @@ module Authentication
     else
       session[:saml_identifier] = saml_identifier
       session[:username] = username
+      session[:no_account_provider] = auth_hash&.provider
       redirect_to no_account_sessions_path
     end
   end

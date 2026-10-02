@@ -18,6 +18,13 @@
           <%= (" spolu s Vašim identifikátorom: " + session[:saml_identifier]) if session[:saml_identifier] %>
         </p>
       <% end %>
+      <% if @retry_provider %>
+        <div class="mt-8">
+          <%= button_to "/auth/#{@retry_provider}", method: :post, params: { prompt: "select_account" }, data: { turbo: false }, class: "flex w-full items-center justify-center gap-3 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:ring-transparent" do %>
+            <span class="text-sm font-semibold leading-6">Skúsiť iný <%= @retry_provider_name %> účet</span>
+          <% end %>
+        </div>
+      <% end %>
     </div>
   </div>
 </div>
