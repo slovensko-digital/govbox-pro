@@ -97,12 +97,6 @@ class Message < ApplicationRecord
     metadata&.dig("template_id").present?
   end
 
-  def html_visualization_for_display
-    return html_visualization unless built_from_template?
-
-    CGI.escapeHTML(html_visualization.to_s)
-  end
-
   def authorizable_delivery_notification?
     metadata["delivery_notification"] && !metadata["authorized"] && Time.parse(metadata.dig("delivery_notification", "delivery_period_end_at")) > Time.now
   end

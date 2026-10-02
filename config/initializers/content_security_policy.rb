@@ -19,7 +19,7 @@ Rails.application.configure do
     policy.frame_src   :self
     policy.script_src  :self
     policy.style_src   :self, :unsafe_inline
-    policy.font_src    :self
+    policy.font_src    :self, :https, :data
     policy.img_src     :self, :data,
                        *("https://*.googleusercontent.com" if ENV["GOOGLE_CLIENT_ID"].present?)
     policy.connect_src :self, "http://localhost:37200", "https://loopback.autogram.slovensko.digital:37200"

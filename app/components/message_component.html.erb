@@ -52,7 +52,7 @@
             <%= tag.iframe class: "relative border-none overflow-hidden h-full w-full",
                            scrolling: "no",
                            sandbox: "allow-same-origin",
-                           srcdoc: @message.html_visualization_for_display,
+                           srcdoc: MessageHelper.html_visualization_for_display(@message),
                            data: { controller: "visualization-frame", action: "load->visualization-frame#setup", "visualization-frame-scale-value": true } %>
           </div>
       <% end %>
