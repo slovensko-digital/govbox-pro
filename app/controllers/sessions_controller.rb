@@ -4,10 +4,17 @@ class SessionsController < ApplicationController
   skip_before_action :set_menu_context
   layout 'login'
 
+  ACCOUNT_SELECT_PROVIDERS = {
+    'google_oauth2' => 'Google',
+    'microsoft_graph' => 'Microsoft'
+  }.freeze
+
   def login; end
 
   def no_account
     @no_account_trial_enabled = no_account_trial_enabled?
+    @retry_provider = session[:no_account_provider] if ACCOUNT_SELECT_PROVIDERS.key?(session[:no_account_provider])
+    @retry_provider_name = ACCOUNT_SELECT_PROVIDERS[@retry_provider]
   end
 
   def trial_login
