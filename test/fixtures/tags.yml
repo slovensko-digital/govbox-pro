@@ -470,3 +470,10 @@ api_connection_tag:
   type: SimpleTag
   visible: true
   tenant: accountants
+
+ssd_access_tag:
+  name: AccessTag
+  type: SimpleTag
+  visible: true
+  tenant: ssd
+  tag_groups_count: 1

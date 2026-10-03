@@ -179,7 +179,7 @@
                     <span class="shrink-0 text-gray-400 text-xs" data-expand-indicator>▾</span>
                   </div>
                   <div class="flex flex-wrap items-center gap-1 mt-1">
-                    <% message_thread.message_threads_tags.only_visible_tags.each do |tag| %>
+                    <% message_thread.message_threads_tags.only_visible_tags_for(Current.user).each do |tag| %>
                       <%= render Common::TagComponent.new(tag.tag) %>
                     <% end %>
                   </div>

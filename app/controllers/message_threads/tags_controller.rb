@@ -64,7 +64,7 @@ class MessageThreads::TagsController < ApplicationController
   end
 
   def tag_scope
-    Current.tenant.simple_tags.visible.order(:name)
+    Current.user.manageable_simple_tags(Current.tenant).order(:name)
   end
 
   def message_thread_policy_scope

@@ -37,4 +37,8 @@ module ApplicationHelper
   def sort_tags(tags)
     tags.sort_by(&:name).sort_by { |i| i.type.in?(%w[ValidationWarningTag ValidationErrorTag ProblemTag SubmissionErrorTag UnprocessableTag]) ? 1 : 0 }
   end
+
+  def listable_tag_ids
+    @listable_tag_ids ||= Current.user&.listable_tags(Current.tenant)&.ids&.to_set || Set.new
+  end
 end
