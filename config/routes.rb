@@ -180,6 +180,7 @@ Rails.application.routes.draw do
       post :confirm_unlock
       post :unlock
       post :submit
+      post :apply_corrected_xml
     end
 
     scope module: 'message_drafts' do

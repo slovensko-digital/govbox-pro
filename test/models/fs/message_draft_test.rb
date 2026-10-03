@@ -136,6 +136,82 @@ class Fs::MessageDraftTest < ActiveSupport::TestCase
     EventBus.class_variable_get(:@@subscribers_map)[:message_created].pop
   end
 
+  test "apply_corrected_xml replaces form content, clears validation errors and re-enqueues validation" do
+    message_draft = messages(:fs_accountants_draft_uzmujv14_with_attachment)
+    corrected_xml = "<CorrectedForm>fixed</CorrectedForm>"
+    message_draft.update!(metadata: message_draft.metadata.merge(
+      "status" => "invalid",
+      "validation_errors" => { "diff_errors" => ["FS zmenil IČO"], "corrected_xml" => corrected_xml }
+    ))
+
+    assert_enqueued_with(job: Fs::ValidateMessageDraftJob) do
+      assert message_draft.apply_corrected_xml
+    end
+
+    message_draft.reload
+    assert_equal corrected_xml, message_draft.form_object.content
+    assert_equal({}, message_draft.metadata["validation_errors"])
+    assert_equal "being_validated", message_draft.metadata["status"]
+  end
+
+  test "apply_corrected_xml returns false and changes nothing when corrected_xml is missing" do
+    message_draft = messages(:fs_accountants_draft_uzmujv14_with_attachment)
+    original_content = message_draft.form_object.content
+    message_draft.update!(metadata: message_draft.metadata.merge(
+      "status" => "invalid",
+      "validation_errors" => { "diff_errors" => ["FS zmenil IČO"], "corrected_xml" => nil }
+    ))
+
+    assert_no_enqueued_jobs only: Fs::ValidateMessageDraftJob do
+      assert_not message_draft.apply_corrected_xml
+    end
+
+    message_draft.reload
+    assert_equal original_content, message_draft.form_object.content
+    assert_equal "invalid", message_draft.metadata["status"]
+  end
+
+  test "apply_corrected_xml refuses to overwrite a signed form and changes nothing" do
+    message_draft = messages(:fs_accountants_draft_uzmujv14_with_attachment)
+    message_draft.form_object.update!(is_signed: true)
+    original_content = message_draft.form_object.content
+    message_draft.update!(metadata: message_draft.metadata.merge(
+      "status" => "invalid",
+      "validation_errors" => { "diff_errors" => ["FS zmenil IČO"], "corrected_xml" => "<CorrectedForm>fixed</CorrectedForm>" }
+    ))
+
+    assert_not message_draft.correctable_xml?
+
+    assert_no_enqueued_jobs only: Fs::ValidateMessageDraftJob do
+      assert_not message_draft.apply_corrected_xml
+    end
+
+    message_draft.reload
+    assert_equal original_content, message_draft.form_object.content
+    assert_equal "invalid", message_draft.metadata["status"]
+  end
+
+  test "correctable_xml? is true only when a corrected_xml exists and the form is unsigned" do
+    message_draft = messages(:fs_accountants_draft_uzmujv14_with_attachment)
+
+    message_draft.metadata["validation_errors"] = { "corrected_xml" => "<xml/>" }
+    assert message_draft.correctable_xml?
+
+    message_draft.metadata["validation_errors"] = { "corrected_xml" => nil }
+    assert_not message_draft.correctable_xml?
+  end
+
+  test "correctable_xml? is false while a new validation is already running" do
+    message_draft = messages(:fs_accountants_draft_uzmujv14_with_attachment)
+    message_draft.metadata["validation_errors"] = { "corrected_xml" => "<xml/>" }
+
+    message_draft.metadata["status"] = "being_validated"
+    assert_not message_draft.correctable_xml?
+
+    message_draft.metadata["status"] = "invalid"
+    assert message_draft.correctable_xml?
+  end
+
   test "validate_and_process marks message as invalid if there are validation errors" do
     message_draft = messages(:fs_accountants_draft_uzmujv14)
     message_draft.validate_and_process
