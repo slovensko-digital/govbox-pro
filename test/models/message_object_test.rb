@@ -310,6 +310,24 @@ class MessageObjectTest < ActiveSupport::TestCase
     fs_api.verify
   end
 
+  test "prepare_pdf_visualization asks the form for the visualization of a signed form" do
+    message_object = fs_message_object(pdf_supported: true, feature_enabled: true)
+    xml_content = message_object.content
+    message_object.update!(is_signed: true, mimetype: "application/vnd.etsi.asic-e+zip")
+    message_object.nested_message_objects.create!(name: "form.xml", mimetype: "application/xml", content: xml_content)
+    message_object.message.update!(html_visualization: "<p>stara vizualizacia</p>")
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :pdf_visualization, "%PDF-bytes", [message_object.message.form.identifier, xml_content]
+
+    FsEnvironment.fs_client.stub :api, ->(api_connection:) { fs_api } do
+      assert message_object.downloadable_as_pdf?
+      assert_equal "%PDF-bytes", message_object.prepare_pdf_visualization
+    end
+
+    fs_api.verify
+  end
+
   test "prepare_pdf_visualization falls back to the html visualization without an fs form" do
     message_object = fs_message_object(pdf_supported: false, feature_enabled: true)
     message_object.message.update!(html_visualization: "<p>stara vizualizacia</p>")

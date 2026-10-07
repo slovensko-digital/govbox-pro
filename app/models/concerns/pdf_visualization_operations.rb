@@ -14,13 +14,17 @@ module PdfVisualizationOperations
     end
 
     def prepare_pdf_visualization_from_form
-      return unless xml?
+      return unless xml_content?
 
       message.form.try(:pdf_visualization, self)
     end
 
     def fs_pdf_visualization_supported?
-      xml? && message.form.try(:pdf_visualization_supported?, self)
+      xml_content? && message.form.try(:pdf_visualization_supported?, self)
+    end
+
+    def xml_content?
+      xml? || (is_signed? && unsigned_content.present?)
     end
 
     def prepare_pdf_visualization_from_template
