@@ -15,7 +15,7 @@
       <% else %>
         <p class="text-center text-gray-900">
           Kontaktujte nás emailom na
-          <%= mail_to ENV["SUPPORT_EMAIL"], nil, class: "font-semibold leading-6 text-indigo-600 hover:text-indigo-500" %> s požiadavkou o vytvorenie účtu
+          <%= mail_to ENV["SUPPORT_EMAIL"], class: "font-semibold leading-6 text-indigo-600 hover:text-indigo-500" %> s požiadavkou o vytvorenie účtu
           <%= (" spolu s Vašim identifikátorom: " + session[:saml_identifier]) if session[:saml_identifier] %>
         </p>
       <% end %>
