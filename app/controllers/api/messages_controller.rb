@@ -3,16 +3,14 @@ class Api::MessagesController < Api::TenantController
   before_action :load_box, only: :message_drafts
   before_action :check_message_type, only: :message_drafts
   before_action :check_tags, only: :message_drafts
+  before_action :set_message, only: [:show, :authorize_delivery_notification, :submit, :destroy]
 
   ALLOWED_MESSAGE_TYPES = %w[Upvs::MessageDraft Fs::MessageDraft]
 
   def show
-    @message = @tenant.messages.find(params[:id])
   end
 
   def authorize_delivery_notification
-    @message = @tenant.messages.find(params[:id])
-
     @message.transaction do
       if Govbox::AuthorizeDeliveryNotificationAction.run(@message)
         render status: :created
@@ -22,9 +20,17 @@ class Api::MessagesController < Api::TenantController
     end
   end
 
-  def destroy
-    @message = @tenant.messages.find(params[:id])
+  def submit
+    @message.transaction do
+      if @message.submit
+        head :created
+      else
+        render_unprocessable_content(@message.not_submittable_errors.presence&.join(', ') || "Message cannot be submitted")
+      end
+    end
+  end
 
+  def destroy
     if @message.destroyable? && @message.not_yet_submitted?
       @message.destroy
     else
@@ -135,6 +141,14 @@ class Api::MessagesController < Api::TenantController
 
   def load_box
     @box = @tenant.boxes.find_by(uri: permitted_message_draft_params[:metadata]&.dig('sender_uri'))
+  end
+
+  def set_message
+    @message = @tenant.messages.find(params[:id])
+  end
+
+  rescue_from NotImplementedError do
+    render_unprocessable_content('Message cannot be submitted')
   end
 
   rescue_from MessageDraft::InvalidSenderError do

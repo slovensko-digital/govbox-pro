@@ -1,25 +1,28 @@
 class Fs::OnboardingService
   include ActiveModel::API
-  attr_accessor :tenant_name, :ico, :admin_user_name, :saml_identifier, :admin_user_contact_email, :trial
+  attr_accessor :tenant_name, :ico, :tenant_contact_email, :admin_user_name, :admin_user_email, :saml_identifier, :trial
 
-  validates :tenant_name, :ico, :saml_identifier, :admin_user_name, :admin_user_contact_email, presence: true
+  validates :tenant_name, :admin_user_name, presence: true
+  validates :ico, :tenant_contact_email, :saml_identifier, presence: true, if: -> { trial }
+  validates :admin_user_email, absence: true, if: -> { trial }
 
   def initialize(params)
     @tenant_name = params[:tenant_name] if params[:tenant_name]
     @ico = params[:ico] if params[:ico]
     @saml_identifier = params[:saml_identifier] if params[:saml_identifier]
     @admin_user_name = params[:admin_user_name] if params[:admin_user_name]
-    @admin_user_contact_email = params[:admin_user_contact_email] if params[:admin_user_contact_email]
+    @admin_user_email = params[:admin_user_email] if params[:admin_user_email]
+    @tenant_contact_email = params[:tenant_contact_email] if params[:tenant_contact_email]
     @fs_api_key = OpenSSL::PKey::RSA.new(2048)
     @trial = ActiveModel::Type::Boolean.new.cast(params[:trial])
   end
 
   def call(fs_client: FsEnvironment.fs_client)
     Tenant.transaction do
-      tenant = Tenant.create!(name: @tenant_name, contact_email: @admin_user_contact_email, ico: @ico)
+      tenant = Tenant.create!(name: @tenant_name, contact_email: @tenant_contact_email, ico: @ico)
       tenant.update!(outbox_messages_limit: 50, active_until: Time.now + 30.days) if trial
 
-      user = tenant.users.create!(name: @admin_user_name, saml_identifier: @saml_identifier).tap do |tenant_user|
+      user = tenant.users.create(name: @admin_user_name, email: @admin_user_email, saml_identifier: @saml_identifier).tap do |tenant_user|
         tenant_user.groups << tenant.admin_group
         tenant_user.groups << tenant.groups.find_by(type: "SignerGroup")
 

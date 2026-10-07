@@ -24,8 +24,9 @@ class Api::SiteAdmin::Fs::OnboardingsController < Api::SiteAdminController
       :tenant_name,
       :ico,
       :admin_user_name,
+      :admin_user_email,
       :saml_identifier,
-      :admin_user_contact_email,
+      :tenant_contact_email,
       :trial
     )
   end
