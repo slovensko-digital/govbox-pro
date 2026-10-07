@@ -90,7 +90,7 @@ class Fs::ValidateMessageDraftResultJobTest < ActiveJob::TestCase
     end
   end
 
-  test "message draft with diff_errors keeps the FS result and is marked invalid" do
+  test "message draft with diff_errors keeps the FS result and stays submittable" do
     outbox_message = messages(:fs_accountants_outbox)
     url = "https://fsapi.test/submissions/#{outbox_message.id}"
 
@@ -117,8 +117,9 @@ class Fs::ValidateMessageDraftResultJobTest < ActiveJob::TestCase
       assert_equal ['ICO changed'], outbox_message.metadata['validation_errors']['diff_errors']
       assert_equal '<xml>corrected</xml>', outbox_message.metadata['validation_errors']['corrected_xml']
 
-      assert_equal 'invalid', outbox_message.metadata['status']
-      assert outbox_message.thread.tags.include?(outbox_message.tenant.validation_error_tag)
+      assert_equal 'created', outbox_message.metadata['status']
+      assert_not outbox_message.thread.tags.include?(outbox_message.tenant.validation_error_tag)
+      assert outbox_message.thread.tags.include?(outbox_message.tenant.problem_tag)
     end
   end
 

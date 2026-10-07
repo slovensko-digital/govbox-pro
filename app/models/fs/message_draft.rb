@@ -201,7 +201,7 @@ class Fs::MessageDraft < MessageDraft
 
   def correctable_xml?
     return false unless form_object
-    return false if being_validated?
+    return false if being_validated? || !not_yet_submitted?
 
     corrected_xml.present? && !form_object.is_signed?
   end
@@ -270,10 +270,9 @@ class Fs::MessageDraft < MessageDraft
     validation_errors['internal_errors'] = internal_errors
 
     form_errors = validation_errors['errors'].to_a
-    warnings = validation_errors['warnings'].to_a
-    diff_errors = validation_errors['diff_errors'].to_a
+    warnings = validation_errors['warnings'].to_a + validation_errors['diff_errors'].to_a
 
-    if form_errors.any? || diff_errors.any? || internal_errors.any?
+    if form_errors.any? || internal_errors.any?
       mark_as_invalid
       add_cascading_tag(tenant.validation_warning_tag) if warnings.any?
       unassign_signature_request_tags

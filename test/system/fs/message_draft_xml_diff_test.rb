@@ -47,7 +47,7 @@ class Fs::MessageDraftXmlDiffTest < ApplicationSystemTestCase
     assert_not message_draft.thread.tags.include?(message_draft.tenant.problem_tag)
   end
 
-  test "draft with diff_errors shows error box and is marked invalid" do
+  test "draft with diff_errors shows error box and can still be sent" do
     message_draft = messages(:fs_accountants_draft_uzmujv14_with_attachment)
     message_draft.update!(metadata: message_draft.metadata.merge(
       "validation_errors" => {
@@ -59,7 +59,7 @@ class Fs::MessageDraftXmlDiffTest < ApplicationSystemTestCase
         "diff"        => [],
         "corrected_xml" => "<xml>corrected</xml>"
       },
-      "status" => "invalid"
+      "status" => "created"
     ))
 
     visit message_thread_path(message_draft.thread)
@@ -67,9 +67,10 @@ class Fs::MessageDraftXmlDiffTest < ApplicationSystemTestCase
     within_message_in_thread(message_draft) do
       assert_text "Správa pravdepodobne obsahuje nesprávne údaje"
       assert_text "Pri načítaní vášho súboru do formulára sa zmenili tieto údaje"
+      assert_button "Odoslať"
     end
 
-    assert_text "Správa nie je validná"
+    assert_no_text "Správa nie je validná"
   end
 
   test "changed values are listed without having to expand anything" do
@@ -94,7 +95,7 @@ class Fs::MessageDraftXmlDiffTest < ApplicationSystemTestCase
     end
   end
 
-  test "validate_and_process with diff_errors marks draft invalid and assigns error tag" do
+  test "validate_and_process with diff_errors keeps draft submittable and assigns problem tag" do
     message_draft = messages(:fs_accountants_draft_uzmujv14_with_attachment)
     message_draft.metadata["validation_errors"] = {
       "result"        => "WARN",
@@ -107,8 +108,9 @@ class Fs::MessageDraftXmlDiffTest < ApplicationSystemTestCase
     }
     message_draft.validate_and_process
 
-    assert_equal "invalid", message_draft.metadata["status"]
-    assert message_draft.thread.tags.include?(message_draft.tenant.validation_error_tag)
+    assert_equal "created", message_draft.metadata["status"]
+    assert_not message_draft.thread.tags.include?(message_draft.tenant.validation_error_tag)
+    assert message_draft.thread.tags.include?(message_draft.tenant.problem_tag)
   end
 
   test "draft with diff_errors shows apply correction button" do
@@ -216,27 +218,6 @@ class Fs::MessageDraftXmlDiffTest < ApplicationSystemTestCase
       assert_text "Prebieha validácia správy"
       assert_no_button "Použiť opravené hodnoty"
     end
-  end
-
-  test "validate_and_process with diff_errors in metadata always marks draft invalid" do
-    message_draft = messages(:fs_accountants_draft_uzmujv14_with_attachment)
-    message_draft.update!(metadata: message_draft.metadata.merge(
-      "validation_errors" => {
-        "result"        => "WARN",
-        "errors"        => [],
-        "warnings"      => [],
-        "diff_warnings" => [],
-        "diff_errors"   => ["FS zmenil IČO"],
-        "diff"          => [],
-        "corrected_xml" => nil
-      },
-      "status" => "created"
-    ))
-
-    message_draft.validate_and_process
-
-    assert_equal "invalid", message_draft.metadata["status"]
-    assert message_draft.thread.tags.include?(message_draft.tenant.validation_error_tag)
   end
 
   test "legacy diff level still treated as OK and not shown as error or warning" do

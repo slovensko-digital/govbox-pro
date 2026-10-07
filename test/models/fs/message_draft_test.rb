@@ -208,6 +208,9 @@ class Fs::MessageDraftTest < ActiveSupport::TestCase
     message_draft.metadata["status"] = "being_validated"
     assert_not message_draft.correctable_xml?
 
+    message_draft.metadata["status"] = "being_submitted"
+    assert_not message_draft.correctable_xml?
+
     message_draft.metadata["status"] = "invalid"
     assert message_draft.correctable_xml?
   end
