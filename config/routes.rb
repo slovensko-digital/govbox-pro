@@ -132,8 +132,6 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :message_threads_tags, only: :destroy
-
   resources :messages do
     member do
       post :reply
