@@ -43,6 +43,11 @@ class Tag < ApplicationRecord
   scope :signature_requesting, -> { where(type: "SignatureRequestedFromTag") }
   scope :signed_internally, -> { where(type: ["SignedTag", "SignedByTag"]) }
   scope :archived, -> { where(type: ArchivedTag.to_s) }
+  scope :manageable_by, ->(user) {
+    return all if user.admin? || user.can_manage_access_tags?
+
+    where("tag_groups_count = 0 OR owner_id = ?", user.id)
+  }
 
   after_update_commit ->(tag) { EventBus.publish(:tag_renamed, tag) if previous_changes.key?("name") }
 
@@ -60,6 +65,10 @@ class Tag < ApplicationRecord
 
   def gives_access?
     tag_groups_count.positive?
+  end
+
+  def manageable_by?(user)
+    !gives_access? || owner_id == user.id || user.admin? || user.can_manage_access_tags?
   end
 
   def error?

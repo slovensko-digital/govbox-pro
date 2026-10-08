@@ -71,6 +71,10 @@ class User < ApplicationRecord
     )
   end
 
+  def can_manage_access_tags?
+    admin? || groups.exists?(can_manage_access_tags: true)
+  end
+
   def accessible_boxes
     return tenant.boxes.all if groups.where(all_boxes_permission: true).exists?
 
