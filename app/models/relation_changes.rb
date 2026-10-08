@@ -10,7 +10,9 @@ module RelationChanges
 
     def self.ids_to_tags(ids, record_scope)
       if ids.present?
-        record_scope.find(ids)
+        # `where` instead of `find` so ids outside the given scope are ignored
+        # (e.g. tampered tag assignment requests) instead of raising.
+        record_scope.where(id: ids).to_a
       else
         []
       end
@@ -122,8 +124,9 @@ module RelationChanges
 
     attr_reader :diff, :tags_assignments
 
-    def initialize(tag_scope:, tags_assignments: { init: {}, new: {} })
+    def initialize(tag_scope:, tags_assignments: { init: {}, new: {} }, manageable_scope: nil)
       @tag_scope = tag_scope
+      @manageable_scope = manageable_scope || tag_scope
       @tags_assignments = tags_assignments.to_h
       build_diff
     end
@@ -146,7 +149,7 @@ module RelationChanges
     end
 
     def build_diff
-      @diff = Diff.build_from_assignments(@tags_assignments, @tag_scope)
+      @diff = Diff.build_from_assignments(@tags_assignments, @manageable_scope)
     end
 
     def save(message_thread)

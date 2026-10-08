@@ -334,6 +334,8 @@ sk:
   tag_editing_in_message_threads:
     one: Úprava štítkov v jednom vlákne
     other: Úprava štítkov v %{count} vláknach
+  tags_assignment:
+    not_manageable: Tento štítok nemôžete spravovať
   message_draft:
     form_signed: Správa už bola podpísaná. Podpísanú správu nie je možné ďalej upravovať. V prípade potreby zmien kliknite na tlačidlo Odstrániť podpisy. Všetky podpisy budú odstránené, správu bude ďalej možné upravovať. Následne ju bude potrebné znova podpísať.
     submitted: Správa už bola odoslaná. Odoslanú správu nie je možné ďalej upravovať. V prípade potreby pripravte novú správu a odošlite ju.
@@ -465,6 +467,8 @@ sk:
           box: Schránka
           tag: Štítok
       update_all_boxes_permission:
+        success: Oprávnenie bolo úspešne upravené
+      update_can_manage_access_tags:
         success: Oprávnenie bolo úspešne upravené
   sessions:
     tenant_inactive: Tenant nie je aktívny
