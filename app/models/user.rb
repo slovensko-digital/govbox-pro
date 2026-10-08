@@ -72,7 +72,7 @@ class User < ApplicationRecord
   end
 
   def can_manage_access_tags?
-    admin? || groups.exists?(can_manage_access_tags: true)
+    groups.exists?(can_manage_access_tags: true)
   end
 
   def accessible_boxes

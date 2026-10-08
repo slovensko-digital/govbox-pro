@@ -35,6 +35,18 @@ class TagTest < ActiveSupport::TestCase
     assert owned_tag.manageable_by?(@user)
   end
 
+  test "manageable_by scope returns an owned access tag once even with several groups" do
+    owned_tag = @tenant.simple_tags.create!(name: "Owned shared tag", owner: @user)
+    owned_tag.groups << groups(:ssd_basic_user)
+    owned_tag.groups << groups(:ssd_custom)
+    owned_tag.reload
+
+    scope = @tenant.simple_tags.visible.manageable_by(@user)
+
+    assert owned_tag.gives_access?
+    assert_equal [ owned_tag ], scope.where(id: owned_tag.id).to_a
+  end
+
   test "access tag is manageable by a user whose group has the permission" do
     groups(:ssd_basic_user).update!(can_manage_access_tags: true)
 

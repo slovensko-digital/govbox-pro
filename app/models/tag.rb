@@ -43,10 +43,14 @@ class Tag < ApplicationRecord
   scope :signature_requesting, -> { where(type: "SignatureRequestedFromTag") }
   scope :signed_internally, -> { where(type: ["SignedTag", "SignedByTag"]) }
   scope :archived, -> { where(type: ArchivedTag.to_s) }
+  scope :without_access, -> {
+    where("NOT EXISTS (SELECT 1 FROM tag_groups WHERE tag_groups.tag_id = tags.id)")
+  }
+  scope :owned_by, ->(user) { where(owner_id: user.id) }
   scope :manageable_by, ->(user) {
-    return all if user.admin? || user.can_manage_access_tags?
+    return all if user.can_manage_access_tags?
 
-    where("tag_groups_count = 0 OR owner_id = ?", user.id)
+    without_access.or(owned_by(user))
   }
 
   after_update_commit ->(tag) { EventBus.publish(:tag_renamed, tag) if previous_changes.key?("name") }
@@ -68,7 +72,10 @@ class Tag < ApplicationRecord
   end
 
   def manageable_by?(user)
-    !gives_access? || owner_id == user.id || user.admin? || user.can_manage_access_tags?
+    return true unless gives_access?
+    return true if owner_id == user.id
+
+    user.can_manage_access_tags?
   end
 
   def error?
