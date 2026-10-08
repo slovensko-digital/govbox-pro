@@ -38,13 +38,13 @@ class Searchable::MessageThreadQuery
     }
   end
 
-  def self.labels_to_ids(parsed_query, tenant:)
+  def self.labels_to_ids(parsed_query, tag_scope:)
     fulltext, prefix_search, filter_labels, filter_out_labels =
       parsed_query.fetch_values(:fulltext, :prefix_search, :filter_labels, :filter_out_labels)
 
     # TODO maybe with one query
-    found_all, filter_tag_ids = label_names_to_tag_ids(tenant, filter_labels)
-    _, filter_out_tag_ids = label_names_to_tag_ids(tenant, filter_out_labels)
+    found_all, filter_tag_ids = label_names_to_tag_ids(tag_scope, filter_labels)
+    _, filter_out_tag_ids = label_names_to_tag_ids(tag_scope, filter_out_labels)
 
     result = {}
 
@@ -63,11 +63,11 @@ class Searchable::MessageThreadQuery
     result
   end
 
-  def self.label_names_to_tag_ids(tenant, label_names)
+  def self.label_names_to_tag_ids(tag_scope, label_names)
     if label_names.find { |name| name == "*" }.present?
-      [true, tenant.tags.visible.pluck(:id)]
+      [true, tag_scope.visible.pluck(:id)]
     else
-      ids = tenant.tags.where(name: label_names).pluck(:id)
+      ids = tag_scope.where(name: label_names).pluck(:id)
       [ids.length == label_names.length, ids]
     end
   end

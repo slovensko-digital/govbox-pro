@@ -25,7 +25,9 @@ class TagPolicy < ApplicationPolicy
 
   class ScopeListable < Scope
     def resolve
-      scope.where(tenant: Current.tenant)
+      return scope.none unless Current.tenant
+
+      @user.listable_tags(Current.tenant)
     end
   end
 

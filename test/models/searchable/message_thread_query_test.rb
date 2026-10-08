@@ -134,4 +134,28 @@ class Searchable::MessageThreadQueryTest < ActiveSupport::TestCase
       filter_out_labels: []
     }
   end
+
+  test "labels_to_ids hides access tags from users outside their groups" do
+    user = users(:ssd_signer)
+    parsed_query = Searchable::MessageThreadQuery.parse("label:AccessTag")
+
+    result = Searchable::MessageThreadQuery.labels_to_ids(
+      parsed_query,
+      tag_scope: user.accessible_or_unrestricted_tags(user.tenant)
+    )
+
+    assert_equal :missing_tag, result[:filter_tag_ids]
+  end
+
+  test "labels_to_ids resolves access tags for group members" do
+    user = users(:basic)
+    parsed_query = Searchable::MessageThreadQuery.parse("label:AccessTag")
+
+    result = Searchable::MessageThreadQuery.labels_to_ids(
+      parsed_query,
+      tag_scope: user.accessible_or_unrestricted_tags(user.tenant)
+    )
+
+    assert_equal [tags(:ssd_access_tag).id], result[:filter_tag_ids]
+  end
 end
