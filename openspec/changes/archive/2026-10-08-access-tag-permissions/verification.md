@@ -38,3 +38,20 @@ Code inspection confirmed that `manageable_scope` / `manageable_by` are used onl
 - GovBox/UPVS processing continues through existing message/thread tag APIs; delivery-notification removal regression tests passed.
 
 Coverage limits: these are existing mocked service/job and browser regression tests, not live FS/UPVS integrations. They do not exercise every exempt path under every permission combination. The exemption is additionally verified by inspecting scope call sites and the absence of permission checks in shared assignment APIs.
+
+## Review fixes
+
+The implementation review reproduced two additional edge cases, both now fixed:
+
+- When all visible ordinary tags are locked, the form sends no `new` assignments. `RelationChanges::Tags` now normalizes that missing hash to an empty hash. Single and two-thread bulk search controller regressions pass; a model regression also checks that creating a new classification tag still works from this state.
+- A locked tag assigned to only one selected thread must render as indeterminate, not fully checked. The disabled checkbox now uses the existing tri-state controller's initialization without a click action or assignment name. A Chrome regression checks the mixed state both before and after filtering the list away and back.
+
+Focused command:
+
+```sh
+bin/rails test test/models/relation_changes_tags_test.rb test/controllers/message_threads/tags_controller_test.rb test/controllers/message_threads/bulk/tags_controller_test.rb test/system/access_tag_permissions_test.rb
+```
+
+Result: 29 tests, 189 assertions, no failures or errors.
+
+The combined model/policy/controller, browser, automation, FS/GovBox and signing suites listed above were then run together against the final code: 146 tests, 595 assertions, no failures, errors or skips.
