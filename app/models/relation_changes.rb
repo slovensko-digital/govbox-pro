@@ -128,6 +128,7 @@ module RelationChanges
       @tag_scope = tag_scope
       @manageable_scope = manageable_scope || tag_scope
       @tags_assignments = tags_assignments.to_h
+      @tags_assignments[:new] ||= {}
       build_diff
     end
 

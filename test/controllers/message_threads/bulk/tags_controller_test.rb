@@ -112,6 +112,24 @@ module MessageThreads
         threads.each { |thread| refute_includes thread.reload.tags, @finance_tag }
       end
 
+      test "search works when all visible ordinary tags are locked" do
+        user = users(:basic)
+        sign_in(user)
+        threads = two_accessible_threads
+        scope = user.tenant.simple_tags.visible
+        scope.each { |tag| tag.groups << groups(:ssd_custom) unless tag.groups.exists? }
+        assignments = RelationChanges::Tags.build_bulk_assignments(message_threads: threads, tag_scope: scope)
+
+        post :prepare, params: {
+          message_thread_ids: threads.map(&:id),
+          name_search_query: "Finance",
+          tags_assignments: { init: assignments[:init] }
+        }, format: :turbo_stream
+
+        assert_response :success
+        assert_select "input[id=?][disabled][checked]", "new_tags_assignments_#{@finance_tag.id}"
+      end
+
       private
 
       def two_accessible_threads

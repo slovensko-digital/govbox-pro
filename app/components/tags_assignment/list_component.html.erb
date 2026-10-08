@@ -21,7 +21,9 @@
             <% end %>
           <% else %>
             <span title="<%= t('tags_assignment.not_manageable') %>">
-              <%= check_box_tag nil, checkbox.value, checkbox.checked?, disabled: true, id: "new_tags_assignments_#{tag.id}", class: "h-5 w-5 rounded border-gray-300 text-gray-400 cursor-not-allowed" %>
+              <%= check_box_tag nil, checkbox.value, checkbox.checked?, disabled: true,
+                                data: { controller: "tri-state-checkbox", "tri-state-checkbox-indeterminate-value": RelationChanges::KEEP_SIGN },
+                                id: "new_tags_assignments_#{tag.id}", class: "h-5 w-5 rounded border-gray-300 text-gray-400 cursor-not-allowed" %>
             </span>
           <% end %>
         </div>

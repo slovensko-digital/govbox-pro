@@ -59,7 +59,37 @@ class AccessTagPermissionsTest < ApplicationSystemTestCase
     end
   end
 
+  test "locked mixed bulk assignment stays indeterminate through search" do
+    tag = tags(:ssd_legal)
+    tag.groups << groups(:ssd_custom)
+    sign_in_as(:basic)
+    visit message_threads_path
+    check "message_thread_#{@thread.id}"
+    assert_text "1 označená správa"
+    check "message_thread_#{message_threads(:ssd_main_issue).id}"
+    assert_text "2 označené správy"
+    click_button "Hromadné akcie"
+    click_button "Upraviť štítky"
+    assert_text "Úprava štítkov v 2 vláknach"
+
+    assert_locked_mixed_state(tag)
+    fill_in "name_search_query", with: "Print"
+    within("#tags-assignment-list") { assert_no_text "Legal" }
+    fill_in "name_search_query", with: ""
+    within("#tags-assignment-list") { assert_text "Legal" }
+    assert_locked_mixed_state(tag)
+    assert_no_selector "input[name='tags_assignments[new][#{tag.id}]']"
+  end
+
   private
+
+  def assert_locked_mixed_state(tag)
+    checkbox = find("#new_tags_assignments_#{tag.id}")
+    assert checkbox.disabled?
+    assert_equal "=", checkbox.value
+    assert checkbox.checked?
+    assert page.evaluate_script("document.getElementById('new_tags_assignments_#{tag.id}').indeterminate")
+  end
 
   def assert_finance_state(permission)
     checkbox = find("#new_tags_assignments_#{@finance.id}")
