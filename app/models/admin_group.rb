@@ -13,6 +13,10 @@
 #  tenant_id              :bigint           not null
 #
 class AdminGroup < Group
+  attribute :can_manage_access_tags, :boolean, default: true
+
+  validates :can_manage_access_tags, inclusion: { in: [true] }
+
   def name
     I18n.t("group.names.admin")
   end

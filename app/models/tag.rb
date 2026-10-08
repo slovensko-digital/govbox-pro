@@ -46,11 +46,10 @@ class Tag < ApplicationRecord
   scope :without_access, -> {
     where("NOT EXISTS (SELECT 1 FROM tag_groups WHERE tag_groups.tag_id = tags.id)")
   }
-  scope :owned_by, ->(user) { where(owner_id: user.id) }
   scope :manageable_by, ->(user) {
     return all if user.can_manage_access_tags?
 
-    without_access.or(owned_by(user))
+    without_access
   }
 
   after_update_commit ->(tag) { EventBus.publish(:tag_renamed, tag) if previous_changes.key?("name") }
@@ -72,8 +71,8 @@ class Tag < ApplicationRecord
   end
 
   def manageable_by?(user)
-    return true unless gives_access?
-    return true if owner_id == user.id
+    grants_access = is_a?(SimpleTag) ? tag_groups.exists? : gives_access?
+    return true unless grants_access
 
     user.can_manage_access_tags?
   end

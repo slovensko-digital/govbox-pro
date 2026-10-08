@@ -440,6 +440,7 @@ sk:
       destroy:
         success: Skupina bola úspešne odstránená
       permissions:
+        access_tags_always_enabled: Vždy povolené
         title: Prístup pre skupinu %{group_name}
         edit: Upraviť oprávnenia
         back: Späť

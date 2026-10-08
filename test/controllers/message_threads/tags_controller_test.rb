@@ -70,6 +70,10 @@ class MessageThreads::TagsControllerTest < ActionController::TestCase
     assert_select "input[type=checkbox][id=?][disabled]", "new_tags_assignments_#{@finance_tag.id}", count: 1
     assert_select "input[type=checkbox][id=?][name]", "new_tags_assignments_#{@finance_tag.id}", count: 0
     assert_select "input[type=hidden][name=?]", "tags_assignments[new][#{@finance_tag.id}]", count: 0
+    assert_select "span[title=?]", I18n.t("tags_assignment.not_manageable")
+    [tags(:ssd_hidden), tags(:ssd_signature_requested)].each do |tag|
+      assert_select "input[id=?]", "new_tags_assignments_#{tag.id}", count: 0
+    end
   end
 
   test "edit renders a classification tag as manageable for a regular user" do
@@ -94,6 +98,55 @@ class MessageThreads::TagsControllerTest < ActionController::TestCase
     assert_select "input[type=checkbox][id=?][name=?]",
                   "new_tags_assignments_#{@finance_tag.id}",
                   "tags_assignments[new][#{@finance_tag.id}]", count: 1
+  end
+
+  test "mixed request removes classification tag but preserves locked tag and ignores hidden ids" do
+    sign_in(users(:basic))
+    hidden = tags(:ssd_hidden)
+
+    patch :update, params: {
+      message_thread_id: @thread.id,
+      tags_assignments: {
+        init: { @finance_tag.id.to_s => "+", @legal_tag.id.to_s => "+" },
+        new: { @finance_tag.id.to_s => "-", @legal_tag.id.to_s => "-", hidden.id.to_s => "+", "0" => "+" }
+      }
+    }
+
+    assert_response :see_other
+    assert_includes @thread.reload.tags, @finance_tag
+    refute_includes @thread.tags, @legal_tag
+    refute_includes @thread.tags, hidden
+  end
+
+  test "owner without permission cannot add or remove an access tag" do
+    user = users(:basic)
+    sign_in(user)
+    tag = user.tenant.simple_tags.create!(name: "Owned access", owner: user)
+    tag.groups << groups(:ssd_custom)
+
+    patch :update, params: assignment_params(@thread, tag, from: "-", to: "+")
+    assert_response :see_other
+    refute_includes @thread.reload.tags, tag
+
+    @thread.tags << tag
+    patch :update, params: assignment_params(@thread, tag, from: "+", to: "-")
+    assert_response :see_other
+    assert_includes @thread.reload.tags, tag
+  end
+
+  test "creator can assign classification tag until groups are attached" do
+    user = users(:basic)
+    sign_in(user)
+    tag = user.tenant.simple_tags.create!(name: "Created classification", owner: user)
+
+    patch :update, params: assignment_params(@thread, tag, from: "-", to: "+")
+    assert_includes @thread.reload.tags, tag
+    patch :update, params: assignment_params(@thread, tag, from: "+", to: "-")
+    refute_includes @thread.reload.tags, tag
+
+    tag.groups << groups(:ssd_custom)
+    patch :update, params: assignment_params(@thread, tag, from: "-", to: "+")
+    refute_includes @thread.reload.tags, tag
   end
 
   private

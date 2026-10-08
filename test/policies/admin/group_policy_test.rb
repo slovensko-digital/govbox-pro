@@ -18,4 +18,8 @@ class Admin::GroupPolicyTest < ActiveSupport::TestCase
 
     refute policy.update_can_manage_access_tags?
   end
+
+  test 'admin group access tag permission cannot be changed' do
+    refute Admin::GroupPolicy.new(@admin, groups(:ssd_admins)).update_can_manage_access_tags?
+  end
 end

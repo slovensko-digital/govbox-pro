@@ -2,7 +2,8 @@
     <%= submit_tag "1", name: "assignments_update", id: "assignments_update", class: "hidden" %>
     <% @tags_filter.all_tags.each do |tag| %>
       <% manageable = @tags_filter.manageable_ids.include?(tag.id) %>
-      <% checkbox = RelationChanges::Checkbox.new(assignments: @tags_assignments, record_id: tag.id.to_s) %>
+      <% assignments = manageable ? @tags_assignments : { init: @tags_assignments[:init], new: @tags_assignments[:init] } %>
+      <% checkbox = RelationChanges::Checkbox.new(assignments: assignments, record_id: tag.id.to_s) %>
       <div class="flex ml-1 gap-3 items-center <%= "hidden" if @tags_filter.filtered_ids.exclude?(tag.id) %>">
         <div class="flex">
           <% if manageable %>

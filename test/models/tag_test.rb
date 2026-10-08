@@ -26,16 +26,16 @@ class TagTest < ActiveSupport::TestCase
     refute @access_tag.manageable_by?(@user)
   end
 
-  test "access tag is manageable by its owner" do
+  test "access tag is not manageable by its owner without permission" do
     owned_tag = @tenant.simple_tags.create!(name: "Owned access tag", owner: @user)
     owned_tag.groups << groups(:ssd_basic_user)
     owned_tag.reload
 
     assert owned_tag.gives_access?
-    assert owned_tag.manageable_by?(@user)
+    refute owned_tag.manageable_by?(@user)
   end
 
-  test "manageable_by scope returns an owned access tag once even with several groups" do
+  test "owned access tag with several groups requires permission and is not duplicated" do
     owned_tag = @tenant.simple_tags.create!(name: "Owned shared tag", owner: @user)
     owned_tag.groups << groups(:ssd_basic_user)
     owned_tag.groups << groups(:ssd_custom)
@@ -44,7 +44,24 @@ class TagTest < ActiveSupport::TestCase
     scope = @tenant.simple_tags.visible.manageable_by(@user)
 
     assert owned_tag.gives_access?
-    assert_equal [ owned_tag ], scope.where(id: owned_tag.id).to_a
+    assert_empty scope.where(id: owned_tag.id)
+
+    groups(:ssd_basic_user).update!(can_manage_access_tags: true)
+    assert_equal [owned_tag], @tenant.simple_tags.visible.manageable_by(@user).where(id: owned_tag.id).to_a
+  end
+
+  test "access tag with a stale zero counter is still locked" do
+    @access_tag.update_column(:tag_groups_count, 0)
+
+    refute @access_tag.manageable_by?(@user)
+    refute_includes @tenant.simple_tags.manageable_by(@user), @access_tag
+  end
+
+  test "classification tag with a stale positive counter is still manageable" do
+    @classification_tag.update_column(:tag_groups_count, 1)
+
+    assert @classification_tag.manageable_by?(@user)
+    assert_includes @tenant.simple_tags.manageable_by(@user), @classification_tag
   end
 
   test "access tag is manageable by a user whose group has the permission" do

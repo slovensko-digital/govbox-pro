@@ -53,4 +53,22 @@ class Admin::GroupsControllerTest < ActionController::TestCase
     assert_response :success
     assert_select "input[type=hidden][name=can_manage_access_tags][value=true]"
   end
+
+  test "admin group shows always enabled without an access tag permission toggle" do
+    get :edit_permissions, params: { tenant_id: @tenant.id, id: groups(:ssd_admins).id }
+
+    assert_response :success
+    assert_select "#tags-column span", text: I18n.t("admin.groups.permissions.access_tags_always_enabled")
+    assert_select "input[name=can_manage_access_tags]", count: 0
+  end
+
+  test "admin cannot disable the admin group's permission" do
+    group = groups(:ssd_admins)
+
+    patch :update_can_manage_access_tags, params: { tenant_id: @tenant.id, id: group.id, can_manage_access_tags: "false" }
+
+    assert_redirected_to root_path
+    assert_equal "Prístup bol zamietnutý", flash[:alert]
+    assert group.reload.can_manage_access_tags
+  end
 end
