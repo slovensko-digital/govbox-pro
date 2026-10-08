@@ -2,16 +2,21 @@
 #
 # Table name: groups
 #
-#  id                   :bigint           not null, primary key
-#  all_boxes_permission :boolean          default(FALSE), not null
-#  group_type           :enum
-#  name                 :string           not null
-#  type                 :string           not null
-#  created_at           :datetime         not null
-#  updated_at           :datetime         not null
-#  tenant_id            :bigint           not null
+#  id                     :bigint           not null, primary key
+#  all_boxes_permission   :boolean          default(FALSE), not null
+#  can_manage_access_tags :boolean          default(FALSE), not null
+#  group_type             :enum
+#  name                   :string           not null
+#  type                   :string           not null
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
+#  tenant_id              :bigint           not null
 #
 class AdminGroup < Group
+  attribute :can_manage_access_tags, :boolean, default: true
+
+  validates :can_manage_access_tags, inclusion: { in: [true] }
+
   def name
     I18n.t("group.names.admin")
   end

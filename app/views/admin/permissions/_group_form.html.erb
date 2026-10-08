@@ -64,6 +64,22 @@
       <!-- Tags Column -->
       <div class="flex flex-col gap-4" id="tags-column">
         <div class="text-lg font-semibold text-gray-900"><%= t('admin.groups.permissions.tags') %></div>
+        <div class="flex justify-between items-center gap-4">
+          <div class="flex flex-col justify-start items-start flex-grow relative gap-1">
+            <p class="self-stretch flex-grow-0 flex-shrink-0 text-left">Oprávnenie spravovať prístupové štítky</p>
+          </div>
+          <% if group.is_a?(AdminGroup) %>
+            <span class="text-sm text-gray-500"><%= t('admin.groups.permissions.access_tags_always_enabled') %></span>
+          <% else %>
+          <%= form_with url: update_can_manage_access_tags_admin_tenant_group_path(Current.tenant, group), title: "Zmeniť oprávnenie skupiny spravovať prístupové štítky", method: :patch, scope: nil do |form| %>
+            <%= form.hidden_field :can_manage_access_tags, value: !group.can_manage_access_tags %>
+            <%= form.button class: "#{group.can_manage_access_tags ? "bg-indigo-600" : "bg-gray-200"} relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2", role: :switch, aria: { checked: group.can_manage_access_tags.to_s } do %>
+              <span class="sr-only">Use setting</span>
+              <span aria-hidden="true" class="<%= group.can_manage_access_tags ? "translate-x-5" : "translate-x-0" %> pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"></span>
+            <% end %>
+          <% end %>
+          <% end %>
+        </div>
         <div class="flex flex-col divide-y border rounded-md border-gray-200">
           <% if group.tag_groups.empty? %>
             <div class="p-4 text-sm text-gray-500 text-center">

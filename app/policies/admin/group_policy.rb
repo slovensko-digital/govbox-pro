@@ -40,6 +40,10 @@ class Admin::GroupPolicy < ApplicationPolicy
     @user.admin?
   end
 
+  def update_can_manage_access_tags?
+    @user.admin? && !@group.is_a?(AdminGroup)
+  end
+
   def edit?
     update?
   end

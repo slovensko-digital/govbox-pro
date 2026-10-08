@@ -189,7 +189,7 @@ class Tenant < ApplicationRecord
 
   def create_default_objects
     create_all_group!(name: "all")
-    create_admin_group!(name: "admins")
+    create_admin_group!(name: "admins", can_manage_access_tags: true)
     create_signer_group!(name: "signers")
 
     create_draft_tag!(name: "Rozpracované", visible: true)
