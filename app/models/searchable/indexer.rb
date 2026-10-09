@@ -33,7 +33,7 @@ class Searchable::Indexer
         when :string
           Searchable::IndexHelpers.searchable_string(value)
         when :html_string
-          if tenant&.feature_enabled?(:fs_html_visualizations_indexing)
+          if tenant&.feature_enabled?(:fs_html_visualization)
             Searchable::IndexHelpers.html_to_searchable_string(value)
           else
             Searchable::IndexHelpers.legacy_html_to_searchable_string(value)
