@@ -5509,3 +5509,18 @@ UZMUJv14_xsd:
     </xsd:sequence>
     </xsd:complexType>
     </xsd:schema>
+
+UZMUJv14_txt_xslt:
+  document_type: CLS_F_XSLT_TXT_SGN
+  language: sk
+  form: UZMUJv14
+  data: |
+    <?xml version="1.0" encoding="UTF-8"?>
+    <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+    <xsl:output method="text" indent="yes" omit-xml-declaration="yes"/>
+    <xsl:strip-space elements="*"/>
+    <xsl:template match="/">
+    <xsl:text>UZMUJv14</xsl:text>
+    <xsl:apply-templates/>
+    </xsl:template>
+    </xsl:stylesheet>
