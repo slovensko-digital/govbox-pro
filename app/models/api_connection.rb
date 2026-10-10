@@ -15,6 +15,8 @@
 #  tenant_id             :bigint
 #
 class ApiConnection < ApplicationRecord
+  encrypts :api_token_private_key
+
   belongs_to :tenant, optional: true
   belongs_to :owner, class_name: "User", optional: true
   has_many :boxes_api_connections, dependent: :destroy
