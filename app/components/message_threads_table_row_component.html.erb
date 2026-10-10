@@ -46,7 +46,7 @@
         <p class="text-xs sm:text-sm text-left text-gray-500">
           <%#  Necessary to generate proper CSS for search_highlight %>
           <%#  class="bg-yellow-200 text-gray-950" %>
-          <%= raw @message_thread.search_highlight %>
+          <%= sanitize @message_thread.search_highlight, tags: %w[span], attributes: %w[class] %>
         </p>
       <% end %>
     </div>
