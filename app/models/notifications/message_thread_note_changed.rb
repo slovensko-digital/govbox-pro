@@ -26,5 +26,12 @@ module Notifications
         filter_name: subscription.filter.name
       )
     end
+
+    def send_webpush
+      return unless sends_webpush?
+
+      url = Rails.application.routes.url_helpers.message_thread_url(message_thread)
+      WebpushJob.perform_later(I18n.t("filter_subscription.events.Notifications::MessageThreadNoteChanged.name"), message_thread.title, url, user)
+    end
   end
 end
