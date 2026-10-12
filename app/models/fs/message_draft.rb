@@ -201,9 +201,10 @@ class Fs::MessageDraft < MessageDraft
 
   def correctable_xml?
     return false unless form_object
-    return false unless correctly_created? || invalid?
+    return false unless corrected_xml.present?
+    return false if form_object.is_signed?
 
-    corrected_xml.present? && !form_object.is_signed?
+    correctly_created? || invalid?
   end
 
   def apply_corrected_xml
