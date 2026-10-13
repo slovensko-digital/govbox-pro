@@ -56,6 +56,13 @@ jobs:
           path: ${{ github.workspace }}/tmp/screenshots
           if-no-files-found: ignore
       - run: bundle exec rails test:integration
+      - name: Keep test log from failed tests
+        uses: actions/upload-artifact@v6
+        if: failure()
+        with:
+          name: test-log
+          path: ${{ github.workspace }}/log/test.log
+          if-no-files-found: ignore
 
   gitlab-push:
     name: Push to GitLab
