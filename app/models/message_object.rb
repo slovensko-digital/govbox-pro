@@ -17,6 +17,7 @@
 #
 class MessageObject < ApplicationRecord
   include PdfVisualizationOperations
+  include TextContent
 
   belongs_to :message, inverse_of: :objects
   has_one :message_object_datum, dependent: :destroy
