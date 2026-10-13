@@ -12,7 +12,7 @@
 #
 class NestedMessageObject < ApplicationRecord
   include PdfVisualizationOperations
-  include TextContent
+  include TextContentOperations
   include MessageExportOperations
 
   belongs_to :message_object, inverse_of: :nested_message_objects

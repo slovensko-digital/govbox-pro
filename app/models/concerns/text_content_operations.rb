@@ -1,4 +1,4 @@
-module TextContent
+module TextContentOperations
   # memoized, so that automation rules evaluated against the same object don't parse it repeatedly
   def text_content
     return @text_content if defined?(@text_content)
