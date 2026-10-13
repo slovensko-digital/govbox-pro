@@ -48,6 +48,20 @@ openspec validate --archived --strict --json
 
 Both passed with no findings. Spec validation covers the main `access-tags` specification; archived validation confirms all twelve tracked tasks are complete. `openspec list --json` returns no active changes. No new change was created and no archive operation was repeated.
 
+### List query measurement and optimization
+
+SQL instrumentation used `sql.active_record` with the query cache disabled, excluding schema and transaction events. For both 1 and 100 visible tags, before optimization the list performed 2 preparation queries plus 1 render query; repeating `manageable?` ten times for every tag performed 0 queries. `manageable_ids` was already stored as a `Set`, not a lazy relation or a repeated `pluck`.
+
+After optimization, the same measurements were 2 preparation queries, 0 render queries and 0 repeated-predicate queries. These counts cover `TagsFilter` construction and list rendering after the tag scopes are built; they are not counts for the entire controller request or its group-permission lookup. Non-empty search retains 3 list queries to preserve database accent/case-insensitive matching. Without a separate manageable scope, an empty-search list uses 1 query.
+
+The component now prepares the locked assignment hash once and builds checkboxes through `checkbox_for`. For a locked tag, both `init` and `new` refer to the original `init` assignment values, preserving checked and mixed states even when new values are absent or tampered with. Manageable tags continue to render their edited state. This hash is only read for rendering and does not assign tags in the database.
+
+```sh
+bin/rails test test/components/tags_assignment/list_component_test.rb test/controllers/message_threads/tags_controller_test.rb test/controllers/message_threads/bulk/tags_controller_test.rb test/system/access_tag_permissions_test.rb
+```
+
+Result: **38 tests, 270 assertions, no failures, errors or skips**. Includes fixed query counts for 1 and 100 tags, zero-query repeated membership checks, accent/case-insensitive search, initial locked versus edited manageable state, mixed locked state, and the single/bulk submission regressions.
+
 Coverage limits remain unchanged: these are local browser and mocked service/job tests, not live FS/UPVS integrations or a new run of the entire application suite.
 
 ## Historical verification at original archive
