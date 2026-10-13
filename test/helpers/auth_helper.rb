@@ -5,6 +5,10 @@ module AuthHelper
     visit auth_path
 
     assert_selector "button", text: "Prihlásiť cez Google"
+    # on slow CI a click while the page is still loading may not submit the form
+    page.document.synchronize do
+      raise Capybara::ExpectationNotMet, "page not loaded" unless page.evaluate_script("document.readyState") == "complete"
+    end
     click_on "Prihlásiť cez Google"
 
     assert_current_path root_path, ignore_query: true
