@@ -130,6 +130,27 @@ module MessageThreads
         assert_select "input[id=?][disabled][checked]", "new_tags_assignments_#{@finance_tag.id}"
       end
 
+      test "mixed two-thread request applies classification changes but preserves locked assignments" do
+        sign_in(users(:basic))
+        threads = two_accessible_threads
+        classification_tag = tags(:ssd_print)
+        threads.each { |thread| thread.tags.delete(classification_tag) }
+
+        patch :update, params: {
+          message_thread_ids: threads.map(&:id),
+          tags_assignments: {
+            init: { @finance_tag.id.to_s => "+", classification_tag.id.to_s => "-" },
+            new: { @finance_tag.id.to_s => "-", classification_tag.id.to_s => "+", "0" => "+" }
+          }
+        }
+
+        assert_response :see_other
+        threads.each do |thread|
+          assert_includes thread.reload.tags, @finance_tag
+          assert_includes thread.tags, classification_tag
+        end
+      end
+
       private
 
       def two_accessible_threads

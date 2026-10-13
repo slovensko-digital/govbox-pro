@@ -102,6 +102,55 @@ class AccessTagPermissionsTest < ApplicationSystemTestCase
     assert_no_selector "input[name='tags_assignments[new][#{tag.id}]']"
   end
 
+  [false, true].each do |bulk|
+    test "#{bulk ? 'bulk' : 'single'} save preserves locked assignments while applying classification changes" do
+      locked_tag = tags(:ssd_legal)
+      locked_tag.groups << groups(:ssd_custom)
+      threads = bulk ? [@thread, message_threads(:ssd_main_issue)] : [@thread]
+      original_assignments = threads.to_h do |thread|
+        [thread.id, [@finance, locked_tag].map { |tag| thread.tags.exists?(tag.id) }]
+      end
+      sign_in_as(:basic)
+
+      if bulk
+        visit message_threads_path
+        check "message_thread_#{@thread.id}"
+        assert_text "1 označená správa"
+        check "message_thread_#{threads.last.id}"
+        assert_text "2 označené správy"
+        click_button "Hromadné akcie"
+        click_button "Upraviť štítky"
+        assert_text "Úprava štítkov v 2 vláknach"
+        assert_locked_mixed_state(locked_tag)
+      else
+        visit message_thread_path(@thread)
+        click_link "Upraviť štítky"
+      end
+
+      [@finance, locked_tag].each do |tag|
+        checkbox = find("#new_tags_assignments_#{tag.id}")
+        assert checkbox.disabled?
+        original_value = checkbox.value
+        original_checked = checkbox.checked?
+        checkbox.click
+        assert_equal original_value, checkbox.value
+        assert_equal original_checked, checkbox.checked?
+        assert_no_selector "input[name='tags_assignments[new][#{tag.id}]']", visible: :all
+      end
+
+      check "Print"
+      click_button "Uložiť zmeny (1)"
+      assert_no_selector "#tags-assignment-list"
+
+      threads.each do |thread|
+        thread.reload
+        assert_equal original_assignments.fetch(thread.id),
+                     [@finance, locked_tag].map { |tag| thread.tags.exists?(tag.id) }
+        assert_includes thread.tags, tags(:ssd_print)
+      end
+    end
+  end
+
   private
 
   def assert_locked_mixed_state(tag)
