@@ -61,6 +61,7 @@ class TagsAssignment::ListComponentTest < ViewComponent::TestCase
     render_inline(build_component(filter, assignments))
 
     assert_selector "#new_tags_assignments_#{finance.id}[disabled][checked]"
+    assert_selector "span[title='#{I18n.t('tags_assignment.not_manageable')}']", text: finance.name
     assert_no_selector "input[name='tags_assignments[new][#{finance.id}]']", visible: :all
     assert_selector "#new_tags_assignments_#{print_tag.id}[checked]:not([disabled])"
   end
