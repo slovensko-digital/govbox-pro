@@ -30,7 +30,7 @@
           <% if manageable %>
             <%= label_tag "new_tags_assignments_#{tag.id}", tag.name, class: "select-none text-gray-900 cursor-pointer" %>
           <% else %>
-            <span title="<%= t('tags_assignment.not_manageable') %>" class="select-none text-gray-500 cursor-not-allowed"><%= tag.name %></span>
+            <%= content_tag :span, tag.name, title: t('tags_assignment.not_manageable'), class: "select-none text-gray-500 cursor-not-allowed" %>
           <% end %>
         </div>
       </div>
