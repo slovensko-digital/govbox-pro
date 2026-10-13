@@ -26,4 +26,30 @@ class UserAccessTagPermissionTest < ActiveSupport::TestCase
 
     refute group.can_manage_access_tags
   end
+
+  test "group access tag management permission must be a boolean" do
+    group = groups(:ssd_custom)
+
+    [nil, ""].each do |value|
+      group.can_manage_access_tags = value
+
+      refute group.valid?
+      assert group.errors.of_kind?(:can_manage_access_tags, :inclusion)
+    end
+
+    [true, false].each do |value|
+      group.can_manage_access_tags = value
+
+      assert group.valid?
+    end
+  end
+
+  test "permission granted to existing groups can be fully revoked" do
+    @tenant.groups.update_all(can_manage_access_tags: true)
+    assert @user.can_manage_access_tags?
+
+    @user.groups.each { |group| group.update!(can_manage_access_tags: false) }
+
+    refute @user.can_manage_access_tags?
+  end
 end

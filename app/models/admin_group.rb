@@ -17,6 +17,10 @@ class AdminGroup < Group
 
   validates :can_manage_access_tags, inclusion: { in: [true] }
 
+  def manage_access_tags_changable?
+    false
+  end
+
   def name
     I18n.t("group.names.admin")
   end

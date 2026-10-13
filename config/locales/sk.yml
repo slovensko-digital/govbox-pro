@@ -335,7 +335,7 @@ sk:
     one: Úprava štítkov v jednom vlákne
     other: Úprava štítkov v %{count} vláknach
   tags_assignment:
-    not_manageable: Tento štítok nemôžete spravovať
+    not_manageable: Tento štítok nemáte právo meniť
   message_draft:
     form_signed: Správa už bola podpísaná. Podpísanú správu nie je možné ďalej upravovať. V prípade potreby zmien kliknite na tlačidlo Odstrániť podpisy. Všetky podpisy budú odstránené, správu bude ďalej možné upravovať. Následne ju bude potrebné znova podpísať.
     submitted: Správa už bola odoslaná. Odoslanú správu nie je možné ďalej upravovať. V prípade potreby pripravte novú správu a odošlite ju.

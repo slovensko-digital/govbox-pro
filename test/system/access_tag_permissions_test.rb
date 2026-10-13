@@ -59,6 +59,27 @@ class AccessTagPermissionsTest < ApplicationSystemTestCase
     end
   end
 
+  %i[ssd_all ssd_signers ssd_basic_user].each do |fixture|
+    test "admin can revoke access tag management for #{fixture} through permissions UI" do
+      group = groups(fixture)
+      group.update!(can_manage_access_tags: true)
+      sign_in_as(:admin)
+      visit admin_tenant_permissions_path(tenants(:ssd))
+
+      within("##{ActionView::RecordIdentifier.dom_id(group)}") do
+        find("a[title='#{I18n.t('admin.groups.permissions.edit')}']").click
+      end
+
+      assert_current_path edit_permissions_admin_tenant_group_path(tenants(:ssd), group)
+      within("#tags-column") do
+        assert_selector "button[role=switch][aria-checked=true]"
+        find("button[role=switch]").click
+        assert_selector "button[role=switch][aria-checked=false]"
+      end
+      refute group.reload.can_manage_access_tags
+    end
+  end
+
   test "locked mixed bulk assignment stays indeterminate through search" do
     tag = tags(:ssd_legal)
     tag.groups << groups(:ssd_custom)

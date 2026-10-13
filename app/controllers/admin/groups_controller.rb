@@ -68,9 +68,10 @@ module Admin
     def update_can_manage_access_tags
       authorize([:admin, @group], policy_class: Admin::GroupPolicy)
 
-      if params[:can_manage_access_tags].in?(%w[true false])
-        @group.update(can_manage_access_tags: ActiveModel::Type::Boolean.new.cast(params[:can_manage_access_tags]))
+      if @group.update(params.permit(:can_manage_access_tags))
         redirect_to edit_permissions_admin_tenant_group_url(Current.tenant, @group), notice: t('.success')
+      else
+        render :edit_permissions, status: :unprocessable_content
       end
     end
 

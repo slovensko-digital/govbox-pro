@@ -71,4 +71,30 @@ class Admin::GroupsControllerTest < ActionController::TestCase
     assert_equal "Prístup bol zamietnutý", flash[:alert]
     assert group.reload.can_manage_access_tags
   end
+
+  test "blank access tag permission fails validation without updating the group" do
+    [nil, ""].each do |value|
+      patch :update_can_manage_access_tags, params: { tenant_id: @tenant.id, id: @group.id, can_manage_access_tags: value }
+
+      assert_response :unprocessable_content
+      refute @group.reload.can_manage_access_tags
+      assert_nil flash[:notice]
+    end
+  end
+
+  %i[ssd_all ssd_signers ssd_basic_user].each do |fixture|
+    test "admin can revoke access tag management for #{fixture}" do
+      group = groups(fixture)
+      group.update!(can_manage_access_tags: true)
+
+      get :edit_permissions, params: { tenant_id: @tenant.id, id: group.id }
+      assert_response :success
+      assert_select "input[name=can_manage_access_tags][value=false]"
+
+      patch :update_can_manage_access_tags, params: { tenant_id: @tenant.id, id: group.id, can_manage_access_tags: "false" }
+
+      assert_redirected_to edit_permissions_admin_tenant_group_url(@tenant, group)
+      refute group.reload.can_manage_access_tags
+    end
+  end
 end

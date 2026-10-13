@@ -5,5 +5,9 @@ module TagsAssignment
       @tags_assignments = tags_assignments
       @create_tag_path = create_tag_path
     end
+
+    def manageable?(tag)
+      @tags_filter.manageable_ids.include?(tag.id)
+    end
   end
 end

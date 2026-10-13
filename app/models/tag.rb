@@ -70,13 +70,6 @@ class Tag < ApplicationRecord
     tag_groups_count.positive?
   end
 
-  def manageable_by?(user)
-    grants_access = is_a?(SimpleTag) ? tag_groups.exists? : gives_access?
-    return true unless grants_access
-
-    user.can_manage_access_tags?
-  end
-
   def error?
     false
   end

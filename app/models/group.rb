@@ -29,9 +29,14 @@ class Group < ApplicationRecord
 
   validates_presence_of :name
   validates_uniqueness_of :name, scope: :tenant_id
+  validates :can_manage_access_tags, inclusion: { in: [true, false] }
 
   def editable?
     type.in? EDITABLE_GROUP_TYPES
+  end
+
+  def manage_access_tags_changable?
+    true
   end
 
   def system?
