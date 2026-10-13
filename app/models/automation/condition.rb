@@ -30,7 +30,7 @@ module Automation
     end
 
     def box_list
-      automation_rule.tenant.boxes.pluck(:name, :id)
+      automation_rule.tenant.boxes.order(:name).pluck(:name, :id)
     end
 
     def api_connection_list
