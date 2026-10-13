@@ -62,6 +62,16 @@ bin/rails test test/components/tags_assignment/list_component_test.rb test/contr
 
 Result: **38 tests, 270 assertions, no failures, errors or skips**. Includes fixed query counts for 1 and 100 tags, zero-query repeated membership checks, accent/case-insensitive search, initial locked versus edited manageable state, mixed locked state, and the single/bulk submission regressions.
 
+### Locked label tooltip and span helper
+
+Commit `5591ed3c` adds the locked-tag tooltip to the tag name as well as the checkbox. Commit `f2d4ca20` renders that name with `content_tag :span`, preserving the tooltip and `cursor-not-allowed` styling.
+
+```sh
+bin/rails test test/components/tags_assignment/list_component_test.rb
+```
+
+Result at `f2d4ca20`: **5 tests, 20 assertions, no failures, errors or skips**. The rendering regression checks that the locked Finance label carries the translated tooltip.
+
 Coverage limits remain unchanged: these are local browser and mocked service/job tests, not live FS/UPVS integrations or a new run of the entire application suite.
 
 ## Historical verification at original archive

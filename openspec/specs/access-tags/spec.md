@@ -72,11 +72,11 @@ A user SHALL be allowed to change a visible ordinary tag assignment only on a th
 
 ### Requirement: Non-manageable tags are shown but locked
 
-The tag assignment list SHALL include the tenant's visible ordinary tags, including those the user may not manage, subject to the existing search filter. Hidden and system tags SHALL remain outside this list. A non-manageable tag SHALL be disabled and SHALL submit no assignment value, while a manageable tag SHALL stay editable.
+The tag assignment list SHALL include the tenant's visible ordinary tags, including those the user may not manage, subject to the existing search filter. Hidden and system tags SHALL remain outside this list. A non-manageable tag SHALL be disabled and its assignment on every selected thread SHALL remain unchanged when the user saves other edits, while a manageable tag SHALL stay editable.
 
 #### Scenario: Access tag rendered as locked for an ordinary user
 - **WHEN** an ordinary user opens the tag assignment list
-- **THEN** non-manageable tags are disabled and submit no assignment value
+- **THEN** non-manageable tags are disabled and their original assignment state on every selected thread is preserved when edits are saved
 
 #### Scenario: Manageable tag stays interactive
 - **WHEN** the user may manage a tag
