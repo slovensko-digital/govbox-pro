@@ -1,5 +1,15 @@
 # Verification
 
+## Safe-default migration review (2026-10-14)
+
+The column migration now enables only existing `AdminGroup` rows. Existing `AllGroup`, `UserGroup`, `SignerGroup` and `CustomGroup` rows remain false and require an explicit administrator grant. This supersedes the earlier grandfathering decision; signing and automated assignments remain exempt.
+
+```sh
+bin/rails test test/models/access_tag_permission_migration_test.rb test/models/user_access_tag_permission_test.rb
+```
+
+Result: **8 tests, 29 assertions, no failures, errors or skips** (seed 42808). The migration test removes and recreates the column inside a rolled-back transaction, checks all five group types, verifies the new non-admin default and rolls back the migration. The admin repair test still verifies that already-explicit non-admin grants are not overwritten.
+
 ## Review verification (2026-10-13)
 
 The review implementation at commit `f781d720` was tested in this review worktree with the isolated Docker PostgreSQL database `DATABASE_URL=postgres://postgres:postgres@127.0.0.1:55432/govbox_access_review_test` and `RAILS_ENV=test`. No `.env` changes were made.

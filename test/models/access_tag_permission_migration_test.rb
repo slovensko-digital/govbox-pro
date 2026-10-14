@@ -22,7 +22,7 @@ class AccessTagPermissionMigrationTest < ActiveSupport::TestCase
     assert admin_group.reload.can_manage_access_tags
   end
 
-  test "migration preserves existing groups and defaults new groups to false and rolls back" do
+  test "migration enables only existing admin groups and defaults new groups to false and rolls back" do
     connection = Group.connection
 
     connection.transaction(requires_new: true) do
@@ -34,7 +34,12 @@ class AccessTagPermissionMigrationTest < ActiveSupport::TestCase
       Group.reset_column_information
 
       assert Group.exists?
-      refute Group.exists?(can_manage_access_tags: false)
+      assert Group.where(type: "AdminGroup").exists?
+      refute Group.where(type: "AdminGroup", can_manage_access_tags: false).exists?
+      %w[AllGroup UserGroup SignerGroup CustomGroup].each do |type|
+        assert Group.where(type: type).exists?, "Missing coverage for #{type}"
+        refute Group.where(type: type, can_manage_access_tags: true).exists?, "#{type} must require an explicit grant"
+      end
       group = tenants(:ssd).custom_groups.create!(name: "New group after migration")
       refute group.can_manage_access_tags
 
