@@ -60,7 +60,7 @@ class FilterSubscription < ApplicationRecord
 
     query = Searchable::MessageThreadQuery.labels_to_ids(
       Searchable::MessageThreadQuery.parse(filter.query, user_tag_name: user.author_tag&.name),
-      tenant: tenant
+      tag_scope: user.accessible_or_unrestricted_tags(tenant)
     )
 
     if query[:filter_tag_ids].present?

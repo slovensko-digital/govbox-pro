@@ -137,6 +137,7 @@ class MessageThreadsController < ApplicationController
     result = { tenant: Current.tenant }
     result[:box] = Current.box if Current.box
     result[:tag_ids] = policy_scope(Tag).pluck(:id)
+    result[:tag_scope] = Current.user.accessible_or_unrestricted_tags(Current.tenant)
     result[:accessible_box_ids] = Current.user.accessible_boxes.pluck(:id)
     result
   end
@@ -150,6 +151,6 @@ class MessageThreadsController < ApplicationController
   end
 
   def set_thread_tags
-    @thread_tags = helpers.sort_tags(@message_thread.message_threads_tags.only_visible_tags)
+    @thread_tags = helpers.sort_tags(@message_thread.message_threads_tags.only_visible_tags_for(Current.user))
   end
 end

@@ -55,3 +55,7 @@ drafts_accountants_basic_user:
 accountants_basic_user_authors:
   tag: accountants_basic_user_authors
   group: accountants_basic_user
+
+access_tag_basic_user_group:
+  tag: ssd_access_tag
+  group: ssd_basic_user

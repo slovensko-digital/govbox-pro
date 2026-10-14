@@ -27,7 +27,7 @@ class MessageThreadCollection
     parsed_query = Searchable::MessageThreadQuery.parse(query, user_tag_name: user_tag_name)
     filter = Searchable::MessageThreadQuery.labels_to_ids(
       parsed_query,
-      tenant: search_permissions.fetch(:tenant)
+      tag_scope: search_permissions.fetch(:tag_scope)
     )
 
     ids, next_cursor, highlights, count_estimate = Searchable::MessageThread.search_ids(

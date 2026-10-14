@@ -71,6 +71,21 @@ class User < ApplicationRecord
     )
   end
 
+  def accessible_or_unrestricted_tags(tenant)
+    base = tenant.tags
+    return base if admin?
+
+    base.where(tag_groups_count: 0).or(base.where(id: accessible_tags))
+  end
+
+  def listable_tags(tenant)
+    accessible_or_unrestricted_tags(tenant).visible
+  end
+
+  def manageable_simple_tags(tenant)
+    listable_tags(tenant).simple
+  end
+
   def accessible_boxes
     return tenant.boxes.all if groups.where(all_boxes_permission: true).exists?
 

@@ -94,6 +94,18 @@ module MessageThreads
         assert_select "input[type=date][name='export[settings][delivered_at_to]']", count: 1
       end
 
+      test 'edit hides access tags outside the user groups' do
+        user = users(:ssd_signer)
+        Current.user = user
+        session[:user_id] = user.id
+        session[:tenant_id] = user.tenant_id
+        @export = Export.create!(user: user, message_thread_ids: [message_threads(:ssd_main_general).id], settings: { 'messages' => true })
+
+        get :edit, params: { id: @export.id }
+
+        assert_select ".tag", text: "AccessTag", count: 0
+      end
+
       test 'update persists delivered_at_from date setting' do
         patch :update, params: { id: @export.id, export: { settings: { 'summary' => '1', 'delivered_at_from' => '2025-01-01' } } }
         assert_equal "2025-01-01", @export.reload.settings['delivered_at_from']
