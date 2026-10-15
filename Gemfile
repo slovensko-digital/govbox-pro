@@ -78,7 +78,7 @@ group :development do
 end
 
 group :test do
-  # Minitest 6 extracts mocks used by the existing test suite.
+  # Minitest 6 drops minitest/mock, which test_helper and several tests require.
   gem 'minitest', '~> 5.27'
   gem 'selenium-webdriver', '~> 4.41'
   gem 'capybara'
