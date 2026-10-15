@@ -31,7 +31,7 @@ module MessageThreads
       def update
         authorize @export
 
-        if @export.update(export_params)
+        if @export.update(settings: merged_settings)
           redirect_to edit_message_threads_bulk_export_path(@export), notice: t("exports.flash.updated")
         else
           load_export_context
@@ -43,7 +43,7 @@ module MessageThreads
         authorize @export
 
         if params[:export].present?
-          unless @export.update(export_params)
+          unless @export.update(settings: merged_settings)
             load_export_context
             return render :edit, status: :unprocessable_content
           end
@@ -65,6 +65,10 @@ module MessageThreads
 
       def export_params
         params.require(:export).permit(settings: {})
+      end
+
+      def merged_settings
+        @export.settings.deep_merge((export_params[:settings] || {}).to_h)
       end
 
       def load_export_context

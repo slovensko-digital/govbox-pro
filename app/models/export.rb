@@ -121,6 +121,11 @@ class Export < ApplicationRecord
     %w[summary messages pdf default].each do |flag|
       settings[flag] = ActiveModel::Type::Boolean.new.cast(settings[flag]) if settings.key?(flag)
     end
+    %w[by_form by_type].each do |group|
+      settings[group]&.each do |key, value|
+        settings[group][key] = ActiveModel::Type::Boolean.new.cast(value)
+      end
+    end
     settings["message_direction"] = settings["message_direction"].presence&.then { |v|
       %w[all inbox outbox].include?(v) ? v : "all"
     } || "all"
