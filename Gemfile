@@ -16,7 +16,7 @@ gem 'turbo-rails'
 gem 'sprockets-rails'
 gem 'importmap-rails'
 gem 'initials'
-gem 'tailwindcss-rails'
+gem 'tailwindcss-rails', '~> 4.6'
 gem 'view_component'
 
 # Schedulers

@@ -4,7 +4,9 @@ module ColorizedHelper
   end
 end
 
-# NOTE: Tailwind processor catches these
+# NOTE: Tailwind v4 does not read classes from Ruby comments, so these dynamic
+# colour utilities are safelisted with `@source inline(...)` in
+# app/assets/tailwind/application.css. Keep both lists in sync.
 # class="bg-slate-50 border-slate-400 text-slate-600 ring-slate-500/10"
 # class="bg-gray-50 border-gray-400 text-gray-600 ring-gray-500/10"
 # class="bg-zinc-50 border-zinc-400 text-zinc-600 ring-zinc-500/10"
