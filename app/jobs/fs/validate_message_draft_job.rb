@@ -37,7 +37,7 @@ class Fs::ValidateMessageDraftJob < ApplicationJob
     when 408, 503
       raise TemporaryValidationError, error_message(message_draft, response_status, response_body)
     else
-      message_draft.metadata[:validation_errors] = {
+      message_draft.metadata['validation_errors'] = {
         result: response_body['result'],
         errors: [
           response_body['message']
