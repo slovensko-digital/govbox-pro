@@ -1,6 +1,8 @@
 require "application_system_test_case"
+require "helpers/good_job_helper"
 
 class NotificationsTest < ApplicationSystemTestCase
+  include GoodJobHelper
   setup do
     Searchable::MessageThread.reindex_all
     sign_in_as(:basic)
