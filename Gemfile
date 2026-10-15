@@ -2,8 +2,8 @@ source 'https://rubygems.org'
 
 ruby '3.3.12'
 
-gem 'rails', '~> 7.2.4'
-gem 'rails-i18n'
+gem 'rails', '~> 8.0.5.1'
+gem 'rails-i18n', '~> 8.0'
 
 gem 'pg', '~> 1.5'
 gem 'with_advisory_lock'
@@ -17,7 +17,7 @@ gem 'sprockets-rails'
 gem 'importmap-rails'
 gem 'initials'
 gem 'tailwindcss-rails'
-gem 'view_component'
+gem 'view_component', '~> 4.0'
 
 # Schedulers
 gem 'clockwork'
@@ -64,7 +64,7 @@ group :development, :test do
 end
 
 group :development do
-  gem 'annotate'
+  gem 'annotaterb'
   gem 'listen'
   gem 'web-console'
   gem 'htmlbeautifier'

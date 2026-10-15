@@ -55,7 +55,13 @@ class ApiController < ActionController::API
   end
 
   def render_bad_request(exception)
-    render status: :bad_request, json: { message: exception.message }
+    # Keep the public API wording independent of Rails' ParameterMissing message.
+    message = if exception.is_a?(ActionController::ParameterMissing)
+      "param is missing or the value is empty: #{exception.param}"
+    else
+      exception.message
+    end
+    render status: :bad_request, json: { message: message }
   end
 
   def render_unauthorized(key = "credentials")
