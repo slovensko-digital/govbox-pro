@@ -14,6 +14,9 @@ gem 'turbo-rails'
 
 # Styles
 gem 'sprockets-rails'
+# sprockets 4.2.1 passes `create_additions` to JSON.parse, which json 3 (shipped
+# with Ruby 4.0) rejects; it breaks booting with a precompiled asset manifest.
+gem 'sprockets', '>= 4.4.1'
 gem 'importmap-rails'
 gem 'initials'
 gem 'tailwindcss-rails'
