@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 ruby '3.3.12'
 
-gem 'rails', '~> 8.0.5.1'
+gem 'rails', '~> 8.1.4'
 gem 'rails-i18n', '~> 8.0'
 
 gem 'pg', '~> 1.5'
