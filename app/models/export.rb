@@ -46,6 +46,18 @@ class Export < ApplicationRecord
     MessageThread.where(id: message_thread_ids)
   end
 
+  # Wrapper exposing settings to the form builder (see ExportSettings).
+  def settings_object
+    ExportSettings.new(settings)
+  end
+
+  # Persist a partial settings submission without dropping settings that the
+  # form did not submit (e.g. per-form settings for forms not in the current
+  # selection).
+  def update_settings(attributes)
+    update(settings: settings_object.merge(attributes).to_h)
+  end
+
   def export_object_filepath(message_object)
     thread = message_object.message.thread
     form = Fs::Form.find_by(id: thread.metadata&.dig("fs_form_id"))&.slug
