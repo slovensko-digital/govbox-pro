@@ -9,7 +9,7 @@
 @source '../../../app/components/**/*.{rb,erb,haml,html,slim}';
 
 /* Colour utilities composed at runtime from Colorized.colors (tags, boxes,
-   filter colour pickers). Keep in sync with app/helpers/colorized_helper.rb. */
+   filter colour pickers). Add any new dynamically composed colour utilities here. */
 @source inline("bg-{slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{50,100}");
 @source inline("text-{slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-600");
 @source inline("border-{slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-400");
