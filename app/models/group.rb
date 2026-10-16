@@ -2,14 +2,15 @@
 #
 # Table name: groups
 #
-#  id                   :bigint           not null, primary key
-#  all_boxes_permission :boolean          default(FALSE), not null
-#  group_type           :enum
-#  name                 :string           not null
-#  type                 :string           not null
-#  created_at           :datetime         not null
-#  updated_at           :datetime         not null
-#  tenant_id            :bigint           not null
+#  id                     :bigint           not null, primary key
+#  all_boxes_permission   :boolean          default(FALSE), not null
+#  can_manage_access_tags :boolean          default(FALSE), not null
+#  group_type             :enum
+#  name                   :string           not null
+#  type                   :string           not null
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
+#  tenant_id              :bigint           not null
 #
 class Group < ApplicationRecord
   include AuditableEvents
@@ -28,9 +29,14 @@ class Group < ApplicationRecord
 
   validates_presence_of :name
   validates_uniqueness_of :name, scope: :tenant_id
+  validates :can_manage_access_tags, inclusion: { in: [true, false] }
 
   def editable?
     type.in? EDITABLE_GROUP_TYPES
+  end
+
+  def manage_access_tags_changable?
+    true
   end
 
   def system?

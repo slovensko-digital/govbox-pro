@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_08_31_090000) do
+ActiveRecord::Schema[7.1].define(version: 2026_10_08_210000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -436,6 +436,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_08_31_090000) do
     t.datetime "updated_at", null: false
     t.string "type", null: false
     t.boolean "all_boxes_permission", default: false, null: false
+    t.boolean "can_manage_access_tags", default: false, null: false
     t.index ["tenant_id"], name: "index_groups_on_tenant_id"
   end
 

@@ -8,10 +8,11 @@ class MessageThreads::TagsController < ApplicationController
 
     @tags_changes = RelationChanges::Tags.new(
       tag_scope: tag_scope,
-      tags_assignments: RelationChanges::Tags.build_assignment(message_thread: @message_thread, tag_scope: tag_scope)
+      tags_assignments: RelationChanges::Tags.build_assignment(message_thread: @message_thread, tag_scope: tag_scope),
+      manageable_scope: manageable_tag_scope
     )
 
-    @tags_filter = TagsFilter.new(tag_scope: tag_scope)
+    @tags_filter = TagsFilter.new(tag_scope: tag_scope, manageable_scope: manageable_tag_scope)
   end
 
   def prepare
@@ -19,10 +20,11 @@ class MessageThreads::TagsController < ApplicationController
 
     @tags_changes = RelationChanges::Tags.new(
       tag_scope: tag_scope,
-      tags_assignments: tags_assignments
+      tags_assignments: tags_assignments,
+      manageable_scope: manageable_tag_scope
     )
 
-    @tags_filter = TagsFilter.new(tag_scope: tag_scope, filter_query: params[:name_search_query].strip)
+    @tags_filter = TagsFilter.new(tag_scope: tag_scope, filter_query: params[:name_search_query].strip, manageable_scope: manageable_tag_scope)
     @rerender_list = params[:assignments_update].blank?
   end
 
@@ -32,11 +34,12 @@ class MessageThreads::TagsController < ApplicationController
 
     @tags_changes = RelationChanges::Tags.new(
       tag_scope: tag_scope,
-      tags_assignments: tags_assignments
+      tags_assignments: tags_assignments,
+      manageable_scope: manageable_tag_scope
     )
     @tags_changes.add_new_tag(new_tag) if new_tag.save
 
-    @tags_filter = TagsFilter.new(tag_scope: tag_scope, filter_query: "")
+    @tags_filter = TagsFilter.new(tag_scope: tag_scope, filter_query: "", manageable_scope: manageable_tag_scope)
     @rerender_list = true
     @reset_search = true
 
@@ -48,7 +51,8 @@ class MessageThreads::TagsController < ApplicationController
 
     tag_changes = RelationChanges::Tags.new(
       tag_scope: tag_scope,
-      tags_assignments: tags_assignments
+      tags_assignments: tags_assignments,
+      manageable_scope: manageable_tag_scope
     )
 
     tag_changes.save(@message_thread)
@@ -65,6 +69,10 @@ class MessageThreads::TagsController < ApplicationController
 
   def tag_scope
     Current.tenant.simple_tags.visible.order(:name)
+  end
+
+  def manageable_tag_scope
+    tag_scope.manageable_by(Current.user)
   end
 
   def message_thread_policy_scope
