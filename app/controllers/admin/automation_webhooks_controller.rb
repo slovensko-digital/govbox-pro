@@ -21,7 +21,7 @@ module Admin
     def create
       @webhook = Current.tenant.automation_webhooks.new(webhook_params)
       authorize([:admin, @webhook])
-      if @webhook.save!
+      if @webhook.save
         redirect_to admin_tenant_automation_webhooks_url(Current.tenant), notice: "Webhook bol úspešne vytvorený"
       else
         render :new, status: :unprocessable_content
