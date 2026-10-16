@@ -175,7 +175,7 @@ class Fs::MessageDraftsTest < ApplicationSystemTestCase
     visit message_threads_path
 
     click_button "Vytvoriť novú správu"
-    assert_not has_link? "Vytvoriť novú správu na finančnú správu"
+    assert_no_link "Vytvoriť novú správu na finančnú správu"
   end
 
   test "user can upload a message draft only to the tenant's boxes" do
