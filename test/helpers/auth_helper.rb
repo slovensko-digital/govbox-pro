@@ -9,7 +9,9 @@ module AuthHelper
     page.document.synchronize do
       raise Capybara::ExpectationNotMet, "page not loaded" unless page.evaluate_script("document.readyState") == "complete"
     end
-    click_on "Prihlásiť cez Google"
+    # Activate the focused button so late font/layout changes cannot move it
+    # out from under Selenium's pointer between scrolling and clicking.
+    find_button("Prihlásiť cez Google").send_keys(:enter)
 
     assert_current_path root_path, ignore_query: true
     assert_text "Správy v schránke"

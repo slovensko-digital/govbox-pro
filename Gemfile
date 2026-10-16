@@ -2,8 +2,8 @@ source 'https://rubygems.org'
 
 ruby '3.3.12'
 
-gem 'rails', '~> 7.1.5'
-gem 'rails-i18n'
+gem 'rails', '~> 8.1.4'
+gem 'rails-i18n', '~> 8.0'
 
 gem 'pg', '~> 1.5'
 gem 'with_advisory_lock'
@@ -17,7 +17,7 @@ gem 'sprockets-rails'
 gem 'importmap-rails'
 gem 'initials'
 gem 'tailwindcss-rails'
-gem 'view_component'
+gem 'view_component', '~> 4.0'
 
 # Schedulers
 gem 'clockwork'
@@ -41,7 +41,6 @@ gem 'jbuilder'
 gem 'rubyzip', require: 'zip'
 gem 'jwt'
 gem 'stimulus-rails'
-gem 'jsbundling-rails'
 gem 'pdf-reader'
 gem 'grover'
 gem 'caxlsx'
@@ -64,7 +63,7 @@ group :development, :test do
 end
 
 group :development do
-  gem 'annotate'
+  gem 'annotaterb'
   gem 'listen'
   gem 'web-console'
   gem 'htmlbeautifier'

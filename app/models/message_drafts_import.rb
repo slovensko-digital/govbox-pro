@@ -16,7 +16,7 @@ class MessageDraftsImport < ApplicationRecord
 
   validates_with MessageDraftsImportValidator, if: :unzipped?
 
-  enum status: { uploaded: 0, unzipped: 1, parsed: 2 }
+  enum :status, { uploaded: 0, unzipped: 1, parsed: 2 }
 
   def base_name
     name.split('_', 2).last
