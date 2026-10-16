@@ -27,11 +27,14 @@ module Fs::MessageHelper
   end
 
   def self.humanize_diff(diff_text)
-    removed = diff_lines(diff_text, "< ")
-    added = diff_lines(diff_text, "> ")
-
-    changes = field_changes(removed, added)
+    changes = diff_hunks(diff_text).flat_map do |hunk|
+      field_changes(diff_lines(hunk, "< "), diff_lines(hunk, "> "))
+    end
     changes.any? ? changes : ["Niektoré údaje sa zmenili, pred odoslaním ich skontrolujte vo formulári."]
+  end
+
+  def self.diff_hunks(diff_text)
+    diff_text.to_s.split(/^(?=\d+(?:,\d+)?[acd]\d+(?:,\d+)?$)/)
   end
 
   def self.diff_lines(diff_text, prefix)

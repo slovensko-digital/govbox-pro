@@ -245,6 +245,17 @@ class Fs::MessageDraftTest < ActiveSupport::TestCase
     assert_equal ["IČO: pôvodne 11111111 → opravené 22222222", "PSČ: pôvodne 81101 → opravené 81102"], message_draft.diff_error_descriptions
   end
 
+  test "diff_error_descriptions keeps changes paired when an added-only hunk sits between them" do
+    message_draft = messages(:fs_accountants_draft_uzmujv14)
+    message_draft.metadata["validation_errors"] = { "diff_errors" => [
+      "29c29\n<   <datumZaplatenia>15.3.2025</datumZaplatenia>\n---\n>   <datumZaplatenia>15.03.2025</datumZaplatenia>\n" \
+      "34a35\n>     <riadok/>\n" \
+      "58c59\n<   <podpis>0</podpis>\n---\n>   <podpis>1</podpis>"
+    ] }
+
+    assert_equal ["datumZaplatenia: pôvodne 15.3.2025 → opravené 15.03.2025", "podpis: pôvodne 0 → opravené 1"], message_draft.diff_error_descriptions
+  end
+
   test "diff_error_descriptions returns generic description when diff is unparseable" do
     message_draft = messages(:fs_accountants_draft_uzmujv14)
     message_draft.metadata["validation_errors"] = { "diff_errors" => [
