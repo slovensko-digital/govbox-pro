@@ -16,6 +16,7 @@
 #
 class Govbox::ApiConnectionWithOboSupport < ::ApiConnection
   validates :tenant_id, presence: true
+  encrypts :api_token_private_key
 
   def box_obo(box)
     raise "OBO not allowed!" if obo.present?
