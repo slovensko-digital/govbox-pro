@@ -1,1 +1,1 @@
-import "./redirect"
+import "turbo_streams/redirect"
