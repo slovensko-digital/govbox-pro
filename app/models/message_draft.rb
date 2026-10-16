@@ -264,6 +264,10 @@ class MessageDraft < Message
     false
   end
 
+  def diff_error_descriptions
+    raise NotImplementedError
+  end
+
   private
 
   def validate_data

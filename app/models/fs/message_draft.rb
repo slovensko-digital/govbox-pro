@@ -225,6 +225,10 @@ class Fs::MessageDraft < MessageDraft
     true
   end
 
+  def diff_error_descriptions
+    metadata.dig('validation_errors', 'diff_errors').to_a.flat_map { |diff| humanize_diff(diff) }
+  end
+
   def attachments_editable?
     not_yet_submitted? && form&.attachments_allowed?
   end
@@ -326,6 +330,53 @@ class Fs::MessageDraft < MessageDraft
 
   def corrected_xml
     metadata.dig('validation_errors', 'corrected_xml')
+  end
+
+  def humanize_diff(diff_text)
+    removed = diff_lines(diff_text, "< ")
+    added = diff_lines(diff_text, "> ")
+
+    changes = field_changes(removed, added)
+    changes.any? ? changes : ["Niektoré údaje sa zmenili, pred odoslaním ich skontrolujte vo formulári."]
+  end
+
+  def diff_lines(diff_text, prefix)
+    diff_text.to_s.split("\n").select { |line| line.start_with?(prefix) }.map { |line| line[prefix.length..].strip }
+  end
+
+  def field_changes(removed, added)
+    removed.zip(added).filter_map do |old_line, new_line|
+      old_field = leaf_element(old_line)
+      new_field = leaf_element(new_line)
+      next unless old_field && new_field
+      next unless old_field[:name] == new_field[:name] && old_field[:value] != new_field[:value]
+
+      "#{field_label(old_field[:name])}: pôvodne #{old_field[:value]} → opravené #{new_field[:value]}"
+    end
+  end
+
+  def leaf_element(line)
+    match = line&.match(%r{\A<(?:[\w.-]+:)?([\w.-]+)(?:\s[^>]*)?>([^<]*)</[^>]+>\z})
+    return unless match
+
+    { name: match[1], value: match[2].strip }
+  end
+
+  def field_label(name)
+    {
+      "ico" => "IČO",
+      "dic" => "DIČ",
+      "icdph" => "IČ DPH",
+      "icDph" => "IČ DPH",
+      "rodneCislo" => "Rodné číslo",
+      "meno" => "Meno",
+      "priezvisko" => "Priezvisko",
+      "obchMeno" => "Obchodné meno",
+      "ulica" => "Ulica",
+      "obec" => "Obec",
+      "psc" => "PSČ",
+      "stat" => "Štát"
+    }.fetch(name, name)
   end
 
   def validate_data

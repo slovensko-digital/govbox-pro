@@ -215,6 +215,47 @@ class Fs::MessageDraftTest < ActiveSupport::TestCase
     assert message_draft.correctable_xml?
   end
 
+  test "diff_error_descriptions maps identifier field change to friendly label" do
+    message_draft = messages(:fs_accountants_draft_uzmujv14)
+    message_draft.metadata["validation_errors"] = { "diff_errors" => ["3c3\n<       <ico>12345678</ico>\n---\n>       <ico>87654321</ico>"] }
+
+    assert_equal ["IČO: pôvodne 12345678 → opravené 87654321"], message_draft.diff_error_descriptions
+  end
+
+  test "diff_error_descriptions handles namespaced elements" do
+    message_draft = messages(:fs_accountants_draft_uzmujv14)
+    message_draft.metadata["validation_errors"] = { "diff_errors" => ["1c1\n< <ns0:dic>1020304050</ns0:dic>\n---\n> <ns0:dic>9999999999</ns0:dic>"] }
+
+    assert_equal ["DIČ: pôvodne 1020304050 → opravené 9999999999"], message_draft.diff_error_descriptions
+  end
+
+  test "diff_error_descriptions falls back to raw element name for unknown fields" do
+    message_draft = messages(:fs_accountants_draft_uzmujv14)
+    message_draft.metadata["validation_errors"] = { "diff_errors" => ["1c1\n< <nejakePole>a</nejakePole>\n---\n> <nejakePole>b</nejakePole>"] }
+
+    assert_equal ["nejakePole: pôvodne a → opravené b"], message_draft.diff_error_descriptions
+  end
+
+  test "diff_error_descriptions reports multiple changes" do
+    message_draft = messages(:fs_accountants_draft_uzmujv14)
+    message_draft.metadata["validation_errors"] = { "diff_errors" => [
+      "3c3\n<   <ico>11111111</ico>\n---\n>   <ico>22222222</ico>\n7c7\n<   <psc>81101</psc>\n---\n>   <psc>81102</psc>"
+    ] }
+
+    assert_equal ["IČO: pôvodne 11111111 → opravené 22222222", "PSČ: pôvodne 81101 → opravené 81102"], message_draft.diff_error_descriptions
+  end
+
+  test "diff_error_descriptions returns generic description when diff is unparseable" do
+    message_draft = messages(:fs_accountants_draft_uzmujv14)
+    message_draft.metadata["validation_errors"] = { "diff_errors" => [
+      "garbage without diff markers",
+      "5a6,7\n>       <novaSekcia>\n>       </novaSekcia>",
+      "1c1\n< <?xml version=\"1.0\" encoding=\"UTF-8\"?>\n---\n> <?xml version=\"1.0\" encoding=\"utf-8\"?>"
+    ] }
+
+    assert_equal ["Niektoré údaje sa zmenili, pred odoslaním ich skontrolujte vo formulári."] * 3, message_draft.diff_error_descriptions
+  end
+
   test "validate_and_process marks message as invalid if there are validation errors" do
     message_draft = messages(:fs_accountants_draft_uzmujv14)
     message_draft.validate_and_process
