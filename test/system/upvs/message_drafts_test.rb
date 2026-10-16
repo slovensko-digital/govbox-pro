@@ -7,7 +7,7 @@ class Upvs::MessageDraftsTest < ApplicationSystemTestCase
     visit message_threads_path
 
     click_button "Vytvoriť novú správu"
-    assert_not has_link? "Napísať novú správu na slovensko.sk"
+    assert_no_link "Napísať novú správu na slovensko.sk"
   end
 
   test "user can create message draft from Všeobecná agenda MessageTemplate" do
