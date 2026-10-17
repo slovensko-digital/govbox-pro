@@ -136,6 +136,137 @@ class Fs::MessageDraftTest < ActiveSupport::TestCase
     EventBus.class_variable_get(:@@subscribers_map)[:message_created].pop
   end
 
+  test "apply_corrected_xml replaces form content, clears validation errors and re-enqueues validation" do
+    message_draft = messages(:fs_accountants_draft_uzmujv14_with_attachment)
+    corrected_xml = "<CorrectedForm>fixed</CorrectedForm>"
+    message_draft.update!(metadata: message_draft.metadata.merge(
+      "status" => "invalid",
+      "validation_errors" => { "diff_errors" => ["FS zmenil IČO"], "corrected_xml" => corrected_xml }
+    ))
+
+    assert_enqueued_with(job: Fs::ValidateMessageDraftJob) do
+      assert message_draft.apply_corrected_xml
+    end
+
+    message_draft.reload
+    assert_equal corrected_xml, message_draft.form_object.content
+    assert_equal({}, message_draft.metadata["validation_errors"])
+    assert_equal "being_validated", message_draft.metadata["status"]
+  end
+
+  test "apply_corrected_xml returns false and changes nothing when corrected_xml is missing" do
+    message_draft = messages(:fs_accountants_draft_uzmujv14_with_attachment)
+    original_content = message_draft.form_object.content
+    message_draft.update!(metadata: message_draft.metadata.merge(
+      "status" => "invalid",
+      "validation_errors" => { "diff_errors" => ["FS zmenil IČO"], "corrected_xml" => nil }
+    ))
+
+    assert_no_enqueued_jobs only: Fs::ValidateMessageDraftJob do
+      assert_not message_draft.apply_corrected_xml
+    end
+
+    message_draft.reload
+    assert_equal original_content, message_draft.form_object.content
+    assert_equal "invalid", message_draft.metadata["status"]
+  end
+
+  test "apply_corrected_xml refuses to overwrite a signed form and changes nothing" do
+    message_draft = messages(:fs_accountants_draft_uzmujv14_with_attachment)
+    message_draft.form_object.update!(is_signed: true)
+    original_content = message_draft.form_object.content
+    message_draft.update!(metadata: message_draft.metadata.merge(
+      "status" => "invalid",
+      "validation_errors" => { "diff_errors" => ["FS zmenil IČO"], "corrected_xml" => "<CorrectedForm>fixed</CorrectedForm>" }
+    ))
+
+    assert_not message_draft.correctable_xml?
+
+    assert_no_enqueued_jobs only: Fs::ValidateMessageDraftJob do
+      assert_not message_draft.apply_corrected_xml
+    end
+
+    message_draft.reload
+    assert_equal original_content, message_draft.form_object.content
+    assert_equal "invalid", message_draft.metadata["status"]
+  end
+
+  test "correctable_xml? is true only when a corrected_xml exists and the form is unsigned" do
+    message_draft = messages(:fs_accountants_draft_uzmujv14_with_attachment)
+
+    message_draft.metadata["validation_errors"] = { "corrected_xml" => "<xml/>" }
+    assert message_draft.correctable_xml?
+
+    message_draft.metadata["validation_errors"] = { "corrected_xml" => nil }
+    assert_not message_draft.correctable_xml?
+  end
+
+  test "correctable_xml? is false while a new validation is already running" do
+    message_draft = messages(:fs_accountants_draft_uzmujv14_with_attachment)
+    message_draft.metadata["validation_errors"] = { "corrected_xml" => "<xml/>" }
+
+    message_draft.metadata["status"] = "being_validated"
+    assert_not message_draft.correctable_xml?
+
+    message_draft.metadata["status"] = "being_submitted"
+    assert_not message_draft.correctable_xml?
+
+    message_draft.metadata["status"] = "invalid"
+    assert message_draft.correctable_xml?
+  end
+
+  test "diff_error_descriptions maps identifier field change to friendly label" do
+    message_draft = messages(:fs_accountants_draft_uzmujv14)
+    message_draft.metadata["validation_errors"] = { "diff_errors" => ["3c3\n<       <ico>12345678</ico>\n---\n>       <ico>87654321</ico>"] }
+
+    assert_equal ["IČO: pôvodne 12345678 → opravené 87654321"], message_draft.diff_error_descriptions
+  end
+
+  test "diff_error_descriptions handles namespaced elements" do
+    message_draft = messages(:fs_accountants_draft_uzmujv14)
+    message_draft.metadata["validation_errors"] = { "diff_errors" => ["1c1\n< <ns0:dic>1020304050</ns0:dic>\n---\n> <ns0:dic>9999999999</ns0:dic>"] }
+
+    assert_equal ["DIČ: pôvodne 1020304050 → opravené 9999999999"], message_draft.diff_error_descriptions
+  end
+
+  test "diff_error_descriptions falls back to raw element name for unknown fields" do
+    message_draft = messages(:fs_accountants_draft_uzmujv14)
+    message_draft.metadata["validation_errors"] = { "diff_errors" => ["1c1\n< <nejakePole>a</nejakePole>\n---\n> <nejakePole>b</nejakePole>"] }
+
+    assert_equal ["nejakePole: pôvodne a → opravené b"], message_draft.diff_error_descriptions
+  end
+
+  test "diff_error_descriptions reports multiple changes" do
+    message_draft = messages(:fs_accountants_draft_uzmujv14)
+    message_draft.metadata["validation_errors"] = { "diff_errors" => [
+      "3c3\n<   <ico>11111111</ico>\n---\n>   <ico>22222222</ico>\n7c7\n<   <psc>81101</psc>\n---\n>   <psc>81102</psc>"
+    ] }
+
+    assert_equal ["IČO: pôvodne 11111111 → opravené 22222222", "PSČ: pôvodne 81101 → opravené 81102"], message_draft.diff_error_descriptions
+  end
+
+  test "diff_error_descriptions keeps changes paired when an added-only hunk sits between them" do
+    message_draft = messages(:fs_accountants_draft_uzmujv14)
+    message_draft.metadata["validation_errors"] = { "diff_errors" => [
+      "29c29\n<   <datumZaplatenia>15.3.2025</datumZaplatenia>\n---\n>   <datumZaplatenia>15.03.2025</datumZaplatenia>\n" \
+      "34a35\n>     <riadok/>\n" \
+      "58c59\n<   <podpis>0</podpis>\n---\n>   <podpis>1</podpis>"
+    ] }
+
+    assert_equal ["datumZaplatenia: pôvodne 15.3.2025 → opravené 15.03.2025", "podpis: pôvodne 0 → opravené 1"], message_draft.diff_error_descriptions
+  end
+
+  test "diff_error_descriptions returns generic description when diff is unparseable" do
+    message_draft = messages(:fs_accountants_draft_uzmujv14)
+    message_draft.metadata["validation_errors"] = { "diff_errors" => [
+      "garbage without diff markers",
+      "5a6,7\n>       <novaSekcia>\n>       </novaSekcia>",
+      "1c1\n< <?xml version=\"1.0\" encoding=\"UTF-8\"?>\n---\n> <?xml version=\"1.0\" encoding=\"utf-8\"?>"
+    ] }
+
+    assert_equal ["Niektoré údaje sa zmenili, pred odoslaním ich skontrolujte vo formulári."] * 3, message_draft.diff_error_descriptions
+  end
+
   test "validate_and_process marks message as invalid if there are validation errors" do
     message_draft = messages(:fs_accountants_draft_uzmujv14)
     message_draft.validate_and_process
