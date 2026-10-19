@@ -256,6 +256,23 @@ class Fs::MessageDraftTest < ActiveSupport::TestCase
     assert_equal ["datumZaplatenia: pôvodne 15.3.2025 → opravené 15.03.2025", "podpis: pôvodne 0 → opravené 1"], message_draft.diff_error_descriptions
   end
 
+  test "diff_error_descriptions reports a value the form cleared" do
+    message_draft = messages(:fs_accountants_draft_uzmujv14)
+    message_draft.metadata["validation_errors"] = { "diff_errors" => [
+      "39c39\n<       <mesiac>04</mesiac>\n---\n>       <mesiac>4</mesiac>\n" \
+      "46c46\n<         <kodStatu>cz</kodStatu>\n---\n>         <kodStatu/>"
+    ] }
+
+    assert_equal ["mesiac: pôvodne 04 → opravené 4", "kodStatu: pôvodne cz → opravené (prázdne)"], message_draft.diff_error_descriptions
+  end
+
+  test "diff_error_descriptions reports a value the form filled in" do
+    message_draft = messages(:fs_accountants_draft_uzmujv14)
+    message_draft.metadata["validation_errors"] = { "diff_errors" => ["12c12\n<     <zaRok/>\n---\n>     <zaRok>2025</zaRok>"] }
+
+    assert_equal ["zaRok: pôvodne (prázdne) → opravené 2025"], message_draft.diff_error_descriptions
+  end
+
   test "diff_error_descriptions returns generic description when diff is unparseable" do
     message_draft = messages(:fs_accountants_draft_uzmujv14)
     message_draft.metadata["validation_errors"] = { "diff_errors" => [

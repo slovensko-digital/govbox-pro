@@ -48,15 +48,19 @@ module Fs::MessageHelper
       next unless old_field && new_field
       next unless old_field[:name] == new_field[:name] && old_field[:value] != new_field[:value]
 
-      "#{field_label(old_field[:name])}: pôvodne #{old_field[:value]} → opravené #{new_field[:value]}"
+      "#{field_label(old_field[:name])}: pôvodne #{field_value(old_field[:value])} → opravené #{field_value(new_field[:value])}"
     end
   end
 
   def self.leaf_element(line)
-    match = line&.match(%r{\A<(?:[\w.-]+:)?([\w.-]+)(?:\s[^>]*)?>([^<]*)</[^>]+>\z})
+    match = line&.match(%r{\A<(?:[\w.-]+:)?([\w.-]+)(?:\s[^>]*)?(?:/>|>([^<]*)</[^>]+>)\z})
     return unless match
 
-    { name: match[1], value: match[2].strip }
+    { name: match[1], value: match[2].to_s.strip }
+  end
+
+  def self.field_value(value)
+    value.presence || "(prázdne)"
   end
 
   def self.field_label(name)
