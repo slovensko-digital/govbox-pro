@@ -13,10 +13,11 @@ RUN apt-get update && apt-get install -y build-essential nodejs libpq-dev libjem
 RUN ln -s /usr/lib/$(uname -m)-linux-gnu/libjemalloc.so.2 /usr/local/lib/libjemalloc.so
 ENV LD_PRELOAD="/usr/local/lib/libjemalloc.so"
 
-# Setup FOP to use saxon xslt parser
-RUN sed -i '/find_jars/i \
-find_jars saxon saxonb' /usr/bin/fop
-RUN sed -i 's/^run_java /run_java -Djavax.xml.transform.TransformerFactory=net.sf.saxon.TransformerFactoryImpl /' /usr/bin/fop
+# Setup FOP to use saxon xslt parser, the JDK one rejects XPath in some slovensko.sk form templates (JAXP0801001).
+# Debian's fop runs fop-core.jar with -jar, which ignores an added classpath, so run its main class instead.
+# The grep fails the build when a new fop package changes the script and the sed stops matching.
+RUN sed -i 's#-jar /usr/share/java/fop-core.jar#-Djavax.xml.transform.TransformerFactory=net.sf.saxon.TransformerFactoryImpl -cp /usr/share/java/fop-core.jar:/usr/share/java/saxonb.jar org.apache.fop.cli.Main#' /usr/bin/fop \
+    && grep -q net.sf.saxon.TransformerFactoryImpl /usr/bin/fop
 
 # Set working directory
 RUN mkdir /app
