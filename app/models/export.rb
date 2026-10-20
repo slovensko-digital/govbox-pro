@@ -46,6 +46,18 @@ class Export < ApplicationRecord
     MessageThread.where(id: message_thread_ids)
   end
 
+  # Wrapper exposing settings to the form builder (see ExportSettings).
+  def settings_object
+    ExportSettings.new(settings)
+  end
+
+  # Persist a partial settings submission without dropping settings that the
+  # form did not submit (e.g. per-form settings for forms not in the current
+  # selection).
+  def update_settings(attributes)
+    update(settings: settings_object.merge(attributes).to_h)
+  end
+
   def export_object_filepath(message_object)
     thread = message_object.message.thread
     form = Fs::Form.find_by(id: thread.metadata&.dig("fs_form_id"))&.slug
@@ -122,9 +134,7 @@ class Export < ApplicationRecord
       settings[flag] = ActiveModel::Type::Boolean.new.cast(settings[flag]) if settings.key?(flag)
     end
     %w[by_form by_type].each do |group|
-      settings[group]&.each do |key, value|
-        settings[group][key] = ActiveModel::Type::Boolean.new.cast(value)
-      end
+      settings[group]&.transform_values! { |value| ActiveModel::Type::Boolean.new.cast(value) }
     end
     settings["message_direction"] = settings["message_direction"].presence&.then { |v|
       %w[all inbox outbox].include?(v) ? v : "all"
