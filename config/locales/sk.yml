@@ -424,6 +424,9 @@ sk:
     fs_html_visualization:
       name: HTML vizualizácie FS
       description: HTML vizualizácie správ z finančnej správy
+    fs_strip_empty_xmlns:
+      name: Odstraňovanie prázdnych xmlns z FS podaní
+      description: Pri nahrávaní XML podaní pre finančnú správu odstráni zo súboru výskyty xmlns=""
   exports:
     flash:
       started: Export správ bol zaradený na spracovanie.

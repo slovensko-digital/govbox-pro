@@ -86,6 +86,42 @@ class Fs::MessageDraftTest < ActiveSupport::TestCase
     assert_equal message_draft.thread.tags.find_by(name: "092024").present?, false
   end
 
+  test "create_and_validate_with_fs_form method removes empty xmlns attributes from XML if fs_strip_empty_xmlns feature is enabled" do
+    author = users(:accountants_basic)
+    author.tenant.enable_feature(:fs_strip_empty_xmlns, force: true)
+
+    original_content = file_fixture("fs/Accountants_main_FS_prehlad_0924.xml").read
+    content_with_empty_xmlns = original_content.sub("<dokument", '<dokument xmlns=""').gsub("<hlavicka>", '<hlavicka xmlns="">')
+    form_file = Rack::Test::UploadedFile.new(StringIO.new(content_with_empty_xmlns), "application/xml", original_filename: "podanie.xml")
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :parse_form, { "subject" => "1122334455", "form_identifier" => "795_777" }, [original_content]
+
+    FsEnvironment.fs_client.stub :api, fs_api do
+      Fs::MessageDraft.create_and_validate_with_fs_form(form_files: [form_file], author: author)
+    end
+
+    assert_mock fs_api
+    assert_equal original_content.b, Fs::MessageDraft.last.form_object.message_object_datum.blob
+  end
+
+  test "create_and_validate_with_fs_form method keeps empty xmlns attributes in XML if fs_strip_empty_xmlns feature is disabled" do
+    author = users(:accountants_basic)
+
+    content_with_empty_xmlns = file_fixture("fs/Accountants_main_FS_prehlad_0924.xml").read.sub("<dokument", '<dokument xmlns=""')
+    form_file = Rack::Test::UploadedFile.new(StringIO.new(content_with_empty_xmlns), "application/xml", original_filename: "podanie.xml")
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :parse_form, { "subject" => "1122334455", "form_identifier" => "795_777" }, [content_with_empty_xmlns]
+
+    FsEnvironment.fs_client.stub :api, fs_api do
+      Fs::MessageDraft.create_and_validate_with_fs_form(form_files: [form_file], author: author)
+    end
+
+    assert_mock fs_api
+    assert_equal content_with_empty_xmlns.b, Fs::MessageDraft.last.form_object.message_object_datum.blob
+  end
+
   test "create_and_validate_with_fs_form method does not raise if XML does not match any FS form" do
     author = users(:accountants_basic)
 
