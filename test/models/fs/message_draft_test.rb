@@ -86,9 +86,9 @@ class Fs::MessageDraftTest < ActiveSupport::TestCase
     assert_equal message_draft.thread.tags.find_by(name: "092024").present?, false
   end
 
-  test "create_and_validate_with_fs_form method removes empty xmlns attributes from XML if fs_strip_empty_xmlns feature is enabled" do
+  test "create_and_validate_with_fs_form method removes empty xmlns attributes from XML if fs_hotfixes feature is enabled" do
     author = users(:accountants_basic)
-    author.tenant.enable_feature(:fs_strip_empty_xmlns, force: true)
+    author.tenant.enable_feature(:fs_hotfixes, force: true)
 
     original_content = file_fixture("fs/Accountants_main_FS_prehlad_0924.xml").read
     content_with_empty_xmlns = original_content.sub("<dokument", '<dokument xmlns=""').gsub("<hlavicka>", '<hlavicka xmlns="">')
@@ -105,7 +105,7 @@ class Fs::MessageDraftTest < ActiveSupport::TestCase
     assert_equal original_content.b, Fs::MessageDraft.last.form_object.message_object_datum.blob
   end
 
-  test "create_and_validate_with_fs_form method keeps empty xmlns attributes in XML if fs_strip_empty_xmlns feature is disabled" do
+  test "create_and_validate_with_fs_form method keeps empty xmlns attributes in XML if fs_hotfixes feature is disabled" do
     author = users(:accountants_basic)
 
     content_with_empty_xmlns = file_fixture("fs/Accountants_main_FS_prehlad_0924.xml").read.sub("<dokument", '<dokument xmlns=""')
