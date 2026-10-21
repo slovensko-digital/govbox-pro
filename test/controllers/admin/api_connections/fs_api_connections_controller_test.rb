@@ -118,7 +118,5 @@ class Admin::ApiConnections::FsApiConnectionsControllerTest < ActionController::
     assert_redirected_to admin_tenant_api_connections_url(@tenant)
     assert_includes flash[:alert], "Schránky sa nepodarilo vytvoriť"
     assert_not_includes flash[:alert], "Failed to decode FS token"
-  ensure
-    Rails.logger = original_logger
   end
 end
