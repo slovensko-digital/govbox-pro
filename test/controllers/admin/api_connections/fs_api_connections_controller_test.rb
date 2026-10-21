@@ -109,4 +109,23 @@ class Admin::ApiConnections::FsApiConnectionsControllerTest < ActionController::
     assert_equal "saved-login", @api_connection.settings_username
     assert_equal "saved-password", @api_connection.settings_password
   end
+
+  test "boxify redirects with safe alert and logs error when FS authentication fails" do
+    log_output = StringIO.new
+    original_logger = Rails.logger
+    Rails.logger = ActiveSupport::Logger.new(log_output)
+
+    FsEnvironment.fs_client.stub :api, ->(*) { raise Fs::AuthenticationError, "Failed to decode FS token" } do
+      post :boxify, params: { tenant_id: @tenant.id, id: @api_connection.id }
+    end
+
+    assert_redirected_to admin_tenant_api_connections_url(@tenant)
+    assert_includes flash[:alert], "Schránky sa nepodarilo vytvoriť"
+    assert_not_includes flash[:alert], "Failed to decode FS token"
+    assert_not_includes flash[:alert], "heslo"
+    assert_includes log_output.string, "api_connection_id=#{@api_connection.id}"
+    assert_includes log_output.string, "Failed to decode FS token"
+  ensure
+    Rails.logger = original_logger
+  end
 end
