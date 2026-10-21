@@ -274,6 +274,25 @@ class MessageObjectTest < ActiveSupport::TestCase
     assert_not form_object.message.thread.tags.reload.include?(signature_requested_tag)
   end
 
+  test "update creates MessageObjectUpdated audit record" do
+    message_object = message_objects(:ssd_main_general_one_attachment)
+
+    Current.tenant = tenants(:ssd)
+    Current.user = users(:basic)
+
+    assert_difference "AuditLog::MessageObjectUpdated.count", 1 do
+      message_object.update!(name: "Renamed attachment")
+    end
+
+    audit_record = AuditLog::MessageObjectUpdated.last
+    assert_equal tenants(:ssd), audit_record.tenant
+    assert_equal users(:basic), audit_record.actor
+    assert_equal message_object.message.thread, audit_record.message_thread
+    assert_equal ["MyString", "Renamed attachment"], audit_record.changeset["name"]
+  ensure
+    Current.reset
+  end
+
   test "prepares PDF visualization" do
     skip('Test needs to be run in docker')
 
