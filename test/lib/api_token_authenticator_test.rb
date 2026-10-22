@@ -3,7 +3,8 @@ require 'test_helper'
 class ApiTokenAuthenticatorTest < ActiveSupport::TestCase
   setup do
     @sub = 1
-    @key_pair = OpenSSL::PKey::RSA.new(512)
+    # jwt 3 refuses to encode RS256 tokens with keys shorter than 2048 bits.
+    @key_pair = OpenSSL::PKey::RSA.new(2048)
     @public_key_reader = ->(s) { s == @sub ? @key_pair.public_key : raise }
     @return_handler = ->(s) { s }
     @api_token_authenticator = ApiTokenAuthenticator.new(
@@ -28,7 +29,7 @@ class ApiTokenAuthenticatorTest < ActiveSupport::TestCase
   end
 
   test '#verify_token verifies signature' do
-    token = JWT.encode({ sub: @sub }, OpenSSL::PKey::RSA.new(512), 'RS256')
+    token = JWT.encode({ sub: @sub }, OpenSSL::PKey::RSA.new(2048), 'RS256')
     assert_raises(JWT::VerificationError) { @api_token_authenticator.verify_token(token) }
   end
 
