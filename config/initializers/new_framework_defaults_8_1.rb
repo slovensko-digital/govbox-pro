@@ -8,9 +8,5 @@
 # - action_controller.escape_json_responses = false
 # - active_support.escape_js_separators_in_json = false
 #
-# The JSON escaping defaults are intentionally kept safe for the public API:
-# `active_support.escape_js_separators_in_json` is set back to true in
-# config/application.rb, and the HTML entities are escaped by rendering every
-# JSON response with the `escape: true` option (see EscapedJsonResponses),
-# because `action_controller.escape_json_responses = true` is deprecated.
-# See public/openapi.yaml and test/integration/*_api_test.rb.
+# JSON responses adopt the Rails 8.1 defaults. API consumers must parse them as
+# JSON rather than embed the response body directly into HTML or JavaScript.

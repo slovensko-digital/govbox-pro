@@ -1,6 +1,4 @@
 class ApiController < ActionController::API
-  include EscapedJsonResponses
-
   around_action :use_en_locale
   before_action :authenticate_user
   around_action :wrap_in_request_logger
