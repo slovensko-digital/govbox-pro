@@ -54,6 +54,7 @@ jobs:
       - run: npm ci
 
       - run: bundle exec rails db:setup --trace
+      # Includes integration tests; system tests run separately below.
       - run: bundle exec rails test
       - run: bundle exec rails test:system
       - name: Keep screenshots from failed system tests
@@ -63,7 +64,6 @@ jobs:
           name: screenshots.zip
           path: ${{ github.workspace }}/tmp/screenshots
           if-no-files-found: ignore
-      - run: bundle exec rails test:integration
       - name: Keep test log from failed tests
         uses: actions/upload-artifact@v6
         if: failure()

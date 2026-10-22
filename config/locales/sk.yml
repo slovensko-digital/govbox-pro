@@ -424,6 +424,9 @@ sk:
     fs_html_visualization:
       name: HTML vizualizácie FS
       description: HTML vizualizácie správ z finančnej správy
+    fs_hotfixes:
+      name: Opravy FS podaní
+      description: Opraví nerozpoznané FS podanie XML pri nahratí
   exports:
     flash:
       started: Export správ bol zaradený na spracovanie.
