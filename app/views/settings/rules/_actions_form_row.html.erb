@@ -1,6 +1,6 @@
 <%# locals: (form:, index:, editable: true) %>
 <%= tag.turbo_frame id: "action-#{index}", class: "flex justify-start self-stretch grow" do %>
-  <div class="flex justify-between items-center self-stretch flex-grow flex-shrink-0 relative">
+  <div class="flex justify-between items-center self-stretch grow shrink-0 relative">
     <%= form.hidden_field :id %>
     <div class="flex gap-1">
       <p class="text-base font-medium text-left text-gray-900"><%= t form.object.type %></p>

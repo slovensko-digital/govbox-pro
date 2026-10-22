@@ -1,8 +1,8 @@
 <%# locals: (ids:, signable:, filter: nil, filter_subscription: nil, count_estimate: nil) %>
 <%= tag.turbo_frame id: "bulk_actions", class: "contents" do %>
-  <div class="sticky top-16 z-30 bg-white shadow-sm">
+  <div class="sticky top-16 z-30 bg-white shadow-xs">
     <div class="flex justify-stretch items-center gap-4 px-4 lg:py-4 border-t-0 border-r-0 border-b border-l-0 border-gray-200 min-h-[3rem] sm:min-h-[5rem]">
-      <%= check_box_tag("", nil, false, { class: "hidden sm:block h-4 w-4 rounded border-gray-300 text-blue-500 focus:ring-0", type: "checkbox", id: "checkbox-all", data: { action: "all-checkboxes#toggle", "all-checkboxes-target": "checkbox" } }) %>
+      <%= check_box_tag("", nil, false, { class: "hidden sm:block h-4 w-4 rounded-sm border-gray-300 text-blue-500 focus:ring-0", type: "checkbox", id: "checkbox-all", data: { action: "all-checkboxes#toggle", "all-checkboxes-target": "checkbox" } }) %>
       <span class="grow sm:text-xl text-base font-semibold text-left text-gray-900">
         <% if ids.present? %>
           <%= t(:selected_message, count: ids.count) %>
@@ -35,14 +35,14 @@
           <% end %>
           <div data-controller="dropdown" class="relative hidden sm:inline-block text-left">
             <div>
-              <button type="button" data-action="dropdown#toggle click@window->dropdown#hide" class="inline-flex w-full justify-center items-center gap-x-1.5 rounded-md bg-white px-2 py-1 sm:px-3 sm:py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" id="menu-button" aria-expanded="true" aria-haspopup="true">
+              <button type="button" data-action="dropdown#toggle click@window->dropdown#hide" class="inline-flex w-full justify-center items-center gap-x-1.5 rounded-md bg-white px-2 py-1 sm:px-3 sm:py-2 text-sm font-semibold text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 hover:bg-gray-50" id="menu-button" aria-expanded="true" aria-haspopup="true">
                 Hromadné akcie
                 <%= render "icons/chevron_down", css_classes: "w-4 h-4 text-gray-400", stroke_width: 2 %>
               </button>
             </div>
             <div data-dropdown-target="menu"
                  data-turbo-temporary-hide
-                 class="absolute hidden right-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                 class="absolute hidden right-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-hidden"
                  role="menu"
                  aria-orientation="vertical"
                  aria-labelledby="menu-button"
@@ -141,13 +141,13 @@
       <% if (Current.tenant.feature_enabled?(:upvs) && Current.tenant.boxes.where(type: 'Upvs::Box').any?) || (Current.tenant.feature_enabled?(:fs_api) && Current.tenant.boxes.where(type: 'Fs::Box').any?) %>
         <div data-controller="dropdown" class="relative hidden sm:inline-block text-left">
           <div>
-            <button type="button" data-action="dropdown#toggle click@window->dropdown#hide" class="inline-flex w-full justify-center items-center gap-x-1.5 rounded-md bg-white px-2 py-1 sm:px-3 sm:py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" id="menu-button" aria-expanded="true" aria-haspopup="true">
+            <button type="button" data-action="dropdown#toggle click@window->dropdown#hide" class="inline-flex w-full justify-center items-center gap-x-1.5 rounded-md bg-white px-2 py-1 sm:px-3 sm:py-2 text-sm font-semibold text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 hover:bg-gray-50" id="menu-button" aria-expanded="true" aria-haspopup="true">
               Vytvoriť novú správu
               <%= render "icons/chevron_down", css_classes: "w-4 h-4 text-gray-400", stroke_width: 2 %>
             </button>
           </div>
           <div data-dropdown-target="menu"
-               class="absolute hidden right-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+               class="absolute hidden right-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-hidden"
                role="menu"
                aria-orientation="vertical"
                aria-labelledby="menu-button"

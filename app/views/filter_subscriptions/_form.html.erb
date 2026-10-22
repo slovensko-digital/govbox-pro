@@ -6,7 +6,7 @@
           <div class="relative flex items-start">
             <div class="flex h-6 items-center">
               <% id = "event-#{idx}" %>
-              <%= check_box_tag "events[]", event_name, @subscription.events.include?(event_name.to_s), class: "h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600", id: "filter_subscription_#{id}" %>
+              <%= check_box_tag "events[]", event_name, @subscription.events.include?(event_name.to_s), class: "h-4 w-4 rounded-sm border-gray-300 text-indigo-600 focus:ring-indigo-600", id: "filter_subscription_#{id}" %>
             </div>
             <div class="ml-3 text-sm leading-6">
               <%= f.label id, t("filter_subscription.events.#{event_name}.name"), class: "font-medium text-gray-900" %>

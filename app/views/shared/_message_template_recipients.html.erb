@@ -1,8 +1,8 @@
 <%# locals: (recipients_list:) %>
 <%= render layout: "common/modal", locals: { header: nil } do %>
   <div class="flex flex-col gap-2 mb-4">
-    <%= form_with url: message_template_search_recipients_list_path, class: "flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 mt-4" do |form| %>
-      <div class="flex w-full items-center rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600">
+    <%= form_with url: message_template_search_recipients_list_path, class: "flex justify-start items-center self-stretch grow-0 shrink-0 mt-4" do |form| %>
+      <div class="flex w-full items-center rounded-md shadow-xs ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600">
         <div class="p-2">
           <%= render "icons/magnifying_glass", css_classes: "text-gray-400 w-4 h-4" %>
         </div>

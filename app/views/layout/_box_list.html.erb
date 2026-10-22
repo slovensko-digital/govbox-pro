@@ -1,9 +1,9 @@
 <%# locals: (box:) %>
-<%= link_to select_box_path(box), class: "flex justify-between items-center self-stretch flex-grow-0 py-2", data: { turbo_frame: "_top" } do %>
-  <div class="flex justify-start items-center flex-grow-0 relative gap-3">
+<%= link_to select_box_path(box), class: "flex justify-between items-center self-stretch grow-0 py-2", data: { turbo_frame: "_top" } do %>
+  <div class="flex justify-start items-center grow-0 relative gap-3">
     <div class="justify-start w-16">
       <%= render "common/box_label", box: box %>
     </div>
-    <span class="flex-grow-0 text-base font-medium text-left text-gray-900"><%= box.name %></span>
+    <span class="grow-0 text-base font-medium text-left text-gray-900"><%= box.name %></span>
   </div>
 <% end %>

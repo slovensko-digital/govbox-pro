@@ -16,7 +16,7 @@ class MessageDraftsControllerTest < ActionController::TestCase
   
   test "should not destroy draft that is being submitted" do
     message_draft = messages(:ssd_main_draft)
-    message_draft.metadata[:status] = "being_submitted"
+    message_draft.metadata['status'] = "being_submitted"
     message_draft.save!
     delete :destroy, params: { id: message_draft.id }
     assert_equal "Správu nie je možné zmazať po zaradení na odoslanie", flash[:alert]

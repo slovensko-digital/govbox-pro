@@ -13,7 +13,7 @@
   </div>
   <% if message.reason_for_readonly == :form_signed %>
     <%= render layout: "common/modal_actions" do %>
-      <%= button_to unlock_message_draft_path(message), class: "inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto", data: { turbo_frame: "_top" } do %>
+      <%= button_to unlock_message_draft_path(message), class: "inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-red-500 sm:ml-3 sm:w-auto", data: { turbo_frame: "_top" } do %>
         Odstrániť podpisy
       <% end %>
     <% end %>

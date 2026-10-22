@@ -23,7 +23,7 @@
          data-transition-leave-to="opacity-0 -translate-x-full"
     >
       <div class="absolute top-0 right-0 -mr-14 p-1">
-        <button data-action="slideover#toggle" class="flex items-center justify-center h-12 w-12 rounded-full focus:outline-none focus:bg-white" aria-label="Close sidebar">
+        <button data-action="slideover#toggle" class="flex items-center justify-center h-12 w-12 rounded-full focus:outline-hidden focus:bg-white" aria-label="Close sidebar">
           <svg class="h-6 w-6 text-white" stroke="currentColor" fill="none" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
@@ -31,7 +31,7 @@
       </div>
       <%= render "t_w/static_sidebar", menu: menu %>
     </div>
-    <div class="flex-shrink-0 w-14">
+    <div class="shrink-0 w-14">
     </div>
   </div>
 </div>

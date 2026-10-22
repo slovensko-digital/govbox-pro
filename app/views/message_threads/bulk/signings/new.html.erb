@@ -8,7 +8,7 @@
         <p class="pb-4">Vybrané vlákna obsahujú <%= t("signing.documents", count: @message_objects.length) %> na podpis.</p>
       </div>
       <%= render layout: "common/modal_actions" do %>
-        <%= submit_tag "Podpísať Autogramom", class: "inline-flex w-full justify-center items-center px-3 py-2 rounded-md font-medium text-left text-sm text-white bg-blue-700 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 focus:outline-none dark:focus:ring-blue-800 hover:cursor-pointer sm:w-auto" %>
+        <%= submit_tag "Podpísať Autogramom", class: "inline-flex w-full justify-center items-center px-3 py-2 rounded-md font-medium text-left text-sm text-white bg-blue-700 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 focus:outline-hidden dark:focus:ring-blue-800 hover:cursor-pointer sm:w-auto" %>
       <% end %>
     <% end %>
   <% end %>

@@ -72,6 +72,16 @@ jobs:
           path: ${{ github.workspace }}/log/test.log
           if-no-files-found: ignore
 
+  fop:
+    name: FOP Saxon check
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+      - name: Build the image's FOP stage
+        run: docker build --target base -t govbox-pro-base .
+
   gitlab-push:
     name: Push to GitLab
 
@@ -82,6 +92,7 @@ jobs:
     needs:
       - test
       - brakeman
+      - fop
 
     steps:
       - uses: actions/checkout@v5

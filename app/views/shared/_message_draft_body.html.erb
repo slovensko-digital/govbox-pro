@@ -19,21 +19,21 @@
           </div>
         <% end %>
         <% if message.invalid? || message.submit_failed? %>
-          <div class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-1.5 px-1.5 py-0.5 rounded-md bg-red-50 border border-red-300">
+          <div class="flex justify-center items-center grow-0 shrink-0 relative overflow-hidden gap-1.5 px-1.5 py-0.5 rounded-md bg-red-50 border border-red-300">
             <% if message.invalid? %>
-              <p class="flex-grow-0 flex-shrink-0 text-sm text-left text-red-600">Správa nie je validná</p>
+              <p class="grow-0 shrink-0 text-sm text-left text-red-600">Správa nie je validná</p>
             <% elsif message.submit_failed? %>
-              <p class="flex-grow-0 flex-shrink-0 text-sm text-left text-red-600">Správu sa nepodarilo odoslať</p>
+              <p class="grow-0 shrink-0 text-sm text-left text-red-600">Správu sa nepodarilo odoslať</p>
             <% end %>
           </div>
         <% elsif message.being_validated? || message.being_submitted? || message.submitted? %>
-          <div class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-1.5 px-1.5 py-0.5 rounded-md bg-purple-50 border border-purple-300">
+          <div class="flex justify-center items-center grow-0 shrink-0 relative overflow-hidden gap-1.5 px-1.5 py-0.5 rounded-md bg-purple-50 border border-purple-300">
             <% if message.being_validated? %>
-              <p class="flex-grow-0 flex-shrink-0 text-sm text-left text-purple-600">Prebieha validácia správy</p>
+              <p class="grow-0 shrink-0 text-sm text-left text-purple-600">Prebieha validácia správy</p>
             <% elsif message.being_submitted? %>
-              <p class="flex-grow-0 flex-shrink-0 text-sm text-left text-purple-600">Správa sa odosiela</p>
+              <p class="grow-0 shrink-0 text-sm text-left text-purple-600">Správa sa odosiela</p>
             <% elsif message.submitted? %>
-              <p class="flex-grow-0 flex-shrink-0 text-sm text-left text-purple-600">Správa bola odoslaná</p>
+              <p class="grow-0 shrink-0 text-sm text-left text-purple-600">Správa bola odoslaná</p>
             <% end %>
           </div>
         <% end %>
@@ -45,7 +45,7 @@
     <% if message.submit_failed? && message.metadata["submit_error_message"].present? %>
       <div class="rounded-md bg-red-50 p-4 w-full">
         <div class="flex">
-          <div class="flex-shrink-0">
+          <div class="shrink-0">
             <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
               <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
             </svg>
@@ -68,7 +68,7 @@
         <% if message.all_validation_errors.any? %>
           <div class="rounded-md bg-red-50 p-4 w-full">
             <div class="flex">
-              <div class="flex-shrink-0">
+              <div class="shrink-0">
                 <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                   <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
                 </svg>
@@ -89,7 +89,7 @@
         <% if message.metadata['validation_errors']['warnings']&.any? %>
           <div class="rounded-md bg-yellow-50 p-4 w-full">
             <div class="flex">
-              <div class="flex-shrink-0">
+              <div class="shrink-0">
                 <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                   <path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
                 </svg>
