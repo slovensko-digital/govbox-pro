@@ -13,20 +13,9 @@
     <%= favicon_link_tag 'SD_icon_square_white.png', type: "image/png" %>
   </head>
   <body class="h-full">
-    <%= render Common::FlashComponent.new %>
-    <%= render TW::LightLayoutWithSidebarComponent.new do |component| %>
-      <% component.with_mobile_sidebar do %>
-        <%= render TW::MobileSidebarComponent.new(menu: @menu) %>
-      <% end %>
-      <% component.with_static_sidebar do %>
-        <%= render TW::StaticSidebarComponent.new(menu: @menu) %>
-      <% end %>
-      <% component.with_top_navigation do %>
-        <%= render TW::TopNavigationComponent.new %>
-      <% end %>
-      <% component.with_main_content do %>
-        <%= yield %>
-      <% end %>
+    <%= render "common/flash" %>
+    <%= render layout: "t_w/light_layout_with_sidebar", locals: { menu: @menu } do %>
+      <%= yield %>
     <% end %>
     <%= turbo_frame_tag :modal, target: "_top" %>
     <%= turbo_stream_from Current.user %>

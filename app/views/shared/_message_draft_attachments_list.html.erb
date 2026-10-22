@@ -1,0 +1,46 @@
+<%# locals: (message:) %>
+<%
+  attachments = message.objects.reject(&:form?).sort_by(&:created_at).reverse
+%>
+<div id="<%= dom_id(message, :attachments) %>" is="turbo-frame" class="border-b-0 w-full">
+  <% if message.attachments_editable? || attachments.present? %>
+    <div class="justify-stretch items-center self-stretch flex-grow-0 flex-shrink-0 gap-3 px-6 py-4 border-b">
+      <div class="flex justify-between items-center gap-4 overflow-clip">
+        <div class="flex justify-start items-center gap-4 overflow-clip">
+          <div class="flex justify-stretch items-center gap-4">
+            <%= render "common/icon", icon: "paper_clip", classes: "w-6 h-6 text-gray-400" %>
+            <p class="flex-grow-0 flex-shrink-0 text-base text-left text-gray-900">
+              <% if attachments.present? %>
+                Správa obsahuje <b><%= t("message_object", count: attachments.length) %></b>
+              <% elsif message.attachments_editable? %>
+                <b>Pridať prílohu</b>
+              <% end %>
+            </p>
+          </div>
+          <% if message.attachments_editable? %>
+            <%
+              attachments_form_id = "#{dom_id(message, :attachments)}_form"
+            %>
+            <%= form_tag message_message_objects_path(message), id: attachments_form_id, method: :post, multipart: true, "data-turbo": false do %>
+              <%= content_tag(:div,
+                {
+                  "data-controller": "message-drafts",
+                  "data-message-drafts-attachments-form-id": attachments_form_id,
+                  "class": "flex justify-start items-center gap-4 overflow-clip"
+                }
+              ) do %>
+                <%= label_tag :attachments_, "Pridať prílohy", class: "hidden" %>
+                <%= file_field_tag "attachments[]", "data-action": "change->message-drafts#uploadAttachments", class: "text-gray-900 bg-white focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm font-semibold px-5 py-2.5 dark:border-gray-600", multiple: true %>
+              <% end %>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    <% if attachments.present? %>
+      <div class="flex flex-col justify-stretch items-stretch divide-y relative px-4 bg-white border-t-0 border-r-0 border-b border-l-0 border-gray-200">
+        <%= render partial: "shared/message_attachment", collection: attachments, as: :message_attachment %>
+      </div>
+    <% end %>
+  <% end %>
+</div>

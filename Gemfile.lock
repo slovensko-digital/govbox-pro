@@ -448,10 +448,6 @@ GEM
     uri (1.1.2)
     useragent (0.16.11)
     version_gem (1.1.9)
-    view_component (4.15.0)
-      actionview (>= 7.1.0)
-      activesupport (>= 7.1.0)
-      concurrent-ruby (~> 1)
     web-console (4.2.1)
       actionview (>= 6.0.0)
       activemodel (>= 6.0.0)
@@ -528,7 +524,6 @@ DEPENDENCIES
   stimulus-rails
   tailwindcss-rails
   turbo-rails
-  view_component (~> 4.0)
   web-console
   webmock
   with_advisory_lock

@@ -1,7 +1,4 @@
 <%= tag.turbo_frame id: "modal" do %>
   <%=
-    render Signing::SignersRequests::Component.new(
-      message_draft: @message_draft,
-      message_objects: @message_objects,
-      signers_changes: @signers_changes) %>
+    render "signing/signers_requests/show", message_draft: @message_draft, message_objects: @message_objects, signers_changes: @signers_changes %>
 <% end %>

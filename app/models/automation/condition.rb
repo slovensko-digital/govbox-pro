@@ -20,7 +20,6 @@ module Automation
 
     attr_accessor :delete_record
 
-    # when adding items, check defaults in condition_form_component.rb
     ATTR_LIST = %i[box sender_name recipient_name title sender_uri recipient_uri outbox attachment attachments edesk_class fs_submission_status fs_message_type object_type api_connection type authors_api_connection].freeze
 
     def valid_condition_type_list_for_attr

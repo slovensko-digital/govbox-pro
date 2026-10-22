@@ -1,9 +1,9 @@
 <%= turbo_stream.append "message_threads" do %>
-  <%= render MessageThreadsTableRowComponent.with_collection(@message_threads) %>
+  <%= render partial: "shared/message_threads_table_row", collection: @message_threads, as: :message_thread %>
 <% end %>
 <% if @next_cursor %>
   <%= turbo_stream.append "next_page_area" do %>
-    <%= render Turbo::NextPageComponent.new(id: @next_cursor, url: scroll_message_threads_url(@next_page_params)) %>
+    <%= render "turbo/next_page", id: @next_cursor, url: scroll_message_threads_url(@next_page_params) %>
   <% end %>
 <% else %>
   <%= turbo_stream.replace "next_page_area" %>

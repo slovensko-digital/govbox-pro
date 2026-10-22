@@ -3,165 +3,152 @@
     <div class="border-b border-gray-200 bg-white px-4 py-5 sm:px-6">
       <h3 class="text-base font-semibold leading-6 text-gray-900">Hromadný export</h3>
     </div>
-
     <div class="flow-root m-6">
       <%= form_for @export, url: message_threads_bulk_export_path(@export), html: { id: 'export-form' }, method: :put do |f| %>
         <%= f.fields_for :settings, @export.settings_object do |s| %>
-        <div>
-          <h3 class="text-base font-semibold text-gray-900">Nastavenie exportu</h3>
-        </div>
-
-        <% if @export.errors.any? %>
-          <div class="mt-4 rounded-md bg-red-50 p-4">
-            <div class="flex text-sm text-red-700">
-              <ul class="list-disc space-y-1 pl-4">
-                <% @export.errors.full_messages.each do |msg| %>
-                  <li><%= msg %></li>
-                <% end %>
-              </ul>
+          <div>
+            <h3 class="text-base font-semibold text-gray-900">Nastavenie exportu</h3>
+          </div>
+          <% if @export.errors.any? %>
+            <div class="mt-4 rounded-md bg-red-50 p-4">
+              <div class="flex text-sm text-red-700">
+                <ul class="list-disc space-y-1 pl-4">
+                  <% @export.errors.full_messages.each do |msg| %>
+                    <li><%= msg %></li>
+                  <% end %>
+                </ul>
+              </div>
             </div>
-          </div>
-        <% end %>
-
-        <div class="py-6">
-          <div class="flex items-center gap-x-3 pd-3">
-            <%= s.check_box :summary, class: "h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer", data: { controller: "auto-submit", action: "click->auto-submit#submit" } %>
-            <%= s.label :summary, "Exportovať sumár", class: "select-none text-sm/6 text-gray-900 cursor-pointer" %>
-          </div>
-
-          <div class="flex items-center gap-x-3 py-3">
-            <%= s.check_box :messages, class: "h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer", data: { controller: "auto-submit", action: "click->auto-submit#submit" } %>
-            <%= s.label :messages, "Exportovať správy", class: "select-none text-sm/6 text-gray-900 cursor-pointer" %>
-          </div>
-          <div style="<%= s.object.messages ? '' : 'display: none;' %>">
-            <div class="mt-4 flex items-center gap-x-6">
-              <span class="text-sm text-gray-700">Zahrnúť správy:</span>
-              <% [["all", "Všetky"], ["inbox", "Len prijaté"], ["outbox", "Len odoslané"]].each do |value, label| %>
-                <div class="flex items-center gap-x-3">
-                  <%= s.radio_button :message_direction, value,
+          <% end %>
+          <div class="py-6">
+            <div class="flex items-center gap-x-3 pd-3">
+              <%= s.check_box :summary, class: "h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer", data: { controller: "auto-submit", action: "click->auto-submit#submit" } %>
+              <%= s.label :summary, "Exportovať sumár", class: "select-none text-sm/6 text-gray-900 cursor-pointer" %>
+            </div>
+            <div class="flex items-center gap-x-3 py-3">
+              <%= s.check_box :messages, class: "h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer", data: { controller: "auto-submit", action: "click->auto-submit#submit" } %>
+              <%= s.label :messages, "Exportovať správy", class: "select-none text-sm/6 text-gray-900 cursor-pointer" %>
+            </div>
+            <div style="<%= s.object.messages ? '' : 'display: none;' %>">
+              <div class="mt-4 flex items-center gap-x-6">
+                <span class="text-sm text-gray-700">Zahrnúť správy:</span>
+                <% [["all", "Všetky"], ["inbox", "Len prijaté"], ["outbox", "Len odoslané"]].each do |value, label| %>
+                  <div class="flex items-center gap-x-3">
+                    <%= s.radio_button :message_direction, value,
                         class: "h-4 w-4 border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer",
                         data: { controller: "auto-submit", action: "click->auto-submit#submit" } %>
-                  <%= s.label :message_direction, label, value: value,
+                    <%= s.label :message_direction, label, value: value,
                         class: "select-none text-sm text-gray-900 cursor-pointer" %>
-                </div>
-              <% end %>
-            </div>
-
-            <p class="mt-1 text-sm text-gray-500">Nastavte ako budú exportované jednotlivé typy správ.</p>
-
-            <div class="mt-4 flex items-center gap-x-6">
-              <span class="text-sm text-gray-700">Dátum doručenia:</span>
-              <div class="flex items-center gap-x-3">
-                <%= s.label :delivered_at_from, "od", class: "text-sm text-gray-700 select-none" %>
-                <%= s.date_field :delivered_at_from,
+                  </div>
+                <% end %>
+              </div>
+              <p class="mt-1 text-sm text-gray-500">Nastavte ako budú exportované jednotlivé typy správ.</p>
+              <div class="mt-4 flex items-center gap-x-6">
+                <span class="text-sm text-gray-700">Dátum doručenia:</span>
+                <div class="flex items-center gap-x-3">
+                  <%= s.label :delivered_at_from, "od", class: "text-sm text-gray-700 select-none" %>
+                  <%= s.date_field :delivered_at_from,
                       class: "rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500",
                       data: { controller: "auto-submit", action: "change->auto-submit#submit" } %>
-              </div>
-              <div class="flex items-center gap-x-3">
-                <%= s.label :delivered_at_to, "do", class: "text-sm text-gray-700 select-none" %>
-                <%= s.date_field :delivered_at_to,
+                </div>
+                <div class="flex items-center gap-x-3">
+                  <%= s.label :delivered_at_to, "do", class: "text-sm text-gray-700 select-none" %>
+                  <%= s.date_field :delivered_at_to,
                       class: "rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500",
                       data: { controller: "auto-submit", action: "change->auto-submit#submit" } %>
-              </div>
-            </div>
-
-            <div class="mt-2">
-              <details class="group">
-                <summary class="text-sm cursor-pointer select-none text-gray-500 hover:text-gray-800">Dostupné premenné pre šablónu</summary>
-                <div class="mt-2 space-y-1 text-xs text-gray-500 leading-5">
-                  <code>{{ schranka.export_nazov }}</code> – upraviteľný názov schránky pre export<br>
-                  <code>{{ schranka.oficialny_nazov }}</code> – oficiálny názov schránky<br>
-                  <code>{{ schranka.nazov }}</code> – pôvodný názov schránky bez úprav<br>
-                  <code>{{ schranka.dic }}</code> – DIČ schránky<br>
-                  <code>{{ vlakno.id }}</code> – identifikátor vlákna<br>
-                  <code>{{ vlakno.nazov }}</code> – názov vlákna (používateľom upraviteľný)<br>
-                  <code>{{ vlakno.obdobie }}</code> – obdobie vlákna (napr. 2024-01)<br>
-                  <code>{{ vlakno.formular }}</code> – typ formulára s verziou (napr. DPHv20)<br>
-                  <code>{{ vlakno.formular_bez_verzie }}</code> – typ formulára bez verzie (napr. DPH)<br>
-                  <code>{{ vlakno.datum_podania }}</code> – dátum podania<br>
-                  <code>{{ vlakno.datum_dorucenia }}</code> – dátum doručenia správy<br>
-                  <code>{{ sprava.id }}</code> – identifikátor správy<br>
-                  <code>{{ subor.nazov }}</code> – názov súboru (napr. priloha.pdf)
                 </div>
-              </details>
-            </div>
-
-            <div class="space-y-4 py-6 px-6">
-              <div class="flex items-center gap-x-3">
-                <%= s.check_box :pdf, class: "h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer" %>
-                <%= s.label :pdf, "Exportovať aj PDF", class: "select-none text-sm/6 text-gray-900 cursor-pointer" %>
               </div>
-
-              <% template_class = "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" %>
-              <%= s.fields_for :templates, s.object.templates do |t| %>
-                <table class="min-w-full">
-                  <tbody>
-                  <tr class="border-t border-gray-200">
-                    <td colspan="3" class="border-t border-gray-200 bg-gray-50 py-2 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-3">Všeobecné nastavenie</td>
-                  </tr>
-                  <tr class="border-t border-gray-200">
-                    <td class="py-2 pr-3"><%= s.check_box :default, class: "h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer" %></td>
-                    <td class="text-sm">všetky správy</td>
-                    <td class="whitespace-nowrap w-full py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-3"><%= t.text_field :default, class: template_class %></td>
-                  </tr>
-                  <tr>
-                    <td colspan="3" class="border-t border-gray-200 bg-gray-50 py-2 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-3">Podľa typu formulára</td>
-                  </tr>
-                  <%= s.fields_for :by_form, s.object.by_form do |bf| %>
-                    <% @message_forms.each do |message_form| %>
+              <div class="mt-2">
+                <details class="group">
+                  <summary class="text-sm cursor-pointer select-none text-gray-500 hover:text-gray-800">Dostupné premenné pre šablónu</summary>
+                  <div class="mt-2 space-y-1 text-xs text-gray-500 leading-5">
+                    <code>{{ schranka.export_nazov }}</code> – upraviteľný názov schránky pre export<br>
+                    <code>{{ schranka.oficialny_nazov }}</code> – oficiálny názov schránky<br>
+                    <code>{{ schranka.nazov }}</code> – pôvodný názov schránky bez úprav<br>
+                    <code>{{ schranka.dic }}</code> – DIČ schránky<br>
+                    <code>{{ vlakno.id }}</code> – identifikátor vlákna<br>
+                    <code>{{ vlakno.nazov }}</code> – názov vlákna (používateľom upraviteľný)<br>
+                    <code>{{ vlakno.obdobie }}</code> – obdobie vlákna (napr. 2024-01)<br>
+                    <code>{{ vlakno.formular }}</code> – typ formulára s verziou (napr. DPHv20)<br>
+                    <code>{{ vlakno.formular_bez_verzie }}</code> – typ formulára bez verzie (napr. DPH)<br>
+                    <code>{{ vlakno.datum_podania }}</code> – dátum podania<br>
+                    <code>{{ vlakno.datum_dorucenia }}</code> – dátum doručenia správy<br>
+                    <code>{{ sprava.id }}</code> – identifikátor správy<br>
+                    <code>{{ subor.nazov }}</code> – názov súboru (napr. priloha.pdf)
+                  </div>
+                </details>
+              </div>
+              <div class="space-y-4 py-6 px-6">
+                <div class="flex items-center gap-x-3">
+                  <%= s.check_box :pdf, class: "h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer" %>
+                  <%= s.label :pdf, "Exportovať aj PDF", class: "select-none text-sm/6 text-gray-900 cursor-pointer" %>
+                </div>
+                <% template_class = "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" %>
+                <%= s.fields_for :templates, s.object.templates do |t| %>
+                  <table class="min-w-full">
+                    <tbody>
                       <tr class="border-t border-gray-200">
-                        <td><%= bf.check_box message_form, class: "h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer" %></td>
-                        <td class="text-sm"><%= message_form %></td>
-                        <td class="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-3">
-                          <%= t.text_field message_form, placeholder: 'nastavenie ako pre všetky správy', class: template_class %>
-                        </td>
+                        <td colspan="3" class="border-t border-gray-200 bg-gray-50 py-2 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-3">Všeobecné nastavenie</td>
                       </tr>
-                    <% end %>
-                  <% end %>
-
-                  <tr class="border-t border-gray-200">
-                    <td colspan="3" class="bg-gray-50 py-2 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-3">Podľa typu správy</td>
-                  </tr>
-                  <%= s.fields_for :by_type, s.object.by_type do |bt| %>
-                    <% @message_types.each do |message_type| %>
                       <tr class="border-t border-gray-200">
-                        <td><%= bt.check_box message_type, class: "h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer" %></td>
-                        <td class="text-sm"><%= message_type %></td>
-                        <td class="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-3">
-                          <%= t.text_field message_type, placeholder: 'nastavenie ako pre všetky správy', class: template_class %>
-                        </td>
+                        <td class="py-2 pr-3"><%= s.check_box :default, class: "h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer" %></td>
+                        <td class="text-sm">všetky správy</td>
+                        <td class="whitespace-nowrap w-full py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-3"><%= t.text_field :default, class: template_class %></td>
                       </tr>
-                    <% end %>
-                  <% end %>
-                  </tbody>
-                </table>
-              <% end %>
+                      <tr>
+                        <td colspan="3" class="border-t border-gray-200 bg-gray-50 py-2 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-3">Podľa typu formulára</td>
+                      </tr>
+                      <%= s.fields_for :by_form, s.object.by_form do |bf| %>
+                        <% @message_forms.each do |message_form| %>
+                          <tr class="border-t border-gray-200">
+                            <td><%= bf.check_box message_form, class: "h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer" %></td>
+                            <td class="text-sm"><%= message_form %></td>
+                            <td class="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-3">
+                              <%= t.text_field message_form, placeholder: 'nastavenie ako pre všetky správy', class: template_class %>
+                            </td>
+                          </tr>
+                        <% end %>
+                      <% end %>
+                      <tr class="border-t border-gray-200">
+                        <td colspan="3" class="bg-gray-50 py-2 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-3">Podľa typu správy</td>
+                      </tr>
+                      <%= s.fields_for :by_type, s.object.by_type do |bt| %>
+                        <% @message_types.each do |message_type| %>
+                          <tr class="border-t border-gray-200">
+                            <td><%= bt.check_box message_type, class: "h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer" %></td>
+                            <td class="text-sm"><%= message_type %></td>
+                            <td class="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-3">
+                              <%= t.text_field message_type, placeholder: 'nastavenie ako pre všetky správy', class: template_class %>
+                            </td>
+                          </tr>
+                        <% end %>
+                      <% end %>
+                    </tbody>
+                  </table>
+                <% end %>
+              </div>
             </div>
           </div>
-        </div>
         <% end %>
       <% end %>
-
       <div class="flex items-center gap-x-4 mb-6">
         <%= button_tag "Uložiť nastavenia", form: "export-form", name: nil, class: "rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" %>
         <%= button_tag "Exportovať", form: "export-form", formaction: message_threads_bulk_export_start_path(@export), formmethod: "post", class: "rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500", data: { turbo_confirm: "Chcete vytvoriť export?" } %>
       </div>
-
       <div class="border-b border-gray-200 bg-white py-5">
         <h3 class="text-base font-semibold text-gray-900">Náhľad exportu</h3>
       </div>
-
       <table class="table-fixed w-full divide-y divide-gray-300">
         <thead>
-        <tr>
-          <th scope="col" class="w-1/12 whitespace-nowrap py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">Schránka</th>
-          <th scope="col" class="w-1/3 px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Názov</th>
-          <th scope="col" class="w-1/6 whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Typ</th>
-          <th scope="col" class="px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Súbor</th>
-          <th scope="col" class="relative whitespace-nowrap py-3.5 pl-3 pr-4 sm:pr-0">
-            <span class="sr-only">Edit</span>
-          </th>
-        </tr>
+          <tr>
+            <th scope="col" class="w-1/12 whitespace-nowrap py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">Schránka</th>
+            <th scope="col" class="w-1/3 px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Názov</th>
+            <th scope="col" class="w-1/6 whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Typ</th>
+            <th scope="col" class="px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Súbor</th>
+            <th scope="col" class="relative whitespace-nowrap py-3.5 pl-3 pr-4 sm:pr-0">
+              <span class="sr-only">Edit</span>
+            </th>
+          </tr>
         </thead>
         <tbody class="divide-y divide-gray-200 bg-white">
           <% if @export.settings.dig("summary") %>
@@ -172,7 +159,6 @@
               <td class="px-2 py-2 text-sm text-gray-500">sumar.xlsx</td>
             </tr>
           <% end %>
-
           <% if @export.settings.dig("messages") %>
             <% @message_threads.each do |message_thread| %>
               <tr>
@@ -186,7 +172,7 @@
                   </div>
                   <div class="flex flex-wrap items-center gap-1 mt-1">
                     <% message_thread.message_threads_tags.only_visible_tags.each do |tag| %>
-                      <%= render Common::TagComponent.new(tag.tag) %>
+                      <%= render "common/tag", tag: tag.tag %>
                     <% end %>
                   </div>
                 </td>

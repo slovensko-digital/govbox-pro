@@ -1,11 +1,5 @@
 <% if @collapsed %>
-  <%= render CollapsedMessageComponent.new(message: @message) %>
+  <%= render "shared/collapsed_message", message: @message %>
 <% else %>
-  <%= render MessageComponent.new(message: @message, mode: @mode) do |component| %>
-    <% @message.objects.each do |message_object| %>
-      <% component.with_attachment do %>
-        <%= render MessageAttachmentComponent.new(message_attachment: message_object) %>
-      <% end %>
-    <% end %>
-  <% end %>
+  <%= render "shared/message", message: @message, mode: @mode %>
 <% end %>

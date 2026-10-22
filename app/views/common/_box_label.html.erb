@@ -1,0 +1,10 @@
+<%# locals: (box:, classes: "", font_size_class: "text-sm", padding_class: "px-2 py-1") %>
+<%
+  color = box.color
+  label = box.short_name || box.name[0]
+%>
+<div class="flex shrink-0 justify-center items-center relative overflow-hidden gap-1.5 <%= classes %>">
+  <span title="<%= label %>" class="<%= font_size_class %> truncate hover:text-clip h-fit text-left text-<%= color %>-600 <%= padding_class %> rounded-md bg-<%= color %>-100 border border-<%= color %>-400">
+    <%= label %>
+  </span>
+</div>

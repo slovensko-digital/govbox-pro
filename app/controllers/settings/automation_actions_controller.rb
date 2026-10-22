@@ -1,4 +1,5 @@
 class Settings::AutomationActionsController < ApplicationController
+  include AutomationRuleForm
   before_action :set_automation_rule
 
   def create
@@ -28,6 +29,8 @@ class Settings::AutomationActionsController < ApplicationController
     @automation_rule = Current.tenant.automation_rules.new(automation_rule_params)
     @index = params[:index].to_i
     @new_rule = Current.tenant.automation_rules.new(actions: [Automation::Action.new])
+    prepare_action_fields(@new_rule)
+    prepare_action_fields(@automation_rule)
   end
 
   def automation_rule_params

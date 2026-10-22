@@ -1,0 +1,18 @@
+<%# locals: (message:, classes: "") %>
+<% if message.form_object&.is_signed? || message.form_object.present? || message.authorized?  %>
+  <div class="w-fit flex flex-row gap-1 <%= classes %>">
+    <% if message.form_object&.tags&.signed_by&.any? %>
+      <% message.form_object.tags.signed_by.each do |tag| %>
+        <%= render "common/badge", label: tag.name, color: "green", icon: "fingerprint" %>
+      <% end %>
+    <% elsif message.form_object&.is_signed? %>
+      <%= render "common/badge", label: "Podpísané", color: "green", icon: "fingerprint" %>
+    <% end %>
+    <% if message.authorized? %>
+      <%= render "common/badge", label: "Prevzatá doručenka", color: "purple" %>
+    <% end %>
+    <% if message.thread.archived? %>
+      <%= render "shared/archived_object_tag", archived_object: message.form_object&.archived_object %>
+    <% end %>
+  </div>
+<% end %>

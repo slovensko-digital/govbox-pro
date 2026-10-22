@@ -1,0 +1,36 @@
+<%# locals: (boxes:) %>
+<%= render layout: "common/modal", locals: { max_size: "max-w-2xl", header: nil } do %>
+  <%= link_to select_all_boxes_path, data: { turbo_frame: "_top" }, class: "flex justify-between items-center self-stretch flex-grow-0 flex-shrink-0 py-2" do %>
+    <span class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-gray-900">
+      Všetky schránky
+    </span>
+  <% end %>
+  <hr>
+  <div class="flex flex-col gap-2 mb-4">
+    <% if boxes.length > 5 %>
+      <%= form_with url: search_boxes_path, class: "flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 mt-4" do |form| %>
+        <div class="flex w-full items-center rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600">
+          <div class="p-2">
+            <%= render "icons/magnifying_glass", css_classes: "text-gray-400 w-4 h-4" %>
+          </div>
+          <%= tag.turbo_frame id: "box-search-results" %>
+          <%= form.search_field :name_search, value: params[:name_search], placeholder: "Vyhľadaj schránku",
+                                                data: { controller: "auto-submit", action: "input->auto-submit#submit reset->auto-submit#submit" },
+                                                autofocus: true,
+                                                class: "block w-full flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" %>
+        </div>
+      <% end %>
+    <% end %>
+    <%= tag.turbo_frame id: "box-list", class: "flex-col self-stretch mt-2 max-h-[50vh] overflow-y-auto" do %>
+      <% boxes.each do |box| %>
+        <%= render "layout/box_list", box: box %>
+      <% end %>
+    <% end %>
+  </div>
+  <div class="flex sm:flex-row flex-col-reverse gap-4 justify-center sm:-mx-6 sm:px-6 -mx-4 p-4 -mb-4 bg-gray-50">
+    <%= button_to sync_all_boxes_path, class: "flex w-full justify-center gap-4", data: { turbo_frame: "_top" } do %>
+      <%= render "common/icon", icon: "cloud-arrow-down", classes: "size-6 text-gray-400" %>
+      <%= "Stiahnuť nové správy" %>
+    <% end %>
+  </div>
+<% end %>

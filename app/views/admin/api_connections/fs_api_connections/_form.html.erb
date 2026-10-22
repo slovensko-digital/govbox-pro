@@ -3,7 +3,6 @@
 <% submit_label = local_assigns.fetch(:submit_label) { @api_connection.new_record? ? 'Vytvoriť' : 'Uložiť' } %>
 <% form_method = local_assigns[:method] %>
 <% show_discard_button = local_assigns.fetch(:show_discard_button, true) %>
-
 <%= tag.turbo_frame id: "modal" do %>
   <div class="fixed inset-0 z-40 p-2" role="dialog" aria-modal="true">
     <div class="fixed inset-0 transition-opacity bg-gray-400 bg-opacity-75" aria-hidden="true"></div>
@@ -13,7 +12,7 @@
           <div class="flex flex-col justify-start items-start flex-grow relative">
             <p class="self-stretch flex-grow-0 flex-shrink-0 text-xl font-semibold text-left text-gray-900"><%= title %></p>
           </div>
-          <%= render Common::CloseButtonComponent.new(link_to: admin_tenant_api_connections_path(Current.tenant)) %>
+          <%= render "common/close_button", link_to: admin_tenant_api_connections_path(Current.tenant) %>
         </div>
         <%= form_with model: [:admin, Current.tenant, @api_connection], scope: :fs_api_connection, url: form_url, method: form_method do |form| %>
           <%= form.hidden_field(:type, value: 'Fs::ApiConnection') %>

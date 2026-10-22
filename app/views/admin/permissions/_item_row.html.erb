@@ -4,7 +4,7 @@
   </div>
   <% unless local_assigns[:restricted] %>
     <%= button_to delete_path, method: :delete, title: t('admin.groups.permissions.actions.delete'), data: { turbo_frame: "_top" } do %>
-      <%= render Common::DeleteButtonComponent.new %>
+      <%= render "common/delete_button" %>
     <% end %>
   <% end %>
 </div>

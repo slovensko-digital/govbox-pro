@@ -1,4 +1,5 @@
 class Settings::AutomationRulesController < ApplicationController
+  include AutomationRuleForm
   before_action :set_automation_rule, only: %i[edit update destroy]
   before_action :set_form_automation_rule, only: %i[header_step conditions_step actions_step create]
   before_action :transform_delete_destroy, only: %i[create update]
@@ -49,10 +50,16 @@ class Settings::AutomationRulesController < ApplicationController
 
   def actions_step
     authorize @automation_rule, policy_class: Settings::AutomationRulePolicy
+    @new_rule = Current.tenant.automation_rules.new(actions: [Automation::Action.new])
+    prepare_action_fields(@new_rule)
+    prepare_action_fields(@automation_rule)
   end
 
   def conditions_step
     authorize @automation_rule, policy_class: Settings::AutomationRulePolicy
+    @new_rule = Current.tenant.automation_rules.new(conditions: [Automation::Condition.new])
+    prepare_condition_fields(@new_rule)
+    prepare_condition_fields(@automation_rule)
   end
 
   private

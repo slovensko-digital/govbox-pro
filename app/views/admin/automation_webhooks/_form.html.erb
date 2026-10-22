@@ -7,7 +7,7 @@
           <div class="flex flex-col justify-start items-start flex-grow relative">
             <p class="self-stretch flex-grow-0 flex-shrink-0 text-xl font-semibold text-left text-gray-900"><%= @webhook.new_record? ? 'Nová integrácia' : 'Úprava integrácie' %></p>
           </div>
-          <%= render Common::CloseButtonComponent.new(link_to: admin_tenant_automation_webhooks_path(Current.tenant)) %>
+          <%= render "common/close_button", link_to: admin_tenant_automation_webhooks_path(Current.tenant) %>
         </div>
         <%= form_with model: [:admin, Current.tenant, @webhook], class: "contents" do |form| %>
           <div class="w-96">
@@ -39,7 +39,7 @@
                 <p class="flex-grow-0 flex-shrink-0 text-base font-medium text-left text-white"><%= @webhook.new_record? ? 'Vytvoriť' : 'Uložiť' %></p>
               <% end %>
             </div>
-        <% end %>
+          <% end %>
         </div>
       </div>
     </div>

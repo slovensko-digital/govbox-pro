@@ -1,0 +1,30 @@
+<%# locals: (nested_message_attachment:, nested_message_attachment_iteration: nil) %>
+<%
+  message_object = nested_message_attachment.message_object
+  message = message_object.message
+  is_last = nested_message_attachment_iteration&.last?
+%>
+<div class="flex justify-between items-center gap-4 p-2 overflow-x-clip">
+  <%= link_to message_message_object_nested_message_object_path(message, message_object, nested_message_attachment), data: { turbo_frame: "_top" }, class: "flex justify-start items-center gap-4 overflow-clip" do %>
+    <div class="flex justify-stretch items-center gap-4">
+      <%= render "icons/document_text", css_classes: "w-8 h-8 text-gray-400", stroke_width: 1 %>
+    </div>
+    <div class="flex flex-col justify-start items-start overflow-x-clip">
+      <div class="flex justify-start items-start gap-4 w-full">
+        <span class="truncate text-base font-semibold text-left text-gray-900"><%= MessageObjectHelper.displayable_name(nested_message_attachment) %></span>
+      </div>
+    </div>
+  <% end %>
+  <%= render layout: "common/options", locals: { id: "message-attachment-menu" } do %>
+    <%= link_to message_message_object_nested_message_object_download_path(message, message_object, nested_message_attachment), class: "flex gap-3", role: "menuitem", tabindex: "-1", data: { turbo_frame: "_top", turbo: false } do %>
+      <%= render "icons/arrow_down_tray", css_classes: "h-5 w-5" %>
+      Stiahnuť
+    <% end %>
+    <% if nested_message_attachment.downloadable_as_pdf? %>
+      <%= link_to message_message_object_nested_message_object_download_pdf_path(message, message_object, nested_message_attachment), class: "flex gap-3", role: "menuitem", tabindex: "-1", data: { turbo_frame: "_top", turbo: false } do %>
+        <%= render "common/icon", icon: "document-arrow-down", classes: "w-5 h-5" %>
+        Stiahnuť ako PDF
+      <% end %>
+    <% end %>
+  <% end %>
+</div>

@@ -17,7 +17,6 @@ gem 'sprockets-rails'
 gem 'importmap-rails'
 gem 'initials'
 gem 'tailwindcss-rails'
-gem 'view_component', '~> 4.0'
 
 # Schedulers
 gem 'clockwork'

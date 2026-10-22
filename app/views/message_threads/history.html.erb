@@ -1,5 +1,1 @@
-<%= render MessageThreadHistoryLogComponent.new(
-      message_thread: @message_thread,
-      thread_tags: @thread_tags,
-      thread_messages: @thread_messages
-    ) %>
+<%= render "shared/message_thread_history_log", message_thread: @message_thread, thread_tags: @thread_tags, thread_messages: @thread_messages %>

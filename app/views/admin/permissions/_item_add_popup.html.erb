@@ -1,7 +1,6 @@
 <%# locals: { title:, close_path:, items:, empty_message:, url:, item_param_key:, group_id:, item_type: :box, nested_params: false } %>
 <% item_type ||= :box %>
 <% nested_params ||= false %>
-
 <div class="flex flex-col absolute z-50 mt-2 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
   <div class="flex flex-col justify-start items-start rounded-lg bg-white border border-gray-300" style="box-shadow: 1px 1px 4px 0 rgba(0,0,0,0.1);">
     <% if items && items.present? %>
@@ -9,7 +8,7 @@
         <div class="flex flex-col justify-start items-start flex-grow relative">
           <p class="self-stretch flex-grow text-m font-semibold text-left text-gray-900"><%= title %></p>
         </div>
-        <%= render Common::CloseButtonComponent.new(link_to: close_path, target_frame: "_top") %>
+        <%= render "common/close_button", link_to: close_path, target_frame: "_top" %>
       </div>
       <div class="flex flex-wrap gap-2 p-6 max-w-3xl">
         <% items.each do |item| %>

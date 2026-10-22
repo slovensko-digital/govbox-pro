@@ -1,0 +1,25 @@
+<%# locals: (message_thread:, tags_changes:, tags_filter:) %>
+<%= render layout: "common/modal", locals: { classes: "h-[550px]", header: "Úprava štítkov" } do %>
+  <%= form_with url: prepare_message_thread_tags_path(message_thread),
+                  data: { controller: 'debounce', debounce_target: 'form' }, class: "relative mt-4 flex flex-col grow justify-between" do |form| %>
+    <div class="flex flex-col items-start gap-4">
+      <div class="w-full">
+        <%= tag.turbo_frame id: "tags-assignment-search-field" do %>
+          <%= render "tags_assignment/search_field" %>
+        <% end %>
+      </div>
+      <div class="w-full mb-4 overflow-x-hidden overflow-y-auto pr-2.5 max-h-[300px] sm:max-h-[350px]">
+        <% tags_changes.init_assignments.each do |tag_id, value| %>
+          <%= hidden_field_tag "tags_assignments[init][#{tag_id}]", value %>
+        <% end %>
+        <%= tag.turbo_frame id: "tags-assignment-list" do %>
+          <%=
+              render "tags_assignment/list", tags_filter: tags_filter, tags_assignments: tags_changes.tags_assignments, create_tag_path: create_tag_message_thread_tags_path(message_thread) %>
+        <% end %>
+      </div>
+    </div>
+    <%= tag.turbo_frame id: "tags-assignment-actions" do %>
+      <%= render "common/modal_actions" %>
+    <% end %>
+  <% end %>
+<% end %>
