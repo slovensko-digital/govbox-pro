@@ -19,7 +19,7 @@ gem 'sprockets-rails'
 gem 'sprockets', '>= 4.4.1'
 gem 'importmap-rails'
 gem 'initials'
-gem 'tailwindcss-rails'
+gem 'tailwindcss-rails', '~> 4.6'
 gem 'view_component', '~> 4.0'
 
 # Schedulers
