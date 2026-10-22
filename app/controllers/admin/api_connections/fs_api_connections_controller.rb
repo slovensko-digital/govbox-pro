@@ -29,6 +29,9 @@ class Admin::ApiConnections::FsApiConnectionsController < Admin::ApiConnectionsC
     authorize([:admin, @api_connection])
     count = @api_connection.boxify
     redirect_to admin_tenant_api_connections_url(Current.tenant), notice: "API connection created #{count} new FS boxes."
+  rescue Fs::AuthenticationError
+    redirect_to admin_tenant_api_connections_url(Current.tenant),
+                alert: "Schránky sa nepodarilo vytvoriť, pretože sa nepodarilo prihlásiť na finančnú správu."
   end
 
   private

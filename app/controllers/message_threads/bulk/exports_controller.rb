@@ -31,7 +31,7 @@ module MessageThreads
       def update
         authorize @export
 
-        if @export.update(export_params)
+        if @export.update_settings(export_params[:settings] || {})
           redirect_to edit_message_threads_bulk_export_path(@export), notice: t("exports.flash.updated")
         else
           load_export_context
@@ -43,7 +43,7 @@ module MessageThreads
         authorize @export
 
         if params[:export].present?
-          unless @export.update(export_params)
+          unless @export.update_settings(export_params[:settings] || {})
             load_export_context
             return render :edit, status: :unprocessable_content
           end
