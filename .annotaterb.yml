@@ -1,0 +1,17 @@
+position_in_class: before
+position_in_test: before
+position_in_fixture: before
+position_in_factory: before
+position_in_serializer: before
+position_in_routes: before
+show_foreign_keys: false
+show_complete_foreign_keys: false
+show_indexes: false
+exclude_tests: true
+exclude_fixtures: true
+exclude_factories: true
+exclude_serializers: true
+hide_limit_column_types: integer,bigint,boolean
+hide_default_column_types: json,jsonb,hstore
+sort: true
+classified_sort: true

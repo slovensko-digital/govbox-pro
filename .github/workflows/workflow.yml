@@ -45,7 +45,16 @@ jobs:
         with:
           bundler-cache: true
 
+      # Puppeteer, used by Grover for PDF rendering, is a runtime dependency with no
+      # asset pipeline hook installing it anymore now that assets are served via importmap.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+
       - run: bundle exec rails db:setup --trace
+      # Includes integration tests; system tests run separately below.
       - run: bundle exec rails test
       - run: bundle exec rails test:system
       - name: Keep screenshots from failed system tests
@@ -55,7 +64,6 @@ jobs:
           name: screenshots.zip
           path: ${{ github.workspace }}/tmp/screenshots
           if-no-files-found: ignore
-      - run: bundle exec rails test:integration
       - name: Keep test log from failed tests
         uses: actions/upload-artifact@v6
         if: failure()

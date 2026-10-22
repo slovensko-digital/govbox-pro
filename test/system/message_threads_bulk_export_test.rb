@@ -129,7 +129,9 @@ class MessageThreadsBulkExportTest < ApplicationSystemTestCase
     visit edit_message_threads_bulk_export_path(export)
     assert_text outbox_message.title
 
-    future_date = (Date.today + 1.year).iso8601
+    # A Date sets the native input atomically; typing an ISO string submits
+    # intermediate years on each change event and races the Turbo response.
+    future_date = Date.today + 1.year
     fill_in "export[settings][delivered_at_from]", with: future_date
 
     assert_no_text outbox_message.title

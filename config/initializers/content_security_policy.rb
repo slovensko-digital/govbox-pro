@@ -5,6 +5,10 @@
 # https://guides.rubyonrails.org/security.html#content-security-policy-header
 
 Rails.application.configure do
+  # Import maps and their module entrypoints are inline scripts.
+  config.content_security_policy_nonce_generator = ->(_request) { SecureRandom.base64(16) }
+  config.content_security_policy_nonce_directives = %w[script-src]
+
   upvs_login_url = ENV.fetch("UPVS_ENV", "fix") == "prod" ? "https://prihlasenie.slovensko.sk" : "https://prihlasenie.upvsfix.gov.sk"
 
   config.content_security_policy do |policy|

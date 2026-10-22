@@ -33,6 +33,8 @@ class Fs::MessageDraft < MessageDraft
 
     form_files.each do |form_file|
       form_content = form_file.read.force_encoding("UTF-8")
+      # TODO hotfix, remove when FS accepts XML with empty default namespace declarations
+      form_content = form_content.gsub(' xmlns=""', '') if author.tenant.feature_enabled?(:fs_hotfixes) && File.extname(form_file.original_filename.to_s).casecmp?('.xml')
 
       box, fs_form, period = get_parsed_box_and_form_from_content(form_content, tenant: author.tenant, author: author)
 

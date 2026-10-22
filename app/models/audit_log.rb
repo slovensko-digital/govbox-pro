@@ -269,7 +269,7 @@ class AuditLog < ApplicationRecord
 
   class MessageObjectUpdated < AuditLog
     def self.create_audit_record(message_object)
-      create_record(object: message_object, message_thread: message_object.message.message_thread)
+      create_record(object: message_object, message_thread: message_object.message.thread)
     end
   end
 
