@@ -76,8 +76,8 @@ GEM
       securerandom (>= 0.3)
       tzinfo (~> 2.0, >= 2.0.5)
       uri (>= 0.13.1)
-    addressable (2.8.6)
-      public_suffix (>= 2.0.2, < 6.0)
+    addressable (2.9.0)
+      public_suffix (>= 2.0.2, < 8.0)
     afm (0.2.2)
     annotaterb (4.25.0)
       activerecord (>= 6.0.0)
@@ -117,7 +117,7 @@ GEM
     coderay (1.1.3)
     concurrent-ruby (1.3.8)
     connection_pool (2.4.1)
-    crack (1.0.0)
+    crack (1.0.1)
       bigdecimal
       rexml
     crass (1.0.6)
@@ -156,7 +156,7 @@ GEM
       thor (>= 1.0.0)
     grover (1.2.10)
       nokogiri (~> 1)
-    hashdiff (1.1.0)
+    hashdiff (1.2.1)
     hashery (2.1.2)
     hashie (5.1.0)
       logger
@@ -305,7 +305,7 @@ GEM
     psych (5.5.0)
       date
       stringio
-    public_suffix (5.0.4)
+    public_suffix (7.0.5)
     puma (6.4.2)
       nio4r (~> 2.0)
     pundit (2.3.1)
@@ -460,7 +460,7 @@ GEM
       activemodel (>= 6.0.0)
       bindex (>= 0.4.0)
       railties (>= 6.0.0)
-    webmock (3.20.0)
+    webmock (3.34.0)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
