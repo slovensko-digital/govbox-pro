@@ -7,11 +7,7 @@ module Fs
     FS_API_URL = ENV.fetch('FS_API_URL')
 
     test "box with delegate_id should create Fs::Api object that uses delegate_id in obo in fetch_sent_messages" do
-      options = Minitest::Mock.new
-      options.expect :timeout=, nil, [900_000]
-
       handler = Minitest::Mock.new
-      handler.expect :options, options
       handler.expect :public_send, OpenStruct.new({
         body: '{"ok": true}', status: 200, headers: ""
       }), [:get, "#{FS_API_URL}/api/v1/sent-messages?page=1&per_page=100", {}, {}]
@@ -27,14 +23,13 @@ module Fs
           fs_api.fetch_sent_messages
         end
       end
+
+      assert_mock jwt_header_mock
+      assert_mock handler
     end
 
     test "box without delegate_id should create Fs::Api object that uses valid obo in fetch_sent_messages" do
-      options = Minitest::Mock.new
-      options.expect :timeout=, nil, [900_000]
-
       handler = Minitest::Mock.new
-      handler.expect :options, options
       handler.expect :public_send, OpenStruct.new({
         body: '{"ok": true}', status: 200, headers: ""
       }), [:get, "#{FS_API_URL}/api/v1/sent-messages?page=1&per_page=100", {}, {}]
@@ -50,6 +45,9 @@ module Fs
           fs_api.fetch_sent_messages
         end
       end
+
+      assert_mock jwt_header_mock
+      assert_mock handler
     end
 
     test "raises authentication error for unauthorized response" do

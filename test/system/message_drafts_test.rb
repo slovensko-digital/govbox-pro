@@ -21,6 +21,7 @@ class MessageDraftsTest < ApplicationSystemTestCase
   end
 
   test "user can create message draft as reply on replyable message" do
+    skip "not implemented yet"
   end
 
   test "templated message draft content is searchable" do
