@@ -65,26 +65,45 @@ A newly published common filter SHALL be automatically appended for existing ten
 - **AND** subsequent personal ordering is independent of that initial order
 
 ### Requirement: Losing an effective first filter has a deterministic fallback
-If a first pinned filter is removed or becomes unavailable, the next effective pinned filter SHALL become the entry view. If none remains, the system SHALL fall back to all authorized messages. Foreign or unavailable preference records SHALL NOT make filters available.
+After a filter is removed or becomes unavailable, the system SHALL recompute the effective personal menu and use its first pinned entry as the entry view. If none remains, it SHALL fall back to all authorized messages. Foreign or unavailable preference records SHALL NOT make filters available.
 
 #### Scenario: Administrator removes the user's first filter
 - **WHEN** the administrator removes a common filter that was first in the user's menu
 - **THEN** the next remaining effective pinned filter is used on their next entry
 - **AND** if there is none, all authorized messages are shown
 
+### Requirement: Removing a personal override restores the common preference
+Deleting a personal filter that overrides a common filter SHALL restore the common filter's own stored pinning and position. The personal filter's preferences SHALL NOT be copied to it. The restored common filter SHALL participate in default-view selection at its original position.
+
+#### Scenario: Common filter was pinned before the personal override
+- **WHEN** a user deletes a personal override of a common filter previously pinned first
+- **THEN** the common filter returns at its stored first position and becomes the default entry view
+- **AND** the personal filter's position is not transferred
+
+#### Scenario: Common filter was unpinned
+- **WHEN** a user deletes a personal override and the common filter's stored preference is unpinned
+- **THEN** the common filter becomes available in settings but remains absent from the menu
+- **AND** its subscription settings are not changed by the display-precedence change
+
 ### Requirement: Preserve navigation at deployment
-A one-time migration SHALL preserve each existing user's query shortcuts in their previous order: all messages, saved filters, then visible tag shortcuts. Equal queries SHALL collapse to one effective entry with personal precedence. Existing subscription settings SHALL survive necessary filter remapping. Migration SHALL NOT establish automatic filter creation for future tags.
+A one-time migration SHALL preserve current query shortcuts in their previous order: all messages, saved filters, then visible tags. Existing saved filters SHALL become common definitions with unchanged IDs. Existing subscriptions, their associations, event selections, and checkpoints SHALL remain unchanged. Visible tag shortcuts SHALL be created as common query filters only during migration, not for future tags.
 
 #### Scenario: Existing tenant with saved filters and tags
 - **WHEN** the migration runs against a populated tenant
 - **THEN** users retain the query shortcuts previously available in their navigation
 - **AND** all messages remains their initial first entry
-- **AND** existing subscriptions retain their selected event types and processing progress
+- **AND** existing filters retain their IDs as common definitions without personal copies
+- **AND** existing subscriptions retain their IDs, filter associations, selected event types, and processing progress
+
+#### Scenario: Existing author without administrator rights
+- **WHEN** an existing author's tenant-visible filter becomes common during migration
+- **THEN** its definition becomes administrator-managed
+- **AND** the author retains personal pinning, order, and subscription controls rather than common-definition editing rights
 
 #### Scenario: Duplicate legacy shortcut
 - **WHEN** a saved filter and visible tag shortcut have the same trimmed query
-- **THEN** migration creates one effective menu entry for that query
-- **AND** prefers the user's personal filter when one exists
+- **THEN** migration reuses the saved filter for one effective menu entry rather than creating a duplicate tag-derived filter
+- **AND** existing saved-filter IDs and subscriptions remain unchanged
 
 #### Scenario: Fresh tenant uses the same all-messages semantics
 - **WHEN** a tenant is created after deployment

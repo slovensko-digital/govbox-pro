@@ -24,7 +24,7 @@ Only tenant administrators SHALL publish, rename, edit, or remove common filters
 - **THEN** the edit is denied even if the user has pinned or subscribed to the filter
 
 ### Requirement: Query changes require explicit impact confirmation
-Before changing a common filter's query, the system SHALL require explicit administrator confirmation explaining that results and existing subscriptions change for users of that common filter. Confirmation SHALL preserve the filter's identity, per-user preferences, and subscription settings, subject to personal precedence.
+Before changing a common filter's query, the system SHALL require explicit administrator confirmation explaining the effect on results and subscriptions attached to that common filter. Confirmation SHALL preserve its identity, preferences, and subscription settings. Personal display precedence SHALL NOT suspend these subscriptions.
 
 #### Scenario: Cancel a query edit
 - **WHEN** an administrator changes the query but cancels the confirmation
@@ -35,6 +35,7 @@ Before changing a common filter's query, the system SHALL require explicit admin
 - **THEN** the same common filter executes the new query
 - **AND** its existing pinning positions, explicit unpins, and subscription event selections remain attached
 - **AND** personal filters with the new query retain precedence and are not altered
+- **AND** existing subscriptions attached to the common filter continue even when its new query has a personal display match
 
 #### Scenario: Confirmation does not cover a subsequently changed query
 - **WHEN** the requested or stored query changes after the administrator reviewed its impact
@@ -53,6 +54,12 @@ Common-filter deletion SHALL remove the definition, its personal preference reco
 - **WHEN** an administrator deletes a common filter sharing a query with personal filters
 - **THEN** those personal filters, their preferences, and their subscriptions remain unchanged
 - **AND** no common definition is converted into a personal copy
+
+#### Scenario: Common subscription is accessed under a personal name
+- **WHEN** a user has a personal display match for a common query and an existing subscription attached to that common filter
+- **AND** the administrator confirms removing the common filter after the subscription warning
+- **THEN** that common subscription is cancelled with the removed definition
+- **AND** the personal filter remains without inheriting or copying the cancelled subscription
 
 #### Scenario: Search links survive removal
 - **WHEN** a user opens the query URL of a removed common filter
