@@ -22,6 +22,10 @@ Rails.application.routes.draw do
     end
     resources :tags
     resource :profile
+    resources :user_filter_visibilities, only: [:create, :update] do
+      post :move_higher, on: :member
+      post :move_lower, on: :member
+    end
   end
 
   namespace :admin do

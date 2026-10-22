@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_15_105627) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_22_180200) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -231,9 +231,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_15_105627) do
     t.integer "position", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "common", default: false, null: false
     t.index ["author_id"], name: "index_filters_on_author_id"
+    t.index ["tenant_id", "author_id", "query"], name: "unique_personal_filter_query", unique: true, where: "(common = false)"
     t.index ["tenant_id", "position"], name: "index_filters_on_tenant_id_and_position", unique: true
+    t.index ["tenant_id", "query"], name: "unique_common_filter_query", unique: true, where: "(common = true)"
     t.index ["tenant_id"], name: "index_filters_on_tenant_id"
+    t.check_constraint "common OR author_id IS NOT NULL", name: "personal_filter_has_author"
   end
 
   create_table "folders", force: :cascade do |t|
@@ -744,6 +748,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_15_105627) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "user_filter_visibilities", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "filter_id", null: false
+    t.boolean "visible", default: true, null: false
+    t.integer "position", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["filter_id"], name: "index_user_filter_visibilities_on_filter_id"
+    t.index ["user_id", "filter_id"], name: "index_user_filter_visibilities_on_user_id_and_filter_id", unique: true
+    t.index ["user_id", "position"], name: "index_user_filter_visibilities_on_user_id_and_position"
+    t.index ["user_id"], name: "index_user_filter_visibilities_on_user_id"
+    t.check_constraint "\"position\" > 0", name: "positive_user_filter_position"
+  end
+
   create_table "users", force: :cascade do |t|
     t.bigint "tenant_id"
     t.string "email"
@@ -826,5 +844,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_15_105627) do
   add_foreign_key "tags", "tenants"
   add_foreign_key "tags", "users", column: "owner_id"
   add_foreign_key "upvs_form_related_documents", "upvs_forms"
+  add_foreign_key "user_filter_visibilities", "filters", on_delete: :cascade
+  add_foreign_key "user_filter_visibilities", "users", on_delete: :cascade
   add_foreign_key "users", "tenants"
 end

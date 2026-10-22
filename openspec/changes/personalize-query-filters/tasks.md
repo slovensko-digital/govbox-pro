@@ -2,16 +2,16 @@
 
 ## 1. Filter ownership and query identity
 
-- [ ] 1.1 Add explicit personal/common scope and trim-only query normalization to the current `Filter` model using additive schema; permit empty-query all-messages filters and verify model tests for ownership, empty queries, outer whitespace, and preserved internal syntax.
-- [ ] 1.2 Implement database-backed same-owner personal and same-tenant common uniqueness, allowing personal/common overlap; stage constraints after the legacy collision preflight and verify duplicate create/edit and concurrent insert tests without automatic legacy merging.
-- [ ] 1.3 Add the tenant-scoped effective-filter resolver with personal precedence independent of pinning; verify tests for other users, other tenants, common duplicates, unpinned personal winners, and common query edits into personal queries.
-- [ ] 1.4 Update `FilterPolicy` and definition-management scopes for personal owner versus common administrator permissions without filtering by pinning; verify policy/request tests denying foreign IDs and allowing management of unpinned personal filters.
-- [ ] 1.5 Document ownership, trim-only equality, common naming, and personal precedence in the project's user/developer documentation; verify examples match resolver tests and identify the tag-rename limitation explicitly.
+- [x] 1.1 Add explicit personal/common scope and trim-only query normalization to the current `Filter` model using additive schema; permit empty-query all-messages filters and verify model tests for ownership, empty queries, outer whitespace, and preserved internal syntax.
+- [x] 1.2 Implement database-backed same-owner personal and same-tenant common uniqueness, allowing personal/common overlap; stage constraints after the legacy collision preflight and verify duplicate create/edit and concurrent insert tests without automatic legacy merging.
+- [x] 1.3 Add the tenant-scoped effective-filter resolver with personal precedence independent of pinning; verify tests for other users, other tenants, common duplicates, unpinned personal winners, and common query edits into personal queries.
+- [x] 1.4 Update `FilterPolicy` and definition-management scopes for personal owner versus common administrator permissions without filtering by pinning; verify policy/request tests denying foreign IDs and allowing management of unpinned personal filters.
+- [x] 1.5 Document ownership, trim-only equality, common naming, and personal precedence in the project's user/developer documentation; verify examples match resolver tests and identify the tag-rename limitation explicitly.
 
 ## 2. Personal preferences and common distribution
 
-- [ ] 2.1 Add the personal preference model/table, unique user/filter constraint, tenant-consistency validation, and cleanup associations; verify model/database tests for duplicate preferences, cross-tenant targets, and filter/user deletion.
-- [ ] 2.2 Implement authorized pin/unpin/repin and per-user reorder operations with user-level locking; verify request/concurrency tests for persistent explicit unpins, append-on-repin, stable other-user order, rejection of foreign submitted IDs, and restoration of a common filter's stored pinning/position after personal-override deletion, including the first/default position.
+- [x] 2.1 Add the personal preference model/table, unique user/filter constraint, tenant-consistency validation, and cleanup associations; verify model/database tests for duplicate preferences, cross-tenant targets, and filter/user deletion.
+- [x] 2.2 Implement authorized pin/unpin/repin and per-user reorder operations with user-level locking; verify request/concurrency tests for persistent explicit unpins, append-on-repin, stable other-user order, rejection of foreign submitted IDs, and restoration of a common filter's stored pinning/position after personal-override deletion, including the first/default position.
 - [ ] 2.3 Add idempotent common publication distribution and user initialization, appending only new effective pins and acknowledging personal duplicates without pinning them; verify tests for retries, publication/onboarding races, personal duplicates, and preserved defaults.
 - [ ] 2.4 Initialize fresh tenants with an empty-query all-messages common default and seed new-user common order independently of existing personal menus; verify tenant/user creation tests match migrated all-messages semantics.
 - [ ] 2.5 Add bounded eager-loaded menu reads that resolve precedence before pinning and never create preference rows during GET; verify query-count/no-write tests on a multi-filter user and document distribution retry behavior alongside the operation.

@@ -10,17 +10,15 @@ class FilterPolicy < ApplicationPolicy
 
   class ScopeEditable < Scope
     def resolve
-      scoped = scope.where(tenant_id: Current.tenant)
-
-      return scoped if @user.admin?
-
-      scoped.where(author_id: @user.id)
+      scoped = scope.where(tenant_id: @user.tenant_id)
+      own = scoped.personal.where(author_id: @user.id)
+      @user.admin? ? own.or(scoped.common) : own
     end
   end
 
   class ScopeShowable < Scope
     def resolve
-      scope.where(tenant_id: Current.tenant)
+      scope.available_to(@user)
     end
   end
 
@@ -37,18 +35,22 @@ class FilterPolicy < ApplicationPolicy
   end
 
   def edit?
-    @user.admin? || is_author_current_user?
+    same_tenant? && (@filter.common? ? @user.admin? : is_author_current_user?)
   end
 
   def update?
-    @user.admin? || is_author_current_user?
+    edit?
   end
 
   def destroy?
-    @user.admin? || is_author_current_user?
+    edit?
   end
 
   private
+
+  def same_tenant?
+    @filter.tenant_id == @user.tenant_id
+  end
 
   def is_author_current_user?
     @filter.author == @user
