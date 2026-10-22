@@ -46,6 +46,14 @@
   color utility to any element that depends on these defaults.
 */
 @layer base {
+  /* Tailwind v4 no longer gives buttons a pointer cursor. Keep clickable
+     controls consistent without making disabled controls look actionable. */
+  button:not(:disabled):not([aria-disabled="true"]),
+  [role="button"]:not(:disabled):not([aria-disabled="true"]),
+  input:where([type="button"], [type="submit"], [type="reset"], [type="checkbox"], [type="radio"]):not(:disabled):not([aria-disabled="true"]) {
+    cursor: pointer;
+  }
+
   *,
   ::after,
   ::before,
