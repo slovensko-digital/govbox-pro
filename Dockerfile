@@ -1,4 +1,4 @@
-FROM ruby:4.0.6
+FROM ruby:4.0.6 AS base
 
 # Install Node.js 22 rather than the Debian default (Node.js 18).
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates gnupg \
@@ -18,6 +18,12 @@ ENV LD_PRELOAD="/usr/local/lib/libjemalloc.so"
 # The grep fails the build when a new fop package changes the script and the sed stops matching.
 RUN sed -i 's#-jar /usr/share/java/fop-core.jar#-Djavax.xml.transform.TransformerFactory=net.sf.saxon.TransformerFactoryImpl -cp /usr/share/java/fop-core.jar:/usr/share/java/saxonb.jar org.apache.fop.cli.Main#' /usr/bin/fop \
     && grep -q net.sf.saxon.TransformerFactoryImpl /usr/bin/fop
+
+# Fail the build unless FOP actually runs on Saxon, not only names it in the launcher.
+COPY bin/check-fop-saxon /usr/local/bin/check-fop-saxon
+RUN /usr/local/bin/check-fop-saxon
+
+FROM base
 
 # Set working directory
 RUN mkdir /app
