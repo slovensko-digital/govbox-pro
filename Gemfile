@@ -33,7 +33,7 @@ gem 'omniauth-identity'
 gem 'omniauth-google-oauth2'
 gem 'omniauth-microsoft_graph'
 gem 'omniauth-saml', '~> 2.2.1'
-gem 'omniauth-rails_csrf_protection'
+gem 'omniauth-rails_csrf_protection', '>= 2.0'
 gem 'pundit'
 
 # Utilities

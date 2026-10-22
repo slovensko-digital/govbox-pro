@@ -246,4 +246,15 @@ class MessagesApiTest < ActionDispatch::IntegrationTest
 
     assert_response :unprocessable_content
   end
+
+  test "error response keeps the JSON escaping" do
+    name = "<script>&\u2028\u2029"
+
+    post "/api/messages/message_drafts", params: { type: name, token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }, as: :json
+
+    assert_response :bad_request
+    assert_equal "Disallowed message type: #{name}", response.parsed_body["message"]
+    %w[\\u003c \\u003e \\u0026 \\u2028 \\u2029].each { |escaped| assert_includes response.body, escaped }
+    assert_not_includes response.body, "<script>"
+  end
 end

@@ -3,7 +3,11 @@ require 'axlsx'
 class ExportJob < ApplicationJob
   include GoodJob::ActiveJobExtensions::Concurrency
 
-  good_job_control_concurrency_with(perform_limit: 2)
+  good_job_concurrency_rule(
+    label: "ExportJob",
+    apply_label: true,
+    perform_limit: 2
+  )
 
   class PdfVisualizationFailed < StandardError
   end

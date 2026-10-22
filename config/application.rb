@@ -16,7 +16,10 @@ module GovboxPro
     config.load_defaults 8.1
 
     # Preserve the API's safe JSON escaping rather than Rails 8.1's fast path.
-    config.action_controller.escape_json_responses = true
+    # The HTML entities are escaped per response with the supported
+    # `escape: true` render option (see EscapedJsonResponses), because
+    # `action_controller.escape_json_responses = true` is deprecated, and the
+    # Unicode line separators are escaped by this setting.
     config.active_support.escape_js_separators_in_json = true
 
     config.middleware.use Rack::Attack

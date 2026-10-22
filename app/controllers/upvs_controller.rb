@@ -1,5 +1,6 @@
 class UpvsController < ActionController::API
   include Authentication
+  include EscapedJsonResponses
   skip_before_action :authenticate
 
   def login

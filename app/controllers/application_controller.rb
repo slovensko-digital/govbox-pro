@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   include Authentication
+  include EscapedJsonResponses
   include Pundit::Authorization
   after_action :verify_authorized
   after_action :verify_policy_scoped, if: -> { action_name == "index" }
