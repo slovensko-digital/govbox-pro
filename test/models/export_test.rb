@@ -140,6 +140,16 @@ class ExportTest < ActiveSupport::TestCase
     end
   end
 
+  test "normalize_settings casts by_form and by_type values to boolean" do
+    export = Export.new(user: Current.user, settings: { "summary" => true, "by_form" => { "DPHv20" => "0", "DPHv21" => "1", "DPHv22" => true }, "by_type" => { "App.GeneralAgenda" => "0", "Other" => "1" } })
+    export.valid?
+    assert_equal false, export.settings.dig("by_form", "DPHv20"), '"0" must not stay truthy'
+    assert_equal true, export.settings.dig("by_form", "DPHv21")
+    assert_equal true, export.settings.dig("by_form", "DPHv22")
+    assert_equal false, export.settings.dig("by_type", "App.GeneralAgenda")
+    assert_equal true, export.settings.dig("by_type", "Other")
+  end
+
   test "filtered_messages with only from date returns messages on or after that date" do
     thread = message_threads(:fs_accountants_thread1)
     outbox_msg = messages(:fs_accountants_thread1_outbox_message)

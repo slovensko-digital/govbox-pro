@@ -34,7 +34,7 @@ class MessageObject < ApplicationRecord
   validate :allowed_mimetype?, on: :validate_data
 
   after_create ->(message_object) { message_object.fill_missing_info }
-  after_update ->(message_object) { EventBus.publish(:message_object_changed, message_object) }
+  after_update ->(message_object) { EventBus.publish(:message_object_updated, message_object) }
   before_destroy :remove_object_related_tags_from_thread, prepend: true
 
   def self.create_message_objects(message, objects)

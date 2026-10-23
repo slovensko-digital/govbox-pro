@@ -4,12 +4,10 @@ class Fs::SubmitMessageDraftJob < ApplicationJob
 
   include GoodJob::ActiveJobExtensions::Concurrency
 
-  good_job_control_concurrency_with(
-    # Maximum number of unfinished jobs to allow with the concurrency key
-    # Can be an Integer or Lambda/Proc that is invoked in the context of the job
-    total_limit: 1,
-
-    key: -> { "Fs::SubmitMessageDraftJob-#{arguments.first.try(:id)}" }
+  good_job_concurrency_rule(
+    label: -> { "Fs::SubmitMessageDraftJob-#{arguments.first.try(:id)}" },
+    apply_label: true,
+    total_limit: 1
   )
 
   retry_on SubmissionError, attempts: 1 do |_job, _error|
@@ -57,7 +55,7 @@ class Fs::SubmitMessageDraftJob < ApplicationJob
   private
 
   def handle_submit_fail(message_draft, error_message, expose_error: true)
-    message_draft.metadata[:submit_error_message] = error_message if expose_error
+    message_draft.metadata['submit_error_message'] = error_message if expose_error
     message_draft.submit_failed!
 
     raise SubmissionError, error_message

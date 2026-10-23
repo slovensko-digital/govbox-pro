@@ -10,7 +10,6 @@ class Fs::DownloadSentMessageJobTest < ActiveJob::TestCase
     fs_client = Minitest::Mock.new
     fs_client.expect :api, fs_api, **{ api_connection: api_connections(:fs_api_connection5), box: message_draft.box }
 
-    fs_api.expect :obo_without_delegate, "obo_without_delegate"
     fs_api.expect :fetch_sent_message, {
       "created_at" => "2025-10-21T10:33:12.516Z",
       "message_id" => "1235/2025",
@@ -48,5 +47,8 @@ class Fs::DownloadSentMessageJobTest < ActiveJob::TestCase
     Fs::Message.stub :create_outbox_message_with_thread!, outbox_message do
       Fs::DownloadSentMessageJob.new.perform('1235/2025', message_draft: message_draft, fs_client: fs_client)
     end
+
+    assert_mock fs_client
+    assert_mock fs_api
   end
 end

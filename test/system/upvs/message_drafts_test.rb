@@ -7,13 +7,7 @@ class Upvs::MessageDraftsTest < ApplicationSystemTestCase
     visit message_threads_path
 
     click_button "Vytvoriť novú správu"
-    assert_not has_link? "Napísať novú správu na slovensko.sk"
-  end
-
-  test "user can create message draft from Všeobecná agenda MessageTemplate" do
-  end
-
-  test "user can create message draft from CRAC MessageTemplate" do
+    assert_no_link "Napísať novú správu na slovensko.sk"
   end
 
   test "user can upload message draft only if tenant messages limit not exceeded" do
@@ -33,12 +27,4 @@ class Upvs::MessageDraftsTest < ApplicationSystemTestCase
     assert_text "Dosiahli ste limit #{tenant.outbox_messages_limit} správ"
   end
 
-  test "user can update message draft content" do
-  end
-
-  test "user can submit message draft" do
-  end
-
-  test "user can delete message draft" do
-  end
 end

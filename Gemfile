@@ -1,9 +1,9 @@
 source 'https://rubygems.org'
 
-ruby '3.3.12'
+ruby '4.0.6'
 
-gem 'rails', '~> 7.1.5'
-gem 'rails-i18n'
+gem 'rails', '~> 8.1.4'
+gem 'rails-i18n', '~> 8.0'
 
 gem 'pg', '~> 1.5'
 gem 'with_advisory_lock'
@@ -14,10 +14,13 @@ gem 'turbo-rails'
 
 # Styles
 gem 'sprockets-rails'
+# sprockets 4.2.1 passes `create_additions` to JSON.parse, which json 3 (shipped
+# with Ruby 4.0) rejects; it breaks booting with a precompiled asset manifest.
+gem 'sprockets', '>= 4.4.1'
 gem 'importmap-rails'
 gem 'initials'
-gem 'tailwindcss-rails'
-gem 'view_component'
+gem 'tailwindcss-rails', '~> 4.6'
+gem 'view_component', '~> 4.0'
 
 # Schedulers
 gem 'clockwork'
@@ -30,10 +33,12 @@ gem 'omniauth-identity'
 gem 'omniauth-google-oauth2'
 gem 'omniauth-microsoft_graph'
 gem 'omniauth-saml', '~> 2.2.1'
-gem 'omniauth-rails_csrf_protection'
+gem 'omniauth-rails_csrf_protection', '>= 2.0'
 gem 'pundit'
 
 # Utilities
+gem 'csv'
+gem 'ostruct'
 gem 'rest-client'
 gem 'rack-attack'
 gem 'rack-session', '>= 2.1.2'
@@ -41,7 +46,6 @@ gem 'jbuilder'
 gem 'rubyzip', require: 'zip'
 gem 'jwt'
 gem 'stimulus-rails'
-gem 'jsbundling-rails'
 gem 'pdf-reader'
 gem 'grover'
 gem 'caxlsx'
@@ -64,7 +68,7 @@ group :development, :test do
 end
 
 group :development do
-  gem 'annotate'
+  gem 'annotaterb'
   gem 'listen'
   gem 'web-console'
   gem 'htmlbeautifier'
@@ -73,7 +77,9 @@ group :development do
 end
 
 group :test do
-  gem 'selenium-webdriver', '~> 4.27.0'
+  gem 'minitest', '~> 6.0'
+  gem 'minitest-mock', '~> 5.27', require: false
+  gem 'selenium-webdriver', '~> 4.41'
   gem 'capybara'
   gem 'capybara-screenshot'
   gem 'webmock'
