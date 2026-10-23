@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
   after_action :verify_authorized
   after_action :verify_policy_scoped, if: -> { action_name == "index" }
   before_action :set_menu_context
+  helper_method :current_search_query
 
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
@@ -15,8 +16,18 @@ class ApplicationController < ActionController::Base
     return unless Current.user
 
     @tags = policy_scope(Tag, policy_scope_class: TagPolicy::ScopeListable).where(visible: true).order(:name)
-    @filters = policy_scope(Filter, policy_scope_class: FilterPolicy::ScopeShowable).order(:position)
-    @menu = SidebarMenu.new(controller_name, action_name, { tags: @tags, filters: @filters })
+    personalized = Current.tenant.feature_enabled?(:personalized_filters)
+    @filters = personalized ? Current.user.pinned_filters.to_a : policy_scope(Filter, policy_scope_class: FilterPolicy::ScopeShowable).order(:position)
+    @menu = SidebarMenu.new(controller_name, action_name, { tags: @tags, filters: @filters, personalized: personalized, query: current_search_query })
+  end
+
+  def current_search_query
+    return params[:q].to_s.strip if params.key?(:q)
+    if Current.user && Current.tenant.feature_enabled?(:personalized_filters) && controller_name == "message_threads" && action_name.in?(%w[index scroll bulk_actions])
+      return @filters.first&.query.to_s
+    end
+
+    ""
   end
 
   private

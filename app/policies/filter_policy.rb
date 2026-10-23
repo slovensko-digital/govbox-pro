@@ -31,7 +31,9 @@ class FilterPolicy < ApplicationPolicy
   end
 
   def create?
-    true
+    return true if @filter == Filter
+
+    same_tenant? && (@filter.common? ? @user.admin? : is_author_current_user?)
   end
 
   def edit?
@@ -44,6 +46,12 @@ class FilterPolicy < ApplicationPolicy
 
   def destroy?
     edit?
+  end
+
+  alias_method :confirm_destroy?, :destroy?
+
+  def subscribe?
+    same_tenant? && (@filter.common? || is_author_current_user?)
   end
 
   private

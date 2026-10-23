@@ -4,7 +4,7 @@
 
 See `proposal.md` for motivation and the three capability deltas for the behavioral contract.
 
-The checkout is current main (`718af8c9` when inspected), not PR #249. Current `Filter` records contain query/name/author and tenant-global position. `FilterPolicy::ScopeShowable` exposes all tenant filters, while editing is restricted to the author or an administrator. `ApplicationController#set_menu_context` builds separate saved-filter and visible-tag lists; `SidebarMenu` prepends all messages. The tag shortcut query is already `label:(name)`.
+Implementation starts from current main (`c436c394`), not PR #249 or the original proposal branch. This baseline uses Ruby 4.0.6 and Rails 8.1.4. Before this change, `Filter` records contain query/name/author and tenant-global position. `FilterPolicy::ScopeShowable` exposes all tenant filters, while editing is restricted to the author or an administrator. `ApplicationController#set_menu_context` builds separate saved-filter and visible-tag lists; `SidebarMenu` prepends all messages. The tag shortcut query is already `label:(name)`.
 
 `MessageThreadsController` loads messages in a before-action and later looks up subscriptions using an unrestricted tenant query match. `FilterSubscriptionsController` also finds filters tenant-wide. `FilterSubscription` already owns event selections and `last_notify_run_at`; `Filter` already destroys its subscriptions. Notification matching and delivery occur in separate background jobs. Personal display precedence must not be mistaken for delivery eligibility.
 

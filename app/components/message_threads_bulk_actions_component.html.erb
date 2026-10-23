@@ -7,7 +7,7 @@
         <% if @ids.present? %>
           <%= t(:selected_message, count: @ids.count) %>
         <% else %>
-          Správy v schránke
+          <%= title %>
           <% if @count_estimate %>
             <% if @count_estimate.in?(20..100) %>
               (<%= @count_estimate %>)
@@ -18,9 +18,11 @@
         <% end %>
 
         <% if @filter %>
-          <% if @filter_subscription %>
-            <%= link_to edit_filter_filter_subscription_path(@filter, @filter_subscription), title: "Nastaviť notifikácie", "data-turbo-frame": :modal, form_class: "inline" do %>
-              <%= render Common::IconComponent.new("bell-alert", classes: "h-6 w-6 inline stroke-gray-400 hover:stroke-gray-700") %>
+          <% if @filter_subscriptions.any? %>
+            <% @filter_subscriptions.each do |subscription| %>
+              <%= link_to edit_filter_filter_subscription_path(subscription.filter, subscription), title: "Nastaviť notifikácie", "data-turbo-frame": :modal, class: "inline", aria: { label: "Nastaviť notifikácie: #{subscription.filter.name}" } do %>
+                <%= render Common::IconComponent.new("bell-alert", classes: "h-6 w-6 inline stroke-gray-400 hover:stroke-gray-700") %>
+              <% end %>
             <% end %>
           <% else %>
             <%= link_to new_filter_filter_subscription_path(@filter), title: "Nastaviť notifikácie", "data-turbo-frame": :modal, form_class: "inline" do %>

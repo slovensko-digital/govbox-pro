@@ -1,0 +1,20 @@
+<%= turbo_frame_tag "modal", target: "_top" do %>
+  <%= render Common::ModalComponent.new do |modal| %>
+    <% modal.with_header do %>Zmeniť spoločný filter?<% end %>
+    <% modal.with_modal_content do %>
+      <p class="my-4">Meníte podmienky spoločného filtra „<%= @filter.name %>“. Zmena ovplyvní výsledky a existujúce odbery notifikácií. Osobné pripnutie a poradie zostanú zachované.</p>
+      <p class="my-2">Pôvodný dopyt: <code><%= @filter.query %></code></p>
+      <p class="my-2">Nový dopyt: <code><%= @pending_filter_attributes["query"] %></code></p>
+      <%= form_with url: filter_path(@filter), method: :patch, data: { turbo_frame: "_top" } do |form| %>
+        <% @pending_filter_attributes.each do |key, value| %>
+          <%= hidden_field_tag "filter[#{key}]", value %>
+        <% end %>
+        <%= hidden_field_tag :confirmation_token, @confirmation_token %>
+        <div class="flex flex-wrap gap-4 my-4">
+          <%= link_to "Zrušiť", filters_path, class: "underline", data: { turbo_frame: "_top" } %>
+          <%= form.submit "Potvrdiť zmenu dopytu", class: "rounded-md bg-blue-600 px-4 py-2 text-white" %>
+        </div>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>

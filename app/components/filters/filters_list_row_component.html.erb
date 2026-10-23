@@ -1,21 +1,47 @@
-<div class="self-stretch p-6 border-b border-gray-200 justify-start items-center gap-4 inline-flex">
+<div class="self-stretch p-6 border-b border-gray-200 justify-start items-center gap-4 flex flex-wrap" data-filter-id="<%= @filter.id %>">
   <div class="relative inline-flex items-center justify-center w-16 h-16 overflow-hidden bg-blue-600 rounded-full">
     <span class="text-white text-2xl font-normal"><%= @filter.name[0] %></span>
   </div>
   <div class="grow shrink basis-0 flex-col justify-start items-start gap-1 inline-flex">
     <div class="text-center text-gray-900 text-lg font-medium leading-loose">
-      <%= render Common::InlineRenameComponent.new(name: @filter.name, model: @filter) %>
+      <%= link_to @filter.name, message_threads_path(q: @filter.query), class: "underline" %>
     </div>
     <div class="text-center text-gray-500 text-base font-normal leading-normal">
       <%= @filter.query %>
     </div>
-  </div>
-  <div class="justify-start items-start gap-2 flex">
-    <%= link_to edit_filter_path(@filter), title: "Upraviť filter" do %>
-      <%= render Common::EditButtonComponent.new %>
+    <p class="text-sm text-gray-500"><%= @filter.common? ? "Spoločný filter" : "Osobný filter" %></p>
+    <% if @subscriptions.any? %>
+      <p class="text-sm text-gray-500">Notifikácie zapnuté</p>
+      <% @subscriptions.each do |subscription| %>
+        <%= link_to "Nastaviť notifikácie", edit_filter_filter_subscription_path(subscription.filter, subscription), data: { turbo_frame: "modal" }, class: "underline text-sm", aria: { label: "Nastaviť notifikácie: #{subscription.filter.name}" } %>
+      <% end %>
+    <% else %>
+      <%= link_to "Nastaviť notifikácie", new_filter_filter_subscription_path(@filter), data: { turbo_frame: "modal" }, class: "underline text-sm" %>
     <% end %>
-    <%= link_to filter_path(@filter), title: "Zmazať filter", data: { turbo_confirm: "Naozaj?", turbo_method: :delete } do %>
-      <%= render Common::DeleteButtonComponent.new %>
+  </div>
+  <div class="justify-start items-center gap-2 flex flex-wrap">
+    <% if @overridden %>
+      <span class="text-sm text-gray-500">Prekrytý osobným filtrom</span>
+    <% elsif @preference %>
+      <%= button_to(@preference.visible? ? "Odopnúť" : "Pripnúť", settings_user_filter_visibility_path(@preference), method: :patch, params: { user_filter_visibility: { visible: !@preference.visible? } }, class: "underline text-sm", aria: { label: "#{@preference.visible? ? 'Odopnúť' : 'Pripnúť'}: #{@filter.name}" }) %>
+      <% if @preference.visible? %>
+        <%= button_to move_higher_settings_user_filter_visibility_path(@preference), method: :post, aria: { label: "Posunúť vyššie: #{@filter.name}" }, class: "rounded-md border border-gray-300 p-2" do %>
+          <%= render Common::IconComponent.new("chevron-up") %>
+        <% end %>
+        <%= button_to move_lower_settings_user_filter_visibility_path(@preference), method: :post, aria: { label: "Posunúť nižšie: #{@filter.name}" }, class: "rounded-md border border-gray-300 p-2" do %>
+          <%= render Common::IconComponent.new("chevron-down") %>
+        <% end %>
+      <% end %>
+    <% else %>
+      <%= button_to "Pripnúť", settings_user_filter_visibilities_path, params: { user_filter_visibility: { filter_id: @filter.id, visible: true } }, class: "underline text-sm", aria: { label: "Pripnúť: #{@filter.name}" } %>
+    <% end %>
+    <% if helpers.policy(@filter).edit? %>
+      <%= link_to edit_filter_path(@filter), title: "Upraviť filter" do %>
+        <%= render Common::EditButtonComponent.new %>
+      <% end %>
+      <%= link_to(@filter.common? ? confirm_destroy_filter_path(@filter) : filter_path(@filter), title: "Zmazať filter", data: @filter.common? ? {} : { turbo_confirm: "Naozaj?", turbo_method: :delete }) do %>
+        <%= render Common::DeleteButtonComponent.new %>
+      <% end %>
     <% end %>
   </div>
 </div>

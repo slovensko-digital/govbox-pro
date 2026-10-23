@@ -1,5 +1,6 @@
 require "test_helper"
 require Rails.root.join("db/migrate/20261022180100_finalize_filter_query_uniqueness")
+require Rails.root.join("db/migrate/20261022180300_backfill_personal_filter_navigation")
 
 class FilterQueryPreflightTest < ActiveSupport::TestCase
   test "preflight reports trimmed collisions without merging filters or subscriptions" do
@@ -17,6 +18,9 @@ class FilterQueryPreflightTest < ActiveSupport::TestCase
     assert_equal 1, report.first["subscribing_users"].to_i
     error = assert_raises(RuntimeError) { FinalizeFilterQueryUniqueness.new.up }
     assert_includes error.message, "explicit resolution"
+    assert_no_difference "Filter.count" do
+      assert_raises(RuntimeError) { BackfillPersonalFilterNavigation.new.up }
+    end
     assert_equal before, subscription.reload.attributes
     assert_equal " preflight ", Filter.find(second_id).query
   end

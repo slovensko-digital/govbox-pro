@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_22_180200) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_22_180300) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -234,7 +234,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_22_180200) do
     t.boolean "common", default: false, null: false
     t.index ["author_id"], name: "index_filters_on_author_id"
     t.index ["tenant_id", "author_id", "query"], name: "unique_personal_filter_query", unique: true, where: "(common = false)"
-    t.index ["tenant_id", "position"], name: "index_filters_on_tenant_id_and_position", unique: true
     t.index ["tenant_id", "query"], name: "unique_common_filter_query", unique: true, where: "(common = true)"
     t.index ["tenant_id"], name: "index_filters_on_tenant_id"
     t.check_constraint "common OR author_id IS NOT NULL", name: "personal_filter_has_author"

@@ -2,6 +2,8 @@ require "application_system_test_case"
 
 class MessageThreadsTest < ApplicationSystemTestCase
   setup do
+    # The legacy navigation assertion includes this other author's shared filter.
+    filters(:two).update!(common: true)
     Searchable::MessageThread.reindex_all
 
     silence_warnings do

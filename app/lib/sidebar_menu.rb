@@ -15,17 +15,34 @@ class SidebarMenu
   private
 
   def initial_structure(controller, _action)
+    return settings_menu if @parameters[:personalized] && controller.in?(%w[filters user_filter_visibilities]) && !Current.user.admin?
     return admin_menu + site_admin_menu if controller.in? %w[groups users tags permissions automation_rules boxes api_connections api_accesses filters automation_webhooks feature_flags]
 
     default_main_menu
   end
 
   def default_main_menu
+    if @parameters[:personalized]
+      return [
+        Layout::FilterListComponent.new(filters: @parameters[:filters], query: @parameters[:query]),
+        TW::SidebarMenuItemComponent.new(name: 'Nastavenia', url: filters_path, icon: Icons::CogSixToothComponent.new)
+      ]
+    end
+
     [
-      TW::SidebarMenuItemComponent.new(name: 'Všetky správy', url: message_threads_path, icon: Common::IconComponent.new("envelope")),
+      TW::SidebarMenuItemComponent.new(name: 'Všetky správy', url: message_threads_path(q: ""), icon: Common::IconComponent.new("envelope")),
       Layout::FilterListComponent.new(filters: @parameters[:filters]),
       Layout::TagListComponent.new(tags: @parameters[:tags]),
       TW::SidebarMenuItemComponent.new(name: 'Nastavenia', url: filters_path, icon: Icons::CogSixToothComponent.new)
+    ]
+  end
+
+  def settings_menu
+    [
+      Layout::BackToBoxComponent.new,
+      TW::SidebarMenuDividerComponent.new(name: 'Nastavenia'),
+      TW::SidebarMenuItemComponent.new(name: 'Filtre', url: filters_path, icon: Icons::BookmarkComponent.new),
+      TW::SidebarMenuItemComponent.new(name: 'Pravidlá', url: settings_automation_rules_path, icon: Icons::FunnelComponent.new)
     ]
   end
 

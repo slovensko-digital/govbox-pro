@@ -63,6 +63,39 @@ class Filter < ApplicationRecord
     tenant.users.find_each(batch_size: 100) { |user| user.add_common_filter!(self) }
   end
 
+  def query_change_confirmation(attributes)
+    confirmation_verifier.generate(query_change_payload(attributes), purpose: "query-change", expires_in: 15.minutes)
+  end
+
+  def update_with_confirmation(attributes, token: nil)
+    with_lock do
+      normalized = normalized_changes(attributes)
+      requires_confirmation = common? && normalized.key?("query") && normalized["query"] != query
+      confirmed = confirmation_verifier.verified(token, purpose: "query-change") == query_change_payload(normalized) if token.present?
+      if requires_confirmation && !confirmed
+        :confirmation_required
+      else
+        update(normalized) ? :updated : :invalid
+      end
+    end
+  end
+
+  def deletion_confirmation
+    confirmation_verifier.generate(deletion_payload, purpose: "delete-filter", expires_in: 15.minutes)
+  end
+
+  def destroy_with_confirmation(token: nil)
+    with_lock do
+      confirmed = confirmation_verifier.verified(token, purpose: "delete-filter") == deletion_payload if token.present?
+      if common? && filter_subscriptions.exists? && !confirmed
+        :confirmation_required
+      else
+        destroy!
+        :destroyed
+      end
+    end
+  end
+
   def fill_position
     return if position.present?
 
@@ -72,6 +105,26 @@ class Filter < ApplicationRecord
   end
 
   private
+
+  def confirmation_verifier
+    Rails.application.message_verifier("common-filter-confirmations")
+  end
+
+  def normalized_changes(attributes)
+    attributes.to_h.stringify_keys.slice("name", "query").tap do |changes|
+      changes["query"] = changes["query"].to_s.strip if changes.key?("query")
+    end
+  end
+
+  def query_change_payload(attributes)
+    { "id" => id, "tenant_id" => tenant_id, "query" => query,
+      "updated_at" => updated_at.iso8601(6), "changes" => normalized_changes(attributes) }
+  end
+
+  def deletion_payload
+    { "id" => id, "tenant_id" => tenant_id, "updated_at" => updated_at.iso8601(6),
+      "subscriptions" => filter_subscriptions.order(:id).pluck(:id, :user_id) }
+  end
 
   def initialize_preferences
     common? ? distribute! : author.set_filter_visibility!(id, visible: true)

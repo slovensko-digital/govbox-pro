@@ -65,6 +65,39 @@ Filter je dopyt vyhľadávania uložený spoločne s názvom na neskoršie využ
 
 :::
 
+## Osobné menu a odopnuté filtre
+
+V **Nastavenia → Filtre** nájdete aj odopnuté filtre. Pri každom môžete zapnúť
+alebo vypnúť pripnutie a nastaviť notifikácie. Označenie **Notifikácie zapnuté**
+ukazuje existujúci odber aj pri odopnutom filtri.
+
+Pripnuté filtre môžete posúvať vyššie alebo nižšie. Prvý pripnutý filter určuje,
+čo uvidíte po otvorení schránky. Zmeny poradia a pripnutia platia iba pre vás.
+Opätovné pripnutie pridá filter na koniec menu. Zrušenie vyhľadávania zobrazí
+všetky dostupné správy bez opätovného použitia predvoleného filtra.
+
+**Odopnutie nevypína notifikácie.** Odber zmeníte alebo vypnete cez jeho nastavenia.
+Kliknutie na query odkaz či odkaz z notifikácie filter automaticky nepripne.
+
+## Spoločné filtre pre administrátora
+
+Pri vytváraní filtra môže administrátor zvoliť **Spoločný filter pre všetkých**.
+Nový spoločný filter pribudne na koniec osobného menu používateľov. Existujúci
+osobný filter s rovnakým dopytom má prednosť, aj keď je odopnutý. Spoločný názov
+a dopyt spravuje administrátor; používatelia menia iba vlastné pripnutie, poradie
+a notifikácie.
+
+Pri zmene dopytu spoločného filtra sa najprv zobrazí pôvodný a nový dopyt a
+upozornenie na zmenu výsledkov aj existujúcich odberov. Až **Potvrdiť zmenu
+dopytu** zmenu uloží. **Zrušiť** nechá pôvodné podmienky nezmenené. Pripnutia,
+poradie a existujúce odbery zostávajú zachované.
+
+Pred odstránením spoločného filtra administrátor uvidí počet používateľov s
+odberom a upozornenie, že sa ich odbery zrušia. Po potvrdení **Odstrániť filter**
+zmizne spoločná definícia aj jej odbery; nevytvoria sa osobné kópie. Osobné
+duplikáty, správy a štítky zostanú nezmenené. Starý query odkaz stále funguje
+ako obyčajné vyhľadávanie.
+
 ## Operátory pre vyhľadávanie
 
 | Operátor | Popis | Príklad |
@@ -84,4 +117,3 @@ Nastavte si upozornenia na správy vyhovujúce filtrom.
 Čo je filter a ako funguje.
 
 - **[Filter (pojem)](/concepts/filter)**
-

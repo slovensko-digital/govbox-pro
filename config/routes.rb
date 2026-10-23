@@ -159,6 +159,7 @@ Rails.application.routes.draw do
   end
 
   resources :filters do
+    get :confirm_destroy, on: :member
     resources :filter_subscriptions
   end
 

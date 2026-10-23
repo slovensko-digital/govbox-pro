@@ -36,4 +36,14 @@ class CommonFilterDistributionTest < ActiveSupport::TestCase
     user.initialize_filter_preferences!
     assert_equal [second, first], user.pinned_filters.to_a
   end
+
+  test "fresh tenant all-messages default is an empty query not an everything label" do
+    tenant = Tenant.create!(name: "Fresh filter tenant")
+    user = User.create!(tenant: tenant, name: "Fresh user", email: "fresh-filter-user@example.com")
+    assert_equal 1, tenant.filters.count
+    assert tenant.filters.first.common?
+    assert_equal "", tenant.filters.first.query
+    assert_equal [tenant.filters.first], user.pinned_filters.to_a
+    assert_equal "", user.pinned_filters.first.query
+  end
 end

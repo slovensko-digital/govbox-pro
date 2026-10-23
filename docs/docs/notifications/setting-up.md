@@ -31,6 +31,9 @@ Notifikácie je možné nastaviť na udalosti týkajúce sa správ a vlákien, k
 
 ::: callout warning "Dôležité"
 Notifikácie sa budú týkať iba správ, ktoré spĺňajú podmienky vybraného filtra.
+Spoločný filter neprideľuje prístup k správam. Výsledky aj notifikácie rešpektujú
+vaše oprávnenia ku schránkam a správam; preto môže rovnaký filter každému ukazovať
+iný počet správ alebo žiadne správy.
 :::
 
 ## Prístup k notifikáciám
@@ -38,3 +41,13 @@ Notifikácie sa budú týkať iba správ, ktoré spĺňajú podmienky vybraného
 ### Kde nájsť notifikácie
 Notifikácie sú k dispozícii po kliknutí na ikonu používateľa v pravom hornom menu a voľbe **"Notifikácie"**.
 
+Odopnutie filtra z menu nevypne jeho odber. Nájdete ho aj s nastavením odberu
+v **Nastavenia → Filtre** alebo otvorením jeho vyhľadávacieho dopytu. Ak rovnaký
+dopyt máte uložený osobne, stránka môže mať osobný názov, ale existujúci spoločný
+odber na nej stále môžete upraviť alebo vypnúť.
+
+Odkaz na filter v notifikácii otvorí jeho aktuálny dopyt a filter automaticky
+nepripne. Po zmene spoločného dopytu administrátorom sa aj staré odkazy otvoria
+s novými podmienkami. Priame odkazy na správu alebo vlákno sa nemenia.
+Už pripravené upozornenie môže výnimočne zodpovedať podmienkam pred zmenou dopytu;
+historické verzie filtrov a rušenie čakajúcich upozornení sa nevedú.

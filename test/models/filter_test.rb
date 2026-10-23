@@ -46,4 +46,16 @@ class FilterTest < ActiveSupport::TestCase
       end
     end
   end
+
+  test "tag creation and rename do not create filters or rewrite literal queries" do
+    tag = nil
+    assert_no_difference "Filter.count" do
+      tag = SimpleTag.create!(tenant: tenants(:ssd), name: "Original query label")
+    end
+    filter = Filter.create!(tenant: tenants(:ssd), author: users(:basic), name: "Literal label", query: "label:(Original query label)")
+    assert_no_difference "Filter.count" do
+      tag.update!(name: "Renamed query label")
+    end
+    assert_equal "label:(Original query label)", filter.reload.query
+  end
 end

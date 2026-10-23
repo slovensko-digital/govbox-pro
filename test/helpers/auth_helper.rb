@@ -14,7 +14,9 @@ module AuthHelper
     find_button("Prihlásiť cez Google").send_keys(:enter)
 
     assert_current_path root_path, ignore_query: true
-    assert_text "Správy v schránke"
+    user = users(user_fixture_name)
+    default_filter = user.tenant.feature_enabled?(:personalized_filters) ? user.pinned_filters.first : nil
+    within("#bulk_actions") { assert_text(default_filter&.name || "Správy v schránke") }
   end
 
   def mock_omni_auth_with_user(user_fixture_name)
@@ -40,6 +42,19 @@ module AuthHelper
   end
 
   def sign_out
+    # The dropdown's initial close transition can finish after the first click
+    # and hide an already-open menu. Wait for initialization, not by re-clicking.
+    page.document.synchronize do
+      ready = page.evaluate_script(<<~JS)
+        (() => {
+          const element = document.getElementById('user-menu-button')?.closest('[data-controller]');
+          const controller = element && window.Stimulus?.getControllerForElementAndIdentifier(element, 'dropdown');
+          return !!controller && controller.menuTarget.classList.contains('hidden') &&
+            !controller.menuTarget.classList.contains('transition');
+        })()
+      JS
+      raise Capybara::ExpectationNotMet, "user menu is still initializing" unless ready
+    end
     find("#user-menu-button").click
     click_on "Odhlásiť sa"
 

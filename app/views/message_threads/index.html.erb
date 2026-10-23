@@ -8,7 +8,7 @@
 
 <%= render partial: "fs_api_connection_setup_notice", locals: { api_connections: @unconfigured_fs_api_connections } %>
 
-<%= render MessageThreadsTableComponent.new(filter: @filter, filter_subscription: @filter_subscription, count_estimate: @count_estimate) do |component| %>
+<%= render MessageThreadsTableComponent.new(filter: @filter, query: @query, filter_subscription: @filter_subscription, filter_subscriptions: @filter_subscriptions, count_estimate: @count_estimate) do |component| %>
   <% if @message_threads.any? %>
     <% component.with_message_thread do %>
       <%= render MessageThreadsTableRowComponent.with_collection(@message_threads) %>

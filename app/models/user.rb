@@ -118,7 +118,7 @@ class User < ApplicationRecord
 
   def initialize_filter_preferences!
     tenant.with_lock do
-      tenant.filters.common.order(:position, :id).each { |filter| add_common_filter!(filter) }
+      tenant.filters.common.order(Arel.sql("CASE WHEN query = '' THEN 0 ELSE 1 END"), :position, :id).each { |filter| add_common_filter!(filter) }
     end
   end
 

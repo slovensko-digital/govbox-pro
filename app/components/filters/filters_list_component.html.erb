@@ -7,8 +7,8 @@
       <% end %>
     </div>
     <div class="self-stretch flex-col justify-start items-start flex">
-      <% @filters.each do |user| %>
-        <%= render Filters::FiltersListRowComponent.new(user) %>
+      <% @filters.each do |filter| %>
+        <%= render Filters::FiltersListRowComponent.new(filter, preference: @preferences[filter.id], subscriptions: @subscriptions.fetch(filter.query, []), overridden: filter.common? && @personal_queries.include?(filter.query)) %>
       <% end %>
     </div>
     <%= blank_results_area %>

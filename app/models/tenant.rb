@@ -64,7 +64,7 @@ class Tenant < ApplicationRecord
 
   validate :validate_api_token_public_key_format, unless: -> { api_token_public_key.nil? }
 
-  ALL_FEATURE_FLAGS = [:audit_log, :archive, :api, :message_draft_import, :fs_api, :fs_sync, :upvs, :fs_pdf_visualization, :fs_html_visualization, :fs_hotfixes]
+  ALL_FEATURE_FLAGS = [:audit_log, :archive, :api, :message_draft_import, :fs_api, :fs_sync, :upvs, :fs_pdf_visualization, :fs_html_visualization, :fs_hotfixes, :personalized_filters]
 
   PDF_SIGNATURE_FORMATS = %w[PAdES XAdES CAdES]
   SIGNATURE_REQUEST_MODES = %w[signer_group author].freeze
@@ -208,6 +208,7 @@ class Tenant < ApplicationRecord
     create_validation_warning_tag!(name: "Upozornenia", color: "orange", icon: "exclamation-triangle")
 
     make_admins_see_everything!
+    filters.create!(name: "Všetky správy", query: "", common: true)
   end
 
   def validate_api_token_public_key_format
