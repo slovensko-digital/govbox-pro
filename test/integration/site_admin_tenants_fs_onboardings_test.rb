@@ -29,7 +29,7 @@ class SiteAdminTenantsFsOnboardingsTest < ActionDispatch::IntegrationTest
   end
 
   test "returns unauthorized for invalid token" do
-    invalid_key_pair = OpenSSL::PKey::RSA.new(512)
+    invalid_key_pair = OpenSSL::PKey::RSA.new(2048)
 
     Fs::OnboardingService.stub(:new, ->(_) { flunk "service should not be called for unauthorized requests" }) do
       post "/api/site_admin/tenants/fs/onboardings",
