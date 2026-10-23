@@ -29,7 +29,8 @@ class User < ApplicationRecord
   has_many :message_drafts, foreign_key: :author_id, dependent: :destroy
   has_many :messages, foreign_key: :author_id, dependent: :nullify
   has_many :automation_rules, class_name: 'Automation::Rule', dependent: :nullify
-  has_many :filters, foreign_key: :author_id, dependent: :nullify
+  has_many :filters, -> { where(common: false) }, foreign_key: :author_id, dependent: :destroy
+  has_many :user_filter_visibilities, dependent: :destroy
   has_many :filter_subscriptions, dependent: :destroy
   has_many :notifications, dependent: :destroy
   has_one :sticky_note, dependent: :destroy
@@ -45,6 +46,7 @@ class User < ApplicationRecord
 
   before_destroy :delete_user_group, prepend: true
   after_create :handle_default_settings
+  after_create :initialize_filter_preferences!
   after_update :broadcast_badge_update
 
   normalizes :saml_identifier, with: -> (saml_identifier) { saml_identifier.presence }
@@ -106,6 +108,67 @@ class User < ApplicationRecord
     end
 
     update(attrs)
+  end
+
+  def pinned_filters
+    Filter.effective_for(self).joins(:user_filter_visibilities)
+      .where(user_filter_visibilities: { user_id: id, visible: true })
+      .order("user_filter_visibilities.position", "user_filter_visibilities.id")
+  end
+
+  def initialize_filter_preferences!
+    tenant.with_lock do
+      tenant.filters.common.order(Arel.sql("CASE WHEN query = '' THEN 0 ELSE 1 END"), :position, :id).each { |filter| add_common_filter!(filter) }
+    end
+  end
+
+  def add_common_filter!(filter)
+    tenant.with_lock do
+      with_lock do
+        raise ActiveRecord::RecordNotFound unless filter.common? && filter.tenant_id == tenant_id
+        return user_filter_visibilities.find_by(filter_id: filter.id) if user_filter_visibilities.exists?(filter_id: filter.id)
+
+        visible = !filters.exists?(query: filter.query)
+        user_filter_visibilities.create!(filter: filter, visible: visible,
+          position: (user_filter_visibilities.maximum(:position) || 0) + 1)
+      end
+    end
+  end
+
+  def set_filter_visibility!(filter_id, visible:)
+    with_lock do
+      filter = Filter.available_to(self).find(filter_id)
+      preference = user_filter_visibilities.find_or_initialize_by(filter: filter)
+      if preference.new_record? || (visible && !preference.visible?)
+        preference.position = (user_filter_visibilities.maximum(:position) || 0) + 1
+      end
+      preference.update!(visible: visible)
+      preference
+    end
+  end
+
+  def reorder_filters!(filter_ids)
+    with_lock do
+      ids = filter_ids.map(&:to_i)
+      current = pinned_filters.pluck(:id)
+      raise ActiveRecord::RecordNotFound unless ids.sort == current.sort && ids.uniq == ids
+
+      preferences = user_filter_visibilities.where(filter_id: current).index_by(&:filter_id)
+      positions = preferences.values.map(&:position).sort
+      ids.zip(positions).each { |filter_id, position| preferences.fetch(filter_id).update!(position: position) }
+    end
+  end
+
+  def move_filter!(filter_id, direction:)
+    with_lock do
+      ids = pinned_filters.pluck(:id)
+      index = ids.index(filter_id.to_i) || raise(ActiveRecord::RecordNotFound)
+      target = direction == :higher ? index - 1 : index + 1
+      return if target.negative? || target >= ids.size
+
+      ids[index], ids[target] = ids[target], ids[index]
+      reorder_filters!(ids)
+    end
   end
 
   private

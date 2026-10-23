@@ -5,9 +5,10 @@ class MessageThreadsController < ApplicationController
   before_action :set_message_thread, only: %i[show rename update history confirm_unarchive archive mark_read]
   before_action :set_thread_tags, only: %i[show history]
   before_action :set_thread_messages, only: %i[show history confirm_unarchive archive]
+  before_action :set_search_query, only: %i[index scroll bulk_actions]
   before_action :load_threads, only: %i[index scroll]
   before_action :set_unconfigured_fs_api_connections, only: :index
-  before_action :set_subscription, only: :index
+  before_action :set_subscription, only: [:index, :bulk_actions]
   before_action :set_reload
 
   def index
@@ -79,14 +80,14 @@ class MessageThreadsController < ApplicationController
       MessageThreadCollection.all(
         scope: message_thread_policy_scope.includes(:tags, :box),
         search_permissions: search_permissions,
-        query: search_params[:q],
+        query: @query,
         user_tag_name: Current.user.author_tag&.name,
         cursor: cursor
       )
 
     @message_threads, @next_cursor, @count_estimate = result.fetch_values(:records, :next_cursor, :count_estimate)
     @next_cursor = MessageThreadCollection.serialize_cursor(@next_cursor)
-    @next_page_params = search_params.to_h.merge(cursor: @next_cursor).merge(format: :turbo_stream)
+    @next_page_params = search_params.to_h.merge(q: @query, cursor: @next_cursor, format: :turbo_stream)
   end
 
   def history
@@ -112,6 +113,10 @@ class MessageThreadsController < ApplicationController
 
   private
 
+  def set_search_query
+    @query = current_search_query
+  end
+
   def set_unconfigured_fs_api_connections
     @unconfigured_fs_api_connections = Current.tenant.api_connections.where(type: "Fs::ApiConnection").select do |api_connection|
       !api_connection.credentials_configured? && policy([:admin, api_connection]).init?
@@ -119,10 +124,9 @@ class MessageThreadsController < ApplicationController
   end
 
   def set_subscription
-    return unless params[:q]
-
-    @filter = Current.tenant.filters.where(query: params[:q]).first
-    @filter_subscription = Current.user.filter_subscriptions.joins(:filter).where(filter: { query: params[:q] }).first
+    @filter = Filter.for_query(Current.user, @query)
+    @filter_subscriptions = FilterSubscription.for_query(Current.user, @query).includes(:filter).order(:id).to_a
+    @filter_subscription = @filter_subscriptions.first
   end
 
   def set_message_thread

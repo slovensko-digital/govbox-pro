@@ -1,0 +1,18 @@
+<%= turbo_frame_tag "modal", target: "_top" do %>
+  <%= render Common::ModalComponent.new do |modal| %>
+    <% modal.with_header do %>Odstrániť spoločný filter?<% end %>
+    <% modal.with_modal_content do %>
+      <p class="my-4">Filter „<%= @filter.name %>“ sa odstráni všetkým používateľom vrátane jeho odberov. Správy a štítky zostanú nezmenené.</p>
+      <% if @subscribing_users_count.positive? %>
+        <p role="alert" class="my-4 font-semibold">Počet používateľov s odberom: <%= @subscribing_users_count %>. Odstránením sa zrušia aj ich odbery notifikácií.</p>
+      <% end %>
+      <%= form_with url: filter_path(@filter), method: :delete, data: { turbo_frame: "_top" } do |form| %>
+        <%= hidden_field_tag :confirmation_token, @confirmation_token %>
+        <div class="flex flex-wrap gap-4 my-4">
+          <%= link_to "Zrušiť", filters_path, class: "underline", data: { turbo_frame: "_top" } %>
+          <%= form.submit "Odstrániť filter", class: "rounded-md bg-red-600 px-4 py-2 text-white" %>
+        </div>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>

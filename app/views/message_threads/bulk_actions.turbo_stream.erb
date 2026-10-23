@@ -1,3 +1,3 @@
 <%= turbo_stream.replace "bulk_actions" do %>
-  <%= render MessageThreadsBulkActionsComponent.new(ids: @ids, count_estimate: @count_estimate, signable: Current.user.signer?) %>
+  <%= render MessageThreadsBulkActionsComponent.new(ids: @ids, query: @query, filter: @filter, filter_subscription: @filter_subscription, filter_subscriptions: @filter_subscriptions, count_estimate: @count_estimate, signable: Current.user.signer?) %>
 <% end %>

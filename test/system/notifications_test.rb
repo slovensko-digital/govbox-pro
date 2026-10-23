@@ -4,6 +4,8 @@ require "helpers/good_job_helper"
 class NotificationsTest < ApplicationSystemTestCase
   include GoodJobHelper
   setup do
+    # This journey shares one filter between multiple users, as migrated common filters do.
+    filters(:one).update!(common: true)
     Searchable::MessageThread.reindex_all
     sign_in_as(:basic)
   end

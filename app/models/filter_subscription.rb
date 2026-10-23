@@ -26,7 +26,13 @@ class FilterSubscription < ApplicationRecord
   belongs_to :user
   belongs_to :filter
 
+  def self.for_query(user, query)
+    where(user_id: user.id, tenant_id: user.tenant_id,
+      filter_id: Filter.available_to(user).where(query: query.to_s.strip).select(:id))
+  end
+
   validates_presence_of :events, on: :create
+  validate :consistent_ownership
 
   before_create { self.last_notify_run_at = Time.current }
 
@@ -52,10 +58,11 @@ class FilterSubscription < ApplicationRecord
     #       .matching(query)
 
     tag_ids = user.accessible_tags.pluck(:id)
-    raise SecurityError unless tag_ids.any?
+    return searchable.none unless tag_ids.any?
 
     scope = searchable
               .where(tenant_id: tenant)
+              .where(box_id: user.accessible_boxes.select(:id))
               .where("tag_ids && ARRAY[?]::integer[]", tag_ids)
 
     query = Searchable::MessageThreadQuery.labels_to_ids(
@@ -73,5 +80,16 @@ class FilterSubscription < ApplicationRecord
     scope = scope.fulltext_search(query[:fulltext], prefix_search: query[:prefix_search]) if query[:fulltext].present?
 
     scope
+  end
+
+  private
+
+  def consistent_ownership
+    return unless user && filter
+
+    if tenant_id != user.tenant_id || filter.tenant_id != user.tenant_id || (!filter.common? && filter.author_id != user.id)
+      errors.add(:filter, "is not available to this user")
+    end
+    errors.add(:events, "contains an unknown notification event") if (Array(events) - AVAILABLE_EVENT_NAMES).any?
   end
 end

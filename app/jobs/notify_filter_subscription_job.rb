@@ -1,5 +1,6 @@
 class NotifyFilterSubscriptionJob < ApplicationJob
   include GoodJob::ActiveJobExtensions::Concurrency
+  discard_on ActiveJob::DeserializationError, ActiveRecord::RecordNotFound
 
   good_job_control_concurrency_with(
     # Maximum number of unfinished jobs to allow with the concurrency key
@@ -15,14 +16,19 @@ class NotifyFilterSubscriptionJob < ApplicationJob
   )
 
   def perform(subscription, thread, matched_before)
-    Notification.transaction do
-      run_started_at = Time.current
+    subscription.filter.with_lock do
+      subscription.reload
+      return unless MessageThreadPolicy::Scope.new(subscription.user, MessageThread).resolve.exists?(id: thread.id)
 
-      subscription.event_types.each do |type|
-        type.create_notifications!(subscription, thread, matched_before)
+      Notification.transaction do
+        run_started_at = Time.current
+
+        subscription.event_types.each do |type|
+          type.create_notifications!(subscription, thread, matched_before)
+        end
+
+        subscription.update!(last_notify_run_at: run_started_at)
       end
-
-      subscription.update!(last_notify_run_at: run_started_at)
     end
   end
 end
