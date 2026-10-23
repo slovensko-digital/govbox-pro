@@ -1,9 +1,7 @@
-<%= render Admin::AuditLogs::AuditLogTableComponent.new(actor: @actor, message_thread: @message_thread, audit_logs: @audit_logs, view: @view) do |component| %>
-  <% component.with_next_page_area do %>
-    <% if @audit_logs.any? %>
-      <%= render Turbo::NextPageAreaComponent.new(id: @next_cursor, url: @url) %>
-    <% else %>
-      <%= render Common::NoResultsFoundComponent.new("Nenašli sa žiadne auditné záznamy", "") %>
-    <% end %>
+<%= render layout: "admin/audit_logs/audit_log_table", locals: { actor: @actor, message_thread: @message_thread, audit_logs: @audit_logs, view: @view } do %>
+  <% if @audit_logs.any? %>
+    <%= render "turbo/next_page_area", id: @next_cursor, url: @url %>
+  <% else %>
+    <%= render "common/no_results_found", message_header: "Nenašli sa žiadne auditné záznamy", message_body: "" %>
   <% end %>
 <% end %>

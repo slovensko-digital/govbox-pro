@@ -1,0 +1,15 @@
+<%# locals: (filter:) %>
+<%= render layout: "common/modal", locals: { header: "Pridať filter" } do %>
+  <%= form_with model: filter, url: filters_path(to: 'search'), data: { turbo_frame: "_top" }, class: "flex flex-col self-stretch grow-0 shrink-0 mt-4" do |f| %>
+    <div class="mb-4">
+      <%= f.label :name, "Názov", class: "block text-sm font-medium leading-6 text-gray-900" %>
+      <div class="mt-2">
+        <%= f.text_field :name, autofocus: true, class: "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" %>
+      </div>
+    </div>
+    <%= f.hidden_field :query %>
+    <%= render layout: "common/modal_actions" do %>
+      <%= f.submit "Vytvoriť", class: "inline-flex w-full justify-center items-center px-3 py-2 rounded-md bg-blue-600 font-medium text-left text-sm text-white hover:cursor-pointer sm:w-auto" %>
+    <% end %>
+  <% end %>
+<% end %>

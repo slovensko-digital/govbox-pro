@@ -1,6 +1,3 @@
-<%= turbo_stream.update Signing::DocumentsSelection::Component::ACTIONS_FRAME do %>
-  <%= render Signing::DocumentsSelection::ActionsComponent.new(
-    message_draft: @message_draft,
-    message_object_ids: @message_object_ids,
-    next_step: @next_step) %>
+<%= turbo_stream.update "documents-selections-actions" do %>
+  <%= render "signing/documents_selection/actions", message_draft: @message_draft, message_object_ids: @message_object_ids, next_step: @next_step %>
 <% end %>

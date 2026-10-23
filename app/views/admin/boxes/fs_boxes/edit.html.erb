@@ -8,7 +8,7 @@
             <p class="self-stretch grow-0 shrink-0 text-xl font-semibold text-left text-gray-900">Zmena údajov o schránke</p>
             <p class="grow-0 shrink-0 text-xs text-left text-gray-500">Základné informácie o FS schránke</p>
           </div>
-          <%= render Common::CloseButtonComponent.new(link_to: admin_tenant_boxes_path(Current.tenant)) %>
+          <%= render "common/close_button", link_to: admin_tenant_boxes_path(Current.tenant) %>
         </div>
         <%= form_with model: [:admin, Current.tenant, @box], scope: :fs_box, url: polymorphic_path([:admin, Current.tenant, :boxes, @box]) do |form| %>
           <div class="w-96">

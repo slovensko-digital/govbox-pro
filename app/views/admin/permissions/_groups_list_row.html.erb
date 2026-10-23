@@ -25,7 +25,7 @@
       <% if group.tags.any? %>
         <div class="flex flex-wrap justify-start items-start gap-2">
           <% group.tags.each do |tag| %>
-            <%= render Common::TagComponent.new(tag) %>
+            <%= render "common/tag", tag: tag %>
           <% end %>
         </div>
       <% end %>
@@ -33,7 +33,7 @@
   </div>
   <div class="justify-start items-start gap-2 flex">
     <%= link_to edit_permissions_admin_tenant_group_path(group.tenant, group), title: t('admin.groups.permissions.edit'), data: { turbo_frame: "_top" }  do %>
-      <%= render Common::EditButtonComponent.new %>
+      <%= render "common/edit_button" %>
     <% end %>
   </div>
 </div>

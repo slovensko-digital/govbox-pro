@@ -1,0 +1,21 @@
+<%# locals: (message:) %>
+<%= render layout: "common/modal", locals: { header: "Správu nie je možné upravovať" } do %>
+  <div class="mt-2 pb-4">
+    <p class="text-sm text-gray-500">
+      <% if message.reason_for_readonly == :form_signed %>
+        <%= t "message_draft.form_signed" %>
+      <% elsif message.reason_for_readonly == :submitted %>
+        <%= t "message_draft.submitted" %>
+      <% else %>
+        <%= t "message_draft.read_only_agenda" %>
+      <% end %>
+    </p>
+  </div>
+  <% if message.reason_for_readonly == :form_signed %>
+    <%= render layout: "common/modal_actions" do %>
+      <%= button_to unlock_message_draft_path(message), class: "inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-red-500 sm:ml-3 sm:w-auto", data: { turbo_frame: "_top" } do %>
+        Odstrániť podpisy
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>

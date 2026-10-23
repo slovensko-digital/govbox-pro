@@ -1,0 +1,44 @@
+<%# locals: (form:, index:, enabled: true, new:) %>
+<%
+  attr_list = Automation::Condition::ATTR_LIST.map { |attr| [t(attr), attr] }
+  condition_type_list = form.object.valid_condition_type_list_for_attr.map do |condition_type|
+    [t(condition_type), condition_type]
+  end
+%>
+<%= tag.turbo_frame id: "condition-#{index}", class: "flex justify-between self-stretch grow" do %>
+  <div class="flex justify-stretch gap-2" id="<%= dom_id(form.object)%>">
+    <%= form.hidden_field :id %>
+    <%= form.select :attr, attr_list, {}, { data: { controller: "auto-submit", action: "change->auto-submit#submit", "auto-submit-submitter-param": "rerender" }, class: "mt-2 block rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-400 ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6", disabled: !enabled } %>
+    <%= form.select :type, condition_type_list, {}, class: "mt-2 block rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-400 ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6", disabled: !enabled %>
+    <% if form.object.attr.in? ['box'] %>
+      <%= form.select :condition_object_id, form.object.box_list, {}, class: "mt-2 block rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-400 ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6", disabled: !enabled %>
+      <%= form.hidden_field :condition_object_type, value: 'Box' %>
+    <% elsif form.object.attr.in? ['api_connection'] %>
+      <%= form.select :condition_object_id, form.object.api_connection_list, {}, class: "mt-2 block rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-400 ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6", disabled: !enabled %>
+      <%= form.hidden_field :condition_object_type, value: 'ApiConnection' %>
+    <% elsif form.object.attr.in? ['outbox'] %>
+      <%= form.select :value, [['áno', true], ['nie', false]], {}, class: "mt-2 block rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-400 ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6", disabled: !enabled %>
+    <% elsif form.object.attr.in? %w[authors_api_connection attachments] %>
+      <!-- noop -->
+    <% else %>
+      <%= form.text_field :value, class: "mt-2 block rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-400 ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6", disabled: !enabled %>
+    <% end %>
+  </div>
+  <% if enabled %>
+    <div>
+      <% if new %>
+        <%= button_tag type: "submit", title: "Pridať podmienku", formaction: settings_automation_conditions_path(index: index), formmethod: :post do %>
+          <%= render "common/add_button" %>
+        <% end %>
+      <% else %>
+        <%= button_tag type: "submit", title: "Zmazať podmienku", formaction: settings_automation_condition_path(id: form.object.id, index: index), formmethod: :delete do %>
+          <%= render "common/delete_button" %>
+        <% end %>
+        <%= button_tag type: "submit", title: "Upraviť podmienku", formaction: settings_automation_condition_path(index: index), formmethod: :patch do %>
+          <%= render "common/add_button" %>
+        <% end %>
+      <% end %>
+      <%= button_tag id: "rerender", type: "submit", formaction: settings_automation_condition_rerender_path(automation_condition_index: index, new: new), hidden: true, formmethod: :patch %>
+    </div>
+  <% end %>
+<% end %>

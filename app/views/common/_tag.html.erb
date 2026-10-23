@@ -1,0 +1,7 @@
+<%# locals: (tag:, classes: "", color: nil) %>
+<%
+  label = tag.name || tag.external_name
+  color = tag.color || "gray"
+  icon = tag.icon.presence || (tag.gives_access? ? "key" : nil)
+%>
+<%= render "common/badge", label: label, color: color, icon: icon, classes: classes %>

@@ -5,7 +5,7 @@
     </div>
     <% @feature_flags.each do |flag| %>
       <div class="self-stretch flex-col justify-start items-start flex">
-        <%= render Admin::FeatureFlags::FeatureFlagsListRowComponent.new(flag.to_s, @enabled_features) %>
+        <%= render "admin/feature_flags/feature_flags_list_row", flag: flag.to_s, enabled_features: @enabled_features %>
       </div>
     <% end %>
   </div>

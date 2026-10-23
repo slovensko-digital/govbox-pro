@@ -1,0 +1,13 @@
+<%# locals: (filter:, filter_subscription:, message_threads:, count_estimate: nil, next_cursor: nil, next_page_params: nil) %>
+<div class="flex flex-col justify-stretch items-stretch gap-4 sm:p-4">
+  <div class="flex flex-col justify-stretch items-stretch sm:rounded-md bg-white sm:border sm:border-gray-200" data-controller="form all-checkboxes shift-select">
+    <%= render "shared/message_threads_bulk_actions", ids: [], filter: filter, count_estimate: count_estimate, filter_subscription: filter_subscription, signable: Current.user.signer? %>
+    <%= form_with url: bulk_actions_message_threads_path(count_estimate: count_estimate), data: { "form-target": "form", "all-checkboxes-target": "form" } do %>
+      <ul role="list" id="message_threads" data-controller="visited-links" class="divide-y divide-gray-100">
+        <%= render partial: "shared/message_threads_table_row", collection: message_threads, as: :message_thread %>
+      </ul>
+      <%= render "turbo/next_page_area", id: next_cursor, url: scroll_message_threads_url(next_page_params) if message_threads.any? && next_cursor %>
+    <% end %>
+    <%= render "common/blank_results", reason: :not_found if message_threads.empty? %>
+  </div>
+</div>

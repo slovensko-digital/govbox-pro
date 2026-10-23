@@ -1,5 +1,5 @@
 <%= turbo_stream.update 'box-list' do %>
   <% @boxes.each do |box| %>
-    <%= render Layout::BoxListComponent.new(box: box) %>
+    <%= render "layout/box_list", box: box %>
   <% end %>
 <% end %>

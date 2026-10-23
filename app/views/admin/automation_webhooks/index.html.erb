@@ -2,10 +2,10 @@
   <div class="self-stretch bg-white rounded-md border border-gray-200 flex-col justify-start items-start flex">
     <div class="self-stretch p-6 border-b border-gray-200 justify-start items-center gap-4 inline-flex">
       <div class="grow shrink basis-0 text-gray-900 text-xl font-semibold leading-[35px]">Integrácie</div>
-        <%= link_to new_admin_tenant_automation_webhook_path, data: { turbo_frame: "modal" }, class: "px-3.5 py-2.5 bg-blue-600 rounded-md justify-center items-center gap-2.5 flex" do %>
-          <p class="text-white text-base font-medium leading-normal">Vytvoriť novú integráciu</p>
-        <% end %>
-      </div>
+      <%= link_to new_admin_tenant_automation_webhook_path, data: { turbo_frame: "modal" }, class: "px-3.5 py-2.5 bg-blue-600 rounded-md justify-center items-center gap-2.5 flex" do %>
+        <p class="text-white text-base font-medium leading-normal">Vytvoriť novú integráciu</p>
+      <% end %>
+    </div>
     <div class="self-stretch flex-col justify-start items-start flex">
       <% @webhooks.each do |webhook| %>
         <div class="self-stretch p-6 border-b border-gray-200 justify-start items-center gap-4 inline-flex">
@@ -22,10 +22,10 @@
           </div>
           <div class="justify-start items-start gap-2 flex">
             <%= link_to edit_admin_tenant_automation_webhook_path(webhook.tenant, webhook), data: { turbo_frame: "modal" } do %>
-              <%= render Common::EditButtonComponent.new %>
+              <%= render "common/edit_button" %>
             <% end %>
             <%= button_to admin_tenant_automation_webhook_path(webhook.tenant, webhook), method: :delete, data: { turbo_confirm: "Naozaj chcete zmazať integráciu '#{webhook.name}'?" } do %>
-              <%= render Common::DeleteButtonComponent.new %>
+              <%= render "common/delete_button" %>
             <% end %>
           </div>
         </div>

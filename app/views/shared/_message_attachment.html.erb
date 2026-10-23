@@ -1,0 +1,52 @@
+<%# locals: (message_attachment:, message_attachment_iteration: nil) %>
+<%
+  is_last = message_attachment_iteration&.last?
+  is_draft_view = message_attachment.message.draft?
+%>
+<div class="flex justify-between items-center p-2 overflow-x-clip">
+  <%= link_to message_message_object_path(message_attachment.message_id, message_attachment), data: { turbo_frame: "_top" }, class: "flex justify-start items-center gap-4 overflow-x-clip" do %>
+    <div class="flex justify-stretch items-center gap-4">
+      <% if message_attachment.nested_message_objects.present? %>
+        <!--        TODO najst inu ikonku-->
+        <%= render "icons/document_text", css_classes: "w-8 h-8 text-gray-400", stroke_width: 1 %>
+      <% else %>
+        <%= render "icons/document_text", css_classes: "w-8 h-8 text-gray-400", stroke_width: 1 %>
+      <% end %>
+    </div>
+    <div class="flex flex-col justify-start items-start overflow-x-clip gap-1">
+      <div class="flex justify-start items-center gap-4 w-full">
+        <span class="truncate text-base font-semibold text-left text-gray-900">
+          <%= MessageObjectHelper.displayable_name(message_attachment) %>
+        </span>
+        <div class="flex flex-wrap gap-1">
+          <% SigningTagsHelper.sort_tags(message_attachment.tags).each do |tag| %>
+            <%= render "common/tag", tag: tag %>
+          <% end %>
+          <% if !is_draft_view && message_attachment.message.thread.archived? %>
+            <%= render "shared/archived_object_tag", archived_object: message_attachment.message_object_datum.message_object.archived_object %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+  <% if is_draft_view %>
+    <div class="hidden md:flex justify-end items-center gap-4">
+      <%= link_to download_message_message_object_path(message_attachment.message, message_attachment), data: { turbo_frame: "_top" }, class: "flex justify-end items-center gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300 hover:bg-gray-100", "aria-label": "Stiahnúť" do %>
+        <%= render "icons/arrow_down_tray", css_classes: "w-5 h-5" %>
+      <% end %>
+      <% if message_attachment.destroyable? %>
+        <%= button_to message_message_object_path(message_attachment.message, message_attachment), method: :delete, class: "flex justify-end items-center self-stretch grow-0 shrink-0 relative gap-2.5 px-3.5 py-2.5 rounded-md bg-white border border-gray-300 hover:bg-gray-100", "aria-label": "Zmazať", "data-turbo": false do %>
+          <%= render "icons/trash", css_classes: "w-5 h-5 text-red-600" %>
+        <% end %>
+      <% end %>
+    </div>
+  <% else %>
+    <%= render "shared/message_attachment_menu", message_attachment: message_attachment %>
+  <% end %>
+</div>
+<% if message_attachment.nested_message_objects.present? %>
+  <div class="flex-col pl-12 divide-y">
+    <%=
+      render partial: "shared/nested_message_attachment", collection: message_attachment.nested_message_objects, as: :nested_message_attachment %>
+  </div>
+<% end %>

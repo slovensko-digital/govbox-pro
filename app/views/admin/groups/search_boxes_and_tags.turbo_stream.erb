@@ -7,7 +7,7 @@
             <div class="flex flex-col justify-start items-start grow relative">
               <p class="self-stretch grow text-m font-semibold text-left text-gray-900"><%= t('admin.groups.permissions.add_popup.title.boxes_and_tags') %></p>
             </div>
-            <%= render Common::CloseButtonComponent.new(link_to: edit_permissions_admin_tenant_group_path(Current.tenant, @group), target_frame: "_top") %>
+            <%= render "common/close_button", link_to: edit_permissions_admin_tenant_group_path(Current.tenant, @group), target_frame: "_top" %>
           </div>
           <% if @boxes.present? %>
             <div class="flex flex-wrap gap-2 p-4 max-w-3xl">
@@ -51,7 +51,7 @@
               <div class="flex flex-col justify-start items-start grow relative">
                 <p class="self-stretch grow text-m font-semibold text-left text-gray-900"><%= t('admin.groups.permissions.add_popup.title.boxes_and_tags') %></p>
               </div>
-              <%= render Common::CloseButtonComponent.new(link_to: edit_permissions_admin_tenant_group_path(Current.tenant, @group), target_frame: "_top") %>
+              <%= render "common/close_button", link_to: edit_permissions_admin_tenant_group_path(Current.tenant, @group), target_frame: "_top" %>
             </div>
             <div class="flex justify-start items-center self-stretch gap-4 p-4">
               <%= t('admin.groups.permissions.add_popup.empty.boxes_and_tags') %>

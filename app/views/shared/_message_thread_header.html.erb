@@ -1,0 +1,25 @@
+<%# locals: (message_thread:, thread_tags:) %>
+<div class="flex justify-between gap-4 px-4 md:px-6 py-4 bg-white border-t-0 border-r-0 border-b border-l-0 border-gray-200" data-test="header">
+  <div class="flex flex-col grow md:flex-row justify-start relative gap-4">
+    <div class="flex flex-col flex-wrap gap-2 md:gap-4">
+      <div class="flex gap-2">
+        <span class="text-xl [word-break:break-word] font-semibold text-left text-gray-900" data-test="title" data-controller="text-wrap">
+          <%= message_thread.title %>
+        </span>
+      </div>
+      <div class="flex flex-wrap items-center gap-1" data-test="tags" data-controller="content-with-separator">
+        <div class="flex gap-4 mr-3" data-content-with-separator-target="separator-container">
+          <%= render "common/box_label", box: message_thread.box, classes: "", font_size_class: "text-xs sm:text-sm", padding_class: "px-2 py-0.5" %>
+          <div class="h-6 sm:h-8 w-px bg-gray-900/10" aria-hidden="true" data-content-with-separator-target="separator"></div>
+        </div>
+        <% thread_tags.each do |thread_tag| %>
+          <%= render "common/tag", tag: thread_tag.tag %>
+        <% end %>
+        <%= link_to edit_message_thread_tags_path(message_thread), data: { turbo_frame: "modal" }, title: "Upraviť štítky", class: "rounded-md bg-blue-100 p-[5px] hover:bg-blue-200" do %>
+          <%= render "icons/tag", css_classes: "h-4 w-4 text-blue-600", stroke_width: 2 %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <%= render "shared/message_thread_options", message_thread: message_thread %>
+</div>

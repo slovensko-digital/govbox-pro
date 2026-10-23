@@ -1,0 +1,25 @@
+<%# locals: (message_draft:, message_object_ids:, next_step:) %>
+<%
+  form = message_draft.form_object
+  attachments = message_draft.signable_objects.to_a.reject(&:form?).sort_by(&:created_at).reverse
+%>
+<%= render layout: "common/modal", locals: { max_size: "max-w-lg md:max-w-xl", header: "Dokumenty na podpis" } do %>
+  <%= form_with url: message_draft_document_selections_path(message_draft), method: :patch do %>
+    <%= hidden_field_tag "next_step", next_step %>
+    <div class="flex flex-col items-start gap-4 mt-4">
+      <div class="w-full mb-4">
+        <div class="flex flex-col gap-2 overflow-y-scroll p-1">
+          <% if form.present? %>
+            <%= render "signing/documents_selection/item", message_object: form, name: "Hlavný dokument", checked_ids: message_object_ids, icon: "envelope" %>
+          <% end %>
+          <% attachments.each do |attachment| %>
+            <%= render "signing/documents_selection/item", message_object: attachment, checked_ids: message_object_ids, icon: "paper_clip" %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    <%= tag.turbo_frame id: "documents-selections-actions" do %>
+      <%= render "signing/documents_selection/actions", message_draft: message_draft, message_object_ids: message_object_ids, next_step: next_step %>
+    <% end %>
+  <% end %>
+<% end %>

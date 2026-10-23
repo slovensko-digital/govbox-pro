@@ -13,7 +13,7 @@
         <div class="relative w-full">
           <div class="flex w-full items-center rounded-md shadow-xs ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600">
             <div class="p-2">
-              <%= render Icons::MagnifyingGlassComponent.gray(size: "5") %>
+              <%= render "icons/magnifying_glass", css_classes: "text-gray-400 w-5 h-5" %>
             </div>
             <%= form.search_field :name_search, value: params[:name_search], placeholder: t('admin.groups.permissions.search_placeholder.boxes_and_tags'),
                 data: { controller: 'auto-submit', action: 'input->debounce#debounce reset->auto-submit#submit' },
@@ -42,22 +42,22 @@
         </div>
         <% unless group.all_boxes_permission? %>
           <div class="flex flex-col divide-y border rounded-md border-gray-200">
-          <% if group.box_groups.empty? %>
-            <div class="p-4 text-sm text-gray-500 text-center">
-              <%= t('admin.groups.permissions.empty_list.box') %>
-            </div>
-          <% else %>
-            <% group.box_groups.each do |box_group| %>
-              <%= render layout: "admin/permissions/item_row", locals: {
+            <% if group.box_groups.empty? %>
+              <div class="p-4 text-sm text-gray-500 text-center">
+                <%= t('admin.groups.permissions.empty_list.box') %>
+              </div>
+            <% else %>
+              <% group.box_groups.each do |box_group| %>
+                <%= render layout: "admin/permissions/item_row", locals: {
                 delete_path: admin_tenant_group_box_group_path(Current.tenant, group, box_group),
                 id: dom_id(box_group.box, :permission_row)
               } do %>
-                <p class="self-stretch grow-0 shrink-0 text-sm font-medium text-left text-gray-900"><%= box_group.box.name %></p>
-                <p class="self-stretch grow-0 shrink-0 text-xs text-left text-gray-500"><%= box_group.box.short_name %></p>
+                  <p class="self-stretch grow-0 shrink-0 text-sm font-medium text-left text-gray-900"><%= box_group.box.name %></p>
+                  <p class="self-stretch grow-0 shrink-0 text-xs text-left text-gray-500"><%= box_group.box.short_name %></p>
+                <% end %>
               <% end %>
             <% end %>
-          <% end %>
-        </div>
+          </div>
         <% end %>
       </div>
       <!-- Tags Column -->
@@ -75,7 +75,7 @@
                 id: dom_id(group_permission.tag, :permission_row),
                 restricted: group_permission.restricted?
               } do %>
-                <%= render Common::TagComponent.new(group_permission.tag) %>
+                <%= render "common/tag", tag: group_permission.tag %>
               <% end %>
             <% end %>
           <% end %>

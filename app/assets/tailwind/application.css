@@ -6,7 +6,6 @@
 @source '../../../app/helpers/**/*.rb';
 @source '../../../app/javascript/**/*.js';
 @source '../../../app/views/**/*.{erb,haml,html,slim}';
-@source '../../../app/components/**/*.{rb,erb,haml,html,slim}';
 
 /* Colour utilities composed at runtime from Colorized.colors (tags, boxes,
    filter colour pickers). Add any new dynamically composed colour utilities here. */
