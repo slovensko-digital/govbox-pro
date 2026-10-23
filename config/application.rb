@@ -134,7 +134,4 @@ module GovboxPro
   end
 end
 
-Rails.application.routes.default_url_options = {
-  host: ENV['APP_HOST'] || 'localhost',
-  port: ENV['PORT'] || 3000
-}
+Rails.application.routes.default_url_options = { host: 'hovno' }

@@ -26,6 +26,7 @@ module MessageDrafts
       assert_select "input[type='submit'][value='Pokračovať'][formmethod='get'][formaction='#{new_agp_bundle_path}']"
       assert_select "input[type='submit'][value='Pokračovať'][formaction*='object_ids']", count: 0
       assert_select "input[type='checkbox'][name='object_ids[]']", count: 2
+      assert_select "input[type='hidden'][name='message_draft_id'][value='#{@message_draft.id}']"
     end
   end
 end

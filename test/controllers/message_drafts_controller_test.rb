@@ -26,13 +26,15 @@ class MessageDraftsControllerTest < ActionController::TestCase
       bundle: bundle_one,
       message_object: message_object,
       message_object_updated_at: message_object.updated_at,
-      contract_identifier: SecureRandom.uuid
+      contract_identifier: SecureRandom.uuid,
+      signer_user: users(:basic)
     )
     Agp::Contract.create!(
       bundle: bundle_two,
       message_object: message_object,
       message_object_updated_at: message_object.updated_at,
-      contract_identifier: SecureRandom.uuid
+      contract_identifier: SecureRandom.uuid,
+      signer_user: users(:basic)
     )
 
     assert_equal 2, Agp::Contract.where(message_object: message_object).count

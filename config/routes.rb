@@ -349,6 +349,8 @@ Rails.application.routes.draw do
   # Autogram Portal integration
   namespace :agp do
     resources :webhooks, only: [:create]
-    resources :bundles, only: [:show, :new, :create]
+    resources :bundles, only: [:show, :new, :create] do
+      post :sync, on: :member
+    end
   end
 end

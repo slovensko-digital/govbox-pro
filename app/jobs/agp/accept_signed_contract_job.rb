@@ -1,23 +1,16 @@
 module Agp
   class AcceptSignedContractJob < ApplicationJob
-    def perform(contract_id)
-      contract = Agp::Contract.find_by!(contract_identifier: contract_id)
-      return unless contract.created?
+    discard_on ActiveJob::DeserializationError
 
-      message_object = contract.message_object
+    def perform(contract_identifier)
+      contract = Agp::Contract.find_by(contract_identifier: contract_identifier)
+      return unless contract&.created?
 
-      agp_api = SigningEnvironment.signing_client.api(tenant: message_object.tenant)
-      signed_contract = agp_api.retrieve_signed_contract(contract_id)
-      signer_user = contract.signer_user || message_object.tenant.users.first
+      signed_document = Agp.api_for(contract.bundle.tenant).retrieve_signed_document(contract.contract_identifier)
+      return unless signed_document
 
-      message_object.mark_as_signed!(
-        {
-          name: signed_contract["filename"],
-          mimetype: signed_contract["content_type"],
-          content: signed_contract["content"]
-        },
-        signer_user
-      )
+      contract.accept_signed_document!(**signed_document)
+      contract.bundle.finish_if_done!
     end
   end
 end

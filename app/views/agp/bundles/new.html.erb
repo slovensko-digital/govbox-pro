@@ -21,16 +21,7 @@
           </div>
         </div>
 
-        <%= form_with model: @bundle, url: agp_bundles_path, method: :post, data: { turbo_frame: "modal" }, html: { id: "agp-bundle-autostart-form", class: "hidden" } do |f| %>
-          <%= f.hidden_field :bundle_identifier %>
-          <% @bundle.contracts.each_with_index do |contract, index| %>
-            <%= f.fields_for :contracts, contract do |cf| %>
-              <%= cf.hidden_field :contract_identifier %>
-              <%= cf.hidden_field :message_object_id %>
-              <%= cf.hidden_field :message_object_updated_at %>
-            <% end %>
-          <% end %>
-
+        <%= form_with url: agp_bundles_path, method: :post, data: { turbo_frame: "modal", controller: "autosubmit-form" }, html: { id: "agp-bundle-autostart-form", class: "hidden" } do %>
           <%= hidden_field_tag :message_draft_id, params[:message_draft_id] if params[:message_draft_id].present? %>
           <% Array(params[:message_thread_ids]).each do |id| %>
             <%= hidden_field_tag "message_thread_ids[]", id %>
@@ -39,17 +30,7 @@
             <%= hidden_field_tag "object_ids[]", id %>
           <% end %>
         <% end %>
-
-        <script>
-          (() => {
-            const form = document.getElementById("agp-bundle-autostart-form")
-            if (!form || form.dataset.submitted === "true") return
-
-            form.dataset.submitted = "true"
-            requestAnimationFrame(() => form.requestSubmit())
-          })()
-        </script>
-      <% end %>
-    </div>
+      </div>
+    <% end %>
   <% end %>
 <% end %>
