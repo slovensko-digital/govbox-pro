@@ -47,7 +47,7 @@ jobs:
 
       # Puppeteer, used by Grover for PDF rendering, is a runtime dependency with no
       # asset pipeline hook installing it anymore now that assets are served via importmap.
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: 22
           cache: npm
