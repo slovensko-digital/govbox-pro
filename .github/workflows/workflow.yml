@@ -72,20 +72,34 @@ jobs:
           path: ${{ github.workspace }}/log/test.log
           if-no-files-found: ignore
 
-  fop:
-    name: FOP Saxon check
+  changes:
+    name: Detect FOP changes
 
     runs-on: ubuntu-latest
+
+    outputs:
+      fop: ${{ steps.filter.outputs.fop }}
 
     steps:
       - uses: actions/checkout@v5
       - uses: dorny/paths-filter@v3
-        id: changes
+        id: filter
         with:
           filters: |
             fop:
               - Dockerfile
               - bin/check-fop-saxon
+
+  fop:
+    name: FOP Saxon check
+
+    needs: changes
+
+    if: ${{ needs.changes.outputs.fop == 'true' }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
       - name: Build the image's FOP stage
-        if: steps.changes.outputs.fop == 'true'
         run: docker build --target base -t govbox-pro-base .
