@@ -58,3 +58,8 @@
 
 - [x] 8.1 Restore visible system-tag shortcuts beside saved filters without creating saved filter records; show only the current user's signer-specific shortcuts, avoid duplicate links for pinned definitions, and verify system status coverage, user isolation, and first-pin default behavior.
 - [x] 8.2 Document the personalized system-filter section and its user-relative signing shortcuts; verify no future tag-creation callback or saved-filter side effect was introduced.
+
+## 9. Separate saved filters from personal menu settings
+
+- [x] 9.1 Provide a dedicated "Moje menu" page for personal pinning and ordering, remove those controls from saved-filter management, and cover the separation in system/controller tests.
+- [x] 9.2 Rename system-tag links to "Rýchle odkazy", add explanatory copy distinguishing filters, tags, menu visibility, and subscriptions, and update the navigation spec and user documentation.

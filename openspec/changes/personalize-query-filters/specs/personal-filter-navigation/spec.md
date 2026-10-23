@@ -90,7 +90,7 @@ Personalized navigation SHALL retain visible system-tag search shortcuts alongsi
 
 #### Scenario: Existing system status shortcuts remain available
 - **WHEN** personalized navigation is enabled
-- **THEN** visible system tags such as drafts, archived, signature status, and processing/error states remain query links in a system-filters section
+- **THEN** visible system tags such as drafts, archived, signature status, and processing/error states remain query links in a "Rýchle odkazy" section labeled as searches by tags
 - **AND** all-messages remains the empty-query saved-filter entry
 
 #### Scenario: Signer-specific shortcuts are user-relative
@@ -102,6 +102,20 @@ Personalized navigation SHALL retain visible system-tag search shortcuts alongsi
 - **WHEN** a later visible system tag becomes available
 - **THEN** it can appear as a system navigation shortcut
 - **AND** no saved filter or personal pin is created for it
+
+### Requirement: Separate filter definitions from personal menu preferences
+The "Filtre" page SHALL manage saved-search definitions and common-filter subscriptions. A separate "Moje menu" page SHALL manage the current user's pinning and order. The filter-definition page SHALL NOT contain pin or order controls. Explanatory copy SHALL distinguish a saved filter from a tag on a message and clarify that menu visibility does not change message tags or notification subscriptions.
+
+#### Scenario: Manage a saved search
+- **WHEN** a user opens "Filtre"
+- **THEN** the page describes and manages saved searches
+- **AND** it links users to "Moje menu" for navigation preferences
+- **AND** it does not render pinning or ordering controls
+
+#### Scenario: Personalize the sidebar
+- **WHEN** a user opens "Moje menu"
+- **THEN** they can pin, unpin, and reorder effective filters independently
+- **AND** explanatory copy states that this does not change tags on messages or notification subscriptions
 
 ### Requirement: Preserve navigation at deployment
 A one-time migration SHALL preserve current query shortcuts in their previous order: all messages, saved filters, then visible tags. Existing saved filters SHALL become common definitions with unchanged IDs. Existing subscriptions, their associations, event selections, and checkpoints SHALL remain unchanged. Visible tag shortcuts SHALL be created as common query filters only during migration, not for future tags.

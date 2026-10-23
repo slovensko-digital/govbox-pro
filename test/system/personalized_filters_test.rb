@@ -30,25 +30,43 @@ class PersonalizedFiltersTest < ApplicationSystemTestCase
     common = Filter.create!(tenant: tenants(:ssd), common: true, name: "Team invoices", query: "team-invoices")
     subscription = FilterSubscription.create!(tenant: tenants(:ssd), user: users(:basic), filter: common, events: ["Notifications::NewMessage"])
     checkpoint = subscription.reload.last_notify_run_at
-    visit filters_path
+    visit settings_user_filter_visibilities_path
     within("[data-filter-id='#{common.id}']") do
-      assert_selector "button[aria-label='Odopnúť: Team invoices'][aria-pressed='true'][title='Pripnuté'] svg.fill-current"
-      find("button[aria-label='Odopnúť: Team invoices']").send_keys(:enter)
+      assert_selector "button[aria-label='Odopnúť z menu: Team invoices'][aria-pressed='true'][title='Pripnuté v menu'] svg.fill-current"
+      find("button[aria-label='Odopnúť z menu: Team invoices']").send_keys(:enter)
     end
+    visit filters_path
     within("[data-filter-id='#{common.id}']") do
       assert_text "Notifikácie zapnuté"
       assert_link "Nastaviť notifikácie"
-      assert_selector "button[aria-label='Pripnúť: Team invoices'][aria-pressed='false'][title='Odopnuté'] svg.fill-none"
-      find("button[aria-label='Pripnúť: Team invoices']").send_keys(:enter)
+    end
+    visit settings_user_filter_visibilities_path
+    within("[data-filter-id='#{common.id}']") do
+      assert_selector "button[aria-label='Pripnúť do menu: Team invoices'][aria-pressed='false'][title='Nepripnuté v menu'] svg.fill-none"
+      find("button[aria-label='Pripnúť do menu: Team invoices']").send_keys(:enter)
     end
     within("[data-filter-id='#{common.id}']") do
-      find("button[aria-label='Posunúť vyššie: Team invoices']").send_keys(:enter)
+      find("button[aria-label='Posunúť vyššie v menu: Team invoices']").send_keys(:enter)
     end
     assert_selector "[data-filter-id='#{common.id}']:first-child"
     assert_equal common, users(:basic).pinned_filters.first
     assert_equal checkpoint, subscription.reload.last_notify_run_at
     visit root_path
     within("#bulk_actions") { assert_text "Team invoices" }
+  end
+
+  test "filter definitions and personal menu preferences have separate pages" do
+    Filter.create!(tenant: tenants(:ssd), author: users(:basic), name: "Unpinned example", query: "menu-separation")
+    visit filters_path
+    assert_text "Uložené vyhľadávania"
+    assert_text "Moje menu"
+    assert_no_selector "button[aria-label^='Pripnúť']"
+    assert_no_selector "button[aria-label^='Odopnúť']"
+
+    visit settings_user_filter_visibilities_path
+    assert_text "Vyberte filtre, ktoré chcete mať v bočnom menu"
+    assert_selector "[data-filter-id] button[aria-pressed]"
+    assert_no_text "Nastaviť notifikácie"
   end
 
   test "personal query title retains controls for an existing common subscription" do

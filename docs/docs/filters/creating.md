@@ -84,6 +84,12 @@ rozpracované, archivované, podpisové a chybové stavy). Podpisové skratky
 konkrétneho podpisovateľa sa zobrazujú iba jemu. Tieto systémové odkazy
 nevytvárajú pri vzniku štítka nový uložený filter.
 
+**Filter** je uložené vyhľadávanie. **Štítok** označuje správu. V časti **Filtre**
+spravujete uložené vyhľadávania; v časti **Moje menu** si vyberáte, ktoré z nich
+sa zobrazia v bočnom menu a v akom poradí. Toto nastavenie nemení štítky na
+správach ani odbery notifikácií. Odkazy na systémové štítky sú v bočnom menu
+označené ako **Rýchle odkazy**.
+
 ## Spoločné filtre pre administrátora
 
 Pri vytváraní filtra môže administrátor zvoliť **Spoločný filter pre všetkých**.

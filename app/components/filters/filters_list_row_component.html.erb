@@ -22,26 +22,6 @@
   <div class="justify-start items-center gap-2 flex flex-wrap">
     <% if @overridden %>
       <span class="text-sm text-gray-500">Prekrytý osobným filtrom</span>
-    <% else %>
-      <% pinned = @preference&.visible? || false %>
-      <% pin_path = @preference ? settings_user_filter_visibility_path(@preference) : settings_user_filter_visibilities_path %>
-      <% pin_method = @preference ? :patch : :post %>
-      <% pin_params = @preference ? { user_filter_visibility: { visible: !pinned } } : { user_filter_visibility: { filter_id: @filter.id, visible: true } } %>
-      <%= button_to pin_path, method: pin_method, params: pin_params,
-        title: pinned ? "Pripnuté" : "Odopnuté",
-        aria: { label: "#{pinned ? 'Odopnúť' : 'Pripnúť'}: #{@filter.name}", pressed: pinned },
-        class: "flex items-center justify-center rounded-md border p-2 transition-colors #{pinned ? 'border-indigo-300 bg-indigo-50 text-indigo-700 hover:bg-indigo-100' : 'border-gray-300 bg-white text-gray-500 hover:bg-gray-50 hover:text-gray-800'}" do %>
-        <%= render Icons::BookmarkComponent.new(css_classes: "h-5 w-5 #{pinned ? 'fill-current' : 'fill-none'}") %>
-        <span class="sr-only"><%= pinned ? "Pripnuté" : "Odopnuté" %></span>
-      <% end %>
-      <% if pinned %>
-        <%= button_to move_higher_settings_user_filter_visibility_path(@preference), method: :post, aria: { label: "Posunúť vyššie: #{@filter.name}" }, class: "rounded-md border border-gray-300 p-2" do %>
-          <%= render Common::IconComponent.new("chevron-up") %>
-        <% end %>
-        <%= button_to move_lower_settings_user_filter_visibility_path(@preference), method: :post, aria: { label: "Posunúť nižšie: #{@filter.name}" }, class: "rounded-md border border-gray-300 p-2" do %>
-          <%= render Common::IconComponent.new("chevron-down") %>
-        <% end %>
-      <% end %>
     <% end %>
     <% if helpers.policy(@filter).edit? %>
       <%= link_to edit_filter_path(@filter), title: "Upraviť filter" do %>

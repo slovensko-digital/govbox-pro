@@ -197,7 +197,7 @@ common; the logout helper waits for the dropdown's initial close animation
 instead of using retry clicks or weakening assertions.
 
 Final verification adds `test/system/filter_acceptance_test.rb` and personalized
-system-tag navigation and pin-toggle coverage to that command: seed 39232, **88 tests, 633
+system-tag navigation and separate personal-menu coverage to that command: seed 19953, **89 tests, 646
 assertions, zero failures, errors, or skips**.
 The acceptance journey covers an administrator and two users, independent default
 ordering, clear search, publication into pinned/unpinned personal matches,

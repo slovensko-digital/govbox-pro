@@ -1,4 +1,4 @@
-<%= render Filters::FiltersListComponent.new(@filters, preferences: @filter_preferences, subscriptions: @subscriptions_by_query) do |component| %>
+<%= render Filters::FiltersListComponent.new(@filters, subscriptions: @subscriptions_by_query) do |component| %>
   <% if @filters.empty? %>
     <% component.with_blank_results_area do %>
       <%= render Common::BlankResultsComponent.new(:filters) %>

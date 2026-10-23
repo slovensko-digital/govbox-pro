@@ -6,9 +6,8 @@ class FiltersController < ApplicationController
 
     available = policy_scope(Filter, policy_scope_class: FilterPolicy::ScopeShowable)
     available = available.merge(Filter.effective_for(Current.user)) unless Current.user.admin?
-    @filter_preferences = Current.user.user_filter_visibilities.index_by(&:filter_id)
     @subscriptions_by_query = Current.user.filter_subscriptions.where(filter_id: Filter.available_to(Current.user).select(:id)).includes(:filter).group_by { |subscription| subscription.filter.query }
-    @filters = available.order(:position, :id).to_a.sort_by { |filter| @filter_preferences[filter.id]&.position || Float::INFINITY }
+    @filters = available.order(:position, :id)
   end
 
   def new

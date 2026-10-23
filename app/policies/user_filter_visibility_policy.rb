@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 class UserFilterVisibilityPolicy < ApplicationPolicy
+  def index?
+    true
+  end
+
   def create?
     true
   end

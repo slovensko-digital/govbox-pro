@@ -16,7 +16,7 @@ class SidebarMenu
 
   def initial_structure(controller, _action)
     return settings_menu if @parameters[:personalized] && controller.in?(%w[filters user_filter_visibilities]) && !Current.user.admin?
-    return admin_menu + site_admin_menu if controller.in? %w[groups users tags permissions automation_rules boxes api_connections api_accesses filters automation_webhooks feature_flags]
+    return admin_menu + site_admin_menu if controller.in? %w[groups users tags permissions automation_rules boxes api_connections api_accesses filters automation_webhooks feature_flags user_filter_visibilities]
 
     default_main_menu
   end
@@ -43,6 +43,7 @@ class SidebarMenu
       Layout::BackToBoxComponent.new,
       TW::SidebarMenuDividerComponent.new(name: 'Nastavenia'),
       TW::SidebarMenuItemComponent.new(name: 'Filtre', url: filters_path, icon: Icons::BookmarkComponent.new),
+      TW::SidebarMenuItemComponent.new(name: 'Moje menu', url: settings_user_filter_visibilities_path, icon: Icons::RectangleGroupComponent.new),
       TW::SidebarMenuItemComponent.new(name: 'Pravidlá', url: settings_automation_rules_path, icon: Icons::FunnelComponent.new)
     ]
   end
@@ -54,6 +55,7 @@ class SidebarMenu
       Layout::BackToBoxComponent.new,
       TW::SidebarMenuDividerComponent.new(name: 'Nastavenia'),
       TW::SidebarMenuItemComponent.new(name: 'Filtre', url: filters_path, icon: Icons::BookmarkComponent.new),
+      TW::SidebarMenuItemComponent.new(name: 'Moje menu', url: settings_user_filter_visibilities_path, icon: Icons::RectangleGroupComponent.new),
       TW::SidebarMenuItemComponent.new(name: 'Pravidlá', url: settings_automation_rules_path, icon: Icons::FunnelComponent.new),
       TW::SidebarMenuDividerComponent.new(name: 'Administrácia'),
       TW::SidebarMenuItemComponent.new(name: 'Používatelia', url: admin_tenant_users_path(Current.tenant), icon: Icons::UsersComponent.new),

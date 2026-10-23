@@ -1,7 +1,10 @@
 <% if visible_tags.any? %>
   <div class="flex flex-col justify-start items-start gap-2" data-test="system-filters">
     <div class="flex justify-start items-start px-4 py-2">
-      <p class="text-sm text-center text-gray-400">Systémové filtre</p>
+      <div>
+        <p class="text-sm text-gray-400">Rýchle odkazy</p>
+        <p class="text-xs text-gray-400">Vyhľadávanie podľa štítkov</p>
+      </div>
     </div>
     <% visible_tags.each do |tag| %>
       <% url = message_threads_path(q: "label:(#{tag.name})") %>

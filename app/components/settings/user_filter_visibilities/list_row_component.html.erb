@@ -1,0 +1,24 @@
+<div class="self-stretch p-6 border-b border-gray-200 justify-start items-center gap-4 flex flex-wrap" data-filter-id="<%= @filter.id %>">
+  <div class="grow shrink basis-0 flex-col justify-start items-start gap-1 inline-flex">
+    <div class="text-gray-900 text-lg font-medium leading-loose"><%= @filter.name %></div>
+    <div class="text-gray-500 text-sm"><%= @filter.query.presence || "Všetky správy" %></div>
+    <p class="text-sm text-gray-500"><%= @filter.common? ? "Spoločný filter" : "Osobný filter" %></p>
+  </div>
+  <div class="justify-start items-center gap-2 flex flex-wrap">
+    <%= button_to pin_path, method: pin_method, params: pin_params,
+      title: pinned? ? "Pripnuté v menu" : "Nepripnuté v menu",
+      aria: { label: "#{pinned? ? 'Odopnúť z menu' : 'Pripnúť do menu'}: #{@filter.name}", pressed: pinned? },
+      class: "flex items-center justify-center rounded-md border p-2 transition-colors #{pinned? ? 'border-indigo-300 bg-indigo-50 text-indigo-700 hover:bg-indigo-100' : 'border-gray-300 bg-white text-gray-500 hover:bg-gray-50 hover:text-gray-800'}" do %>
+      <%= render Icons::BookmarkComponent.new(css_classes: "h-5 w-5 #{pinned? ? 'fill-current' : 'fill-none'}") %>
+      <span class="sr-only"><%= pinned? ? "Pripnuté v menu" : "Nepripnuté v menu" %></span>
+    <% end %>
+    <% if pinned? %>
+      <%= button_to helpers.move_higher_settings_user_filter_visibility_path(@preference), method: :post, aria: { label: "Posunúť vyššie v menu: #{@filter.name}" }, class: "rounded-md border border-gray-300 p-2" do %>
+        <%= render Common::IconComponent.new("chevron-up") %>
+      <% end %>
+      <%= button_to helpers.move_lower_settings_user_filter_visibility_path(@preference), method: :post, aria: { label: "Posunúť nižšie v menu: #{@filter.name}" }, class: "rounded-md border border-gray-300 p-2" do %>
+        <%= render Common::IconComponent.new("chevron-down") %>
+      <% end %>
+    <% end %>
+  </div>
+</div>

@@ -37,10 +37,11 @@ class FilterAcceptanceTest < ApplicationSystemTestCase
     click_link "Zrušiť vyhľadávanie"
     assert_current_path message_threads_path(q: "")
     assert_field "search", with: ""
+    visit settings_user_filter_visibilities_path
+    within("[data-filter-id='#{filters(:one).id}']") { find("button[aria-label='Odopnúť z menu: #{filters(:one).name}']").send_keys(:enter) }
     visit filters_path
-    within("[data-filter-id='#{filters(:one).id}']") { find("button[aria-label='Odopnúť: #{filters(:one).name}']").send_keys(:enter) }
     within("[data-filter-id='#{filters(:one).id}']") do
-      assert_selector "button[aria-label='Pripnúť: #{filters(:one).name}'][aria-pressed='false']"
+      assert_no_selector "button[aria-label^='Pripnúť']"
       assert_text "Notifikácie zapnuté"
     end
     visit message_threads_path(q: common.query)
@@ -87,8 +88,8 @@ class FilterAcceptanceTest < ApplicationSystemTestCase
 
     sign_out
     sign_in_as(:basic_two)
-    visit filters_path
-    within("[data-filter-id='#{common.id}']") { find("button[aria-label='Posunúť vyššie: Team general']").send_keys(:enter) }
+    visit settings_user_filter_visibilities_path
+    within("[data-filter-id='#{common.id}']") { find("button[aria-label='Posunúť vyššie v menu: Team general']").send_keys(:enter) }
     assert_selector "[data-filter-id='#{common.id}']:first-child"
     visit root_path
     within("#bulk_actions") { assert_text "Team general" }
