@@ -106,10 +106,6 @@ An admin SHALL be able to grant or revoke the access-tag management permission o
 - **WHEN** an admin group is created
 - **THEN** its access-tag management permission is enabled and cannot be saved as disabled
 
-#### Scenario: Existing disabled admin group is repaired
-- **WHEN** the upgrade encounters an admin group with the permission disabled
-- **THEN** its permission is enabled before the upgraded application relies on it
-
 ### Requirement: Access-tag management requires an explicit grant for non-admin groups
 
 On upgrade, only existing admin groups SHALL be granted the permission. All non-admin groups, including all-users, personal, signer and custom groups, SHALL start without it and require an explicit administrator grant. New non-admin groups SHALL also start without it; admin groups SHALL always have it enabled.
