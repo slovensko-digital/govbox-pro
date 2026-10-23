@@ -1,0 +1,9 @@
+<% if @filter.tag %>
+  <% if @filter.tag.icon.present? %>
+    <%= render Common::IconComponent.new(@filter.tag.icon, classes: icon_classes) %>
+  <% else %>
+    <%= render Icons::TagComponent.new(css_classes: icon_classes) %>
+  <% end %>
+<% else %>
+  <%= render Icons::BookmarkComponent.new(css_classes: icon_classes) %>
+<% end %>

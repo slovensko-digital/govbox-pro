@@ -26,4 +26,15 @@ class FilterListComponentTest < ViewComponent::TestCase
     render_inline(Layout::FilterListComponent.new(filters: user.pinned_filters.to_a, query: common.query))
     assert_no_selector "a"
   end
+
+  test "tag-backed filters use their configured icon and keep their color" do
+    tag = tags(:ssd_finance)
+    tag.update!(icon: "key", color: "indigo")
+    filter = Filter.create!(tenant: tag.tenant, common: true, tag: tag, name: tag.name,
+      query: "label:(#{tag.name})")
+
+    render_inline(Layout::FilterIconComponent.new(filter: filter))
+
+    assert_selector "svg.text-indigo-600 path[d='#{Common::IconComponent::ICONS.fetch('key')}']"
+  end
 end
