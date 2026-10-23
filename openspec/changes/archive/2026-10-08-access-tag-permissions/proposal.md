@@ -11,7 +11,7 @@ Visible ordinary tags serve two purposes: classification (no assigned groups, e.
 - Do not exempt a tag's creator or owner from access-tag assignment permission. Classification tags remain editable without that permission, even after creation by an ordinary user.
 - Keep the tenant's visible ordinary tags in the assignment list, but show tags the user may not manage as locked (disabled) and send no change for them.
 - Add an admin-only toggle for non-admin groups. The admin group always has the stored permission enabled; show a localized "Always enabled" status and reject attempts to disable it. Evaluate user permission uniformly through group membership, without an admin bypass.
-- Enable access-tag management only for admin groups on deploy. Existing and new non-admin groups require an explicit administrator grant; new admin groups default to true, and existing admin groups with false are repaired to true.
+- Enable access-tag management only for admin groups on deploy. Existing and new non-admin groups require an explicit administrator grant; the migration enables it for existing admin groups and new admin groups default to true.
 - Limit enforcement to manual single and bulk assignment of visible ordinary tags. Signature-request tags and automation / FS / UPVS assignments remain unaffected.
 - Keep thread visibility unchanged: access-tag management does not itself grant access to threads or boxes.
 
