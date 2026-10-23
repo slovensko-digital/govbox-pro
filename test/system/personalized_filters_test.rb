@@ -32,11 +32,13 @@ class PersonalizedFiltersTest < ApplicationSystemTestCase
     checkpoint = subscription.reload.last_notify_run_at
     visit filters_path
     within("[data-filter-id='#{common.id}']") do
+      assert_selector "button[aria-label='Odopnúť: Team invoices'][aria-pressed='true'][title='Pripnuté'] svg.fill-current"
       find("button[aria-label='Odopnúť: Team invoices']").send_keys(:enter)
     end
     within("[data-filter-id='#{common.id}']") do
       assert_text "Notifikácie zapnuté"
       assert_link "Nastaviť notifikácie"
+      assert_selector "button[aria-label='Pripnúť: Team invoices'][aria-pressed='false'][title='Odopnuté'] svg.fill-none"
       find("button[aria-label='Pripnúť: Team invoices']").send_keys(:enter)
     end
     within("[data-filter-id='#{common.id}']") do

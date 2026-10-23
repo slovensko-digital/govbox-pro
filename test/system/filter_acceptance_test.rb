@@ -38,9 +38,9 @@ class FilterAcceptanceTest < ApplicationSystemTestCase
     assert_current_path message_threads_path(q: "")
     assert_field "search", with: ""
     visit filters_path
-    within("[data-filter-id='#{filters(:one).id}']") { click_button "Odopnúť" }
+    within("[data-filter-id='#{filters(:one).id}']") { find("button[aria-label='Odopnúť: #{filters(:one).name}']").send_keys(:enter) }
     within("[data-filter-id='#{filters(:one).id}']") do
-      assert_button "Pripnúť"
+      assert_selector "button[aria-label='Pripnúť: #{filters(:one).name}'][aria-pressed='false']"
       assert_text "Notifikácie zapnuté"
     end
     visit message_threads_path(q: common.query)
