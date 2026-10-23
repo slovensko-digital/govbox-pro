@@ -208,8 +208,6 @@ Rails.application.routes.draw do
     get :scroll, on: :collection
   end
 
-  resource :settings
-
   resources :message_templates do
     get :recipient_selector
     get :recipients_list
