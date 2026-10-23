@@ -23,4 +23,9 @@ class Settings::UserFilterVisibilities::ListRowComponent < ViewComponent::Base
       { user_filter_visibility: { filter_id: @filter.id, visible: true } }
     end
   end
+
+  def icon_classes
+    color = @filter.tag&.color || "gray"
+    "h-5 w-5 shrink-0 text-#{color}-600"
+  end
 end

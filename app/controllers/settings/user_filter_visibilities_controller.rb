@@ -7,7 +7,7 @@ class Settings::UserFilterVisibilitiesController < ApplicationController
     available = policy_scope(Filter, policy_scope_class: FilterPolicy::ScopeShowable)
       .merge(Filter.effective_for(Current.user))
     @preferences = Current.user.user_filter_visibilities.index_by(&:filter_id)
-    @filters = available.to_a.sort_by do |filter|
+    @filters = available.includes(:tag).to_a.sort_by do |filter|
       preference = @preferences[filter.id]
       [preference&.visible? ? 0 : 1, preference&.position || filter.position, filter.id]
     end

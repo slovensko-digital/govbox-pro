@@ -41,6 +41,7 @@ class PersonalizedFiltersTest < ApplicationSystemTestCase
       assert_link "Nastaviť notifikácie"
     end
     visit settings_user_filter_visibilities_path
+    find("[data-test='hidden-menu-items'] summary").click
     within("[data-filter-id='#{common.id}']") do
       find("button[aria-label='Zobraziť v menu: Team invoices']").send_keys(:enter)
     end
@@ -65,6 +66,8 @@ class PersonalizedFiltersTest < ApplicationSystemTestCase
     visit settings_user_filter_visibilities_path
     assert_text "Vyberte položky bočného menu"
     assert_selector "[data-test='shown-menu-items'] button", text: "Skryť"
+    assert_no_selector "[data-test='hidden-menu-items'] button", text: "Zobraziť v menu"
+    find("[data-test='hidden-menu-items'] summary").click
     assert_selector "[data-test='hidden-menu-items'] button", text: "Zobraziť v menu"
     assert_no_text "Nastaviť notifikácie"
   end
@@ -113,6 +116,7 @@ class PersonalizedFiltersTest < ApplicationSystemTestCase
   test "tags are available but appear in navigation only when chosen" do
     user = users(:basic)
     visit settings_user_filter_visibilities_path
+    find("[data-test='hidden-menu-items'] summary").click
     within("[data-test='hidden-menu-items']") do
       assert_text tags(:ssd_finance).name
       assert_text tags(:ssd_hidden).name

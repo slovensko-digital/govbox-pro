@@ -13,14 +13,16 @@
         <%= render Settings::UserFilterVisibilities::ListRowComponent.new(filter: filter, preference: @preferences[filter.id]) %>
       <% end %>
     </section>
-    <section class="self-stretch" data-test="hidden-menu-items">
-      <h2 class="px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-50">Nezobrazené položky</h2>
+    <details class="self-stretch border-t border-gray-200" data-test="hidden-menu-items">
+      <summary class="cursor-pointer list-none px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50">
+        Nezobrazené položky <span class="ml-1 text-gray-500">(<%= @hidden_filters.size %>)</span>
+      </summary>
       <% @hidden_filters.each do |filter| %>
         <%= render Settings::UserFilterVisibilities::ListRowComponent.new(filter: filter, preference: @preferences[filter.id]) %>
       <% end %>
       <% if @hidden_filters.empty? %>
         <p class="px-4 py-3 text-sm text-gray-500">Všetky dostupné položky sa zobrazujú v menu.</p>
       <% end %>
-    </section>
+    </details>
   </div>
 </div>
