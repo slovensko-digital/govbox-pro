@@ -10,14 +10,6 @@ class Upvs::MessageDraftsTest < ApplicationSystemTestCase
     assert_no_link "Napísať novú správu na slovensko.sk"
   end
 
-  test "user can create message draft from Všeobecná agenda MessageTemplate" do
-    skip "not implemented yet"
-  end
-
-  test "user can create message draft from CRAC MessageTemplate" do
-    skip "not implemented yet"
-  end
-
   test "user can upload message draft only if tenant messages limit not exceeded" do
     tenant = users(:basic).tenant
     tenant.enable_feature(:upvs, force: true)
@@ -35,15 +27,4 @@ class Upvs::MessageDraftsTest < ApplicationSystemTestCase
     assert_text "Dosiahli ste limit #{tenant.outbox_messages_limit} správ"
   end
 
-  test "user can update message draft content" do
-    skip "not implemented yet"
-  end
-
-  test "user can submit message draft" do
-    skip "not implemented yet"
-  end
-
-  test "user can delete message draft" do
-    skip "not implemented yet"
-  end
 end
