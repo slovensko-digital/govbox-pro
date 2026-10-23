@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_15_105627) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_23_080000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -55,7 +55,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_15_105627) do
     t.bigint "tenant_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "fingerprint"
     t.index ["bundle_identifier"], name: "index_agp_bundles_on_bundle_identifier", unique: true
+    t.index ["tenant_id", "fingerprint"], name: "index_agp_bundles_on_tenant_id_and_fingerprint"
     t.index ["tenant_id"], name: "index_agp_bundles_on_tenant_id"
   end
 
@@ -68,6 +70,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_15_105627) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "signer_user_id"
+    t.string "content_digest"
     t.index ["agp_bundle_id"], name: "index_agp_contracts_on_agp_bundle_id"
     t.index ["contract_identifier"], name: "index_agp_contracts_on_contract_identifier", unique: true
     t.index ["message_object_id"], name: "index_agp_contracts_on_message_object_id"

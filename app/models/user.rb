@@ -36,6 +36,7 @@ class User < ApplicationRecord
   has_many :exports, dependent: :destroy
   has_many :identities, dependent: :destroy
   has_many :api_connections, foreign_key: :owner_id, dependent: :destroy
+  has_many :agp_contracts, class_name: "Agp::Contract", foreign_key: :signer_user_id, inverse_of: :signer_user, dependent: :nullify
 
   validates :name, presence: true
   validates :email, uniqueness: { case_sensitive: false }, allow_nil: true

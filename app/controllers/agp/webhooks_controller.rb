@@ -1,33 +1,22 @@
 module Agp
-  class WebhooksController < ActionController::Base
+  class WebhooksController < ActionController::API
     WEBHOOK_SIGNATURE_VERSION = "v1a".freeze
 
-    skip_before_action :verify_authenticity_token
     before_action :authenticate
 
     def create
-      event_type = webhook_params.require :type
-
-      case event_type
+      case params.require(:type)
       when "contract.signed"
-        Agp::AcceptSignedContractJob.perform_later(data[:contract_id])
-        head :no_content
+        Agp::AcceptSignedContractJob.perform_later(agp_contract.contract_identifier) if agp_contract
       when "bundle.all_signed"
-        head :no_content
-      else
-        render plain: "Unrecognized webhook event: #{event_type}", status: :unprocessable_entity
+        Agp::SyncBundleJob.perform_later(agp_bundle) if agp_bundle
       end
+
+      # other events (e.g. recipient declined) are irrelevant for GovBox, acknowledge them so AGP does not retry
+      head :no_content
     end
 
     private
-
-    def webhook_params
-      params.permit(:type, :timestamp, data: [:contract_id, :bundle_id])
-    end
-
-    def data
-      payload_data
-    end
 
     def authenticate
       timestamp = request.headers["webhook-timestamp"]
@@ -36,7 +25,7 @@ module Agp
       head :unauthorized and return unless signature.present? && hook_id.present? && timestamp.present? && agp_webhook_public_key.present?
 
       signature_version, encoded_signature = signature.to_s.split(",", 2)
-      render(status: :unprocessable_entity, json: nil) and return unless signature_version == WEBHOOK_SIGNATURE_VERSION && encoded_signature.present?
+      head :unauthorized and return unless signature_version == WEBHOOK_SIGNATURE_VERSION && encoded_signature.present?
       head :unauthorized and return unless valid_webhook_timestamp?(timestamp)
 
       data_string = "#{hook_id}.#{timestamp}.#{request.raw_post}"
@@ -52,6 +41,8 @@ module Agp
     end
 
     def agp_tenant
+      return if agp_contract && agp_bundle && agp_contract.bundle != agp_bundle
+
       @agp_tenant ||= agp_contract&.bundle&.tenant || agp_bundle&.tenant
     end
 

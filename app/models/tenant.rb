@@ -53,6 +53,7 @@ class Tenant < ApplicationRecord
   has_many :filters
   has_many :filter_subscriptions
   has_many :automation_webhooks, class_name: "Automation::Webhook", dependent: :destroy
+  has_many :agp_bundles, class_name: "Agp::Bundle", dependent: :destroy
   has_many :message_threads, through: :boxes
   has_many :messages, through: :message_threads
 
@@ -104,6 +105,16 @@ class Tenant < ApplicationRecord
 
   def agp_signing_enabled?
     feature_enabled?(:autogram_portal) && agp_api_url.present? && agp_api_token_private_key.present? && agp_sub.present?
+  end
+
+  def agp_origin
+    uri = URI.parse(agp_api_url.to_s)
+    return unless uri.is_a?(URI::HTTP) && uri.host.present?
+
+    port = ":#{uri.port}" unless uri.port == uri.default_port
+    "#{uri.scheme}://#{uri.host}#{port}"
+  rescue URI::InvalidURIError
+    nil
   end
 
   def set_pdf_signature_format(pdf_signature_format)

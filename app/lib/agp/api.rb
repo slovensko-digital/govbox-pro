@@ -1,5 +1,12 @@
 module Agp
   class Api
+    class Error < StandardError; end
+    class ConflictError < Error; end
+
+    OPEN_TIMEOUT = 5
+    TIMEOUT = 60
+    MAX_REDIRECTS = 3
+
     def initialize(url, api_token_private_key:, sub:, settings: {}, handler: Faraday)
       @url = url
       @api_token_private_key = OpenSSL::PKey::RSA.new(api_token_private_key)
@@ -8,20 +15,13 @@ module Agp
       @settings = settings
     end
 
-    def generate_uuid_from_message_objects(message_objects)
-      digest_input = message_objects.map { |mo| "#{mo.id}#{mo.updated_at}" }.sort.join
-      digest = Digest::SHA256.hexdigest(digest_input)
-      "#{digest[0..7]}-#{digest[8..11]}-#{digest[12..15]}-#{digest[16..19]}-#{digest[20..31]}"
-    end
-
-    def upload_bundle(bundle)
+    def upload_bundle(bundle, webhook_url:)
       body = {
         id: bundle.bundle_identifier,
         publiclyVisible: true,
         contracts: bundle.contracts.map do |contract|
           {
             id: contract.contract_identifier,
-            title: contract.message_object.name,
             allowedMethods: [@settings["signature_with_timestamp"].present? ? "ts-qes" : "qes"],
             documents: [
               generate_document_body(contract.message_object)
@@ -30,58 +30,72 @@ module Agp
           }
         end,
         webhook: {
-          url: Rails.application.routes.url_helpers.agp_webhooks_url,
+          url: webhook_url,
           method: "standard"
         }
       }
 
-      request_post("bundles", body)
+      request(:post, "bundles", body)
     end
 
     def destroy_bundle(bundle_id)
       request(:delete, "bundles/#{CGI.escape(bundle_id)}")
     end
 
-    def retrieve_signed_contract(contract_id)
-      r = request(:get, "contracts/#{CGI.escape(contract_id)}/signed_document")
-      file_url = r[:body]["download_url"]
-      begin
-        file_response = @handler.get(file_url)
-        file_response = @handler.get(file_response.headers["Location"]) if file_response.status == 302
-        content_b64 = Base64.strict_encode64(file_response.body)
-        r[:body].merge({ "content" => content_b64 })
-      rescue StandardError => e
-        Rails.logger.error("Failed to retrieve signed document: #{e.message}")
-        { error: e.message }
-      end
+    # Returns nil when AGP does not know the bundle (anymore).
+    def retrieve_bundle(bundle_id)
+      request(:get, "bundles/#{CGI.escape(bundle_id)}", allow_not_found: true)
     end
 
-    def retrieve_contract_status(contract_id)
-      request(:get, "contracts/#{CGI.escape(contract_id)}/status")
+    # Returns nil while the contract is not signed.
+    def retrieve_signed_document(contract_id)
+      signed_document = request(:get, "contracts/#{CGI.escape(contract_id)}/signed_document", allow_not_found: true)
+
+      download_signed_document(signed_document) if signed_document
+    end
+
+    def download_signed_document(signed_document)
+      {
+        filename: signed_document.fetch("filename"),
+        content_type: signed_document.fetch("content_type"),
+        content: download(signed_document.fetch("download_url"))
+      }
     end
 
     private
 
-    def request_post(path, body)
-      response = Faraday.post("#{File.join(@url, "api/v1/", path)}?token=#{jwt_token}", body.to_json, { content_type: 'application/json' })
-      structure = response.body.empty? ? nil : JSON.parse(response.body)
-    rescue StandardError => e
-      raise(StandardError, e.response) if e.respond_to?(:response) && e.response
+    def request(method, path, body = nil, allow_not_found: false)
+      headers = { "Authorization" => "Bearer #{jwt_token}", "Content-Type" => "application/json", "Accept" => "application/json" }
+      response = connection.run_request(method, path, body&.to_json, headers)
 
-      raise e
-    else
-      raise(ConflictResponseError, response.body) if response.status == 409
-      raise(StandardError, response.body) if response.status != 404 && response.status > 400
+      return if allow_not_found && response.status == 404
+      raise ConflictError, response.body if response.status == 409
+      raise Error, "AGP API #{method.upcase} #{path} failed with status #{response.status}: #{response.body}" unless response.success?
 
-      {
-        status: response.status,
-        body: structure,
-        headers: response.headers
-      }
+      response.body.presence && JSON.parse(response.body)
     end
 
-    def request(method, path)
-      request_url(method, "#{File.join(@url, "api/v1/", path)}?token=#{jwt_token}", {}, { content_type: 'application/json' })
+    def download(url)
+      MAX_REDIRECTS.succ.times do
+        response = @handler.get(url) do |request|
+          request.options.open_timeout = OPEN_TIMEOUT
+          request.options.timeout = TIMEOUT
+        end
+
+        return response.body if response.success?
+        raise Error, "Download of signed document failed with status #{response.status}" unless response.status.in?(300..399) && response.headers["Location"].present?
+
+        url = URI.join(url, response.headers["Location"]).to_s
+      end
+
+      raise Error, "Download of signed document failed: too many redirects"
+    end
+
+    def connection
+      @connection ||= @handler.new(url: File.join(@url, "api/v1/")) do |faraday|
+        faraday.options.open_timeout = OPEN_TIMEOUT
+        faraday.options.timeout = TIMEOUT
+      end
     end
 
     def generate_document_body(mo)
@@ -140,26 +154,5 @@ module Agp
         'RS256'
       )
     end
-
-    def request_url(method, path, *args)
-      response = @handler.public_send(method, path, *args)
-      structure = response.body.empty? ? nil : JSON.parse(response.body)
-    rescue StandardError => e
-      raise(StandardError, e.response) if e.respond_to?(:response) && e.response
-
-      raise e
-    else
-      raise(ConflictResponseError, response.body) if response.status == 409
-      raise(StandardError, response.body) if response.status != 404 && response.status > 400
-
-      {
-        status: response.status,
-        body: structure,
-        headers: response.headers
-      }
-    end
-  end
-
-  class ConflictResponseError < StandardError
   end
 end

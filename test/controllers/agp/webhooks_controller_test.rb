@@ -6,7 +6,7 @@ class Agp::WebhooksControllerTest < ActionDispatch::IntegrationTest
   setup do
     @tenant = tenants(:ssd)
     @message_object = message_objects(:ssd_main_general_draft_two_form)
-    @bundle = Agp::Bundle.create!(tenant: @tenant, bundle_identifier: SecureRandom.uuid, status: :created)
+    @bundle = Agp::Bundle.create!(tenant: @tenant, status: :created)
     @contract = Agp::Contract.create!(
       bundle: @bundle,
       message_object: @message_object,
@@ -38,7 +38,7 @@ class Agp::WebhooksControllerTest < ActionDispatch::IntegrationTest
     assert_response :no_content
   end
 
-  test "accepts valid bundle all signed webhook" do
+  test "accepts valid bundle all signed webhook and enqueues bundle sync" do
     payload = {
       type: "bundle.all_signed",
       timestamp: Time.current.iso8601,
@@ -49,9 +49,66 @@ class Agp::WebhooksControllerTest < ActionDispatch::IntegrationTest
 
     request_body = payload.to_json
 
+    assert_enqueued_with(job: Agp::SyncBundleJob, args: [@bundle]) do
+      post agp_webhooks_path, params: request_body, headers: webhook_headers_for(request_body)
+    end
+
+    assert_response :no_content
+  end
+
+  test "acknowledges events irrelevant for govbox" do
+    payload = {
+      type: "bundle.recipient_declined",
+      timestamp: Time.current.iso8601,
+      data: {
+        bundle_id: @bundle.bundle_identifier,
+        contract_id: @contract.contract_identifier
+      }
+    }
+
+    request_body = payload.to_json
+
     post agp_webhooks_path, params: request_body, headers: webhook_headers_for(request_body)
 
     assert_response :no_content
+    assert_no_enqueued_jobs
+  end
+
+  test "rejects webhook for a contract outside of the given bundle" do
+    other_bundle = Agp::Bundle.create!(tenant: @tenant, status: :created)
+    payload = {
+      type: "contract.signed",
+      timestamp: Time.current.iso8601,
+      data: {
+        contract_id: @contract.contract_identifier,
+        bundle_id: other_bundle.bundle_identifier
+      }
+    }
+
+    request_body = payload.to_json
+
+    post agp_webhooks_path, params: request_body, headers: webhook_headers_for(request_body)
+
+    assert_response :unauthorized
+    assert_no_enqueued_jobs
+  end
+
+  test "rejects webhook with expired timestamp" do
+    payload = {
+      type: "contract.signed",
+      timestamp: Time.current.iso8601,
+      data: {
+        contract_id: @contract.contract_identifier,
+        bundle_id: @bundle.bundle_identifier
+      }
+    }
+
+    request_body = payload.to_json
+
+    post agp_webhooks_path, params: request_body, headers: webhook_headers_for(request_body, timestamp: 1.hour.ago.to_i)
+
+    assert_response :unauthorized
+    assert_no_enqueued_jobs
   end
 
   test "rejects webhook with invalid signature" do
