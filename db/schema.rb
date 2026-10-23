@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_15_105627) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_23_090000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -652,6 +652,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_15_105627) do
     t.index "((((to_tsvector('simple'::regconfig, COALESCE(title, ''::text)) || to_tsvector('simple'::regconfig, COALESCE(content, ''::text))) || to_tsvector('simple'::regconfig, COALESCE((note)::text, ''::text))) || to_tsvector('simple'::regconfig, COALESCE(tag_names, ''::text))))", name: "idx_searchable_message_threads_fulltext", using: :gin
     t.index ["id", "box_id", "last_message_delivered_at"], name: "idx_on_id_box_id_last_message_delivered_at_5a4090c55e", unique: true
     t.index ["message_thread_id"], name: "index_searchable_message_threads_on_message_thread_id", unique: true
+    t.index ["tenant_id"], name: "index_searchable_message_threads_on_tenant_id"
   end
 
   create_table "stats_message_submission_requests", force: :cascade do |t|
