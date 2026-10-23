@@ -33,6 +33,18 @@ Toto je ideálny spôsob, ako zabezpečiť, že napríklad zamestnanci účtovn�
 ![Zoznam štítkov v nastaveniach](../../assets/images/labels/labels-settings-menu.png)
 ![Nastavenie prístupu k štítku](../../assets/images/labels/label-access-settings.png)
 
+## Kto môže meniť prístupové štítky
+
+::: callout warning "Zmena toho, kto vidí správy"
+Prístupové štítky určujú, ktoré skupiny používateľov môžu vidieť správy vo vlákne, ak majú aj prístup k jeho schránke. Ich pridaním alebo odobratím teda meníte, kto bude mať k správam prístup. Toto oprávnenie udeľujte iba používateľom, ktorí majú rozhodovať o rozdeľovaní pošty.
+:::
+
+Administrátor oprávnenie udeľuje skupine cez **Nastavenia → Prístup → úprava oprávnení skupiny**, prepínačom **„Oprávnenie spravovať prístupové štítky“**. **Novovytvorené skupiny ho štandardne nemajú.** Výnimkou je administrátorská skupina, ktorá ho má vždy povolené.
+
+Samotné oprávnenie používateľovi nesprístupní ďalšie správy. Umožní mu meniť prístupové štítky na vláknach, ktoré už môže vidieť.
+
+Používateľ má oprávnenie, ak ho udeľuje aspoň jedna jeho skupina. Pri odobratí preto skontrolujte, či mu ho neudeľuje ešte iná skupina.
+
 ## Príklady použitia
 
 ### Príklad: Sociálna poisťovňa
@@ -40,3 +52,6 @@ Toto je ideálny spôsob, ako zabezpečiť, že napríklad zamestnanci účtovn�
 
 ### Príklad: Prístup k financiám
 > Ekonomickému oddeleniu udelím prístup k správam so štítkom **"Financie"**.
+
+### Príklad: Triedič pošty
+> Skupine **"Triediči pošty"** udelím oprávnenie spravovať prístupové štítky. Jej členovia môžu dostupným vláknam priradiť štítok **"Financie"** alebo **"Právne"** a sprístupniť ich príslušným skupinám. Skupinám používateľov, ktorí iba vybavujú pridelené správy, toto oprávnenie neudelím.

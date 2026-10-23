@@ -43,6 +43,14 @@ class Tag < ApplicationRecord
   scope :signature_requesting, -> { where(type: "SignatureRequestedFromTag") }
   scope :signed_internally, -> { where(type: ["SignedTag", "SignedByTag"]) }
   scope :archived, -> { where(type: ArchivedTag.to_s) }
+  scope :without_access, -> {
+    where("NOT EXISTS (SELECT 1 FROM tag_groups WHERE tag_groups.tag_id = tags.id)")
+  }
+  scope :manageable_by, ->(user) {
+    return all if user.can_manage_access_tags?
+
+    without_access
+  }
 
   after_update_commit ->(tag) { EventBus.publish(:tag_renamed, tag) if previous_changes.key?("name") }
 
