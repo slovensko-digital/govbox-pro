@@ -1,0 +1,34 @@
+<div data-controller="agp-signing"
+     data-agp-signing-agp-url-value="<%= Current.tenant.agp_api_url.chomp("/") %>"
+     data-agp-signing-bundle-id-value="<%= @bundle.bundle_identifier %>"
+     data-agp-signing-status-url-value="<%= agp_bundle_path(@bundle, format: :json) %>"
+     data-agp-signing-sync-url-value="<%= sync_agp_bundle_path(@bundle) %>">
+  <div data-agp-signing-target="iframe"></div>
+
+  <div data-agp-signing-target="syncing" class="hidden mx-auto max-w-md px-6 py-10 text-center">
+    <svg class="mx-auto mb-4 h-8 w-8 animate-spin text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+    </svg>
+    <h3 class="text-lg font-semibold text-gray-900">Dokumenty sú podpísané</h3>
+    <p class="mt-2 text-sm text-gray-600">Ukladáme podpísané dokumenty do GovBoxu.</p>
+    <p class="mt-2 text-sm text-gray-500">Uložených dokumentov: <span data-agp-signing-target="progress">0 / <%= @bundle.contracts.size %></span></p>
+  </div>
+
+  <div data-agp-signing-target="failed" class="hidden mx-auto max-w-md px-6 py-10 text-center">
+    <h3 class="text-lg font-semibold text-gray-900">Niektoré podpísané dokumenty sa nepodarilo uložiť</h3>
+    <p class="mt-2 text-sm text-gray-600">Dokumenty sa medzičasom zmenili alebo ich podpisovanie vypršalo. Obnovte stránku, skontrolujte stav dokumentov a podľa potreby ich podpíšte znova.</p>
+    <button type="button" data-action="agp-signing#reload" class="mt-6 inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700">Obnoviť stránku</button>
+  </div>
+
+  <div data-agp-signing-target="timeout" class="hidden mx-auto max-w-md px-6 py-10 text-center">
+    <h3 class="text-lg font-semibold text-gray-900">Dokumenty sú podpísané</h3>
+    <p class="mt-2 text-sm text-gray-600">Ukladanie podpísaných dokumentov do GovBoxu trvá dlhšie ako zvyčajne a dokončí sa na pozadí. Obnovte stránku a skontrolujte stav dokumentov.</p>
+    <button type="button" data-action="agp-signing#reload" class="mt-6 inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700">Obnoviť stránku</button>
+  </div>
+
+  <div data-agp-signing-target="error" class="hidden mx-auto max-w-md px-6 py-10 text-center">
+    <h3 class="text-lg font-semibold text-gray-900">Autogram Portal sa nepodarilo načítať</h3>
+    <p class="mt-2 text-sm text-gray-600">Skúste to prosím o chvíľu znova alebo použite podpisovanie priamo cez Autogram.</p>
+  </div>
+</div>

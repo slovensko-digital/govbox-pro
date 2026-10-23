@@ -345,4 +345,12 @@ Rails.application.routes.draw do
   constraints(GoodJobAdmin) do
     mount GoodJob::Engine => 'good_job'
   end
+
+  # Autogram Portal integration
+  namespace :agp do
+    resources :webhooks, only: [:create]
+    resources :bundles, only: [:show, :new, :create] do
+      post :sync, on: :member
+    end
+  end
 end
