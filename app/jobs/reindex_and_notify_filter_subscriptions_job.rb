@@ -29,7 +29,7 @@ class ReindexAndNotifyFilterSubscriptionsJob < ApplicationJob
   end
 
   def self.perform_later_for_tag_id(tag_id)
-    Searchable::MessageThread.with_tag_id(tag_id).find_each { |s| perform_later(s.message_thread) }
+    Searchable::MessageThread.with_tag_id(tag_id).find_each { |s| perform_later(s.message_thread_id) }
   end
 
   private

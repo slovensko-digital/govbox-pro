@@ -1,10 +1,11 @@
 class NotifyFilterSubscriptionJob < ApplicationJob
   include GoodJob::ActiveJobExtensions::Concurrency
 
-  # The thread id is used instead of the thread itself, because the label is
-  # resolved again when the job is performed.
+  # The ids are used instead of the records themselves, because the label is
+  # resolved again when the job is performed. The label includes the subscription,
+  # so that the limits do not drop the jobs of other subscriptions to the thread.
   good_job_concurrency_rule(
-    label: -> { "NotifyFilterSubscriptionJob-#{arguments.second.try(:id)}" },
+    label: -> { "NotifyFilterSubscriptionJob-#{arguments.first.try(:id)}-#{arguments.second.try(:id)}" },
     apply_label: true,
     total_limit: 2,
     perform_limit: 1
