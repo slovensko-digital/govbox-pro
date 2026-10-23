@@ -1,5 +1,5 @@
 <% if @signable %>
-  <div class="inline-flex rounded-lg shadow-sm">
+  <div class="inline-flex rounded-lg shadow-xs">
     <% if @agp_enabled %>
       <%= link_to "Podpísať", new_message_draft_document_selections_path(@message, next_step: "sign-agp"),
                   data: { turbo_frame: "modal" },
@@ -27,8 +27,8 @@
            data-transition-leave-from="transform opacity-100 scale-100"
            data-transition-leave-to="transform opacity-0 scale-95"
            data-turbo-temporary-hide
-           class="absolute hidden right-0 bottom-full z-50 mb-2 w-52 origin-bottom-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="option-menu-button" tabindex="-1">
-        <div class="py-1 text-gray-700 text-sm [&>*]:px-4 [&>*]:py-2 [&>*:hover]:bg-gray-100" role="none">
+           class="absolute hidden right-0 bottom-full z-50 mb-2 w-52 origin-bottom-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-hidden" role="menu" aria-orientation="vertical" aria-labelledby="option-menu-button" tabindex="-1">
+        <div class="py-1 text-gray-700 text-sm *:px-4 *:py-2 [&>*:hover]:bg-gray-100" role="none">
           <%= link_to new_message_draft_document_selections_path(@message, next_step: "sign"),
                       data: { turbo_frame: "modal" },
                       class: "whitespace-nowrap flex gap-3",
@@ -54,5 +54,5 @@
   <%= link_to "Vyžiadať podpis",
               new_message_draft_document_selections_path(@message),
               data: { turbo_frame: "modal" },
-              class: "font-semibold rounded-lg text-sm px-3.5 py-2.5 bg-white text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" %>
+              class: "font-semibold rounded-lg text-sm px-3.5 py-2.5 bg-white text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 hover:bg-gray-50" %>
 <% end %>

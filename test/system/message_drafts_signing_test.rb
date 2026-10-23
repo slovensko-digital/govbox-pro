@@ -12,7 +12,9 @@ class MessageDraftsSigningTest < ApplicationSystemTestCase
     visit message_thread_path(@thread_general)
 
     within_message_in_thread(@first_draft) do
-      click_button "option-menu-button"
+      # Visualization frames resize after loading; keyboard activation avoids
+      # a pointer click landing elsewhere while the draft moves on screen.
+      find_button("option-menu-button").send_keys(:enter)
       assert_link "Vyžiadať podpis"
       click_link "Vyžiadať podpis"
     end

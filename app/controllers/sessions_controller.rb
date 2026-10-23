@@ -4,7 +4,24 @@ class SessionsController < ApplicationController
   skip_before_action :set_menu_context
   layout 'login'
 
+  ACCOUNT_SELECT_PROVIDERS = {
+    'google_oauth2' => 'Google',
+    'microsoft_graph' => 'Microsoft'
+  }.freeze
+
   def login; end
+
+  def no_account
+    @no_account_trial_enabled = no_account_trial_enabled?
+    @retry_provider = session[:no_account_provider] if ACCOUNT_SELECT_PROVIDERS.key?(session[:no_account_provider])
+    @retry_provider_name = ACCOUNT_SELECT_PROVIDERS[@retry_provider]
+  end
+
+  def trial_login
+    return unless params[:ssd_trial].present? && valid_return_url?(params[:return_url])
+
+    session[:ssd_trial_return_url] = params[:return_url]
+  end
 
   def create
     Current.user = User.find_by(email: auth_hash.info.email)
@@ -25,5 +42,54 @@ class SessionsController < ApplicationController
 
   def failure
     render html: "Authorization failed (#{request.params["message"]})", status: :forbidden
+  end
+
+  def no_account_trial
+    return redirect_to no_account_sessions_path unless no_account_trial_enabled?
+
+    saml_identifier = session[:saml_identifier]
+    username = session[:username]
+
+    return redirect_to no_account_sessions_path if saml_identifier.blank? || username.blank?
+
+    token = JWT.encode(
+      {
+        saml_identifier: saml_identifier,
+        username: username,
+        exp: 5.minutes.from_now.to_i
+      },
+      ENV.fetch('SSD_TRIAL_SHARED_SECRET'),
+      'HS256'
+    )
+
+    uri = URI.parse(no_account_trial_return_url)
+    uri.query = URI.encode_www_form(URI.decode_www_form(uri.query.to_s).append(['token', token]))
+
+    redirect_to uri.to_s, allow_other_host: true
+  end
+
+  private
+
+  def no_account_trial_enabled?
+    no_account_trial_return_url.present? && ENV.fetch('SSD_TRIAL_SHARED_SECRET', '').present?
+  end
+
+  def no_account_trial_return_url
+    ENV.fetch('SSD_NO_ACCOUNT_TRIAL_RETURN_URL', '').presence
+  end
+
+  def valid_return_url?(url)
+    return false if url.blank?
+
+    uri = URI.parse(url.to_s)
+    return true if uri.host.nil? && uri.scheme.nil?
+
+    %w[http https].include?(uri.scheme) && allowed_return_urls.include?(url)
+  rescue URI::InvalidURIError
+    false
+  end
+
+  def allowed_return_urls
+    ENV.fetch('SSD_TRIAL_RETURN_URL_ALLOWLIST', '').split(',')
   end
 end

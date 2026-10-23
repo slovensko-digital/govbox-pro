@@ -27,7 +27,21 @@ class TenantApiTest < ActionDispatch::IntegrationTest
 
     assert_response :bad_request
     json_response = JSON.parse(response.body)
-    assert_match "param is missing or the value is empty: admin", json_response["message"]
+    assert_match "param is missing or the value is empty or invalid: admin", json_response["message"]
+  end
+
+  test "can update tenant active_until" do
+    tenant = tenants(:ssd)
+    future_date = 1.year.from_now
+
+    patch "/api/site_admin/tenants/#{tenant.id}",
+          params: { tenant: { active_until: future_date }, token: generate_api_token },
+          as: :json
+
+    assert_response :success
+    json_response = JSON.parse(response.body)
+    assert_equal tenant.id, json_response["id"]
+    assert_equal future_date.to_i, tenant.reload.active_until.to_i
   end
 
   test "can destroy tenant" do

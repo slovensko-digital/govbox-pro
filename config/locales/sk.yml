@@ -41,6 +41,8 @@ sk:
             base:
               restrict_dependent_destroy:
                 has_many: Integrácia je použitá v automatizačných pravidlách, nie je možné ju vymazať. Upravte najskôr pravidlá
+            url:
+              not_public_https: Musí byť verejná HTTPS adresa
         message_draft:
           attributes:
             metadata:
@@ -49,6 +51,7 @@ sk:
           attributes:
             base:
               empty_selection: Musí byť zvolené aspoň jedno z nastavení exportu
+              invalid_date_range: Dátum „od" musí byť pred dátumom „do"
         fs/message_draft:
           multiple_signatures: "Správa obsahuje viacero podpisov. Nie je možné vybrať FS prepojenie."
           signer_not_allowed_to_submit: "Podpisujúci nemá oprávnenie na odoslanie správy."
@@ -304,6 +307,7 @@ sk:
   fs_message_type: Typ FS správy
   box: Schránka správy
   attachment: Príloha
+  attachments: Prílohy
   api_connection: API Prepojenie
   authors_api_connection: Autor svoje API prepojenie
   boxes:
@@ -325,6 +329,7 @@ sk:
   Automation::BoxCondition: je
   Automation::ApiConnectionCondition: je
   Automation::AuthorHasApiConnectionCondition: má
+  Automation::AttachmentsPresentCondition: sú prítomné
   Automation::AddMessageThreadTagAction: Pridaj štítok na vlákno
   Automation::AddSignatureRequestedFromAuthorMessageThreadTagAction: Pridaj štítok pre vyžiadanie podpisu autora
   Automation::UnassignMessageThreadTagAction: Odober štítok z vlákna
@@ -430,11 +435,20 @@ sk:
     message_draft_import:
       name: Import správ
       description: Funkcionalita pre hromadné zasielanie správ
+    fs_html_visualization:
+      name: HTML vizualizácie FS
+      description: HTML vizualizácie správ z finančnej správy
+    fs_hotfixes:
+      name: Opravy FS podaní
+      description: Opraví nerozpoznané FS podanie XML pri nahratí
   exports:
     flash:
       started: Export správ bol zaradený na spracovanie.
       updated: Nastavenia exportu správ boli zmenené.
   admin:
+    tag_groups:
+      destroy:
+        cannot_remove_restricted_tag: Tento štítok nie je možné odstrániť
     groups:
       create:
         success: Skupina bola úspešne vytvorená
@@ -471,3 +485,5 @@ sk:
           tag: Štítok
       update_all_boxes_permission:
         success: Oprávnenie bolo úspešne upravené
+  sessions:
+    tenant_inactive: Tenant nie je aktívny

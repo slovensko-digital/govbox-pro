@@ -1,6 +1,8 @@
 require 'test_helper'
+require 'helpers/good_job_helper'
 
 class Automation::RuleTest < ActiveSupport::TestCase
+  include GoodJobHelper
   include ActionDispatch::TestProcess::FixtureFile
   test 'should update condition with nested attributes and cleanup as in model' do
     automation_rule = automation_rules(:one)
@@ -295,5 +297,14 @@ class Automation::RuleTest < ActiveSupport::TestCase
     travel_to(15.minutes.from_now) { GoodJob.perform_inline }
     message_draft = Fs::MessageDraft.last
     assert_includes message_draft.thread.title, "1122334455"
+  end
+
+  test 'should run an automation on message created BooleanCondition AttachmentsPresentCondition ChangeMessageThreadTitleAction' do
+    message = messages(:ssd_main_general_one)
+    EventBus.publish(:message_thread_with_message_created, message)
+
+    travel_to(15.minutes.from_now) { GoodJob.perform_inline }
+
+    assert_includes message.thread.reload.title, "Inbox message with attachments"
   end
 end

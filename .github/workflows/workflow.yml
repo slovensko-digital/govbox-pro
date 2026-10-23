@@ -31,7 +31,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:14-alpine
+        image: postgres:18-alpine
         env:
           POSTGRES_USER: postgres
           POSTGRES_HOST_AUTH_METHOD: trust
@@ -45,7 +45,16 @@ jobs:
         with:
           bundler-cache: true
 
+      # Puppeteer, used by Grover for PDF rendering, is a runtime dependency with no
+      # asset pipeline hook installing it anymore now that assets are served via importmap.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+
       - run: bundle exec rails db:setup --trace
+      # Includes integration tests; system tests run separately below.
       - run: bundle exec rails test
       - run: bundle exec rails test:system
       - name: Keep screenshots from failed system tests
@@ -55,7 +64,23 @@ jobs:
           name: screenshots.zip
           path: ${{ github.workspace }}/tmp/screenshots
           if-no-files-found: ignore
-      - run: bundle exec rails test:integration
+      - name: Keep test log from failed tests
+        uses: actions/upload-artifact@v6
+        if: failure()
+        with:
+          name: test-log
+          path: ${{ github.workspace }}/log/test.log
+          if-no-files-found: ignore
+
+  fop:
+    name: FOP Saxon check
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+      - name: Build the image's FOP stage
+        run: docker build --target base -t govbox-pro-base .
 
   gitlab-push:
     name: Push to GitLab
@@ -67,6 +92,7 @@ jobs:
     needs:
       - test
       - brakeman
+      - fop
 
     steps:
       - uses: actions/checkout@v5

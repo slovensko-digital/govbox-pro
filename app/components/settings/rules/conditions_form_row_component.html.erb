@@ -1,5 +1,5 @@
  <%= tag.turbo_frame id: "condition-#{@index}", class: "flex justify-start self-stretch grow" do %>
-  <div class="flex justify-between items-center self-stretch flex-grow flex-shrink-0 relative" id="<%= dom_id(@form.object) %>">
+  <div class="flex justify-between items-center self-stretch grow shrink-0 relative" id="<%= dom_id(@form.object) %>">
     <div class="flex gap-1">
       <%= @form.hidden_field :id %>
       <p class="text-base font-medium text-left text-gray-900"><%= t @form.object.attr %></p>

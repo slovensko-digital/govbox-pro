@@ -10,10 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_05_20_170600) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_15_105627) do
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
-  enable_extension "plpgsql"
   enable_extension "unaccent"
 
   # Custom types defined in this database.
@@ -312,6 +312,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_05_20_170600) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "submission_type_identifier"
+    t.boolean "pdf_supported", default: false, null: false
   end
 
   create_table "good_job_batches", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -327,6 +328,22 @@ ActiveRecord::Schema[7.1].define(version: 2026_05_20_170600) do
     t.datetime "enqueued_at"
     t.datetime "discarded_at"
     t.datetime "finished_at"
+    t.datetime "jobs_finished_at"
+    t.index ["created_at", "id"], name: "index_good_job_batches_on_created_at_and_id", order: :desc
+    t.index ["finished_at"], name: "index_good_job_batches_on_finished_at", where: "(finished_at IS NOT NULL)"
+  end
+
+  create_table "good_job_concurrency_claims", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "job_id", null: false
+    t.uuid "locked_by_id"
+    t.integer "state", limit: 2, null: false
+    t.text "key", null: false
+    t.index ["job_id"], name: "index_good_job_concurrency_claims_on_job_id"
+    t.index ["key", "job_id"], name: "index_good_job_concurrency_claims_on_key_and_job_id", unique: true
+    t.index ["key", "state", "created_at"], name: "index_good_job_concurrency_claims_for_promotion"
+    t.index ["locked_by_id"], name: "index_good_job_concurrency_claims_on_locked_by_id", where: "(locked_by_id IS NOT NULL)"
   end
 
   create_table "good_job_executions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -342,8 +359,10 @@ ActiveRecord::Schema[7.1].define(version: 2026_05_20_170600) do
     t.integer "error_event", limit: 2
     t.text "error_backtrace", array: true
     t.uuid "process_id"
+    t.interval "duration"
     t.index ["active_job_id", "created_at"], name: "index_good_job_executions_on_active_job_id_and_created_at"
     t.index ["process_id", "created_at"], name: "index_good_job_executions_on_process_id_and_created_at"
+    t.index ["scheduled_at"], name: "index_good_job_executions_on_scheduled_at"
   end
 
   create_table "good_job_processes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -385,19 +404,32 @@ ActiveRecord::Schema[7.1].define(version: 2026_05_20_170600) do
     t.text "labels", array: true
     t.uuid "locked_by_id"
     t.datetime "locked_at"
+    t.integer "lock_type", limit: 2
     t.index ["active_job_id", "created_at"], name: "index_good_jobs_on_active_job_id_and_created_at"
     t.index ["batch_callback_id"], name: "index_good_jobs_on_batch_callback_id", where: "(batch_callback_id IS NOT NULL)"
+    t.index ["batch_callback_id"], name: "index_good_jobs_on_batch_callback_id_unfinished", where: "((batch_callback_id IS NOT NULL) AND (finished_at IS NULL))"
     t.index ["batch_id"], name: "index_good_jobs_on_batch_id", where: "(batch_id IS NOT NULL)"
+    t.index ["batch_id"], name: "index_good_jobs_on_batch_id_unfinished", where: "((batch_id IS NOT NULL) AND (finished_at IS NULL))"
+    t.index ["concurrency_key", "created_at"], name: "index_good_jobs_on_concurrency_key_and_created_at"
     t.index ["concurrency_key"], name: "index_good_jobs_on_concurrency_key_when_unfinished", where: "(finished_at IS NULL)"
+    t.index ["created_at"], name: "index_good_jobs_on_created_at"
     t.index ["cron_key", "created_at"], name: "index_good_jobs_on_cron_key_and_created_at_cond", where: "(cron_key IS NOT NULL)"
-    t.index ["cron_key", "cron_at"], name: "index_good_jobs_on_cron_key_and_cron_at_cond", unique: true, where: "(cron_key IS NOT NULL)"
-    t.index ["finished_at"], name: "index_good_jobs_jobs_on_finished_at", where: "((retried_good_job_id IS NULL) AND (finished_at IS NOT NULL))"
+    t.index ["cron_key", "cron_at"], name: "index_good_jobs_on_cron_key_and_cron_at_cond", unique: true, order: { cron_at: "DESC NULLS LAST" }, where: "(cron_key IS NOT NULL)"
+    t.index ["finished_at"], name: "index_good_jobs_jobs_on_finished_at_only", where: "(finished_at IS NOT NULL)"
+    t.index ["finished_at"], name: "index_good_jobs_on_discarded", order: :desc, where: "((finished_at IS NOT NULL) AND (error IS NOT NULL))"
+    t.index ["id"], name: "index_good_jobs_on_unfinished_or_errored", where: "((finished_at IS NULL) OR (error IS NOT NULL))"
+    t.index ["job_class", "finished_at"], name: "index_good_jobs_on_discarded_job_class", where: "((finished_at IS NOT NULL) AND (error IS NOT NULL))"
+    t.index ["job_class"], name: "index_good_jobs_on_job_class"
     t.index ["labels"], name: "index_good_jobs_on_labels", where: "(labels IS NOT NULL)", using: :gin
     t.index ["locked_by_id"], name: "index_good_jobs_on_locked_by_id", where: "(locked_by_id IS NOT NULL)"
     t.index ["priority", "created_at"], name: "index_good_job_jobs_for_candidate_lookup", where: "(finished_at IS NULL)"
-    t.index ["priority", "created_at"], name: "index_good_jobs_jobs_on_priority_created_at_when_unfinished", order: { priority: "DESC NULLS LAST" }, where: "(finished_at IS NULL)"
-    t.index ["priority", "scheduled_at"], name: "index_good_jobs_on_priority_scheduled_at_unfinished_unlocked", where: "((finished_at IS NULL) AND (locked_by_id IS NULL))"
-    t.index ["queue_name", "scheduled_at"], name: "index_good_jobs_on_queue_name_and_scheduled_at", where: "(finished_at IS NULL)"
+    t.index ["priority", "scheduled_at", "id"], name: "index_good_jobs_for_candidate_dequeue_unlocked", where: "((finished_at IS NULL) AND (locked_by_id IS NULL))"
+    t.index ["priority", "scheduled_at", "id"], name: "index_good_jobs_on_priority_scheduled_at_unfinished", where: "(finished_at IS NULL)"
+    t.index ["queue_name", "priority", "created_at"], name: "index_good_jobs_dequeue_by_queue", where: "((finished_at IS NULL) AND (locked_by_id IS NULL))"
+    t.index ["queue_name", "priority", "scheduled_at"], name: "index_good_jobs_dequeue_by_queue_scheduled_at", where: "((finished_at IS NULL) AND (locked_by_id IS NULL))"
+    t.index ["queue_name", "scheduled_at", "id"], name: "index_good_jobs_on_queue_name_priority_scheduled_at_unfinished", where: "(finished_at IS NULL)"
+    t.index ["queue_name"], name: "index_good_jobs_on_queue_name"
+    t.index ["scheduled_at", "queue_name"], name: "index_good_jobs_on_scheduled_at_and_queue_name"
     t.index ["scheduled_at"], name: "index_good_jobs_on_scheduled_at", where: "(finished_at IS NULL)"
   end
 
@@ -588,6 +620,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_05_20_170600) do
     t.jsonb "export_metadata", default: {}, null: false
     t.index "((metadata ->> 'fs_message_id'::text))", name: "index_messages_on_metadata_fs_message_id", using: :hash
     t.index ["author_id"], name: "index_messages_on_author_id"
+    t.index ["delivered_at"], name: "index_messages_on_delivered_at"
     t.index ["import_id"], name: "index_messages_on_import_id"
     t.index ["message_thread_id"], name: "index_messages_on_message_thread_id"
     t.unique_constraint ["uuid", "message_thread_id"], deferrable: :deferred
@@ -688,7 +721,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_05_20_170600) do
     t.enum "color", enum_type: "color"
     t.index ["owner_id"], name: "index_tags_on_owner_id"
     t.index ["tenant_id", "type", "name"], name: "index_tags_on_tenant_id_and_type_and_name", unique: true
-    t.index ["tenant_id", "type"], name: "signings_tags", unique: true, where: "((type)::text = ANY ((ARRAY['SignatureRequestedTag'::character varying, 'SignedTag'::character varying])::text[]))"
+    t.index ["tenant_id", "type"], name: "signings_tags", unique: true, where: "((type)::text = ANY (ARRAY[('SignatureRequestedTag'::character varying)::text, ('SignedTag'::character varying)::text]))"
     t.index ["tenant_id"], name: "index_tags_on_tenant_id"
   end
 
@@ -700,7 +733,10 @@ ActiveRecord::Schema[7.1].define(version: 2026_05_20_170600) do
     t.string "api_token_public_key"
     t.jsonb "settings", default: {}, null: false
     t.string "signature_request_mode", default: "signer_group", null: false
+    t.string "contact_email"
+    t.string "ico", limit: 8
     t.integer "outbox_messages_limit"
+    t.datetime "active_until"
   end
 
   create_table "upvs_form_related_documents", force: :cascade do |t|
@@ -743,6 +779,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_05_20_170600) do
     t.datetime "notifications_last_opened_at"
     t.datetime "notifications_reset_at"
     t.boolean "notifications_opened", default: false, null: false
+    t.boolean "is_site_admin", default: false, null: false
     t.index "tenant_id, lower((email)::text)", name: "index_users_on_tenant_id_and_lowercase_email", unique: true
     t.check_constraint "email IS NOT NULL OR saml_identifier IS NOT NULL", name: "email_or_saml_identifier_required"
   end

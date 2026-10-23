@@ -10,6 +10,7 @@
 .rubocop.yml
 .ruby-lsp
 .vscode/
+node_modules/
 chart/
 Procfile
 Procfile.debug

@@ -5,7 +5,7 @@
 tenant = Tenant.find_or_create_by!(name: 'Dummy Tenant')
 
 ENV['SITE_ADMIN_EMAILS'].to_s.split(',').each.with_index(1) do |email, i|
-  tenant.users.find_or_create_by!(email: email, name: "Site ADMIN User #{i}").tap do |user|
+  tenant.users.find_or_create_by!(email: email, name: "Site ADMIN User #{i}", is_site_admin: true).tap do |user|
     user.groups << tenant.admin_group unless user.groups.include?(tenant.admin_group)
     user.save!
   end

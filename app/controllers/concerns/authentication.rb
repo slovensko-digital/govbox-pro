@@ -13,14 +13,16 @@ module Authentication
     if valid_session?(session)
       session[:login_expires_at] = SESSION_TIMEOUT.from_now
     else
-      redirect_to login_path
+      redirect_to login_path and return
     end
 
     load_current_user
   end
 
-  def create_session(saml_identifier: nil)
+  def create_session(saml_identifier: nil, username: nil)
     if Current.user
+      redirect_to login_path, alert: I18n.t("sessions.tenant_inactive") and return unless Current.user.tenant.active?
+
       session[:user_id] = Current.user.id
       session[:login_expires_at] = SESSION_TIMEOUT.from_now
       session[:tenant_id] = Current.user.tenant_id
@@ -29,7 +31,10 @@ module Authentication
       session[:upvs_login] = saml_identifier.present?
       redirect_to session[:after_login_path] || default_after_login_path
     else
-      redirect_to no_account_sessions_path(saml_identifier: saml_identifier)
+      session[:saml_identifier] = saml_identifier
+      session[:username] = username
+      session[:no_account_provider] = auth_hash&.provider
+      redirect_to no_account_sessions_path
     end
   end
 
@@ -44,6 +49,12 @@ module Authentication
   def load_current_user
     Current.user = User.find(session[:user_id]) if session[:user_id]
     Current.tenant = Tenant.find(session[:tenant_id]) if session[:tenant_id]
+
+    if Current.tenant && !Current.tenant.active?
+      clean_session
+      redirect_to login_path, alert: I18n.t("sessions.tenant_inactive") and return
+    end
+
     Current.box = Current.tenant.boxes.find_by(id: session[:box_id]) if session[:box_id]
   end
 

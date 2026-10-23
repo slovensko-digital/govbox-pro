@@ -17,7 +17,7 @@ class Fs::FormAttachment < ApplicationRecord
   delegate :identifier, :name, to: :group
 
   def required_occurrences(xml)
-    return min_occurrences, max_occurrences if form.slug != "VP_DANv24" && !identifier.in?(%w[VP_PRI_UA VP_DOK_UA])
+    return min_occurrences, max_occurrences unless form.slug == "VP_DANv24" && identifier.in?(%w[VP_PRI_UA VP_DOK_UA])
 
     case identifier
     when "VP_PRI_UA"

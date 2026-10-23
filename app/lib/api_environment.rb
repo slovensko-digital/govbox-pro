@@ -21,6 +21,7 @@ module ApiEnvironment
 
     raise unless tenant
     raise unless tenant.feature_enabled? :api
+    raise unless tenant.active?
 
     tenant
   end

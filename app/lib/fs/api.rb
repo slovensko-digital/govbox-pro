@@ -1,13 +1,19 @@
 # frozen_string_literal: true
 
 module Fs
+  class AuthenticationError < StandardError; end
+
   class Api
+    AUTHENTICATION_ERROR_STATUSES = [401, 403].freeze
+    HTTP_TIMEOUT = 900
+    PDF_VISUALIZATION_TIMEOUT = 210
+    DEFAULT_HANDLER = Faraday.new(request: { timeout: HTTP_TIMEOUT })
+
     attr_accessor :obo, :obo_without_delegate
 
-    def initialize(url, api_connection: nil, box: nil, handler: Faraday)
+    def initialize(url, api_connection: nil, box: nil, handler: DEFAULT_HANDLER)
       @url = url
       @handler = handler
-      @handler.options.timeout = 900_000
 
       api_connection ||= box&.api_connection
       @sub = api_connection&.sub
@@ -27,6 +33,16 @@ module Fs
 
     def parse_form(content)
       request(:post, "forms/parse", { content: Base64.strict_encode64(content) })[:body]
+    end
+
+    def pdf_visualization(form_identifier, content)
+      response = @handler.post(
+        "#{@url}/api/v1/pdf-visualizations",
+        { form_identifier: form_identifier, content: Base64.strict_encode64(content) },
+        jwt_header
+      ) { |request| request.options.timeout = PDF_VISUALIZATION_TIMEOUT }
+
+      response.body if response.status == 200 && response.headers["content-type"].to_s.include?("application/pdf")
     end
 
     def get_public_key(**args)
@@ -126,10 +142,11 @@ module Fs
 
     def request_url(method, path, *args, accept_negative: false)
       response = @handler.public_send(method, path, *args)
+      raise AuthenticationError, response_body(response) if !accept_negative && authentication_error_response?(response)
+
       structure = response.body.empty? ? nil : JSON.parse(response.body)
     rescue StandardError => error
-      raise StandardError.new(error.response) if error.respond_to?(:response) && error.response
-      raise error
+      handle_response_error(error) || raise(error)
     else
       raise StandardError.new(response.body) if !accept_negative && response.status != 404 && response.status > 400
       return {
@@ -137,6 +154,26 @@ module Fs
         body: structure,
         headers: response.headers
       }
+    end
+
+    def handle_response_error(error)
+      return unless error.respond_to?(:response) && error.response
+
+      response = error.response
+      raise AuthenticationError, response_body(response) if authentication_error_response?(response)
+      raise StandardError, response_body(response)
+    end
+
+    def authentication_error_response?(response)
+      response_status(response).in?(AUTHENTICATION_ERROR_STATUSES)
+    end
+
+    def response_status(response)
+      response.respond_to?(:status) ? response.status : response[:status]
+    end
+
+    def response_body(response)
+      response.respond_to?(:body) ? response.body : response[:body]
     end
   end
 end
