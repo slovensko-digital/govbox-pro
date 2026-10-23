@@ -187,7 +187,7 @@ Integrated filter verification (Ruby 4.0.6 / Rails 8.1.4, dedicated test databas
 after `bin/rails tailwindcss:build`):
 
 ```console
-bin/rails test test/models/*filter*test.rb test/policies/filter_policy_test.rb test/components/filter_list_component_test.rb test/controllers/filters_controller_test.rb test/controllers/common_filters_controller_test.rb test/controllers/filter_subscriptions_controller_test.rb test/controllers/boxes_filter_context_test.rb test/controllers/settings/user_filter_visibilities_controller_test.rb test/controllers/message_threads/filter_query_test.rb test/jobs/notify_filter_subscription_job_test.rb test/system/filters_test.rb test/system/personalized_filters_test.rb test/system/common_filters_test.rb test/system/message_threads_test.rb test/system/notifications_test.rb
+bin/rails test test/models/*filter*test.rb test/policies/filter_policy_test.rb test/components/filter_list_component_test.rb test/controllers/filters_controller_test.rb test/controllers/common_filters_controller_test.rb test/controllers/filter_subscriptions_controller_test.rb test/controllers/boxes_filter_context_test.rb test/controllers/settings/user_filter_visibilities_controller_test.rb test/controllers/message_threads/filter_query_test.rb test/jobs/notify_filter_subscription_job_test.rb test/system/filters_test.rb test/system/personalized_filters_test.rb test/system/common_filters_test.rb test/system/filter_acceptance_test.rb test/system/message_threads_test.rb test/system/notifications_test.rb
 ```
 
 Run with `RAILS_ENV=test` and `DATABASE_URL` explicitly selecting the dedicated
@@ -196,13 +196,17 @@ errors, or skips**. Shared-filter journeys explicitly classify their fixture as
 common; the logout helper waits for the dropdown's initial close animation
 instead of using retry clicks or weakening assertions.
 
-Final verification adds `test/system/filter_acceptance_test.rb` to that same
-command: seed 36652, **87 tests, 611 assertions, zero failures, errors, or skips**.
+Final verification adds `test/system/filter_acceptance_test.rb` and personalized
+system-tag navigation coverage to that command: seed 42603, **88 tests, 631
+assertions, zero failures, errors, or skips**.
 The acceptance journey covers an administrator and two users, independent default
 ordering, clear search, publication into pinned/unpinned personal matches,
 subscription management under a personal title, authorized delivery, unpinned
 notification links, original common-order restoration, confirmed query edits,
 and cancelled/confirmed deletion with two subscribers.
+The personalized sidebar also keeps visible system-status shortcuts without
+duplicating matching pinned definitions and shows signer-specific shortcuts only
+to their owner; these shortcuts do not create saved filters.
 To capture browser evidence, set `FILTER_DEMO_DIRECTORY` to an existing directory
 and run `bin/rails test test/system/common_filters_test.rb test/system/filter_acceptance_test.rb`.
 The tests save query confirmation, subscriber warnings, personal notification

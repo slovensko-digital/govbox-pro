@@ -53,3 +53,8 @@
 - [x] 7.1 Run the affected model, policy, request, job, migration, and system suites together using the repository's test setup; record exact commands/results and resolve regressions without weakening assertions or introducing conditional test clicks.
 - [x] 7.2 Exercise a browser acceptance journey with an administrator and two users: reorder defaults, clear search, publish into pinned/unpinned personal duplicates, manage an existing common subscription under a personal name, follow an unpinned notification link, delete a personal override to restore common order, confirm query edit, and cancel/confirm subscribed deletion; retain UI evidence and verify each user's menu and deliveries match the specs.
 - [x] 7.3 Validate the completed OpenSpec change and review the final diff against PR #249 context; verify no `filter_id` message-list URL dependency, automatic new-tag filter creation, group/template feature, tag-rename rewrite, display-precedence delivery suppression, notification-job query versioning, or migration subscription remapping was introduced.
+
+## 8. System-tag shortcuts in personalized navigation
+
+- [x] 8.1 Restore visible system-tag shortcuts beside saved filters without creating saved filter records; show only the current user's signer-specific shortcuts, avoid duplicate links for pinned definitions, and verify system status coverage, user isolation, and first-pin default behavior.
+- [x] 8.2 Document the personalized system-filter section and its user-relative signing shortcuts; verify no future tag-creation callback or saved-filter side effect was introduced.

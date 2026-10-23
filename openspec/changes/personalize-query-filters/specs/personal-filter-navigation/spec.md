@@ -85,6 +85,24 @@ Deleting a personal filter that overrides a common filter SHALL restore the comm
 - **THEN** the common filter becomes available in settings but remains absent from the menu
 - **AND** its subscription settings are not changed by the display-precedence change
 
+### Requirement: Keep system-tag shortcuts in personalized navigation
+Personalized navigation SHALL retain visible system-tag search shortcuts alongside saved filters without automatically creating saved filter definitions for tags. It SHALL include tenant-visible system statuses and only the current user's own signer-specific `SignatureRequestedFromTag` and `SignedByTag` shortcuts; another user's signer-specific shortcuts SHALL NOT appear. A system shortcut SHALL not be duplicated when the same query is already represented by a pinned personal filter.
+
+#### Scenario: Existing system status shortcuts remain available
+- **WHEN** personalized navigation is enabled
+- **THEN** visible system tags such as drafts, archived, signature status, and processing/error states remain query links in a system-filters section
+- **AND** all-messages remains the empty-query saved-filter entry
+
+#### Scenario: Signer-specific shortcuts are user-relative
+- **WHEN** the tenant has signer-specific tags for multiple users
+- **THEN** each user sees their own request-to-sign and signed-by shortcuts
+- **AND** does not see another user's signer-specific shortcuts
+
+#### Scenario: Creating later tags does not create saved filters
+- **WHEN** a later visible system tag becomes available
+- **THEN** it can appear as a system navigation shortcut
+- **AND** no saved filter or personal pin is created for it
+
 ### Requirement: Preserve navigation at deployment
 A one-time migration SHALL preserve current query shortcuts in their previous order: all messages, saved filters, then visible tags. Existing saved filters SHALL become common definitions with unchanged IDs. Existing subscriptions, their associations, event selections, and checkpoints SHALL remain unchanged. Visible tag shortcuts SHALL be created as common query filters only during migration, not for future tags.
 

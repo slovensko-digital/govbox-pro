@@ -79,6 +79,11 @@ všetky dostupné správy bez opätovného použitia predvoleného filtra.
 **Odopnutie nevypína notifikácie.** Odber zmeníte alebo vypnete cez jeho nastavenia.
 Kliknutie na query odkaz či odkaz z notifikácie filter automaticky nepripne.
 
+Vedľa uložených filtrov zostávajú aj viditeľné systémové skratky (napríklad
+rozpracované, archivované, podpisové a chybové stavy). Podpisové skratky
+konkrétneho podpisovateľa sa zobrazujú iba jemu. Tieto systémové odkazy
+nevytvárajú pri vzniku štítka nový uložený filter.
+
 ## Spoločné filtre pre administrátora
 
 Pri vytváraní filtra môže administrátor zvoliť **Spoločný filter pre všetkých**.

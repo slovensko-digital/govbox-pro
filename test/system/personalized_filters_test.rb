@@ -89,4 +89,42 @@ class PersonalizedFiltersTest < ApplicationSystemTestCase
     assert_not users(:basic).user_filter_visibilities.find_by!(filter: common).visible?
     assert_not users(:basic).user_filter_visibilities.find_by!(filter: personal).visible?
   end
+
+  test "system tag shortcuts include visible system states and only the current user's signer tags" do
+    user = users(:basic)
+    system_query = "label:(#{tags(:ssd_drafts).name})"
+    saved_system_filter = Filter.create!(tenant: tenants(:ssd), common: true, name: "Drafts shortcut", query: system_query)
+    user.set_filter_visibility!(saved_system_filter.id, visible: true)
+    group_signer_filter = Filter.create!(tenant: tenants(:ssd), common: true, name: "Group signer shortcut",
+      query: "label:(#{tags(:ssd_signers_signature_requested).name})")
+    user.set_filter_visibility!(group_signer_filter.id, visible: true)
+    own_request = own_signed = nil
+    assert_no_difference "Filter.count" do
+      own_request = SignatureRequestedFromTag.create!(tenant: tenants(:ssd), owner: user, name: "Na podpis: My current user", visible: true)
+      own_signed = SignedByTag.create!(tenant: tenants(:ssd), owner: user, name: "Podpísané: My current user", visible: true)
+      SignatureRequestedFromTag.create!(tenant: tenants(:ssd), owner: users(:basic_two), name: "Na podpis: Other current user", visible: true)
+      SignedByTag.create!(tenant: tenants(:ssd), owner: users(:basic_two), name: "Podpísané: Other current user", visible: true)
+    end
+
+    visit root_path
+    within("[data-test='system-filters']") do
+      assert_link tags(:ssd_drafts).name
+      assert_link tags(:ssd_archived).name
+      assert_link tags(:ssd_signature_requested).name
+      assert_link tags(:ssd_signed).name
+      assert_link own_request.name
+      assert_link own_signed.name
+      assert_no_link tags(:ssd_signer_user_signature_requested).name
+      assert_no_link tags(:ssd_signer_user_signed).name
+      assert_no_link tags(:ssd_signers_signature_requested).name
+      assert_no_link group_signer_filter.name
+    end
+    expected_names = tenants(:ssd).tags.visible.where.not(type: SimpleTag.to_s)
+      .where.not(type: [SignatureRequestedFromTag.to_s, SignedByTag.to_s]).pluck(:name)
+    expected_names += tenants(:ssd).tags.visible.where(type: [SignatureRequestedFromTag.to_s, SignedByTag.to_s], owner: user).pluck(:name)
+    assert_equal expected_names.sort, page.all("[data-test='system-filters'] a").map(&:text).sort
+    assert_selector "a[href='#{message_threads_path(q: system_query)}']", count: 1
+    assert_selector "a[href='#{message_threads_path(q: "label:(#{own_request.name})")}']"
+    refute_includes page.all("[data-test='system-filters'] a").map(&:text), tags(:ssd_signer_user_signature_requested).name
+  end
 end
