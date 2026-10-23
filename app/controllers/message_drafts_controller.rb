@@ -40,6 +40,20 @@ class MessageDraftsController < ApplicationController
     end
   end
 
+  def apply_corrected_xml
+    authorize @message
+
+    unless @message.not_yet_submitted?
+      redirect_to message_thread_path(@message.thread), alert: "Správu nie je možné upraviť po zaradení na odoslanie" and return
+    end
+
+    if @message.apply_corrected_xml
+      redirect_to message_thread_path(@message.thread), notice: "Opravené hodnoty boli použité, prebieha nová validácia správy"
+    else
+      redirect_to message_thread_path(@message.thread), alert: apply_corrected_xml_failure_message
+    end
+  end
+
   def unlock
     authorize @message
     if @message.remove_form_signature
@@ -62,5 +76,13 @@ class MessageDraftsController < ApplicationController
   def message_draft_params
     attributes = MessageTemplateParser.parse_template_placeholders(@message.template).map{|item| item[:name]}
     params[:message_draft].permit(attributes)
+  end
+
+  def apply_corrected_xml_failure_message
+    if @message.form_object&.is_signed?
+      "Formulár je podpísaný, opravené hodnoty nie je možné použiť. Najskôr odstráňte podpis."
+    else
+      "Opravené hodnoty nie sú k dispozícii. Spustite validáciu správy znova."
+    end
   end
 end
