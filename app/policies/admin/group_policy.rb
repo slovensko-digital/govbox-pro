@@ -41,7 +41,7 @@ class Admin::GroupPolicy < ApplicationPolicy
   end
 
   def update_can_manage_access_tags?
-    @user.admin? && @group.manage_access_tags_changable?
+    @user.admin? && @group.manage_access_tags_changeable?
   end
 
   def edit?

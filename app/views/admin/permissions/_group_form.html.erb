@@ -67,7 +67,7 @@
           <div class="flex flex-col justify-start items-start grow relative gap-1">
             <p class="self-stretch grow-0 shrink-0 text-left">Oprávnenie spravovať prístupové štítky</p>
           </div>
-          <% unless group.manage_access_tags_changable? %>
+          <% unless group.manage_access_tags_changeable? %>
             <span class="text-sm text-gray-500"><%= t('admin.groups.permissions.access_tags_always_enabled') %></span>
           <% else %>
           <%= form_with url: update_can_manage_access_tags_admin_tenant_group_path(Current.tenant, group), title: "Zmeniť oprávnenie skupiny spravovať prístupové štítky", method: :patch, scope: nil do |form| %>

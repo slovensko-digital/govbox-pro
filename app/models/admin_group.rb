@@ -17,7 +17,7 @@ class AdminGroup < Group
 
   validates :can_manage_access_tags, inclusion: { in: [true] }
 
-  def manage_access_tags_changable?
+  def manage_access_tags_changeable?
     false
   end
 

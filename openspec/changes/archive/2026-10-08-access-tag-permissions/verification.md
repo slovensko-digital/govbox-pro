@@ -23,7 +23,7 @@ Result: **161 tests, 652 assertions, no failures, errors or skips**.
 - The list template delegates manageability to `TagsAssignment::ListComponent#manageable?(tag)`.
 - The new permission update uses Rails boolean casting and `Group` inclusion validation, with 422 rendering on validation failure. The pre-existing `all_boxes_permission` action is unchanged.
 - `Tag#manageable_by?` was unused in production and removed; the tests exercise the enforcement scope instead, retaining ownership and stale-counter coverage.
-- The policy and permissions form use polymorphic `manage_access_tags_changable?` for admin-group immutability.
+- The policy and permissions form use polymorphic `manage_access_tags_changeable?` for admin-group immutability.
 - Locked tags use the tooltip "Tento štítok nemáte právo meniť".
 - Chrome tests navigate through the permissions list and revoke access-tag management for `AllGroup`, `UserGroup` and `SignerGroup`. A model regression verifies that permission granted to existing groups can be fully revoked for a non-admin by disabling every granting membership.
 

@@ -12,7 +12,7 @@ Already implemented:
 - [x] 1.1 Verify the migration in an isolated test database: only pre-existing admin groups become true, all non-admin groups and new non-admin groups have a false stored default, and rollback removes the column; add focused migration coverage.
 - [x] 1.2 Guarantee the stored-true invariant for admin groups: default new admin groups to true for all ordinary creation paths, reject application saves with false, and add a follow-up migration repairing existing false admin-group values without changing non-admin permissions. Add and run model and isolated repair-migration tests; retain the uniform group-based user lookup without an admin bypass.
 - [x] 1.3 Show a localized "Always enabled" status without an editable toggle for the admin group; add and run a rendering test against a valid admin group with stored permission true.
-- [x] 1.4 Reject admin-group disable requests while preserving valid non-admin-group updates; add and run policy/controller tests for rejection, non-admin denial and valid updates. Use Rails casting, boolean model validation and polymorphic `manage_access_tags_changable?`; verify permission revocation for all-users, personal and signer groups through the permissions UI.
+- [x] 1.4 Reject admin-group disable requests while preserving valid non-admin-group updates; add and run policy/controller tests for rejection, non-admin denial and valid updates. Use Rails casting, boolean model validation and polymorphic `manage_access_tags_changeable?`; verify permission revocation for all-users, personal and signer groups through the permissions UI.
 
 ## 2. Server-side enforcement
 

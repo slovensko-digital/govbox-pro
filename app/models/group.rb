@@ -35,7 +35,7 @@ class Group < ApplicationRecord
     type.in? EDITABLE_GROUP_TYPES
   end
 
-  def manage_access_tags_changable?
+  def manage_access_tags_changeable?
     true
   end
 
