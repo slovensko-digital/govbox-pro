@@ -10,7 +10,7 @@ jobs:
   brakeman:
     name: Brakeman
 
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v5
@@ -23,7 +23,7 @@ jobs:
   test:
     name: Run tests
 
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
 
     env:
       PGHOST: localhost
@@ -75,7 +75,7 @@ jobs:
   fop:
     name: FOP Saxon check
 
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v5
@@ -87,7 +87,7 @@ jobs:
 
     if: ${{(github.repository == 'slovensko-digital/govbox-pro') && (github.ref == 'refs/heads/main')}}
 
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
 
     needs:
       - test
