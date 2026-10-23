@@ -42,3 +42,4 @@ Tento softvér je licencovaný pod [licenciou EUPL v1.2](LICENSE).
 V skratke to znamená, že tento softvér môžete voľne používať komerčne aj nekomerčne, môžete vytvárať vlastné verzie a to všetko za predpokladu, že prípadné vlastné zmeny a rozšírenia tiež zverejníte pod rovnakou licenciou a zachováte originálny copyright pôvodných autorov. Softvér sa poskytuje "ber ako je", bez záväzkov.
 
 Tento projekt je postavený na open-source softvéri, ktorý umožnuje jeho používanie tiež komerčne, aj nekomerčne.
+

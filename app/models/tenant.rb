@@ -3,8 +3,11 @@
 # Table name: tenants
 #
 #  id                     :bigint           not null, primary key
+#  active_until           :datetime
 #  api_token_public_key   :string
+#  contact_email          :string
 #  feature_flags          :string           default([]), is an Array
+#  ico                    :string(8)
 #  name                   :string           not null
 #  outbox_messages_limit  :integer
 #  settings               :jsonb            not null
@@ -55,17 +58,28 @@ class Tenant < ApplicationRecord
 
   after_create :create_default_objects
 
-  validates_presence_of :name
+  validates :name, presence: true, uniqueness: true
+  validates_uniqueness_of :ico, allow_nil: true
+
+  validates :contact_email, format: { with: URI::MailTo::EMAIL_REGEXP, message: "must be valid" }, allow_blank: true
+  validates :ico, format: { with: /\A\d{8}\z/, message: "must be 8 digits" }, allow_blank: true
+
   validate :validate_api_token_public_key_format, unless: -> { api_token_public_key.nil? }
   validate :validate_agp_api_token_private_key_format, unless: -> { settings_agp_api_token_private_key.nil? }
   validate :validate_agp_webhook_public_key_format, unless: -> { settings_agp_webhook_public_key.nil? }
 
-  ALL_FEATURE_FLAGS = [:audit_log, :archive, :api, :message_draft_import, :fs_api, :fs_sync, :upvs, :autogram_portal]
+  ALL_FEATURE_FLAGS = [:audit_log, :archive, :api, :message_draft_import, :fs_api, :fs_sync, :upvs, :fs_pdf_visualization, :fs_html_visualization, :fs_hotfixes, :autogram_portal]
 
   PDF_SIGNATURE_FORMATS = %w[PAdES XAdES CAdES]
   SIGNATURE_REQUEST_MODES = %w[signer_group author].freeze
 
   validates :signature_request_mode, inclusion: { in: SIGNATURE_REQUEST_MODES }
+
+  scope :active, -> { where("active_until IS NULL OR active_until > ?", Time.current) }
+
+  def active?
+    active_until.nil? || active_until > Time.current
+  end
 
   def agp_api_url
     settings_agp_api_url.presence || ENV.fetch("AGP_API_URL", nil).presence
@@ -215,9 +229,9 @@ class Tenant < ApplicationRecord
     create_signed_tag!(name: "Podpísané", visible: true, color: "green", icon: "fingerprint")
     signer_group.create_signature_requested_tag!
     create_signed_externally_tag!(name: "Externe podpísané", visible: false, color: "purple", icon: "shield-check")
-    create_problem_tag!(name: 'Problémové')
+    create_problem_tag!(name: 'Problémové', color: 'red', icon: 'exclamation-triangle')
     create_submitted_tag!(name: 'Odoslané na spracovanie')
-    create_submission_error_tag!(name: 'Chyba pri odoslaní')
+    create_submission_error_tag!(name: 'Chyba pri odoslaní', color: 'red', icon: 'exclamation-triangle')
     create_unprocessable_tag!(name: 'Chybné', color: 'red', icon: 'exclamation-triangle')
     create_validation_error_tag!(name: "Chybné údaje", color: 'red', icon: "exclamation-triangle")
     create_validation_warning_tag!(name: "Upozornenia", color: "orange", icon: "exclamation-triangle")

@@ -10,6 +10,8 @@ class Admin::TagGroupsController < ApplicationController
 
   def destroy
     authorize([:admin, @tag_group])
+    redirect_to edit_permissions_admin_tenant_group_url(Current.tenant, @tag_group.group), alert: t('.cannot_remove_restricted_tag') and return if @tag_group.restricted?
+
     @tag_group.destroy
     redirect_to edit_permissions_admin_tenant_group_url(Current.tenant, @tag_group.group), notice: "Prístup na základe štítkov bol úspešne odstránený"
   end

@@ -13,9 +13,17 @@ end
 module GovboxPro
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 7.1
+    config.load_defaults 8.1
+
+    # Preserve the API's safe JSON escaping rather than Rails 8.1's fast path.
+    config.action_controller.escape_json_responses = true
+    config.active_support.escape_js_separators_in_json = true
 
     config.middleware.use Rack::Attack
+
+    config.action_dispatch.default_headers = config.action_dispatch.default_headers.merge(
+      "Permissions-Policy" => "camera=(), microphone=(), geolocation=(), payment=(), usb=(), gyroscope=(), magnetometer=()"
+    )
 
     config.active_record.schema_format = :ruby
 

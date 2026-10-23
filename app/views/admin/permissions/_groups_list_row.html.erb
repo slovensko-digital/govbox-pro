@@ -11,7 +11,7 @@
         <%= t("user", count: group.users.count) %>
       </div>
     </div>
-    <div class="flex flex-col justify-start items-start gap-2 px-4 flex-grow">
+    <div class="flex flex-col justify-start items-start gap-2 px-4 grow">
       <% if group.boxes.any? %>
         <div class="flex flex-wrap justify-start items-start gap-2">
           <% group.boxes.each do |box| %>

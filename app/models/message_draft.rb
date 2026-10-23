@@ -160,10 +160,13 @@ class MessageDraft < Message
     return [] if submittable?
 
     errors = []
-    errors << 'Vyplňte obsah správy' unless form_object.content.present?
+    errors << 'Schránka nie je aktívna' unless box.active?
+    errors << 'Vyplňte obsah správy' unless form_object&.content&.present?
     errors << 'Pred odoslaním podpíšte všetky dokumenty na podpis' if any_objects_with_requested_signature?
     errors << 'Obsah správy nie je validný' if invalid? || !valid?(:validate_data)
     errors << 'Správu bude možné odoslať až po ukončení validácie' if being_validated?
+    errors << 'Správa už bola zaradená na odoslanie' if being_submitted? || submitted?
+    errors << 'Správu sa nepodarilo odoslať, skúste ju odoslať znova z aplikácie' if submit_failed?
 
     errors
   end
@@ -216,6 +219,16 @@ class MessageDraft < Message
     metadata["status"] = "submitted"
     save!
     EventBus.publish(:message_draft_submitted, self)
+  end
+
+  def submit_failed!
+    metadata["status"] = "submit_fail"
+    save!
+
+    remove_cascading_tag(tenant.submitted_tag)
+    add_cascading_tag(tenant.draft_tag!)
+    add_cascading_tag(tenant.submission_error_tag)
+    add_cascading_tag(tenant.problem_tag)
   end
 
   def attachments_editable?

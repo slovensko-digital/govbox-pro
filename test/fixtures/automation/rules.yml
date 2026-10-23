@@ -77,3 +77,10 @@ ed_delivery_report_rule3:
   tenant: accountants
   name: Add S potvrdenkou tag
   trigger_event: message_updated
+
+inbox_message_with_attachments_rule:
+  user: basic
+  tenant: ssd
+  name: inbox_message_with_attachments_rule
+  trigger_event: message_created
+

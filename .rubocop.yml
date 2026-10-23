@@ -22,6 +22,8 @@ Style/WordArray:
   Enabled: false
 Style/Lambda:
   Enabled: false
+Style/EndlessMethod:
+  EnforcedStyle: disallow
 Style/StringLiteralsInInterpolation:
   EnforcedStyle: double_quotes
 Style/ExplicitBlockArgument:

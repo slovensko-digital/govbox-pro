@@ -83,3 +83,13 @@ DPHv21:
   slug: DPHv21
   number_identifier: 503,
   submission_type_identifier: 716
+
+VP_REGv24:
+  identifier: '3056_782'
+  name: Podanie pre FS (Register) - platné od 1.4.2024
+  group_name: Register/Podanie pre FS - Register/Všeobecné podanie - Register (platné od 1.4.2024)
+  subtype_name: Žiadosť o potvrdenie
+  signature_required: true
+  ez_signature: true
+  slug: VP_REGv24
+  number_identifier: 584

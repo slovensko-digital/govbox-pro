@@ -41,6 +41,87 @@ class Fs::MessageDraftTest < ActiveSupport::TestCase
     assert message_draft.thread.box.eql?(boxes(:fs_accountants))
   end
 
+  test "create_and_validate_with_fs_form method adds period tag to thread" do
+    author = users(:accountants_basic)
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :parse_form, {
+      "subject" => "1122334455",
+      "form_identifier" => "795_777",
+      "period" => {
+        "pretty" => "092024"
+      }
+    },
+                  [file_fixture("fs/Accountants_main_FS_prehlad_0924.xml").read]
+
+    FsEnvironment.fs_client.stub :api, fs_api do
+      Fs::MessageDraft.create_and_validate_with_fs_form(form_files: [fixture_file_upload("fs/Accountants_main_FS_prehlad_0924.xml", "application/xml")], author: author)
+    end
+
+    message_draft = Fs::MessageDraft.last
+    assert_equal message_draft.thread.tags.find_by(name: "092024").present?, true
+  end
+
+  test "create_and_validate_with_fs_form method does not add period tag to thread if it is off for the tenant" do
+    author = users(:accountants_basic)
+    tenant = tenants(:accountants)
+    tenant.settings["assign_period_tag_to_thread"] = false
+    tenant.save
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :parse_form, {
+      "subject" => "1122334455",
+      "form_identifier" => "795_777",
+      "period" => {
+        "pretty" => "092024"
+      }
+    },
+                  [file_fixture("fs/Accountants_main_FS_prehlad_0924.xml").read]
+
+    FsEnvironment.fs_client.stub :api, fs_api do
+      Fs::MessageDraft.create_and_validate_with_fs_form(form_files: [fixture_file_upload("fs/Accountants_main_FS_prehlad_0924.xml", "application/xml")], author: author)
+    end
+
+    message_draft = Fs::MessageDraft.last
+    assert_equal message_draft.thread.tags.find_by(name: "092024").present?, false
+  end
+
+  test "create_and_validate_with_fs_form method removes empty xmlns attributes from XML if fs_hotfixes feature is enabled" do
+    author = users(:accountants_basic)
+    author.tenant.enable_feature(:fs_hotfixes, force: true)
+
+    original_content = file_fixture("fs/Accountants_main_FS_prehlad_0924.xml").read
+    content_with_empty_xmlns = original_content.sub("<dokument", '<dokument xmlns=""').gsub("<hlavicka>", '<hlavicka xmlns="">')
+    form_file = Rack::Test::UploadedFile.new(StringIO.new(content_with_empty_xmlns), "application/xml", original_filename: "podanie.xml")
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :parse_form, { "subject" => "1122334455", "form_identifier" => "795_777" }, [original_content]
+
+    FsEnvironment.fs_client.stub :api, fs_api do
+      Fs::MessageDraft.create_and_validate_with_fs_form(form_files: [form_file], author: author)
+    end
+
+    assert_mock fs_api
+    assert_equal original_content.b, Fs::MessageDraft.last.form_object.message_object_datum.blob
+  end
+
+  test "create_and_validate_with_fs_form method keeps empty xmlns attributes in XML if fs_hotfixes feature is disabled" do
+    author = users(:accountants_basic)
+
+    content_with_empty_xmlns = file_fixture("fs/Accountants_main_FS_prehlad_0924.xml").read.sub("<dokument", '<dokument xmlns=""')
+    form_file = Rack::Test::UploadedFile.new(StringIO.new(content_with_empty_xmlns), "application/xml", original_filename: "podanie.xml")
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :parse_form, { "subject" => "1122334455", "form_identifier" => "795_777" }, [content_with_empty_xmlns]
+
+    FsEnvironment.fs_client.stub :api, fs_api do
+      Fs::MessageDraft.create_and_validate_with_fs_form(form_files: [form_file], author: author)
+    end
+
+    assert_mock fs_api
+    assert_equal content_with_empty_xmlns.b, Fs::MessageDraft.last.form_object.message_object_datum.blob
+  end
+
   test "create_and_validate_with_fs_form method does not raise if XML does not match any FS form" do
     author = users(:accountants_basic)
 
@@ -232,5 +313,37 @@ class Fs::MessageDraftTest < ActiveSupport::TestCase
         assert_not message_draft.submittable?
       end
     end
+  end
+
+  test "build_html_visualization uses HTML XSLT only if fs_html_visualization feature is enabled" do
+    message_draft = messages(:fs_accountants_draft_vp_danv24)
+    message_draft.form.related_documents.create!(document_type: "CLS_F_XSLT_HTML", language: "sk", data: <<~XSLT)
+      <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+        <xsl:template match="/"><html><body><img src="./logo.png"/><img src="https://example.com/logo.png"/><div id="html-visualization"><xsl:value-of select="//valObec"/></div></body></html></xsl:template>
+      </xsl:stylesheet>
+    XSLT
+
+    assert_no_match "html-visualization", message_draft.build_html_visualization
+
+    message_draft.tenant.enable_feature(:fs_html_visualization, force: true)
+
+    html_visualization = message_draft.build_html_visualization
+
+    assert_match '<div id="html-visualization">Obec</div>', html_visualization
+    assert_match %(<img src="#{ENV['FS_FORMS_STORAGE_API_URL']}/#{message_draft.form.slug}/1.0/Content/logo.png">), html_visualization
+    assert_match '<img src="https://example.com/logo.png">', html_visualization
+  end
+
+  test "build_html_visualization uses TXT XSLT for large forms even if fs_html_visualization feature is enabled" do
+    message_draft = messages(:fs_accountants_draft_vp_danv24)
+    message_draft.tenant.enable_feature(:fs_html_visualization, force: true)
+    message_draft.form.related_documents.create!(document_type: "CLS_F_XSLT_HTML", language: "sk", data: <<~XSLT)
+      <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+        <xsl:template match="/"><html><body><div id="html-visualization"/></body></html></xsl:template>
+      </xsl:stylesheet>
+    XSLT
+    message_draft.form_object.message_object_datum.update_column(:blob, message_draft.form_object.content.sub("Text podania", "x" * 251.kilobytes))
+
+    assert_no_match "html-visualization", message_draft.reload.build_html_visualization
   end
 end

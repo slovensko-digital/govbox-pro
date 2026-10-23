@@ -33,6 +33,8 @@ class Fs::MessageDraft < MessageDraft
 
     form_files.each do |form_file|
       form_content = form_file.read.force_encoding("UTF-8")
+      # TODO hotfix, remove when FS accepts XML with empty default namespace declarations
+      form_content = form_content.gsub(' xmlns=""', '') if author.tenant.feature_enabled?(:fs_hotfixes) && File.extname(form_file.original_filename.to_s).casecmp?('.xml')
 
       box, fs_form, period = get_parsed_box_and_form_from_content(form_content, tenant: author.tenant, author: author)
 
@@ -86,7 +88,7 @@ class Fs::MessageDraft < MessageDraft
       form_object.update(is_signed: form_object.asice?)
       message.thread.box.tenant.signed_externally_tag!.assign_to_message_object(form_object) if form_object.is_signed?
 
-      message.thread.assign_tag(message.thread.box.tenant.simple_tags.find_or_create_by!(name: period)) if period
+      message.thread.assign_tag(message.thread.box.tenant.simple_tags.find_or_create_by!(name: period)) if period && message.assign_period_tag?
 
       MessageObjectDatum.create(
         message_object: form_object,
@@ -183,14 +185,14 @@ class Fs::MessageDraft < MessageDraft
 
     signed_by = form_object.tags.where(type: "SignedByTag")&.first&.owner
 
-    return box.api_connections.find_by(owner: signed_by) if signed_by && box.api_connections.find_by(owner: signed_by)
+    return box.api_connections.active.find_by(owner: signed_by) if signed_by && box.api_connections.active.find_by(owner: signed_by)
 
     raise I18n.t("activerecord.errors.models.fs/message_draft.signer_not_allowed_to_submit")
   end
 
   def assign_tags_from_params(tags_params)
     period = thread.metadata.dig('period')
-    thread.assign_tag(thread.box.tenant.simple_tags.find_or_create_by!(name: period)) if period
+    thread.assign_tag(thread.box.tenant.simple_tags.find_or_create_by!(name: period)) if period && self.assign_period_tag?
 
     super
   end
@@ -268,6 +270,10 @@ class Fs::MessageDraft < MessageDraft
     end
 
     save
+  end
+
+  def assign_period_tag?
+    ActiveModel::Type::Boolean.new.cast(tenant.settings&.dig('assign_period_tag_to_thread')) != false
   end
 
   def mark_as_invalid

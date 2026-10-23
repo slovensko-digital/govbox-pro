@@ -3,12 +3,12 @@
   <%= render MessageThreadNoteComponent.new(@message_thread.note) %>
   <div class="flex flex-col justify-start items-start gap-2 p-4">
     <div class="flex flex-col justify-start items-start w-full gap-6 p-6 rounded-md bg-white border border-gray-200">
-      <div class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative p-2 bg-white">
-        <div class="flex justify-start items-center flex-grow relative gap-4">
+      <div class="flex justify-start items-center self-stretch grow-0 shrink-0 relative p-2 bg-white">
+        <div class="flex justify-start items-center grow relative gap-4">
           <%= link_to @message_thread do %>
             <%= render Icons::ArrowLeftComponent.new(css_classes: "text-gray-400 w-5 h-5", stroke_width: 2) %>
           <% end %>
-          <p class="flex-grow-0 flex-shrink-0 text-base text-left text-gray-900">História komunikácie</p>
+          <p class="grow-0 shrink-0 text-base text-left text-gray-900">História komunikácie</p>
         </div>
       </div>
       <ul role="list" class="w-full -mb-8">

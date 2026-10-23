@@ -106,13 +106,13 @@ class Upvs::Drafts::ParseImportJob < ApplicationJob
 
   def load_message_draft_metadata(message_draft, row)
     message_draft.metadata.merge!({
-        "recipient_uri": row['recipient_uri'],
-        "posp_id": row['posp_id'],
-        "posp_version": row['posp_version'],
-        "message_type": row['message_type'],
-        "sender_business_reference": row['sender_business_reference'],
-        "recipient_business_reference": row['recipient_business_reference'],
-        "import_subfolder": row['subfolder'],
+        "recipient_uri" => row['recipient_uri'],
+        "posp_id" => row['posp_id'],
+        "posp_version" => row['posp_version'],
+        "message_type" => row['message_type'],
+        "sender_business_reference" => row['sender_business_reference'],
+        "recipient_business_reference" => row['recipient_business_reference'],
+        "import_subfolder" => row['subfolder'],
       }
     )
     message_draft.save

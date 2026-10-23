@@ -52,7 +52,11 @@ Rails.application.routes.draw do
       namespace :api_connections do
         resources :upvs_api_connections, except: [:index, :destroy]
         resources :fs_api_connections, except: [:index, :destroy] do
-          post :boxify, on: :member
+          member do
+            get :init
+            patch :init
+            post :boxify
+          end
         end
       end
 
@@ -127,8 +131,6 @@ Rails.application.routes.draw do
       end
     end
   end
-
-  resources :message_threads_tags, only: :destroy
 
   resources :messages do
     member do
@@ -206,8 +208,6 @@ Rails.application.routes.draw do
     get :scroll, on: :collection
   end
 
-  resource :settings
-
   resources :message_templates do
     get :recipient_selector
     get :recipients_list
@@ -224,12 +224,19 @@ Rails.application.routes.draw do
   resources :sessions do
     get :login, on: :collection
     get :no_account, on: :collection
+    post :no_account_trial, on: :collection
     delete :destroy, on: :collection
   end
 
   namespace :api do
     namespace :site_admin do
-      resources :tenants, only: [:create, :destroy] do
+      resources :tenants, only: [:create, :update, :destroy] do
+        collection do
+          namespace :fs do
+            resources :onboardings, only: [:create]
+          end
+        end
+
         namespace :upvs do
           resources :boxes, only: :create
         end
@@ -260,6 +267,7 @@ Rails.application.routes.draw do
 
     resources :messages, only: [:show, :destroy] do
       post :authorize_delivery_notification, on: :member
+      post :submit, on: :member
       get :search, on: :collection
       post :message_drafts, on: :collection
       get :sync, on: :collection
@@ -296,6 +304,7 @@ Rails.application.routes.draw do
   resource :sticky_note
 
   get :auth, path: 'prihlasenie', to: 'sessions#login'
+  get :trial_auth, path: 'trial/prihlasenie', to: 'sessions#trial_login'
 
   if ENV["GOOGLE_CLIENT_ID"]
     get 'auth/google_oauth2/callback', to: 'sessions#create'
@@ -310,6 +319,12 @@ Rails.application.routes.draw do
   if ENV["IDENTITY_AUTH"] == "true"
     post 'auth/identity/callback', to: 'sessions#create'
     post 'auth/identity/failure', to: 'sessions#failure'
+  end
+
+  if Rails.env.development?
+    namespace :dev do
+      get 'mock_saml_callback', to: 'mock#saml_callback'
+    end
   end
 
   get "/service-worker.js" => "service_worker#service_worker"

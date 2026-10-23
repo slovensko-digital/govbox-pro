@@ -46,6 +46,7 @@ class Message < ApplicationRecord
   scope :not_drafts, -> { where(type: [nil, 'Message']) }
   scope :outbox, -> { where(outbox: true) }
   scope :inbox, -> { not_drafts.where.not(outbox: true) }
+  scope :delivered_between, ->(from, to) { where(delivered_at: from.beginning_of_day..to.end_of_day) }
 
   after_update_commit ->(message) { EventBus.publish(:message_changed, message) }
   after_destroy_commit ->(message) { EventBus.publish(:message_destroyed, message) }
@@ -76,8 +77,16 @@ class Message < ApplicationRecord
     false
   end
 
+  def submit
+    false
+  end
+
   def submittable?
     false
+  end
+
+  def not_submittable_errors
+    ["Message is not a draft"]
   end
 
   def collapsible?
@@ -90,6 +99,10 @@ class Message < ApplicationRecord
 
   def visualizable_body?
     html_visualization.present? || (form_object && form_object.nested_message_objects.count > 1)
+  end
+
+  def built_from_template?
+    metadata&.dig("template_id").present?
   end
 
   def authorizable_delivery_notification?
@@ -159,13 +172,14 @@ class Message < ApplicationRecord
 
     {
       message_thread_id: message_thread_id,
+      thread_title: thread.title,
       title: title,
       box: box.official_name,
       delivered_at: delivered_at,
       tags: thread.tags.map(&:name),
       outbox: outbox
     }.merge!(
-      form&.slug&.match?(/\ADPH/) ? {
+      form&.respond_to?(:slug) && form&.slug&.match?(/\ADPH/) ? {
         dph_r33: parse_value_from_form_object('//r33'),
         dph_r35: parse_value_from_form_object('//r35')
       }.compact : {}

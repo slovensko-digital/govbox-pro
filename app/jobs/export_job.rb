@@ -1,6 +1,20 @@
 require 'axlsx'
 
 class ExportJob < ApplicationJob
+  include GoodJob::ActiveJobExtensions::Concurrency
+
+  good_job_control_concurrency_with(perform_limit: 2)
+
+  class PdfVisualizationFailed < StandardError
+  end
+
+  retry_on PdfVisualizationFailed, wait: :polynomially_longer, attempts: 3
+
+  after_discard do |job, _error|
+    export = job.arguments.first
+    export.user.notifications.create!(type: Notifications::ExportFailed, export: export)
+  end
+
   queue_as :default
 
   def perform(export)
@@ -9,7 +23,7 @@ class ExportJob < ApplicationJob
     export_content = ::Zip::OutputStream.write_buffer do |zip|
       if export.settings.dig("messages")
         export.message_threads.each do |message_thread|
-          message_thread.messages.each do |message|
+          export.filtered_messages(message_thread).includes(:thread).each do |message|
             message.objects.each do |object|
               prepare_original_object(object, export: export, zip: zip, file_paths: file_paths)
               prepare_pdf_object(object, export: export, zip: zip, file_paths: file_paths) if export.settings["pdf"]
@@ -20,9 +34,7 @@ class ExportJob < ApplicationJob
         end
       end
 
-      if export.settings.dig("summary")
-        prepare_summary(export: export, zip: zip)
-      end
+      prepare_summary(export: export, zip: zip) if export.settings.dig("summary")
     end
 
     FileStorage.new.store("exports", export.file_name, export_content.string.force_encoding("UTF-8"))
@@ -48,7 +60,7 @@ class ExportJob < ApplicationJob
     else
       return unless object.downloadable_as_pdf?
 
-      pdf_content = object.prepare_pdf_visualization
+      pdf_content = pdf_visualization(object)
 
       file_path = unique_path_within_export(object, export: export, other_file_names: file_paths, pdf: true)
       return unless file_path
@@ -63,14 +75,14 @@ class ExportJob < ApplicationJob
     object.nested_message_objects.each do |nested_message_object|
       next unless nested_message_object.pdf? || nested_message_object.downloadable_as_pdf?
 
-      if nested_message_object.pdf?
-        pdf_content = nested_message_object.content
-      else
-        pdf_content = nested_message_object.prepare_pdf_visualization
-      end
+      pdf_content = if nested_message_object.pdf?
+                      nested_message_object.content
+                    else
+                      pdf_visualization(nested_message_object)
+                    end
 
       file_path = unique_path_within_export(object, export: export, other_file_names: file_paths, pdf: true)
-      return nil unless file_path
+      next unless file_path
 
       zip.put_next_entry(file_path)
       zip.write(pdf_content)
@@ -78,19 +90,28 @@ class ExportJob < ApplicationJob
     end
   end
 
+  def pdf_visualization(object)
+    object.prepare_pdf_visualization || raise(PdfVisualizationFailed, pdf_visualization_failure(object))
+  end
+
+  def pdf_visualization_failure(object)
+    "Unable to prepare PDF visualization for #{object.class.name} ID #{object.id}"
+  end
+
   def prepare_summary(export:, zip:)
-    headers = export.message_threads
-                    .flat_map(&:messages)
-                    .flat_map(&:export_summary)
-                    .map(&:keys)
-                    .flatten
-                    .uniq
+    messages = export.message_threads.flat_map { |t| export.filtered_messages(t).to_a }
+
+    headers = messages
+              .flat_map(&:export_summary)
+              .map(&:keys)
+              .flatten
+              .uniq
 
     Axlsx::Package.new do |p|
-      p.workbook.add_worksheet(:name => "Sumár") do |sheet|
+      p.workbook.add_worksheet(name: "Sumár") do |sheet|
         sheet.add_row(headers)
 
-        export.message_threads.flat_map(&:messages).each do |message|
+        messages.each do |message|
           row_hash = message.export_summary
           row = headers.map do |h|
             v = row_hash[h]
