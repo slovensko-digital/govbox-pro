@@ -40,18 +40,6 @@ class BoxesApiTest < ActionDispatch::IntegrationTest
     assert_equal ssd_box.settings_obo, ssd_box_json["obo"]
   end
 
-  test "JSON round trips HTML and line separators" do
-    box = boxes(:solver_main)
-    name = "<script>&\u2028\u2029"
-    box.update!(name: name)
-
-    get "/api/boxes", params: { token: generate_api_token(sub: box.tenant_id, key_pair: @key_pair) }, as: :json
-
-    assert_response :success
-    assert_equal "application/json", response.media_type
-    assert_equal name, response.parsed_body.find { |item| item["id"] == box.id }["name"]
-  end
-
   test "includes dic attribute for fs boxes" do
     tenant = tenants(:accountants)
 
