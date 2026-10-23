@@ -64,7 +64,7 @@ AZURE_APPLICATION_CLIENT_SECRET=some-secret
 
 ### Autogram Portal (AGP) signing
 
-Tenants with the `autogram_portal` feature sign documents in an AGP iframe instead of calling Autogram directly. The AGP connection is configured per tenant in the API access settings, or for the whole instance:
+Tenants with the `autogram_portal` feature sign documents in an AGP iframe instead of calling Autogram directly. The AGP connection is configured for the whole instance, or per tenant by the operator in the console (`tenant.update!(settings_agp_api_url: ..., settings_agp_sub: ..., settings_agp_api_token_private_key: ..., settings_agp_webhook_public_key: ...)`, unset (nil) values fall back to the instance configuration):
 
 ```dotenv
 AGP_API_URL=https://agp.slovensko.digital
