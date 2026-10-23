@@ -128,8 +128,7 @@ class User < ApplicationRecord
         raise ActiveRecord::RecordNotFound unless filter.common? && filter.tenant_id == tenant_id
         return user_filter_visibilities.find_by(filter_id: filter.id) if user_filter_visibilities.exists?(filter_id: filter.id)
 
-        visible = !filters.exists?(query: filter.query)
-        user_filter_visibilities.create!(filter: filter, visible: visible,
+        user_filter_visibilities.create!(filter: filter, visible: false,
           position: (user_filter_visibilities.maximum(:position) || 0) + 1)
       end
     end

@@ -66,7 +66,7 @@ class FiltersControllerTest < ActionController::TestCase
     common = tenants(:ssd).filters.common.find_by!(query: personal.query)
     assert_equal before, personal.reload.attributes
     assert_not users(:basic).user_filter_visibilities.find_by!(filter: common).visible?
-    assert_includes users(:basic_two).pinned_filters, common
+    assert_not_includes users(:basic_two).pinned_filters, common
     assert_equal personal, Filter.for_query(users(:basic), personal.query)
   end
 end

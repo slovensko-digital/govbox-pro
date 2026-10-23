@@ -118,13 +118,13 @@ Common availability, personal pinning, and saved query matching SHALL NOT grant 
 - **WHEN** a common filter's query matches messages the user cannot access
 - **THEN** those messages remain excluded from results and notifications
 
-### Requirement: Tags do not implicitly create filters
-Creating a tag SHALL NOT create or publish a saved filter. Changing tag display visibility SHALL NOT rewrite personal filter preferences. Saved filters SHALL remain ordinary queries; automatic query rewriting and old-name aliases after tag renames are outside this capability.
+### Requirement: Tags create hidden filter choices rather than automatic menu entries
+Creating a tag while personalized filters are enabled SHALL create a tag-backed query filter that remains hidden until the user chooses it. Existing tags SHALL be synchronized into the catalog when "Moje menu" is opened. Changing tag display visibility SHALL NOT rewrite personal filter preferences. Saved filters SHALL remain ordinary queries; automatic query rewriting and old-name aliases after tag renames are outside this capability.
 
 #### Scenario: Create a tag
 - **WHEN** a tag is created
 - **THEN** it can be searched using the existing label query syntax
-- **AND** no saved filter or menu pin is automatically created
+- **AND** its query filter is available as a hidden choice without automatically enabling a menu entry
 
 #### Scenario: Hide a tag on threads
 - **WHEN** an administrator changes a tag's display visibility

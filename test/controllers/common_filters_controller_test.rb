@@ -77,6 +77,8 @@ class CommonFiltersControllerTest < ActionController::TestCase
 
   test "removing first common pin falls back to next without deleting messages" do
     next_filter = Filter.create!(tenant: tenants(:ssd), common: true, name: "Next", query: "common-next")
+    users(:basic_two).set_filter_visibility!(@filter.id, visible: true)
+    users(:basic_two).set_filter_visibility!(next_filter.id, visible: true)
     before_messages = Message.count
     assert_equal @filter, users(:basic_two).pinned_filters.first
     delete :destroy, params: { id: @filter.id, confirmation_token: @filter.deletion_confirmation }

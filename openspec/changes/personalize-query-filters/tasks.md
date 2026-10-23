@@ -63,3 +63,10 @@
 
 - [x] 9.1 Provide a dedicated "Moje menu" page for personal pinning and ordering, remove those controls from saved-filter management, and cover the separation in system/controller tests.
 - [x] 9.2 Rename system-tag links to "Rýchle odkazy", add explanatory copy distinguishing filters, tags, menu visibility, and subscriptions, and update the navigation spec and user documentation.
+
+## 10. Explicit compact menu choices (supersedes automatic shortcuts in section 8 and the quick-links label in 9.2)
+
+- [x] 10.1 Remove automatic system/quick links: render only enabled effective choices, with all newly created definitions hidden until selected.
+- [x] 10.2 Add an idempotent tag-filter catalog including hidden/system tags and all messages, reuse existing common queries without subscription changes, and exclude foreign-owned and unowned group-signer choices.
+- [x] 10.3 Replace bookmark controls with compact shown/hidden lists, text visibility actions, and reorder arrows; verify keyboard controls, explicit selection, and isolated user state.
+- [x] 10.4 Update specs, documentation, and regression tests for the revised menu semantics.

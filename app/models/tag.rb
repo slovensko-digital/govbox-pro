@@ -45,6 +45,11 @@ class Tag < ApplicationRecord
   scope :archived, -> { where(type: ArchivedTag.to_s) }
 
   after_update_commit ->(tag) { EventBus.publish(:tag_renamed, tag) if previous_changes.key?("name") }
+  after_create_commit :add_menu_filter, if: -> { tenant.feature_enabled?(:personalized_filters) }
+
+  private def add_menu_filter
+    TagFilterCatalog.add!(self)
+  end
 
   def assign_to_message_object(message_object)
     message_object.assign_tag(self)

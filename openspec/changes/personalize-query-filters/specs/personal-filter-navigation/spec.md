@@ -7,7 +7,7 @@ Provide a personalized ordered menu of saved searches while keeping explicit sea
 ## ADDED Requirements
 
 ### Requirement: Personal pinning and ordering
-Each user SHALL control the pinning and order of their effective filters independently. A newly saved personal filter SHALL be appended as pinned. Reordering SHALL affect only that user. An explicit unpin SHALL persist across subsequent visits and common-filter distribution.
+Each user SHALL control the visibility and order of their effective filters independently through "Moje menu". Newly saved personal and common filters SHALL start hidden. Reordering SHALL affect only that user. Explicit hidden choices SHALL persist across subsequent visits and common-filter distribution.
 
 #### Scenario: Independent order
 - **WHEN** one user moves a common filter to the first position
@@ -48,11 +48,11 @@ Clearing search or selecting the all-messages shortcut SHALL execute an empty qu
 - **THEN** the empty query is preserved through scrolling and page refresh
 
 ### Requirement: Publish common filters without changing personal defaults
-A newly published common filter SHALL be automatically appended for existing tenant users without an equal personal query. New users SHALL receive the current common defaults in their initial order. Publication SHALL NOT reorder existing pins or reinstate an explicitly unpinned filter.
+A newly published common filter SHALL become available as a hidden choice for existing tenant users. New users SHALL start with no enabled menu choices. Publication SHALL NOT reorder existing choices or reinstate an explicitly hidden filter.
 
 #### Scenario: Existing user's menu receives a new filter
 - **WHEN** an administrator publishes a new common query
-- **THEN** it appears after the user's existing pinned filters
+- **THEN** it is listed among hidden choices in "Moje menu"
 - **AND** the user's first filter and entry view remain unchanged
 
 #### Scenario: Personal duplicate is not appended
@@ -61,7 +61,7 @@ A newly published common filter SHALL be automatically appended for existing ten
 
 #### Scenario: Onboard a new user
 - **WHEN** a new user is initialized
-- **THEN** the tenant's common defaults are pinned in their initial order
+- **THEN** the tenant's common definitions are available as hidden choices
 - **AND** subsequent personal ordering is independent of that initial order
 
 ### Requirement: Losing an effective first filter has a deterministic fallback
@@ -85,26 +85,26 @@ Deleting a personal filter that overrides a common filter SHALL restore the comm
 - **THEN** the common filter becomes available in settings but remains absent from the menu
 - **AND** its subscription settings are not changed by the display-precedence change
 
-### Requirement: Keep system-tag shortcuts in personalized navigation
-Personalized navigation SHALL retain visible system-tag search shortcuts alongside saved filters without automatically creating saved filter definitions for tags. It SHALL include tenant-visible system statuses and only the current user's own signer-specific `SignatureRequestedFromTag` and `SignedByTag` shortcuts; another user's signer-specific shortcuts SHALL NOT appear. A system shortcut SHALL not be duplicated when the same query is already represented by a pinned personal filter.
+### Requirement: Explicit menu choices include all tags
+Personalized navigation SHALL render only enabled effective filter choices. It SHALL NOT render separate automatic system-tag shortcuts or a "Rýchle odkazy" section. All tags, including hidden and system tags, SHALL be represented by query filters in "Moje menu". Owner-specific choices SHALL be limited to their owner; unowned signer-group choices SHALL NOT be offered. Existing equal common queries SHALL be reused without replacing filter IDs or subscriptions.
 
 #### Scenario: Existing system status shortcuts remain available
 - **WHEN** personalized navigation is enabled
-- **THEN** visible system tags such as drafts, archived, signature status, and processing/error states remain query links in a "Rýchle odkazy" section labeled as searches by tags
+- **THEN** system tags such as drafts, archived, signature status, and processing/error states are hidden choices until the user enables them in "Moje menu"
 - **AND** all-messages remains the empty-query saved-filter entry
 
 #### Scenario: Signer-specific shortcuts are user-relative
 - **WHEN** the tenant has signer-specific tags for multiple users
-- **THEN** each user sees their own request-to-sign and signed-by shortcuts
+- **THEN** each user can choose their own request-to-sign and signed-by filters
 - **AND** does not see another user's signer-specific shortcuts
 
-#### Scenario: Creating later tags does not create saved filters
+#### Scenario: Creating later tags adds hidden choices
 - **WHEN** a later visible system tag becomes available
-- **THEN** it can appear as a system navigation shortcut
-- **AND** no saved filter or personal pin is created for it
+- **THEN** a tag-backed query filter becomes available without being enabled in the sidebar
+- **AND** existing users' visibility and order remain unchanged
 
 ### Requirement: Separate filter definitions from personal menu preferences
-The "Filtre" page SHALL manage saved-search definitions and common-filter subscriptions. A separate "Moje menu" page SHALL manage the current user's pinning and order. The filter-definition page SHALL NOT contain pin or order controls. Explanatory copy SHALL distinguish a saved filter from a tag on a message and clarify that menu visibility does not change message tags or notification subscriptions.
+The "Filtre" page SHALL manage saved-search definitions and subscriptions without menu controls. A separate "Moje menu" page SHALL manage the current user's visibility and order. Explanatory copy SHALL distinguish saved filters from message tags and clarify that hiding menu items does not change tags or subscriptions.
 
 #### Scenario: Manage a saved search
 - **WHEN** a user opens "Filtre"
@@ -117,8 +117,16 @@ The "Filtre" page SHALL manage saved-search definitions and common-filter subscr
 - **THEN** they can pin, unpin, and reorder effective filters independently
 - **AND** explanatory copy states that this does not change tags on messages or notification subscriptions
 
+### Requirement: Compact shown and hidden menu lists
+The "Moje menu" page SHALL use compact rows and separate "Zobrazené v menu" above "Nezobrazené položky". Visible rows SHALL provide reorder arrows and a text "Skryť" action. Hidden rows SHALL provide a text "Zobraziť v menu" action that appends the choice. Bookmark icons SHALL NOT be used as visibility controls.
+
+#### Scenario: Show a hidden choice
+- **WHEN** the user selects "Zobraziť v menu" on a hidden item
+- **THEN** it moves to the end of the shown list and appears in the sidebar
+- **AND** selecting "Skryť" moves it back to the hidden list without changing subscriptions
+
 ### Requirement: Preserve navigation at deployment
-A one-time migration SHALL preserve current query shortcuts in their previous order: all messages, saved filters, then visible tags. Existing saved filters SHALL become common definitions with unchanged IDs. Existing subscriptions, their associations, event selections, and checkpoints SHALL remain unchanged. Visible tag shortcuts SHALL be created as common query filters only during migration, not for future tags.
+A one-time migration SHALL preserve current query shortcuts in their previous order: all messages, saved filters, then visible tags. Existing saved filters SHALL become common definitions with unchanged IDs. Existing subscriptions, their associations, event selections, and checkpoints SHALL remain unchanged. Subsequent tag-catalog synchronization SHALL add hidden choices without resetting those migrated preferences.
 
 #### Scenario: Existing tenant with saved filters and tags
 - **WHEN** the migration runs against a populated tenant

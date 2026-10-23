@@ -1,13 +1,26 @@
 <div class="w-full p-4 flex-col justify-start items-start gap-4 inline-flex" data-test="my-menu-settings">
   <div class="self-stretch bg-white rounded-md border border-gray-200 flex-col justify-start items-start flex">
-    <div class="self-stretch p-6 border-b border-gray-200">
+    <div class="self-stretch p-4 border-b border-gray-200">
       <h1 class="text-gray-900 text-xl font-semibold leading-[35px]">Moje menu</h1>
-      <p class="mt-1 text-sm text-gray-500">Vyberte filtre, ktoré chcete mať v bočnom menu, a upravte ich poradie. Toto nastavenie nemení štítky na správach ani odbery notifikácií.</p>
+      <p class="mt-1 text-sm text-gray-500">Vyberte položky bočného menu a upravte ich poradie. Prvá položka určuje úvodné zobrazenie správ. Skrytie nemení štítky na správach ani odbery notifikácií.</p>
     </div>
-    <div class="self-stretch flex-col justify-start items-start flex">
-      <% @filters.each do |filter| %>
+    <section class="self-stretch" data-test="shown-menu-items">
+      <h2 class="px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-50">Zobrazené v menu</h2>
+      <% if @shown_filters.empty? %>
+        <p class="px-4 py-3 text-sm text-gray-500">Menu je prázdne. Vyberte položky zo zoznamu nižšie.</p>
+      <% end %>
+      <% @shown_filters.each do |filter| %>
         <%= render Settings::UserFilterVisibilities::ListRowComponent.new(filter: filter, preference: @preferences[filter.id]) %>
       <% end %>
-    </div>
+    </section>
+    <section class="self-stretch" data-test="hidden-menu-items">
+      <h2 class="px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-50">Nezobrazené položky</h2>
+      <% @hidden_filters.each do |filter| %>
+        <%= render Settings::UserFilterVisibilities::ListRowComponent.new(filter: filter, preference: @preferences[filter.id]) %>
+      <% end %>
+      <% if @hidden_filters.empty? %>
+        <p class="px-4 py-3 text-sm text-gray-500">Všetky dostupné položky sa zobrazujú v menu.</p>
+      <% end %>
+    </section>
   </div>
 </div>

@@ -3,6 +3,7 @@ class Settings::UserFilterVisibilitiesController < ApplicationController
 
   def index
     authorize UserFilterVisibility
+    TagFilterCatalog.sync!(Current.tenant)
     available = policy_scope(Filter, policy_scope_class: FilterPolicy::ScopeShowable)
       .merge(Filter.effective_for(Current.user))
     @preferences = Current.user.user_filter_visibilities.index_by(&:filter_id)
@@ -10,6 +11,7 @@ class Settings::UserFilterVisibilitiesController < ApplicationController
       preference = @preferences[filter.id]
       [preference&.visible? ? 0 : 1, preference&.position || filter.position, filter.id]
     end
+    @shown_filters, @hidden_filters = @filters.partition { |filter| @preferences[filter.id]&.visible? }
   end
 
   def create

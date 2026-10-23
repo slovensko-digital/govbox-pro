@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_22_180300) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_23_150000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -232,7 +232,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_22_180300) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "common", default: false, null: false
+    t.bigint "tag_id"
     t.index ["author_id"], name: "index_filters_on_author_id"
+    t.index ["tag_id"], name: "index_filters_on_tag_id"
     t.index ["tenant_id", "author_id", "query"], name: "unique_personal_filter_query", unique: true, where: "(common = false)"
     t.index ["tenant_id", "query"], name: "unique_common_filter_query", unique: true, where: "(common = true)"
     t.index ["tenant_id"], name: "index_filters_on_tenant_id"
@@ -799,6 +801,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_22_180300) do
   add_foreign_key "filter_subscriptions", "filters"
   add_foreign_key "filter_subscriptions", "tenants"
   add_foreign_key "filter_subscriptions", "users"
+  add_foreign_key "filters", "tags", on_delete: :nullify
   add_foreign_key "filters", "tenants", on_delete: :cascade
   add_foreign_key "filters", "users", column: "author_id", on_delete: :nullify
   add_foreign_key "folders", "boxes"

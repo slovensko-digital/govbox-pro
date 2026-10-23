@@ -28,12 +28,12 @@ class PersonalizedFiltersTest < ApplicationSystemTestCase
 
   test "unpinned subscribed filter remains manageable and can be reordered by keyboard" do
     common = Filter.create!(tenant: tenants(:ssd), common: true, name: "Team invoices", query: "team-invoices")
+    users(:basic).set_filter_visibility!(common.id, visible: true)
     subscription = FilterSubscription.create!(tenant: tenants(:ssd), user: users(:basic), filter: common, events: ["Notifications::NewMessage"])
     checkpoint = subscription.reload.last_notify_run_at
     visit settings_user_filter_visibilities_path
     within("[data-filter-id='#{common.id}']") do
-      assert_selector "button[aria-label='Odopnúť z menu: Team invoices'][aria-pressed='true'][title='Pripnuté v menu'] svg.fill-current"
-      find("button[aria-label='Odopnúť z menu: Team invoices']").send_keys(:enter)
+      find("button[aria-label='Skryť: Team invoices']").send_keys(:enter)
     end
     visit filters_path
     within("[data-filter-id='#{common.id}']") do
@@ -42,13 +42,12 @@ class PersonalizedFiltersTest < ApplicationSystemTestCase
     end
     visit settings_user_filter_visibilities_path
     within("[data-filter-id='#{common.id}']") do
-      assert_selector "button[aria-label='Pripnúť do menu: Team invoices'][aria-pressed='false'][title='Nepripnuté v menu'] svg.fill-none"
-      find("button[aria-label='Pripnúť do menu: Team invoices']").send_keys(:enter)
+      find("button[aria-label='Zobraziť v menu: Team invoices']").send_keys(:enter)
     end
     within("[data-filter-id='#{common.id}']") do
       find("button[aria-label='Posunúť vyššie v menu: Team invoices']").send_keys(:enter)
     end
-    assert_selector "[data-filter-id='#{common.id}']:first-child"
+    assert_selector "[data-test='shown-menu-items'] [data-filter-id='#{common.id}']:nth-child(2)"
     assert_equal common, users(:basic).pinned_filters.first
     assert_equal checkpoint, subscription.reload.last_notify_run_at
     visit root_path
@@ -64,8 +63,9 @@ class PersonalizedFiltersTest < ApplicationSystemTestCase
     assert_no_selector "button[aria-label^='Odopnúť']"
 
     visit settings_user_filter_visibilities_path
-    assert_text "Vyberte filtre, ktoré chcete mať v bočnom menu"
-    assert_selector "[data-filter-id] button[aria-pressed]"
+    assert_text "Vyberte položky bočného menu"
+    assert_selector "[data-test='shown-menu-items'] button", text: "Skryť"
+    assert_selector "[data-test='hidden-menu-items'] button", text: "Zobraziť v menu"
     assert_no_text "Nastaviť notifikácie"
   end
 
@@ -110,41 +110,29 @@ class PersonalizedFiltersTest < ApplicationSystemTestCase
     assert_not users(:basic).user_filter_visibilities.find_by!(filter: personal).visible?
   end
 
-  test "system tag shortcuts include visible system states and only the current user's signer tags" do
+  test "tags are available but appear in navigation only when chosen" do
     user = users(:basic)
-    system_query = "label:(#{tags(:ssd_drafts).name})"
-    saved_system_filter = Filter.create!(tenant: tenants(:ssd), common: true, name: "Drafts shortcut", query: system_query)
-    user.set_filter_visibility!(saved_system_filter.id, visible: true)
-    group_signer_filter = Filter.create!(tenant: tenants(:ssd), common: true, name: "Group signer shortcut",
-      query: "label:(#{tags(:ssd_signers_signature_requested).name})")
-    user.set_filter_visibility!(group_signer_filter.id, visible: true)
-    own_request = own_signed = nil
-    assert_no_difference "Filter.count" do
-      own_request = SignatureRequestedFromTag.create!(tenant: tenants(:ssd), owner: user, name: "Na podpis: My current user", visible: true)
-      own_signed = SignedByTag.create!(tenant: tenants(:ssd), owner: user, name: "Podpísané: My current user", visible: true)
-      SignatureRequestedFromTag.create!(tenant: tenants(:ssd), owner: users(:basic_two), name: "Na podpis: Other current user", visible: true)
-      SignedByTag.create!(tenant: tenants(:ssd), owner: users(:basic_two), name: "Podpísané: Other current user", visible: true)
+    visit settings_user_filter_visibilities_path
+    within("[data-test='hidden-menu-items']") do
+      assert_text tags(:ssd_finance).name
+      assert_text tags(:ssd_hidden).name
+      assert_text tags(:ssd_archived).name
+      assert_text tags(:ssd_basic_user_signature_requested).name
+      assert_no_text tags(:ssd_signer_user_signature_requested).name
+      assert_no_text tags(:ssd_signers_signature_requested).name
+      find("button[aria-label='Zobraziť v menu: #{tags(:ssd_finance).name}']").send_keys(:enter)
     end
-
+    within("[data-test='shown-menu-items']") { assert_selector "button[aria-label='Skryť: #{tags(:ssd_finance).name}']" }
+    assert_equal "label:(#{tags(:ssd_finance).name})", user.pinned_filters.last.query
     visit root_path
-    within("[data-test='system-filters']") do
-      assert_link tags(:ssd_drafts).name
-      assert_link tags(:ssd_archived).name
-      assert_link tags(:ssd_signature_requested).name
-      assert_link tags(:ssd_signed).name
-      assert_link own_request.name
-      assert_link own_signed.name
-      assert_no_link tags(:ssd_signer_user_signature_requested).name
-      assert_no_link tags(:ssd_signer_user_signed).name
-      assert_no_link tags(:ssd_signers_signature_requested).name
-      assert_no_link group_signer_filter.name
+    within_sidebar do
+      assert_link tags(:ssd_finance).name
+      assert_no_link tags(:ssd_archived).name
+      assert_no_text "Rýchle odkazy"
     end
-    expected_names = tenants(:ssd).tags.visible.where.not(type: SimpleTag.to_s)
-      .where.not(type: [SignatureRequestedFromTag.to_s, SignedByTag.to_s]).pluck(:name)
-    expected_names += tenants(:ssd).tags.visible.where(type: [SignatureRequestedFromTag.to_s, SignedByTag.to_s], owner: user).pluck(:name)
-    assert_equal expected_names.sort, page.all("[data-test='system-filters'] a").map(&:text).sort
-    assert_selector "a[href='#{message_threads_path(q: system_query)}']", count: 1
-    assert_selector "a[href='#{message_threads_path(q: "label:(#{own_request.name})")}']"
-    refute_includes page.all("[data-test='system-filters'] a").map(&:text), tags(:ssd_signer_user_signature_requested).name
+    visit settings_user_filter_visibilities_path
+    find("button[aria-label='Skryť: #{tags(:ssd_finance).name}']").send_keys(:enter)
+    visit root_path
+    within_sidebar { assert_no_link tags(:ssd_finance).name }
   end
 end

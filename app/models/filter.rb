@@ -16,6 +16,7 @@ class Filter < ApplicationRecord
 
   belongs_to :author, class_name: 'User', foreign_key: :author_id, optional: true
   belongs_to :tenant
+  belongs_to :tag, optional: true
   has_many :filter_subscriptions, dependent: :destroy
   has_many :user_filter_visibilities, dependent: :destroy
 
@@ -24,7 +25,11 @@ class Filter < ApplicationRecord
 
   def self.available_to(user)
     tenant_filters = where(tenant_id: user.tenant_id)
-    tenant_filters.common.or(tenant_filters.personal.where(author_id: user.id))
+    available = tenant_filters.common.or(tenant_filters.personal.where(author_id: user.id))
+    private_tags = user.tenant.tags.where.not(owner_id: [nil, user.id])
+    group_signer_tags = user.tenant.tags.where(type: ["SignatureRequestedFromTag", "SignedByTag"], owner_id: nil)
+    available.where.not(tag_id: private_tags.select(:id)).where.not(tag_id: group_signer_tags.select(:id))
+      .or(available.where(tag_id: nil))
   end
 
   def self.effective_for(user)
@@ -127,7 +132,7 @@ class Filter < ApplicationRecord
   end
 
   def initialize_preferences
-    common? ? distribute! : author.set_filter_visibility!(id, visible: true)
+    common? ? distribute! : author.set_filter_visibility!(id, visible: false)
   end
 
   def serialize_position(&block)

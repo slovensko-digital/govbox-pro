@@ -59,7 +59,7 @@ class FilterUniquenessConcurrencyTest < ActiveSupport::TestCase
     ]
     common, user = threads.map(&:value)
     assert_equal 1, user.user_filter_visibilities.where(filter: common).count
-    assert_includes user.pinned_filters, common
+    assert_not_includes user.pinned_filters, common
   ensure
     User.find_by(email: "#{query}@example.com")&.destroy! if query
     Filter.where(query: query).destroy_all if query

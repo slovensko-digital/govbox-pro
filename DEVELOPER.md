@@ -163,6 +163,16 @@ it disabled until the existing-data backfill and checks have completed.
    `Filter.find(filter_id).distribute!`. User onboarding can likewise retry
    `User.find(user_id).initialize_filter_preferences!`; neither resets choices.
 
+The compact-menu revision adds the nullable `filters.tag_id` source reference.
+On first opening **Moje menu**, `TagFilterCatalog.sync!(tenant)` converts all
+remaining tags to hidden query choices, reusing equal common queries and retaining
+their existing IDs, subscriptions, and preferences. It can also be run explicitly
+after migrations for enabled tenants. New tags in enabled tenants create hidden
+choices after commit. No new personal/common/tag filter is automatically shown;
+new users start with an empty menu. Legacy migrated selections remain preserved.
+Tag visibility on threads does not control catalog availability. Foreign-owned
+tags and unowned group-signing tags are excluded from each user's choices.
+
 For a read-path rollback, disable only the feature:
 
 ```ruby
@@ -197,23 +207,23 @@ common; the logout helper waits for the dropdown's initial close animation
 instead of using retry clicks or weakening assertions.
 
 Final verification adds `test/system/filter_acceptance_test.rb` and personalized
-system-tag navigation and separate personal-menu coverage to that command: seed 19953, **89 tests, 646
+tag-catalog and compact personal-menu coverage to that command: seed 8940, **92 tests, 667
 assertions, zero failures, errors, or skips**.
 The acceptance journey covers an administrator and two users, independent default
 ordering, clear search, publication into pinned/unpinned personal matches,
 subscription management under a personal title, authorized delivery, unpinned
 notification links, original common-order restoration, confirmed query edits,
 and cancelled/confirmed deletion with two subscribers.
-The personalized sidebar also keeps visible system-status shortcuts without
-duplicating matching pinned definitions and shows signer-specific shortcuts only
-to their owner; these shortcuts do not create saved filters.
+The personalized sidebar renders only enabled choices from **Moje menu**, with
+no automatic quick-link section. Compact shown/hidden sections use text actions
+and reorder arrows; tag-derived query filters start hidden.
 To capture browser evidence, set `FILTER_DEMO_DIRECTORY` to an existing directory
 and run `bin/rails test test/system/common_filters_test.rb test/system/filter_acceptance_test.rb`.
 The tests save query confirmation, subscriber warnings, personal notification
 context, and independent common-default screenshots there.
 
 The final diff was checked against PR #249 as context only: no STI filter types,
-sortable dependency, `filter_id` message-list navigation, permanent tag callbacks,
+sortable dependency, `filter_id` message-list navigation,
 group/template distribution, tag-rename rewriting, notification query versions,
 display-precedence delivery suppression, or migration subscription remapping.
 `openspec validate personalize-query-filters --strict` and `git diff --check` pass.

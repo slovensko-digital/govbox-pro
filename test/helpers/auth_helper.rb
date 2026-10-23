@@ -15,7 +15,9 @@ module AuthHelper
 
     assert_current_path root_path, ignore_query: true
     user = users(user_fixture_name)
-    default_filter = user.tenant.feature_enabled?(:personalized_filters) ? user.pinned_filters.first : nil
+    default_filter = if user.tenant.feature_enabled?(:personalized_filters)
+      user.pinned_filters.first || Filter.for_query(user, "")
+    end
     within("#bulk_actions") { assert_text(default_filter&.name || "Správy v schránke") }
   end
 

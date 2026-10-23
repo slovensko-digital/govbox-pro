@@ -65,35 +65,32 @@ Filter je dopyt vyhľadávania uložený spoločne s názvom na neskoršie využ
 
 :::
 
-## Osobné menu a odopnuté filtre
+## Moje menu
 
-V **Nastavenia → Filtre** nájdete aj odopnuté filtre. Pri každom môžete zapnúť
-alebo vypnúť pripnutie a nastaviť notifikácie. Označenie **Notifikácie zapnuté**
-ukazuje existujúci odber aj pri odopnutom filtri.
+V **Nastavenia → Moje menu** si vyberáte jediný zdroj položiek bočného menu.
+Hore sú **Zobrazené v menu**, ktoré môžete zoradiť šípkami alebo **Skryť**.
+Dole sú **Nezobrazené položky**; cez **Zobraziť v menu** ich pridáte na koniec.
+Prvá zobrazená položka určuje úvodné vyhľadávanie v schránke.
 
-Pripnuté filtre môžete posúvať vyššie alebo nižšie. Prvý pripnutý filter určuje,
-čo uvidíte po otvorení schránky. Zmeny poradia a pripnutia platia iba pre vás.
-Opätovné pripnutie pridá filter na koniec menu. Zrušenie vyhľadávania zobrazí
-všetky dostupné správy bez opätovného použitia predvoleného filtra.
+Na výber sú osobné a spoločné filtre, **Všetky správy** aj filtre všetkých
+štítkov vrátane skrytých a systémových. Osobné štítky patria iba ich vlastníkovi.
+Nové filtre a nové štítky sa do menu nezapínajú automaticky. Pri prvom otvorení
+Moje menu sa doplní katalóg filtrov existujúcich štítkov bez zmeny vašich volieb.
+Menu nemá ďalšie automatické rýchle odkazy.
 
-**Odopnutie nevypína notifikácie.** Odber zmeníte alebo vypnete cez jeho nastavenia.
-Kliknutie na query odkaz či odkaz z notifikácie filter automaticky nepripne.
-
-Vedľa uložených filtrov zostávajú aj viditeľné systémové skratky (napríklad
-rozpracované, archivované, podpisové a chybové stavy). Podpisové skratky
-konkrétneho podpisovateľa sa zobrazujú iba jemu. Tieto systémové odkazy
-nevytvárajú pri vzniku štítka nový uložený filter.
+**Skrytie nevypína notifikácie.** V **Nastavenia → Filtre** zostáva dostupná
+správa uložených vyhľadávaní a odberov aj pre nezobrazené filtre. Zrušenie
+vyhľadávania zobrazí všetky dostupné správy bez opätovného použitia predvoľby.
 
 **Filter** je uložené vyhľadávanie. **Štítok** označuje správu. V časti **Filtre**
 spravujete uložené vyhľadávania; v časti **Moje menu** si vyberáte, ktoré z nich
 sa zobrazia v bočnom menu a v akom poradí. Toto nastavenie nemení štítky na
-správach ani odbery notifikácií. Odkazy na systémové štítky sú v bočnom menu
-označené ako **Rýchle odkazy**.
+správach ani odbery notifikácií.
 
 ## Spoločné filtre pre administrátora
 
 Pri vytváraní filtra môže administrátor zvoliť **Spoločný filter pre všetkých**.
-Nový spoločný filter pribudne na koniec osobného menu používateľov. Existujúci
+Nový spoločný filter pribudne medzi nezobrazené položky v **Moje menu**. Existujúci
 osobný filter s rovnakým dopytom má prednosť, aj keď je odopnutý. Spoločný názov
 a dopyt spravuje administrátor; používatelia menia iba vlastné pripnutie, poradie
 a notifikácie.

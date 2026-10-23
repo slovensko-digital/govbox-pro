@@ -44,8 +44,8 @@ class FilterNavigationBackfillTest < ActiveSupport::TestCase
     assert_equal count, Filter.count
     assert_not Filter.exists?(query: "label:(Created after snapshot)")
     new_user = User.create!(tenant: tenants(:ssd), name: "After backfill", email: "after-backfill@example.com")
-    assert_equal "", new_user.pinned_filters.first.query
-    assert_equal new_user.pinned_filters.count, new_user.user_filter_visibilities.count
+    assert_empty new_user.pinned_filters
+    assert_equal tenants(:ssd).filters.common.count, new_user.user_filter_visibilities.count
   end
 
   test "tag shortcut matching an existing saved query is reused" do

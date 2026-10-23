@@ -25,7 +25,6 @@ class SidebarMenu
     if @parameters[:personalized]
       return [
         Layout::FilterListComponent.new(filters: @parameters[:filters], query: @parameters[:query]),
-        Layout::SystemFilterListComponent.new(tags: @parameters[:system_tags] || [], filters: @parameters[:filters], query: @parameters[:query]),
         TW::SidebarMenuItemComponent.new(name: 'Nastavenia', url: filters_path, icon: Icons::CogSixToothComponent.new)
       ]
     end

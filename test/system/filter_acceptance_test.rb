@@ -8,6 +8,8 @@ class FilterAcceptanceTest < ApplicationSystemTestCase
     @other = users(:basic_two)
     @user.set_filter_visibility!(filters(:one).id, visible: true)
     @all = Filter.create!(tenant: @tenant, common: true, name: "All messages", query: "")
+    @user.set_filter_visibility!(@all.id, visible: true)
+    @other.set_filter_visibility!(@all.id, visible: true)
     @hidden = Filter.create!(tenant: @tenant, author: @user, name: "My hidden", query: "acceptance-hidden")
     @user.set_filter_visibility!(@hidden.id, visible: false)
     Searchable::MessageThread.reindex_all
@@ -18,6 +20,7 @@ class FilterAcceptanceTest < ApplicationSystemTestCase
     publish_common("Team general", "general")
     publish_common("Team hidden", "acceptance-hidden")
     common = @tenant.filters.common.find_by!(query: "general")
+    @other.set_filter_visibility!(common.id, visible: true)
     common_hidden = @tenant.filters.common.find_by!(query: "acceptance-hidden")
     assert_not @user.user_filter_visibilities.find_by!(filter: common).visible?
     assert_not @user.user_filter_visibilities.find_by!(filter: common_hidden).visible?
@@ -38,7 +41,7 @@ class FilterAcceptanceTest < ApplicationSystemTestCase
     assert_current_path message_threads_path(q: "")
     assert_field "search", with: ""
     visit settings_user_filter_visibilities_path
-    within("[data-filter-id='#{filters(:one).id}']") { find("button[aria-label='Odopnúť z menu: #{filters(:one).name}']").send_keys(:enter) }
+    within("[data-filter-id='#{filters(:one).id}']") { find("button[aria-label='Skryť: #{filters(:one).name}']").send_keys(:enter) }
     visit filters_path
     within("[data-filter-id='#{filters(:one).id}']") do
       assert_no_selector "button[aria-label^='Pripnúť']"
@@ -75,6 +78,7 @@ class FilterAcceptanceTest < ApplicationSystemTestCase
     click_button "Vytvoriť"
     assert_current_path filters_path
     personal_all = @user.filters.find_by!(name: "My all")
+    @user.set_filter_visibility!(personal_all.id, visible: true)
     visit root_path
     within("#bulk_actions") { assert_text "My all" }
     visit filters_path
@@ -90,7 +94,7 @@ class FilterAcceptanceTest < ApplicationSystemTestCase
     sign_in_as(:basic_two)
     visit settings_user_filter_visibilities_path
     within("[data-filter-id='#{common.id}']") { find("button[aria-label='Posunúť vyššie v menu: Team general']").send_keys(:enter) }
-    assert_selector "[data-filter-id='#{common.id}']:first-child"
+    assert_selector "[data-test='shown-menu-items'] [data-filter-id='#{common.id}']:nth-child(2)"
     visit root_path
     within("#bulk_actions") { assert_text "Team general" }
     assert_equal basic_preferences, @user.user_filter_visibilities.order(:id).map(&:attributes)

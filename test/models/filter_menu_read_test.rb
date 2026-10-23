@@ -3,7 +3,10 @@ require "test_helper"
 class FilterMenuReadTest < ActiveSupport::TestCase
   test "reading a multi-filter menu is one query with no writes" do
     user = users(:basic)
-    12.times { |i| Filter.create!(tenant: user.tenant, author: user, name: "Menu #{i}", query: "menu-#{i}") }
+    12.times do |i|
+      filter = Filter.create!(tenant: user.tenant, author: user, name: "Menu #{i}", query: "menu-#{i}")
+      user.set_filter_visibility!(filter.id, visible: true)
+    end
     statements = []
     subscriber = ->(*args) do
       payload = args.last

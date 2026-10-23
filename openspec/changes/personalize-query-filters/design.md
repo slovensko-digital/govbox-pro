@@ -8,7 +8,7 @@ Implementation starts from current main (`c436c394`), not PR #249 or the origina
 
 `MessageThreadsController` loads messages in a before-action and later looks up subscriptions using an unrestricted tenant query match. `FilterSubscriptionsController` also finds filters tenant-wide. `FilterSubscription` already owns event selections and `last_notify_run_at`; `Filter` already destroys its subscriptions. Notification matching and delivery occur in separate background jobs. Personal display precedence must not be mistaken for delivery eligibility.
 
-The old PR's STI filters, `filter_id` message-list links, callback-created tag filters, and eager creation of every possible user visibility record are not prerequisites and must not be copied wholesale. Current box permissions and user-relative query parsing must survive this change.
+The old PR's STI filters and `filter_id` message-list links are not prerequisites and must not be copied wholesale. Current box permissions and user-relative query parsing must survive this change. Following user feedback, query filters now optionally reference their source tag and are available as hidden menu choices.
 
 ## Goals / Non-Goals
 
@@ -46,7 +46,7 @@ Alternative: reject common publication if any user has the query. Rejected becau
 
 Add a `UserFilterVisibility`-style preference model with `user_id`, `filter_id`, `visible`, and `position`, a unique `(user_id, filter_id)` constraint, and cascading cleanup. Validate tenant consistency. Position belongs to the user's pin, not the filter; legacy global positions are only migration/bootstrap ordering inputs.
 
-Rows are needed for actual personal pins and explicit unpins, and for automatically distributed common defaults. Do not create a row for every searchable tag or query. Explicit unpin records are necessary because absence must not cause a later common-default pass to repin a filter.
+Rows retain explicit menu visibility and order. New personal/common definitions, including tag-backed queries, start hidden. Common distribution initializes hidden preferences without changing existing choices; showing an item is an explicit action in "Moje menu".
 
 Append and reorder under a per-user lock; validate all submitted preference IDs, reject foreign IDs, and update order atomically. Consecutive positions can be assigned without importing the PR's draggable dependency or assuming drag-and-drop is necessary. Use existing Turbo/Stimulus patterns and generic icon components; accessible up/down controls are sufficient.
 
@@ -86,7 +86,7 @@ Deletion uses the existing subscription association's dependent cleanup plus pre
 
 ### 7. Migrate the current navigation, not the old PR's schema history
 
-Introduce additive schema first and a separately retryable, batched data backfill. Capture each tenant's previous ordered shortcuts before changing navigation reads: all messages, existing filters by position/ID, visible tags by name/ID. Render tag queries exactly as the current component does. Migration creates common tag-derived saved filters only for this existing snapshot, never a future tag callback.
+Introduce additive schema first and a separately retryable, batched data backfill. Capture each tenant's previous ordered shortcuts before changing navigation reads: all messages, existing filters by position/ID, visible tags by name/ID. Render tag queries exactly as the current component does. Subsequent tag catalog synchronization adds every remaining tag as a hidden choice, reusing equal common queries and preserving existing preferences. New tags in enabled tenants create hidden choices after commit. The tag reference scopes owner-specific choices without granting access to messages.
 
 Keep every existing tenant-visible filter as a common definition with the same ID; retain author attribution for audit, not common-definition editing authority. Its existing subscriptions keep their IDs, filter associations, selected events, and `last_notify_run_at`. Do not create owner-personal/common pairs, move subscription foreign keys, or copy subscriptions. Personal definitions are created by users after rollout, not inferred from legacy authorship. The former non-admin author now uses common-filter pin/order/subscription controls rather than editing the shared definition; this permission change was explicitly accepted.
 
@@ -94,7 +94,7 @@ Reuse an existing common query when a visible-tag shortcut or all-messages entry
 
 Seed personal preferences on the retained common definitions in the old order, collapse duplicate menu shortcuts, and place the empty-query all-messages filter first. Backfill must be restartable without resetting an already completed user's choices. Build uniqueness indexes only after preflight succeeds; use migration-local models or explicit SQL rather than application callbacks that evolve over time.
 
-Alternative: copy every visible tag into filters through a permanent callback. Rejected by the explicit decision that new tags do not create filters and by fresh/existing tenant inconsistencies in the old PR.
+The sidebar has no separate automatic quick-link section. "Moje menu" shows compact enabled rows above hidden rows, using explicit text visibility actions and reorder arrows. Catalog synchronization is serialized by tenant, is retryable, and never rewrites renamed-tag queries or subscriptions.
 
 ## Risks / Trade-offs
 
