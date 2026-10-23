@@ -24,7 +24,7 @@ class SidebarMenu
   def default_main_menu
     if @parameters[:personalized]
       return [
-        Layout::FilterListComponent.new(filters: @parameters[:filters], query: @parameters[:query]),
+        Layout::FilterListComponent.new(filters: @parameters[:filters], query: @parameters[:query], show_heading: false),
         TW::SidebarMenuItemComponent.new(name: 'Nastavenia', url: filters_path, icon: Icons::CogSixToothComponent.new)
       ]
     end

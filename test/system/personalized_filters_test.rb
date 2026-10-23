@@ -133,6 +133,7 @@ class PersonalizedFiltersTest < ApplicationSystemTestCase
       assert_link tags(:ssd_finance).name
       assert_no_link tags(:ssd_archived).name
       assert_no_text "Rýchle odkazy"
+      assert_no_text "Filtre"
     end
     visit settings_user_filter_visibilities_path
     find("button[aria-label='Skryť: #{tags(:ssd_finance).name}']").send_keys(:enter)
