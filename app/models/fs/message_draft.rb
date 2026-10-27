@@ -179,7 +179,7 @@ class Fs::MessageDraft < MessageDraft
   end
 
   def find_api_connection_for_submission
-    return box.api_connection if box.api_connections.count == 1 && !box.api_connection.owner
+    return box.api_connection if single_api_connection_without_owner?
 
     raise I18n.t("activerecord.errors.models.fs/message_draft.multiple_signatures") if form_object.tags.where(type: "SignedByTag").count > 1
 
@@ -221,18 +221,30 @@ class Fs::MessageDraft < MessageDraft
     Fs::Form.find_by(id: metadata['fs_form_id'])
   end
 
+  def signable_by?(user)
+    return false unless user&.signer?
+    return true if single_api_connection_without_owner?
+
+    box.api_connections.active.exists?(owner: user)
+  end
+
   def signable_by_author?
-    return false unless author
-    return false unless author.signer?
-    return true if global_api_connection?
-    return true if author_api_connection?
-    false
+    signable_by?(author)
+  end
+
+  def signer_groups
+    return super if single_api_connection_without_owner?
+
+    signers.map(&:user_group)
   end
 
   def signature_target_group
     tenant = thread.box.tenant
+    sole_signer = find_sole_signer
 
-    if tenant.signature_request_mode == 'author' && signable_by_author?
+    if sole_signer
+      sole_signer
+    elsif tenant.signature_request_mode == 'author' && signable_by_author?
       author
     else
       tenant.signer_group
@@ -323,11 +335,18 @@ class Fs::MessageDraft < MessageDraft
     end
   end
 
-  def global_api_connection?
-    box.api_connections.where(owner: nil).one?
+  def single_api_connection_without_owner?
+    box.api_connections.one? && box.api_connections.exists?(owner: nil)
   end
 
-  def author_api_connection?
-    box.api_connections.where(owner: author).present?
+  def signers
+    tenant.signer_group.users.select { |user| signable_by?(user) }
+  end
+
+  def find_sole_signer
+    return if single_api_connection_without_owner?
+
+    candidates = signers
+    candidates.first if candidates.one?
   end
 end

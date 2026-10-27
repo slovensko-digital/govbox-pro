@@ -229,6 +229,63 @@ class Fs::MessageDraftTest < ActiveSupport::TestCase
     assert message_draft.thread.tags.any? { |tag| tag.type == 'SignatureRequestedFromTag' }
   end
 
+  test "validate_and_process requests signature from the owner of the single api connection of the box" do
+    message_draft = messages(:fs_accountants_outbox)
+    owner = users(:accountants_user2)
+    owner.groups << owner.tenant.signer_group
+    api_connections(:fs_api_connection1).update(owner: owner)
+
+    message_draft.validate_and_process
+
+    assert_includes message_draft.form_object.tags.reload, owner.signature_requested_from_tag
+    assert_includes message_draft.thread.tags.reload, owner.signature_requested_from_tag
+    assert_not_includes message_draft.form_object.tags, tags(:accountants_signers_signature_requested)
+  end
+
+  test "validate_and_process requests signature from the only user who can sign if the box has connections with and without owner" do
+    message_draft = messages(:fs_accountants_outbox)
+    owner = users(:accountants_user2)
+    owner.groups << owner.tenant.signer_group
+    users(:accountants_basic).groups << owner.tenant.signer_group
+    message_draft.box.api_connections << api_connections(:fs_api_connection2).tap { |c| c.update!(owner: owner) }
+
+    message_draft.validate_and_process
+
+    assert_includes message_draft.form_object.tags.reload, owner.signature_requested_from_tag
+    assert_not_includes message_draft.form_object.tags, tags(:accountants_signers_signature_requested)
+  end
+
+  test "validate_and_process requests signature from signer group if the box has a single api connection without owner even with a single signer in tenant" do
+    message_draft = messages(:fs_accountants_outbox)
+    users(:accountants_basic).groups << tenants(:accountants).signer_group
+
+    message_draft.validate_and_process
+
+    assert_includes message_draft.form_object.tags.reload, tags(:accountants_signers_signature_requested)
+    assert_not_includes message_draft.form_object.tags, users(:accountants_basic).signature_requested_from_tag
+  end
+
+  test "validate_and_process requests signature from signer group if multiple owners of api connections of the box can sign" do
+    message_draft = messages(:fs_accountants_outbox)
+    users(:accountants_basic).groups << tenants(:accountants).signer_group
+    users(:accountants_user2).groups << tenants(:accountants).signer_group
+    api_connections(:fs_api_connection1).update!(owner: users(:accountants_basic))
+    message_draft.box.api_connections << api_connections(:fs_api_connection2).tap { |c| c.update!(owner: users(:accountants_user2)) }
+
+    message_draft.validate_and_process
+
+    assert_includes message_draft.form_object.tags.reload, tags(:accountants_signers_signature_requested)
+  end
+
+  test "validate_and_process requests signature from signer group if the owner of the single api connection of the box is not a signer" do
+    message_draft = messages(:fs_accountants_outbox)
+    api_connections(:fs_api_connection1).update(owner: users(:accountants_user2))
+
+    message_draft.validate_and_process
+
+    assert_includes message_draft.form_object.tags.reload, tags(:accountants_signers_signature_requested)
+  end
+
   test "signable_by_author? returns false if author is not a signer" do
     author = users(:basic)
     author.group_memberships.where(group: author.tenant.signer_group).destroy_all
@@ -299,6 +356,120 @@ class Fs::MessageDraftTest < ActiveSupport::TestCase
     message_draft = Fs::MessageDraft.new(author: author, thread: MessageThread.new(box: box))
 
     assert message_draft.signable_by_author?
+  end
+
+  test "signable_by_author? returns false if author owns no api connection and the box has multiple connections including one without owner" do
+    author = users(:accountants_basic)
+    author.groups << author.tenant.signer_group
+
+    box = boxes(:fs_accountants)
+    box.api_connections.destroy_all
+
+    box.api_connections << api_connections(:fs_api_connection1).tap { |c| c.update(owner: nil) }
+    box.api_connections << api_connections(:fs_api_connection2).tap { |c| c.update(owner: users(:accountants_user2)) }
+
+    message_draft = Fs::MessageDraft.new(author: author, thread: MessageThread.new(box: box))
+
+    assert_not message_draft.signable_by_author?
+  end
+
+  test "signable_by? returns false for a signer who does not own the single api connection of the box" do
+    user = users(:accountants_basic)
+    user.groups << user.tenant.signer_group
+
+    box = boxes(:fs_accountants)
+    box.api_connections.destroy_all
+    box.api_connections << api_connections(:fs_api_connection1).tap { |c| c.update(owner: users(:accountants_user2)) }
+
+    message_draft = Fs::MessageDraft.new(author: user, thread: MessageThread.new(box: box))
+
+    assert_not message_draft.signable_by?(user)
+  end
+
+  test "signable_by? returns true for a signer who owns the single api connection of the box" do
+    owner = users(:accountants_user2)
+    owner.groups << owner.tenant.signer_group
+
+    box = boxes(:fs_accountants)
+    box.api_connections.destroy_all
+    box.api_connections << api_connections(:fs_api_connection1).tap { |c| c.update(owner: owner) }
+
+    message_draft = Fs::MessageDraft.new(author: users(:accountants_basic), thread: MessageThread.new(box: box))
+
+    assert message_draft.signable_by?(owner)
+  end
+
+  test "signable_by? returns false for a non-signer who owns the single api connection of the box" do
+    owner = users(:accountants_user2)
+
+    box = boxes(:fs_accountants)
+    box.api_connections.destroy_all
+    box.api_connections << api_connections(:fs_api_connection1).tap { |c| c.update(owner: owner) }
+
+    message_draft = Fs::MessageDraft.new(author: owner, thread: MessageThread.new(box: box))
+
+    assert_not message_draft.signable_by?(owner)
+  end
+
+  test "signable_by? returns true for any signer if the box has a single api connection without owner" do
+    user = users(:accountants_basic)
+    user.groups << user.tenant.signer_group
+
+    box = boxes(:fs_accountants)
+    box.api_connections.destroy_all
+    box.api_connections << api_connections(:fs_api_connection1).tap { |c| c.update(owner: nil) }
+
+    message_draft = Fs::MessageDraft.new(author: users(:accountants_user2), thread: MessageThread.new(box: box))
+
+    assert message_draft.signable_by?(user)
+  end
+
+  test "signable_by? returns false for a signer without own api connection if the box has multiple connections including one without owner" do
+    user = users(:accountants_basic)
+    user.groups << user.tenant.signer_group
+
+    box = boxes(:fs_accountants)
+    box.api_connections.destroy_all
+    box.api_connections << api_connections(:fs_api_connection1).tap { |c| c.update(owner: nil) }
+    box.api_connections << api_connections(:fs_api_connection2).tap { |c| c.update(owner: users(:accountants_user2)) }
+
+    message_draft = Fs::MessageDraft.new(author: user, thread: MessageThread.new(box: box))
+
+    assert_not message_draft.signable_by?(user)
+  end
+
+  test "signable_by? returns false for a signer whose own api connection for the box is inactive" do
+    user = users(:accountants_basic)
+    user.groups << user.tenant.signer_group
+
+    box = boxes(:fs_accountants)
+    box.api_connections.destroy_all
+    box.api_connections << api_connections(:fs_api_connection1).tap { |c| c.update(owner: user) }
+    box.api_connections << api_connections(:fs_api_connection2).tap { |c| c.update(owner: users(:accountants_user2)) }
+    box.boxes_api_connections.find_by(api_connection: api_connections(:fs_api_connection1)).update!(active: false)
+
+    message_draft = Fs::MessageDraft.new(author: user, thread: MessageThread.new(box: box))
+
+    assert_not message_draft.signable_by?(user)
+  end
+
+  test "signer_groups contains only user groups of signers who own an api connection of the box" do
+    users(:accountants_basic).groups << tenants(:accountants).signer_group
+    users(:accountants_user2).groups << tenants(:accountants).signer_group
+    api_connections(:fs_api_connection1).update!(owner: users(:accountants_user2))
+
+    message_draft = messages(:fs_accountants_draft_uzmujv14_with_attachment)
+
+    assert_equal [groups(:accountants_user2_group)], message_draft.signer_groups
+  end
+
+  test "signer_groups contains all signers and the signer group if the box has a single api connection without owner" do
+    users(:accountants_basic).groups << tenants(:accountants).signer_group
+    users(:accountants_user2).groups << tenants(:accountants).signer_group
+
+    message_draft = messages(:fs_accountants_draft_uzmujv14_with_attachment)
+
+    assert_equal [groups(:accountants_basic_user), groups(:accountants_signers), groups(:accountants_user2_group)].sort_by(&:id), message_draft.signer_groups.sort_by(&:id)
   end
 
   test "submittable? returns false for inactive box" do

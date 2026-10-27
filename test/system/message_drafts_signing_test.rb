@@ -57,4 +57,21 @@ class MessageDraftsSigningTest < ApplicationSystemTestCase
 
     page.go_back
   end
+
+  test "user can not sign Fs::MessageDraft if the only api connection of the box is owned by another user" do
+    @thread = message_threads(:fs_accountants_draft_uzmujv14_with_attachment)
+    @message = @thread.messages.find { |message| message.draft? }
+
+    GroupMembership.create!(user: users(:accountants_basic), group: groups(:accountants_signers))
+    api_connections(:fs_api_connection1).update!(owner: users(:accountants_user2))
+
+    sign_in_as(:accountants_basic)
+
+    visit message_thread_path(@thread)
+
+    within_message_in_thread(@message) do
+      assert_link "Vyžiadať podpis"
+      assert_no_link "Podpísať"
+    end
+  end
 end
