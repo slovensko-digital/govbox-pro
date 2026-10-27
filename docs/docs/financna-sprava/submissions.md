@@ -28,7 +28,7 @@ V GovBox PRO je možné vytvárať podania na Finančnú správu, ktoré sa auto
    Pomocou štíkta Problémové rýchlo identifikujete, ktoré podania je potrebné skontrolovať
 
 6. **Hromadné podpísanie podaní**
-   Označíte si podania, ktoré chcete podpísať a zadaním bezpečnostných kódov iba jedenkrát podpíšete všetky naraz, viď [Hromadné podpisovanie](../signing/bulk-signing.md)
+   Označíte si podania, ktoré chcete podpísať a zadaním bezpečnostných kódov iba jedenkrát podpíšete všetky naraz, viď [Hromadné podpisovanie](../signing/bulk-signing.md). Ak má schránka prepojenie s nastaveným [vlastníkom](connections.md), podania za ňu môže podpísať iba vlastník
 
 7. **Odoslanie podaní**
    Podania môžete odoslať hromadne, viď [Odosielanie správ](../messages/submitting.md)
