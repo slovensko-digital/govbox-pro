@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     && echo "deb [signed-by=/usr/share/keyrings/nodesource.gpg] https://deb.nodesource.com/node_22.x nodistro main" > /etc/apt/sources.list.d/nodesource.list
 
 # Install packages
-RUN apt-get update && apt-get install -y build-essential nodejs libpq-dev libjemalloc2 fop=1:2.* libsaxon-java libsaxonb-java chromium \
+RUN apt-get update && apt-get install -y build-essential nodejs libpq-dev libjemalloc2 fop=1:2.* libsaxon-java libsaxonb-java chromium tini \
     && apt-get -y install libx11-xcb1 libxcomposite1 libasound2 libatk1.0-0 libatk-bridge2.0-0 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgbm1 libgcc1 libglib2.0-0 libgtk-3-0 libnspr4 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6
 
 # Enable jemalloc for reduced memory usage and latency (Rails 8 default).
@@ -48,7 +48,9 @@ RUN bundle exec bootsnap precompile app/ lib/
 RUN SECRET_KEY_BASE=NONE RAILS_ENV=production bundle exec rails assets:precompile
 
 # Entrypoint prepares the database.
-ENTRYPOINT ["/app/bin/docker-entrypoint"]
+# Tini runs as PID 1 and reaps orphaned Chromium processes left by PDF rendering,
+# otherwise they pile up as zombies until the container hits its pids limit.
+ENTRYPOINT ["/usr/bin/tini", "--", "/app/bin/docker-entrypoint"]
 
 # Start the server by default, this can be overwritten at runtime
 CMD ["./bin/rails", "server"]

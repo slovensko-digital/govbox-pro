@@ -38,7 +38,8 @@ persistence:
 workers:
   worker:
     replicaCount: "1"
-    command: ["bundle", "exec", "good_job", "start"]
+    # command replaces the image ENTRYPOINT, so start tini here to reap zombie Chromium processes
+    command: ["/usr/bin/tini", "--", "bundle", "exec", "good_job", "start"]
     startupProbe:
       probeType: "httpGet"
       path: "/status/started"
