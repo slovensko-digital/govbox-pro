@@ -33,6 +33,7 @@ Rails.application.routes.draw do
         post :search_non_members, on: :member
         post :search_boxes_and_tags, on: :member
         patch :update_all_boxes_permission, on: :member
+        patch :update_can_manage_access_tags, on: :member
         resources :group_memberships do
         end
         resources :box_groups, only: [:create, :destroy]
