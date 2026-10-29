@@ -43,7 +43,35 @@ class NoAccountTest < ActionDispatch::IntegrationTest
     assert_select "input[name='prompt']", count: 0
   end
 
+  test "submits trial registration without Turbo so the browser follows the external redirect" do
+    with_no_account_trial("https://registration.example.com/trial/callback") do
+      get no_account_sessions_path
+    end
+
+    assert_select "form[action='#{no_account_trial_sessions_path}'] button[data-turbo='false']"
+  end
+
+  test "allows trial registration origin as form action in CSP" do
+    with_no_account_trial("https://registration.example.com/trial/callback?source=govbox") do
+      get no_account_sessions_path
+    end
+
+    form_action = response.headers.fetch("Content-Security-Policy")[/form-action [^;]*/]
+    assert_includes form_action.split, "https://registration.example.com"
+  end
+
   private
+
+  def with_no_account_trial(return_url)
+    original_return_url = ENV.fetch("SSD_NO_ACCOUNT_TRIAL_RETURN_URL", nil)
+    original_shared_secret = ENV.fetch("SSD_TRIAL_SHARED_SECRET", nil)
+    ENV["SSD_NO_ACCOUNT_TRIAL_RETURN_URL"] = return_url
+    ENV["SSD_TRIAL_SHARED_SECRET"] = "secret"
+    yield
+  ensure
+    ENV["SSD_NO_ACCOUNT_TRIAL_RETURN_URL"] = original_return_url
+    ENV["SSD_TRIAL_SHARED_SECRET"] = original_shared_secret
+  end
 
   def mock_oauth(provider, email)
     OmniAuth.config.mock_auth[provider] =
