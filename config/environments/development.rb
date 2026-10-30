@@ -75,4 +75,6 @@ Rails.application.configure do
   config.action_controller.raise_on_missing_callback_actions = true
   # Annotates rendered views in the browser's dev console
   config.action_view.annotate_rendered_view_with_filenames = true
+
+  config.hosts += ENV.fetch("ALLOWED_HOSTS", "localhost:3000").split(",")
 end

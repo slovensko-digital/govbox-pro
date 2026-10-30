@@ -62,6 +62,22 @@ AZURE_APPLICATION_CLIENT_SECRET=some-secret
 
 > For more details, see the [official documentation](https://learn.microsoft.com/en-us/entra/identity-platform/reference-app-manifest#signinaudience-attribute)
 
+### Autogram Portal (AGP) signing
+
+Tenants with the `autogram_portal` feature sign documents in an AGP iframe instead of calling Autogram directly. The AGP connection is configured for the whole instance, or per tenant by the operator in the console (`tenant.update!(settings_agp_api_url: ..., settings_agp_sub: ..., settings_agp_api_token_private_key: ..., settings_agp_webhook_public_key: ...)`, unset (nil) values fall back to the instance configuration):
+
+```dotenv
+AGP_API_URL=https://agp.slovensko.digital
+AGP_API_SUB=tenant-id-in-agp
+AGP_API_TOKEN_PRIVATE_KEY=base64-encoded-pem-of-2048-bit-rsa-private-key
+AGP_WEBHOOK_PUBLIC_KEY=pem-of-the-agp-webhook-ec-public-key
+AGP_WEBHOOK_URL= # optional, e.g. a tunnel to localhost in development
+```
+
+- Signed documents come back by the AGP webhook (`/agp/webhooks`), by the signing page as soon as AGP reports the signature, and by polling (`Agp::SyncBundleJob`) as a fallback for lost webhooks. Polling starts every 30 seconds, slows down to once an hour and stops after 3 days.
+- A signed document is not saved when the document changed after it was sent to AGP (e.g. another signer signed it meanwhile).
+- The signing itself (including the calls to the local Autogram app) runs in the AGP iframe. The AGP origin is allowed in the content security policy of every page of the tenant; the `Permissions-Policy` header must not disable `loopback-network` / `local-network-access`, the SDK delegates them to the iframe.
+
 ## Running
 
 ### Run database
