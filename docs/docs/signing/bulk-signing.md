@@ -7,7 +7,7 @@ keywords: ["podpis", "hromadné", "autogram", "dokumenty"]
 # Hromadné podpisovanie dokumentov
 
 ::: callout warning "Predpoklady"
-Aby používateľ mohol čokoľvek podpisovať, musí byť súčasťou skupiny **"Podpisovatelia" a mať [Autogram](https://sluzby.slovensko.digital/autogram/) nainštalovaný**.
+Aby používateľ mohol čokoľvek podpisovať, musí byť súčasťou skupiny **"Podpisovatelia" a mať [Autogram](https://sluzby.slovensko.digital/autogram/) nainštalovaný**. Ak má schránka Finančnej správy prepojenie s nastaveným [vlastníkom](../financna-sprava/connections.md), podania za ňu môže podpísať iba vlastník a ostatným používateľom sa do hromadného podpisu nezaradia.
 :::
 
 ## Postup hromadného podpisu
