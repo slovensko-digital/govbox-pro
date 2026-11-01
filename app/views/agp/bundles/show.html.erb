@@ -1,0 +1,27 @@
+<%= tag.turbo_frame id: "modal" do %>
+  <%= render Common::ModalComponent.new(closable: true, max_size: "max-w-2xl") do |modal| %>
+    <% modal.with_header do %>
+      Podpisovanie
+    <% end %>
+    <% modal.with_modal_content do %>
+      <div class="py-4">
+        <% if @bundle.created? %>
+          <%= render "created" %>
+        <% elsif @bundle.completed? %>
+          <p class="pb-4">Dokumenty sú podpísané.</p>
+        <% elsif @bundle.init? %>
+          <p class="pb-4">
+            Balík dokumentov sa inicializuje. Počkajte prosím, kým sa proces dokončí.
+          </p>
+          <div>
+            <%= link_to "Skontrolovať stav", agp_bundle_path(@bundle), data: { turbo_frame: "modal" }, class: "inline-flex w-full justify-center rounded-md px-3 py-2 text-sm font-semibold bg-white text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:w-auto" %>
+          </div>
+        <% else %>
+          <p class="pb-4 text-red-600">
+            Podpisovanie cez Autogram Portal sa nepodarilo. Skúste to prosím znova.
+          </p>
+        <% end %>
+      </div>
+    <% end %>
+  <% end %>
+<% end %>

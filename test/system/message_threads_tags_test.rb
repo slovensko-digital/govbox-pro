@@ -25,6 +25,9 @@ class MessageThreadsTagsTest < ApplicationSystemTestCase
     check "Print"
     uncheck "Legal"
 
+    assert_button "Uložiť zmeny (2)"
+    wait_for_turbo_focus_restore
+
     fill_in "name_search_query", with: "Struction"
 
     within("#tags-assignment-list") do
