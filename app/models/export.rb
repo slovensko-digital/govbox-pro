@@ -14,6 +14,7 @@ class Export < ApplicationRecord
   before_save :set_default_template
   before_validation :normalize_settings
   validate :at_least_one_export_option, unless: :new_record?
+  validate :at_least_one_message_format, unless: :new_record?
   validate :delivered_at_range_valid, unless: :new_record?
 
   DEFAULT_TEMPLATE = "{{ schranka.export_nazov }}/vlakno-{{ vlakno.id }}/sprava-{{ sprava.id }}/{{ subor.nazov }}"
@@ -58,7 +59,7 @@ class Export < ApplicationRecord
     update(settings: settings_object.merge(attributes).to_h)
   end
 
-  def export_object_filepath(message_object)
+  def export_object_filepath(message_object, pdf: false, other_file_names: [])
     thread = message_object.message.thread
     form = Fs::Form.find_by(id: thread.metadata&.dig("fs_form_id"))&.slug
     type = message_object.message.message_type
@@ -81,7 +82,32 @@ class Export < ApplicationRecord
     end
 
     out.gsub!(/\.\.\//, '')
-    out.sub(/^\/+/, '')
+    out = out.sub(/^\/+/, '')
+    original_extension = File.extname(MessageObjectHelper.displayable_name(message_object))
+    extension = pdf ? '.pdf' : original_extension
+    path_without_extension = out.delete_suffix(original_extension)
+    path = "#{path_without_extension}#{extension}"
+    return path unless path.in?(other_file_names)
+
+    matches_count = other_file_names.count { |name| /#{Regexp.escape(path_without_extension)}( \(\d+\))?#{Regexp.escape(extension)}/ =~ name }
+    "#{path_without_extension} (#{matches_count})#{extension}"
+  end
+
+  def pdf_objects(message_object)
+    return [] unless settings['pdf']
+    return [] if settings_object.originals && message_object.pdf?
+
+    objects = message_object.nested_message_objects.presence || [message_object]
+    objects.select { |object| object.pdf? || object.downloadable_as_pdf? }
+  end
+
+  def export_object_filepaths(message_object, other_file_names: [])
+    paths = []
+    paths << export_object_filepath(message_object, other_file_names: other_file_names) if settings_object.originals
+    pdf_objects(message_object).each do
+      paths << export_object_filepath(message_object, pdf: true, other_file_names: other_file_names + paths.compact)
+    end
+    paths.compact
   end
 
   def self.form_name(object, include_version: true)
@@ -128,9 +154,15 @@ class Export < ApplicationRecord
     errors.add(:base, I18n.t('activerecord.errors.models.export.attributes.base.empty_selection')) unless settings['summary'] || settings['messages']
   end
 
+  def at_least_one_message_format
+    if settings['messages'] && !settings_object.originals && !settings['pdf']
+      errors.add(:base, I18n.t('activerecord.errors.models.export.attributes.base.empty_message_formats'))
+    end
+  end
+
   def normalize_settings
     self.settings ||= {}
-    %w[summary messages pdf default].each do |flag|
+    %w[summary messages originals pdf default].each do |flag|
       settings[flag] = ActiveModel::Type::Boolean.new.cast(settings[flag]) if settings.key?(flag)
     end
     %w[by_form by_type].each do |group|

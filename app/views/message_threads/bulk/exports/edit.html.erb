@@ -88,8 +88,12 @@
 
             <div class="space-y-4 py-6 px-6">
               <div class="flex items-center gap-x-3">
-                <%= s.check_box :pdf, class: "h-5 w-5 rounded-sm border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer" %>
-                <%= s.label :pdf, "Exportovať aj PDF", class: "select-none text-sm/6 text-gray-900 cursor-pointer" %>
+                <%= s.check_box :originals, class: "h-5 w-5 rounded-sm border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer", data: { controller: "auto-submit", action: "click->auto-submit#submit" } %>
+                <%= s.label :originals, "Exportovať pôvodný formát", class: "select-none text-sm/6 text-gray-900 cursor-pointer" %>
+              </div>
+              <div class="flex items-center gap-x-3">
+                <%= s.check_box :pdf, class: "h-5 w-5 rounded-sm border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer", data: { controller: "auto-submit", action: "click->auto-submit#submit" } %>
+                <%= s.label :pdf, "Exportovať PDF", class: "select-none text-sm/6 text-gray-900 cursor-pointer" %>
               </div>
 
               <% template_class = "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" %>
@@ -174,6 +178,7 @@
           <% end %>
 
           <% if @export.settings.dig("messages") %>
+            <% exported_filepaths = [] %>
             <% @message_threads.each do |message_thread| %>
               <tr>
                 <td class="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-gray-500 sm:pl-0"><%= message_thread.box.short_name %></td>
@@ -208,7 +213,8 @@
                   <td class="px-2 py-2 text-sm text-gray-500"></td>
                 </tr>
                 <% message.objects.each do |message_object| %>
-                  <% filepath = @export.export_object_filepath(message_object) %>
+                  <% filepaths = @export.export_object_filepaths(message_object, other_file_names: exported_filepaths) %>
+                  <% exported_filepaths.concat(filepaths) %>
                   <tr>
                     <td class="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-gray-500 sm:pl-0"></td>
                     <td class="px-2 py-2 text-sm font-medium text-gray-900 cursor-pointer select-none"
@@ -223,9 +229,9 @@
                     <td class="px-2 py-2 text-sm text-gray-500 cursor-pointer select-none"
                         data-controller="expand-text"
                         data-action="click->expand-text#toggle">
-                      <% if filepath.present? %>
+                      <% if filepaths.present? %>
                         <div class="flex items-center gap-x-1 overflow-hidden">
-                          <code class="truncate min-w-0" data-expand-content><%= filepath %></code>
+                          <code class="truncate min-w-0" data-expand-content><%= safe_join(filepaths, tag.br) %></code>
                           <span class="shrink-0 text-gray-400 text-xs" data-expand-indicator>▾</span>
                         </div>
                       <% else %>

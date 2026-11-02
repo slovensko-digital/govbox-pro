@@ -11,6 +11,35 @@ class MessageThreadsBulkExportTest < ApplicationSystemTestCase
     sign_in_as(:accountants_basic)
   end
 
+  test "PDF only settings are saved and preview omits original paths" do
+    thread = message_threads(:fs_accountants_thread1)
+    object = message_objects(:fs_accountants_outbox_form)
+    object.nested_message_objects.create!(name: 'form.pdf', mimetype: Utils::PDF_MIMETYPE, content: '%PDF-form')
+    export = Export.create!(
+      user: users(:accountants_basic),
+      message_thread_ids: [thread.id],
+      settings: { 'messages' => true, 'default' => true, 'templates' => { 'default' => '{{ subor.nazov }}' } }
+    )
+
+    visit edit_message_threads_bulk_export_path(export)
+    assert_checked_field 'Exportovať pôvodný formát'
+    assert_selector 'code', text: 'SVDPHv20.asice'
+
+    check 'Exportovať PDF'
+    assert_selector 'code', text: 'SVDPHv20.pdf'
+    uncheck 'Exportovať pôvodný formát'
+    assert_no_selector 'code', text: /\.asice/
+    assert_selector 'code', text: 'SVDPHv20.pdf'
+    assert_equal false, export.reload.settings['originals']
+    assert_equal true, export.settings['pdf']
+
+    visit edit_message_threads_bulk_export_path(export)
+    assert_unchecked_field 'Exportovať pôvodný formát'
+    assert_checked_field 'Exportovať PDF'
+    assert_no_selector 'code', text: /\.asice/
+    take_screenshot
+  end
+
   test "export edit page shows message_direction radio buttons defaulting to all" do
     thread = message_threads(:fs_accountants_thread1)
     export = Export.create!(

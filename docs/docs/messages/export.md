@@ -23,7 +23,7 @@ Správy je možné z GovBox PRO hromadne **exportovať**.
 4. **Nastavte export**
    Po otvorení okna s nastaveniami exportu si zvolíte, čo chcete exportovať:
       - sumár alebo iba samotné správy
-      - dokumenty aj v PDF formáte
+      - dokumenty v pôvodnom formáte, PDF alebo v oboch formátoch
       - všetky správy z vybraných vlákien alebo iba určitý typ formulára (platí pre FS podania) alebo typy správ, ktoré sa majú exportovať (napr. iba potvrdenky)
 
    Môžete si určiť formát názvov výsledných súborov a priečinkov. Napríklad pre podania a potvrdenky je možné nastaviť odlišný formát.
@@ -34,7 +34,8 @@ Správy je možné z GovBox PRO hromadne **exportovať**.
 
     Je potrebné, aby ste zvolili nasledovné nastavenia:
     - Exportovať správy
-     - Exportovať aj PDF
+     - Exportovať pôvodný formát
+     - Exportovať PDF
      - Všetky správy
        - vyplniť želaný formát (napr. podľa ukážky nižšie)
      - ED.DeliveryReport (to je označenie pre potvrdenku)
@@ -69,8 +70,41 @@ Vďaka tomu, že sa jedná o tabuľku je možné s ňou jednoducho ďalej pracov
 ### PDF vizualizácie dokumentov
 Ak chcete mať dokumenty lepšie čitateľné alebo pripravené na tlač, môžete ich pri exporte automaticky previesť do formátu PDF. GovBox PRO k vybraným dokumentom vytvorí aj PDF verziu, ktorá je vhodná na čítanie a tlač. Táto PDF verzia neobsahuje elektronické podpisy.
 
+Pre export iba PDF zapnite **Exportovať PDF** a vypnite **Exportovať pôvodný formát**. Export bude obsahovať dostupné PDF vizualizácie a PDF prílohy vrátane PDF dokumentov z podpisových kontajnerov, bez pôvodných ASiC-E súborov. Dokumenty, pre ktoré nie je dostupná PDF verzia, sa vynechajú.
+
 ### Originálne dokumenty
-Export vždy obsahuje dokumenty zo zvolených správ v originálnom formáte, väčšinou v ASiC-E formáte, ktoré obsahujú aj podpisy odosielateľov a sú právne záväzné.
+Voľba **Exportovať pôvodný formát** je predvolene zapnutá. Export obsahuje dokumenty zo zvolených správ v originálnom formáte, väčšinou v ASiC-E formáte, ktoré obsahujú aj podpisy odosielateľov a sú právne záväzné. Túto voľbu môžete vypnúť, ak potrebujete iba PDF.
+
+### Výber formátov
+
+Pri zapnutej voľbe **Exportovať správy** musí byť zvolený aspoň jeden formát:
+
+| Pôvodný formát | PDF | Exportované dokumenty |
+| --- | --- | --- |
+| Zapnutý | Vypnuté | Iba pôvodné súbory |
+| Zapnutý | Zapnuté | Pôvodné súbory a dostupné PDF verzie |
+| Vypnutý | Zapnuté | Iba dostupné PDF verzie a PDF prílohy |
+
+Samostatná voľba **Exportovať sumár** pridáva súbor `sumar.xlsx` nezávisle od zvolených formátov dokumentov. Ak exportujete iba sumár, formát dokumentov nemusíte vyberať. Nastavenia sa použijú aj pri ďalšom exporte.
+
+## Náhľad exportu
+
+V spodnej časti nastavení sa zobrazuje **Náhľad exportu**. Po zmene voľby pôvodného formátu alebo PDF sa náhľad automaticky aktualizuje.
+
+- Stĺpec **Názov** zobrazuje názov pôvodnej prílohy, napríklad `SVDPHv20.asice`.
+- Stĺpec **Súbor** zobrazuje názvy a cesty súborov, ktoré sa vložia do ZIP-u podľa zvolených formátov a šablóny pomenovania.
+- Pri oboch zapnutých formátoch môže jedna príloha obsahovať dva výstupy: `SVDPHv20.asice` a `SVDPHv20.pdf`.
+- Pri exporte iba PDF zostane v stĺpci **Súbor** len `SVDPHv20.pdf`. Pomlčka `—` znamená, že sa daná príloha neexportuje, napríklad preto, že nemá dostupnú PDF verziu.
+
+### Náhľad s pôvodnými súbormi aj PDF
+
+![Náhľad exportu pôvodných súborov a PDF](../../assets/images/export/preview-both-formats.png)
+
+### Náhľad iba PDF
+
+V tomto príklade je zapnutý aj sumár. Potvrdenka bez dostupnej PDF verzie sa vynechá, aj keď jej pôvodný názov zostáva zobrazený.
+
+![Náhľad exportu iba PDF](../../assets/images/export/preview-pdf-only.png)
 
 ## Štruktúra exportu
 Štruktúru exportu a spôsob pomenovania súborov i priečinkov máte plne vo svojej réžii. V nastaveniach exportu uvediete štruktúru, v ktorej môžete použiť premenné. Pri každej správe tieto premenné budú nahradené hodnotou, kt. zodpovedá danej správe. Zoznam podporovaných premenných si môžete pozrieť v nastaveniach exportu.

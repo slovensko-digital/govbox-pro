@@ -32,6 +32,41 @@ class ExportTest < ActiveSupport::TestCase
     assert export.valid?
   end
 
+  test 'original format defaults to enabled for existing settings' do
+    export = Export.new(user: Current.user, settings: { 'messages' => true })
+    assert_equal true, export.settings_object.originals
+  end
+
+  test 'original format checkbox values are normalized and survive reload' do
+    export = Export.create!(user: Current.user, settings: { 'messages' => true })
+    assert export.update_settings('originals' => '0', 'pdf' => '1')
+    assert_equal false, export.reload.settings_object.originals
+    assert export.update_settings('originals' => '1')
+    assert_equal true, export.reload.settings_object.originals
+  end
+
+  test 'messages require at least one format even when summary is selected' do
+    export = Export.create!(user: Current.user, settings: { 'messages' => true, 'summary' => true })
+    refute export.update_settings('originals' => '0', 'pdf' => '0')
+    assert_includes export.errors[:base], I18n.t('activerecord.errors.models.export.attributes.base.empty_message_formats')
+  end
+
+  test 'summary only export does not require a message format' do
+    export = Export.create!(user: Current.user, settings: { 'summary' => true })
+    assert export.update_settings('messages' => '0', 'originals' => '0', 'pdf' => '0')
+  end
+
+  test 'PDF only preview lists nested PDF paths with unique names' do
+    object = message_objects(:fs_accountants_outbox_form)
+    2.times do |index|
+      object.nested_message_objects.create!(name: "form#{index}.pdf", mimetype: Utils::PDF_MIMETYPE, content: '%PDF-form')
+    end
+    export = Export.new(user: Current.user, settings: { 'originals' => false, 'pdf' => true, 'default' => true, 'templates' => { 'default' => '{{ subor.nazov }}' } })
+
+    assert_equal ['SVDPHv20.pdf', 'SVDPHv20 (1).pdf'], export.export_object_filepaths(object)
+    assert_equal ['SVDPHv20 (1).pdf', 'SVDPHv20 (2).pdf'], export.export_object_filepaths(object, other_file_names: ['SVDPHv20.pdf'])
+  end
+
   test "export_object_filepath substitutes vlakno.nazov" do
     thread = message_threads(:fs_accountants_thread1)
     message = messages(:fs_accountants_thread1_outbox_message)

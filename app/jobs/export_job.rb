@@ -29,8 +29,8 @@ class ExportJob < ApplicationJob
         export.message_threads.each do |message_thread|
           export.filtered_messages(message_thread).includes(:thread).each do |message|
             message.objects.each do |object|
-              prepare_original_object(object, export: export, zip: zip, file_paths: file_paths)
-              prepare_pdf_object(object, export: export, zip: zip, file_paths: file_paths) if export.settings["pdf"]
+              prepare_original_object(object, export: export, zip: zip, file_paths: file_paths) if export.settings_object.originals
+              prepare_pdf_object(object, export: export, zip: zip, file_paths: file_paths)
 
               EventBus.publish(:message_object_downloaded, object)
             end
@@ -50,7 +50,7 @@ class ExportJob < ApplicationJob
   end
 
   def prepare_original_object(object, export:, zip:, file_paths:)
-    file_path = unique_path_within_export(object, export: export, other_file_names: file_paths)
+    file_path = export.export_object_filepath(object, other_file_names: file_paths)
     return unless file_path
 
     zip.put_next_entry(file_path)
@@ -59,33 +59,10 @@ class ExportJob < ApplicationJob
   end
 
   def prepare_pdf_object(object, export:, zip:, file_paths:)
-    if object.nested_message_objects.any?
-      prepare_nested_print_objects(object, export: export, zip: zip, file_paths: file_paths)
-    else
-      return unless object.downloadable_as_pdf?
+    export.pdf_objects(object).each do |pdf_object|
+      pdf_content = pdf_object.pdf? ? pdf_object.content : pdf_visualization(pdf_object)
 
-      pdf_content = pdf_visualization(object)
-
-      file_path = unique_path_within_export(object, export: export, other_file_names: file_paths, pdf: true)
-      return unless file_path
-
-      zip.put_next_entry(file_path)
-      zip.write(pdf_content)
-      file_paths << file_path
-    end
-  end
-
-  def prepare_nested_print_objects(object, export:, zip:, file_paths:)
-    object.nested_message_objects.each do |nested_message_object|
-      next unless nested_message_object.pdf? || nested_message_object.downloadable_as_pdf?
-
-      pdf_content = if nested_message_object.pdf?
-                      nested_message_object.content
-                    else
-                      pdf_visualization(nested_message_object)
-                    end
-
-      file_path = unique_path_within_export(object, export: export, other_file_names: file_paths, pdf: true)
+      file_path = export.export_object_filepath(object, other_file_names: file_paths, pdf: true)
       next unless file_path
 
       zip.put_next_entry(file_path)
@@ -128,21 +105,5 @@ class ExportJob < ApplicationJob
       zip.put_next_entry('sumar.xlsx')
       zip.write(p.to_stream.read)
     end
-  end
-
-  def unique_path_within_export(object, export:, other_file_names:, pdf: false)
-    path = export.export_object_filepath(object)
-    return unless path
-
-    object_name = MessageObjectHelper.displayable_name(object)
-
-    extension = pdf ? ".pdf" : File.extname(object_name)
-    path_without_extension = path.delete_suffix(File.extname(object_name))
-    path_with_extension = "#{path_without_extension}#{extension}"
-
-    return path_with_extension unless path_with_extension.in?(other_file_names)
-
-    matches_count = other_file_names.count { |name| /#{Regexp.escape(path_without_extension)}( \(\d+\))?#{Regexp.escape(extension)}/ =~ name }
-    "#{path_without_extension} (#{matches_count})#{extension}"
   end
 end

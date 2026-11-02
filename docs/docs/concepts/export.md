@@ -4,9 +4,10 @@ Hromadný export správ v GovBox PRO umožňuje používateľom exportovať spr�
 
 ## Funkcie exportu
 
-- Export originálnych dokumentov (napr. ASiC-E formát)
-- Generovanie PDF verzií dokumentov pre čítanie a tlač
+- Voliteľný export originálnych dokumentov (napr. ASiC-E formát), predvolene zapnutý
+- Export dostupných PDF verzií dokumentov a PDF príloh pre čítanie a tlač, aj bez originálnych súborov
 - Vytvorenie sumáru správ s prehľadom údajov (napr. DIČ, stav správy, typ správy)
+- Náhľad názvov a ciest súborov podľa zvolených formátov a šablón pomenovania
 
 ## Príklad použitia
 Export podaní a potvrdení podľa subjektu a obdobia:  

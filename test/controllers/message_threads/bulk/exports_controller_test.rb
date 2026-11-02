@@ -97,9 +97,31 @@ module MessageThreads
 
       test 'edit renders hidden unchecked-value fields for settings checkboxes' do
         get :edit, params: { id: @export.id }
-        %w[summary messages pdf default].each do |flag|
+        %w[summary messages originals pdf default].each do |flag|
           assert_select "input[type=hidden][name='export[settings][#{flag}]'][value='0']", count: 1
         end
+      end
+
+      test 'edit enables original format for settings saved before the option existed' do
+        get :edit, params: { id: @export.id }
+        assert_select "input[type=checkbox][name='export[settings][originals]'][checked]", count: 1
+      end
+
+      test 'start saves PDF only settings and enqueues the export' do
+        assert_enqueued_with(job: ExportJob) do
+          post :start, params: { export_id: @export.id, export: { settings: { 'originals' => '0', 'pdf' => '1' } } }
+        end
+        assert_redirected_to root_path
+        assert_equal false, @export.reload.settings['originals']
+        assert_equal true, @export.settings['pdf']
+      end
+
+      test 'start rejects messages without a format and does not enqueue an export' do
+        assert_no_enqueued_jobs(only: ExportJob) do
+          post :start, params: { export_id: @export.id, export: { settings: { 'originals' => '0', 'pdf' => '0' } } }
+        end
+        assert_response :unprocessable_content
+        assert_select "input[type=checkbox][name='export[settings][originals]'][checked]", count: 0
       end
 
       test 'update persists delivered_at_from date setting' do
@@ -147,7 +169,7 @@ module MessageThreads
         user = @export.user
         @export.update!(settings: { 'summary' => true, 'messages' => true, 'message_direction' => 'inbox' })
 
-        Export.create!(user: user, message_thread_ids: [], settings: { 'summary' => true, 'messages' => true, 'message_direction' => 'outbox', 'templates' => { 'default' => 'A', 'x' => 'Y' } })
+        Export.create!(user: user, message_thread_ids: [], settings: { 'summary' => true, 'messages' => true, 'originals' => false, 'pdf' => true, 'message_direction' => 'outbox', 'templates' => { 'default' => 'A', 'x' => 'Y' } })
 
         post :create, params: { message_thread_ids: [] }
         new_export = user.exports.order(:id).last
@@ -155,6 +177,8 @@ module MessageThreads
         assert_equal 'outbox', new_export.settings['message_direction'], 'new export inherits last created export'
         assert_equal true, new_export.settings['summary']
         assert_equal true, new_export.settings['messages']
+        assert_equal false, new_export.settings['originals']
+        assert_equal true, new_export.settings['pdf']
         assert_equal({ 'default' => 'A', 'x' => 'Y' }, new_export.settings['templates'])
       end
 
