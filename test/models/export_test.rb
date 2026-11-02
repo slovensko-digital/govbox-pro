@@ -56,52 +56,6 @@ class ExportTest < ActiveSupport::TestCase
     assert export.update_settings('messages' => '0', 'originals' => '0', 'pdf' => '0')
   end
 
-  test 'PDF only preview lists nested PDF paths with unique names' do
-    object = message_objects(:fs_accountants_outbox_form)
-    2.times do |index|
-      object.nested_message_objects.create!(name: "form#{index}.pdf", mimetype: Utils::PDF_MIMETYPE, content: '%PDF-form')
-    end
-    export = Export.new(user: Current.user, settings: { 'originals' => false, 'pdf' => true, 'default' => true, 'templates' => { 'default' => '{{ subor.nazov }}' } })
-
-    assert_equal ['SVDPHv20.pdf', 'SVDPHv20 (1).pdf'], export.export_object_filepaths(object)
-    assert_equal ['SVDPHv20 (1).pdf', 'SVDPHv20 (2).pdf'], export.export_object_filepaths(object, other_file_names: ['SVDPHv20.pdf'])
-  end
-
-  test "export_object_filepath substitutes vlakno.nazov" do
-    thread = message_threads(:fs_accountants_thread1)
-    message = messages(:fs_accountants_thread1_outbox_message)
-    object = message.objects.first
-
-    export = Export.create!(
-      user: Current.user,
-      message_thread_ids: [thread.id],
-      settings: { "messages" => true, "default" => true, "templates" => { "default" => "{{ vlakno.nazov }}/{{ subor.nazov }}" } }
-    )
-
-    path = export.export_object_filepath(object)
-    assert path.start_with?(thread.title), "Expected path to start with thread title '#{thread.title}', got '#{path}'"
-  end
-
-  test "export_object_filepath handles nil thread title gracefully" do
-    thread = message_threads(:fs_accountants_thread1)
-    message = messages(:fs_accountants_thread1_outbox_message)
-    object = message.objects.first
-
-    export = Export.create!(
-      user: Current.user,
-      message_thread_ids: [thread.id],
-      settings: { "messages" => true, "default" => true, "templates" => { "default" => "{{ vlakno.nazov }}/{{ subor.nazov }}" } }
-    )
-
-    thread.stub(:title, nil) do
-      message.stub(:thread, thread) do
-        object.stub(:message, message) do
-          assert_nothing_raised { export.export_object_filepath(object) }
-        end
-      end
-    end
-  end
-
   test "filtered_messages returns all messages when direction is 'all'" do
     thread = message_threads(:fs_accountants_thread1)
     export = Export.new(
@@ -306,82 +260,6 @@ class ExportTest < ActiveSupport::TestCase
     export.settings["delivered_at_from"] = "2025-06-30"
     export.settings["delivered_at_to"]   = "2025-06-30"
     assert export.valid?
-  end
-
-  test "export_object_filepath replaces slash in thread title" do
-    thread = message_threads(:fs_accountants_thread1)
-    message = messages(:fs_accountants_thread1_outbox_message)
-    object = message.objects.first
-
-    export = Export.create!(
-      user: Current.user,
-      message_thread_ids: [thread.id],
-      settings: { "messages" => true, "default" => true, "templates" => { "default" => "{{ vlakno.nazov }}/{{ subor.nazov }}" } }
-    )
-
-    thread.stub(:title, "DPH/2025/Q1") do
-      message.stub(:thread, thread) do
-        object.stub(:message, message) do
-          path = export.export_object_filepath(object)
-          parts = path.split("/")
-          refute parts.any? { |p| p.empty? }, "Expected no empty path segments from slash in title, got: #{path}"
-          assert_equal "DPH-2025-Q1", parts.first, "Slash in title should be replaced with dash"
-        end
-      end
-    end
-  end
-
-  test "export_object_filepath replaces slash in message object name" do
-    thread = message_threads(:fs_accountants_thread1)
-    message = messages(:fs_accountants_thread1_outbox_message)
-    object = message.objects.first
-
-    export = Export.create!(
-      user: Current.user,
-      message_thread_ids: [thread.id],
-      settings: { "messages" => true, "default" => true, "templates" => { "default" => "vlakno/{{ subor.nazov }}" } }
-    )
-
-    MessageObjectHelper.stub(:displayable_name, "report/2025/file.pdf") do
-      path = export.export_object_filepath(object)
-      assert_equal "vlakno/report-2025-file.pdf", path, "Slash in object name should be replaced with dash"
-    end
-  end
-
-  test "export_object_filepath replaces multiple slashes in thread title" do
-    thread = message_threads(:fs_accountants_thread1)
-    message = messages(:fs_accountants_thread1_outbox_message)
-    object = message.objects.first
-
-    export = Export.create!(
-      user: Current.user,
-      message_thread_ids: [thread.id],
-      settings: { "messages" => true, "default" => true, "templates" => { "default" => "{{ vlakno.nazov }}/{{ subor.nazov }}" } }
-    )
-
-    thread.stub(:title, "a/b/c") do
-      message.stub(:thread, thread) do
-        object.stub(:message, message) do
-          path = export.export_object_filepath(object)
-          assert_equal "a-b-c", path.split("/").first, "Multiple slashes should all be replaced"
-        end
-      end
-    end
-  end
-
-  test "export_object_filepath still blocks path traversal with ../" do
-    thread = message_threads(:fs_accountants_thread1)
-    message = messages(:fs_accountants_thread1_outbox_message)
-    object = message.objects.first
-
-    export = Export.create!(
-      user: Current.user,
-      message_thread_ids: [thread.id],
-      settings: { "messages" => true, "default" => true, "templates" => { "default" => "../{{ vlakno.id }}/{{ subor.nazov }}" } }
-    )
-
-    path = export.export_object_filepath(object)
-    refute path.include?("../"), "Path traversal ../ should be stripped"
   end
 
   test 'file_name returns old naming logic if old file exists' do

@@ -16,10 +16,7 @@ class ExportJobTest < ActiveJob::TestCase
     assert_equal({ 'SVDPHv20.pdf' => '%PDF-first', 'SVDPHv20 (1).pdf' => '%PDF-second', 'attachment.pdf' => '%PDF-attachment' }, entries)
     assert_equal export, Notifications::ExportFinished.last.export
 
-    preview_paths = []
-    object.message.objects.each do |message_object|
-      preview_paths.concat(export.export_object_filepaths(message_object, other_file_names: preview_paths))
-    end
+    preview_paths = ExportJob.new.preview_filepaths(export, message_threads: export.message_threads).values.flatten
     assert_equal entries.keys.sort, preview_paths.sort
   end
 
@@ -73,7 +70,7 @@ class ExportJobTest < ActiveJob::TestCase
 
     object = message_objects(:fs_accountants_outbox_form)
     file_paths = []
-    path = export.export_object_filepath(object, other_file_names: file_paths)
+    path = ExportJob.new.export_object_filepath(object, export: export, other_file_names: file_paths)
 
     parts = path.split("/")
     assert_equal "DPH-2025-Q1", parts.first, "Slash in thread title should produce dash, not extra directory level"
@@ -119,7 +116,7 @@ class ExportJobTest < ActiveJob::TestCase
 
     object = message_objects(:fs_accountants_outbox_form)
     file_paths = []
-    path = export.export_object_filepath(object, other_file_names: file_paths)
+    path = ExportJob.new.export_object_filepath(object, export: export, other_file_names: file_paths)
     assert path.start_with?("#{thread.title}/"), "Expected path to start with thread title, got: #{path}"
   end
 
@@ -199,7 +196,7 @@ class ExportJobTest < ActiveJob::TestCase
     job = ExportJob.new
 
     paths = [ nil, "second.pdf" ]
-    export.stub(:export_object_filepath, ->(*, **) { paths.shift }) do
+    job.stub(:export_object_filepath, ->(*, **) { paths.shift }) do
       ::Zip::OutputStream.write_buffer do |zip|
         job.prepare_pdf_object(object, export: export, zip: zip, file_paths: file_paths)
       end
@@ -280,14 +277,14 @@ class ExportJobTest < ActiveJob::TestCase
 
     file_paths = []
 
-    file_paths << export.export_object_filepath(outbox_message.form_object, other_file_names: file_paths, pdf: false)
+    file_paths << ExportJob.new.export_object_filepath(outbox_message.form_object, export: export, other_file_names: file_paths, pdf: false)
     assert_equal "Accountants main FS/Q22025_SVDPHv20.asice", file_paths.last
-    file_paths << export.export_object_filepath(outbox_message.form_object, other_file_names: file_paths, pdf: true)
+    file_paths << ExportJob.new.export_object_filepath(outbox_message.form_object, export: export, other_file_names: file_paths, pdf: true)
     assert_equal "Accountants main FS/Q22025_SVDPHv20.pdf", file_paths.last
 
-    file_paths << export.export_object_filepath(inbox_message.form_object, other_file_names: file_paths, pdf: false)
+    file_paths << ExportJob.new.export_object_filepath(inbox_message.form_object, export: export, other_file_names: file_paths, pdf: false)
     assert_equal "Accountants main FS/Accountants main FS_Q22025_potvrdenie.asice", file_paths.last
-    file_paths << export.export_object_filepath(inbox_message.form_object, other_file_names: file_paths, pdf: true)
+    file_paths << ExportJob.new.export_object_filepath(inbox_message.form_object, export: export, other_file_names: file_paths, pdf: true)
     assert_equal "Accountants main FS/Accountants main FS_Q22025_potvrdenie.pdf", file_paths.last
   end
 
@@ -305,14 +302,14 @@ class ExportJobTest < ActiveJob::TestCase
 
     file_paths = []
 
-    file_paths << export.export_object_filepath(outbox_message.form_object, other_file_names: file_paths, pdf: false)
+    file_paths << ExportJob.new.export_object_filepath(outbox_message.form_object, export: export, other_file_names: file_paths, pdf: false)
     assert_equal "Accountants main FS/Q22025.asice", file_paths.last
-    file_paths << export.export_object_filepath(outbox_message.form_object, other_file_names: file_paths, pdf: true)
+    file_paths << ExportJob.new.export_object_filepath(outbox_message.form_object, export: export, other_file_names: file_paths, pdf: true)
     assert_equal "Accountants main FS/Q22025.pdf", file_paths.last
 
-    file_paths << export.export_object_filepath(inbox_message.form_object, other_file_names: file_paths, pdf: false)
+    file_paths << ExportJob.new.export_object_filepath(inbox_message.form_object, export: export, other_file_names: file_paths, pdf: false)
     assert_equal "Accountants main FS/Q22025 (1).asice", file_paths.last
-    file_paths << export.export_object_filepath(inbox_message.form_object, other_file_names: file_paths, pdf: true)
+    file_paths << ExportJob.new.export_object_filepath(inbox_message.form_object, export: export, other_file_names: file_paths, pdf: true)
     assert_equal "Accountants main FS/Q22025 (1).pdf", file_paths.last
   end
 
@@ -329,19 +326,19 @@ class ExportJobTest < ActiveJob::TestCase
 
     file_paths = []
 
-    file_paths << export.export_object_filepath(message.objects.first, other_file_names: file_paths, pdf: false)
+    file_paths << ExportJob.new.export_object_filepath(message.objects.first, export: export, other_file_names: file_paths, pdf: false)
     assert_equal "SSD main/1234-Rozh_o_pokute_§155_ods.1_písm.g)_no.asice", file_paths.last
-    file_paths << export.export_object_filepath(message.objects.first, other_file_names: file_paths, pdf: true)
+    file_paths << ExportJob.new.export_object_filepath(message.objects.first, export: export, other_file_names: file_paths, pdf: true)
     assert_equal "SSD main/1234-Rozh_o_pokute_§155_ods.1_písm.g)_no.pdf", file_paths.last
 
-    file_paths << export.export_object_filepath(message.objects.second, other_file_names: file_paths, pdf: false)
+    file_paths << ExportJob.new.export_object_filepath(message.objects.second, export: export, other_file_names: file_paths, pdf: false)
     assert_equal "SSD main/MyString", file_paths.last
-    file_paths << export.export_object_filepath(message.objects.second, other_file_names: file_paths, pdf: true)
+    file_paths << ExportJob.new.export_object_filepath(message.objects.second, export: export, other_file_names: file_paths, pdf: true)
     assert_equal "SSD main/MyString.pdf", file_paths.last
 
-    file_paths << export.export_object_filepath(message.objects.last, other_file_names: file_paths, pdf: false)
+    file_paths << ExportJob.new.export_object_filepath(message.objects.last, export: export, other_file_names: file_paths, pdf: false)
     assert_equal "SSD main/1234-Rozh_o_pokute_§155_ods.1_písm.g)_no (1).asice", file_paths.last
-    file_paths << export.export_object_filepath(message.objects.last, other_file_names: file_paths, pdf: true)
+    file_paths << ExportJob.new.export_object_filepath(message.objects.last, export: export, other_file_names: file_paths, pdf: true)
     assert_equal "SSD main/1234-Rozh_o_pokute_§155_ods.1_písm.g)_no (1).pdf", file_paths.last
   end
 

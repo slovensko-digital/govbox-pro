@@ -107,6 +107,17 @@ module MessageThreads
         assert_select "input[type=checkbox][name='export[settings][originals]'][checked]", count: 1
       end
 
+      test 'edit does not query FS forms for UPVS threads' do
+        thread = message_threads(:ssd_main_general)
+        @export.update!(message_thread_ids: [thread.id])
+
+        Fs::Form.stub(:find_by, ->(**) { flunk 'UPVS export must not look up FS forms' }) do
+          get :edit, params: { id: @export.id }
+        end
+
+        assert_response :success
+      end
+
       test 'start saves PDF only settings and enqueues the export' do
         assert_enqueued_with(job: ExportJob) do
           post :start, params: { export_id: @export.id, export: { settings: { 'originals' => '0', 'pdf' => '1' } } }

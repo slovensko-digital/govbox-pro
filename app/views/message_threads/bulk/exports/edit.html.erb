@@ -178,7 +178,6 @@
           <% end %>
 
           <% if @export.settings.dig("messages") %>
-            <% exported_filepaths = [] %>
             <% @message_threads.each do |message_thread| %>
               <tr>
                 <td class="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-gray-500 sm:pl-0"><%= message_thread.box.short_name %></td>
@@ -213,8 +212,7 @@
                   <td class="px-2 py-2 text-sm text-gray-500"></td>
                 </tr>
                 <% message.objects.each do |message_object| %>
-                  <% filepaths = @export.export_object_filepaths(message_object, other_file_names: exported_filepaths) %>
-                  <% exported_filepaths.concat(filepaths) %>
+                  <% filepaths = @export_filepaths.fetch(message_object.id, []) %>
                   <tr>
                     <td class="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-gray-500 sm:pl-0"></td>
                     <td class="px-2 py-2 text-sm font-medium text-gray-900 cursor-pointer select-none"

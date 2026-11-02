@@ -78,6 +78,10 @@ class Box < ApplicationRecord
     name.match(/^FS (.*?)(?:\s*(v zastúpení:.*| \(oblasť SPD\)))?$/)&.captures&.first || name
   end
 
+  def export_form(thread)
+    nil
+  end
+
   private
 
   def set_default_export_name

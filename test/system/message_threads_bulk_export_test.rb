@@ -40,6 +40,23 @@ class MessageThreadsBulkExportTest < ApplicationSystemTestCase
     take_screenshot
   end
 
+  test "FS form selection and template names are supplied by the box" do
+    thread = message_threads(:fs_accountants_thread1)
+    form = fs_forms(:SVDPHv20)
+    thread.update!(metadata: thread.metadata.merge("fs_form_id" => form.id))
+    export = Export.create!(
+      user: users(:accountants_basic),
+      message_thread_ids: [thread.id],
+      settings: { "messages" => true, "by_form" => { form.slug => true },
+                  "templates" => { "default" => "{{ vlakno.formular }}/{{ vlakno.formular_bez_verzie }}/{{ subor.nazov }}" } }
+    )
+
+    visit edit_message_threads_bulk_export_path(export)
+
+    assert_checked_field "export[settings][by_form][#{form.slug}]"
+    assert_selector "code", text: "SVDPHv20/SVDPH/SVDPHv20.asice"
+  end
+
   test "export edit page shows message_direction radio buttons defaulting to all" do
     thread = message_threads(:fs_accountants_thread1)
     export = Export.create!(
