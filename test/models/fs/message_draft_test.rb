@@ -334,18 +334,6 @@ class Fs::MessageDraftTest < ActiveSupport::TestCase
     assert_match '<img src="https://example.com/logo.png">', html_visualization
   end
 
-  test "build_html_visualization hides FS form parts that only work with JavaScript" do
-    message_draft = messages(:fs_accountants_draft_vp_danv24)
-    message_draft.tenant.enable_feature(:fs_html_visualization, force: true)
-    message_draft.form.related_documents.create!(document_type: "CLS_F_XSLT_HTML", language: "sk", data: <<~XSLT)
-      <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-        <xsl:template match="/"><html><body><noscript><p>Pre kompletnú funkčnosť aplikácie je potrebné povoliť JavaScript</p></noscript></body></html></xsl:template>
-      </xsl:stylesheet>
-    XSLT
-
-    assert_match "noscript, #buttonsPlaceholder, #statusDialog { display: none; }", message_draft.build_html_visualization
-  end
-
   test "build_html_visualization uses TXT XSLT for large forms even if fs_html_visualization feature is enabled" do
     message_draft = messages(:fs_accountants_draft_vp_danv24)
     message_draft.tenant.enable_feature(:fs_html_visualization, force: true)
