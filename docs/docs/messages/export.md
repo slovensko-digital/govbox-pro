@@ -75,25 +75,6 @@ Pre export iba PDF zapnite **Exportovať PDF** a vypnite **Exportovať pôvodný
 ### Originálne dokumenty
 Voľba **Exportovať pôvodný formát** je predvolene zapnutá. Export obsahuje dokumenty zo zvolených správ v originálnom formáte, väčšinou v ASiC-E formáte, ktoré obsahujú aj podpisy odosielateľov a sú právne záväzné. Túto voľbu môžete vypnúť, ak potrebujete iba PDF.
 
-### Výber formátov
-
-| Pôvodný formát | PDF | Exportované dokumenty |
-| --- | --- | --- |
-| Zapnutý | Vypnuté | Iba pôvodné súbory |
-| Zapnutý | Zapnuté | Pôvodné súbory a dostupné PDF verzie |
-| Vypnutý | Zapnuté | Iba dostupné PDF verzie a PDF prílohy |
-
-Samostatná voľba **Exportovať sumár** pridáva súbor `sumar.xlsx` nezávisle od zvolených formátov dokumentov. Ak exportujete iba sumár, formát dokumentov nemusíte vyberať. Nastavenia sa použijú aj pri ďalšom exporte.
-
-## Náhľad exportu
-
-V spodnej časti nastavení sa zobrazuje **Náhľad exportu**. Po zmene voľby pôvodného formátu alebo PDF sa náhľad automaticky aktualizuje.
-
-- Stĺpec **Názov** zobrazuje názov pôvodnej prílohy, napríklad `SVDPHv20.asice`.
-- Stĺpec **Súbor** zobrazuje názvy a cesty súborov, ktoré sa vložia do ZIP-u podľa zvolených formátov a šablóny pomenovania.
-- Pri oboch zapnutých formátoch môže jedna príloha obsahovať dva výstupy: `SVDPHv20.asice` a `SVDPHv20.pdf`.
-- Pri exporte iba PDF zostane v stĺpci **Súbor** len `SVDPHv20.pdf`. Pomlčka `—` znamená, že sa daná príloha neexportuje, napríklad preto, že nemá dostupnú PDF verziu.
-
 ## Štruktúra exportu
 Štruktúru exportu a spôsob pomenovania súborov i priečinkov máte plne vo svojej réžii. V nastaveniach exportu uvediete štruktúru, v ktorej môžete použiť premenné. Pri každej správe tieto premenné budú nahradené hodnotou, kt. zodpovedá danej správe. Zoznam podporovaných premenných si môžete pozrieť v nastaveniach exportu.
 V šablóne môžete používať premenné, ale aj priamo hodnoty, napr. pevne stanoviť, že potvrdenia budú vždy pomenované ako potvrdenia.
