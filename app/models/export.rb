@@ -93,19 +93,16 @@ class Export < ApplicationRecord
     "#{path_without_extension} (#{matches_count})#{extension}"
   end
 
-  def pdf_objects(message_object)
-    return [] unless settings['pdf']
-    return [] if settings_object.originals && message_object.pdf?
-
-    objects = message_object.nested_message_objects.presence || [message_object]
-    objects.select { |object| object.pdf? || object.downloadable_as_pdf? }
-  end
-
   def export_object_filepaths(message_object, other_file_names: [])
     paths = []
     paths << export_object_filepath(message_object, other_file_names: other_file_names) if settings_object.originals
-    pdf_objects(message_object).each do
-      paths << export_object_filepath(message_object, pdf: true, other_file_names: other_file_names + paths.compact)
+    if settings['pdf'] && !(settings_object.originals && message_object.pdf?)
+      objects = message_object.nested_message_objects.presence || [message_object]
+      objects.each do |object|
+        next unless object.pdf? || object.downloadable_as_pdf?
+
+        paths << export_object_filepath(message_object, pdf: true, other_file_names: other_file_names + paths.compact)
+      end
     end
     paths.compact
   end

@@ -59,7 +59,13 @@ class ExportJob < ApplicationJob
   end
 
   def prepare_pdf_object(object, export:, zip:, file_paths:)
-    export.pdf_objects(object).each do |pdf_object|
+    return unless export.settings['pdf']
+    return if export.settings_object.originals && object.pdf?
+
+    objects = object.nested_message_objects.presence || [object]
+    objects.each do |pdf_object|
+      next unless pdf_object.pdf? || pdf_object.downloadable_as_pdf?
+
       pdf_content = pdf_object.pdf? ? pdf_object.content : pdf_visualization(pdf_object)
 
       file_path = export.export_object_filepath(object, other_file_names: file_paths, pdf: true)

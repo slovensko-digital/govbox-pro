@@ -77,8 +77,6 @@ Voľba **Exportovať pôvodný formát** je predvolene zapnutá. Export obsahuje
 
 ### Výber formátov
 
-Pri zapnutej voľbe **Exportovať správy** musí byť zvolený aspoň jeden formát:
-
 | Pôvodný formát | PDF | Exportované dokumenty |
 | --- | --- | --- |
 | Zapnutý | Vypnuté | Iba pôvodné súbory |
@@ -95,16 +93,6 @@ V spodnej časti nastavení sa zobrazuje **Náhľad exportu**. Po zmene voľby p
 - Stĺpec **Súbor** zobrazuje názvy a cesty súborov, ktoré sa vložia do ZIP-u podľa zvolených formátov a šablóny pomenovania.
 - Pri oboch zapnutých formátoch môže jedna príloha obsahovať dva výstupy: `SVDPHv20.asice` a `SVDPHv20.pdf`.
 - Pri exporte iba PDF zostane v stĺpci **Súbor** len `SVDPHv20.pdf`. Pomlčka `—` znamená, že sa daná príloha neexportuje, napríklad preto, že nemá dostupnú PDF verziu.
-
-### Náhľad s pôvodnými súbormi aj PDF
-
-![Náhľad exportu pôvodných súborov a PDF](../../assets/images/export/preview-both-formats.png)
-
-### Náhľad iba PDF
-
-V tomto príklade je zapnutý aj sumár. Potvrdenka bez dostupnej PDF verzie sa vynechá, aj keď jej pôvodný názov zostáva zobrazený.
-
-![Náhľad exportu iba PDF](../../assets/images/export/preview-pdf-only.png)
 
 ## Štruktúra exportu
 Štruktúru exportu a spôsob pomenovania súborov i priečinkov máte plne vo svojej réžii. V nastaveniach exportu uvediete štruktúru, v ktorej môžete použiť premenné. Pri každej správe tieto premenné budú nahradené hodnotou, kt. zodpovedá danej správe. Zoznam podporovaných premenných si môžete pozrieť v nastaveniach exportu.

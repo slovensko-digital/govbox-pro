@@ -15,6 +15,12 @@ class ExportJobTest < ActiveJob::TestCase
 
     assert_equal({ 'SVDPHv20.pdf' => '%PDF-first', 'SVDPHv20 (1).pdf' => '%PDF-second', 'attachment.pdf' => '%PDF-attachment' }, entries)
     assert_equal export, Notifications::ExportFinished.last.export
+
+    preview_paths = []
+    object.message.objects.each do |message_object|
+      preview_paths.concat(export.export_object_filepaths(message_object, other_file_names: preview_paths))
+    end
+    assert_equal entries.keys.sort, preview_paths.sort
   end
 
   test "existing export settings still include originals and PDF attachments are not duplicated" do
