@@ -228,10 +228,6 @@ class Fs::MessageDraft < MessageDraft
     box.api_connections.active.exists?(owner: user)
   end
 
-  def signable_by_author?
-    signable_by?(author)
-  end
-
   def signer_groups
     return super if single_api_connection_without_owner?
 
@@ -244,7 +240,7 @@ class Fs::MessageDraft < MessageDraft
 
     if sole_signer
       sole_signer
-    elsif tenant.signature_request_mode == 'author' && signable_by_author?
+    elsif tenant.signature_request_mode == 'author' && signable_by?(author)
       author
     else
       tenant.signer_group
