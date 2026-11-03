@@ -23,7 +23,7 @@ Správy je možné z GovBox PRO hromadne **exportovať**.
 4. **Nastavte export**
    Po otvorení okna s nastaveniami exportu si zvolíte, čo chcete exportovať:
       - sumár alebo iba samotné správy
-      - dokumenty aj v PDF formáte
+      - dokumenty v pôvodnom formáte, PDF alebo v oboch formátoch
       - všetky správy z vybraných vlákien alebo iba určitý typ formulára (platí pre FS podania) alebo typy správ, ktoré sa majú exportovať (napr. iba potvrdenky)
 
    Môžete si určiť formát názvov výsledných súborov a priečinkov. Napríklad pre podania a potvrdenky je možné nastaviť odlišný formát.
@@ -34,7 +34,8 @@ Správy je možné z GovBox PRO hromadne **exportovať**.
 
     Je potrebné, aby ste zvolili nasledovné nastavenia:
     - Exportovať správy
-     - Exportovať aj PDF
+     - Exportovať pôvodný formát
+     - Exportovať PDF
      - Všetky správy
        - vyplniť želaný formát (napr. podľa ukážky nižšie)
      - ED.DeliveryReport (to je označenie pre potvrdenku)
@@ -69,8 +70,10 @@ Vďaka tomu, že sa jedná o tabuľku je možné s ňou jednoducho ďalej pracov
 ### PDF vizualizácie dokumentov
 Ak chcete mať dokumenty lepšie čitateľné alebo pripravené na tlač, môžete ich pri exporte automaticky previesť do formátu PDF. GovBox PRO k vybraným dokumentom vytvorí aj PDF verziu, ktorá je vhodná na čítanie a tlač. Táto PDF verzia neobsahuje elektronické podpisy.
 
+Pre export iba PDF zapnite **Exportovať PDF** a vypnite **Exportovať pôvodný formát**. Export bude obsahovať dostupné PDF vizualizácie a PDF prílohy vrátane PDF dokumentov z podpisových kontajnerov, bez pôvodných ASiC-E súborov. Dokumenty, pre ktoré nie je dostupná PDF verzia, sa vynechajú.
+
 ### Originálne dokumenty
-Export vždy obsahuje dokumenty zo zvolených správ v originálnom formáte, väčšinou v ASiC-E formáte, ktoré obsahujú aj podpisy odosielateľov a sú právne záväzné.
+Voľba **Exportovať pôvodný formát** je predvolene zapnutá. Export obsahuje dokumenty zo zvolených správ v originálnom formáte, väčšinou v ASiC-E formáte, ktoré obsahujú aj podpisy odosielateľov a sú právne záväzné. Túto voľbu môžete vypnúť, ak potrebujete iba PDF.
 
 ## Štruktúra exportu
 Štruktúru exportu a spôsob pomenovania súborov i priečinkov máte plne vo svojej réžii. V nastaveniach exportu uvediete štruktúru, v ktorej môžete použiť premenné. Pri každej správe tieto premenné budú nahradené hodnotou, kt. zodpovedá danej správe. Zoznam podporovaných premenných si môžete pozrieť v nastaveniach exportu.

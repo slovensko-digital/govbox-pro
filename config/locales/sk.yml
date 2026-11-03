@@ -47,6 +47,7 @@ sk:
           attributes:
             base:
               empty_selection: Musí byť zvolené aspoň jedno z nastavení exportu
+              empty_message_formats: Zvoľte pôvodný formát alebo PDF pre export správ
               invalid_date_range: Dátum „od" musí byť pred dátumom „do"
         fs/message_draft:
           multiple_signatures: "Správa obsahuje viacero podpisov. Nie je možné vybrať FS prepojenie."

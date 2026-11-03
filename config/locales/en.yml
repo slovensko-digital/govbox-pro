@@ -44,6 +44,7 @@ en:
           attributes:
             base:
               empty_selection: "At least one export option must be selected"
+              empty_message_formats: "Select the original format or PDF to export messages"
               invalid_date_range: "\"From\" date must be before \"To\" date"
         message:
           limit_exceeded: 'Limit of %{limit} messages exceeded'

@@ -50,6 +50,10 @@ class ExportSettings
     @hash["pdf"]
   end
 
+  def originals
+    @hash.fetch("originals", true)
+  end
+
   def default
     @hash["default"]
   end

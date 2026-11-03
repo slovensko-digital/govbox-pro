@@ -2,6 +2,62 @@ require "test_helper"
 require "zip"
 
 class ExportJobTest < ActiveJob::TestCase
+  test "PDF only export contains nested PDFs and PDF attachments but no original or unsupported files" do
+    export = pdf_export
+    export.update_settings('originals' => '0', 'message_direction' => 'outbox', 'templates' => { 'default' => '{{ subor.nazov }}' })
+    object = message_objects(:fs_accountants_outbox_form)
+    nested_pdf(object, name: 'first.pdf', content: '%PDF-first')
+    nested_pdf(object, name: 'second.pdf', content: '%PDF-second')
+    attachment(object.message, name: 'attachment.pdf', mimetype: Utils::PDF_MIMETYPE, content: '%PDF-attachment')
+    attachment(object.message, name: 'notes.txt', mimetype: 'text/plain', content: 'Not a PDF')
+
+    entries = export_entries(export)
+
+    assert_equal({ 'SVDPHv20.pdf' => '%PDF-first', 'SVDPHv20 (1).pdf' => '%PDF-second', 'attachment.pdf' => '%PDF-attachment' }, entries)
+    assert_equal export, Notifications::ExportFinished.last.export
+
+    preview_paths = ExportJob.new.preview_filepaths(export, message_threads: export.message_threads).values.flatten
+    assert_equal entries.keys.sort, preview_paths.sort
+  end
+
+  test "existing export settings still include originals and PDF attachments are not duplicated" do
+    export = pdf_export
+    export.update_settings('message_direction' => 'outbox', 'templates' => { 'default' => '{{ subor.nazov }}' })
+    object = message_objects(:fs_accountants_outbox_form)
+    original_content = asice_with_pdf(object, content: '%PDF-form')
+    attachment(object.message, name: 'attachment.pdf', mimetype: Utils::PDF_MIMETYPE, content: '%PDF-attachment')
+
+    assert_equal({ 'SVDPHv20.asice' => original_content, 'SVDPHv20.pdf' => '%PDF-form', 'attachment.pdf' => '%PDF-attachment' }, export_entries(export))
+  end
+
+  test "original only export does not include PDF visualizations" do
+    export = pdf_export
+    export.update_settings('pdf' => '0', 'message_direction' => 'outbox', 'templates' => { 'default' => '{{ subor.nazov }}' })
+    object = message_objects(:fs_accountants_outbox_form)
+    original_content = asice_with_pdf(object, content: '%PDF-form')
+
+    assert_equal({ 'SVDPHv20.asice' => original_content }, export_entries(export))
+  end
+
+  test "PDF only export writes generated visualizations" do
+    export = pdf_export
+    export.update_settings('originals' => '0', 'templates' => { 'default' => '{{ subor.nazov }}' })
+    object = message_objects(:fs_accountants_outbox_xml_form)
+    job = ExportJob.new
+    buffer = object.stub(:downloadable_as_pdf?, true) do
+      object.stub(:prepare_pdf_visualization, '%PDF-generated') do
+        ::Zip::OutputStream.write_buffer do |zip|
+          job.prepare_pdf_object(object, export: export, zip: zip, file_paths: [])
+        end
+      end
+    end
+
+    ::Zip::File.open_buffer(buffer) do |zip|
+      assert_equal ['SVDPHv20.pdf'], zip.entries.map(&:name)
+      assert_equal '%PDF-generated', zip.read('SVDPHv20.pdf')
+    end
+  end
+
   test "thread title with slash is replaced with dash in ZIP entry path" do
     thread = message_threads(:fs_accountants_thread1)
     thread.update!(title: "DPH/2025/Q1")
@@ -14,7 +70,7 @@ class ExportJobTest < ActiveJob::TestCase
 
     object = message_objects(:fs_accountants_outbox_form)
     file_paths = []
-    path = ExportJob.new.unique_path_within_export(object, export: export, other_file_names: file_paths)
+    path = ExportJob.new.export_object_filepath(object, export: export, other_file_names: file_paths)
 
     parts = path.split("/")
     assert_equal "DPH-2025-Q1", parts.first, "Slash in thread title should produce dash, not extra directory level"
@@ -60,7 +116,7 @@ class ExportJobTest < ActiveJob::TestCase
 
     object = message_objects(:fs_accountants_outbox_form)
     file_paths = []
-    path = ExportJob.new.unique_path_within_export(object, export: export, other_file_names: file_paths)
+    path = ExportJob.new.export_object_filepath(object, export: export, other_file_names: file_paths)
     assert path.start_with?("#{thread.title}/"), "Expected path to start with thread title, got: #{path}"
   end
 
@@ -140,7 +196,7 @@ class ExportJobTest < ActiveJob::TestCase
     job = ExportJob.new
 
     paths = [ nil, "second.pdf" ]
-    job.stub(:unique_path_within_export, ->(*, **) { paths.shift }) do
+    job.stub(:export_object_filepath, ->(*, **) { paths.shift }) do
       ::Zip::OutputStream.write_buffer do |zip|
         job.prepare_pdf_object(object, export: export, zip: zip, file_paths: file_paths)
       end
@@ -221,14 +277,14 @@ class ExportJobTest < ActiveJob::TestCase
 
     file_paths = []
 
-    file_paths << ExportJob.new.unique_path_within_export(outbox_message.form_object, export: export, other_file_names: file_paths, pdf: false)
+    file_paths << ExportJob.new.export_object_filepath(outbox_message.form_object, export: export, other_file_names: file_paths, pdf: false)
     assert_equal "Accountants main FS/Q22025_SVDPHv20.asice", file_paths.last
-    file_paths << ExportJob.new.unique_path_within_export(outbox_message.form_object, export: export, other_file_names: file_paths, pdf: true)
+    file_paths << ExportJob.new.export_object_filepath(outbox_message.form_object, export: export, other_file_names: file_paths, pdf: true)
     assert_equal "Accountants main FS/Q22025_SVDPHv20.pdf", file_paths.last
 
-    file_paths << ExportJob.new.unique_path_within_export(inbox_message.form_object, export: export, other_file_names: file_paths, pdf: false)
+    file_paths << ExportJob.new.export_object_filepath(inbox_message.form_object, export: export, other_file_names: file_paths, pdf: false)
     assert_equal "Accountants main FS/Accountants main FS_Q22025_potvrdenie.asice", file_paths.last
-    file_paths << ExportJob.new.unique_path_within_export(inbox_message.form_object, export: export, other_file_names: file_paths, pdf: true)
+    file_paths << ExportJob.new.export_object_filepath(inbox_message.form_object, export: export, other_file_names: file_paths, pdf: true)
     assert_equal "Accountants main FS/Accountants main FS_Q22025_potvrdenie.pdf", file_paths.last
   end
 
@@ -246,14 +302,14 @@ class ExportJobTest < ActiveJob::TestCase
 
     file_paths = []
 
-    file_paths << ExportJob.new.unique_path_within_export(outbox_message.form_object, export: export, other_file_names: file_paths, pdf: false)
+    file_paths << ExportJob.new.export_object_filepath(outbox_message.form_object, export: export, other_file_names: file_paths, pdf: false)
     assert_equal "Accountants main FS/Q22025.asice", file_paths.last
-    file_paths << ExportJob.new.unique_path_within_export(outbox_message.form_object, export: export, other_file_names: file_paths, pdf: true)
+    file_paths << ExportJob.new.export_object_filepath(outbox_message.form_object, export: export, other_file_names: file_paths, pdf: true)
     assert_equal "Accountants main FS/Q22025.pdf", file_paths.last
 
-    file_paths << ExportJob.new.unique_path_within_export(inbox_message.form_object, export: export, other_file_names: file_paths, pdf: false)
+    file_paths << ExportJob.new.export_object_filepath(inbox_message.form_object, export: export, other_file_names: file_paths, pdf: false)
     assert_equal "Accountants main FS/Q22025 (1).asice", file_paths.last
-    file_paths << ExportJob.new.unique_path_within_export(inbox_message.form_object, export: export, other_file_names: file_paths, pdf: true)
+    file_paths << ExportJob.new.export_object_filepath(inbox_message.form_object, export: export, other_file_names: file_paths, pdf: true)
     assert_equal "Accountants main FS/Q22025 (1).pdf", file_paths.last
   end
 
@@ -270,19 +326,19 @@ class ExportJobTest < ActiveJob::TestCase
 
     file_paths = []
 
-    file_paths << ExportJob.new.unique_path_within_export(message.objects.first, export: export, other_file_names: file_paths, pdf: false)
+    file_paths << ExportJob.new.export_object_filepath(message.objects.first, export: export, other_file_names: file_paths, pdf: false)
     assert_equal "SSD main/1234-Rozh_o_pokute_§155_ods.1_písm.g)_no.asice", file_paths.last
-    file_paths << ExportJob.new.unique_path_within_export(message.objects.first, export: export, other_file_names: file_paths, pdf: true)
+    file_paths << ExportJob.new.export_object_filepath(message.objects.first, export: export, other_file_names: file_paths, pdf: true)
     assert_equal "SSD main/1234-Rozh_o_pokute_§155_ods.1_písm.g)_no.pdf", file_paths.last
 
-    file_paths << ExportJob.new.unique_path_within_export(message.objects.second, export: export, other_file_names: file_paths, pdf: false)
+    file_paths << ExportJob.new.export_object_filepath(message.objects.second, export: export, other_file_names: file_paths, pdf: false)
     assert_equal "SSD main/MyString", file_paths.last
-    file_paths << ExportJob.new.unique_path_within_export(message.objects.second, export: export, other_file_names: file_paths, pdf: true)
+    file_paths << ExportJob.new.export_object_filepath(message.objects.second, export: export, other_file_names: file_paths, pdf: true)
     assert_equal "SSD main/MyString.pdf", file_paths.last
 
-    file_paths << ExportJob.new.unique_path_within_export(message.objects.last, export: export, other_file_names: file_paths, pdf: false)
+    file_paths << ExportJob.new.export_object_filepath(message.objects.last, export: export, other_file_names: file_paths, pdf: false)
     assert_equal "SSD main/1234-Rozh_o_pokute_§155_ods.1_písm.g)_no (1).asice", file_paths.last
-    file_paths << ExportJob.new.unique_path_within_export(message.objects.last, export: export, other_file_names: file_paths, pdf: true)
+    file_paths << ExportJob.new.export_object_filepath(message.objects.last, export: export, other_file_names: file_paths, pdf: true)
     assert_equal "SSD main/1234-Rozh_o_pokute_§155_ods.1_písm.g)_no (1).pdf", file_paths.last
   end
 
@@ -306,5 +362,36 @@ class ExportJobTest < ActiveJob::TestCase
       message_thread_ids: [message_threads(:fs_accountants_thread1).id],
       settings: { "messages" => true, "pdf" => "1", "default" => "1" }
     )
+  end
+
+  def attachment(message, name:, mimetype:, content:)
+    object = message.objects.create!(name: name, mimetype: mimetype, object_type: 'ATTACHMENT')
+    object.create_message_object_datum!(blob: content)
+    object
+  end
+
+  def asice_with_pdf(object, content:)
+    bytes = ::Zip::OutputStream.write_buffer do |zip|
+      zip.put_next_entry('form.pdf')
+      zip.write(content)
+    end.string.b
+    object.create_message_object_datum!(blob: bytes)
+    bytes
+  end
+
+  def export_entries(export)
+    entries = nil
+    storage = Minitest::Mock.new
+    storage.expect(:store, nil) do |directory, filename, content|
+      assert_equal 'exports', directory
+      assert_equal export.file_name, filename
+      ::Zip::File.open_buffer(StringIO.new(content.b)) do |zip|
+        entries = zip.entries.to_h { |entry| [entry.name, entry.get_input_stream.read] }
+      end
+      true
+    end
+    FileStorage.stub(:new, storage) { ExportJob.new.perform(export) }
+    storage.verify
+    entries
   end
 end
