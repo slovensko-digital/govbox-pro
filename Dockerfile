@@ -45,7 +45,7 @@ COPY . .
 # Precompile bootsnap code for faster boot times
 RUN bundle exec bootsnap precompile app/ lib/
 
-RUN SECRET_KEY_BASE=NONE RAILS_ENV=production bundle exec rails assets:precompile
+RUN SECRET_KEY_BASE_DUMMY=1 RAILS_ENV=production bundle exec rails assets:precompile
 
 # Entrypoint prepares the database.
 # Tini runs as PID 1 and reaps orphaned Chromium processes left by PDF rendering,
@@ -53,4 +53,5 @@ RUN SECRET_KEY_BASE=NONE RAILS_ENV=production bundle exec rails assets:precompil
 ENTRYPOINT ["/usr/bin/tini", "--", "/app/bin/docker-entrypoint"]
 
 # Start the server by default, this can be overwritten at runtime
+EXPOSE 3000
 CMD ["./bin/rails", "server"]
