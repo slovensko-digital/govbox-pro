@@ -5,9 +5,7 @@ module MessageHelper
 
   def self.html_visualization_for_display(message)
     return CGI.escapeHTML(message.html_visualization.to_s) if message.built_from_template?
-    return message.html_visualization unless message.box.is_a?(Fs::Box)
 
-    # FS forms hide these with their own JavaScript, which never runs in the visualization iframe.
-    "<style>noscript, #buttonsPlaceholder, #statusDialog { display: none; }</style>#{message.html_visualization}"
+    message.prepare_html_visualization_for_display
   end
 end

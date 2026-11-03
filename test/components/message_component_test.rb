@@ -79,4 +79,13 @@ class MessageComponentTest < ViewComponent::TestCase
 
     assert_not_includes page.find("iframe")[:srcdoc], "#buttonsPlaceholder"
   end
+
+  test "keeps noscript content of an FS delivery report" do
+    message = messages(:fs_accountants_thread1_inbox_message)
+    message.update!(html_visualization: '<noscript><p>Vizualizacia</p></noscript>')
+
+    render_inline(MessageComponent.new(message: message, mode: :thread_view))
+
+    assert_not_includes page.find("iframe")[:srcdoc], "#buttonsPlaceholder"
+  end
 end
