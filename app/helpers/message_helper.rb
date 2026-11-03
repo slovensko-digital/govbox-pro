@@ -4,8 +4,8 @@ module MessageHelper
   end
 
   def self.html_visualization_for_display(message)
-    return CGI.escapeHTML(message.html_visualization.to_s) if message.built_from_template?
+    return message.prepare_html_visualization_for_display unless message.built_from_template?
 
-    message.prepare_html_visualization_for_display
+    CGI.escapeHTML(message.html_visualization.to_s)
   end
 end
