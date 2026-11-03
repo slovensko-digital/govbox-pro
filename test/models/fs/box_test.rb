@@ -150,4 +150,12 @@ class Fs::BoxTest < ActiveSupport::TestCase
     assert_includes boxes, active_box
     assert_not_includes boxes, inactive_box
   end
+
+  test "#prepare_html_visualization_for_display hides JS-only parts in a draft" do
+    box = boxes(:fs_accountants)
+    draft = messages(:fs_accountants_draft_vp_danv24)
+    draft.update!(html_visualization: '<noscript><p>Pre kompletnú funkčnosť aplikácie je potrebné povoliť JavaScript</p></noscript>')
+
+    assert_includes box.prepare_html_visualization_for_display(draft), "<style>noscript, #buttonsPlaceholder, #statusDialog { display: none; }</style>"
+  end
 end

@@ -57,6 +57,10 @@ class Box < ApplicationRecord
     api_connections.active.first
   end
 
+  def prepare_html_visualization_for_display(message)
+    message.html_visualization
+  end
+
   def sync
     raise NotImplementedError
   end
