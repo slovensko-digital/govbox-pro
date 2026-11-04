@@ -77,15 +77,10 @@ RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 # Final stage for app image.
 FROM base
 
-# Run and own only the runtime files as a non-root user for security.
-RUN groupadd --system --gid 1000 rails && \
-    useradd rails --uid 1000 --gid 1000 --create-home --shell /bin/bash
-
 # Copy built artifacts: gems, application.
-COPY --chown=rails:rails --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
-COPY --chown=rails:rails --from=build /app /app
+COPY --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
+COPY --from=build /app /app
 
-USER 1000:1000
 
 # Entrypoint prepares the database.
 # Tini runs as PID 1 and reaps orphaned Chromium processes left by PDF rendering,
