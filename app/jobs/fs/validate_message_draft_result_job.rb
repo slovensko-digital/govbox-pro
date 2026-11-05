@@ -1,6 +1,10 @@
 class Fs::ValidateMessageDraftResultJob < ApplicationJob
   include DiscardOnDeserializationError
 
+  WARNING_LEVELS = ['warning', 'warning section-error'].freeze
+  DIFF_LEVELS = ['diff', 'diff_warning', 'diff_error'].freeze
+  IGNORED_DIFF_LEVELS = ['diff', 'diff_warning'].freeze
+
   def perform(message_draft, location_header, fs_client: FsEnvironment.fs_client)
     response = fs_client.api(box: message_draft.thread.box).get_location(location_header)
 
@@ -12,25 +16,40 @@ class Fs::ValidateMessageDraftResultJob < ApplicationJob
       raise RuntimeError.new("Unexpected response status: #{response[:status]}")
     end
 
-    warnings = response[:body]['problems']&.select { |problem| problem['level'].in?(['warning', 'warning section-error']) }&.map{ |problem| problem['message'] } || []
-    diff = response[:body]['problems']&.select { |problem| problem['level'] == 'diff' }&.map{ |problem| problem['message'] } || []
-    errors = response[:body]['problems']&.reject { |problem| problem['level'].in?(['warning', 'warning section-error', 'diff']) }&.map{ |problem| problem['message'] } || []
+    problems = response[:body]['problems'] || []
 
-    result = if errors.none? && warnings.none? && diff.any?
+    warnings      = messages_for(problems, *WARNING_LEVELS)
+    diff_warnings = messages_for(problems, 'diff_warning')
+    diff_errors   = messages_for(problems, 'diff_error')
+    diff          = messages_for(problems, 'diff')
+    errors        = problems.reject { |problem| problem['level'].in?(WARNING_LEVELS + DIFF_LEVELS) }.map { |problem| problem['message'] }
+
+    ignored_diffs = messages_for(problems, *IGNORED_DIFF_LEVELS)
+
+    result = if errors.none? && warnings.none? && diff_errors.none? && ignored_diffs.any?
                'OK'
              else
                response[:body]['result']
              end
 
     message_draft.metadata['validation_errors'] = {
-      'result'=> result,
-      'errors' => errors,
-      'warnings'=> warnings,
-      'diff'=> diff
+      'result'        => result,
+      'errors'        => errors,
+      'warnings'      => warnings,
+      'diff_warnings' => diff_warnings,
+      'diff_errors'   => diff_errors,
+      'diff'          => diff,
+      'corrected_xml' => response[:body]['corrected_xml']
     }
 
     message_draft.validate_and_process
 
     EventBus.publish(:message_draft_validated, message_draft)
+  end
+
+  private
+
+  def messages_for(problems, *levels)
+    problems.select { |problem| problem['level'].in?(levels) }.map { |problem| problem['message'] }
   end
 end
