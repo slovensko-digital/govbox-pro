@@ -16,10 +16,23 @@ class Automation::WebhookTest < ActiveSupport::TestCase
     webhook = automation_webhooks(:one)
 
     downloader = Minitest::Mock.new
-    downloader.expect :post, true, [webhook.url, data], content_type: 'application/json'
+    downloader.expect :post, Faraday::Response.new(status: 200), [webhook.url, data], content_type: 'application/json'
 
     webhook.fire! message, event, timestamp, downloader: downloader
 
+    assert_mock downloader
+  end
+
+  test "should raise when the url responds with an error status so the job retries" do
+    webhook = automation_webhooks(:one)
+    downloader = Minitest::Mock.new
+    downloader.expect :post, Faraday::Response.new(status: 500), [webhook.url, String], content_type: 'application/json'
+
+    error = assert_raises(Automation::Webhook::DeliveryError) do
+      webhook.fire! messages(:ssd_main_draft), :message_created, DateTime.now, downloader: downloader
+    end
+
+    assert_equal "Webhook #{webhook.id} responded with HTTP 500", error.message
     assert_mock downloader
   end
 
