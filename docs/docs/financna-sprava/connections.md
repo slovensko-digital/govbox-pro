@@ -37,3 +37,21 @@ Ak potrebujete pridať prepojenie pre viaceré účty na Finančnej správe, kon
 ::: callout warning "Upozornenie"
 Ak by ste na portáli Finančnej správy zmenili heslo k svojmu účtu, je potrebné aktualizovať aj heslo uložené v GovBox PRO.
 :::
+
+## Vlastník prepojenia
+
+Každé prepojenie používa prihlasovacie údaje jedného účtu na portáli Finančnej správy. Administrátor systému GovBox PRO môže prepojeniu nastaviť aj **vlastníka**, teda používateľa GovBox PRO, ktorému tento účet na portáli FS patrí.
+
+Vlastníka sa oplatí nastaviť, ak má viacero vašich používateľov vlastný účet na portáli FS a každý z nich má na Finančnej správe vlastné oprávnenia na zastupovanie klientov. Bez vlastníka môže podanie podpísať ktokoľvek zo skupiny **"Podpisovatelia"**, aj keď daný subjekt zastupovať nesmie. Takéto podanie potom môže na Finančnej správe skončiť chybou. Vlastník prepojenia oprávnenie na zastupovanie má vždy, pretože schránky sa do GovBox PRO načítali práve z jeho účtu.
+
+Pre prepojenie s nastaveným vlastníkom platí:
+
+- vlastník automaticky získa prístup ku schránkam, ktoré sa cez jeho prepojenie načítajú
+- podanie sa na Finančnú správu odošle cez účet toho vlastníka, ktorý ho podpísal
+- podania za takúto schránku môže podpísať iba vlastník niektorého z jej prepojení, ktorý je zároveň v skupine **"Podpisovatelia"**
+- ostatní používatelia môžu podanie pripraviť a [vyžiadať jeho podpis](../signing/request-signature.md), v zozname podpisujúcich sa im ponúknu iba vlastníci
+- ak môže podanie podpísať iba jeden vlastník, podanie automaticky dostane štítok **"Na podpis: [meno vlastníka]"**
+
+GovBox PRO pritom kontroluje iba to, ktorý používateľ GovBox PRO podanie podpisuje, nie certifikát použitý pri podpise. Používateľ tak môže podpísať aj iným ako vlastným certifikátom, napríklad ak u vás všetci podpisujú rovnakým kvalifikovaným certifikátom na eID alebo inej karte. Aj majiteľ takého certifikátu však musí mať oprávnenie zastupovať daný subjekt.
+
+Ak chcete mať pri prepojeniach nastavených vlastníkov, kontaktujte podporu na: **podpora@slovensko.digital**.

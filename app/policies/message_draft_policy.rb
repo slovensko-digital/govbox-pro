@@ -54,6 +54,10 @@ class MessageDraftPolicy < ApplicationPolicy
     create?
   end
 
+  def sign?
+    @message.signable_by?(@user)
+  end
+
   def destroy?
     create?
   end

@@ -239,6 +239,14 @@ class MessageDraft < Message
     true
   end
 
+  def signable_by?(user)
+    user.signer?
+  end
+
+  def signer_groups
+    tenant.signer_group.users.map(&:user_group) + [tenant.signer_group]
+  end
+
   def signable_objects
     objects
   end

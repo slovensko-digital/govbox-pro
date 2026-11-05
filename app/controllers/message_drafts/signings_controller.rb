@@ -3,7 +3,7 @@ module MessageDrafts
     before_action :set_message_draft, :set_message_objects
 
     def new
-      authorize MessageObjectsTag
+      authorize @message_draft, :sign?
     end
 
     def update
