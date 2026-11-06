@@ -4,6 +4,7 @@ require "zip"
 class ExportJobChunkingTest < ActiveJob::TestCase
   teardown do
     clear_enqueued_jobs
+    (@pdf_stubs || []).each { |stub| stub[:active] = false }
     return unless @export
 
     FileUtils.rm_f(@export.storage_path)
@@ -14,72 +15,70 @@ class ExportJobChunkingTest < ActiveJob::TestCase
   test "export larger than one batch chains jobs and finishes with a single zip + notification" do
     create_export("summary" => true)
 
-    assert_enqueued_with(job: ExportJob) do
-      ExportJob.perform_later(@export, batch_size: 1)
+    with_download_events(record: ->(object) { [object.id, File.exist?(@export.storage_path)] }) do |published|
+      run_export
+
+      entries = zip_entry_names
+      assert File.exist?(@export.storage_path), "final single ZIP should exist"
+      assert_includes entries, "sumar.xlsx"
+      assert entries.size > 1, "ZIP should contain entries from both chunks, got: #{entries.inspect}"
+      assert_equal 1, finished_count, "exactly one finished notification for the single ZIP"
+      assert_not File.exist?(parts_dir), "part files should be cleaned up after merge"
+      assert_equal expected_object_ids.sort, published.map(&:first).sort, "each object exactly once"
+      assert published.all?(&:last), "every event must fire after the final ZIP is saved"
     end
-
-    perform_enqueued_jobs while enqueued_jobs.any?
-
-    assert File.exist?(@export.storage_path), "final single ZIP should exist"
-
-    entries = zip_entry_names
-    assert_includes entries, "sumar.xlsx"
-    assert entries.size > 1, "ZIP should contain entries from both chunks, got: #{entries.inspect}"
-    assert_equal 1, finished_count, "exactly one finished notification for the single ZIP"
-    assert_not File.exist?(parts_dir), "part files should be cleaned up after merge"
-  end
-
-  test "first chunk enqueues follow-up instead of finishing" do
-    create_export
-
-    assert_enqueued_with(job: ExportJob) do
-      ExportJob.new.perform(@export, offset: 0, file_paths: [], batch_size: 1)
-    end
-
-    assert_equal 0, finished_count
-    assert File.exist?(File.join(parts_dir, "part-0.zip")), "first chunk part file should exist"
-    assert_not File.exist?(@export.storage_path), "final ZIP must not exist before last chunk"
   end
 
   test "summary-only export writes no parts and finishes with just the summary" do
     create_export("messages" => false, "summary" => true)
 
-    ExportJob.new.perform(@export, offset: 0, file_paths: [], batch_size: 1)
+    with_download_events do |published|
+      ExportJob.new.perform(@export, offset: 0, file_paths: [], batch_size: 1)
 
-    assert File.exist?(@export.storage_path)
-    assert_equal ["sumar.xlsx"], zip_entry_names
-    assert_equal 1, finished_count
-    assert_not File.exist?(parts_dir), "no parts should exist for a summary-only export"
+      assert File.exist?(@export.storage_path)
+      assert_equal ["sumar.xlsx"], zip_entry_names
+      assert_equal 1, finished_count
+      assert_not File.exist?(parts_dir), "no parts should exist for a summary-only export"
+      assert_empty published
+    end
   end
 
   test "export with no matching messages still produces a valid zip" do
     create_export("summary" => true, "delivered_at_from" => (Date.today + 1.year).iso8601)
 
-    ExportJob.perform_later(@export, batch_size: 1)
-    perform_enqueued_jobs while enqueued_jobs.any?
+    run_export
 
     assert File.exist?(@export.storage_path)
     assert_includes zip_entry_names, "sumar.xlsx"
     assert_equal 1, finished_count
   end
 
-  test "re-running a chunk is idempotent and still yields a single complete zip" do
-    create_export("summary" => true)
+  test "a batch that fails once then succeeds ships clean names and single events" do
+    create_export("summary" => true, "pdf" => true)
+    stub = stub_pdf_visualization(->(calls) { calls.size == 3 ? nil : "pdf-bytes" })
 
-    ExportJob.new.perform(@export, offset: 0, file_paths: [], batch_size: 1)
-    clear_enqueued_jobs
+    with_download_events do |published|
+      run_export
 
-    retry_paths = []
-    ExportJob.new.perform(@export, offset: 0, file_paths: retry_paths, batch_size: 1)
-    clear_enqueued_jobs
+      assert_operator stub[:calls].size, :>=, 2, "guard: a retry must have happened"
+      names = zip_entry_names
+      assert names.none? { |n| n.include?("(1)") }, "retry must rebuild names from scratch, got: #{names.inspect}"
+      assert_equal expected_object_ids.sort, published.sort, "each object exactly once"
+      assert_equal 1, finished_count
+    end
+  end
 
-    assert_equal 1, Dir[File.join(parts_dir, "part-*.zip")].size, "retry must not duplicate part files"
-    ExportJob.new.perform(@export, offset: 1, file_paths: retry_paths, batch_size: 1)
+  test "a discarded export publishes no download events" do
+    create_export("summary" => true, "pdf" => true)
+    stub = stub_pdf_visualization(->(calls) { calls.size.even? ? nil : "pdf-bytes" })
 
-    assert File.exist?(@export.storage_path)
-    entries = zip_entry_names
-    assert entries.size > 1, "ZIP should contain entries from both chunks, got: #{entries.inspect}"
-    assert_equal 1, finished_count
+    with_download_events do |published|
+      assert_raises(ExportJob::PdfVisualizationFailed) { run_export }
+
+      assert_operator stub[:calls].size, :>=, 3, "guard: retries must have been attempted"
+      assert_empty published, "failed export must not mark objects downloaded, got: #{published.inspect}"
+      assert_equal 1, @export.user.notifications.where(export: @export, type: "Notifications::ExportFailed").count
+    end
   end
 
   private
@@ -95,6 +94,47 @@ class ExportJobChunkingTest < ActiveJob::TestCase
 
   def parts_dir
     Rails.root.join("storage", "exports", "tmp", "export-#{@export.id}").to_s
+  end
+
+  def run_export(batch_size: 1)
+    ExportJob.perform_later(@export, batch_size: batch_size)
+    perform_enqueued_jobs while enqueued_jobs.any?
+  end
+
+  def with_download_events(record: ->(object) { object.id })
+    published = []
+    sub = ->(object) { published << record.call(object) }
+    EventBus.subscribe(:message_object_downloaded, sub)
+    begin
+      yield published
+    ensure
+      EventBus.class_variable_get(:@@subscribers_map)[:message_object_downloaded].delete(sub)
+    end
+  end
+
+  def expected_object_ids
+    @export.message_threads.flat_map do |thread|
+      @export.filtered_messages(thread).flat_map { |message| message.objects.ids }
+    end
+  end
+
+  def stub_pdf_visualization(result_for)
+    state = { active: true, calls: [] }
+    override = Module.new do
+      define_method(:downloadable_as_pdf?) { state[:active] ? true : super() }
+      define_method(:prepare_pdf_visualization) do
+        if state[:active]
+          state[:calls] << id
+          result_for.call(state[:calls])
+        else
+          super()
+        end
+      end
+    end
+    MessageObject.prepend(override)
+    NestedMessageObject.prepend(override)
+    (@pdf_stubs ||= []) << state
+    state
   end
 
   def zip_entry_names

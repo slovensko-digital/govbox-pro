@@ -24,6 +24,8 @@ class ExportJob < ApplicationJob
   THREADS_PER_BATCH = 25
 
   def perform(export, offset: 0, file_paths: [], batch_size: THREADS_PER_BATCH)
+    file_paths = file_paths.dup
+
     if export.settings.dig("messages")
       batch_ids = export.message_thread_ids[offset, batch_size] || []
       build_part(export, batch_ids, File.join(parts_dir(export), "part-#{offset}.zip"), file_paths) if batch_ids.any?
@@ -154,8 +156,6 @@ class ExportJob < ApplicationJob
           message.objects.each do |object|
             prepare_original_object(object, export: export, zip: zip, file_paths: file_paths)
             prepare_pdf_object(object, export: export, zip: zip, file_paths: file_paths) if export.settings["pdf"]
-
-            EventBus.publish(:message_object_downloaded, object)
           end
         end
       end
@@ -182,6 +182,20 @@ class ExportJob < ApplicationJob
     end
 
     FileUtils.mv(final_tmp_path, export.storage_path)
+
+    if export.settings.dig("messages")
+      export.message_thread_ids.each do |thread_id|
+        message_thread = export.message_threads.find_by(id: thread_id)
+        next unless message_thread
+
+        export.filtered_messages(message_thread).includes(:thread, :objects).find_each do |message|
+          message.objects.each do |object|
+            EventBus.publish(:message_object_downloaded, object)
+          end
+        end
+      end
+    end
+
     FileUtils.rm_rf(parts_dir(export))
 
     export.user.notifications.create!(
