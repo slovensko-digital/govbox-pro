@@ -3,10 +3,14 @@ class SidebarMenu
 
   def initialize(controller, action, parameters = nil)
     @parameters = parameters
-    @menu = initial_structure(controller, action)
+    @controller = controller
+    @action = action
   end
 
-  attr_reader :menu
+  # Mobile and desktop sidebars must not share single-use component instances.
+  def menu
+    initial_structure(@controller, @action)
+  end
 
   private
 

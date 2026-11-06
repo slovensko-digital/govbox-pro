@@ -1,6 +1,8 @@
 require "test_helper"
+require "helpers/good_job_helper"
 
 class FilterSubscriptionTest < ActiveSupport::TestCase
+  include GoodJobHelper
   test "new thread matching subscription fires event" do
     user = users(:admin)
     filter = filters(:one)

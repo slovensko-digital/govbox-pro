@@ -1,5 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
-import { isAutogramRunning, startBatch, signMessageObject, endBatch } from "../autogram"
+import { isAutogramRunning, startBatch, signMessageObject, endBatch } from "autogram"
 
 export default class extends Controller {
   static targets = ["appNotRunning", "waitingForAutogram", "signingInProgress", "signingProgressText", "macosHint", "doneOk", "doneError", "openAutogramApp"]

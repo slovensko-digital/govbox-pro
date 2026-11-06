@@ -175,7 +175,7 @@ class Fs::MessageDraftsTest < ApplicationSystemTestCase
     visit message_threads_path
 
     click_button "Vytvoriť novú správu"
-    assert_not has_link? "Vytvoriť novú správu na finančnú správu"
+    assert_no_link "Vytvoriť novú správu na finančnú správu"
   end
 
   test "user can upload a message draft only to the tenant's boxes" do
@@ -228,8 +228,8 @@ class Fs::MessageDraftsTest < ApplicationSystemTestCase
     message_draft = messages(:fs_accountants_draft_uzmujv14_with_attachment)
     message_draft.update!(
       metadata: message_draft.metadata.merge({
-                                               status: "submit_fail",
-                                               submit_error_message: "Podpisujúci nemá oprávnenie na odoslanie správy."
+                                               "status" => "submit_fail",
+                                               "submit_error_message" => "Podpisujúci nemá oprávnenie na odoslanie správy."
                                              })
     )
 
@@ -246,8 +246,8 @@ class Fs::MessageDraftsTest < ApplicationSystemTestCase
     message_draft = messages(:fs_accountants_draft_uzmujv14_with_attachment)
     message_draft.update!(
       metadata: message_draft.metadata.merge({
-                                               status: "submit_fail",
-                                               submit_error_message: "Správa má viacero podpisov. Nie je možné vybrať API prepojenie."
+                                               "status" => "submit_fail",
+                                               "submit_error_message" => "Správa má viacero podpisov. Nie je možné vybrať API prepojenie."
                                              })
     )
 
@@ -264,8 +264,8 @@ class Fs::MessageDraftsTest < ApplicationSystemTestCase
     message_draft = messages(:fs_accountants_draft_uzmujv14_with_attachment)
     message_draft.update!(
       metadata: message_draft.metadata.merge({
-                                               status: "submit_fail",
-                                               submit_error_message: nil
+                                               "status" => "submit_fail",
+                                               "submit_error_message" => nil
                                              })
     )
 

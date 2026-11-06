@@ -22,7 +22,7 @@
         <% end %>
       <% end %>
       <% if @message.replyable? %>
-          <%= form_with(url: reply_message_path(@message), method: :post, local: true, class: 'flex justify-strech items-start self-stretch flex-grow-0 flex-shrink-0 gap-2 p-6 border-t-0 border-r-0 border-b-0 border-l-0 border-gray-200') do |form| %>
+          <%= form_with(url: reply_message_path(@message), method: :post, local: true, class: 'flex justify-strech items-start self-stretch grow-0 shrink-0 gap-2 p-6 border-t-0 border-r-0 border-b-0 border-l-0 border-gray-200') do |form| %>
             <%= form.hidden_field :original_message_id, value: @message.id %>
             <%= render Icons::ArrowUturnLeftComponent.new(css_classes: "w-5 h-5") %>
             <%= form.submit "Odpovedať", data: { turbo_frame: "_top" } do %>

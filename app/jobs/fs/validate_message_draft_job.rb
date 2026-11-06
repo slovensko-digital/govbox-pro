@@ -6,12 +6,10 @@ class Fs::ValidateMessageDraftJob < ApplicationJob
   end
 
 
-  good_job_control_concurrency_with(
-    # Maximum number of unfinished jobs to allow with the concurrency key
-    # Can be an Integer or Lambda/Proc that is invoked in the context of the job
-    total_limit: 1,
-
-    key: -> { "Fs::ValidateMessageDraftJob-#{arguments.first.try(:id)}" }
+  good_job_concurrency_rule(
+    label: -> { "Fs::ValidateMessageDraftJob-#{arguments.first.try(:id)}" },
+    apply_label: true,
+    total_limit: 1
   )
 
   retry_on TemporaryValidationError, wait: 2.minutes, attempts: 5
@@ -37,7 +35,7 @@ class Fs::ValidateMessageDraftJob < ApplicationJob
     when 408, 503
       raise TemporaryValidationError, error_message(message_draft, response_status, response_body)
     else
-      message_draft.metadata[:validation_errors] = {
+      message_draft.metadata['validation_errors'] = {
         result: response_body['result'],
         errors: [
           response_body['message']

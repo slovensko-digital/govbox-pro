@@ -30,7 +30,7 @@ module Automation
     end
 
     def box_list
-      automation_rule.tenant.boxes.pluck(:name, :id)
+      automation_rule.tenant.boxes.order(:name).pluck(:name, :id)
     end
 
     def api_connection_list
@@ -163,24 +163,7 @@ module Automation
     private
 
     def content_match?(object, value)
-      if object.pdf?
-        pdf_match?(object.content, value)
-      elsif object.xml?
-        # TODO: fix encoding when saving content to DB
-        Nokogiri::XML(object.content, nil, 'UTF-8').to_s.match?(value)
-      end
-    end
-
-    def pdf_match?(object, value)
-      io = StringIO.new
-      io.set_encoding Encoding::BINARY
-      io.write object
-      pdf_string = ""
-      PDF::Reader.open(io) do |pdf|
-        pdf_string = pdf.pages.map(&:text).join(" ")
-      end
-      io.close
-      pdf_string.match?(value)
+      object.text_content&.match?(value)
     end
   end
 

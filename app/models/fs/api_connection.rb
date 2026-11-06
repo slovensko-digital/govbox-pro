@@ -16,7 +16,7 @@
 #
 class Fs::ApiConnection < ::ApiConnection
   validates :tenant_id, presence: true
-  encrypts :settings
+  encrypts :api_token_private_key, :settings
 
   store_accessor :settings, :username, prefix: true
   store_accessor :settings, :password, prefix: true

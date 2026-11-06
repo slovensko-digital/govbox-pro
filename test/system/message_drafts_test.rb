@@ -1,6 +1,8 @@
 require "application_system_test_case"
+require "helpers/good_job_helper"
 
 class MessageDraftsTest < ApplicationSystemTestCase
+  include GoodJobHelper
   setup do
     Searchable::MessageThread.reindex_all
 
@@ -16,9 +18,6 @@ class MessageDraftsTest < ApplicationSystemTestCase
     silence_warnings do
       MessageThreadCollection.const_set("PER_PAGE", @old_value)
     end
-  end
-
-  test "user can create message draft as reply on replyable message" do
   end
 
   test "templated message draft content is searchable" do

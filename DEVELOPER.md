@@ -73,9 +73,9 @@ docker-compose up
 ### Install dependencies & setup database for local and test environment
 
 ```console
-./bin/setup
-env RAILS_ENV=test ././bin/setup
-yarn
+./bin/setup --skip-server
+env RAILS_ENV=test ./bin/setup --skip-server
+npm install
 ```
 
 ### Seed the database

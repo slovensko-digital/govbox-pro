@@ -1,0 +1,43 @@
+#!/bin/sh
+
+# FOP has to run on Saxon: the JDK's XSLT compiler rejects the XPath in some slovensko.sk form
+# templates (JAXP0801001). The image build runs this, so a FOP without Saxon fails the build.
+#
+# The grep in the Dockerfile only proves the launcher names Saxon; this proves FOP really
+# loaded it and reports it as the XSLT engine.
+
+set -eu
+
+work=$(mktemp -d)
+trap 'rm -rf "$work"' EXIT
+
+printf '<doc/>' > "$work/message.xml"
+
+cat > "$work/vendor.xsl" <<'XSL'
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format">
+  <xsl:template match="/">
+    <fo:root>
+      <fo:layout-master-set>
+        <fo:simple-page-master master-name="A4"><fo:region-body/></fo:simple-page-master>
+      </fo:layout-master-set>
+      <fo:page-sequence master-reference="A4">
+        <fo:flow flow-name="xsl-region-body">
+          <fo:block><xsl:message>vendor=<xsl:value-of select="system-property('xsl:vendor')"/></xsl:message>ok</fo:block>
+        </fo:flow>
+      </fo:page-sequence>
+    </fo:root>
+  </xsl:template>
+</xsl:stylesheet>
+XSL
+
+if ! fop -xml "$work/message.xml" -xsl "$work/vendor.xsl" -pdf "$work/out.pdf" > "$work/fop.log" 2>&1; then
+  echo "FOP failed to render:" >&2
+  cat "$work/fop.log" >&2
+  exit 1
+fi
+
+if ! grep -q 'vendor=SAXON' "$work/fop.log"; then
+  echo "FOP does not use Saxon:" >&2
+  cat "$work/fop.log" >&2
+  exit 1
+fi

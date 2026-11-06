@@ -5,13 +5,15 @@ module Fs
 
   class Api
     AUTHENTICATION_ERROR_STATUSES = [401, 403].freeze
+    HTTP_TIMEOUT = 900
+    PDF_VISUALIZATION_TIMEOUT = 210
+    DEFAULT_HANDLER = Faraday.new(request: { timeout: HTTP_TIMEOUT })
 
     attr_accessor :obo, :obo_without_delegate
 
-    def initialize(url, api_connection: nil, box: nil, handler: Faraday)
+    def initialize(url, api_connection: nil, box: nil, handler: DEFAULT_HANDLER)
       @url = url
       @handler = handler
-      @handler.options.timeout = 900_000
 
       api_connection ||= box&.api_connection
       @sub = api_connection&.sub
@@ -31,6 +33,16 @@ module Fs
 
     def parse_form(content)
       request(:post, "forms/parse", { content: Base64.strict_encode64(content) })[:body]
+    end
+
+    def pdf_visualization(form_identifier, content)
+      response = @handler.post(
+        "#{@url}/api/v1/pdf-visualizations",
+        { form_identifier: form_identifier, content: Base64.strict_encode64(content) },
+        jwt_header
+      ) { |request| request.options.timeout = PDF_VISUALIZATION_TIMEOUT }
+
+      response.body if response.status == 200 && response.headers["content-type"].to_s.include?("application/pdf")
     end
 
     def get_public_key(**args)

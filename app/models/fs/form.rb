@@ -8,6 +8,7 @@
 #  identifier                 :string           not null
 #  name                       :string           not null
 #  number_identifier          :integer
+#  pdf_supported              :boolean          default(FALSE), not null
 #  signature_required         :boolean
 #  slug                       :string
 #  submission_type_identifier :string
@@ -41,6 +42,22 @@ class Fs::Form < ApplicationRecord
 
   def attachments_allowed?
     attachments.count == 1
+  end
+
+  def pdf_visualization(message_object)
+    return unless pdf_visualization_supported?(message_object)
+
+    content = message_object.unsigned_content
+    return unless content
+
+    api_connection = message_object.message.box.api_connection
+    return unless api_connection
+
+    FsEnvironment.fs_client.api(api_connection: api_connection).pdf_visualization(identifier, content)
+  end
+
+  def pdf_visualization_supported?(message_object)
+    pdf_supported? && message_object.message.tenant.feature_enabled?(:fs_pdf_visualization)
   end
 
   def short_name(include_version: true)

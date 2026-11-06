@@ -1,0 +1,35 @@
+/* Inter's original Latin and Latin Extended subsets from tailwindcss-rails 2.3.0.
+   Self-hosted to preserve the font and Slovak glyphs without an external CDN.
+   See vendor/fonts/Inter-LICENSE.txt. */
+@font-face {
+  font-family: 'Inter var';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('Inter-roman.latin.var.woff2') format('woff2');
+  unicode-range: U+0000-007F,U+00A0-0100,U+0131,U+0152-0154,U+02BB-02BD,U+02C6,U+02DA,U+02DC,U+2000-200C,U+2010-2028,U+202F-2060,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+FEFF;
+}
+@font-face {
+  font-family: 'Inter var';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('Inter-roman.latin-ext.var.woff2') format('woff2');
+  unicode-range: U+0100-0149,U+014A-01C4,U+01C5-0250,U+0259,U+1E00-1F00,U+2020,U+20A0-20AC,U+20AD-20C0,U+2113,U+2C7C,U+2C7F,U+A7FF;
+}
+@font-face {
+  font-family: 'Inter var';
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('Inter-italic.latin.var.woff2') format('woff2');
+  unicode-range: U+0000-007F,U+00A0-0100,U+0131,U+0152-0154,U+02BB-02BD,U+02C6,U+02DA,U+02DC,U+2000-200C,U+2010-2028,U+202F-2060,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+FEFF;
+}
+@font-face {
+  font-family: 'Inter var';
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('Inter-italic.latin-ext.var.woff2') format('woff2');
+  unicode-range: U+0100-0149,U+014A-01C4,U+01C5-0250,U+0259,U+1E00-1F00,U+2020,U+20A0-20AC,U+20AD-20C0,U+2113,U+2C7C,U+2C7F,U+A7FF;
+}

@@ -274,12 +274,104 @@ class MessageObjectTest < ActiveSupport::TestCase
     assert_not form_object.message.thread.tags.reload.include?(signature_requested_tag)
   end
 
-  test "prepares PDF visualization" do
-    message_object = message_objects(:ssd_main_fs_one_form)
+  test "update creates MessageObjectUpdated audit record" do
+    message_object = message_objects(:ssd_main_general_one_attachment)
 
+    Current.tenant = tenants(:ssd)
+    Current.user = users(:basic)
+
+    assert_difference "AuditLog::MessageObjectUpdated.count", 1 do
+      message_object.update!(name: "Renamed attachment")
+    end
+
+    audit_record = AuditLog::MessageObjectUpdated.last
+    assert_equal tenants(:ssd), audit_record.tenant
+    assert_equal users(:basic), audit_record.actor
+    assert_equal message_object.message.thread, audit_record.message_thread
+    assert_equal ["MyString", "Renamed attachment"], audit_record.changeset["name"]
+  ensure
+    Current.reset
+  end
+
+  test "prepares PDF visualization" do
     skip('Test needs to be run in docker')
 
+    message_object = message_objects(:ssd_main_fs_one_form)
+    message_object.tenant.enable_feature(:fs_pdf_visualization, force: true)
+
     assert_not_equal nil, message_object.prepare_pdf_visualization
+  end
+
+  test "prepare_pdf_visualization asks the form for the visualization" do
+    message_object = fs_message_object(pdf_supported: true, feature_enabled: true)
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :pdf_visualization, "%PDF-bytes", [message_object.message.form.identifier, message_object.unsigned_content]
+
+    FsEnvironment.fs_client.stub :api, ->(api_connection:) { fs_api } do
+      assert_equal "%PDF-bytes", message_object.prepare_pdf_visualization
+    end
+
+    fs_api.verify
+  end
+
+  test "prepare_pdf_visualization does not fall back to the html visualization for an fs form" do
+    message_object = fs_message_object(pdf_supported: true, feature_enabled: true)
+    message_object.message.update!(html_visualization: "<p>stara vizualizacia</p>")
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :pdf_visualization, nil, [message_object.message.form.identifier, message_object.unsigned_content]
+
+    FsEnvironment.fs_client.stub :api, ->(api_connection:) { fs_api } do
+      assert_nil message_object.prepare_pdf_visualization
+    end
+
+    fs_api.verify
+  end
+
+  test "prepare_pdf_visualization asks the form for the visualization of a signed form" do
+    message_object = fs_message_object(pdf_supported: true, feature_enabled: true)
+    xml_content = message_object.content
+    message_object.update!(is_signed: true, mimetype: "application/vnd.etsi.asic-e+zip")
+    message_object.nested_message_objects.create!(name: "form.xml", mimetype: "application/xml", content: xml_content)
+    message_object.message.update!(html_visualization: "<p>stara vizualizacia</p>")
+
+    fs_api = Minitest::Mock.new
+    fs_api.expect :pdf_visualization, "%PDF-bytes", [message_object.message.form.identifier, xml_content]
+
+    FsEnvironment.fs_client.stub :api, ->(api_connection:) { fs_api } do
+      assert message_object.downloadable_as_pdf?
+      assert_equal "%PDF-bytes", message_object.prepare_pdf_visualization
+    end
+
+    fs_api.verify
+  end
+
+  test "prepare_pdf_visualization falls back to the html visualization without an fs form" do
+    message_object = fs_message_object(pdf_supported: false, feature_enabled: true)
+    message_object.message.update!(html_visualization: "<p>stara vizualizacia</p>")
+
+    message_object.stub(:prepare_pdf_visualization_from_html, "%PDF-html") do
+      assert_equal "%PDF-html", message_object.prepare_pdf_visualization
+    end
+  end
+
+  test "downloadable_as_pdf? is true for xml fs message object with pdf_supported form" do
+    message_object = fs_message_object(pdf_supported: true, feature_enabled: true)
+
+    assert message_object.downloadable_as_pdf?
+  end
+
+  test "downloadable_as_pdf? is false when the fs form does not support pdf" do
+    message_object = fs_message_object(pdf_supported: false, feature_enabled: true)
+
+    assert_not message_object.downloadable_as_pdf?
+  end
+
+  test "downloadable_as_pdf? is false when the fs_pdf_visualization feature flag is disabled" do
+    message_object = fs_message_object(pdf_supported: true, feature_enabled: false)
+
+    assert_not message_object.downloadable_as_pdf?
   end
 
   test "mark_signed_by_user removes SignatureRequestedFrom SignerGroup, SignatureRequested Tags and adds SignedBy, Signed Tags after message object is signed by a signer user" do
@@ -334,5 +426,15 @@ class MessageObjectTest < ActiveSupport::TestCase
     assert message_object.message.thread.tags.include?(user.signed_by_tag)
     assert message_object.message.thread.tags.include?(user.tenant.signature_requested_tag)
     assert message_object.message.thread.tags.include?(user.tenant.signer_group.signature_requested_from_tag)
+  end
+
+  private
+
+  def fs_message_object(pdf_supported:, feature_enabled:)
+    message_object = message_objects(:fs_accountants_dphv21_form)
+    message_object.message.form.update!(pdf_supported: pdf_supported)
+    message_object.tenant.enable_feature(:fs_pdf_visualization, force: true) if feature_enabled
+
+    message_object
   end
 end

@@ -18,6 +18,15 @@ class GroupPermissionsTest < ApplicationSystemTestCase
     )
   end
 
+  test "admin can navigate to tags management from permissions" do
+    visit admin_tenant_permissions_path(tenants(:ssd))
+
+    click_link "Nastaviť štítky"
+
+    assert_current_path admin_tenant_tags_path(tenants(:ssd))
+    assert_text "Štítky"
+  end
+
   test "admin can add and remove tag permissions" do
     tag = tags(:ssd_finance)
     manage_permission_test(

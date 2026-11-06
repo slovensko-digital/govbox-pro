@@ -3,7 +3,9 @@ require "application_system_test_case"
 class MessageDraftsSigningTest < ApplicationSystemTestCase
   test "user can request a signature from a user on message drafts" do
     @thread_general = message_threads(:ssd_main_general)
-    @first_draft = @thread_general.messages.find { |message| message.draft? }
+    # This draft has a form and an attachment, so document selection is shown.
+    # Drafts with a single signable object intentionally skip straight to signers.
+    @draft = messages(:ssd_main_general_draft_one)
 
     GroupMembership.create!(user: users(:basic), group: groups(:ssd_signers))
 
@@ -11,8 +13,10 @@ class MessageDraftsSigningTest < ApplicationSystemTestCase
 
     visit message_thread_path(@thread_general)
 
-    within_message_in_thread(@first_draft) do
-      click_button "option-menu-button"
+    within_message_in_thread(@draft) do
+      # Visualization frames resize after loading; keyboard activation avoids
+      # a pointer click landing elsewhere while the draft moves on screen.
+      find_button("option-menu-button").send_keys(:enter)
       assert_link "Vyžiadať podpis"
       click_link "Vyžiadať podpis"
     end

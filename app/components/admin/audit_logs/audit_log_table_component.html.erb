@@ -13,9 +13,9 @@
         </div>
         <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
           <% if @actor %>
-            <%= link_to 'Export CSV', admin_audit_logs_path(actor: @actor, format: 'csv'), class: "block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" %>
+            <%= link_to 'Export CSV', admin_audit_logs_path(actor: @actor, format: 'csv'), class: "block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" %>
           <% elsif @message_thread %>
-            <%= link_to 'Export CSV', admin_audit_logs_path(message_thread: @message_thread, format: 'csv'), class: "block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" %>
+            <%= link_to 'Export CSV', admin_audit_logs_path(message_thread: @message_thread, format: 'csv'), class: "block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" %>
           <% end %>
         </div>
       </div>

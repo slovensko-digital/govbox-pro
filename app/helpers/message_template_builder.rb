@@ -1,7 +1,7 @@
 class MessageTemplateBuilder < ActionView::Helpers::FormBuilder
   ALLOWED_TEMPLATE_FIELD_TYPES = %w[text_field email_field text_area date_field datetime_local_field]
 
-  DEFAULT_CLASSES = 'rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
+  DEFAULT_CLASSES = 'rounded-md border-0 py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
   ERROR_CLASSES = 'rounded-md border-0 py-1.5 pr-10 text-red-900 ring-1 ring-inset ring-red-300 placeholder:text-red-300 focus:ring-2 focus:ring-inset focus:ring-red-500 sm:text-sm sm:leading-6'
   DEFAULT_CONTENT_TAG_CLASSES = 'flex flex-col justify-center text-left gap-2 mb-3'
   DEFAULT_LABEL_CLASSES = 'block text-base font-medium leading-6 text-gray-900'

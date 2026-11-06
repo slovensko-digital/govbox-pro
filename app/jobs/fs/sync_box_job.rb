@@ -2,7 +2,9 @@ module Fs
   class SyncBoxJob < ApplicationJob
     include GoodJob::ActiveJobExtensions::Concurrency
 
-    good_job_control_concurrency_with(
+    good_job_concurrency_rule(
+      label: "Fs::SyncBoxJob",
+      apply_label: true,
       perform_limit: 2
     )
 

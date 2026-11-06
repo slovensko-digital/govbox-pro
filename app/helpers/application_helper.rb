@@ -31,6 +31,8 @@ module ApplicationHelper
       "folder"
     when Notifications::ExportFinished
       "folder-arrow-down"
+    when Notifications::ExportFailed
+      "exclamation-triangle"
     end
   end
 

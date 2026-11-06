@@ -1,19 +1,19 @@
 source 'https://rubygems.org'
 
-ruby '3.3.12'
+ruby '4.0.6'
 
-gem 'rails', '~> 7.1.5'
+gem 'rails', '~> 8.1.4'
 gem 'rails-i18n'
 
-gem 'pg', '~> 1.5'
+gem 'pg', '~> 1.1'
 gem 'with_advisory_lock'
 
-gem 'puma', '~> 6.4'
+gem 'puma', '>= 5.0'
 
 gem 'turbo-rails'
 
 # Styles
-gem 'sprockets-rails'
+gem 'propshaft'
 gem 'importmap-rails'
 gem 'initials'
 gem 'tailwindcss-rails'
@@ -29,19 +29,19 @@ gem 'good_job'
 gem 'omniauth-identity'
 gem 'omniauth-google-oauth2'
 gem 'omniauth-microsoft_graph'
-gem 'omniauth-saml', '~> 2.2.1'
-gem 'omniauth-rails_csrf_protection'
+gem 'omniauth-saml'
+gem 'omniauth-rails_csrf_protection', '>= 2.0' # 1.0.1 includes ActiveSupport::Configurable, deprecated in Rails 8.1 and removed in 8.2
 gem 'pundit'
 
 # Utilities
+gem 'csv'
+gem 'ostruct'
 gem 'rest-client'
 gem 'rack-attack'
-gem 'rack-session', '>= 2.1.2'
 gem 'jbuilder'
 gem 'rubyzip', require: 'zip'
 gem 'jwt'
 gem 'stimulus-rails'
-gem 'jsbundling-rails'
 gem 'pdf-reader'
 gem 'grover'
 gem 'caxlsx'
@@ -53,7 +53,7 @@ gem 'rollbar'
 gem 'pg_search'
 
 # Reduces boot times through caching; required in config/boot.rb
-gem 'bootsnap', '>= 1.4.4', require: false
+gem 'bootsnap', require: false
 
 group :development, :test do
   gem "brakeman"
@@ -64,7 +64,7 @@ group :development, :test do
 end
 
 group :development do
-  gem 'annotate'
+  gem 'annotaterb'
   gem 'listen'
   gem 'web-console'
   gem 'htmlbeautifier'
@@ -73,11 +73,13 @@ group :development do
 end
 
 group :test do
-  gem 'selenium-webdriver', '~> 4.27.0'
+  gem 'minitest'
+  gem 'minitest-mock', require: false
+  gem 'selenium-webdriver'
   gem 'capybara'
   gem 'capybara-screenshot'
   gem 'webmock'
   gem 'simplecov', require: false
 end
 
-gem "bcrypt", "~> 3.1"
+gem "bcrypt", "~> 3.1.7"

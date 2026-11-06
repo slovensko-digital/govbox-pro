@@ -27,6 +27,15 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
 
   Capybara.default_max_wait_time = 5
 
+  def after_teardown
+    # Stop Turbo prefetch/navigation and drain responses before clearing cookies.
+    # Otherwise an in-flight response can restore the previous test's session.
+    visit "about:blank"
+    page.server&.wait_for_pending_requests
+  ensure
+    super
+  end
+
   include AuthHelper
   include PagePartsHelper
   include TenantHelper

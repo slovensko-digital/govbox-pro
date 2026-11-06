@@ -132,8 +132,6 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :message_threads_tags, only: :destroy
-
   resources :messages do
     member do
       post :reply
@@ -209,8 +207,6 @@ Rails.application.routes.draw do
   resources :notifications do
     get :scroll, on: :collection
   end
-
-  resource :settings
 
   resources :message_templates do
     get :recipient_selector

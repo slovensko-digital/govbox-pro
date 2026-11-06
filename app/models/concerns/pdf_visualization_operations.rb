@@ -7,7 +7,24 @@ module PdfVisualizationOperations
 
   included do
     def prepare_pdf_visualization
-      prepare_pdf_visualization_from_template || prepare_pdf_visualization_from_html
+      pdf = prepare_pdf_visualization_from_template || prepare_pdf_visualization_from_form
+      return pdf if pdf || fs_pdf_visualization_supported?
+
+      prepare_pdf_visualization_from_html
+    end
+
+    def prepare_pdf_visualization_from_form
+      return unless xml_content?
+
+      message.form.try(:pdf_visualization, self)
+    end
+
+    def fs_pdf_visualization_supported?
+      xml_content? && message.form.try(:pdf_visualization_supported?, self)
+    end
+
+    def xml_content?
+      xml? || (is_signed? && unsigned_content.present?)
     end
 
     def prepare_pdf_visualization_from_template
@@ -48,7 +65,7 @@ module PdfVisualizationOperations
       return unless message.html_visualization.present?
 
       Grover.new(
-        full_html_document_from_body_content(message.html_visualization),
+        full_html_document_from_body_content(MessageHelper.html_visualization_for_display(message)),
         format: 'A4',
         margin: {
           top: '15px',
@@ -99,6 +116,7 @@ module PdfVisualizationOperations
 
     def downloadable_as_pdf?
       return true if xml? && form&.xsl_fo&.present?
+      return true if fs_pdf_visualization_supported?
       return true if form? && message.html_visualization.present?
       false
     end

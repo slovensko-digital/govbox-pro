@@ -1,6 +1,8 @@
 require 'test_helper'
+require 'helpers/good_job_helper'
 
 class Automation::RuleTest < ActiveSupport::TestCase
+  include GoodJobHelper
   include ActionDispatch::TestProcess::FixtureFile
   test 'should update condition with nested attributes and cleanup as in model' do
     automation_rule = automation_rules(:one)
