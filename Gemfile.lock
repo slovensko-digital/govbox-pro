@@ -166,7 +166,7 @@ GEM
       fugit (>= 1.11.0)
       railties (>= 6.1.0)
       thor (>= 1.0.0)
-    grover (2.0.0)
+    grover (2.0.1)
       nokogiri (~> 1)
     hashdiff (1.2.1)
     hashery (2.1.2)
