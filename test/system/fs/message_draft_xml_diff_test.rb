@@ -67,6 +67,7 @@ class Fs::MessageDraftXmlDiffTest < ApplicationSystemTestCase
     within_message_in_thread(message_draft) do
       assert_text "Správa pravdepodobne obsahuje nesprávne údaje"
       assert_text "Pri načítaní vášho súboru do formulára sa zmenili tieto údaje"
+      assert_link "Viac informácií", href: "https://docs.govbox.sk/financna-sprava/form-changes/"
       assert_button "Odoslať"
     end
 

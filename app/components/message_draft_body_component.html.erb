@@ -115,7 +115,7 @@
         <% if validation_errors['diff_errors']&.any? %>
           <div class="rounded-md border border-red-300 bg-red-50 p-4 text-sm text-red-900 w-full">
             <p class="font-semibold">Správa pravdepodobne obsahuje nesprávne údaje</p>
-            <p class="mt-1">Pri načítaní vášho súboru do formulára sa zmenili tieto údaje. Pred odoslaním ich skontrolujte.</p>
+            <p class="mt-1">Pri načítaní vášho súboru do formulára sa zmenili tieto údaje. Pred odoslaním ich skontrolujte. <%= link_to "Viac informácií", "https://docs.govbox.sk/financna-sprava/form-changes/", target: "_blank", class: "underline font-bold hover:no-underline" %></p>
             <ul class="mt-2 list-disc space-y-1 pl-5">
               <% @message.diff_error_descriptions.each do |description| %>
                 <li><%= description %></li>
