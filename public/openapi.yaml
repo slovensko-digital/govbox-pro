@@ -1503,6 +1503,12 @@ components:
               type: array
               items:
                 type: string
+            diff_errors:
+              description: Údaje (IČO, DIČ, IČ DPH, sumy alebo štruktúra), ktoré formulár Finančnej správy zmenil pri načítaní XML. Správa dostane štítky Upozornenia a Problémové, ale dá sa odoslať. Každá položka je výstup príkazu `diff` (`<` pôvodná hodnota, `>` opravená hodnota).
+              type: array
+              items:
+                type: string
+              example: ["3c3\n<       <ico>12345678</ico>\n---\n>       <ico>87654321</ico>"]
 
     UpvsMessageMetadata:
       description: Metaúdaje správy ÚPVS
