@@ -23,7 +23,7 @@ class Fs::FormTest < ActiveSupport::TestCase
     message_object = fs_message_object(pdf_supported: true, feature_enabled: true)
 
     fs_api = Minitest::Mock.new
-    fs_api.expect :pdf_visualization, "%PDF-bytes", [message_object.message.form.identifier, message_object.unsigned_content]
+    fs_api.expect :pdf_visualization, "%PDF-bytes", [message_object.message.form.identifier, message_object.unsigned_content], in_background: false
 
     fs_client = lambda do |api_connection:|
       assert_equal message_object.message.box.api_connection, api_connection

@@ -44,6 +44,10 @@ class MessageObjectsController < ApplicationController
     else
       redirect_back_or_to(message_thread_path(@message_object.message.thread), alert: "Obsah nie je možné stiahnuť.")
     end
+  rescue Fs::PdfVisualizationUnavailable
+    redirect_back_or_to(message_thread_path(@message_object.message.thread), alert: MessageObjectHelper::PDF_BUSY_MESSAGE)
+  rescue Fs::PdfVisualizationTooLarge
+    redirect_back_or_to(message_thread_path(@message_object.message.thread), alert: MessageObjectHelper::PDF_TOO_LARGE_MESSAGE)
   end
 
   def download_archived

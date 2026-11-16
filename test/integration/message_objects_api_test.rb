@@ -24,4 +24,28 @@ class MessageObjectsApiTest < ActionDispatch::IntegrationTest
 
     assert_response :not_found
   end
+
+  test "tells an API client whether asking for the PDF again can help" do
+    get_fs_form_pdf(answer: ->(*, **) { raise Fs::PdfVisualizationUnavailable, "busy" })
+    assert_response :service_unavailable
+    assert_equal "30", response.headers["Retry-After"]
+
+    get_fs_form_pdf(answer: ->(*, **) { raise Fs::PdfVisualizationTooLarge, "596 kB" })
+    assert_response :content_too_large
+  end
+
+  private
+
+  def get_fs_form_pdf(answer:)
+    tenant = tenants(:accountants)
+    message_object = message_objects(:fs_accountants_dphv21_form)
+    message_object.message.form.update!(pdf_supported: true)
+    tenant.enable_feature(:fs_pdf_visualization, force: true) unless tenant.feature_enabled?(:fs_pdf_visualization)
+    fs_api = Object.new
+    fs_api.define_singleton_method(:pdf_visualization, &answer)
+
+    FsEnvironment.fs_client.stub(:api, ->(**) { fs_api }) do
+      get "/api/message_objects/#{message_object.id}/pdf", params: { token: generate_api_token(sub: tenant.id, key_pair: @key_pair) }, as: :json
+    end
+  end
 end

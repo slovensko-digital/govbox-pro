@@ -64,55 +64,123 @@ class ExportJobTest < ActiveJob::TestCase
     assert path.start_with?("#{thread.title}/"), "Expected path to start with thread title, got: #{path}"
   end
 
-  test "an object whose PDF visualization is unavailable fails the export rather than shipping it incomplete" do
+  test "a nested PDF after a skipped one does not take the name the skipped list points at" do
     export = pdf_export
     object = message_objects(:fs_accountants_outbox_form)
-    file_paths = []
+    failing = object.nested_message_objects.create!(name: "form.xml", mimetype: "application/x-eform-xml",
+                                                    content: "<x/>")
+    following = nested_pdf(object, name: "second.pdf", content: "%PDF-2")
+    pdf_path = ExportJob.new.unique_path_within_export(object, export: export, other_file_names: [], pdf: true)
+    zip = nil
 
-    error = object.stub(:nested_message_objects, []) do
-      object.stub(:downloadable_as_pdf?, true) do
-        object.stub(:prepare_pdf_visualization, nil) do
-          assert_raises(ExportJob::PdfVisualizationFailed) do
-            ::Zip::OutputStream.write_buffer do |zip|
-              ExportJob.new.prepare_pdf_object(object, export: export, zip: zip, file_paths: file_paths)
+    reported_errors do
+      failing.stub(:downloadable_as_pdf?, true) do
+        failing.stub(:prepare_pdf_visualization, nil) do
+          object.stub(:nested_message_objects, [ failing, following ]) do
+            zip = ::Zip::OutputStream.write_buffer do |stream|
+              ExportJob.new.prepare_pdf_object(object, export: export, zip: stream, file_paths: [])
             end
           end
         end
       end
     end
 
-    assert_match(/Unable to prepare PDF visualization/, error.message)
-    assert_empty file_paths, "Nothing should be recorded for a PDF we never got"
+    assert_equal [ pdf_path ], export.skipped_pdf_paths
+    assert_equal [ pdf_path.sub(/\.pdf\z/, " (1).pdf") ], zip_entry_names(zip)
   end
 
-  test "a nested object whose PDF visualization is unavailable fails the export too" do
+  test "a PDF that raises is left out instead of retrying the whole export forever" do
     export = pdf_export
     object = message_objects(:fs_accountants_outbox_form)
-    file_paths = []
+    error = RuntimeError.new("Grover: page crashed")
 
-    nested = object.nested_message_objects.create!(name: "form.xml", mimetype: "application/x-eform-xml",
-                                                   content: "<x/>")
-
-    error = nested.stub(:downloadable_as_pdf?, true) do
-      nested.stub(:prepare_pdf_visualization, nil) do
-        object.stub(:nested_message_objects, [ nested ]) do
-          assert_raises(ExportJob::PdfVisualizationFailed) do
+    reported = reported_errors do
+      object.stub(:nested_message_objects, []) do
+        object.stub(:downloadable_as_pdf?, true) do
+          object.stub(:prepare_pdf_visualization, ->(**) { raise error }) do
             ::Zip::OutputStream.write_buffer do |zip|
-              ExportJob.new.prepare_pdf_object(object, export: export, zip: zip, file_paths: file_paths)
+              ExportJob.new.prepare_pdf_object(object, export: export, zip: zip, file_paths: [])
             end
           end
         end
       end
     end
 
-    assert_match(/Unable to prepare PDF visualization/, error.message)
-    assert_empty file_paths
+    assert_equal 1, export.skipped_pdf_paths.size
+    assert_equal [ error ], reported
   end
 
-  test "a failing export gives up instead of retrying forever like ApplicationJob does" do
-    assert_equal Float::INFINITY, retry_attempts(ApplicationJob, "StandardError"),
-                 "Guard: this test only means something while ApplicationJob retries forever"
-    assert_equal 3, retry_attempts(ExportJob, "ExportJob::PdfVisualizationFailed")
+  test "a PDF the FS API refuses to make is left out and listed instead of failing the whole export" do
+    export = pdf_export
+    object = fs_pdf_supported_form
+    fs_api = unavailable_fs_api
+    zip = nil
+
+    reported = reported_errors do
+      FsEnvironment.fs_client.stub :api, fs_api do
+        zip = ::Zip::OutputStream.write_buffer do |stream|
+          ExportJob.new.prepare_pdf_object(object, export: export, zip: stream, file_paths: [])
+        end
+      end
+    end
+
+    assert_empty zip_entry_names(zip), "Nothing should be written for a PDF we never got"
+    assert_equal [ ExportJob.new.unique_path_within_export(object, export: export, other_file_names: [], pdf: true) ], export.skipped_pdf_paths
+    assert_equal [ ExportJob::PdfVisualizationFailed ], reported.map(&:class)
+    assert_equal [ { in_background: true } ], fs_api.calls, "An export has no one waiting on it, so it may wait for the FS API"
+  end
+
+  test "an FS API unavailable again and again stops the export waiting on it for the rest of its forms" do
+    export = pdf_export
+    fs_api = down_fs_api
+
+    reported = reported_errors do
+      export_pdfs(export, fs_api, times: ExportJob::FS_API_OUTAGE_AFTER + 2)
+    end
+
+    assert_equal ExportJob::FS_API_OUTAGE_AFTER, fs_api.calls.size
+    assert_equal ExportJob::FS_API_OUTAGE_AFTER + 2, export.skipped_pdf_paths.size
+    assert_equal [ Fs::PdfVisualizationUnavailable ] * ExportJob::FS_API_OUTAGE_AFTER, reported.map(&:class),
+                 "Forms skipped after the outage are not reported one by one"
+  end
+
+  test "a form too large to visualize is listed without counting as an FS API outage or an error" do
+    export = pdf_export
+    too_large = Class.new do
+      def calls = @calls ||= []
+
+      def pdf_visualization(*, **options)
+        calls << options
+        raise Fs::PdfVisualizationTooLarge, "596 kB"
+      end
+    end.new
+
+    reported = reported_errors { export_pdfs(export, too_large, times: ExportJob::FS_API_OUTAGE_AFTER + 1) }
+
+    assert_equal ExportJob::FS_API_OUTAGE_AFTER + 1, too_large.calls.size, "a large form says nothing about the next one"
+    assert_equal ExportJob::FS_API_OUTAGE_AFTER + 1, export.skipped_pdf_paths.size
+    assert_empty reported
+  end
+
+  test "an export with a PDF it could not make still finishes and keeps the list of skipped PDFs" do
+    object = fs_pdf_supported_form
+    export = Export.create!(user: users(:accountants_basic), message_thread_ids: [ object.message.thread.id ],
+                            settings: { "messages" => true, "pdf" => "1", "default" => "1" })
+    storage = Minitest::Mock.new
+    storage.expect :store, nil, [ "exports", export.file_name, String ]
+
+    reported_errors do
+      FsEnvironment.fs_client.stub :api, unavailable_fs_api do
+        FileStorage.stub :new, storage do
+          assert_difference -> { Notifications::ExportFinished.count }, 1 do
+            ExportJob.perform_now(export)
+          end
+        end
+      end
+    end
+
+    storage.verify
+    assert_equal 1, export.reload.skipped_pdf_paths.size
   end
 
   test "an export that exhausts its retries tells the user instead of going silent" do
@@ -286,9 +354,55 @@ class ExportJobTest < ActiveJob::TestCase
     assert_equal "SSD main/1234-Rozh_o_pokute_§155_ods.1_písm.g)_no (1).pdf", file_paths.last
   end
 
-  def retry_attempts(job, error_name)
-    job.rescue_handlers.reverse.find { |klass, _| klass == error_name }
-       .last.binding.local_variable_get(:attempts)
+  def zip_entry_names(buffer)
+    Zip::File.open_buffer(buffer.string).entries.map(&:name)
+  end
+
+  def fs_pdf_supported_form
+    message_objects(:fs_accountants_dphv21_form).tap do |object|
+      object.message.form.update!(pdf_supported: true)
+      object.message.tenant.enable_feature(:fs_pdf_visualization, force: true)
+    end
+  end
+
+  def unavailable_fs_api
+    Class.new do
+      def calls = @calls ||= []
+
+      def pdf_visualization(_identifier, _content, **options)
+        calls << options
+        nil
+      end
+    end.new
+  end
+
+  def export_pdfs(export, fs_api, times:)
+    object = fs_pdf_supported_form
+    job = ExportJob.new
+    file_paths = []
+
+    FsEnvironment.fs_client.stub :api, fs_api do
+      ::Zip::OutputStream.write_buffer do |zip|
+        times.times { job.prepare_pdf_object(object, export: export, zip: zip, file_paths: file_paths) }
+      end
+    end
+  end
+
+  def down_fs_api
+    Class.new do
+      def calls = @calls ||= []
+
+      def pdf_visualization(_identifier, _content, **options)
+        calls << options
+        raise Fs::PdfVisualizationUnavailable, "busy"
+      end
+    end.new
+  end
+
+  def reported_errors
+    reported = []
+    Rollbar.stub(:error, ->(error, *) { reported << error }) { yield }
+    reported
   end
 
   def handler_for(job, error)

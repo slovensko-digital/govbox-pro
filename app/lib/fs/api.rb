@@ -2,11 +2,15 @@
 
 module Fs
   class AuthenticationError < StandardError; end
+  class PdfVisualizationUnavailable < StandardError; end
+  class PdfVisualizationTooLarge < StandardError; end
 
   class Api
     AUTHENTICATION_ERROR_STATUSES = [401, 403].freeze
     HTTP_TIMEOUT = 900
-    PDF_VISUALIZATION_TIMEOUT = 210
+    PDF_VISUALIZATION_TIMEOUT = 240
+    PDF_VISUALIZATION_ATTEMPTS = 10
+    PDF_VISUALIZATION_INTERACTIVE_TIMEOUT = 50
     DEFAULT_HANDLER = Faraday.new(request: { timeout: HTTP_TIMEOUT })
 
     attr_accessor :obo, :obo_without_delegate
@@ -35,14 +39,29 @@ module Fs
       request(:post, "forms/parse", { content: Base64.strict_encode64(content) })[:body]
     end
 
-    def pdf_visualization(form_identifier, content)
-      response = @handler.post(
-        "#{@url}/api/v1/pdf-visualizations",
-        { form_identifier: form_identifier, content: Base64.strict_encode64(content) },
-        jwt_header
-      ) { |request| request.options.timeout = PDF_VISUALIZATION_TIMEOUT }
+    def pdf_visualization(form_identifier, content, in_background: false)
+      attempts, timeout = in_background ? [PDF_VISUALIZATION_ATTEMPTS, PDF_VISUALIZATION_TIMEOUT] : [1, PDF_VISUALIZATION_INTERACTIVE_TIMEOUT]
 
-      response.body if response.status == 200 && response.headers["content-type"].to_s.include?("application/pdf")
+      attempts.times do |attempt|
+        asked_at = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+        response = @handler.post(
+          "#{@url}/api/v1/pdf-visualizations",
+          { form_identifier: form_identifier, content: Base64.strict_encode64(content) },
+          jwt_header
+        ) { |request| request.options.timeout = timeout }
+        return response.body if response.status == 200 && response.headers["content-type"].to_s.include?("application/pdf")
+
+        Rails.logger.warn("FS PDF visualization of #{form_identifier} failed with #{response.status}: #{response.body.to_s.truncate(500)}")
+        raise PdfVisualizationTooLarge, response.body.to_s.truncate(500) if response.status == 413
+        return nil unless response.status == 503
+
+        wait_for_pdf_visualization_slot(response, asked_at) if in_background && attempt < attempts - 1
+      end
+
+      raise PdfVisualizationUnavailable, "FS API stayed busy visualizing #{form_identifier}"
+    rescue Faraday::Error => error
+      Rails.logger.warn("FS PDF visualization of #{form_identifier} failed with #{error.class}: #{error.message}")
+      raise PdfVisualizationUnavailable, "#{error.class}: #{error.message}"
     end
 
     def get_public_key(**args)
@@ -154,6 +173,11 @@ module Fs
         body: structure,
         headers: response.headers
       }
+    end
+
+    def wait_for_pdf_visualization_slot(response, asked_at)
+      waited = Process.clock_gettime(Process::CLOCK_MONOTONIC) - asked_at
+      sleep([(response.headers["retry-after"] || 30).to_i - waited, 0].max)
     end
 
     def handle_response_error(error)

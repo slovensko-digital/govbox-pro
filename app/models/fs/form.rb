@@ -44,7 +44,7 @@ class Fs::Form < ApplicationRecord
     attachments.count == 1
   end
 
-  def pdf_visualization(message_object)
+  def pdf_visualization(message_object, in_background: false)
     return unless pdf_visualization_supported?(message_object)
 
     content = message_object.unsigned_content
@@ -53,7 +53,7 @@ class Fs::Form < ApplicationRecord
     api_connection = message_object.message.box.api_connection
     return unless api_connection
 
-    FsEnvironment.fs_client.api(api_connection: api_connection).pdf_visualization(identifier, content)
+    FsEnvironment.fs_client.api(api_connection: api_connection).pdf_visualization(identifier, content, in_background: in_background)
   end
 
   def pdf_visualization_supported?(message_object)
