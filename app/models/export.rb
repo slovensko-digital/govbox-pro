@@ -5,6 +5,7 @@
 #  id                 :bigint           not null, primary key
 #  message_thread_ids :integer          default([]), not null, is an Array
 #  settings           :jsonb            not null
+#  skipped_pdf_paths  :string           default([]), not null, is an Array
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
 #  user_id            :bigint           not null

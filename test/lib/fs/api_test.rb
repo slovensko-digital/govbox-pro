@@ -101,11 +101,80 @@ module Fs
       assert_equal "%PDF-1.7 fake", fs_api.pdf_visualization("123_456", "<dokument/>")
     end
 
-    test "pdf_visualization returns nil on error response" do
+    test "pdf_visualization returns nil on error response and logs why" do
       handler = pdf_visualization_handler(status: 422, content_type: "application/json", body: '{"result":"FAIL","message":"unsupported"}')
       fs_api = Fs::Api.new(FS_API_URL, api_connection: api_connections(:fs_api_connection2), handler: handler)
+      warnings = []
 
-      assert_nil fs_api.pdf_visualization("123_456", "<dokument/>")
+      Rails.logger.stub(:warn, ->(message) { warnings << message }) do
+        assert_nil fs_api.pdf_visualization("123_456", "<dokument/>")
+      end
+
+      assert_equal [ 'FS PDF visualization of 123_456 failed with 422: {"result":"FAIL","message":"unsupported"}' ], warnings
+    end
+
+    test "pdf_visualization in the background waits out Retry-After, or 30 s without it, and asks again while busy" do
+      ingress_busy = OpenStruct.new(body: "<html>503</html>", status: 503, headers: { "content-type" => "text/html" })
+      handler = pdf_visualization_responses(busy_response, ingress_busy, OpenStruct.new(body: "%PDF-1.7 fake", status: 200, headers: { "content-type" => "application/pdf" }))
+      fs_api = Fs::Api.new(FS_API_URL, api_connection: api_connections(:fs_api_connection2), handler: handler)
+      slept = []
+
+      fs_api.stub(:sleep, ->(seconds) { slept << seconds }) do
+        assert_equal "%PDF-1.7 fake", fs_api.pdf_visualization("123_456", "<dokument/>", in_background: true)
+      end
+
+      assert_equal [ Fs::Api::PDF_VISUALIZATION_TIMEOUT ] * 3, handler.timeouts
+      assert_equal [ 30, 30 ], slept.map(&:round)
+    end
+    test "pdf_visualization in the background gives up when the FS API stays busy, without waiting after the last answer" do
+      handler = pdf_visualization_responses(*Array.new(Fs::Api::PDF_VISUALIZATION_ATTEMPTS) { busy_response })
+      fs_api = Fs::Api.new(FS_API_URL, api_connection: api_connections(:fs_api_connection2), handler: handler)
+      slept = []
+
+      fs_api.stub(:sleep, ->(seconds) { slept << seconds }) do
+        assert_raises(Fs::PdfVisualizationUnavailable) { fs_api.pdf_visualization("123_456", "<dokument/>", in_background: true) }
+      end
+      assert_equal Fs::Api::PDF_VISUALIZATION_ATTEMPTS, handler.posts
+      assert_equal Fs::Api::PDF_VISUALIZATION_ATTEMPTS - 1, slept.size
+    end
+    test "pdf_visualization does not ask again when the FS API rejects the form" do
+      handler = pdf_visualization_responses(OpenStruct.new(body: '{"result":"FAIL"}', status: 500, headers: { "content-type" => "application/json" }))
+      fs_api = Fs::Api.new(FS_API_URL, api_connection: api_connections(:fs_api_connection2), handler: handler)
+
+      assert_nil fs_api.pdf_visualization("123_456", "<dokument/>", in_background: true)
+      assert_equal 1, handler.posts
+    end
+
+    test "pdf_visualization for a person waiting on it asks once and gives up before the ingress does" do
+      handler = pdf_visualization_responses(busy_response, busy_response)
+      fs_api = Fs::Api.new(FS_API_URL, api_connection: api_connections(:fs_api_connection2), handler: handler)
+
+      assert_raises(Fs::PdfVisualizationUnavailable) { fs_api.pdf_visualization("123_456", "<dokument/>") }
+      assert_equal 1, handler.posts
+      assert_equal [ Fs::Api::PDF_VISUALIZATION_INTERACTIVE_TIMEOUT ], handler.timeouts
+      assert_operator Fs::Api::PDF_VISUALIZATION_INTERACTIVE_TIMEOUT, :<, 60, "nginx ingress answers 504 after its default 60 s"
+    end
+
+    test "pdf_visualization tells the FS API is unavailable and logs why when it does not answer in time" do
+      handler = pdf_visualization_responses(Faraday::TimeoutError.new("timeout"))
+      fs_api = Fs::Api.new(FS_API_URL, api_connection: api_connections(:fs_api_connection2), handler: handler)
+      warnings = []
+
+      Rails.logger.stub(:warn, ->(message) { warnings << message }) do
+        assert_raises(Fs::PdfVisualizationUnavailable) { fs_api.pdf_visualization("123_456", "<dokument/>", in_background: true) }
+      end
+
+      assert_equal [ "FS PDF visualization of 123_456 failed with Faraday::TimeoutError: timeout" ], warnings
+    end
+
+    test "pdf_visualization tells a form too large to visualize apart, so nobody asks again" do
+      too_large = OpenStruct.new(body: '{"result":"FAIL","message":"Form XML is too large to visualize as PDF: 596 kB"}', status: 413,
+                                 headers: { "content-type" => "application/json" })
+      handler = pdf_visualization_responses(too_large)
+      fs_api = Fs::Api.new(FS_API_URL, api_connection: api_connections(:fs_api_connection2), handler: handler)
+
+      assert_raises(Fs::PdfVisualizationTooLarge) { fs_api.pdf_visualization("123_456", "<dokument/>", in_background: true) }
+      assert_equal 1, handler.posts
     end
 
     test "pdf_visualization returns nil when the response is not a pdf" do
@@ -165,6 +234,35 @@ module Fs
           response
         end
       end
+    end
+
+    def pdf_visualization_responses(*responses)
+      Class.new do
+        class << self
+          attr_accessor :responses, :posts, :timeouts
+        end
+
+        self.responses = responses
+        self.posts = 0
+        self.timeouts = []
+
+        def self.post(*)
+          self.posts += 1
+          request = OpenStruct.new(options: OpenStruct.new)
+          yield request
+          timeouts << request.options.timeout
+
+          response = responses.shift
+          raise response if response.is_a?(Exception)
+
+          response
+        end
+      end
+    end
+
+    def busy_response
+      OpenStruct.new(body: '{"result":"FAIL","message":"Too many PDF visualizations in flight, try again later"}',
+                     status: 503, headers: { "content-type" => "application/json", "retry-after" => "30" })
     end
   end
 end

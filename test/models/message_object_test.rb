@@ -306,7 +306,7 @@ class MessageObjectTest < ActiveSupport::TestCase
     message_object = fs_message_object(pdf_supported: true, feature_enabled: true)
 
     fs_api = Minitest::Mock.new
-    fs_api.expect :pdf_visualization, "%PDF-bytes", [message_object.message.form.identifier, message_object.unsigned_content]
+    fs_api.expect :pdf_visualization, "%PDF-bytes", [message_object.message.form.identifier, message_object.unsigned_content], in_background: false
 
     FsEnvironment.fs_client.stub :api, ->(api_connection:) { fs_api } do
       assert_equal "%PDF-bytes", message_object.prepare_pdf_visualization
@@ -320,7 +320,7 @@ class MessageObjectTest < ActiveSupport::TestCase
     message_object.message.update!(html_visualization: "<p>stara vizualizacia</p>")
 
     fs_api = Minitest::Mock.new
-    fs_api.expect :pdf_visualization, nil, [message_object.message.form.identifier, message_object.unsigned_content]
+    fs_api.expect :pdf_visualization, nil, [message_object.message.form.identifier, message_object.unsigned_content], in_background: false
 
     FsEnvironment.fs_client.stub :api, ->(api_connection:) { fs_api } do
       assert_nil message_object.prepare_pdf_visualization
@@ -337,7 +337,7 @@ class MessageObjectTest < ActiveSupport::TestCase
     message_object.message.update!(html_visualization: "<p>stara vizualizacia</p>")
 
     fs_api = Minitest::Mock.new
-    fs_api.expect :pdf_visualization, "%PDF-bytes", [message_object.message.form.identifier, xml_content]
+    fs_api.expect :pdf_visualization, "%PDF-bytes", [message_object.message.form.identifier, xml_content], in_background: false
 
     FsEnvironment.fs_client.stub :api, ->(api_connection:) { fs_api } do
       assert message_object.downloadable_as_pdf?
@@ -345,6 +345,26 @@ class MessageObjectTest < ActiveSupport::TestCase
     end
 
     fs_api.verify
+  end
+
+  test "prepare_pdf_visualization lets the caller tell a busy FS API from a form it cannot make" do
+    message_object = fs_message_object(pdf_supported: true, feature_enabled: true)
+    unavailable = Object.new
+    def unavailable.pdf_visualization(*, **) = raise(Fs::PdfVisualizationUnavailable, "busy")
+
+    FsEnvironment.fs_client.stub :api, ->(api_connection:) { unavailable } do
+      assert_raises(Fs::PdfVisualizationUnavailable) { message_object.prepare_pdf_visualization }
+      assert_raises(Fs::PdfVisualizationUnavailable) { message_object.prepare_pdf_visualization(in_background: true) }
+    end
+  end
+
+  test "an xml attachment of an FS form message is not sent to the FS API as the form" do
+    form = fs_message_object(pdf_supported: true, feature_enabled: true)
+    attachment = form.message.objects.build(name: "priloha.xml", mimetype: "application/xml", object_type: "ATTACHMENT",
+                                            message_object_datum: MessageObjectDatum.new(blob: form.content))
+
+    assert form.fs_pdf_visualization_supported?
+    assert_not attachment.fs_pdf_visualization_supported?
   end
 
   test "prepare_pdf_visualization falls back to the html visualization without an fs form" do

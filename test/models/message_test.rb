@@ -130,4 +130,27 @@ class MessageTest < ActiveSupport::TestCase
 
     assert_equal expected_summary, message.export_summary
   end
+
+  test "a message ZIP keeps its originals when a PDF of it cannot be made" do
+    object = message_objects(:fs_accountants_dphv21_form)
+    answers = [ nil, ->(**) { raise Fs::PdfVisualizationUnavailable, "busy" }, ->(**) { raise Fs::PdfVisualizationTooLarge, "596 kB" } ]
+
+    answers.each { |pdf| assert_equal [ "originaly/#{object.name}" ], message_export_entries(object, pdf: pdf) }
+  end
+
+  private
+
+  def message_export_entries(object, pdf:)
+    zip = object.stub(:nested_message_objects, []) do
+      object.stub(:downloadable_as_pdf?, true) do
+        object.stub(:prepare_pdf_visualization, pdf) do
+          object.message.stub(:objects, [ object ]) { object.message.prepare_message_export }
+        end
+      end
+    end
+
+    names = []
+    Zip::InputStream.open(StringIO.new(zip)) { |stream| while (entry = stream.get_next_entry) do names << entry.name end }
+    names
+  end
 end

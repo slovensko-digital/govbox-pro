@@ -1,3 +1,18 @@
 <p class="text-sm text-gray-500">
   Export správ #<%= notification.export.id %> je pripravený <%= link_to "na stiahnutie", message_threads_bulk_export_path(notification.export), class: "underline font-semibold" %>.
 </p>
+<% skipped_pdf_paths = notification.export.skipped_pdf_paths %>
+<% if skipped_pdf_paths.any? %>
+  <p class="text-sm text-gray-500">
+    Tieto PDF sa nepodarilo pripraviť, v exporte sú len ich originály. Export môžete neskôr <%= link_to "skúsiť znova", edit_message_threads_bulk_export_path(notification.export), class: "underline font-semibold" %>,
+    no formuláre príliš veľké na PDF (napr. súhrnný výkaz s viac ako tisíc riadkami) budú aj potom len v origináli.
+  </p>
+  <ul class="text-sm text-gray-500 list-disc pl-5">
+    <% skipped_pdf_paths.first(5).each do |path| %>
+      <li class="break-all"><%= path %></li>
+    <% end %>
+    <% if skipped_pdf_paths.size > 5 %>
+      <li>a ďalšie (<%= skipped_pdf_paths.size - 5 %>)</li>
+    <% end %>
+  </ul>
+<% end %>

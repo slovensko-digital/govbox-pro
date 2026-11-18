@@ -20,6 +20,10 @@ class NestedMessageObjectsController < ApplicationController
     else
       redirect_back fallback_location: message_thread_path(@nested_message_object.message.thread), notice: "Obsah nie je možné stiahnuť."
     end
+  rescue Fs::PdfVisualizationUnavailable
+    redirect_back_or_to(message_thread_path(@nested_message_object.message.thread), notice: MessageObjectHelper::PDF_BUSY_MESSAGE)
+  rescue Fs::PdfVisualizationTooLarge
+    redirect_back_or_to(message_thread_path(@nested_message_object.message.thread), notice: MessageObjectHelper::PDF_TOO_LARGE_MESSAGE)
   end
 
   private

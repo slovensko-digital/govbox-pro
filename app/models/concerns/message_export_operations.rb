@@ -35,9 +35,8 @@ module MessageExportOperations
         else
           next unless message_object.downloadable_as_pdf?
 
-          pdf_content = message_object.prepare_pdf_visualization
-
-          raise StandardError, "Unable to prepare PDF visualization for MessageObject ID #{message_object.id}" unless pdf_content
+          pdf_content = print_pdf(message_object)
+          next unless pdf_content
 
           file_name = unique_name_within_message(message_object, file_names, pdf: true)
           zip.put_next_entry(file_name)
@@ -54,8 +53,8 @@ module MessageExportOperations
         if nested_message_object.pdf?
           pdf_content = nested_message_object.content
         else
-          pdf_content = nested_message_object.prepare_pdf_visualization
-          raise StandardError, "Unable to prepare PDF visualization for MessageObject ID #{nested_message_object.id}" unless pdf_content
+          pdf_content = print_pdf(nested_message_object)
+          next unless pdf_content
         end
 
         file_name = unique_name_within_message(nested_message_object, file_names, pdf: true)
@@ -63,6 +62,12 @@ module MessageExportOperations
         zip.write(pdf_content)
         file_names << file_name
       end
+    end
+
+    def print_pdf(object)
+      object.prepare_pdf_visualization
+    rescue Fs::PdfVisualizationUnavailable, Fs::PdfVisualizationTooLarge
+      nil
     end
 
     def unique_name_within_message(message_object, other_file_names, pdf: false)

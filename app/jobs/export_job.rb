@@ -12,7 +12,7 @@ class ExportJob < ApplicationJob
   class PdfVisualizationFailed < StandardError
   end
 
-  retry_on PdfVisualizationFailed, wait: :polynomially_longer, attempts: 3
+  FS_API_OUTAGE_AFTER = 3
 
   after_discard do |job, _error|
     export = job.arguments.first
@@ -23,6 +23,7 @@ class ExportJob < ApplicationJob
 
   def perform(export)
     file_paths = []
+    export.skipped_pdf_paths = []
 
     export_content = ::Zip::OutputStream.write_buffer do |zip|
       if export.settings.dig("messages")
@@ -42,6 +43,7 @@ class ExportJob < ApplicationJob
     end
 
     FileStorage.new.store("exports", export.file_name, export_content.string.force_encoding("UTF-8"))
+    export.update_columns(skipped_pdf_paths: export.skipped_pdf_paths)
 
     export.user.notifications.create!(
       type: Notifications::ExportFinished,
@@ -64,14 +66,15 @@ class ExportJob < ApplicationJob
     else
       return unless object.downloadable_as_pdf?
 
-      pdf_content = pdf_visualization(object)
-
       file_path = unique_path_within_export(object, export: export, other_file_names: file_paths, pdf: true)
       return unless file_path
 
+      file_paths << file_path
+      pdf_content = pdf_visualization(object, export: export, file_path: file_path)
+      return unless pdf_content
+
       zip.put_next_entry(file_path)
       zip.write(pdf_content)
-      file_paths << file_path
     end
   end
 
@@ -79,23 +82,42 @@ class ExportJob < ApplicationJob
     object.nested_message_objects.each do |nested_message_object|
       next unless nested_message_object.pdf? || nested_message_object.downloadable_as_pdf?
 
-      pdf_content = if nested_message_object.pdf?
-                      nested_message_object.content
-                    else
-                      pdf_visualization(nested_message_object)
-                    end
-
       file_path = unique_path_within_export(object, export: export, other_file_names: file_paths, pdf: true)
       next unless file_path
 
+      file_paths << file_path
+      pdf_content = if nested_message_object.pdf?
+                      nested_message_object.content
+                    else
+                      pdf_visualization(nested_message_object, export: export, file_path: file_path)
+                    end
+      next unless pdf_content
+
       zip.put_next_entry(file_path)
       zip.write(pdf_content)
-      file_paths << file_path
     end
   end
 
-  def pdf_visualization(object)
-    object.prepare_pdf_visualization || raise(PdfVisualizationFailed, pdf_visualization_failure(object))
+  def pdf_visualization(object, export:, file_path:)
+    if @fs_api_outages.to_i >= FS_API_OUTAGE_AFTER && object.fs_pdf_visualization_supported?
+      return skip_pdf_visualization(export: export, file_path: file_path)
+    end
+
+    object.prepare_pdf_visualization(in_background: true) ||
+      skip_pdf_visualization(export: export, file_path: file_path, error: PdfVisualizationFailed.new(pdf_visualization_failure(object)))
+  rescue Fs::PdfVisualizationTooLarge
+    skip_pdf_visualization(export: export, file_path: file_path)
+  rescue Fs::PdfVisualizationUnavailable => error
+    @fs_api_outages = @fs_api_outages.to_i + 1
+    skip_pdf_visualization(export: export, file_path: file_path, error: error)
+  rescue StandardError => error
+    skip_pdf_visualization(export: export, file_path: file_path, error: error)
+  end
+
+  def skip_pdf_visualization(export:, file_path:, error: nil)
+    Rollbar.error(error, file_path: file_path) if error
+    export.skipped_pdf_paths << file_path
+    nil
   end
 
   def pdf_visualization_failure(object)

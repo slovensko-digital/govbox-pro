@@ -10,5 +10,10 @@ class Api::MessageObjectsController < Api::TenantController
     else
       render_not_found
     end
+  rescue Fs::PdfVisualizationUnavailable
+    headers["Retry-After"] = "30"
+    render status: :service_unavailable, json: { message: "PDF visualization is not available right now, try again later" }
+  rescue Fs::PdfVisualizationTooLarge
+    render status: :content_too_large, json: { message: "The form is too large to visualize as PDF" }
   end
 end

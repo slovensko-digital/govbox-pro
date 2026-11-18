@@ -6,21 +6,21 @@ module PdfVisualizationOperations
   UPVS_FORM_IDENTIFIER_PATTERN = /([^\/]+)\/(\d+\.\d+)\z/
 
   included do
-    def prepare_pdf_visualization
-      pdf = prepare_pdf_visualization_from_template || prepare_pdf_visualization_from_form
+    def prepare_pdf_visualization(in_background: false)
+      pdf = prepare_pdf_visualization_from_template || prepare_pdf_visualization_from_form(in_background: in_background)
       return pdf if pdf || fs_pdf_visualization_supported?
 
       prepare_pdf_visualization_from_html
     end
 
-    def prepare_pdf_visualization_from_form
-      return unless xml_content?
+    def prepare_pdf_visualization_from_form(in_background: false)
+      return unless form? && xml_content?
 
-      message.form.try(:pdf_visualization, self)
+      message.form.try(:pdf_visualization, self, in_background: in_background)
     end
 
     def fs_pdf_visualization_supported?
-      xml_content? && message.form.try(:pdf_visualization_supported?, self)
+      form? && xml_content? && message.form.try(:pdf_visualization_supported?, self)
     end
 
     def xml_content?
