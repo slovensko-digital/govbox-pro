@@ -11,7 +11,7 @@
 #
 module Automation
   class Webhook < ApplicationRecord
-    HTTP_TIMEOUT = 30
+    HTTP_TIMEOUT = Integer(ENV["WEBHOOKS_HTTP_TIMEOUT"].presence || 30)
     DEFAULT_DOWNLOADER = Faraday.new(request: { timeout: HTTP_TIMEOUT })
 
     class DeliveryError < StandardError; end
