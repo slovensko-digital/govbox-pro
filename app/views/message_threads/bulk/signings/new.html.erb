@@ -11,7 +11,7 @@
         <% end %>
 
         <div class="w-full my-4">
-          <p class="pb-2">Vybrané vlákna obsahujú <%= t("signing.documents", count: @message_objects.length) %> na podpis.</p>
+          <p class="<%= Current.tenant.agp_signing_enabled? ? "pb-2" : "pb-4" %>">Vybrané vlákna obsahujú <%= t("signing.documents", count: @message_objects.length) %> na podpis.</p>
           <% if Current.tenant.agp_signing_enabled? %>
             <p class="text-sm text-gray-600">
               V prípade problémov s novým podpisovaním použite
