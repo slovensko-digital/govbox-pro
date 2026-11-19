@@ -37,6 +37,30 @@ class Agp::BundlesControllerTest < ActionController::TestCase
     assert_select "turbo-frame#modal script", count: 0
   end
 
+  test "show offers signing the documents of several drafts directly with Autogram when Autogram Portal does not load" do
+    get :show, params: { id: @bundle.id }
+
+    assert_select "[data-agp-signing-target='error'] form[action='#{start_message_threads_bulk_signing_path}']" do
+      [@message_object_one, @message_object_two].map { |message_object| message_object.message.message_thread_id }.uniq.each do |thread_id|
+        assert_select "input[name='message_thread_ids[]'][value='#{thread_id}']"
+      end
+      assert_select "input[type=submit][value='Podpísať priamo Autogramom']"
+    end
+  end
+
+  test "show offers signing the documents of a draft directly with Autogram when Autogram Portal does not load" do
+    bundle = Agp::Bundle.create!(tenant: @tenant, status: :created)
+    contract = create_contract_for(@message_object_one)
+    contract.update!(bundle: bundle)
+
+    get :show, params: { id: bundle.id }
+
+    assert_select "[data-agp-signing-target='error'] form[action='#{message_draft_signing_path(@message_object_one.message)}']" do
+      assert_select "input[name='object_ids[]'][value='#{@message_object_one.id}']"
+      assert_select "input[type=submit][value='Podpísať priamo Autogramom']"
+    end
+  end
+
   test "show is denied to other users of the tenant" do
     sign_in(users(:ssd_signer2))
 

@@ -30,5 +30,21 @@
   <div data-agp-signing-target="error" class="hidden mx-auto max-w-md px-6 py-10 text-center">
     <h3 class="text-lg font-semibold text-gray-900">Autogram Portal sa nepodarilo načítať</h3>
     <p class="mt-2 text-sm text-gray-600">Skúste to prosím o chvíľu znova alebo použite podpisovanie priamo cez Autogram.</p>
+
+    <%# the same direct signing GovBox falls back to when the bundle cannot be created %>
+    <% message_objects = @bundle.contracts.map(&:message_object) %>
+    <% messages = message_objects.map(&:message).uniq %>
+    <%= form_with url: messages.one? ? message_draft_signing_path(messages.sole) : start_message_threads_bulk_signing_path, method: :post, data: { turbo_frame: "modal" }, class: "mt-6" do %>
+      <% if messages.one? %>
+        <% message_objects.each do |message_object| %>
+          <%= hidden_field_tag "object_ids[]", message_object.id, id: nil %>
+        <% end %>
+      <% else %>
+        <% messages.map(&:message_thread_id).uniq.each do |message_thread_id| %>
+          <%= hidden_field_tag "message_thread_ids[]", message_thread_id, id: nil %>
+        <% end %>
+      <% end %>
+      <%= submit_tag "Podpísať priamo Autogramom", class: "inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 hover:cursor-pointer" %>
+    <% end %>
   </div>
 </div>
