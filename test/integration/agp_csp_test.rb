@@ -45,6 +45,25 @@ class AgpCspTest < ActionDispatch::IntegrationTest
     assert_no_match(/local-network|loopback-network/, response.headers["Permissions-Policy"].to_s)
   end
 
+  # e.g. the login page, whose policy would stay in force after a login form submitted by Turbo
+  test "Turbo reloads a page loaded without the policy for the AGP of the tenant" do
+    @tenant.update!(
+      feature_flags: (@tenant.feature_flags + ["autogram_portal"]).uniq,
+      settings_agp_api_url: "https://agp.example.test:8443/",
+      settings_agp_api_token_private_key: OpenSSL::PKey::RSA.generate(2048).to_pem,
+      settings_agp_sub: "govbox-test"
+    )
+
+    get auth_path
+    assert_select "meta[name=agp-origin]", count: 0
+
+    post "/auth/google_oauth2"
+    follow_redirect!
+    get message_threads_path
+
+    assert_select "meta[name=agp-origin][data-turbo-track=reload][content=?]", "https://agp.example.test:8443"
+  end
+
   test "tenant without autogram portal does not allow AGP" do
     post "/auth/google_oauth2"
     follow_redirect!
@@ -52,5 +71,6 @@ class AgpCspTest < ActionDispatch::IntegrationTest
 
     policy = response.headers.fetch("Content-Security-Policy")
     assert_match %r{frame-src 'self';}, policy
+    assert_select "meta[name=agp-origin]", count: 0
   end
 end
