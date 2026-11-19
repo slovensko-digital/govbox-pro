@@ -51,6 +51,8 @@ export default class extends Controller {
     this.agpInstance = window.agp.initBundleIframe(this.bundleIdValue, {
       mode: "iframe",
       previewLevel: "no_onboarding",
+      // like signing directly with Autogram before, more documents are signed at once with it; one by one (e.g. on a phone) on request
+      preferBatchSigning: true,
       baseUrl: this.agpUrlValue,
       parentElement: this.iframeTarget,
       locale: "sk",
