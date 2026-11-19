@@ -5,7 +5,11 @@ class Searchable::ReindexMessageThreadJobTest < ActiveJob::TestCase
     thread_one = message_threads(:ssd_main_general)
     Searchable::ReindexMessageThreadJob.new.perform(thread_one.id)
 
-    Searchable::MessageThread.find_by_message_thread_id!(thread_one.id)
+    indexed = Searchable::MessageThread.find_by_message_thread_id(thread_one.id)
+
+    assert_not_nil indexed
+    assert_equal thread_one.id, indexed.message_thread_id
+    assert_predicate indexed.content, :present?
   end
 
   test "ignores invalid id" do

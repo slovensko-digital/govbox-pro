@@ -51,6 +51,15 @@ class Fs::Box < Box
     true
   end
 
+  def prepare_html_visualization_for_display(message)
+    if message.draft? || message.outbox?
+      # FS forms hide these with their own JavaScript, which never runs in the visualization iframe.
+      "<style>noscript, #buttonsPlaceholder, #statusDialog { display: none; }</style>#{message.html_visualization}"
+    else
+      message.html_visualization
+    end
+  end
+
   store_accessor :settings, :dic, prefix: true
   store_accessor :settings, :subject_id, prefix: true
   store_accessor :settings, :is_subject_c_reg, prefix: true

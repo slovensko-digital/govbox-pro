@@ -20,9 +20,6 @@ class MessageDraftsTest < ApplicationSystemTestCase
     end
   end
 
-  test "user can create message draft as reply on replyable message" do
-  end
-
   test "templated message draft content is searchable" do
     message = messages(:ssd_main_empty_draft)
     thread = message_threads(:ssd_main_empty_draft)
