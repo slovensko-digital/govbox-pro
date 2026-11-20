@@ -13,6 +13,10 @@ Rails.application.configure do
   no_account_trial_origin = -> { ENV["SSD_NO_ACCOUNT_TRIAL_RETURN_URL"].presence&.then { |url| URI(url).origin } }
   fs_forms_storage_origin = -> { ENV["FS_FORMS_STORAGE_API_URL"].presence&.then { |url| URI(url).origin } }
 
+  # Autogram Portal signing runs in an iframe loaded by the AGP SDK script. The policy of the page the user
+  # landed on stays in force across Turbo visits, so allow the tenant's AGP on every page, not only in the modal.
+  agp_origin = -> { Current.tenant&.agp_signing_enabled? ? Current.tenant.agp_origin : nil }
+
   config.content_security_policy do |policy|
     policy.default_src :self
     policy.base_uri    :self
@@ -23,8 +27,8 @@ Rails.application.configure do
                        *(upvs_login_url if ENV["UPVS_SSO_SUBJECT"].present?),
                        no_account_trial_origin
     policy.frame_ancestors :self
-    policy.frame_src   :self
-    policy.script_src  :self
+    policy.frame_src   :self, agp_origin
+    policy.script_src  :self, agp_origin
     policy.style_src   :self, :unsafe_inline, fs_forms_storage_origin
     policy.font_src    :self, :https, :data
     policy.img_src     :self, :data,

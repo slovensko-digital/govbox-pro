@@ -36,6 +36,12 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     super
   end
 
+  # After rendering a Turbo Stream, Turbo waits for an animation frame and focuses again the element
+  # that had focus before the render. Keys typed into another field in between end up in that element.
+  def wait_for_turbo_focus_restore
+    evaluate_async_script("requestAnimationFrame(() => requestAnimationFrame(arguments[0]))")
+  end
+
   include AuthHelper
   include PagePartsHelper
   include TenantHelper
