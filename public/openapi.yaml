@@ -112,6 +112,84 @@ paths:
       security:
         - "Tenant_Token": []
 
+  /api/automation_rules:
+    get:
+      tags: [Pravidlá]
+      summary: Vráti zoznam pravidiel tenanta
+      description: Vráti zoznam automatizačných pravidiel (napr. štítkovania) pre daného tenanta.
+      responses:
+        200:
+          description: Úspešné získanie zoznamu pravidiel
+      security:
+        - "Tenant_Token": []
+    post:
+      tags: [Pravidlá, Štítky]
+      summary: Vytvorí pravidlo štítkovania
+      description: |
+        Vytvorí pravidlo, ktoré pri výskyte udalosti (`trigger_event`) a splnení všetkých podmienok
+        pridá (alebo odoberie) štítok. Neexistujúci štítok sa vytvorí.
+        Povolené typy podmienok: `Automation::ContainsCondition`, `Automation::ValueCondition`,
+        `Automation::BooleanCondition`, `Automation::MetadataValueCondition`, `Automation::MetadataValueNotCondition`,
+        `Automation::MessageMetadataValueCondition`, `Automation::AttachmentContentContainsCondition`,
+        `Automation::AttachmentsPresentCondition`.
+        Povolené typy akcií: `Automation::AddMessageThreadTagAction`, `Automation::UnassignMessageThreadTagAction`.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                automation_rule:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    trigger_event:
+                      type: string
+                      enum: [message_created, message_updated, message_draft_validated, message_draft_submitted, message_object_downloaded]
+                    conditions:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          type: { type: string }
+                          attr: { type: string }
+                          value: { type: string }
+                    actions:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          type: { type: string }
+                          tag: { type: string, description: Názov štítka }
+      responses:
+        201:
+          description: Pravidlo bolo vytvorené
+        422:
+          description: Neplatné pravidlo
+      security:
+        - "Tenant_Token": []
+
+  /api/automation_rules/{id}:
+    delete:
+      tags: [Pravidlá]
+      summary: Zmaže pravidlo
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        204:
+          description: Pravidlo bolo zmazané
+        404:
+          description: Pravidlo nenájdené
+      security:
+        - "Tenant_Token": []
+
   /api/users:
     get:
       tags: [Používatelia]

@@ -279,6 +279,7 @@ Rails.application.routes.draw do
 
     resources :users, only: :index
     resources :boxes, only: :index
+    resources :automation_rules, only: [:index, :create, :destroy]
 
     namespace :fs do
       resources :api_connections, only: [:index] do
