@@ -21,32 +21,19 @@ class ExportJob < ApplicationJob
 
   queue_as :default
 
-  def perform(export)
-    file_paths = []
+  THREADS_PER_BATCH = 25
 
-    export_content = ::Zip::OutputStream.write_buffer do |zip|
-      if export.settings.dig("messages")
-        export.message_threads.each do |message_thread|
-          export.filtered_messages(message_thread).includes(:thread).each do |message|
-            message.objects.each do |object|
-              prepare_original_object(object, export: export, zip: zip, file_paths: file_paths)
-              prepare_pdf_object(object, export: export, zip: zip, file_paths: file_paths) if export.settings["pdf"]
+  def perform(export, offset: 0, file_paths: [], batch_size: THREADS_PER_BATCH)
+    file_paths = file_paths.dup
 
-              EventBus.publish(:message_object_downloaded, object)
-            end
-          end
-        end
-      end
+    if export.settings.dig("messages")
+      batch_ids = export.message_thread_ids[offset, batch_size] || []
+      build_part(export, batch_ids, File.join(parts_dir(export), "part-#{offset}.zip"), file_paths) if batch_ids.any?
 
-      prepare_summary(export: export, zip: zip) if export.settings.dig("summary")
+      return ExportJob.set(job_context: :medium).perform_later(export, offset: offset + batch_size, file_paths: file_paths, batch_size: batch_size) if offset + batch_size < export.message_thread_ids.size
     end
 
-    FileStorage.new.store("exports", export.file_name, export_content.string.force_encoding("UTF-8"))
-
-    export.user.notifications.create!(
-      type: Notifications::ExportFinished,
-      export: export
-    )
+    finalize_export(export)
   end
 
   def prepare_original_object(object, export:, zip:, file_paths:)
@@ -144,5 +131,76 @@ class ExportJob < ApplicationJob
 
     matches_count = other_file_names.count { |name| /#{Regexp.escape(path_without_extension)}( \(\d+\))?#{Regexp.escape(extension)}/ =~ name }
     "#{path_without_extension} (#{matches_count})#{extension}"
+  end
+
+  private
+
+  def parts_dir(export)
+    Rails.root.join("storage", "exports", "tmp", "export-#{export.id}").to_s
+  end
+
+  def ordered_part_paths(export)
+    Dir[File.join(parts_dir(export), "part-*.zip")].sort_by { |path| File.basename(path)[/\d+/].to_i }
+  end
+
+  def build_part(export, batch_ids, part_path, file_paths)
+    tmp_path = "#{part_path}.tmp"
+    FileUtils.mkdir_p(File.dirname(part_path))
+
+    ::Zip::OutputStream.open(tmp_path) do |zip|
+      batch_ids.each do |thread_id|
+        message_thread = export.message_threads.find_by(id: thread_id)
+        next unless message_thread
+
+        export.filtered_messages(message_thread).includes(:thread, :objects).find_each do |message|
+          message.objects.each do |object|
+            prepare_original_object(object, export: export, zip: zip, file_paths: file_paths)
+            prepare_pdf_object(object, export: export, zip: zip, file_paths: file_paths) if export.settings["pdf"]
+          end
+        end
+      end
+    end
+
+    FileUtils.mv(tmp_path, part_path)
+  end
+
+  def finalize_export(export)
+    final_tmp_path = "#{export.storage_path}.tmp"
+    FileUtils.mkdir_p(File.dirname(export.storage_path))
+
+    ::Zip::OutputStream.open(final_tmp_path) do |zip|
+      ordered_part_paths(export).each do |part_path|
+        ::Zip::File.open(part_path) do |part_zip|
+          part_zip.each do |entry|
+            zip.put_next_entry(entry.name)
+            zip.write(entry.get_input_stream.read)
+          end
+        end
+      end
+
+      prepare_summary(export: export, zip: zip) if export.settings.dig("summary")
+    end
+
+    FileUtils.mv(final_tmp_path, export.storage_path)
+
+    if export.settings.dig("messages")
+      export.message_thread_ids.each do |thread_id|
+        message_thread = export.message_threads.find_by(id: thread_id)
+        next unless message_thread
+
+        export.filtered_messages(message_thread).includes(:thread, :objects).find_each do |message|
+          message.objects.each do |object|
+            EventBus.publish(:message_object_downloaded, object)
+          end
+        end
+      end
+    end
+
+    FileUtils.rm_rf(parts_dir(export))
+
+    export.user.notifications.create!(
+      type: Notifications::ExportFinished,
+      export: export
+    )
   end
 end
