@@ -12,19 +12,19 @@ class AutomationRulesApiTest < ActionDispatch::IntegrationTest
       post "/api/automation_rules", params: {
         token: @token,
         automation_rule: {
-          name: "Rule by VAT ID",
+          name: "Tag invoices by VAT ID",
           trigger_event: "message_created",
           conditions: [{ type: "Automation::AttachmentContentContainsCondition", attr: "attachment", value: "2020123456" }],
-          actions: [{ type: "Automation::AddMessageThreadTagAction", tag: "Client tag" }]
+          actions: [{ type: "Automation::AddMessageThreadTagAction", tag: "Invoice" }]
         }
       }, as: :json
     end
 
     assert_response :created
     json = JSON.parse(response.body)
-    assert_equal "Rule by VAT ID", json["name"]
-    assert_equal "Client tag", json["actions"].first["tag"]
-    assert_equal "Client tag", @tenant.automation_rules.find(json["id"]).actions.first.action_object.name
+    assert_equal "Tag invoices by VAT ID", json["name"]
+    assert_equal "Invoice", json["actions"].first["tag"]
+    assert_equal "Invoice", @tenant.automation_rules.find(json["id"]).actions.first.action_object.name
   end
 
   test "rejects unknown condition type" do
