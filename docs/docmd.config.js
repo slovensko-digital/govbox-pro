@@ -159,6 +159,7 @@ export default defineConfig({
         { title: 'Prepojenie s účtami na Finančnej správe', path: '/financna-sprava/connections' },
         { title: 'Správa schránok', path: '/financna-sprava/mailbox-management' },
         { title: 'Hromadné podania', path: '/financna-sprava/submissions' },
+        { title: 'Zmenené údaje vo formulári', path: '/financna-sprava/form-changes' },
         { title: 'Kontrola potvrdení', path: '/financna-sprava/delivery-reports' },
       ],
     },

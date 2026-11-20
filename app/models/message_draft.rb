@@ -269,6 +269,18 @@ class MessageDraft < Message
     # noop
   end
 
+  def correctable_xml?
+    false
+  end
+
+  def apply_corrected_xml
+    false
+  end
+
+  def diff_error_descriptions
+    raise NotImplementedError
+  end
+
   private
 
   def validate_data

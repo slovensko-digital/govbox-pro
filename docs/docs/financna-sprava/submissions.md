@@ -22,7 +22,7 @@ V GovBox PRO je možné vytvárať podania na Finančnú správu, ktoré sa auto
    Klikne na tlačidlo **"Nahrať správy"**
 
 4. **Validácia podaní**
-   Automaticky sa **skontroluje** obsah podaní **rovnakou logikou ako na portáli Finančnej správy** a podania s validačnými chybami sa označia za problémové, aby používateľ jednoducho vedel určiť, ktoré podania treba skontrolovať
+   Automaticky sa **skontroluje** obsah podaní **rovnakou logikou ako na portáli Finančnej správy** a podania s validačnými chybami sa označia za problémové, aby používateľ jednoducho vedel určiť, ktoré podania treba skontrolovať. Ak formulár Finančnej správy pri načítaní zmení niektoré údaje, podanie sa tiež označí za problémové, viď [Zmenené údaje vo formulári](form-changes.md)
 
 5. **Kontrola problémových podaní**
    Pomocou štíkta Problémové rýchlo identifikujete, ktoré podania je potrebné skontrolovať
@@ -42,6 +42,11 @@ V GovBox PRO je možné vytvárať podania na Finančnú správu, ktoré sa auto
 Ako hromadne podpisovať dokumenty v GovBox PRO:
 
 - **[Hromadné podpisovanie](../signing/bulk-signing.md)**
+
+### Zmenené údaje vo formulári
+Čo robiť, keď formulár Finančnej správy zmení údaje v podaní:
+
+- **[Zmenené údaje vo formulári](form-changes.md)**
 
 ### Odosielanie správ
 Ako odoslať rozpracované správy v GovBox PRO:
