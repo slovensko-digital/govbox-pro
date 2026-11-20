@@ -17,7 +17,7 @@ Používateľ môže vyžiadať podpis od iných používateľov, typicky naprí
    Po kliknutí na **"Vyžiadať na podpis"** používateľ zvolí, ktoré dokumenty je potrebné podpísať
 
 3. **Zvoľte podpisujúcich**
-   Používateľ vyberie osoby, ktoré majú dokumenty podpísať
+   Používateľ vyberie osoby, ktoré majú dokumenty podpísať. Ak má schránka Finančnej správy prepojenie s nastaveným [vlastníkom](../financna-sprava/connections.md), v zozname sa zobrazia iba vlastníci
 
 4. **Uložte zmeny**
    Uloží zmeny

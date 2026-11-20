@@ -46,8 +46,13 @@ module MessageDrafts
     end
 
     def signers_scope
-      signer_groups_ids = (Current.tenant.signer_group.users.map(&:user_group) + [Current.tenant.signer_group]).map(&:id)
+      # already requested signers are kept so that their requests can be removed
+      signer_groups_ids = @message_draft.signer_groups.map(&:id) + requested_signer_groups_ids
       Current.tenant.groups.where(id: signer_groups_ids).order(name: :asc)
+    end
+
+    def requested_signer_groups_ids
+      TagGroup.where(tag: SignatureRequestedFromTag.where(id: MessageObjectsTag.where(message_object: @message_objects).select(:tag_id))).pluck(:group_id)
     end
 
     def signer_scope
