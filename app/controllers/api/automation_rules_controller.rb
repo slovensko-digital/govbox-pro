@@ -1,5 +1,11 @@
 class Api::AutomationRulesController < Api::TenantController
-  rescue_from ActiveRecord::RecordInvalid, ActiveRecord::SubclassNotFound do |error|
+  before_action :set_rule, only: %i[show destroy]
+
+  rescue_from ActiveRecord::RecordInvalid do |error|
+    # rescue_from runs outside of the use_en_locale around action
+    render_unprocessable_content(I18n.with_locale(:en) { error.record.errors.full_messages.to_sentence })
+  end
+  rescue_from ActiveRecord::SubclassNotFound do |error|
     render_unprocessable_content(error.message)
   end
 
@@ -7,38 +13,41 @@ class Api::AutomationRulesController < Api::TenantController
     @rules = @tenant.automation_rules.includes(:conditions, actions: :action_object).order(:id)
   end
 
+  def show; end
+
   def create
-    @rule = @tenant.automation_rules.new(rule_params)
-
     Automation::Rule.transaction do
-      condition_params.each { |condition| @rule.conditions.build(condition) }
-      action_params.each do |action|
-        @rule.actions.build(type: action[:type], action_object: find_or_create_tag(action[:tag]))
-      end
-
-      @rule.save!(context: :api)
+      @rule = @tenant.automation_rules.create!(rule_attributes)
     end
 
     render :show, status: :created
   end
 
   def destroy
-    @tenant.automation_rules.find(params[:id]).destroy!
+    @rule.destroy!
     head :no_content
   end
 
   private
 
-  def rule_params
-    params.require(:automation_rule).permit(:name, :trigger_event)
+  def set_rule
+    @rule = @tenant.automation_rules.find(params.expect(:id))
   end
 
-  def condition_params
-    params.require(:automation_rule).permit(conditions: %i[type attr value])[:conditions] || []
+  def rule_attributes
+    permitted = params.expect(automation_rule: [:name, :trigger_event, { conditions: [%i[type attr value]], actions: [%i[type value tag]] }])
+
+    {
+      name: permitted[:name],
+      trigger_event: permitted[:trigger_event],
+      conditions_attributes: permitted.fetch(:conditions, []),
+      actions_attributes: permitted.fetch(:actions, []).map { |action| action_attributes(action) }
+    }
   end
 
-  def action_params
-    params.require(:automation_rule).permit(actions: %i[type tag])[:actions] || []
+  def action_attributes(action)
+    tag_name = action.delete(:tag)
+    tag_name.present? ? action.merge(action_object: find_or_create_tag(tag_name)) : action
   end
 
   def find_or_create_tag(name)

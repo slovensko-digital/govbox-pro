@@ -8,5 +8,6 @@ json.conditions rule.conditions do |condition|
 end
 json.actions rule.actions do |action|
   json.type action.type
-  json.tag action.action_object&.name
+  json.value action.value
+  json.tag action.action_object.name if action.action_object.is_a?(Tag)
 end
