@@ -1,14 +1,6 @@
 class Api::AutomationRulesController < Api::TenantController
   before_action :set_rule, only: %i[show destroy]
 
-  rescue_from ActiveRecord::RecordInvalid do |error|
-    # rescue_from runs outside of the use_en_locale around action
-    render_unprocessable_content(I18n.with_locale(:en) { error.record.errors.full_messages.to_sentence })
-  end
-  rescue_from ActiveRecord::SubclassNotFound do |error|
-    render_unprocessable_content(error.message)
-  end
-
   def index
     @rules = @tenant.automation_rules.includes(:conditions, actions: :action_object).order(:id)
   end
@@ -17,10 +9,17 @@ class Api::AutomationRulesController < Api::TenantController
 
   def create
     Automation::Rule.transaction do
-      @rule = @tenant.automation_rules.create!(rule_attributes)
-    end
+      @rule = @tenant.automation_rules.new(rule_attributes)
 
-    render :show, status: :created
+      if @rule.save
+        render :show, status: :created
+      else
+        render_unprocessable_content(@rule.errors.full_messages.join(', '))
+        raise ActiveRecord::Rollback
+      end
+    end
+  rescue ActiveRecord::SubclassNotFound => e
+    render_unprocessable_content(e.message)
   end
 
   def destroy
