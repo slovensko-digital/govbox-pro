@@ -13,7 +13,7 @@ class Automation::ConditionTest < ActiveSupport::TestCase
   end
 
   test "regexp based conditions accept a valid regular expression" do
-    condition = @rule.conditions.build(type: "Automation::AttachmentContentContainsCondition", attr: "attachment", value: "DIČ:\\s*2020\\d{6}")
+    condition = @rule.conditions.build(type: "Automation::AttachmentContentContainsCondition", attr: "attachment", value: "DIČ:\\s*\\d{10}")
 
     assert condition.valid?
   end
