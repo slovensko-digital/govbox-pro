@@ -31,6 +31,16 @@ module Automation
       end.compact
     end
 
+    private
+
+    def value_must_be_valid_regexp
+      Regexp.new(value) if value.present?
+    rescue RegexpError => e
+      errors.add(:value, "is not a valid regular expression (#{e.message})")
+    end
+
+    public
+
     def box_list
       automation_rule.tenant.boxes.order(:name).pluck(:name, :id)
     end
@@ -56,6 +66,7 @@ module Automation
 
   class ContainsCondition < Automation::Condition
     validates :value, presence: true
+    validate :value_must_be_valid_regexp
     VALID_ATTR_LIST = %w[sender_name recipient_name title object_type].freeze
     validates :attr, inclusion: { in: VALID_ATTR_LIST }
 
@@ -84,6 +95,7 @@ module Automation
 
   class MetadataValueCondition < Automation::Condition
     validates :value, presence: true
+    validate :value_must_be_valid_regexp
     VALID_ATTR_LIST = %w[sender_uri recipient_uri edesk_class fs_submission_status fs_message_type fs_submission_verification_status.name fs_submission_verification_status.description].freeze
     validates :attr, inclusion: { in: VALID_ATTR_LIST }
 
@@ -98,6 +110,7 @@ module Automation
 
   class MetadataValueNotCondition < Automation::Condition
     validates :value, presence: true
+    validate :value_must_be_valid_regexp
     VALID_ATTR_LIST = %w[sender_uri recipient_uri edesk_class fs_submission_status fs_message_type fs_submission_verification_status.name fs_submission_verification_status.description].freeze
     validates :attr, inclusion: { in: VALID_ATTR_LIST }
 
@@ -111,6 +124,7 @@ module Automation
   end
 
   class BoxCondition < Automation::Condition
+    validates :condition_object, presence: true
     validates_associated :condition_object
     VALID_ATTR_LIST = ['box'].freeze
 
@@ -131,6 +145,7 @@ module Automation
 
   class MessageMetadataValueCondition < Automation::Condition
     validates :value, presence: true
+    validate :value_must_be_valid_regexp
     VALID_ATTR_LIST = %w[edesk_class fs_message_type].freeze
     validates :attr, inclusion: { in: VALID_ATTR_LIST }
 
@@ -145,6 +160,7 @@ module Automation
 
   class AttachmentContentContainsCondition < Automation::Condition
     validates :value, presence: true
+    validate :value_must_be_valid_regexp
     VALID_ATTR_LIST = ['attachment'].freeze
 
     def satisfied?(thing)
@@ -170,6 +186,7 @@ module Automation
   end
 
   class ApiConnectionCondition < Automation::Condition
+    validates :condition_object, presence: true
     validates_associated :condition_object
     VALID_ATTR_LIST = ['api_connection'].freeze
 
