@@ -14,6 +14,8 @@ module Automation
   class Rule < ApplicationRecord
     include AuditableEvents
 
+    TRIGGER_EVENTS = %w[message_created message_updated message_draft_validated message_draft_submitted message_object_downloaded].freeze
+
     belongs_to :tenant
     belongs_to :user, optional: true
     has_many :conditions,
@@ -26,6 +28,9 @@ module Automation
              dependent: :destroy,
              foreign_key: :automation_rule_id,
              inverse_of: :automation_rule
+
+    validates :name, presence: true
+    validates :trigger_event, inclusion: { in: TRIGGER_EVENTS }
 
     accepts_nested_attributes_for :conditions, :actions, allow_destroy: true
 

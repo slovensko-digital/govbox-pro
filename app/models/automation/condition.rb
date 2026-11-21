@@ -18,6 +18,8 @@ module Automation
     belongs_to :condition_object, polymorphic: true, optional: true
     before_save :cleanup_record
 
+    validates :type, inclusion: { in: ->(_) { Automation::Condition.subclasses.map(&:name) } }
+
     attr_accessor :delete_record
 
     # when adding items, check defaults in condition_form_component.rb
@@ -53,7 +55,7 @@ module Automation
   end
 
   class ContainsCondition < Automation::Condition
-    validates :value, presence: true
+    validates :value, presence: true, regexp: true
     VALID_ATTR_LIST = %w[sender_name recipient_name title object_type].freeze
     validates :attr, inclusion: { in: VALID_ATTR_LIST }
 
@@ -81,7 +83,7 @@ module Automation
   end
 
   class MetadataValueCondition < Automation::Condition
-    validates :value, presence: true
+    validates :value, presence: true, regexp: true
     VALID_ATTR_LIST = %w[sender_uri recipient_uri edesk_class fs_submission_status fs_message_type fs_submission_verification_status.name fs_submission_verification_status.description].freeze
     validates :attr, inclusion: { in: VALID_ATTR_LIST }
 
@@ -95,7 +97,7 @@ module Automation
   end
 
   class MetadataValueNotCondition < Automation::Condition
-    validates :value, presence: true
+    validates :value, presence: true, regexp: true
     VALID_ATTR_LIST = %w[sender_uri recipient_uri edesk_class fs_submission_status fs_message_type fs_submission_verification_status.name fs_submission_verification_status.description].freeze
     validates :attr, inclusion: { in: VALID_ATTR_LIST }
 
@@ -109,6 +111,7 @@ module Automation
   end
 
   class BoxCondition < Automation::Condition
+    validates :condition_object, presence: true
     validates_associated :condition_object
     VALID_ATTR_LIST = ['box'].freeze
 
@@ -128,7 +131,7 @@ module Automation
   end
 
   class MessageMetadataValueCondition < Automation::Condition
-    validates :value, presence: true
+    validates :value, presence: true, regexp: true
     VALID_ATTR_LIST = %w[edesk_class fs_message_type].freeze
     validates :attr, inclusion: { in: VALID_ATTR_LIST }
 
@@ -142,7 +145,7 @@ module Automation
   end
 
   class AttachmentContentContainsCondition < Automation::Condition
-    validates :value, presence: true
+    validates :value, presence: true, regexp: true
     VALID_ATTR_LIST = ['attachment'].freeze
 
     def satisfied?(thing)
@@ -168,6 +171,7 @@ module Automation
   end
 
   class ApiConnectionCondition < Automation::Condition
+    validates :condition_object, presence: true
     validates_associated :condition_object
     VALID_ATTR_LIST = ['api_connection'].freeze
 

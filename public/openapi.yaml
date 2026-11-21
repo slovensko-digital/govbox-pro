@@ -112,6 +112,142 @@ paths:
       security:
         - "Tenant_Token": []
 
+  /api/automation_rules:
+    get:
+      tags: [Pravidlá]
+      summary: Vráti zoznam pravidiel tenanta
+      description: Vráti zoznam automatizačných pravidiel tenanta vrátane podmienok a akcií.
+      responses:
+        200:
+          description: Úspešné získanie zoznamu pravidiel
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AutomationRule'
+      security:
+        - "Tenant_Token": []
+    post:
+      tags: [Pravidlá, Štítky]
+      summary: Vytvorí pravidlo
+      description: |
+        Vytvorí automatizačné pravidlo, napríklad na štítkovanie správ podľa ich obsahu.
+        Pravidlo sa spustí pri zvolenej udalosti a jeho akcie sa vykonajú, ak sú splnené všetky jeho podmienky.
+        Pravidlo bez podmienok sa vykoná pri každej takejto udalosti.
+
+        Podporované udalosti (`trigger_event`):
+
+        * `message_created` – nová správa vo vlákne, vrátane správ prijatých zo synchronizácie a nových draftov,
+        * `message_updated` – zmena prijatej správy,
+        * `message_draft_validated` – dokončená validácia draftu,
+        * `message_draft_submitted` – draft bol odoslaný,
+        * `message_object_downloaded` – objekt správy bol stiahnutý.
+
+        Podporované podmienky (`conditions`) sú uvedené nižšie. Ak je hodnotou regulárny výraz, stačí, aby sa nachádzal kdekoľvek v texte,
+        napríklad `DIČ:\s*2020123456`. Na zhodu s celým textom použite `^...$`.
+
+        | type | attr | value |
+        |---|---|---|
+        | `Automation::ContainsCondition` | `sender_name`, `recipient_name`, `title`, `object_type` | regulárny výraz |
+        | `Automation::ValueCondition` | `type` | presná hodnota, napr. `Fs::MessageDraft` |
+        | `Automation::BooleanCondition` | `outbox` | `true` alebo `false` |
+        | `Automation::MetadataValueCondition` | `sender_uri`, `recipient_uri`, `edesk_class`, `fs_submission_status`, `fs_message_type`, `fs_submission_verification_status.name`, `fs_submission_verification_status.description` | regulárny výraz, ktorý sa musí v metadátach nachádzať |
+        | `Automation::MetadataValueNotCondition` | rovnaké ako pri `MetadataValueCondition` | regulárny výraz, ktorý sa v metadátach nesmie nachádzať |
+        | `Automation::MessageMetadataValueCondition` | `edesk_class`, `fs_message_type` | regulárny výraz v metadátach správy, ku ktorej objekt patrí (pri `message_object_downloaded`) |
+        | `Automation::AttachmentContentContainsCondition` | `attachment` | regulárny výraz, ktorý sa musí nachádzať v texte niektorej prílohy |
+        | `Automation::AttachmentsPresentCondition` | `attachments` | nepoužíva sa, správa má aspoň jednu prílohu |
+
+        Podporované akcie (`actions`):
+
+        | type | parameter |
+        |---|---|
+        | `Automation::AddMessageThreadTagAction` | `tag` – názov štítka, ktorý sa pridá vláknu; neexistujúci štítok sa vytvorí |
+        | `Automation::UnassignMessageThreadTagAction` | `tag` – názov štítka, ktorý sa z vlákna odoberie |
+        | `Automation::ChangeMessageThreadTitleAction` | `value` – nový názov vlákna, `{{title}}` sa nahradí pôvodným názvom |
+
+        Štítok sa zadáva názvom. Cez API nie je možné použiť systémové štítky.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [automation_rule]
+              properties:
+                automation_rule:
+                  type: object
+                  required: [name, trigger_event, actions]
+                  properties:
+                    name:
+                      type: string
+                    trigger_event:
+                      $ref: '#/components/schemas/AutomationRuleTriggerEvent'
+                    conditions:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/AutomationCondition'
+                    actions:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/AutomationAction'
+            example:
+              automation_rule:
+                name: Štítok Faktúry podľa DIČ
+                trigger_event: message_created
+                conditions:
+                  - type: Automation::AttachmentContentContainsCondition
+                    attr: attachment
+                    value: "2020123456"
+                actions:
+                  - type: Automation::AddMessageThreadTagAction
+                    tag: Faktúry
+      responses:
+        201:
+          description: Pravidlo bolo vytvorené
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AutomationRule'
+        422:
+          description: Neplatné pravidlo, `message` obsahuje všetky chyby validácie
+      security:
+        - "Tenant_Token": []
+
+  /api/automation_rules/{id}:
+    parameters:
+      - name: id
+        description: Id pravidla
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+    get:
+      tags: [Pravidlá]
+      summary: Vráti pravidlo
+      responses:
+        200:
+          description: Úspešné získanie pravidla
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AutomationRule'
+        404:
+          description: Pravidlo nenájdené
+      security:
+        - "Tenant_Token": []
+    delete:
+      tags: [Pravidlá]
+      summary: Zmaže pravidlo
+      responses:
+        204:
+          description: Pravidlo bolo zmazané
+        404:
+          description: Pravidlo nenájdené
+      security:
+        - "Tenant_Token": []
+
   /api/users:
     get:
       tags: [Používatelia]
@@ -1119,6 +1255,53 @@ webhooks:
 
 components:
   schemas:
+    AutomationRuleTriggerEvent:
+      type: string
+      enum: [message_created, message_updated, message_draft_validated, message_draft_submitted, message_object_downloaded]
+    AutomationCondition:
+      type: object
+      required: [type]
+      properties:
+        type:
+          type: string
+          example: Automation::AttachmentContentContainsCondition
+        attr:
+          type: string
+          example: attachment
+        value:
+          type: string
+          example: "2020123456"
+    AutomationAction:
+      type: object
+      required: [type]
+      properties:
+        type:
+          type: string
+          example: Automation::AddMessageThreadTagAction
+        tag:
+          description: Názov štítka pri akciách so štítkom
+          type: string
+          example: Faktúry
+        value:
+          description: Hodnota pri akciách, ktoré ju používajú
+          type: string
+    AutomationRule:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        trigger_event:
+          $ref: '#/components/schemas/AutomationRuleTriggerEvent'
+        conditions:
+          type: array
+          items:
+            $ref: '#/components/schemas/AutomationCondition'
+        actions:
+          type: array
+          items:
+            $ref: '#/components/schemas/AutomationAction'
     StandardWebhookRequestBody:
       description: Telo requestu vo formáte podľa [Standard Webhooks](https://github.com/standard-webhooks/standard-webhooks/blob/main/spec/standard-webhooks.md) špecifikácie. Požiadavka však nie je podpísaná.
       properties:

@@ -37,6 +37,10 @@ module Automation
   end
 
   class UnassignMessageThreadTagAction < Action
+    validates :action_object, presence: true
+    validates :action_object_type, inclusion: { in: ["Tag"] }
+    validates_associated :action_object, message: "is not a valid tag"
+
     def run!(thing, _event)
       tag = action_object
       return if thing.tenant != tag.tenant
@@ -55,6 +59,10 @@ module Automation
   end
 
   class AddMessageThreadTagAction < Action
+    validates :action_object, presence: true
+    validates :action_object_type, inclusion: { in: ["Tag"] }
+    validates_associated :action_object, message: "is not a valid tag"
+
     def run!(thing, _event)
       tag = action_object
       return if thing.tenant != tag.tenant
@@ -119,6 +127,9 @@ module Automation
   end
 
   class FireWebhookAction < Action
+    validates :action_object, presence: true
+    validates :action_object_type, inclusion: { in: ["Automation::Webhook"] }
+
     def run!(thing, event)
       webhook = action_object
       return unless thing.tenant == webhook.tenant
