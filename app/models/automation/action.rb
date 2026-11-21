@@ -48,6 +48,7 @@ module Automation
 
   class UnassignMessageThreadTagAction < Action
     validate { action_object_must_be_tenant(Tag, "tag") }
+    validates_associated :action_object, message: "is not a valid tag"
 
     def run!(thing, _event)
       tag = action_object
@@ -68,6 +69,7 @@ module Automation
 
   class AddMessageThreadTagAction < Action
     validate { action_object_must_be_tenant(Tag, "tag") }
+    validates_associated :action_object, message: "is not a valid tag"
 
     def run!(thing, _event)
       tag = action_object

@@ -165,6 +165,7 @@ paths:
         | `Automation::UnassignMessageThreadTagAction` | `tag` – názov štítka, ktorý sa z vlákna odoberie |
         | `Automation::ChangeMessageThreadTitleAction` | `value` – nový názov vlákna, `{{title}}` sa nahradí pôvodným názvom |
 
+        `tag` je vždy názov bežného štítka, systémové štítky (napr. podpisové) sa cez API použiť nedajú.
         Podmienky na schránku alebo API prepojenie a akcie s webhookom zatiaľ cez API vytvoriť nemožno.
       requestBody:
         required: true

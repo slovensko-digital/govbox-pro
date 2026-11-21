@@ -51,6 +51,17 @@ class AutomationRulesApiTest < ActionDispatch::IntegrationTest
     assert_includes message.thread.reload.tags.pluck(:name), "Invoice"
   end
 
+  test "does not use a system tag with the given name" do
+    signed_tag = tags(:ssd_signed)
+
+    assert_no_difference -> { Automation::Rule.count }, -> { Tag.count } do
+      post_rule(actions: [{ type: "Automation::AddMessageThreadTagAction", tag: signed_tag.name }])
+    end
+
+    assert_response :unprocessable_content
+    assert_match "Actions action object is not a valid tag", response.parsed_body["message"]
+  end
+
   test "creates a new tag only once when used by more actions" do
     assert_difference -> { @tenant.tags.count } => 1 do
       post_rule(actions: [

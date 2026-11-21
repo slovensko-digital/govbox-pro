@@ -46,10 +46,6 @@ class Api::AutomationRulesController < Api::TenantController
 
   def action_attributes(action)
     tag_name = action.delete(:tag)
-    tag_name.present? ? action.merge(action_object: find_or_create_tag(tag_name)) : action
-  end
-
-  def find_or_create_tag(name)
-    @tenant.tags.find_by(name: name) || @tenant.simple_tags.create!(name: name)
+    tag_name.present? ? action.merge(action_object: @tenant.simple_tags.find_or_create_by(name: tag_name)) : action
   end
 end
