@@ -86,6 +86,14 @@ class AutomationRulesApiTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_content
   end
 
+  test "rejects an unknown action type" do
+    assert_no_difference -> { Automation::Rule.count }, -> { Tag.count } do
+      post_rule(actions: [{ type: "Kernel", tag: "Brand new tag" }])
+    end
+
+    assert_response :unprocessable_content
+  end
+
   test "rejects an action without a matching object" do
     assert_no_difference -> { Automation::Rule.count } do
       post_rule(actions: [{ type: "Automation::FireWebhookAction", tag: "Invoice" }])
