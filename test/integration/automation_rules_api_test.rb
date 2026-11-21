@@ -10,7 +10,7 @@ class AutomationRulesApiTest < ActionDispatch::IntegrationTest
   test "creates a tagging rule and a new tag" do
     assert_difference -> { @tenant.automation_rules.count } => 1, -> { @tenant.tags.count } => 1 do
       post_rule(
-        conditions: [{ type: "Automation::AttachmentContentContainsCondition", attr: "attachment", value: "2020123456" }],
+        conditions: [{ type: "Automation::AttachmentContentContainsCondition", attr: "attachment", value: "1234567890" }],
         actions: [{ type: "Automation::AddMessageThreadTagAction", tag: "Invoice" }]
       )
     end
@@ -18,7 +18,7 @@ class AutomationRulesApiTest < ActionDispatch::IntegrationTest
     assert_response :created
     json = response.parsed_body
     assert_equal "Tag invoices by VAT ID", json["name"]
-    assert_equal [{ "type" => "Automation::AttachmentContentContainsCondition", "attr" => "attachment", "value" => "2020123456" }], json["conditions"]
+    assert_equal [{ "type" => "Automation::AttachmentContentContainsCondition", "attr" => "attachment", "value" => "1234567890" }], json["conditions"]
     assert_equal "Invoice", json["actions"].sole["tag"]
 
     rule = @tenant.automation_rules.find(json["id"])

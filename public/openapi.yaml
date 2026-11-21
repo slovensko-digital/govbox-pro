@@ -144,7 +144,7 @@ paths:
         * `message_object_downloaded` – objekt správy bol stiahnutý.
 
         Podmienky (`conditions`). Hodnoty označené ako regulárny výraz sa vyhľadávajú kdekoľvek v texte
-        (napr. `DIČ:\s*2020123456`), na celú zhodu použite `^...$`.
+        (napr. `DIČ:\s*1234567890`), na celú zhodu použite `^...$`.
 
         | type | attr | value |
         |---|---|---|
@@ -197,7 +197,7 @@ paths:
                 conditions:
                   - type: Automation::AttachmentContentContainsCondition
                     attr: attachment
-                    value: "2020123456"
+                    value: "1234567890"
                 actions:
                   - type: Automation::AddMessageThreadTagAction
                     tag: Faktúry
@@ -1269,7 +1269,7 @@ components:
           example: attachment
         value:
           type: string
-          example: "2020123456"
+          example: "1234567890"
     AutomationAction:
       type: object
       required: [type]
