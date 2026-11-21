@@ -8,15 +8,12 @@ class Api::AutomationRulesController < Api::TenantController
   def show; end
 
   def create
-    Automation::Rule.transaction do
-      @rule = @tenant.automation_rules.new(rule_attributes)
+    @rule = @tenant.automation_rules.new(rule_attributes)
 
-      if @rule.save
-        render :show, status: :created
-      else
-        render_unprocessable_content(@rule.errors.full_messages.join(', '))
-        raise ActiveRecord::Rollback
-      end
+    if @rule.save
+      render :show, status: :created
+    else
+      render_unprocessable_content(@rule.errors.full_messages.join(', '))
     end
   rescue ActiveRecord::SubclassNotFound => e
     render_unprocessable_content(e.message)
@@ -46,10 +43,11 @@ class Api::AutomationRulesController < Api::TenantController
 
   def action_attributes(action)
     tag_name = action.delete(:tag)
-    tag_name.present? ? action.merge(action_object: find_or_create_tag(tag_name)) : action
+    tag_name.present? ? action.merge(action_object: find_or_build_tag(tag_name)) : action
   end
 
-  def find_or_create_tag(name)
-    @tenant.tags.find_by(name: name) || @tenant.simple_tags.create!(name: name)
+  def find_or_build_tag(name)
+    @tags ||= {}
+    @tags[name] ||= @tenant.tags.find_by(name: name) || @tenant.simple_tags.new(name: name)
   end
 end

@@ -51,6 +51,18 @@ class AutomationRulesApiTest < ActionDispatch::IntegrationTest
     assert_includes message.thread.reload.tags.pluck(:name), "Invoice"
   end
 
+  test "creates a new tag only once when used by more actions" do
+    assert_difference -> { @tenant.tags.count } => 1 do
+      post_rule(actions: [
+        { type: "Automation::AddMessageThreadTagAction", tag: "Invoice" },
+        { type: "Automation::UnassignMessageThreadTagAction", tag: "Invoice" }
+      ])
+    end
+
+    assert_response :created
+    assert_equal 1, @tenant.automation_rules.find(response.parsed_body["id"]).actions.map(&:action_object_id).uniq.size
+  end
+
   test "rejects an invalid rule without leaving a tag behind" do
     assert_no_difference -> { Automation::Rule.count }, -> { Tag.count } do
       post_rule(
