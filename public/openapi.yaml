@@ -130,12 +130,13 @@ paths:
         - "Tenant_Token": []
     post:
       tags: [Pravidlá, Štítky]
-      summary: Vytvorí pravidlo, napr. na štítkovanie správ
+      summary: Vytvorí pravidlo
       description: |
-        Vytvorí automatizačné pravidlo. Keď nastane udalosť `trigger_event` a splnia sa všetky podmienky (AND),
-        vykonajú sa všetky akcie. Pravidlo bez podmienok sa vykoná pri každej udalosti.
+        Vytvorí automatizačné pravidlo, napríklad na štítkovanie správ podľa ich obsahu.
+        Pravidlo sa spustí pri zvolenej udalosti a jeho akcie sa vykonajú, ak sú splnené všetky jeho podmienky.
+        Pravidlo bez podmienok sa vykoná pri každej takejto udalosti.
 
-        Udalosti (`trigger_event`):
+        Podporované udalosti:
 
         * `message_created` – nová správa vo vlákne, vrátane správ prijatých zo synchronizácie a nových draftov,
         * `message_updated` – zmena prijatej správy,
@@ -143,8 +144,8 @@ paths:
         * `message_draft_submitted` – draft bol odoslaný,
         * `message_object_downloaded` – objekt správy bol stiahnutý.
 
-        Podmienky (`conditions`). Hodnoty označené ako regulárny výraz sa vyhľadávajú kdekoľvek v texte
-        (napr. `DIČ:\s*2020123456`), na celú zhodu použite `^...$`.
+        Podporované podmienky sú uvedené nižšie. Ak je hodnotou regulárny výraz, stačí, aby sa nachádzal kdekoľvek v texte,
+        napríklad `DIČ:\s*2020123456`. Na zhodu s celým textom použite `^...$`.
 
         | type | attr | value |
         |---|---|---|
@@ -157,7 +158,7 @@ paths:
         | `Automation::AttachmentContentContainsCondition` | `attachment` | regulárny výraz, ktorý sa musí nachádzať v texte niektorej prílohy |
         | `Automation::AttachmentsPresentCondition` | `attachments` | nepoužíva sa, správa má aspoň jednu prílohu |
 
-        Akcie (`actions`):
+        Podporované akcie:
 
         | type | parameter |
         |---|---|
@@ -165,8 +166,7 @@ paths:
         | `Automation::UnassignMessageThreadTagAction` | `tag` – názov štítka, ktorý sa z vlákna odoberie |
         | `Automation::ChangeMessageThreadTitleAction` | `value` – nový názov vlákna, `{{title}}` sa nahradí pôvodným názvom |
 
-        `tag` je vždy názov bežného štítka, systémové štítky (napr. podpisové) sa cez API použiť nedajú.
-        Podmienky na schránku alebo API prepojenie a akcie s webhookom zatiaľ cez API vytvoriť nemožno.
+        Štítok sa zadáva názvom. Cez API nie je možné použiť systémové štítky.
       requestBody:
         required: true
         content:
