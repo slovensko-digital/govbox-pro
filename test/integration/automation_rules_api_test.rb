@@ -105,13 +105,22 @@ class AutomationRulesApiTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_content
   end
 
-  test "rejects an action without a matching object" do
+  test "rejects a webhook action with a tag" do
     assert_no_difference -> { Automation::Rule.count } do
       post_rule(actions: [{ type: "Automation::FireWebhookAction", tag: "Invoice" }])
     end
 
     assert_response :unprocessable_content
-    assert_match "must be a webhook", response.parsed_body["message"]
+    assert_match "Actions action object type is not included in the list", response.parsed_body["message"]
+  end
+
+  test "rejects a tag action without a tag" do
+    assert_no_difference -> { Automation::Rule.count } do
+      post_rule(actions: [{ type: "Automation::AddMessageThreadTagAction" }])
+    end
+
+    assert_response :unprocessable_content
+    assert_match "Actions action object can't be blank", response.parsed_body["message"]
   end
 
   test "requires the automation_rule parameter" do

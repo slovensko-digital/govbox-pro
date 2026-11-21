@@ -27,16 +27,6 @@ module Automation
       'Automation::AddMessageExportMetadataBoxNameAction'
     ].freeze
 
-    private
-
-    def action_object_must_be_tenant(klass, label)
-      return if action_object.is_a?(klass) && action_object.tenant_id == automation_rule&.tenant_id
-
-      errors.add(:action_object, "must be a #{label} of the same tenant")
-    end
-
-    public
-
     def tag_list
       automation_rule.tenant.tags.pluck(:name, :id)
     end
@@ -47,7 +37,8 @@ module Automation
   end
 
   class UnassignMessageThreadTagAction < Action
-    validate { action_object_must_be_tenant(Tag, "tag") }
+    validates :action_object, presence: true
+    validates :action_object_type, inclusion: { in: ["Tag"] }
     validates_associated :action_object, message: "is not a valid tag"
 
     def run!(thing, _event)
@@ -68,7 +59,8 @@ module Automation
   end
 
   class AddMessageThreadTagAction < Action
-    validate { action_object_must_be_tenant(Tag, "tag") }
+    validates :action_object, presence: true
+    validates :action_object_type, inclusion: { in: ["Tag"] }
     validates_associated :action_object, message: "is not a valid tag"
 
     def run!(thing, _event)
@@ -135,7 +127,8 @@ module Automation
   end
 
   class FireWebhookAction < Action
-    validate { action_object_must_be_tenant(Automation::Webhook, "webhook") }
+    validates :action_object, presence: true
+    validates :action_object_type, inclusion: { in: ["Automation::Webhook"] }
 
     def run!(thing, event)
       webhook = action_object

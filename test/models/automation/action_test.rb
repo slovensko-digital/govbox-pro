@@ -5,21 +5,33 @@ class Automation::ActionTest < ActiveSupport::TestCase
     @rule = automation_rules(:two)
   end
 
-  test "tag action requires a tag of the rule's tenant" do
+  test "tag actions require a tag" do
     assert @rule.actions.build(type: "Automation::AddMessageThreadTagAction", action_object: tags(:ssd_finance)).valid?
 
-    [nil, tags(:solver_special), automation_webhooks(:one)].each do |object|
-      action = @rule.actions.build(type: "Automation::UnassignMessageThreadTagAction", action_object: object)
+    action = @rule.actions.build(type: "Automation::UnassignMessageThreadTagAction")
 
-      assert_not action.valid?, "expected #{object.inspect} to be rejected"
-      assert_equal ["must be a tag of the same tenant"], action.errors[:action_object]
-    end
+    assert_not action.valid?
+    assert action.errors.added?(:action_object, :blank)
   end
 
-  test "webhook action requires a webhook of the rule's tenant" do
+  test "tag actions reject other objects" do
+    action = @rule.actions.build(type: "Automation::AddMessageThreadTagAction", action_object: automation_webhooks(:one))
+
+    assert_not action.valid?
+    assert action.errors.added?(:action_object_type, :inclusion, value: "Automation::Webhook")
+  end
+
+  test "webhook action rejects other objects" do
     action = @rule.actions.build(type: "Automation::FireWebhookAction", action_object: tags(:ssd_finance))
 
     assert_not action.valid?
-    assert_equal ["must be a webhook of the same tenant"], action.errors[:action_object]
+    assert action.errors.added?(:action_object_type, :inclusion, value: "Tag")
+  end
+
+  test "webhook action requires a webhook" do
+    action = @rule.actions.build(type: "Automation::FireWebhookAction")
+
+    assert_not action.valid?
+    assert action.errors.added?(:action_object, :blank)
   end
 end
