@@ -136,7 +136,7 @@ paths:
         Pravidlo sa spustí pri zvolenej udalosti a jeho akcie sa vykonajú, ak sú splnené všetky jeho podmienky.
         Pravidlo bez podmienok sa vykoná pri každej takejto udalosti.
 
-        Podporované udalosti:
+        Podporované udalosti (`trigger_event`):
 
         * `message_created` – nová správa vo vlákne, vrátane správ prijatých zo synchronizácie a nových draftov,
         * `message_updated` – zmena prijatej správy,
@@ -144,7 +144,7 @@ paths:
         * `message_draft_submitted` – draft bol odoslaný,
         * `message_object_downloaded` – objekt správy bol stiahnutý.
 
-        Podporované podmienky sú uvedené nižšie. Ak je hodnotou regulárny výraz, stačí, aby sa nachádzal kdekoľvek v texte,
+        Podporované podmienky (`conditions`) sú uvedené nižšie. Ak je hodnotou regulárny výraz, stačí, aby sa nachádzal kdekoľvek v texte,
         napríklad `DIČ:\s*2020123456`. Na zhodu s celým textom použite `^...$`.
 
         | type | attr | value |
@@ -158,7 +158,7 @@ paths:
         | `Automation::AttachmentContentContainsCondition` | `attachment` | regulárny výraz, ktorý sa musí nachádzať v texte niektorej prílohy |
         | `Automation::AttachmentsPresentCondition` | `attachments` | nepoužíva sa, správa má aspoň jednu prílohu |
 
-        Podporované akcie:
+        Podporované akcie (`actions`):
 
         | type | parameter |
         |---|---|
