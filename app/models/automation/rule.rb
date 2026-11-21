@@ -14,6 +14,9 @@ module Automation
   class Rule < ApplicationRecord
     include AuditableEvents
 
+    TRIGGER_EVENTS = %w[message_created message_updated message_draft_validated message_draft_submitted message_object_downloaded].freeze
+    API_ACTION_TYPES = %w[Automation::AddMessageThreadTagAction Automation::UnassignMessageThreadTagAction].freeze
+
     belongs_to :tenant
     belongs_to :user, optional: true
     has_many :conditions,
@@ -27,7 +30,18 @@ module Automation
              foreign_key: :automation_rule_id,
              inverse_of: :automation_rule
 
+    validates :name, presence: true
+    validates :trigger_event, inclusion: { in: TRIGGER_EVENTS }
+    validate :actions_allowed_in_api, on: :api
+
     accepts_nested_attributes_for :conditions, :actions, allow_destroy: true
+
+    def actions_allowed_in_api
+      errors.add(:actions, "must contain at least one action") if actions.empty?
+      actions.each do |action|
+        errors.add(:actions, "type #{action.type} is not supported") unless action.type.in?(API_ACTION_TYPES)
+      end
+    end
 
     def run!(thing, event)
       return unless conditions_met?(thing)

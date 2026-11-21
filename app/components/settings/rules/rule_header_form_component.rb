@@ -3,12 +3,6 @@ class Settings::Rules::RuleHeaderFormComponent < ViewComponent::Base
     @form = form
   end
   def before_render
-    @trigger_events_list = [
-      [t('message_created'), 'message_created'],
-      [t('message_updated'), 'message_updated'],
-      [t('message_draft_validated'), 'message_draft_validated'],
-      [t('message_draft_submitted'), 'message_draft_submitted'],
-      [t('message_object_downloaded'), 'message_object_downloaded'],
-    ]
+    @trigger_events_list = Automation::Rule::TRIGGER_EVENTS.map { |event| [t(event), event] }
   end
 end

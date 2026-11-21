@@ -18,6 +18,8 @@ module Automation
     belongs_to :condition_object, polymorphic: true, optional: true
     before_save :cleanup_record
 
+    validates :type, inclusion: { in: ->(_) { Automation::Condition.subclasses.map(&:name) } }
+
     attr_accessor :delete_record
 
     # when adding items, check defaults in condition_form_component.rb

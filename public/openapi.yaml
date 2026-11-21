@@ -128,11 +128,21 @@ paths:
       description: |
         Vytvorí pravidlo, ktoré pri výskyte udalosti (`trigger_event`) a splnení všetkých podmienok
         pridá (alebo odoberie) štítok. Neexistujúci štítok sa vytvorí.
-        Povolené typy podmienok: `Automation::ContainsCondition`, `Automation::ValueCondition`,
-        `Automation::BooleanCondition`, `Automation::MetadataValueCondition`, `Automation::MetadataValueNotCondition`,
-        `Automation::MessageMetadataValueCondition`, `Automation::AttachmentContentContainsCondition`,
-        `Automation::AttachmentsPresentCondition`.
-        Povolené typy akcií: `Automation::AddMessageThreadTagAction`, `Automation::UnassignMessageThreadTagAction`.
+        Podmienky (`conditions`) sa vyhodnocujú všetky naraz (AND). Pre každý `type` platia tieto `attr` a `value`:
+
+        | type | attr | value |
+        |---|---|---|
+        | `Automation::ContainsCondition` | `sender_name`, `recipient_name`, `title`, `object_type` | regulárny výraz, ktorý sa musí nachádzať v hodnote atribútu |
+        | `Automation::ValueCondition` | `type` | presná hodnota atribútu |
+        | `Automation::BooleanCondition` | `outbox` | `true` alebo `false` |
+        | `Automation::MetadataValueCondition` | `sender_uri`, `recipient_uri`, `edesk_class`, `fs_submission_status`, `fs_message_type`, `fs_submission_verification_status.name`, `fs_submission_verification_status.description` | regulárny výraz, ktorý sa musí nachádzať v metadátach |
+        | `Automation::MetadataValueNotCondition` | rovnaké ako `MetadataValueCondition` | regulárny výraz, ktorý sa nesmie nachádzať v metadátach |
+        | `Automation::MessageMetadataValueCondition` | `edesk_class`, `fs_message_type` | regulárny výraz v metadátach správy |
+        | `Automation::AttachmentContentContainsCondition` | `attachment` | regulárny výraz, ktorý sa musí nachádzať v texte príloh |
+        | `Automation::AttachmentsPresentCondition` | `attachments` | nepoužíva sa |
+
+        Akcie (`actions`): `Automation::AddMessageThreadTagAction` (pridá štítok) a `Automation::UnassignMessageThreadTagAction` (odoberie štítok); `tag` je názov štítka.
+        Neplatné pravidlo vráti 422 so správou o chybe.
       requestBody:
         required: true
         content:
