@@ -26,6 +26,14 @@ class AutomationRulesApiTest < ActionDispatch::IntegrationTest
     assert_equal @tenant.tags.find_by!(name: "Invoice"), rule.actions.sole.action_object
   end
 
+  test "accepts every event that runs rules" do
+    Automation::Rule::TRIGGER_EVENTS.each do |event|
+      post_rule(trigger_event: event)
+
+      assert_response :created, event
+    end
+  end
+
   test "reuses an existing tag" do
     tag = tags(:ssd_finance)
 

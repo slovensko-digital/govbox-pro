@@ -1232,13 +1232,14 @@ components:
       description: |
         Udalosť, pri ktorej sa pravidlo spustí:
 
+        * `message_thread_created` – nové vlákno,
         * `message_created` – nová správa vo vlákne, vrátane správ prijatých zo synchronizácie a nových draftov,
         * `message_updated` – zmena prijatej správy,
         * `message_draft_validated` – dokončená validácia draftu,
         * `message_draft_submitted` – draft bol odoslaný,
         * `message_object_downloaded` – objekt správy bol stiahnutý.
       type: string
-      enum: [message_created, message_updated, message_draft_validated, message_draft_submitted, message_object_downloaded]
+      enum: [message_thread_created, message_created, message_updated, message_draft_validated, message_draft_submitted, message_object_downloaded]
 
     AutomationConditionParams:
       description: Podmienka pravidla, podľa `type` sa líši povolený `attr` a význam `value`

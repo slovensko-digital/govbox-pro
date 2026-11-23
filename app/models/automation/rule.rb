@@ -14,7 +14,9 @@ module Automation
   class Rule < ApplicationRecord
     include AuditableEvents
 
-    TRIGGER_EVENTS = %w[message_created message_updated message_draft_validated message_draft_submitted message_object_downloaded].freeze
+    TRIGGER_EVENTS = %w[message_thread_created message_created message_updated message_draft_validated message_draft_submitted message_object_downloaded].freeze
+    # message_thread_created is no longer offered in the form, existing rules still run on it
+    SELECTABLE_TRIGGER_EVENTS = (TRIGGER_EVENTS - %w[message_thread_created]).freeze
 
     belongs_to :tenant
     belongs_to :user, optional: true
