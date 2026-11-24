@@ -8,10 +8,16 @@ class ExportJobTest < ActiveJob::TestCase
     object = message_objects(:fs_accountants_outbox_form)
     nested_pdf(object, name: 'first.pdf', content: '%PDF-first')
     nested_pdf(object, name: 'second.pdf', content: '%PDF-second')
-    attachment(object.message, name: 'attachment.pdf', mimetype: Utils::PDF_MIMETYPE, content: '%PDF-attachment')
+    pdf = attachment(object.message, name: 'attachment.pdf', mimetype: Utils::PDF_MIMETYPE, content: '%PDF-attachment')
     attachment(object.message, name: 'notes.txt', mimetype: 'text/plain', content: 'Not a PDF')
 
-    entries = export_entries(export)
+    entries = nil
+    assert_enqueued_jobs 2, only: Automation::ApplyRulesForEventJob do
+      entries = export_entries(export)
+    end
+    [object, pdf].each do |downloaded|
+      assert_enqueued_with job: Automation::ApplyRulesForEventJob, args: [:message_object_downloaded, downloaded]
+    end
 
     assert_equal({ 'SVDPHv20.pdf' => '%PDF-first', 'SVDPHv20 (1).pdf' => '%PDF-second', 'attachment.pdf' => '%PDF-attachment' }, entries)
     assert_equal export, Notifications::ExportFinished.last.export
@@ -28,6 +34,34 @@ class ExportJobTest < ActiveJob::TestCase
     attachment(object.message, name: 'attachment.pdf', mimetype: Utils::PDF_MIMETYPE, content: '%PDF-attachment')
 
     assert_equal({ 'SVDPHv20.asice' => original_content, 'SVDPHv20.pdf' => '%PDF-form', 'attachment.pdf' => '%PDF-attachment' }, export_entries(export))
+  end
+
+  test "the preview identifies the same file as the ZIP when two threads use the same path" do
+    export = pdf_export
+    forms = message_objects(:fs_accountants_inbox_form, :fs_accountants_inbox2_form)
+    forms.each { |form| nested_pdf(form, name: 'file.pdf', content: "%PDF-#{form.id}") }
+    export.update!(message_thread_ids: forms.map { |form| form.thread.id })
+    export.update_settings('message_direction' => 'inbox', 'originals' => false, 'templates' => { 'default' => 'report' })
+
+    entries = export_entries(export)
+    [:asc, :desc].each do |order|
+      preview = ExportJob.new.preview_filepaths(export, message_threads: export.message_threads.order(id: order))
+      forms.each { |form| assert_equal "%PDF-#{form.id}", entries.fetch(preview.fetch(form.id).sole) }
+    end
+  end
+
+  test "an attachment named sumar.xlsx survives alongside the export summary" do
+    export = pdf_export
+    export.update_settings('summary' => true, 'message_direction' => 'outbox', 'pdf' => false, 'templates' => { 'default' => '{{ subor.nazov }}' })
+    object = message_objects(:fs_accountants_outbox_form)
+    asice_with_pdf(object, content: '%PDF-form')
+    sheet = attachment(object.message, name: 'sumar.xlsx', mimetype: 'application/octet-stream', content: 'attachment bytes')
+
+    preview = ExportJob.new.preview_filepaths(export, message_threads: export.message_threads)
+    assert_equal ['sumar (1).xlsx'], preview.fetch(sheet.id)
+    entries = export_entries(export)
+    assert_equal 'attachment bytes', entries.fetch('sumar (1).xlsx')
+    assert entries.fetch('sumar.xlsx').start_with?('PK')
   end
 
   test "original only export does not include PDF visualizations" do
@@ -47,7 +81,7 @@ class ExportJobTest < ActiveJob::TestCase
     buffer = object.stub(:downloadable_as_pdf?, true) do
       object.stub(:prepare_pdf_visualization, '%PDF-generated') do
         ::Zip::OutputStream.write_buffer do |zip|
-          job.prepare_pdf_object(object, export: export, zip: zip, file_paths: [])
+          job.write_object(object, export: export, zip: zip, used_paths: Set.new)
         end
       end
     end
@@ -55,6 +89,21 @@ class ExportJobTest < ActiveJob::TestCase
     ::Zip::File.open_buffer(buffer) do |zip|
       assert_equal ['SVDPHv20.pdf'], zip.entries.map(&:name)
       assert_equal '%PDF-generated', zip.read('SVDPHv20.pdf')
+    end
+  end
+
+  test "an excluded message cannot fail the export when its PDF renderer fails" do
+    export = pdf_export
+    export.update_settings('originals' => false, 'default' => false)
+    object = message_objects(:fs_accountants_outbox_xml_form)
+    object.stub(:downloadable_as_pdf?, true) do
+      object.stub(:prepare_pdf_visualization, nil) do
+        ::Zip::OutputStream.write_buffer do |zip|
+          paths = []
+          ExportJob.new.write_object(object, export: export, zip: zip, used_paths: paths)
+          assert_empty paths
+        end
+      end
     end
   end
 
@@ -122,6 +171,7 @@ class ExportJobTest < ActiveJob::TestCase
 
   test "an object whose PDF visualization is unavailable fails the export rather than shipping it incomplete" do
     export = pdf_export
+    export.update_settings('originals' => false)
     object = message_objects(:fs_accountants_outbox_form)
     file_paths = []
 
@@ -130,7 +180,7 @@ class ExportJobTest < ActiveJob::TestCase
         object.stub(:prepare_pdf_visualization, nil) do
           assert_raises(ExportJob::PdfVisualizationFailed) do
             ::Zip::OutputStream.write_buffer do |zip|
-              ExportJob.new.prepare_pdf_object(object, export: export, zip: zip, file_paths: file_paths)
+              ExportJob.new.write_object(object, export: export, zip: zip, used_paths: file_paths)
             end
           end
         end
@@ -143,6 +193,7 @@ class ExportJobTest < ActiveJob::TestCase
 
   test "a nested object whose PDF visualization is unavailable fails the export too" do
     export = pdf_export
+    export.update_settings('originals' => false)
     object = message_objects(:fs_accountants_outbox_form)
     file_paths = []
 
@@ -154,7 +205,7 @@ class ExportJobTest < ActiveJob::TestCase
         object.stub(:nested_message_objects, [ nested ]) do
           assert_raises(ExportJob::PdfVisualizationFailed) do
             ::Zip::OutputStream.write_buffer do |zip|
-              ExportJob.new.prepare_pdf_object(object, export: export, zip: zip, file_paths: file_paths)
+              ExportJob.new.write_object(object, export: export, zip: zip, used_paths: file_paths)
             end
           end
         end
@@ -189,6 +240,7 @@ class ExportJobTest < ActiveJob::TestCase
 
   test "a nested object the export template skips does not abandon the nested objects after it" do
     export = pdf_export
+    export.update_settings('originals' => false)
     object = message_objects(:fs_accountants_outbox_form)
     nested_pdf(object, name: "first.pdf", content: "%PDF-1")
     nested_pdf(object, name: "second.pdf", content: "%PDF-2")
@@ -198,7 +250,7 @@ class ExportJobTest < ActiveJob::TestCase
     paths = [ nil, "second.pdf" ]
     job.stub(:export_object_filepath, ->(*, **) { paths.shift }) do
       ::Zip::OutputStream.write_buffer do |zip|
-        job.prepare_pdf_object(object, export: export, zip: zip, file_paths: file_paths)
+        job.write_object(object, export: export, zip: zip, used_paths: file_paths)
       end
     end
 

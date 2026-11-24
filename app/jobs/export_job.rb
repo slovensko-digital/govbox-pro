@@ -3,6 +3,8 @@ require 'axlsx'
 class ExportJob < ApplicationJob
   include GoodJob::ActiveJobExtensions::Concurrency
 
+  SUMMARY_PATH = 'sumar.xlsx'
+
   REPLACEMENT_MAPPINGS = {
     "{{ schranka.nazov }}" => -> (o) { sanitize_path_component(o.message.thread.box.name) },
     "{{ schranka.oficialny_nazov }}" => -> (o) { sanitize_path_component(o.message.thread.box.official_name) },
@@ -38,14 +40,11 @@ class ExportJob < ApplicationJob
   queue_as :default
 
   def perform(export)
-    file_paths = []
+    used_paths = reserved_paths(export)
 
     export_content = ::Zip::OutputStream.write_buffer do |zip|
       each_export_object(export) do |object|
-        prepare_original_object(object, export: export, zip: zip, file_paths: file_paths) if export.settings_object.originals
-        prepare_pdf_object(object, export: export, zip: zip, file_paths: file_paths)
-
-        EventBus.publish(:message_object_downloaded, object)
+        write_object(object, export: export, zip: zip, used_paths: used_paths)
       end
 
       prepare_summary(export: export, zip: zip) if export.settings.dig("summary")
@@ -59,26 +58,15 @@ class ExportJob < ApplicationJob
     )
   end
 
-  def prepare_original_object(object, export:, zip:, file_paths:)
-    file_path = export_object_filepath(object, export: export, other_file_names: file_paths)
-    return unless file_path
-
-    zip.put_next_entry(file_path)
-    zip.write(object.content)
-    file_paths << file_path
-  end
-
-  def prepare_pdf_object(object, export:, zip:, file_paths:)
-    pdf_objects(object, export: export).each do |pdf_object|
-      pdf_content = pdf_object.pdf? ? pdf_object.content : pdf_visualization(pdf_object)
-
-      file_path = export_object_filepath(object, export: export, other_file_names: file_paths, pdf: true)
-      next unless file_path
-
-      zip.put_next_entry(file_path)
-      zip.write(pdf_content)
-      file_paths << file_path
+  def write_object(object, export:, zip:, used_paths:)
+    written = false
+    each_object_file(object, export: export, used_paths: used_paths) do |path, source, render_pdf|
+      content = render_pdf ? pdf_visualization(source) : source.content
+      zip.put_next_entry(path)
+      zip.write(content)
+      written = true
     end
+    EventBus.publish(:message_object_downloaded, object) if written
   end
 
   def pdf_visualization(object)
@@ -91,28 +79,18 @@ class ExportJob < ApplicationJob
 
   def preview_filepaths(export, message_threads:)
     paths = {}
-    file_names = []
+    used_paths = reserved_paths(export)
     each_export_object(export, message_threads: message_threads) do |object|
-      paths[object.id] = export_object_filepaths(object, export: export, other_file_names: file_names)
-      file_names.concat(paths[object.id])
+      paths[object.id] = each_object_file(object, export: export, used_paths: used_paths).map { |path, _, _| path }
     end
     paths
   end
 
-  def export_object_filepaths(object, export:, other_file_names: [])
-    paths = []
-    paths << export_object_filepath(object, export: export, other_file_names: other_file_names) if export.settings_object.originals
-    pdf_objects(object, export: export).each do
-      paths << export_object_filepath(object, export: export, pdf: true, other_file_names: other_file_names + paths.compact)
-    end
-    paths.compact
-  end
-
   def export_object_filepath(object, export:, pdf: false, other_file_names: [])
     thread = object.message.thread
-    form = thread.box.export_form(thread)&.slug
     type = object.message.message_type
     settings = export.settings
+    form = thread.box.export_form(thread)&.slug if settings['by_form'].present?
     default_template = settings.dig("templates", "default").presence || Export::DEFAULT_TEMPLATE
 
     if settings.dig('by_type', type).present?
@@ -131,15 +109,17 @@ class ExportJob < ApplicationJob
     end
 
     out.gsub!(/\.\.\//, '')
-    out = out.sub(/^\/+/, '')
+    base = out.sub(/^\/+/, '')
     original_extension = File.extname(MessageObjectHelper.displayable_name(object))
     extension = pdf ? '.pdf' : original_extension
-    path_without_extension = out.delete_suffix(original_extension)
+    path_without_extension = base.delete_suffix(original_extension)
     path = "#{path_without_extension}#{extension}"
-    return path unless path.in?(other_file_names)
-
-    matches_count = other_file_names.count { |name| /#{Regexp.escape(path_without_extension)}( \(\d+\))?#{Regexp.escape(extension)}/ =~ name }
-    "#{path_without_extension} (#{matches_count})#{extension}"
+    suffix = 0
+    while other_file_names.include?(path)
+      suffix += 1
+      path = "#{path_without_extension} (#{suffix})#{extension}"
+    end
+    path
   end
 
   def self.form_name(object, include_version: true)
@@ -174,28 +154,48 @@ class ExportJob < ApplicationJob
         end
       end
 
-      zip.put_next_entry('sumar.xlsx')
+      zip.put_next_entry(SUMMARY_PATH)
       zip.write(p.to_stream.read)
     end
   end
 
   private
 
-  def each_export_object(export, message_threads: export.message_threads)
-    return unless export.settings['messages']
+  def reserved_paths(export)
+    export.settings['summary'] ? Set[SUMMARY_PATH] : Set.new
+  end
 
-    message_threads.each do |thread|
-      export.filtered_messages(thread).includes(:thread).sort_by(&:delivered_at).each do |message|
-        message.objects.each { |object| yield object }
-      end
+  def each_object_file(object, export:, used_paths:)
+    return enum_for(__method__, object, export: export, used_paths: used_paths) unless block_given?
+
+    originals = export.settings_object.originals
+    if originals
+      path = export_object_filepath(object, export: export, other_file_names: used_paths)
+      return unless path
+      yield path, object, false
+      used_paths << path
+    end
+    return unless export.settings['pdf']
+    return if originals && object.pdf?
+
+    sources = object.nested_message_objects.sort_by(&:id).presence || [object]
+    sources.each do |source|
+      next unless source.pdf? || source.downloadable_as_pdf?
+
+      path = export_object_filepath(object, export: export, pdf: true, other_file_names: used_paths)
+      next unless path
+      yield path, source, !source.pdf?
+      used_paths << path
     end
   end
 
-  def pdf_objects(object, export:)
-    return [] unless export.settings['pdf']
-    return [] if export.settings_object.originals && object.pdf?
+  def each_export_object(export, message_threads: export.message_threads)
+    return unless export.settings['messages']
 
-    objects = object.nested_message_objects.presence || [object]
-    objects.select { |pdf_object| pdf_object.pdf? || pdf_object.downloadable_as_pdf? }
+    message_threads.reorder(:id).each do |thread|
+      export.filtered_messages(thread).includes(:objects).order(:delivered_at, :id).each do |message|
+        message.objects.sort_by(&:id).each { |object| yield object }
+      end
+    end
   end
 end

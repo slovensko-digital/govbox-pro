@@ -18,12 +18,18 @@ class ExportFilepathsTest < ActiveJob::TestCase
     end
     @export.update_settings("originals" => false, "pdf" => true, "templates" => { "default" => "{{ subor.nazov }}" })
 
-    assert_equal ["SVDPHv20.pdf", "SVDPHv20 (1).pdf"], @job.export_object_filepaths(@object, export: @export)
-    assert_equal ["SVDPHv20 (1).pdf", "SVDPHv20 (2).pdf"], @job.export_object_filepaths(@object, export: @export, other_file_names: ["SVDPHv20.pdf"])
+    paths = @job.preview_filepaths(@export, message_threads: @export.message_threads)
+    assert_equal ["SVDPHv20.pdf", "SVDPHv20 (1).pdf"], paths.fetch(@object.id)
   end
 
   test "filepath substitutes thread title" do
     assert_equal "#{@thread.title}/SVDPHv20.asice", @job.export_object_filepath(@object, export: @export)
+  end
+
+  test "a PDF with a numbered name does not get overwritten by a generated duplicate" do
+    @export.update_settings("originals" => false, "pdf" => true, "templates" => { "default" => "{{ subor.nazov }}" })
+    existing = ["SVDPHv20.pdf", "SVDPHv20 (2).pdf"]
+    assert_equal "SVDPHv20 (1).pdf", @job.export_object_filepath(@object, export: @export, pdf: true, other_file_names: existing)
   end
 
   test "filepath handles nil thread title" do
