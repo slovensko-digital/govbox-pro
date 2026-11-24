@@ -10,4 +10,5 @@ json.actions rule.actions do |action|
   json.type action.type
   json.value action.value
   json.tag action.action_object.name if action.action_object.is_a?(Tag)
+  json.webhook_id action.action_object_id if action.action_object.is_a?(Automation::Webhook)
 end

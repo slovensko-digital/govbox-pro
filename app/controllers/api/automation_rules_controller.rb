@@ -34,7 +34,7 @@ class Api::AutomationRulesController < Api::TenantController
   end
 
   def rule_attributes
-    permitted = params.expect(automation_rule: [:name, :trigger_event, { conditions: [%i[type attr value]], actions: [%i[type value tag]] }])
+    permitted = params.expect(automation_rule: [:name, :trigger_event, { conditions: [%i[type attr value]], actions: [%i[type value tag webhook_id]] }])
 
     {
       name: permitted[:name],
@@ -46,6 +46,14 @@ class Api::AutomationRulesController < Api::TenantController
 
   def action_attributes(action)
     tag_name = action.delete(:tag)
-    tag_name.present? ? action.merge(action_object: @tenant.simple_tags.find_or_create_by(name: tag_name)) : action
+    webhook_id = action.delete(:webhook_id)
+
+    if tag_name.present?
+      action.merge(action_object: @tenant.simple_tags.find_or_create_by(name: tag_name))
+    elsif webhook_id.present?
+      action.merge(action_object: @tenant.automation_webhooks.find_by(id: webhook_id))
+    else
+      action
+    end
   end
 end

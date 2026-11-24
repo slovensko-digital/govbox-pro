@@ -1431,12 +1431,14 @@ components:
         - $ref: '#/components/schemas/AutomationAddMessageThreadTagActionParams'
         - $ref: '#/components/schemas/AutomationUnassignMessageThreadTagActionParams'
         - $ref: '#/components/schemas/AutomationChangeMessageThreadTitleActionParams'
+        - $ref: '#/components/schemas/AutomationFireWebhookActionParams'
       discriminator:
         propertyName: type
         mapping:
           Automation::AddMessageThreadTagAction: '#/components/schemas/AutomationAddMessageThreadTagActionParams'
           Automation::UnassignMessageThreadTagAction: '#/components/schemas/AutomationUnassignMessageThreadTagActionParams'
           Automation::ChangeMessageThreadTitleAction: '#/components/schemas/AutomationChangeMessageThreadTitleActionParams'
+          Automation::FireWebhookAction: '#/components/schemas/AutomationFireWebhookActionParams'
 
     AutomationAddMessageThreadTagActionParams:
       description: Akcia `Automation::AddMessageThreadTagAction`, pridá štítok vláknu
@@ -1486,6 +1488,22 @@ components:
         - type
         - value
 
+    AutomationFireWebhookActionParams:
+      description: Akcia `Automation::FireWebhookAction`, zavolá webhook
+      type: object
+      properties:
+        type:
+          description: Typ akcie
+          type: string
+          enum: [ 'Automation::FireWebhookAction' ]
+        webhook_id:
+          description: Identifikátor webhooku tenanta. Webhooky sa spravujú v nastaveniach GovBox Pro
+          type: integer
+          example: 1
+      required:
+        - type
+        - webhook_id
+
     AutomationRule:
       description: Automatizačné pravidlo. Pravidlá vytvorené v GUI môžu obsahovať aj podmienky a akcie, ktoré cez API vytvoriť nemožno
       type: object
@@ -1528,6 +1546,9 @@ components:
               tag:
                 description: Názov štítka pri akciách so štítkom
                 type: string
+              webhook_id:
+                description: Identifikátor webhooku pri akcii s webhookom
+                type: integer
               value:
                 description: Hodnota pri akciách, ktoré ju používajú
                 type: [string, 'null']

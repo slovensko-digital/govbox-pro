@@ -113,6 +113,25 @@ class AutomationRulesApiTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_content
   end
 
+  test "creates a webhook action" do
+    webhook = automation_webhooks(:one)
+
+    post_rule(actions: [{ type: "Automation::FireWebhookAction", webhook_id: webhook.id }])
+
+    assert_response :created
+    assert_equal webhook.id, response.parsed_body["actions"].sole["webhook_id"]
+    assert_equal webhook, @tenant.automation_rules.find(response.parsed_body["id"]).actions.sole.action_object
+  end
+
+  test "rejects a webhook of another tenant" do
+    assert_no_difference -> { Automation::Rule.count } do
+      post_rule(actions: [{ type: "Automation::FireWebhookAction", webhook_id: automation_webhooks(:solver).id }])
+    end
+
+    assert_response :unprocessable_content
+    assert_match "Actions action object can't be blank", response.parsed_body["message"]
+  end
+
   test "rejects a webhook action with a tag" do
     assert_no_difference -> { Automation::Rule.count } do
       post_rule(actions: [{ type: "Automation::FireWebhookAction", tag: "Invoice" }])

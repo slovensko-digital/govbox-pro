@@ -9,3 +9,8 @@ two:
   name: Webhook 2
   url: https://example.com/webhook2
   tenant: ssd
+
+solver:
+  name: Solver webhook
+  url: https://example.com/solver
+  tenant: solver
