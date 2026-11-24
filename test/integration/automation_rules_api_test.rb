@@ -74,7 +74,7 @@ class AutomationRulesApiTest < ActionDispatch::IntegrationTest
     assert_difference -> { @tenant.tags.count } => 1 do
       post_rule(actions: [
         { type: "Automation::AddMessageThreadTagAction", tag: "Invoice" },
-        { type: "Automation::UnassignMessageThreadTagAction", tag: "Invoice" }
+        { type: "Automation::AddMessageThreadTagAction", tag: "Invoice" }
       ])
     end
 
