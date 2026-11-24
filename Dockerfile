@@ -2,7 +2,7 @@
 # check=error=true
 
 # Make sure this matches the version in .ruby-version.
-ARG RUBY_VERSION=4.0.6
+ARG RUBY_VERSION=4.0.10
 FROM docker.io/library/ruby:$RUBY_VERSION-slim AS base
 
 # Rails app lives here.
