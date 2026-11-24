@@ -3,7 +3,9 @@
 # Table name: exports
 #
 #  id                 :bigint           not null, primary key
+#  finalized_at       :datetime
 #  message_thread_ids :integer          default([]), not null, is an Array
+#  parts              :jsonb            not null
 #  settings           :jsonb            not null
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
@@ -35,6 +37,8 @@ class Export < ApplicationRecord
   }.freeze
 
   def start
+    update_columns(finalized_at: nil, parts: {}, updated_at: Time.current) if finalized_at? || parts.any?
+
     user.notifications.create!(
       type: Notifications::ExportStarted,
       export: self

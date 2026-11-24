@@ -16,6 +16,8 @@ class ExportJob < ApplicationJob
 
   after_discard do |job, _error|
     export = job.arguments.first
+    cleanup_parts(export, reset_finalized: true)
+    FileUtils.rm_f("#{export.storage_path}.tmp")
     export.user.notifications.create!(type: Notifications::ExportFailed, export: export)
   end
 
@@ -23,14 +25,14 @@ class ExportJob < ApplicationJob
 
   THREADS_PER_BATCH = 25
 
-  def perform(export, offset: 0, file_paths: [], batch_size: THREADS_PER_BATCH)
-    file_paths = file_paths.dup
+  def perform(export, offset: 0, batch_size: THREADS_PER_BATCH)
+    return finalize_export(export) if export.finalized_at?
 
     if export.settings.dig("messages")
       batch_ids = export.message_thread_ids[offset, batch_size] || []
-      build_part(export, batch_ids, File.join(parts_dir(export), "part-#{offset}.zip"), file_paths) if batch_ids.any?
+      build_part(export, batch_ids, offset) if batch_ids.any?
 
-      return ExportJob.set(job_context: :medium).perform_later(export, offset: offset + batch_size, file_paths: file_paths, batch_size: batch_size) if offset + batch_size < export.message_thread_ids.size
+      return ExportJob.set(job_context: :medium).perform_later(export, offset: offset + batch_size, batch_size: batch_size) if offset + batch_size < export.message_thread_ids.size
     end
 
     finalize_export(export)
@@ -139,13 +141,28 @@ class ExportJob < ApplicationJob
     Rails.root.join("storage", "exports", "tmp", "export-#{export.id}").to_s
   end
 
-  def ordered_part_paths(export)
-    Dir[File.join(parts_dir(export), "part-*.zip")].sort_by { |path| File.basename(path)[/\d+/].to_i }
+  def part_path(export, offset)
+    File.join(parts_dir(export), "part-#{offset}.zip")
   end
 
-  def build_part(export, batch_ids, part_path, file_paths)
+  def cleanup_parts(export, reset_finalized: false)
+    FileUtils.rm_rf(parts_dir(export))
+    updates = {}
+    updates[:parts] = {} if export.parts.any?
+    updates[:finalized_at] = nil if reset_finalized && export.finalized_at?
+    export.update_columns(updates.merge(updated_at: Time.current)) if updates.any?
+  end
+
+  def build_part(export, batch_ids, offset)
+    part_path = part_path(export, offset)
     tmp_path = "#{part_path}.tmp"
     FileUtils.mkdir_p(File.dirname(part_path))
+
+    file_paths = export.parts
+                       .select { |part_offset, _| part_offset.to_i < offset }
+                       .flat_map { |_, part| part["file_paths"] || [] }
+    seed_count = file_paths.size
+    object_ids = []
 
     ::Zip::OutputStream.open(tmp_path) do |zip|
       batch_ids.each do |thread_id|
@@ -154,53 +171,73 @@ class ExportJob < ApplicationJob
 
         export.filtered_messages(message_thread).includes(:thread, :objects).find_each do |message|
           message.objects.each do |object|
+            file_paths_count = file_paths.size
             prepare_original_object(object, export: export, zip: zip, file_paths: file_paths)
             prepare_pdf_object(object, export: export, zip: zip, file_paths: file_paths) if export.settings["pdf"]
+
+            object_ids << object.id if file_paths.size > file_paths_count
           end
         end
       end
     end
 
     FileUtils.mv(tmp_path, part_path)
+
+    export.update_columns(
+      parts: export.parts.merge(
+        offset.to_s => {
+          "object_ids" => object_ids.uniq,
+          "file_paths" => file_paths.drop(seed_count)
+        }
+      ),
+      updated_at: Time.current
+    )
   end
 
   def finalize_export(export)
-    final_tmp_path = "#{export.storage_path}.tmp"
-    FileUtils.mkdir_p(File.dirname(export.storage_path))
+    unless export.finalized_at?
+      final_tmp_path = "#{export.storage_path}.tmp"
+      FileUtils.mkdir_p(File.dirname(export.storage_path))
 
-    ::Zip::OutputStream.open(final_tmp_path) do |zip|
-      ordered_part_paths(export).each do |part_path|
-        ::Zip::File.open(part_path) do |part_zip|
-          part_zip.each do |entry|
-            zip.put_next_entry(entry.name)
-            zip.write(entry.get_input_stream.read)
+      ::Zip::OutputStream.open(final_tmp_path) do |zip|
+        export.parts.keys.map(&:to_i).sort.each do |offset|
+          ::Zip::File.open(part_path(export, offset)) do |part_zip|
+            part_zip.each do |entry|
+              zip.put_next_entry(entry.name)
+              zip.write(entry.get_input_stream.read)
+            end
           end
         end
+
+        prepare_summary(export: export, zip: zip) if export.settings.dig("summary")
       end
 
-      prepare_summary(export: export, zip: zip) if export.settings.dig("summary")
+      FileUtils.mv(final_tmp_path, export.storage_path)
+      export.update_columns(finalized_at: Time.current, updated_at: Time.current)
     end
 
-    FileUtils.mv(final_tmp_path, export.storage_path)
+    publish_download_events(export) if export.settings.dig("messages")
+    cleanup_parts(export)
 
-    if export.settings.dig("messages")
-      export.message_thread_ids.each do |thread_id|
-        message_thread = export.message_threads.find_by(id: thread_id)
-        next unless message_thread
+    started_id = export.user.notifications.where(export: export, type: "Notifications::ExportStarted").maximum(:id) || 0
+    unless export.user.notifications.exists?(export: export, type: "Notifications::ExportFinished", id: (started_id + 1)..)
+      Notifications::ExportFinished.create!(user: export.user, export: export)
+    end
+  end
 
-        export.filtered_messages(message_thread).includes(:thread, :objects).find_each do |message|
-          message.objects.each do |object|
-            EventBus.publish(:message_object_downloaded, object)
-          end
-        end
+  def publish_download_events(export)
+    remaining = export.parts.dup
+
+    remaining.keys.map(&:to_i).sort.each do |offset|
+      key = offset.to_s
+      object_ids = remaining.dig(key, "object_ids") || []
+
+      MessageObject.where(id: object_ids).find_each do |object|
+        EventBus.publish(:message_object_downloaded, object)
       end
+
+      remaining.delete(key)
+      export.update_columns(parts: remaining, updated_at: Time.current)
     end
-
-    FileUtils.rm_rf(parts_dir(export))
-
-    export.user.notifications.create!(
-      type: Notifications::ExportFinished,
-      export: export
-    )
   end
 end

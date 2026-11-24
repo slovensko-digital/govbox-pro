@@ -33,7 +33,7 @@ class ExportJobChunkingTest < ActiveJob::TestCase
     create_export("messages" => false, "summary" => true)
 
     with_download_events do |published|
-      ExportJob.new.perform(@export, offset: 0, file_paths: [], batch_size: 1)
+      ExportJob.new.perform(@export, offset: 0, batch_size: 1)
 
       assert File.exist?(@export.storage_path)
       assert_equal ["sumar.xlsx"], zip_entry_names
@@ -44,7 +44,7 @@ class ExportJobChunkingTest < ActiveJob::TestCase
   end
 
   test "export with no matching messages still produces a valid zip" do
-    create_export("summary" => true, "delivered_at_from" => (Date.today + 1.year).iso8601)
+    create_export("summary" => true, "delivered_at_from" => (Date.current + 1.year).iso8601)
 
     run_export
 
@@ -68,16 +68,183 @@ class ExportJobChunkingTest < ActiveJob::TestCase
     end
   end
 
-  test "a discarded export publishes no download events" do
+  test "a discarded export publishes no download events and cleans its parts" do
     create_export("summary" => true, "pdf" => true)
-    stub = stub_pdf_visualization(->(calls) { calls.size.even? ? nil : "pdf-bytes" })
+    stub = stub_pdf_visualization(->(calls) { calls.size >= 3 ? nil : "pdf-bytes" })
 
     with_download_events do |published|
       assert_raises(ExportJob::PdfVisualizationFailed) { run_export }
 
-      assert_operator stub[:calls].size, :>=, 3, "guard: retries must have been attempted"
+      assert_operator stub[:calls].size, :>=, 5, "guard: batch 0 should succeed and batch 1 should exhaust retries"
       assert_empty published, "failed export must not mark objects downloaded, got: #{published.inspect}"
       assert_equal 1, @export.user.notifications.where(export: @export, type: "Notifications::ExportFailed").count
+      assert_not File.exist?(parts_dir), "discarded export should clean its parts"
+      assert_empty @export.reload.parts, "discarded export should reset its part metadata"
+    end
+  end
+
+  test "cross-batch filename collisions deduplicate across chunks and retries" do
+    create_export("summary" => false, "pdf" => true, "templates" => { "default" => "{{ subor.nazov }}" })
+    stub = stub_pdf_visualization(->(calls) { calls.size == 3 ? nil : "pdf-bytes" })
+
+    with_download_events do |published|
+      run_export
+
+      assert_operator stub[:calls].size, :>=, 4
+      names = zip_entry_names
+      assert_includes names, "DeliveryReport.asice"
+      assert_includes names, "DeliveryReport (1).asice"
+      assert names.none? { |n| n.include?("(2)") }, "retry must not treat failed batch names as taken, got: #{names.inspect}"
+      assert_equal expected_object_ids.sort, published.sort
+    end
+  end
+
+  test "a notification failure after finalization does not overwrite the complete zip on retry" do
+    create_export("summary" => true)
+    ExportJob.new.perform(@export, offset: 0, batch_size: 1)
+    clear_enqueued_jobs
+
+    attempts = 0
+    original = Notifications::ExportFinished.method(:create!)
+    failing = ->(*args, **kwargs) do
+      attempts += 1
+      raise "notification failure" if attempts == 1
+
+      original.call(*args, **kwargs)
+    end
+
+    with_download_events do |published|
+      Notifications::ExportFinished.stub(:create!, failing) do
+        assert_raises(RuntimeError) { ExportJob.new.perform(@export.reload, offset: 1, batch_size: 1) }
+
+        assert File.exist?(@export.storage_path), "finalization should have produced the complete zip"
+        assert @export.reload.finalized_at?, "finalized_at should be persisted before notification"
+        completed_entries = zip_entry_names
+
+        ExportJob.new.perform(@export.reload, offset: 1, batch_size: 1)
+
+        assert_equal completed_entries, zip_entry_names
+        assert_equal 1, finished_count
+        assert_equal expected_object_ids.sort, published.sort, "events must be published exactly once"
+        assert_not File.exist?(parts_dir)
+      end
+    end
+  end
+
+  test "a partial failure while publishing download events does not duplicate already published parts on retry" do
+    create_export("summary" => true)
+    ExportJob.new.perform(@export, offset: 0, batch_size: 1)
+    clear_enqueued_jobs
+
+    part0_object_ids = @export.reload.parts.dig("0", "object_ids")
+    assert_not_empty part0_object_ids
+
+    published = []
+    failed_once = false
+    sub = ->(object) do
+      if !failed_once && !part0_object_ids.include?(object.id)
+        failed_once = true
+        raise "event bus failure"
+      end
+      published << object.id
+    end
+    EventBus.subscribe(:message_object_downloaded, sub)
+
+    begin
+      assert_raises(RuntimeError) { ExportJob.new.perform(@export.reload, offset: 1, batch_size: 1) }
+      assert_equal part0_object_ids.sort, published.sort
+      assert_equal 0, finished_count
+
+      ExportJob.new.perform(@export.reload, offset: 1, batch_size: 1)
+
+      assert_equal expected_object_ids.sort, published.sort, "part 0 objects must not be re-published on retry"
+      assert_equal 1, finished_count
+      assert_empty @export.reload.parts
+      assert_not File.exist?(parts_dir)
+    ensure
+      EventBus.class_variable_get(:@@subscribers_map)[:message_object_downloaded].delete(sub)
+    end
+  end
+
+  test "re-running a finalized export via start resets finalized_at and rebuilds with new settings" do
+    create_export("summary" => true)
+    run_export
+    assert @export.reload.finalized_at?
+    assert_includes zip_entry_names, "sumar.xlsx"
+
+    @export.update_settings("summary" => false, "messages" => true)
+    with_download_events do |published|
+      @export.start
+      perform_enqueued_jobs while enqueued_jobs.any?
+
+      assert_not_includes zip_entry_names, "sumar.xlsx"
+      assert_equal expected_object_ids.sort, published.sort
+      assert_equal 2, finished_count
+    end
+  end
+
+  test "re-running a finalized export does not rebuild it or duplicate events" do
+    create_export("summary" => true)
+    run_export
+
+    @export.reload
+    completed_inode = File.stat(@export.storage_path).ino
+
+    with_download_events do |published|
+      ExportJob.new.perform(@export, offset: 1, batch_size: 1)
+
+      assert_equal completed_inode, File.stat(@export.storage_path).ino
+      assert_empty published
+      assert_equal 1, finished_count
+    end
+  end
+
+  test "only objects actually written to a part get download events" do
+    @export = Export.create!(
+      user: users(:accountants_basic),
+      message_thread_ids: [message_threads(:fs_accountants_thread1).id],
+      settings: {
+        "messages" => true,
+        "default" => false,
+        "by_type" => { "ED.DeliveryReport" => true },
+        "templates" => {
+          "default" => "{{ subor.nazov }}",
+          "ED.DeliveryReport" => "{{ subor.nazov }}"
+        }
+      }
+    )
+
+    expected = messages(:fs_accountants_thread1_inbox_message).objects.ids
+
+    with_download_events do |published|
+      run_export
+
+      assert_equal expected.sort, published.sort
+      assert_equal ["DeliveryReport.asice"], zip_entry_names
+    end
+  end
+
+  test "an object added after its thread's part was built is neither zipped nor published" do
+    create_export("summary" => true)
+    ExportJob.new.perform(@export, offset: 0, batch_size: 1)
+    clear_enqueued_jobs
+
+    expected_before_late_object = expected_object_ids.sort
+    late_object = MessageObject.create!(
+      message: messages(:fs_accountants_thread1_outbox_message),
+      name: "late.pdf",
+      mimetype: "application/pdf",
+      object_type: "ATTACHMENT",
+      uuid: SecureRandom.uuid
+    )
+    MessageObjectDatum.create!(message_object: late_object, blob: "%PDF-1.4")
+
+    with_download_events do |published|
+      ExportJob.new.perform(@export, offset: 1, batch_size: 1)
+
+      assert_equal expected_before_late_object, published.sort
+      assert_not_includes published, late_object.id
+      assert_not_includes zip_entry_names, "late.pdf"
     end
   end
 
