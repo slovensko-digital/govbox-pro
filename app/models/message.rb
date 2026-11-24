@@ -105,6 +105,10 @@ class Message < ApplicationRecord
     metadata&.dig("template_id").present?
   end
 
+  def prepare_html_visualization_for_display
+    box.prepare_html_visualization_for_display(self)
+  end
+
   def authorizable_delivery_notification?
     metadata["delivery_notification"] && !metadata["authorized"] && Time.parse(metadata.dig("delivery_notification", "delivery_period_end_at")) > Time.now
   end
