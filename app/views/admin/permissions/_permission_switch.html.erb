@@ -1,0 +1,20 @@
+<% disabled = url.nil? %>
+<% switch_control = capture do %>
+  <%= button_tag type: disabled ? :button : :submit, disabled: disabled, role: :switch,
+                 aria: { checked: enabled.to_s, describedby: "#{permission}_description" },
+                 class: "group flex w-fit max-w-full cursor-pointer items-start gap-3 rounded-md text-start font-medium text-gray-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-default" do %>
+    <span aria-hidden="true" class="<%= enabled ? "bg-indigo-600" : "bg-gray-200" %> relative inline-flex h-6 w-11 shrink-0 rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out group-disabled:opacity-50 motion-reduce:transition-none">
+      <span class="<%= enabled ? "ltr:translate-x-5 rtl:-translate-x-5" : "translate-x-0" %> pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out motion-reduce:transition-none"></span>
+    </span>
+    <span><%= label %></span>
+  <% end %>
+  <p id="<%= permission %>_description" class="ms-14 mt-1 text-sm text-gray-600"><%= description %></p>
+<% end %>
+<% if disabled %>
+  <div><%= switch_control %></div>
+<% else %>
+  <%= form_with url: url, method: :patch do |form| %>
+    <%= form.hidden_field permission, value: !enabled %>
+    <%= switch_control %>
+  <% end %>
+<% end %>

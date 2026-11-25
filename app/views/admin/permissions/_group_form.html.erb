@@ -1,11 +1,26 @@
 <div class="w-full p-4 flex-col justify-start items-start gap-4 inline-flex">
   <div class="self-stretch bg-white rounded-md border border-gray-200 flex-col justify-start items-start flex">
-    <div class="self-stretch p-6 border-b border-gray-200 justify-start items-center gap-4 inline-flex">
-      <div class="grow shrink basis-0 text-gray-900 text-xl font-semibold leading-[35px]"><%= t('admin.groups.permissions.title', group_name: group.name) %></div>
-      <%= link_to admin_tenant_permissions_path(Current.tenant), class: "px-3.5 py-2.5 bg-white rounded-md border border-gray-300 justify-center items-center gap-2.5 flex hover:bg-gray-100" do %>
-        <p class="text-gray-900 text-base font-medium leading-normal"><%= t('admin.groups.permissions.back') %></p>
-      <% end %>
-    </div>
+    <header class="self-stretch p-6 border-b border-gray-200">
+      <div class="flex items-center justify-between gap-4">
+        <h1 class="text-xl font-semibold leading-[35px] text-gray-900"><%= t('admin.groups.permissions.title', group_name: group.name) %></h1>
+        <%= link_to admin_tenant_permissions_path(Current.tenant), class: "px-3.5 py-2.5 bg-white rounded-md border border-gray-300 justify-center items-center gap-2.5 flex hover:bg-gray-100" do %>
+          <p class="text-gray-900 text-base font-medium leading-normal"><%= t('admin.groups.permissions.back') %></p>
+        <% end %>
+      </div>
+      <div id="group-permissions" class="mt-2 flex max-w-2xl flex-col gap-4">
+        <%= render "admin/permissions/permission_switch",
+                   url: update_all_boxes_permission_admin_tenant_group_path(Current.tenant, group),
+                   permission: :all_boxes_permission, enabled: group.all_boxes_permission?,
+                   label: t('admin.groups.permissions.all_boxes_label'),
+                   description: t('admin.groups.permissions.all_boxes_description') %>
+        <% access_tags_changeable = group.manage_access_tags_changeable? %>
+        <%= render "admin/permissions/permission_switch",
+                   url: (update_can_manage_access_tags_admin_tenant_group_path(Current.tenant, group) if access_tags_changeable),
+                   permission: :can_manage_access_tags, enabled: group.can_manage_access_tags?,
+                   label: t('admin.groups.permissions.access_tags_label'),
+                   description: t(access_tags_changeable ? 'admin.groups.permissions.access_tags_description' : 'admin.groups.permissions.access_tags_always_enabled') %>
+      </div>
+    </header>
     <div class="self-stretch p-6 border-b border-gray-200">
       <%= form_with url: search_boxes_and_tags_admin_tenant_group_path(Current.tenant, group),
                     data: { controller: 'debounce', debounce_target: 'form'},
@@ -28,21 +43,10 @@
       <!-- Boxes Column -->
       <div class="flex flex-col gap-4 pb-6" id="boxes-column">
         <div class="text-lg font-semibold text-gray-900"><%= t('admin.groups.permissions.boxes') %></div>
-        <div class="flex justify-between items-center gap-4">
-          <div class="flex flex-col justify-start items-start grow relative gap-1">
-            <p class="self-stretch grow-0 shrink-0 text-left">Oprávnenie na všetky schránky</p>
-          </div>
-          <%= form_with url: update_all_boxes_permission_admin_tenant_group_path(Current.tenant, group), title: "Zmeniť oprávnenie skupiny na všetky schránky", method: :patch, scope: nil do |form| %>
-            <%= form.hidden_field :all_boxes_permission, value: !group.all_boxes_permission %>
-            <%= form.button class: "#{group.all_boxes_permission ? "bg-indigo-600" : "bg-gray-200"} relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2", role: :switch, aria: { checked: group.all_boxes_permission.to_s } do %>
-              <span class="sr-only">Use setting</span>
-              <span aria-hidden="true" class="<%= group.all_boxes_permission ? "translate-x-5" : "translate-x-0" %> pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out"></span>
-            <% end %>
-          <% end %>
-        </div>
-        <% unless group.all_boxes_permission? %>
-          <div class="flex flex-col divide-y border rounded-md border-gray-200">
-          <% if group.box_groups.empty? %>
+        <div class="flex flex-col divide-y border rounded-md border-gray-200">
+          <% if group.all_boxes_permission? %>
+            <p class="p-4 text-sm text-gray-600 text-center"><%= t('admin.groups.permissions.all_boxes_enabled') %></p>
+          <% elsif group.box_groups.empty? %>
             <div class="p-4 text-sm text-gray-500 text-center">
               <%= t('admin.groups.permissions.empty_list.box') %>
             </div>
@@ -58,7 +62,6 @@
             <% end %>
           <% end %>
         </div>
-        <% end %>
       </div>
       <!-- Tags Column -->
       <div class="flex flex-col gap-4" id="tags-column">

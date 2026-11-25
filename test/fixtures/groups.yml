@@ -9,6 +9,7 @@ ssd_admins:
   name: admins
   type: AdminGroup
   tenant: ssd
+  can_manage_access_tags: true
 
 ssd_basic_user:
   name: Basic user
@@ -49,6 +50,7 @@ solver_admin:
   name: admins
   type: AdminGroup
   tenant: solver
+  can_manage_access_tags: true
 
 solver_other_user:
   name: Other user
@@ -59,11 +61,13 @@ google_admins:
   name: admins
   type: AdminGroup
   tenant: google
+  can_manage_access_tags: true
 
 accountants_admins:
   name: admins
   type: AdminGroup
   tenant: accountants
+  can_manage_access_tags: true
 
 accountants_basic_user:
   name: Basic user 2

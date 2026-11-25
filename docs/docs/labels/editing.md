@@ -35,3 +35,11 @@ keywords: ["štítok", "úprava", "priradenie", "vlákno"]
 ::: callout success "Hotovo!"
 Štítky boli úspešne pridané alebo odobraté z vlákna.
 :::
+
+Rovnaké pravidlá platia pri **Hromadné akcie → Upraviť štítky**. Pomlčka v políčku znamená, že štítok je priradený iba niektorým vybraným vláknam.
+
+::: callout warning "Nie všetky štítky môžete meniť"
+Niektoré štítky určujú, kto môže vidieť správy vo vlákne. Ich zmena je citlivá operácia, preto ich môžu meniť iba používatelia s oprávnením spravovať prístupové štítky.
+
+Bez tohto oprávnenia sú tieto štítky viditeľné, ale nemôžete ich pridávať ani odoberať z vlákna. Pri prejdení kurzorom cez políčko alebo názov sa zobrazí „Tento štítok nemáte právo meniť“. Štítky, ktoré nemenia prístup k správam, môžete meniť aj bez tohto oprávnenia.
+:::

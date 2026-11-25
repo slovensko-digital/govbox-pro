@@ -18,6 +18,27 @@ class GroupPermissionsTest < ApplicationSystemTestCase
     )
   end
 
+  test "the all-boxes switch applies to the group without removing individual box permissions" do
+    box = boxes(:ssd_other)
+    @group.box_groups.create!(box: box)
+    visit edit_permissions_admin_tenant_group_path(tenants(:ssd), @group)
+
+    assert_selector "##{dom_id(box, :permission_row)}"
+    click_button "Prístup ku všetkým schránkam"
+    within("#boxes-column") do
+      assert_text "Skupina má prístup ku všetkým schránkam."
+      assert_no_selector "##{dom_id(box, :permission_row)}"
+    end
+    assert @group.reload.all_boxes_permission?
+
+    click_button "Prístup ku všetkým schránkam"
+    within("#boxes-column") do
+      assert_selector "##{dom_id(box, :permission_row)}"
+      assert_no_text "Skupina má prístup ku všetkým schránkam."
+    end
+    refute @group.reload.all_boxes_permission?
+  end
+
   test "admin can navigate to tags management from permissions" do
     visit admin_tenant_permissions_path(tenants(:ssd))
 

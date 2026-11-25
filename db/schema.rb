@@ -455,6 +455,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_18_155602) do
     t.datetime "updated_at", null: false
     t.string "type", null: false
     t.boolean "all_boxes_permission", default: false, null: false
+    t.boolean "can_manage_access_tags", default: false, null: false
     t.index ["tenant_id"], name: "index_groups_on_tenant_id"
   end
 
