@@ -14,25 +14,10 @@ class Export < ApplicationRecord
   before_save :set_default_template
   before_validation :normalize_settings
   validate :at_least_one_export_option, unless: :new_record?
+  validate :at_least_one_message_format, unless: :new_record?
   validate :delivered_at_range_valid, unless: :new_record?
 
   DEFAULT_TEMPLATE = "{{ schranka.export_nazov }}/vlakno-{{ vlakno.id }}/sprava-{{ sprava.id }}/{{ subor.nazov }}"
-
-  REPLACEMENT_MAPPINGS = {
-    "{{ schranka.nazov }}" => -> (o) { sanitize_path_component(o.message.thread.box.name) },
-    "{{ schranka.oficialny_nazov }}" => -> (o) { sanitize_path_component(o.message.thread.box.official_name) },
-    "{{ schranka.export_nazov }}" => -> (o) { sanitize_path_component(o.message.export_metadata_box_name.presence || o.message.thread.box.export_name) },
-    "{{ schranka.dic }}" => -> (o) { o.message.thread.box.settings["dic"] },
-    "{{ vlakno.id }}" => ->(o) { o.message.thread.id },
-    "{{ vlakno.nazov }}" => ->(o) { sanitize_path_component(o.message.thread.title) },
-    "{{ vlakno.obdobie }}" => ->(o) { sanitize_path_component(o.message.thread.metadata["period"]) if o.message.thread.metadata&.dig("period") },
-    "{{ vlakno.formular }}" => ->(o) { sanitize_path_component(form_name(o)) },
-    "{{ vlakno.formular_bez_verzie }}" => ->(o) { sanitize_path_component(form_name(o, include_version: false)) },
-    "{{ vlakno.datum_podania }}" => ->(o) { o.message.thread.messages.outbox&.first&.delivered_at&.to_date },
-    "{{ vlakno.datum_dorucenia }}" => ->(o) { o.message.delivered_at.to_date },
-    "{{ sprava.id }}" => ->(o) { o.message.id },
-    "{{ subor.nazov }}" => ->(o) { sanitize_path_component(MessageObjectHelper.displayable_name(o)) }
-  }.freeze
 
   def start
     user.notifications.create!(
@@ -56,40 +41,6 @@ class Export < ApplicationRecord
   # selection).
   def update_settings(attributes)
     update(settings: settings_object.merge(attributes).to_h)
-  end
-
-  def export_object_filepath(message_object)
-    thread = message_object.message.thread
-    form = Fs::Form.find_by(id: thread.metadata&.dig("fs_form_id"))&.slug
-    type = message_object.message.message_type
-
-    default_template = settings.dig("templates", "default").presence || DEFAULT_TEMPLATE
-
-    if settings.dig('by_type', type).present?
-      template = settings.dig("templates", type).presence || default_template
-    elsif settings.dig('by_form', form).present?
-      template = settings.dig("templates", form).presence || default_template
-    elsif settings['default'].present?
-      template = default_template
-    else
-      return nil
-    end
-
-    out = template.dup
-    REPLACEMENT_MAPPINGS.map do |key, value_function|
-      out.gsub!(key) { value_function.call(message_object) }
-    end
-
-    out.gsub!(/\.\.\//, '')
-    out.sub(/^\/+/, '')
-  end
-
-  def self.form_name(object, include_version: true)
-    Fs::Form.find_by(id: object.message.thread.metadata&.dig("fs_form_id"))&.short_name(include_version: include_version)
-  end
-
-  def self.sanitize_path_component(value)
-    value.to_s.gsub("/", "-").gsub("\\", "-")
   end
 
   def storage_path
@@ -128,9 +79,15 @@ class Export < ApplicationRecord
     errors.add(:base, I18n.t('activerecord.errors.models.export.attributes.base.empty_selection')) unless settings['summary'] || settings['messages']
   end
 
+  def at_least_one_message_format
+    if settings['messages'] && !settings_object.originals && !settings['pdf']
+      errors.add(:base, I18n.t('activerecord.errors.models.export.attributes.base.empty_message_formats'))
+    end
+  end
+
   def normalize_settings
     self.settings ||= {}
-    %w[summary messages pdf default].each do |flag|
+    %w[summary messages originals pdf default].each do |flag|
       settings[flag] = ActiveModel::Type::Boolean.new.cast(settings[flag]) if settings.key?(flag)
     end
     %w[by_form by_type].each do |group|
