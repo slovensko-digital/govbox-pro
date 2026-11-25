@@ -19,7 +19,7 @@ class ExportFilepathsTest < ActiveJob::TestCase
     @export.update_settings("originals" => false, "pdf" => true, "templates" => { "default" => "{{ subor.nazov }}" })
 
     paths = @job.preview_filepaths(@export, message_threads: @export.message_threads)
-    assert_equal ["SVDPHv20.pdf", "SVDPHv20 (1).pdf"], paths.fetch(@object.id)
+    assert_equal ["SVDPHv20.pdf", "SVDPHv20 (1).pdf"], paths.fetch(@object)
   end
 
   test "filepath substitutes thread title" do

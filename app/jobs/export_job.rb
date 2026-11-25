@@ -81,7 +81,7 @@ class ExportJob < ApplicationJob
     paths = {}
     used_paths = reserved_paths(export)
     each_export_object(export, message_threads: message_threads) do |object|
-      paths[object.id] = each_object_file(object, export: export, used_paths: used_paths).map { |path, _, _| path }
+      paths[object] = each_object_file(object, export: export, used_paths: used_paths).map { |path, _, _| path }
     end
     paths
   end

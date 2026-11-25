@@ -46,7 +46,7 @@ class ExportJobTest < ActiveJob::TestCase
     entries = export_entries(export)
     [:asc, :desc].each do |order|
       preview = ExportJob.new.preview_filepaths(export, message_threads: export.message_threads.order(id: order))
-      forms.each { |form| assert_equal "%PDF-#{form.id}", entries.fetch(preview.fetch(form.id).sole) }
+      forms.each { |form| assert_equal "%PDF-#{form.id}", entries.fetch(preview.fetch(form).sole) }
     end
   end
 
@@ -58,7 +58,7 @@ class ExportJobTest < ActiveJob::TestCase
     sheet = attachment(object.message, name: 'sumar.xlsx', mimetype: 'application/octet-stream', content: 'attachment bytes')
 
     preview = ExportJob.new.preview_filepaths(export, message_threads: export.message_threads)
-    assert_equal ['sumar (1).xlsx'], preview.fetch(sheet.id)
+    assert_equal ['sumar (1).xlsx'], preview.fetch(sheet)
     entries = export_entries(export)
     assert_equal 'attachment bytes', entries.fetch('sumar (1).xlsx')
     assert entries.fetch('sumar.xlsx').start_with?('PK')
