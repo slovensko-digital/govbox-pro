@@ -445,6 +445,11 @@ sk:
       destroy:
         success: Skupina bola úspešne odstránená
       permissions:
+        all_boxes_label: Prístup ku všetkým schránkam
+        all_boxes_description: Ak je táto možnosť vypnutá, platí zoznam schránok nižšie.
+        all_boxes_enabled: Skupina má prístup ku všetkým schránkam.
+        access_tags_label: Môže meniť prístup cez štítky
+        access_tags_description: Členovia skupiny môžu meniť, kto vidí vlákno, pridaním alebo odobratím štítka.
         access_tags_always_enabled: Vždy povolené
         title: Prístup pre skupinu %{group_name}
         edit: Upraviť oprávnenia

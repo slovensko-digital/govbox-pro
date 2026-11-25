@@ -47,18 +47,25 @@ class Admin::GroupsControllerTest < ActionController::TestCase
     refute @group.reload.can_manage_access_tags
   end
 
-  test "edit permissions renders the access tag management toggle" do
+  test "group-wide permissions appear together below the group title" do
     get :edit_permissions, params: { tenant_id: @tenant.id, id: @group.id }
 
     assert_response :success
-    assert_select "input[type=hidden][name=can_manage_access_tags][value=true]"
+    assert_select "header #group-permissions" do
+      assert_select "button[role=switch]", count: 2 do |switches|
+        assert_equal ["Prístup ku všetkým schránkam", "Môže meniť prístup cez štítky"], switches.map { |switch| switch.text.strip }
+      end
+      assert_select "input[type=hidden][name=all_boxes_permission][value=true]"
+      assert_select "input[type=hidden][name=can_manage_access_tags][value=true]"
+    end
+    assert_select "#boxes-column button[role=switch], #tags-column button[role=switch]", count: 0
   end
 
   test "admin group shows always enabled without an access tag permission toggle" do
     get :edit_permissions, params: { tenant_id: @tenant.id, id: groups(:ssd_admins).id }
 
     assert_response :success
-    assert_select "#tags-column span", text: I18n.t("admin.groups.permissions.access_tags_always_enabled")
+    assert_select "#group-permissions", text: /Môže meniť prístup cez štítky\s+Vždy povolené/
     assert_select "input[name=can_manage_access_tags]", count: 0
   end
 

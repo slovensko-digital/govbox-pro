@@ -53,9 +53,9 @@ class AccessTagPermissionsTest < ApplicationSystemTestCase
     sign_in_as(:admin)
     visit edit_permissions_admin_tenant_group_path(tenants(:ssd), groups(:ssd_admins))
 
-    within("#tags-column") do
+    within("#group-permissions") do
       assert_text I18n.t("admin.groups.permissions.access_tags_always_enabled")
-      assert_no_selector "input[name=can_manage_access_tags]"
+      assert_no_selector "input[name=can_manage_access_tags]", visible: :all
     end
   end
 
@@ -71,10 +71,10 @@ class AccessTagPermissionsTest < ApplicationSystemTestCase
       end
 
       assert_current_path edit_permissions_admin_tenant_group_path(tenants(:ssd), group)
-      within("#tags-column") do
-        assert_selector "button[role=switch][aria-checked=true]"
-        find("button[role=switch]").click
-        assert_selector "button[role=switch][aria-checked=false]"
+      within("#group-permissions") do
+        assert_selector "button[role=switch][aria-checked=true]", text: "Môže meniť prístup cez štítky"
+        click_button "Môže meniť prístup cez štítky"
+        assert_selector "button[role=switch][aria-checked=false]", text: "Môže meniť prístup cez štítky"
       end
       refute group.reload.can_manage_access_tags
     end
