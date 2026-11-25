@@ -33,18 +33,25 @@ class MessagesApiTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test "ignores diff in message metadata" do
+  test "shows diff_errors but hides the other diffs and corrected_xml in message metadata" do
     @tenant = tenants(:solver)
     message = messages(:solver_draft_with_diff)
+    diff_error = "3c3\n<       <ico>12345678</ico>\n---\n>       <ico>87654321</ico>"
+    message.metadata["validation_errors"].merge!(
+      "diff_errors" => [diff_error],
+      "diff_warnings" => ["5c5\n<       <suma>10</suma>\n---\n>       <suma>10.00</suma>"],
+      "corrected_xml" => "<CorrectedForm/>"
+    )
+    message.save!
 
     get "/api/messages/#{message.id}", params: { token: generate_api_token(sub: @tenant.id, key_pair: @key_pair) }, as: :json
 
     assert_response :success
-    json_response = JSON.parse(response.body)
-    assert_equal "OK", json_response["metadata"]["validation_errors"]["result"]
-    assert_equal [], json_response["metadata"]["validation_errors"]["warnings"]
-    assert_equal [], json_response["metadata"]["validation_errors"]["errors"]
-    assert_not json_response["metadata"]["validation_errors"].has_key?("diff")
+    validation_errors = JSON.parse(response.body)["metadata"]["validation_errors"]
+    assert_equal [diff_error], validation_errors["diff_errors"]
+    assert_not validation_errors.has_key?("diff")
+    assert_not validation_errors.has_key?("diff_warnings")
+    assert_not validation_errors.has_key?("corrected_xml")
   end
 
   test "can not read nonexisting message" do
