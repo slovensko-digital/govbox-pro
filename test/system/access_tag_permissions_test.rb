@@ -54,6 +54,7 @@ class AccessTagPermissionsTest < ApplicationSystemTestCase
     visit edit_permissions_admin_tenant_group_path(tenants(:ssd), groups(:ssd_admins))
 
     within("#group-permissions") do
+      assert_button "Môže meniť prístup cez štítky", disabled: true
       assert_text I18n.t("admin.groups.permissions.access_tags_always_enabled")
       assert_no_selector "input[name=can_manage_access_tags]", visible: :all
     end

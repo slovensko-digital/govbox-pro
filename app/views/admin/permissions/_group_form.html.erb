@@ -13,18 +13,12 @@
                    permission: :all_boxes_permission, enabled: group.all_boxes_permission?,
                    label: t('admin.groups.permissions.all_boxes_label'),
                    description: t('admin.groups.permissions.all_boxes_description') %>
-        <% if group.manage_access_tags_changeable? %>
-          <%= render "admin/permissions/permission_switch",
-                     url: update_can_manage_access_tags_admin_tenant_group_path(Current.tenant, group),
-                     permission: :can_manage_access_tags, enabled: group.can_manage_access_tags?,
-                     label: t('admin.groups.permissions.access_tags_label'),
-                     description: t('admin.groups.permissions.access_tags_description') %>
-        <% else %>
-          <div class="ps-14">
-            <p class="font-medium text-gray-900"><%= t('admin.groups.permissions.access_tags_label') %></p>
-            <p class="mt-1 text-sm text-gray-600"><%= t('admin.groups.permissions.access_tags_always_enabled') %></p>
-          </div>
-        <% end %>
+        <% access_tags_changeable = group.manage_access_tags_changeable? %>
+        <%= render "admin/permissions/permission_switch",
+                   url: (update_can_manage_access_tags_admin_tenant_group_path(Current.tenant, group) if access_tags_changeable),
+                   permission: :can_manage_access_tags, enabled: group.can_manage_access_tags?,
+                   label: t('admin.groups.permissions.access_tags_label'),
+                   description: t(access_tags_changeable ? 'admin.groups.permissions.access_tags_description' : 'admin.groups.permissions.access_tags_always_enabled') %>
       </div>
     </header>
     <div class="self-stretch p-6 border-b border-gray-200">

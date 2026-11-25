@@ -96,7 +96,7 @@ An admin SHALL be able to grant or revoke the access-tag management permission o
 
 #### Scenario: Admin group shows an always-enabled permission
 - **WHEN** an admin opens the admin group's permissions page
-- **THEN** access-tag management is shown with a localized "Always enabled" status without a toggle to disable it
+- **THEN** access-tag management is shown with a checked, disabled switch and a localized "Always enabled" status
 
 #### Scenario: Attempt to disable admin access-tag management
 - **WHEN** a request attempts to disable access-tag management for the admin group

@@ -61,11 +61,12 @@ class Admin::GroupsControllerTest < ActionController::TestCase
     assert_select "#boxes-column button[role=switch], #tags-column button[role=switch]", count: 0
   end
 
-  test "admin group shows always enabled without an access tag permission toggle" do
+  test "admin group shows an enabled but disabled access tag permission switch" do
     get :edit_permissions, params: { tenant_id: @tenant.id, id: groups(:ssd_admins).id }
 
     assert_response :success
     assert_select "#group-permissions", text: /Môže meniť prístup cez štítky\s+Vždy povolené/
+    assert_select "#group-permissions button[role=switch][aria-checked=true][disabled]", text: "Môže meniť prístup cez štítky", count: 1
     assert_select "input[name=can_manage_access_tags]", count: 0
   end
 
