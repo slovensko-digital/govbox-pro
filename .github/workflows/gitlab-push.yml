@@ -1,0 +1,30 @@
+name: Push to GitLab
+
+on:
+  workflow_run:
+    workflows: [ Push CI ]
+    types: [ completed ]
+    branches: [ main ]
+
+jobs:
+  gitlab-push:
+    name: Push to GitLab
+
+    # The branches filter also matches a pull request from a fork's main, so require a push too.
+    if: ${{(github.repository == 'slovensko-digital/govbox-pro') && (github.event.workflow_run.conclusion == 'success') && (github.event.workflow_run.event == 'push')}}
+
+    runs-on: ubuntu-latest
+
+    steps:
+      # Push the commit CI tested, not whatever main points to now.
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          fetch-depth: 0
+
+      - uses: dokku/github-action@master
+        with:
+          ci_commit: ${{ github.event.workflow_run.head_sha }}
+          git_push_flags: '--force'
+          git_remote_url: ssh://git@${{secrets.GITLAB_DEPLOY_HOST}}/${{github.event.repository.name}}.git
+          ssh_private_key: ${{secrets.GITLAB_DEPLOY_KEY}}

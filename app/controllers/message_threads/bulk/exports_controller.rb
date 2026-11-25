@@ -68,15 +68,12 @@ module MessageThreads
       end
 
       def load_export_context
-        @message_threads = message_thread_policy_scope.where(id: @export.message_thread_ids).includes(:messages)
-        @message_forms = @message_threads.map do |thread|
-          thread.metadata&.dig('fs_form_id')
-        end.then do |ids|
-          Fs::Form.where(id: ids).pluck(:slug).uniq
-        end
+        @message_threads = message_thread_policy_scope.where(id: @export.message_thread_ids).includes(:messages, :box)
+        @message_forms = @message_threads.filter_map { |thread| thread.box.export_form(thread)&.slug }.uniq
         @message_types = @message_threads.flat_map do |thread|
           thread.messages.map(&:message_type)
         end.uniq.compact
+        @export_filepaths = ExportJob.new.preview_filepaths(@export, message_threads: @message_threads)
       end
     end
   end

@@ -72,8 +72,30 @@ jobs:
           path: ${{ github.workspace }}/log/test.log
           if-no-files-found: ignore
 
+  changes:
+    name: Detect FOP changes
+
+    runs-on: ubuntu-latest
+
+    outputs:
+      fop: ${{ steps.filter.outputs.fop }}
+
+    steps:
+      - uses: actions/checkout@v5
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            fop:
+              - Dockerfile
+              - bin/check-fop-saxon
+
   fop:
     name: FOP Saxon check
+
+    needs: changes
+
+    if: ${{ needs.changes.outputs.fop == 'true' }}
 
     runs-on: ubuntu-latest
 
@@ -81,26 +103,3 @@ jobs:
       - uses: actions/checkout@v5
       - name: Build the image's FOP stage
         run: docker build --target base -t govbox-pro-base .
-
-  gitlab-push:
-    name: Push to GitLab
-
-    if: ${{(github.repository == 'slovensko-digital/govbox-pro') && (github.ref == 'refs/heads/main')}}
-
-    runs-on: ubuntu-latest
-
-    needs:
-      - test
-      - brakeman
-      - fop
-
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
-
-      - uses: dokku/github-action@master
-        with:
-          git_push_flags: '--force'
-          git_remote_url: ssh://git@${{secrets.GITLAB_DEPLOY_HOST}}/${{github.event.repository.name}}.git
-          ssh_private_key: ${{secrets.GITLAB_DEPLOY_KEY}}

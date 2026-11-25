@@ -57,6 +57,10 @@ class Box < ApplicationRecord
     api_connections.active.first
   end
 
+  def prepare_html_visualization_for_display(message)
+    message.html_visualization
+  end
+
   def sync
     raise NotImplementedError
   end
@@ -76,6 +80,10 @@ class Box < ApplicationRecord
 
   def official_name
     name.match(/^FS (.*?)(?:\s*(v zastúpení:.*| \(oblasť SPD\)))?$/)&.captures&.first || name
+  end
+
+  def export_form(thread)
+    nil
   end
 
   private

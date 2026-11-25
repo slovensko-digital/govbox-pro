@@ -3,6 +3,32 @@ require "test_helper"
 class BoxTest < ActiveSupport::TestCase
   include ActiveJob::TestHelper
 
+  test "FS box resolves the export form from thread metadata" do
+    thread = message_threads(:fs_accountants_thread1)
+    form = fs_forms(:SVDPHv20)
+    thread.metadata["fs_form_id"] = form.id
+
+    assert_equal form, thread.box.export_form(thread)
+  end
+
+  test "FS box has no export form when metadata is missing or references a deleted form" do
+    thread = message_threads(:fs_accountants_thread1)
+    thread.metadata = nil
+    assert_nil thread.box.export_form(thread)
+
+    thread.metadata = { "fs_form_id" => -1 }
+    assert_nil thread.box.export_form(thread)
+  end
+
+  test "UPVS box does not interpret FS thread metadata" do
+    thread = message_threads(:ssd_main_general)
+    thread.metadata = { "fs_form_id" => fs_forms(:SVDPHv20).id }
+
+    Fs::Form.stub(:find_by, ->(**) { flunk "UPVS boxes must not look up FS forms" }) do
+      assert_nil thread.box.export_form(thread)
+    end
+  end
+
   test "should not be valid if obo value present in settings when api_connection is a Govbox::ApiConnection without tenant" do
     box = boxes(:google_box_with_govbox_api_connection)
     assert box.valid?

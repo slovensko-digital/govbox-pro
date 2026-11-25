@@ -10,6 +10,8 @@ Rails.application.configure do
   config.content_security_policy_nonce_directives = %w[script-src]
 
   upvs_login_url = ENV.fetch("UPVS_ENV", "fix") == "prod" ? "https://prihlasenie.slovensko.sk" : "https://prihlasenie.upvsfix.gov.sk"
+  no_account_trial_origin = -> { ENV["SSD_NO_ACCOUNT_TRIAL_RETURN_URL"].presence&.then { |url| URI(url).origin } }
+  fs_forms_storage_origin = -> { ENV["FS_FORMS_STORAGE_API_URL"].presence&.then { |url| URI(url).origin } }
 
   config.content_security_policy do |policy|
     policy.default_src :self
@@ -18,14 +20,16 @@ Rails.application.configure do
     policy.form_action :self,
                        *("https://accounts.google.com" if ENV["GOOGLE_CLIENT_ID"].present?),
                        *("https://login.microsoftonline.com" if ENV["AZURE_APPLICATION_CLIENT_ID"].present?),
-                       *(upvs_login_url if ENV["UPVS_SSO_SUBJECT"].present?)
+                       *(upvs_login_url if ENV["UPVS_SSO_SUBJECT"].present?),
+                       no_account_trial_origin
     policy.frame_ancestors :self
     policy.frame_src   :self
     policy.script_src  :self
-    policy.style_src   :self, :unsafe_inline
+    policy.style_src   :self, :unsafe_inline, fs_forms_storage_origin
     policy.font_src    :self, :https, :data
     policy.img_src     :self, :data,
-                       *("https://*.googleusercontent.com" if ENV["GOOGLE_CLIENT_ID"].present?)
+                       *("https://*.googleusercontent.com" if ENV["GOOGLE_CLIENT_ID"].present?),
+                       fs_forms_storage_origin
     policy.connect_src :self, "http://localhost:37200", "https://loopback.autogram.slovensko.digital:37200"
   end
 end
