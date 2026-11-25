@@ -1443,6 +1443,7 @@ components:
     AutomationAddMessageThreadTagActionParams:
       description: Akcia `Automation::AddMessageThreadTagAction`, pridá štítok vláknu
       type: object
+      additionalProperties: false
       properties:
         type:
           description: Typ akcie
@@ -1459,6 +1460,7 @@ components:
     AutomationUnassignMessageThreadTagActionParams:
       description: Akcia `Automation::UnassignMessageThreadTagAction`, odoberie štítok z vlákna
       type: object
+      additionalProperties: false
       properties:
         type:
           description: Typ akcie
@@ -1475,6 +1477,7 @@ components:
     AutomationChangeMessageThreadTitleActionParams:
       description: Akcia `Automation::ChangeMessageThreadTitleAction`, zmení názov vlákna
       type: object
+      additionalProperties: false
       properties:
         type:
           description: Typ akcie
@@ -1491,6 +1494,7 @@ components:
     AutomationFireWebhookActionParams:
       description: Akcia `Automation::FireWebhookAction`, zavolá webhook
       type: object
+      additionalProperties: false
       properties:
         type:
           description: Typ akcie

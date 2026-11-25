@@ -47,6 +47,7 @@ class Api::AutomationRulesController < Api::TenantController
   def action_attributes(action)
     tag_name = action.delete(:tag)
     webhook_id = action.delete(:webhook_id)
+    raise ArgumentError, "Action cannot have both tag and webhook_id" if tag_name.present? && webhook_id.present?
 
     if tag_name.present?
       action.merge(action_object: @tenant.simple_tags.find_or_create_by(name: tag_name))

@@ -132,6 +132,20 @@ class AutomationRulesApiTest < ActionDispatch::IntegrationTest
     assert_match "Actions action object can't be blank", response.parsed_body["message"]
   end
 
+  test "rejects an action with both a tag and a webhook" do
+    %w[Automation::AddMessageThreadTagAction Automation::FireWebhookAction].each do |type|
+      assert_no_difference -> { Automation::Rule.count }, -> { Tag.count } do
+        post_rule(actions: [
+          { type: "Automation::AddMessageThreadTagAction", tag: "Brand new tag" },
+          { type: type, tag: "Another new tag", webhook_id: automation_webhooks(:one).id }
+        ])
+      end
+
+      assert_response :unprocessable_content, type
+      assert_equal "Action cannot have both tag and webhook_id", response.parsed_body["message"]
+    end
+  end
+
   test "rejects a webhook action with a tag" do
     assert_no_difference -> { Automation::Rule.count } do
       post_rule(actions: [{ type: "Automation::FireWebhookAction", tag: "Invoice" }])
