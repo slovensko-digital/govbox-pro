@@ -27,7 +27,7 @@ class MessageObjectPolicy < ApplicationPolicy
   end
 
   def update?
-    @message_object.signable?
+    @message_object.signable? && @message_object.message.signable_by?(@user)
   end
 
   def download?

@@ -34,7 +34,9 @@ module MessageThreads
       def set_message_objects
         @message_objects = message_object_policy_scope.joins(:tags, message: :thread).
           where(message_threads: { id: @message_thread_ids }).
-          where(tags: { id: [Current.user.signature_requested_from_tag, Current.tenant.signer_group.signature_requested_from_tag] }).distinct
+          where(tags: { id: [Current.user.signature_requested_from_tag, Current.tenant.signer_group.signature_requested_from_tag] }).distinct.
+          preload(message: { thread: :box }).
+          select { |message_object| message_object.message.signable_by?(Current.user) }
       end
 
       def message_thread_policy_scope
