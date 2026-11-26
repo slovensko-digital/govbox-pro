@@ -3,6 +3,24 @@ require 'axlsx'
 class ExportJob < ApplicationJob
   include GoodJob::ActiveJobExtensions::Concurrency
 
+  SUMMARY_PATH = 'sumar.xlsx'
+
+  REPLACEMENT_MAPPINGS = {
+    "{{ schranka.nazov }}" => -> (o) { sanitize_path_component(o.message.thread.box.name) },
+    "{{ schranka.oficialny_nazov }}" => -> (o) { sanitize_path_component(o.message.thread.box.official_name) },
+    "{{ schranka.export_nazov }}" => -> (o) { sanitize_path_component(o.message.export_metadata_box_name.presence || o.message.thread.box.export_name) },
+    "{{ schranka.dic }}" => -> (o) { o.message.thread.box.settings["dic"] },
+    "{{ vlakno.id }}" => ->(o) { o.message.thread.id },
+    "{{ vlakno.nazov }}" => ->(o) { sanitize_path_component(o.message.thread.title) },
+    "{{ vlakno.obdobie }}" => ->(o) { sanitize_path_component(o.message.thread.metadata["period"]) if o.message.thread.metadata&.dig("period") },
+    "{{ vlakno.formular }}" => ->(o) { sanitize_path_component(form_name(o)) },
+    "{{ vlakno.formular_bez_verzie }}" => ->(o) { sanitize_path_component(form_name(o, include_version: false)) },
+    "{{ vlakno.datum_podania }}" => ->(o) { o.message.thread.messages.outbox&.first&.delivered_at&.to_date },
+    "{{ vlakno.datum_dorucenia }}" => ->(o) { o.message.delivered_at.to_date },
+    "{{ sprava.id }}" => ->(o) { o.message.id },
+    "{{ subor.nazov }}" => ->(o) { sanitize_path_component(MessageObjectHelper.displayable_name(o)) }
+  }.freeze
+
   good_job_concurrency_rule(
     label: "ExportJob",
     apply_label: true,
@@ -29,58 +47,26 @@ class ExportJob < ApplicationJob
     return finalize_export(export) if export.finalized_at?
 
     if export.settings.dig("messages")
-      batch_ids = export.message_thread_ids[offset, batch_size] || []
+      thread_ids = export.message_thread_ids.uniq.sort
+      batch_ids = thread_ids[offset, batch_size] || []
       build_part(export, batch_ids, offset) if batch_ids.any?
 
-      return ExportJob.set(job_context: :medium).perform_later(export, offset: offset + batch_size, batch_size: batch_size) if offset + batch_size < export.message_thread_ids.size
+      return ExportJob.set(job_context: :medium).perform_later(export, offset: offset + batch_size, batch_size: batch_size) if offset + batch_size < thread_ids.size
     end
 
     finalize_export(export)
   end
 
-  def prepare_original_object(object, export:, zip:, file_paths:)
-    file_path = unique_path_within_export(object, export: export, other_file_names: file_paths)
-    return unless file_path
-
-    zip.put_next_entry(file_path)
-    zip.write(object.content)
-    file_paths << file_path
-  end
-
-  def prepare_pdf_object(object, export:, zip:, file_paths:)
-    if object.nested_message_objects.any?
-      prepare_nested_print_objects(object, export: export, zip: zip, file_paths: file_paths)
-    else
-      return unless object.downloadable_as_pdf?
-
-      pdf_content = pdf_visualization(object)
-
-      file_path = unique_path_within_export(object, export: export, other_file_names: file_paths, pdf: true)
-      return unless file_path
-
-      zip.put_next_entry(file_path)
-      zip.write(pdf_content)
-      file_paths << file_path
+  def write_object(object, export:, zip:, used_paths:, publish_event: true)
+    written = false
+    each_object_file(object, export: export, used_paths: used_paths) do |path, source, render_pdf|
+      content = render_pdf ? pdf_visualization(source) : source.content
+      zip.put_next_entry(path)
+      zip.write(content)
+      written = true
     end
-  end
-
-  def prepare_nested_print_objects(object, export:, zip:, file_paths:)
-    object.nested_message_objects.each do |nested_message_object|
-      next unless nested_message_object.pdf? || nested_message_object.downloadable_as_pdf?
-
-      pdf_content = if nested_message_object.pdf?
-                      nested_message_object.content
-                    else
-                      pdf_visualization(nested_message_object)
-                    end
-
-      file_path = unique_path_within_export(object, export: export, other_file_names: file_paths, pdf: true)
-      next unless file_path
-
-      zip.put_next_entry(file_path)
-      zip.write(pdf_content)
-      file_paths << file_path
-    end
+    EventBus.publish(:message_object_downloaded, object) if written && publish_event
+    written
   end
 
   def pdf_visualization(object)
@@ -89,6 +75,60 @@ class ExportJob < ApplicationJob
 
   def pdf_visualization_failure(object)
     "Unable to prepare PDF visualization for #{object.class.name} ID #{object.id}"
+  end
+
+  def preview_filepaths(export, message_threads:)
+    paths = {}
+    used_paths = reserved_paths(export)
+    each_export_object(export, message_threads: message_threads) do |object|
+      paths[object] = each_object_file(object, export: export, used_paths: used_paths).map { |path, _, _| path }
+    end
+    paths
+  end
+
+  def export_object_filepath(object, export:, pdf: false, other_file_names: [])
+    thread = object.message.thread
+    type = object.message.message_type
+    settings = export.settings
+    form = thread.box.export_form(thread)&.slug if settings['by_form'].present?
+    default_template = settings.dig("templates", "default").presence || Export::DEFAULT_TEMPLATE
+
+    if settings.dig('by_type', type).present?
+      template = settings.dig("templates", type).presence || default_template
+    elsif settings.dig('by_form', form).present?
+      template = settings.dig("templates", form).presence || default_template
+    elsif settings['default'].present?
+      template = default_template
+    else
+      return nil
+    end
+
+    out = template.dup
+    REPLACEMENT_MAPPINGS.each do |key, value_function|
+      out.gsub!(key) { value_function.call(object) }
+    end
+
+    out.gsub!(/\.\.\//, '')
+    base = out.sub(/^\/+/, '')
+    original_extension = File.extname(MessageObjectHelper.displayable_name(object))
+    extension = pdf ? '.pdf' : original_extension
+    path_without_extension = base.delete_suffix(original_extension)
+    path = "#{path_without_extension}#{extension}"
+    suffix = 0
+    while other_file_names.include?(path)
+      suffix += 1
+      path = "#{path_without_extension} (#{suffix})#{extension}"
+    end
+    path
+  end
+
+  def self.form_name(object, include_version: true)
+    thread = object.message.thread
+    thread.box.export_form(thread)&.short_name(include_version: include_version)
+  end
+
+  def self.sanitize_path_component(value)
+    value.to_s.gsub("/", "-").gsub("\\", "-")
   end
 
   def prepare_summary(export:, zip:)
@@ -114,28 +154,50 @@ class ExportJob < ApplicationJob
         end
       end
 
-      zip.put_next_entry('sumar.xlsx')
+      zip.put_next_entry(SUMMARY_PATH)
       zip.write(p.to_stream.read)
     end
   end
 
-  def unique_path_within_export(object, export:, other_file_names:, pdf: false)
-    path = export.export_object_filepath(object)
-    return unless path
+  private
 
-    object_name = MessageObjectHelper.displayable_name(object)
-
-    extension = pdf ? ".pdf" : File.extname(object_name)
-    path_without_extension = path.delete_suffix(File.extname(object_name))
-    path_with_extension = "#{path_without_extension}#{extension}"
-
-    return path_with_extension unless path_with_extension.in?(other_file_names)
-
-    matches_count = other_file_names.count { |name| /#{Regexp.escape(path_without_extension)}( \(\d+\))?#{Regexp.escape(extension)}/ =~ name }
-    "#{path_without_extension} (#{matches_count})#{extension}"
+  def reserved_paths(export)
+    export.settings['summary'] ? Set[SUMMARY_PATH] : Set.new
   end
 
-  private
+  def each_object_file(object, export:, used_paths:)
+    return enum_for(__method__, object, export: export, used_paths: used_paths) unless block_given?
+
+    originals = export.settings_object.originals
+    if originals
+      path = export_object_filepath(object, export: export, other_file_names: used_paths)
+      return unless path
+      yield path, object, false
+      used_paths << path
+    end
+    return unless export.settings['pdf']
+    return if originals && object.pdf?
+
+    sources = object.nested_message_objects.sort_by(&:id).presence || [object]
+    sources.each do |source|
+      next unless source.pdf? || source.downloadable_as_pdf?
+
+      path = export_object_filepath(object, export: export, pdf: true, other_file_names: used_paths)
+      next unless path
+      yield path, source, !source.pdf?
+      used_paths << path
+    end
+  end
+
+  def each_export_object(export, message_threads: export.message_threads)
+    return unless export.settings['messages']
+
+    message_threads.reorder(:id).each do |thread|
+      export.filtered_messages(thread).includes(:objects).order(:delivered_at, :id).each do |message|
+        message.objects.sort_by(&:id).each { |object| yield object }
+      end
+    end
+  end
 
   def parts_dir(export)
     Rails.root.join("storage", "exports", "tmp", "export-#{export.id}").to_s
@@ -158,26 +220,16 @@ class ExportJob < ApplicationJob
     tmp_path = "#{part_path}.tmp"
     FileUtils.mkdir_p(File.dirname(part_path))
 
-    file_paths = export.parts
-                       .select { |part_offset, _| part_offset.to_i < offset }
-                       .flat_map { |_, part| part["file_paths"] || [] }
-    seed_count = file_paths.size
+    used_paths = reserved_paths(export)
+    export.parts.each do |part_offset, part|
+      used_paths.merge(part["file_paths"] || []) if part_offset.to_i < offset
+    end
+    seed_count = used_paths.size
     object_ids = []
 
     ::Zip::OutputStream.open(tmp_path) do |zip|
-      batch_ids.each do |thread_id|
-        message_thread = export.message_threads.find_by(id: thread_id)
-        next unless message_thread
-
-        export.filtered_messages(message_thread).includes(:thread, :objects).find_each do |message|
-          message.objects.each do |object|
-            file_paths_count = file_paths.size
-            prepare_original_object(object, export: export, zip: zip, file_paths: file_paths)
-            prepare_pdf_object(object, export: export, zip: zip, file_paths: file_paths) if export.settings["pdf"]
-
-            object_ids << object.id if file_paths.size > file_paths_count
-          end
-        end
+      each_export_object(export, message_threads: export.message_threads.where(id: batch_ids)) do |object|
+        object_ids << object.id if write_object(object, export: export, zip: zip, used_paths: used_paths, publish_event: false)
       end
     end
 
@@ -187,7 +239,7 @@ class ExportJob < ApplicationJob
       parts: export.parts.merge(
         offset.to_s => {
           "object_ids" => object_ids.uniq,
-          "file_paths" => file_paths.drop(seed_count)
+          "file_paths" => used_paths.to_a.drop(seed_count)
         }
       ),
       updated_at: Time.current

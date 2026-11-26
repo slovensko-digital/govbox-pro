@@ -229,9 +229,10 @@ class ExportJobChunkingTest < ActiveJob::TestCase
     ExportJob.new.perform(@export, offset: 0, batch_size: 1)
     clear_enqueued_jobs
 
+    first_part_message = MessageObject.find(@export.reload.parts.dig("0", "object_ids").first).message
     expected_before_late_object = expected_object_ids.sort
     late_object = MessageObject.create!(
-      message: messages(:fs_accountants_thread1_outbox_message),
+      message: first_part_message,
       name: "late.pdf",
       mimetype: "application/pdf",
       object_type: "ATTACHMENT",
@@ -240,12 +241,41 @@ class ExportJobChunkingTest < ActiveJob::TestCase
     MessageObjectDatum.create!(message_object: late_object, blob: "%PDF-1.4")
 
     with_download_events do |published|
-      ExportJob.new.perform(@export, offset: 1, batch_size: 1)
+      ExportJob.new.perform(@export.reload, offset: 1, batch_size: 1)
 
       assert_equal expected_before_late_object, published.sort
       assert_not_includes published, late_object.id
       assert_not_includes zip_entry_names, "late.pdf"
     end
+  end
+
+  test "chunked export matches preview_filepaths with unsorted thread ids and reserved summary name" do
+    threads = [message_threads(:fs_accountants_thread1), message_threads(:fs_accountants_thread2)].sort_by(&:id).reverse
+    threads.each { |t| t.messages.inbox.first.form_object.nested_message_objects.create!(name: "form.pdf", mimetype: Utils::PDF_MIMETYPE, content: "%PDF-#{t.id}") }
+    sheet = MessageObject.create!(message: threads.first.messages.first, name: "sumar.xlsx", mimetype: "application/octet-stream", object_type: "ATTACHMENT", uuid: SecureRandom.uuid)
+    MessageObjectDatum.create!(message_object: sheet, blob: "bytes")
+    @export = Export.create!(
+      user: users(:accountants_basic),
+      message_thread_ids: threads.map(&:id),
+      settings: { "messages" => true, "summary" => true, "originals" => true, "pdf" => true, "default" => true, "templates" => { "default" => "{{ subor.nazov }}" } }
+    )
+
+    preview = ExportJob.new.preview_filepaths(@export, message_threads: @export.message_threads).values.flatten
+    run_export
+
+    assert_includes zip_entry_names, "sumar (1).xlsx"
+    assert_equal (preview + ["sumar.xlsx"]).sort, zip_entry_names.sort
+  end
+
+  test "chunked PDF-only export excludes original files" do
+    create_export("originals" => false, "pdf" => true, "templates" => { "default" => "{{ subor.nazov }}" })
+    [message_threads(:fs_accountants_thread1), message_threads(:fs_accountants_thread2)].each do |t|
+      t.messages.inbox.first.form_object.nested_message_objects.create!(name: "form.pdf", mimetype: Utils::PDF_MIMETYPE, content: "%PDF-#{t.id}")
+    end
+
+    run_export
+
+    assert_equal ["DeliveryReport (1).pdf", "DeliveryReport.pdf"], zip_entry_names.sort
   end
 
   private

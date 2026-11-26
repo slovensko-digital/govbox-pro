@@ -51,6 +51,10 @@ class Fs::Box < Box
     true
   end
 
+  def export_form(thread)
+    Fs::Form.find_by(id: thread.metadata&.dig("fs_form_id"))
+  end
+
   def prepare_html_visualization_for_display(message)
     if message.draft? || message.outbox?
       # FS forms hide these with their own JavaScript, which never runs in the visualization iframe.
