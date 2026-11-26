@@ -432,18 +432,11 @@ class ExportJobTest < ActiveJob::TestCase
   end
 
   def export_entries(export)
-    entries = nil
-    storage = Minitest::Mock.new
-    storage.expect(:store, nil) do |directory, filename, content|
-      assert_equal 'exports', directory
-      assert_equal export.file_name, filename
-      ::Zip::File.open_buffer(StringIO.new(content.b)) do |zip|
-        entries = zip.entries.to_h { |entry| [entry.name, entry.get_input_stream.read] }
-      end
-      true
+    ExportJob.new.perform(export)
+    ::Zip::File.open(export.storage_path) do |zip|
+      zip.entries.to_h { |entry| [entry.name, entry.get_input_stream.read] }
     end
-    FileStorage.stub(:new, storage) { ExportJob.new.perform(export) }
-    storage.verify
-    entries
+  ensure
+    FileUtils.rm_f(export.storage_path)
   end
 end

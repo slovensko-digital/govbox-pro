@@ -3,7 +3,9 @@
 # Table name: exports
 #
 #  id                 :bigint           not null, primary key
+#  finalized_at       :datetime
 #  message_thread_ids :integer          default([]), not null, is an Array
+#  parts              :jsonb            not null
 #  settings           :jsonb            not null
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
@@ -20,6 +22,8 @@ class Export < ApplicationRecord
   DEFAULT_TEMPLATE = "{{ schranka.export_nazov }}/vlakno-{{ vlakno.id }}/sprava-{{ sprava.id }}/{{ subor.nazov }}"
 
   def start
+    update_columns(finalized_at: nil, parts: {}, updated_at: Time.current)
+
     user.notifications.create!(
       type: Notifications::ExportStarted,
       export: self

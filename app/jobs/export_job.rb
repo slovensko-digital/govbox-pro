@@ -34,28 +34,27 @@ class ExportJob < ApplicationJob
 
   after_discard do |job, _error|
     export = job.arguments.first
+    cleanup_parts(export, reset_finalized: true)
+    FileUtils.rm_f("#{export.storage_path}.tmp")
     export.user.notifications.create!(type: Notifications::ExportFailed, export: export)
   end
 
   queue_as :default
 
-  def perform(export)
-    used_paths = reserved_paths(export)
+  THREADS_PER_BATCH = 25
 
-    export_content = ::Zip::OutputStream.write_buffer do |zip|
-      each_export_object(export) do |object|
-        write_object(object, export: export, zip: zip, used_paths: used_paths)
-      end
+  def perform(export, offset: 0, batch_size: THREADS_PER_BATCH)
+    return finalize_export(export) if export.finalized_at?
 
-      prepare_summary(export: export, zip: zip) if export.settings.dig("summary")
+    if export.settings['messages']
+      thread_ids = export.message_thread_ids.uniq.sort
+      batch_ids = thread_ids[offset, batch_size] || []
+      build_part(export, batch_ids, offset) if batch_ids.any?
+
+      return ExportJob.set(job_context: :medium).perform_later(export, offset: offset + batch_size, batch_size: batch_size) if offset + batch_size < thread_ids.size
     end
 
-    FileStorage.new.store("exports", export.file_name, export_content.string.force_encoding("UTF-8"))
-
-    export.user.notifications.create!(
-      type: Notifications::ExportFinished,
-      export: export
-    )
+    finalize_export(export)
   end
 
   def write_object(object, export:, zip:, used_paths:)
@@ -66,7 +65,7 @@ class ExportJob < ApplicationJob
       zip.write(content)
       written = true
     end
-    EventBus.publish(:message_object_downloaded, object) if written
+    written
   end
 
   def pdf_visualization(object)
@@ -196,6 +195,103 @@ class ExportJob < ApplicationJob
       export.filtered_messages(thread).includes(:objects).order(:delivered_at, :id).each do |message|
         message.objects.sort_by(&:id).each { |object| yield object }
       end
+    end
+  end
+
+  def parts_dir(export)
+    Rails.root.join("storage", "exports", "tmp", "export-#{export.id}").to_s
+  end
+
+  def part_path(export, offset)
+    File.join(parts_dir(export), "part-#{offset}.zip")
+  end
+
+  def cleanup_parts(export, reset_finalized: false)
+    FileUtils.rm_rf(parts_dir(export))
+    updates = {}
+    updates[:parts] = {} if export.parts.any?
+    updates[:finalized_at] = nil if reset_finalized && export.finalized_at?
+    export.update_columns(updates.merge(updated_at: Time.current)) if updates.any?
+  end
+
+  def build_part(export, batch_ids, offset)
+    part_path = part_path(export, offset)
+    tmp_path = "#{part_path}.tmp"
+    FileUtils.mkdir_p(File.dirname(part_path))
+
+    used_paths = reserved_paths(export)
+    export.parts.each do |part_offset, part|
+      used_paths.merge(part["file_paths"] || []) if part_offset.to_i < offset
+    end
+    seed_count = used_paths.size
+    object_ids = []
+
+    ::Zip::OutputStream.open(tmp_path) do |zip|
+      each_export_object(export, message_threads: export.message_threads.where(id: batch_ids)) do |object|
+        object_ids << object.id if write_object(object, export: export, zip: zip, used_paths: used_paths)
+      end
+    end
+
+    if object_ids.any?
+      FileUtils.mv(tmp_path, part_path)
+      export.update_columns(
+        parts: export.parts.merge(
+          offset.to_s => {
+            "object_ids" => object_ids.uniq,
+            "file_paths" => used_paths.to_a.drop(seed_count)
+          }
+        ),
+        updated_at: Time.current
+      )
+    else
+      FileUtils.rm_f(tmp_path)
+    end
+  end
+
+  def finalize_export(export)
+    unless export.finalized_at?
+      final_tmp_path = "#{export.storage_path}.tmp"
+      FileUtils.mkdir_p(File.dirname(export.storage_path))
+
+      ::Zip::OutputStream.open(final_tmp_path) do |zip|
+        export.parts.keys.map(&:to_i).sort.each do |offset|
+          ::Zip::File.open(part_path(export, offset)) do |part_zip|
+            part_zip.each do |entry|
+              zip.put_next_entry(entry.name)
+              zip.write(entry.get_input_stream.read)
+            end
+          end
+        end
+
+        prepare_summary(export: export, zip: zip) if export.settings['summary']
+      end
+
+      FileUtils.mv(final_tmp_path, export.storage_path)
+      export.update_columns(finalized_at: Time.current, updated_at: Time.current)
+    end
+
+    publish_download_events(export)
+    cleanup_parts(export)
+
+    started_id = export.user.notifications.where(export: export, type: "Notifications::ExportStarted").maximum(:id) || 0
+    unless export.user.notifications.exists?(export: export, type: "Notifications::ExportFinished", id: (started_id + 1)..)
+      Notifications::ExportFinished.create!(user: export.user, export: export)
+    end
+  end
+
+  def publish_download_events(export)
+    remaining = export.parts.dup
+
+    remaining.keys.map(&:to_i).sort.each do |offset|
+      key = offset.to_s
+      object_ids = remaining.dig(key, "object_ids") || []
+
+      MessageObject.where(id: object_ids).find_each do |object|
+        EventBus.publish(:message_object_downloaded, object)
+      end
+
+      remaining.delete(key)
+      export.update_columns(parts: remaining, updated_at: Time.current)
     end
   end
 end
