@@ -46,7 +46,7 @@ class ExportJob < ApplicationJob
   def perform(export, offset: 0, batch_size: THREADS_PER_BATCH)
     return finalize_export(export) if export.finalized_at?
 
-    if export.settings.dig("messages")
+    if export.settings['messages']
       thread_ids = export.message_thread_ids.uniq.sort
       batch_ids = thread_ids[offset, batch_size] || []
       build_part(export, batch_ids, offset) if batch_ids.any?
@@ -57,7 +57,7 @@ class ExportJob < ApplicationJob
     finalize_export(export)
   end
 
-  def write_object(object, export:, zip:, used_paths:, publish_event: true)
+  def write_object(object, export:, zip:, used_paths:)
     written = false
     each_object_file(object, export: export, used_paths: used_paths) do |path, source, render_pdf|
       content = render_pdf ? pdf_visualization(source) : source.content
@@ -65,7 +65,6 @@ class ExportJob < ApplicationJob
       zip.write(content)
       written = true
     end
-    EventBus.publish(:message_object_downloaded, object) if written && publish_event
     written
   end
 
@@ -229,21 +228,24 @@ class ExportJob < ApplicationJob
 
     ::Zip::OutputStream.open(tmp_path) do |zip|
       each_export_object(export, message_threads: export.message_threads.where(id: batch_ids)) do |object|
-        object_ids << object.id if write_object(object, export: export, zip: zip, used_paths: used_paths, publish_event: false)
+        object_ids << object.id if write_object(object, export: export, zip: zip, used_paths: used_paths)
       end
     end
 
-    FileUtils.mv(tmp_path, part_path)
-
-    export.update_columns(
-      parts: export.parts.merge(
-        offset.to_s => {
-          "object_ids" => object_ids.uniq,
-          "file_paths" => used_paths.to_a.drop(seed_count)
-        }
-      ),
-      updated_at: Time.current
-    )
+    if object_ids.any?
+      FileUtils.mv(tmp_path, part_path)
+      export.update_columns(
+        parts: export.parts.merge(
+          offset.to_s => {
+            "object_ids" => object_ids.uniq,
+            "file_paths" => used_paths.to_a.drop(seed_count)
+          }
+        ),
+        updated_at: Time.current
+      )
+    else
+      FileUtils.rm_f(tmp_path)
+    end
   end
 
   def finalize_export(export)
@@ -261,14 +263,14 @@ class ExportJob < ApplicationJob
           end
         end
 
-        prepare_summary(export: export, zip: zip) if export.settings.dig("summary")
+        prepare_summary(export: export, zip: zip) if export.settings['summary']
       end
 
       FileUtils.mv(final_tmp_path, export.storage_path)
       export.update_columns(finalized_at: Time.current, updated_at: Time.current)
     end
 
-    publish_download_events(export) if export.settings.dig("messages")
+    publish_download_events(export)
     cleanup_parts(export)
 
     started_id = export.user.notifications.where(export: export, type: "Notifications::ExportStarted").maximum(:id) || 0

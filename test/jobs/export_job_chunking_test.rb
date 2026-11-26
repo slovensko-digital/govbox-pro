@@ -53,17 +53,19 @@ class ExportJobChunkingTest < ActiveJob::TestCase
     assert_equal 1, finished_count
   end
 
-  test "a batch that fails once then succeeds ships clean names and single events" do
-    create_export("summary" => true, "pdf" => true)
+  test "cross-batch filename collisions deduplicate across chunks and retries" do
+    create_export("summary" => false, "pdf" => true, "templates" => { "default" => "{{ subor.nazov }}" })
     stub = stub_pdf_visualization(->(calls) { calls.size == 3 ? nil : "pdf-bytes" })
 
     with_download_events do |published|
       run_export
 
-      assert_operator stub[:calls].size, :>=, 2, "guard: a retry must have happened"
+      assert_operator stub[:calls].size, :>=, 4, "guard: a retry must have happened"
       names = zip_entry_names
-      assert names.none? { |n| n.include?("(1)") }, "retry must rebuild names from scratch, got: #{names.inspect}"
-      assert_equal expected_object_ids.sort, published.sort, "each object exactly once"
+      assert_includes names, "DeliveryReport.asice"
+      assert_includes names, "DeliveryReport (1).asice"
+      assert names.none? { |n| n.include?("(2)") }, "retry must not treat failed batch names as taken, got: #{names.inspect}"
+      assert_equal expected_object_ids.sort, published.sort
       assert_equal 1, finished_count
     end
   end
@@ -80,22 +82,6 @@ class ExportJobChunkingTest < ActiveJob::TestCase
       assert_equal 1, @export.user.notifications.where(export: @export, type: "Notifications::ExportFailed").count
       assert_not File.exist?(parts_dir), "discarded export should clean its parts"
       assert_empty @export.reload.parts, "discarded export should reset its part metadata"
-    end
-  end
-
-  test "cross-batch filename collisions deduplicate across chunks and retries" do
-    create_export("summary" => false, "pdf" => true, "templates" => { "default" => "{{ subor.nazov }}" })
-    stub = stub_pdf_visualization(->(calls) { calls.size == 3 ? nil : "pdf-bytes" })
-
-    with_download_events do |published|
-      run_export
-
-      assert_operator stub[:calls].size, :>=, 4
-      names = zip_entry_names
-      assert_includes names, "DeliveryReport.asice"
-      assert_includes names, "DeliveryReport (1).asice"
-      assert names.none? { |n| n.include?("(2)") }, "retry must not treat failed batch names as taken, got: #{names.inspect}"
-      assert_equal expected_object_ids.sort, published.sort
     end
   end
 
@@ -249,7 +235,7 @@ class ExportJobChunkingTest < ActiveJob::TestCase
     end
   end
 
-  test "chunked export matches preview_filepaths with unsorted thread ids and reserved summary name" do
+  test "chunked PDF-only export matches preview_filepaths with unsorted thread ids and reserved summary name" do
     threads = [message_threads(:fs_accountants_thread1), message_threads(:fs_accountants_thread2)].sort_by(&:id).reverse
     threads.each { |t| t.messages.inbox.first.form_object.nested_message_objects.create!(name: "form.pdf", mimetype: Utils::PDF_MIMETYPE, content: "%PDF-#{t.id}") }
     sheet = MessageObject.create!(message: threads.first.messages.first, name: "sumar.xlsx", mimetype: "application/octet-stream", object_type: "ATTACHMENT", uuid: SecureRandom.uuid)
@@ -265,15 +251,10 @@ class ExportJobChunkingTest < ActiveJob::TestCase
 
     assert_includes zip_entry_names, "sumar (1).xlsx"
     assert_equal (preview + ["sumar.xlsx"]).sort, zip_entry_names.sort
-  end
 
-  test "chunked PDF-only export excludes original files" do
-    create_export("originals" => false, "pdf" => true, "templates" => { "default" => "{{ subor.nazov }}" })
-    [message_threads(:fs_accountants_thread1), message_threads(:fs_accountants_thread2)].each do |t|
-      t.messages.inbox.first.form_object.nested_message_objects.create!(name: "form.pdf", mimetype: Utils::PDF_MIMETYPE, content: "%PDF-#{t.id}")
-    end
-
-    run_export
+    @export.update_settings("originals" => false, "summary" => false, "message_direction" => "inbox")
+    @export.start
+    perform_enqueued_jobs while enqueued_jobs.any?
 
     assert_equal ["DeliveryReport (1).pdf", "DeliveryReport.pdf"], zip_entry_names.sort
   end

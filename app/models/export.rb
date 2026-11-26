@@ -22,7 +22,7 @@ class Export < ApplicationRecord
   DEFAULT_TEMPLATE = "{{ schranka.export_nazov }}/vlakno-{{ vlakno.id }}/sprava-{{ sprava.id }}/{{ subor.nazov }}"
 
   def start
-    update_columns(finalized_at: nil, parts: {}, updated_at: Time.current) if finalized_at? || parts.any?
+    update_columns(finalized_at: nil, parts: {}, updated_at: Time.current)
 
     user.notifications.create!(
       type: Notifications::ExportStarted,
